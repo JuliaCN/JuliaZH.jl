@@ -1,5 +1,5 @@
 module JuliaZH
 
-# package code goes here
+include("basedocs.jl")
 
 end # module
