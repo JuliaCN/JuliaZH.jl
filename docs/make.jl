@@ -111,7 +111,6 @@ makedocs(
     pages = PAGES,
     html_prettyurls = !("local" in ARGS),
     html_canonical = "https://juliacn.github.io/JuliaZH.jl/latest/",
-    assets = ["assets/julia-manual.css", ]
 )
 
 deploydocs(
