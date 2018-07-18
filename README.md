@@ -8,16 +8,12 @@ Julia中文文档，中文文档是一个标准的Julia包，可以使用包的�
 
 ## 使用方法
 
-暂未注册在源中，请通过以下方式clone master branch
+暂未注册在源中，仅支持0.7版本，请通过以下方式获取最新的master分支
 
 Julia 0.7+ 请使用自带的包管理器安装
 
-```julia
-pkg> dev https://github.com/JuliaCN/JuliaZH.jl.git
 ```
-
-```julia
-julia> Pkg.clone("https://github.com/JuliaCN/JuliaZH.jl.git")
+pkg> dev https://github.com/JuliaCN/JuliaZH.jl.git#master
 ```
 
 在你的代码中使用这个包，就能够获得中文版本的文档：
