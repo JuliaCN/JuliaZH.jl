@@ -57,7 +57,7 @@ julia> Pkg.add("JuliaZH")
 
 ## 贡献文档
 
-请阅读[JuliaZH的开发文档](https://juliacn.github.io/JuliaZH.jl/latest/juliacn/style-guide/)
+请阅读[JuliaZH的开发文档](https://juliacn.github.io/JuliaZH.jl/latest/juliacn/style-guide/)并给我们提交PR或者通过issue讨论。
 
 ## 开源协议
 
