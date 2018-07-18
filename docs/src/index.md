@@ -9,7 +9,7 @@
 ```@raw html
 <!-- Please read the [release notes](NEWS.md) to see what has changed since the last release. -->
 
-请阅读[发行通知](NEWS.md)来查看最新的更改。
+<!-- 请阅读[发行通知](NEWS.md)来查看最新的更改。 -->
 ```
 
 ```@raw html

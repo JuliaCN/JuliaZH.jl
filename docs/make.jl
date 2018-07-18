@@ -1,12 +1,12 @@
 using Documenter, JuliaZH
 
 const PAGES = [
-    "Home" => "index.md",
+    "主页" => "index.md",
     # hide("NEWS.md"),
-    "Manual" => [
+    "手册" => [
         "manual/getting-started.md",
-        # "manual/variables.md",
-        # "manual/integers-and-floating-point-numbers.md",
+        "manual/variables.md",
+        "manual/integers-and-floating-point-numbers.md",
         # "manual/mathematical-operations.md",
         # "manual/complex-and-rational-numbers.md",
         # "manual/strings.md",
@@ -99,8 +99,8 @@ makedocs(
     modules = [JuliaZH, Base, Core],
     clean = false,
     doctest = false,
-    format = :html,
     sitename = "Julia中文文档",
+    checkdocs = :none, # we do not have translation of stdlib now
     linkcheck = false, # !("skiplinks" in ARGS),
     format    = "pdf" in ARGS ? :latex : :html,
     authors   = "Julia中文社区",
