@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>变量 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-89508993-1', 'auto');
+ga('send', 'pageview');
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/variables/index.html"/><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><a href="../../index.html"><img class="logo" src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><h1>Julia中文文档</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">主页</a></li><li><span class="toctext">手册</span><ul><li><a class="toctext" href="../getting-started/">起步</a></li><li class="current"><a class="toctext" href>变量</a><ul class="internal"><li><a class="toctext" href="#可用的变量名-1">可用的变量名</a></li><li><a class="toctext" href="#命名规范-1">命名规范</a></li></ul></li><li><a class="toctext" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li></ul></li><li><span class="toctext">Base</span><ul><li><a class="toctext" href="../../base/base/">Essentials</a></li><li><a class="toctext" href="../../base/collections/">Collections and Data Structures</a></li><li><a class="toctext" href="../../base/math/">Mathematics</a></li><li><a class="toctext" href="../../base/numbers/">Numbers</a></li><li><a class="toctext" href="../../base/strings/">Strings</a></li><li><a class="toctext" href="../../base/arrays/">数组</a></li><li><a class="toctext" href="../../base/parallel/">Tasks</a></li><li><a class="toctext" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="toctext" href="../../base/constants/">Constants</a></li><li><a class="toctext" href="../../base/file/">Filesystem</a></li><li><a class="toctext" href="../../base/io-network/">I/O and Network</a></li><li><a class="toctext" href="../../base/punctuation/">Punctuation</a></li><li><a class="toctext" href="../../base/sort/">Sorting and Related Functions</a></li><li><a class="toctext" href="../../base/iterators/">Iteration utilities</a></li><li><a class="toctext" href="../../base/c/">C Interface</a></li><li><a class="toctext" href="../../base/libc/">C Standard Library</a></li><li><a class="toctext" href="../../base/stacktraces/">StackTraces</a></li><li><a class="toctext" href="../../base/simd-types/">SIMD Support</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>手册</li><li><a href>变量</a></li></ul><a class="edit-page" href="https://github.com/JuliaCN/JuliaZH.jl/blob/master/docs/src/manual/variables.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>变量</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="变量-1" href="#变量-1">变量</a></h1><!-- # Variables --><p>Julia 中，变量（Variable）即是关联（或绑定）到一个值的名字。当你想存下一个值（比如从某些数学运算后得到的）以备后用时，变量就显得非常有用。例如：</p><!-- A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to
+store a value (that you obtained after some math, for example) for later use. For example: --><pre><code class="language-julia-repl"># Assign the value 10 to the variable x
+julia&gt; x = 10
+10
+
+# Doing math with x&#39;s value
+julia&gt; x + 1
+11
+
+# Reassign x&#39;s value
+julia&gt; x = 1 + 1
+2
+
+# You can assign values of other types, like strings of text
+julia&gt; x = &quot;Hello World!&quot;
+&quot;Hello World!&quot;</code></pre><p>Julia 为变量命名提供了一个极其灵活的系统。变量名区分大小写，并且没有语义上的意义（语言不会因为变量的名字区别而区别对待它们）。</p><!-- Julia provides an extremely flexible system for naming variables. Variable names are case-sensitive,
+and have no semantic meaning (that is, the language will not treat variables differently based
+on their names). --><pre><code class="language-julia-repl">julia&gt; x = 1.0
+1.0
+
+julia&gt; y = -3
+-3
+
+julia&gt; Z = &quot;My string&quot;
+&quot;My string&quot;
+
+julia&gt; customary_phrase = &quot;Hello world!&quot;
+&quot;Hello world!&quot;
+
+julia&gt; UniversalDeclarationOfHumanRightsStart = &quot;人人生而自由，在尊严和权利上一律平等。&quot;
+&quot;人人生而自由，在尊严和权利上一律平等。&quot;</code></pre><p>也可以使用 Unicode 字符（UTF-8 编码）来命名：</p><!-- Unicode names (in UTF-8 encoding) are allowed: --><pre><code class="language-julia-repl">julia&gt; δ = 0.00001
+1.0e-5
+
+julia&gt; 안녕하세요 = &quot;Hello&quot;
+&quot;Hello&quot;</code></pre><p>在 Julia 的 REPL 以及一些其它的 Julia 编辑环境中，很多 Unicode 的数学符号可以使用反斜杠加 LaTeX 符号名并跟上一个 tab 打出。例如，想输入变量名 <code>δ</code> 的话，可以输入 <code>\delta</code>-<em>tab</em>。你甚至可以用 <code>\alpha</code>-<em>tab</em>-<code>\hat</code>-<em>tab</em>-<code>\_2</code>-<em>tab</em> 来输入 <code>α̂₂</code> 这样复杂的名字。如果你在某个地方（比如别人的代码里）看到一个不知道怎么输入的符号，REPL 的帮助功能会告诉你：只需要输入 <code>?</code> 然后粘贴上那个符号即可。</p><!-- In the Julia REPL and several other Julia editing environments, you can type many Unicode math
+symbols by typing the backslashed LaTeX symbol name followed by tab. For example, the variable
+name `δ` can be entered by typing `\delta`-*tab*, or even `α̂₂` by `\alpha`-*tab*-`\hat`-
+*tab*-`\_2`-*tab*. (If you find a symbol somewhere, e.g. in someone else's code,
+that you don't know how to type, the REPL help will tell you: just type `?` and
+then paste the symbol.) --><p>Julia 甚至允许你在需要的时候重新定义那些内建常量和函数（虽然为了避免潜在的混乱，这是不被推荐的）：</p><!-- Julia will even let you redefine built-in constants and functions if needed (although
+this is not recommended to avoid potential confusions): --><pre><code class="language-julia-repl">julia&gt; pi = 3
+3
+
+julia&gt; pi
+3
+
+julia&gt; sqrt = 4
+4</code></pre><p>然而，如果试图重新定义一个已经在使用中的内建常量或函数，Julia 会报错：</p><!-- However, if you try to redefine a built-in constant or function already in use, Julia will give
+you an error: --><pre><code class="language-julia-repl">julia&gt; pi
+π = 3.1415926535897...
+
+julia&gt; pi = 3
+ERROR: cannot assign variable MathConstants.pi from module Main
+
+julia&gt; sqrt(100)
+10.0
+
+julia&gt; sqrt = 4
+ERROR: cannot assign variable Base.sqrt from module Main</code></pre><h2><a class="nav-anchor" id="可用的变量名-1" href="#可用的变量名-1">可用的变量名</a></h2><!-- ## Allowed Variable Names --><p>变量名的第一位必须以下字符：</p><ul><li>字母（A-Z 或者 a-z）或下划线（_）</li><li>或编码大于 00A0 的 Unicode 字符的一个子集。具体来说指的是，<a href="http://www.fileformat.info/info/unicode/category/index.htm">Unicode 字符分类</a>中的<ul><li>Lu/Ll/Lt/Lm/Lo/Nl（字母）</li><li>Sc/So（货币及其他符号）</li><li>一些其它像字母的符号（比如，Sm 数学符号的一个子集）</li></ul></li></ul><p>后续的字符可以包含 ! 和数字（0-9 和其它处于 Nd/No 分类中的字符），以及其它 Unicode 字符：变音和其它修饰符号（Mn/Mc/Me/Sk 分类），一些连接标点（Pc 分类），角分符号和一些其他字符。</p>
+<!-- Variable names must begin with a letter (A-Z or a-z), underscore, or a subset of Unicode code
+points greater than 00A0; in particular, [Unicode character categories](http://www.fileformat.info/info/unicode/category/index.htm)
+Lu/Ll/Lt/Lm/Lo/Nl (letters), Sc/So (currency and other symbols), and a few other letter-like characters
+(e.g. a subset of the Sm math symbols) are allowed. Subsequent characters may also include ! and
+digits (0-9 and other characters in categories Nd/No), as well as other Unicode code points: diacritics
+and other modifying marks (categories Mn/Mc/Me/Sk), some punctuation connectors (category Pc),
+primes, and a few other characters. --><p>像 <code>+</code> 这样的运算符也是合法的标识符，但会被特殊地解析。在一些上下文中，运算符可以就像变量一样被使用。比如说，<code>(+)</code> 指的是加法函数，且 <code>(+) = f</code> 会把它重新赋值。大多数表示中缀运算符的 Unicode 字符（在 Sm 分类中的），比如说 <code>⊕</code>，都会被解析成中缀运算符，且可供用户定义的方法使用（比如说，可以用 <code>const ⊗ = kron</code> 来定义 <code>⊗</code> 为一个中缀的克罗内克积）。运算符也可以放在一些修饰符、角分符号和上下标之前，比如说 <code>+̂ₐ″</code> 会被解析成一个和 <code>+</code> 同样优先级的中缀运算符。</p><!-- Operators like `+` are also valid identifiers, but are parsed specially. In some contexts, operators
+can be used just like variables; for example `(+)` refers to the addition function, and `(+) = f`
+will reassign it. Most of the Unicode infix operators (in category Sm), such as `⊕`, are parsed
+as infix operators and are available for user-defined methods (e.g. you can use `const ⊗ = kron`
+to define `⊗` as an infix Kronecker product).  Operators can also be suffixed with modifying marks,
+primes, and sub/superscripts, e.g. `+̂ₐ″` is parsed as an infix operator with the same precedence as `+`.
+--><p>内建语句的名字是唯一明确被禁止的变量名：</p><!-- The only explicitly disallowed names for variables are the names of built-in statements: --><pre><code class="language-julia-repl">julia&gt; else = false
+ERROR: syntax: unexpected &quot;else&quot;
+
+julia&gt; try = &quot;No&quot;
+ERROR: syntax: unexpected &quot;=&quot;</code></pre><p>有一些 Unicode 字符作为标识符会被认为是等价的。输入 Unicode 组合字符（比如重音）的不同方式也被看作是等价的（具体来说，Julia 标识符是 NFC-正规化的）。Unicode 字符 <code>ɛ</code> (U+025B: Latin small letter open e) 和 <code>µ</code> (U+00B5: micro sign) 会被视为与相应的希腊字母等价，因为前者在一些输入方式中很容易访问到。</p><!-- Some Unicode characters are considered to be equivalent in identifiers.
+Different ways of entering Unicode combining characters (e.g., accents)
+are treated as equivalent (specifically, Julia identifiers are NFC-normalized).
+The Unicode characters `ɛ` (U+025B: Latin small letter open e)
+and `µ` (U+00B5: micro sign) are treated as equivalent to the corresponding
+Greek letters, because the former are easily accessible via some input methods. --><h2><a class="nav-anchor" id="命名规范-1" href="#命名规范-1">命名规范</a></h2>
+<!-- ## Stylistic Conventions --><p>尽管 Julia 对命名本身只有很少的限制，但遵循下列规范是很有用的：</p>
+<!-- While Julia imposes few restrictions on valid names, it has become useful to adopt the following
+conventions: --><ul><li>变量名使用小写字母。</li><li>单词分隔符可以使用下划线（<code>&#39;_&#39;</code>），但除非名字很难阅读否则并不鼓励使用下划线。</li><li><code>Type</code> 和 <code>Module</code> 的名字都使用大写字母开头，且单词的分隔使用大写驼峰命名法而不是下划线。</li><li><code>function</code> 和 <code>macro</code> 的名字使用小写字母，并不含下划线。</li><li>会写入自身参数的函数名使用 <code>!</code> 作为结尾。这样的函数有时被称为“变异（mutating）”或是“原地（in-place）”函数，因为调用它们除了会返回一个值之外，参数还会产生变化。</li></ul>  <!-- * Names of variables are in lower case.
+  * Word separation can be indicated by underscores (`'_'`), but use of underscores is discouraged
+    unless the name would be hard to read otherwise.
+  * Names of `Type`s and `Module`s begin with a capital letter and word separation is shown with upper
+    camel case instead of underscores.
+  * Names of `function`s and `macro`s are in lower case, without underscores.
+  * Functions that write to their arguments have names that end in `!`. These are sometimes called
+    "mutating" or "in-place" functions because they are intended to produce changes in their arguments
+    after the function is called, not just return a value. --><p>关于命名规范的更多信息请参考<a href="manual/@ref">代码风格指南</a>。</p>
+<!-- For more information about stylistic conventions, see the [Style Guide](@ref). --><footer><hr/><a class="previous" href="../getting-started/"><span class="direction">Previous</span><span class="title">起步</span></a><a class="next" href="../integers-and-floating-point-numbers/"><span class="direction">Next</span><span class="title">整数和浮点数</span></a></footer></article></body></html>
