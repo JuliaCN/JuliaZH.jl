@@ -59,6 +59,9 @@ julia> Pkg.add("JuliaZH")
 
 请阅读[JuliaZH的开发文档](https://juliacn.github.io/JuliaZH.jl/latest/juliacn/style-guide/)并给我们提交PR或者通过issue讨论。
 
+所有Julia中文文档的贡献者都可以在[贡献者列表](https://github.com/JuliaCN/JuliaZH.jl/graphs/contributors)中找到。此外也感谢曾经参与
+0.3版本文档的[贡献者们](https://github.com/JuliaCN/julia_zh_cn/graphs/contributors)。
+
 ## 开源协议
 
 MIT协议
