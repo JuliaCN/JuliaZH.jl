@@ -10,11 +10,11 @@ Julia中文文档，中文文档是一个标准的Julia包，可以使用包的�
 Julia 0.7+ 请使用自带的包管理器安装
 
 ```julia
-pkg> dev
+pkg> dev https://github.com/JuliaCN/JuliaZH.jl.git
 ```
 
 ```julia
-julia> Pkg.clone("")
+julia> Pkg.clone("https://github.com/JuliaCN/JuliaZH.jl.git")
 ```
 
 在你的代码中使用这个包，就能够获得中文版本的文档：
@@ -58,3 +58,5 @@ julia> Pkg.add("JuliaZH")
 ## 贡献文档
 
 ## 开源协议
+
+MIT协议
