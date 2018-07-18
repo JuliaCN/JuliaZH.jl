@@ -9352,4 +9352,36 @@ var documenterSearchIndex = {"docs": [
     "text": "Type VecElement{T} is intended for building libraries of SIMD operations. Practical use of it requires using llvmcall. The type is defined as:struct VecElement{T}\n    value::T\nendIt has a special compilation rule: a homogeneous tuple of VecElement{T} maps to an LLVM vector type when T is a primitive bits type and the tuple length is in the set {2-6,8-10,16}.At -O3, the compiler might automatically vectorize operations on such tuples. For example, the following program, when compiled with julia -O3 generates two SIMD addition instructions (addps) on x86 systems:const m128 = NTuple{4,VecElement{Float32}}\n\nfunction add(a::m128, b::m128)\n    (VecElement(a[1].value+b[1].value),\n     VecElement(a[2].value+b[2].value),\n     VecElement(a[3].value+b[3].value),\n     VecElement(a[4].value+b[4].value))\nend\n\ntriple(c::m128) = add(add(c,c),c)\n\ncode_native(triple,(m128,))However, since the automatic vectorization cannot be relied upon, future use will mostly be via libraries that use llvmcall."
 },
 
+{
+    "location": "juliacn/style-guide/#",
+    "page": "翻译格式指引",
+    "title": "翻译格式指引",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "juliacn/style-guide/#翻译格式指引-1",
+    "page": "翻译格式指引",
+    "title": "翻译格式指引",
+    "category": "section",
+    "text": "统一的翻译稿件格式有助于日后维护。请在参与翻译之前阅读这个指引，以保证大家的文档格式基本一致。"
+},
+
+{
+    "location": "juliacn/style-guide/#原文段落组织-1",
+    "page": "翻译格式指引",
+    "title": "原文段落组织",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "juliacn/style-guide/#格式细则-1",
+    "page": "翻译格式指引",
+    "title": "格式细则",
+    "category": "section",
+    "text": ""
+},
+
 ]}
