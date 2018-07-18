@@ -1,7 +1,7 @@
 # JuliaZH.jl
 
 Julia中文文档，中文文档是一个标准的Julia包，可以使用包的安装方式来安装，
-如果你只想查看网页版本请访问[Julia 中文文档页面]()。
+如果你只想查看网页版本请访问[Julia 中文文档页面](https://juliacn.github.io/JuliaZH.jl)。
 
 ## 使用方法
 
