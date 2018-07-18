@@ -23,9 +23,9 @@ pkg> dev https://github.com/JuliaCN/JuliaZH.jl.git#master
 julia> using JuliaZH
 
 help?> julia
-search: JuliaZH JULIA_HOME
+search: JuliaZH
 
-  欢迎来到Julia 0.6.3. 完整的手册（英文）可以在这里找到
+  欢迎来到Julia 0.7.0-beta2.33. 完整的手册（英文）可以在这里找到
 
   https://docs.julialang.org/
 
@@ -33,9 +33,9 @@ search: JuliaZH JULIA_HOME
 
   https://julialang.org/learning/
 
-  也请关注Julia中文社区
+  更多中文资料和教程，也请关注Julia中文社区
 
-  https://juliacn.com
+  https://juliacn.github.io (境内域名 juliacn.com 还在备案中)
 
   输入 ?， 然后输入你想要查看帮助文档的函数或者宏名称就可以查看它们的文档。例如?cos, 或者 ?@time 然后按回车键即可。
 
