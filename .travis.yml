@@ -29,7 +29,11 @@ git:
 #script:
 #  - julia -e 'Pkg.clone(pwd()); Pkg.build("JuliaZH"); Pkg.test("JuliaZH"; coverage=true)'
 after_success:
-  # push coverage results to Coveralls
-  - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  # push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  # # push coverage results to Coveralls
+  # - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  # # push coverage results to Codecov
+  # - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  # add Documenter
+  - julia -e 'using Compat.Pkg; Pkg.add("Documenter")'
+  # push documents to gh-pages
+  - julia -e 'using Compat.Pkg; cd(Pkg.dir("JuliaZH")); include(joinpath("docs", "make.jl"))'
