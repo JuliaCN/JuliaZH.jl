@@ -4,7 +4,7 @@ os:
   - linux
   - osx
 julia:
-  - 0.6
+  - 0.7
   - nightly
 notifications:
   email: false
@@ -34,6 +34,6 @@ after_success:
   # # push coverage results to Codecov
   # - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
   # add Documenter
-  - julia -e 'using Compat.Pkg; Pkg.add("Documenter")'
+  - julia -e 'using Pkg; Pkg.add("Documenter")'
   # push documents to gh-pages
-  - julia -e 'using Compat.Pkg; cd(Pkg.dir("JuliaZH")); include(joinpath("docs", "make.jl"))'
+  - julia -e 'using Pkg; cd(Pkg.dir("JuliaZH")); include(joinpath("docs", "make.jl"))'
