@@ -92,6 +92,9 @@ const PAGES = [
     #         "devdocs/sanitizers.md",
     #     ]
     # ],
+    "中文文档开发" => [
+        "juliacn/style-guide.md",
+    ]
 ]
 
 # make documents
@@ -108,6 +111,7 @@ makedocs(
     pages = PAGES,
     html_prettyurls = !("local" in ARGS),
     html_canonical = "https://juliacn.github.io/JuliaZH.jl/latest/",
+    assets = ["assets/julia-manual.css", ]
 )
 
 deploydocs(
