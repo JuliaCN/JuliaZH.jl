@@ -35,7 +35,7 @@ const PAGES = [
         # "manual/stacktraces.md",
         # "manual/performance-tips.md",
         # "manual/workflow-tips.md",
-        # "manual/style-guide.md",
+        "manual/style-guide.md",
         # "manual/faq.md",
         # "manual/noteworthy-differences.md",
         # "manual/unicode-input.md",
