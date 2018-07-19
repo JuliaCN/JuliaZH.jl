@@ -12,7 +12,9 @@
 
 ## 写函数，而不是仅仅写脚本
 
+```@raw html
 <!-- ## Write functions, not just scripts -->
+```
 
 一开始解决问题的时候，直接从最外层一步步写代码的确很便捷，但你应该尽早地将代码组织成函数。函数有更强的复用性和可测试性，并且能更清楚地让人知道哪些步骤做完了，以及每一步骤的输入输出分别是什么。此外，由于Julia编译器特殊的工作方式，写在函数中的代码往往要比最外层的代码运行地快得多。
 
@@ -226,7 +228,7 @@ a = Vector{Union{Int,AbstractString,Tuple,Array}}(undef, n)
 这种情况下，`Vector{Any}(undef, n)`更合适些。此外，相比将所有可能的类型都打包在一起，直接在使用时标注具体的数据类型（比如：`a[i]::Int`）对编译器来说更有用。
 
 ```@raw html
-<-- In this case `Vector{Any}(undef, n)` is better. It is also more helpful to the compiler to annotate specific
+<!-- In this case `Vector{Any}(undef, n)` is better. It is also more helpful to the compiler to annotate specific
 uses (e.g. `a[i]::Int`) than to try to pack many alternatives into one type. -->
 ```
 
@@ -612,7 +614,9 @@ incompatibilities that are hard to predict and diagnose. -->
 
 例如，你也许想在一个模块中定义符号上的乘法：
 
+```@raw html
 <!-- As an example, suppose you wanted to define multiplication on symbols in a module: -->
+```
 
 ```julia
 module A
