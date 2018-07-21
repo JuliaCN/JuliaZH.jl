@@ -2,7 +2,7 @@ module JuliaZH
 
 using Localize
 
+include("docs/__main__.jl")
 include("basedocs.jl")
-include("math.jl")
 
 end # module
