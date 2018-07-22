@@ -1,32 +1,26 @@
 
 ```@raw html
 <!-- # Essentials -->
-
 ```
 # 重要组件
 
 ```@raw html
-
 <!-- ## Introduction -->
-
 ```
 
 ## 简介
 
 ```@raw html
-
 <!-- Julia Base contains a range of functions and macros appropriate for performing
 scientific and numerical computing, but is also as broad as those of many general purpose programming
 languages.  Additional functionality is available from a growing collection of available packages.
 Functions are grouped by topic below. -->
-
 ```
 
 Julia的基础模块不仅包含了一系列为科学计算和数值计算打造的函数和宏，也包含了广泛的
 为一般目的编程所需的基础设置。额外的功能可以通过增加包来获得。函数被组织为如下的主题。
 
 ```@raw html
-
 <!-- Some general notes:
 
   * To use module functions, use `import Module` to import the module, and `Module.fn(x)` to use the
@@ -34,8 +28,7 @@ Julia的基础模块不仅包含了一系列为科学计算和数值计算打造
   * Alternatively, `using Module` will import all exported `Module` functions into the current namespace.
   * By convention, function names ending with an exclamation point (`!`) modify their arguments.
     Some functions have both modifying (e.g., `sort!`) and non-modifying (`sort`) versions. -->
-
-    ```
+```
 
 一些一般的注记：
 
@@ -44,9 +37,7 @@ Julia的基础模块不仅包含了一系列为科学计算和数值计算打造
   * 按照约定，函数名称以感叹号（`!`）结尾的将会修改它们的输入，一些函数会有修改（副作用）和不修改两种版本
 
 ```@raw html
-
 <!-- ## Getting Around -->
-
 ```
 
 ## 随便看看
@@ -70,9 +61,7 @@ ans
 ```
 
 ```@raw html
-
 <!-- ## Keywords -->
-
 ```
 
 ## 关键词
@@ -110,9 +99,7 @@ primitive type
 ```
 
 ```@raw html
-
 <!-- ## Base Modules -->
-
 ```
 ## 基础库
 
@@ -130,9 +117,7 @@ Base.GC
 ```
 
 ```@raw html
-
 <!-- ## All Objects -->
-
 ```
 ## 所有的对象
 
@@ -167,16 +152,12 @@ Base.identity
 ```
 
 ```@raw html
-
 <!-- ## Properties of Types -->
-
 ```
 ## 类型的性质
 
 ```@raw html
-
 <!-- ### Type relations -->
-
 ```
 ### 类型之间的关系
 
@@ -192,9 +173,7 @@ Base.isdispatchtuple
 ```
 
 ```@raw html
-
 <!-- ### Declared structure -->
-
 ```
 ### 声明的结构
 
@@ -209,9 +188,7 @@ Base.fieldname
 ```
 
 ```@raw html
-
 <!-- ### Memory layout -->
-
 ```
 ### 内存布局
 
@@ -229,9 +206,7 @@ Base.datatype_pointerfree
 ```
 
 ```@raw html
-
 <!-- ### Special values -->
-
 ```
 ### 特殊值
 
@@ -247,9 +222,7 @@ Base.instances
 ```
 
 ```@raw html
-
 <!-- ## Special Types -->
-
 ```
 ## 特别的类型
 
@@ -269,9 +242,7 @@ Base.Enums.@enum
 ```
 
 ```@raw html
-
 <!-- ## Generic Functions -->
-
 ```
 ## 一般的函数
 
@@ -287,9 +258,7 @@ Base.:(∘)
 ```
 
 ```@raw html
-
 <!-- ## Syntax -->
-
 ```
 ## 句法
 
@@ -313,9 +282,7 @@ Base.@polly
 ```
 
 ```@raw html
-
 <!-- ## Missing Values -->
-
 ```
 ## 缺失值
 
@@ -328,9 +295,7 @@ Base.skipmissing
 ```
 
 ```@raw html
-
 <!-- ## System -->
-
 ```
 ## 系统
 
@@ -372,9 +337,7 @@ Base.@static
 ```
 
 ```@raw html
-
 <!-- ## Versioning -->
-
 ```
 ## 版本
 
@@ -384,9 +347,7 @@ Base.@v_str
 ```
 
 ```@raw html
-
 <!-- ## Errors -->
-
 ```
 ## 错误
 
@@ -428,9 +389,7 @@ Base.ExponentialBackOff
 ```
 
 ```@raw html
-
 <!-- ## Events -->
-
 ```
 ## 事件
 
@@ -442,9 +401,7 @@ Base.AsyncCondition(::Function)
 ```
 
 ```@raw html
-
 <!-- ## Reflection -->
-
 ```
 ## 反射
 
@@ -463,10 +420,9 @@ Base.functionloc(::Method)
 ```
 
 ```@raw html
-
 <!-- ## Internals -->
-
 ```
+
 ## 内部构件
 
 ```@docs
