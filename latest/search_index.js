@@ -3277,7 +3277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Collections and Data Structures",
     "title": "Base.pairs",
     "category": "function",
-    "text": "pairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\npairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\n"
+    "text": "pairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\npairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\n"
 },
 
 {
@@ -9581,7 +9581,7 @@ var documenterSearchIndex = {"docs": [
     "page": "翻译格式指引",
     "title": "原文段落组织",
     "category": "section",
-    "text": ""
+    "text": "英文原文如下方式在Markdown里注释：\\`\\`\\`@raw html\n<!-- English -->\n\\`\\`\\`中文翻译写在下面。"
 },
 
 {
@@ -9589,7 +9589,79 @@ var documenterSearchIndex = {"docs": [
     "page": "翻译格式指引",
     "title": "格式细则",
     "category": "section",
+    "text": "段落英文中的英文两边空格，例如：不要将它的类型声明为 Int专业词汇请用括号注明英文原文，例如而要使用抽象类型（abstract type）文件链接全部保持原文链接（包括wiki，@ref的文档内部交叉引用）\nmaster分支的文档跟进官方repo的master分支。\n对于表格， 如果翻译则请按照段落处理"
+},
+
+{
+    "location": "juliacn/style-guide/#提交规则-1",
+    "page": "翻译格式指引",
+    "title": "提交规则",
+    "category": "section",
+    "text": "提交译文时， 请用 pull request (PR) 提交。 对于翻译中不确定的部分， 请在 PR 里指明。\n对于含有多个 commit 的 PR， 合并时， 请选择  squash and merge 。"
+},
+
+{
+    "location": "juliacn/style-guide/#书写规范-1",
+    "page": "翻译格式指引",
+    "title": "书写规范",
+    "category": "section",
     "text": ""
+},
+
+{
+    "location": "juliacn/style-guide/#标点符号-1",
+    "page": "翻译格式指引",
+    "title": "标点符号",
+    "category": "section",
+    "text": "中文内容请使用半角中文标点符号， 尤其是逗号以及括号， 冒号， 破折号。 对于引号， 如果被引用的内容包含英文， 则使用英文引号。"
+},
+
+{
+    "location": "juliacn/style-guide/#空格-1",
+    "page": "翻译格式指引",
+    "title": "空格",
+    "category": "section",
+    "text": "译文一律使用空格， 禁止使用 Tab， 仅对注释原文时可以用 Tab 缩进， 缩进为两个空格。 中文和英文以及数字间应加一个空格。"
+},
+
+{
+    "location": "juliacn/style-guide/#粗斜体-1",
+    "page": "翻译格式指引",
+    "title": "粗斜体",
+    "category": "section",
+    "text": "中文部分不应使用斜体， 对于原文斜体部分， 译文里可以酌情修改为粗体。"
+},
+
+{
+    "location": "juliacn/style-guide/#内容规范-1",
+    "page": "翻译格式指引",
+    "title": "内容规范",
+    "category": "section",
+    "text": "力求表达清楚明确， 语句尽量通顺， 请不要逐字翻译， 避免错别字等。"
+},
+
+{
+    "location": "juliacn/style-guide/#代码-1",
+    "page": "翻译格式指引",
+    "title": "代码",
+    "category": "section",
+    "text": "只翻译注释， 如果代码简单易懂， 可不翻译。"
+},
+
+{
+    "location": "juliacn/style-guide/#专有名词-1",
+    "page": "翻译格式指引",
+    "title": "专有名词",
+    "category": "section",
+    "text": "如果没有对应或者不确定的专有词汇， 可以先不译， 保留在译文里。 等确定后可批量修改。"
+},
+
+{
+    "location": "juliacn/style-guide/#人称代词-1",
+    "page": "翻译格式指引",
+    "title": "人称代词",
+    "category": "section",
+    "text": "像 \"we\" 和 \"you\" 这些词汇一般来说可以不译出来， 或者换个说法。 如果译出来更通顺， 就翻译出来。  "
 },
 
 ]}
