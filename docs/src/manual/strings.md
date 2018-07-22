@@ -815,24 +815,739 @@ hello"""
 <!-- Stripping of the newline is performed after the dedentation. For example: -->
 ```
 
-
 ```jldoctest
 julia> """
          Hello,
          world."""
 "Hello,\nworld."
 ```
+
+尾随空格保持不变。
+
 ```@raw html
 Trailing whitespace is left unaltered.
 ```
 
+三引号字符串文本可无需转义地包含 `"` 符号。
+
 ```@raw html
 <!-- Triple-quoted string literals can contain `"` symbols without escaping. -->
 ```
+
+注意，无论是用单引号还是三引号，在文本字符串中换行符都会生成一个换行 (LF) 字符 `\n`，即使你的编辑器使用回车组合符 `\r` (CR) 或 CRLF 来结束行。为了在字符串中包含 CR，总是应该使用显式转义符 `\r`；比如，可以输入文本字符串 `"a CRLF line ending\r\n"`。
 
 ```@raw html
 <!-- Note that line breaks in literal strings, whether single- or triple-quoted, result in a newline
 (LF) character `\n` in the string, even if your editor uses a carriage return `\r` (CR) or CRLF
 combination to end lines. To include a CR in a string, use an explicit escape `\r`; for example,
 you can enter the literal string `"a CRLF line ending\r\n"`. -->
+```
+
+## 常见操作
+
+```@raw html
+<!-- ## Common Operations -->
+```
+
+你可以使用标准的比较操作符按照字典顺序比较字符串：
+
+```@raw html
+<!-- You can lexicographically compare strings using the standard comparison operators: -->
+```
+
+```jldoctest
+julia> "abracadabra" < "xylophone"
+true
+
+julia> "abracadabra" == "xylophone"
+false
+
+julia> "Hello, world." != "Goodbye, world."
+true
+
+julia> "1 + 2 = 3" == "1 + 2 = $(1 + 2)"
+true
+```
+
+你可以使用 [`findfirst`](@ref) 函数搜索特定字符的索引：
+
+```@raw html
+<!-- You can search for the index of a particular character using the [`findfirst`](@ref) function: -->
+```
+
+```jldoctest
+julia> findfirst(isequal('x'), "xylophone")
+1
+
+julia> findfirst(isequal('p'), "xylophone")
+5
+
+julia> findfirst(isequal('z'), "xylophone")
+```
+
+你可以带上第三个参数，用 [`findnext`](@ref) 函数在定偏移量处搜索字符。
+
+```@raw html
+<!-- You can start the search for a character at a given offset by using [`findnext`](@ref)
+with a third argument: -->
+```
+
+```jldoctest
+julia> findnext(isequal('o'), "xylophone", 1)
+4
+
+julia> findnext(isequal('o'), "xylophone", 5)
+7
+
+julia> findnext(isequal('o'), "xylophone", 8)
+```
+
+你可以用 [`occursin`](@ref) 函数检查在字符串中某子字符串可否找到。
+
+```@raw html
+<!-- You can use the [`occursin`](@ref) function to check if a substring is found within a string: -->
+```
+
+```jldoctest
+julia> occursin("world", "Hello, world.")
+true
+
+julia> occursin("o", "Xylophon")
+true
+
+julia> occursin("a", "Xylophon")
+false
+
+julia> occursin('o', "Xylophon")
+true
+```
+
+最后一例表明 [`occursin`](@ref) 也可用于搜寻字符文本。
+
+```@raw html
+<!-- The last example shows that [`occursin`](@ref) can also look for a character literal. -->
+```
+
+另外还有两个方便的字符串函数 [`repeat`](@ref) 和 [`join`](@ref)：
+
+```@raw html
+<!-- Two other handy string functions are [`repeat`](@ref) and [`join`](@ref): -->
+```
+
+```jldoctest
+julia> repeat(".:Z:.", 10)
+".:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:."
+
+julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
+"apples, bananas and pineapples"
+```
+
+其它有用的函数还包括：
+
+```@raw html
+<!--  Some other useful functions include: -->
+```
+
+  * [`firstindex(str)`](@ref) 给出可用来索引到 `str` 的最小（字节）索引（对字符串来说这总是 1，对于别的容器来说却不一定如此）。
+  * [`lastindex(str)`](@ref) 给出可用来索引到 `str` 的最大（字节）索引。
+  * [`length(str)`](@ref)，`str` 中的字符个数。
+  * [`length(str, i, j)`](@ref)，`str` 中从 `i` 到 `j` 的有效字符索引个数。
+  * [`ncodeunits(str)`](@ref)，字符串中 [代码单元](https://en.wikipedia.org/wiki/Character_encoding#Terminology) 的数目。
+  * [`codeunit(str, i)`](@ref) 给出在字符串 `str` 中索引为 `i` 的代码单元值。
+  * [`thisind(str, i)`](@ref)，给定一个字符串的任意索引，查找索引点所在的首个索引。
+  * [`nextind(str, i, n=1)`](@ref) 查找在索引 `i` 之后第 `n` 个字符的开头。
+  * [`prevind(str, i, n=1)`](@ref) 查找在索引 `i` 之前第 `n` 个字符的开始。
+
+
+```@raw html
+<!--  * [`firstindex(str)`](@ref) gives the minimal (byte) index that can be used to index into `str` (always 1 for strings, not necessarily true for other containers).
+  * [`lastindex(str)`](@ref) gives the maximal (byte) index that can be used to index into `str`.
+  * [`length(str)`](@ref) the number of characters in `str`.
+  * [`length(str, i, j)`](@ref) the number of valid character indices in `str` from `i` to `j`.
+  * [`ncodeunits(str)`](@ref) number of [code units](https://en.wikipedia.org/wiki/Character_encoding#Terminology) in a string.
+  * [`codeunit(str, i)`](@ref) gives the code unit value in the string `str` at index `i`.
+  * [`thisind(str, i)`](@ref) given an arbitrary index into a string find the first index of the character into which the index points.
+  * [`nextind(str, i, n=1)`](@ref) find the start of the `n`th character starting after index `i`.
+  * [`prevind(str, i, n=1)`](@ref) find the start of the `n`th character starting before index `i`.
+-->
+```
+
+## 非标准字符串文本
+
+```@raw html
+<!-- ## Non-Standard String Literals -->
+```
+
+有时当你想构造字符串或者使用字符串语义，标准的字符串构造却不能很好的满足需求。Julia 为这种情形提供了 [非标准字符串文本](@ref)。非标准字符串文本看似常规双引号字符串文本，但却直接由标识符前缀而并不那么像普通的字符串文本。下面将提到，正则表达式，字节数组文本和版本号文本都是非标准字符串文本的例子。其它例子见 [元编程](@ref) 章。
+
+```@raw html
+<!-- There are situations when you want to construct a string or use string semantics, but the behavior
+of the standard string construct is not quite what is needed. For these kinds of situations, Julia
+provides [non-standard string literals](@ref). A non-standard string literal looks like a regular
+double-quoted string literal, but is immediately prefixed by an identifier, and doesn't behave
+quite like a normal string literal.  Regular expressions, byte array literals and version number
+literals, as described below, are some examples of non-standard string literals. Other examples
+are given in the [Metaprogramming](@ref) section. -->
+```
+
+## 正则表达式
+
+```@raw html
+<!-- ## Regular Expressions -->
+```
+
+Julia 具有与 Perl 兼容的正则表达式 (regexes)，就像 [PCRE](http://www.pcre.org/) 包所提供的那样。正则表达式以两种方式和字符串相关：一个显然的关联是，正则表达式被用于找到字符串中的正则模式；另一个关联是，正则表达式自身就是作为字符串输入，它们被解析到可用来高效搜索字符串中模式的状态机中。在 Julia 中正则表达式的输入使用了前缀各类以 `r` 开头的标识符的非标准字符串文本。最基本的不打开任何选项的正则表达式只用到了 `r"..."`：
+
+```@raw html
+<!-- Julia has Perl-compatible regular expressions (regexes), as provided by the [PCRE](http://www.pcre.org/)
+library. Regular expressions are related to strings in two ways: the obvious connection is that
+regular expressions are used to find regular patterns in strings; the other connection is that
+regular expressions are themselves input as strings, which are parsed into a state machine that
+can be used to efficiently search for patterns in strings. In Julia, regular expressions are input
+using non-standard string literals prefixed with various identifiers beginning with `r`. The most
+basic regular expression literal without any options turned on just uses `r"..."`: -->
+```
+
+```jldoctest
+julia> r"^\s*(?:#|$)"
+r"^\s*(?:#|$)"
+
+julia> typeof(ans)
+Regex
+```
+
+若要检查正则表达式是否匹配某字符串，就用 [`occursin`](@ref)：
+
+```@raw html
+<!-- 
+To check if a regex matches a string, use [`occursin`](@ref): -->
+```
+
+```jldoctest
+julia> occursin(r"^\s*(?:#|$)", "not a comment")
+false
+
+julia> occursin(r"^\s*(?:#|$)", "# a comment")
+true
+```
+
+可以看到，[`occursin`](@ref)只返回正确或错误，表明给定正则表达式是否在该字符串中出现。然而，通常我们不只想知道字符串是否匹配，更想了解它是如何匹配的。要捕获匹配的信息，可以改用 [`match`](@ref) 函数：
+
+```@raw html
+<!-- As one can see here, [`occursin`](@ref) simply returns true or false, indicating whether a
+match for the given regex occurs in the string. Commonly, however, one wants to know not
+just whether a string matched, but also *how* it matched. To capture this information about
+a match, use the [`match`](@ref) function instead: -->
+```
+
+```jldoctest
+julia> match(r"^\s*(?:#|$)", "not a comment")
+
+julia> match(r"^\s*(?:#|$)", "# a comment")
+RegexMatch("#")
+```
+
+若正则表达式与给定字符串不匹配，[`match`](@ref) 返回 [`nothing`](@ref)——在交互式提示框中不打印任何东西的特殊值。除了不打印，它是一个完全正常的值，这可以用程序来测试：
+
+```@raw html
+<!-- If the regular expression does not match the given string, [`match`](@ref) returns [`nothing`](@ref)
+-- a special value that does not print anything at the interactive prompt. Other than not printing,
+it is a completely normal value and you can test for it programmatically: -->
+```
+
+```julia
+m = match(r"^\s*(?:#|$)", line)
+if m === nothing
+    println("not a comment")
+else
+    println("blank or comment")
+end
+```
+
+如果正则表达式不匹配，[`match`](@ref) 的返回值是 `RegexMatch` 对象。这些对象记录了表达式是如何匹配的，包括该模式匹配的子字符串和任何可能被捕获的子字符串。上面的例子仅仅捕获了匹配的部分子字符串，但也许我们想要捕获的是公共字符后面的任何非空文本。我们可以这样做：
+
+```@raw html
+<!-- If a regular expression does match, the value returned by [`match`](@ref) is a `RegexMatch`
+object. These objects record how the expression matches, including the substring that the pattern
+matches and any captured substrings, if there are any. This example only captures the portion
+of the substring that matches, but perhaps we want to capture any non-blank text after the comment
+character. We could do the following: -->
+```
+
+```jldoctest
+julia> m = match(r"^\s*(?:#\s*(.*?)\s*$|$)", "# a comment ")
+RegexMatch("# a comment ", 1="a comment")
+```
+
+当调用 [`match`](@ref) 时，你可以选择指定开始搜索的索引。例如：
+
+```@raw html
+<!-- When calling [`match`](@ref), you have the option to specify an index at which to start the
+search. For example: -->
+```
+
+```jldoctest
+julia> m = match(r"[0-9]","aaaa1aaaa2aaaa3",1)
+RegexMatch("1")
+
+julia> m = match(r"[0-9]","aaaa1aaaa2aaaa3",6)
+RegexMatch("2")
+
+julia> m = match(r"[0-9]","aaaa1aaaa2aaaa3",11)
+RegexMatch("3")
+```
+
+你可以从 `RegexMatch` 对象中提取如下信息：
+
+```@raw html
+<!-- You can extract the following info from a `RegexMatch` object: -->
+```
+
+  * 匹配的整个子字符串：`m.match`
+  * 作为字符串数组捕获的子字符串：`m.captures`
+  * 整个匹配开始处的偏移：`m.offset`
+  * 作为向量的捕获子字符串的偏移：`m.offsets`
+
+```@raw html
+<!-- 
+  * the entire substring matched: `m.match`
+  * the captured substrings as an array of strings: `m.captures`
+  * the offset at which the whole match begins: `m.offset`
+  * the offsets of the captured substrings as a vector: `m.offsets`
+-->
+```
+
+当捕获不匹配时，`m.captures` 在该处不再包含一个子字符串，而是 `什么也不` 包含；此外，`m.offsets` 的偏移量为 0（回想一下，Julia 的索引是从 1 开始的，因此字符串的零偏移是无效的）。下面是两个有些勉强的例子：
+
+```@raw html
+<!-- For when a capture doesn't match, instead of a substring, `m.captures` contains `nothing` in that
+position, and `m.offsets` has a zero offset (recall that indices in Julia are 1-based, so a zero
+offset into a string is invalid). Here is a pair of somewhat contrived examples: -->
+```
+
+```jldoctest acdmatch
+julia> m = match(r"(a|b)(c)?(d)", "acd")
+RegexMatch("acd", 1="a", 2="c", 3="d")
+
+julia> m.match
+"acd"
+
+julia> m.captures
+3-element Array{Union{Nothing, SubString{String}},1}:
+ "a"
+ "c"
+ "d"
+
+julia> m.offset
+1
+
+julia> m.offsets
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3
+
+julia> m = match(r"(a|b)(c)?(d)", "ad")
+RegexMatch("ad", 1="a", 2=nothing, 3="d")
+
+julia> m.match
+"ad"
+
+julia> m.captures
+3-element Array{Union{Nothing, SubString{String}},1}:
+ "a"
+ nothing
+ "d"
+
+julia> m.offset
+1
+
+julia> m.offsets
+3-element Array{Int64,1}:
+ 1
+ 0
+ 2
+```
+
+让捕获作为数组返回是很方便的，这样就可以用解构语法把它们和局域变量绑定起来：
+
+```@raw html
+<!-- It is convenient to have captures returned as an array so that one can use destructuring syntax
+to bind them to local variables: -->
+```
+
+```jldoctest acdmatch
+julia> first, second, third = m.captures; first
+"a"
+```
+
+通过使用捕获组的编号或名称对 `RegexMatch` 对象进行索引，也可实现对捕获的访问：
+
+```@raw html
+<!-- Captures can also be accessed by indexing the `RegexMatch` object with the number or name of the
+capture group: -->
+```
+
+```jldoctest
+julia> m=match(r"(?<hour>\d+):(?<minute>\d+)","12:45")
+RegexMatch("12:45", hour="12", minute="45")
+
+julia> m[:minute]
+"45"
+
+julia> m[2]
+"45"
+```
+
+使用 [`replace`](@ref) 时利用 `\n` 引用第 n 个捕获组和给替换字符串加上 `s` 的前缀，可以实现替换字符串中对捕获的引用。捕获组 0 指的是整个匹配对象。可在替换中用 `g<groupname>` 对命名捕获组进行引用。例如：
+
+```@raw html
+<!-- Captures can be referenced in a substitution string when using [`replace`](@ref) by using `\n`
+to refer to the nth capture group and prefixing the substitution string with `s`. Capture group
+0 refers to the entire match object. Named capture groups can be referenced in the substitution
+with `g<groupname>`. For example: -->
+```
+
+```jldoctest
+julia> replace("first second", r"(\w+) (?<agroup>\w+)" => s"\g<agroup> \1")
+"second first"
+```
+
+为明确起见，编号捕获组也可用 `\g<n>` 进行引用，例如：
+
+```@raw html
+<!-- Numbered capture groups can also be referenced as `\g<n>` for disambiguation, as in: -->
+```
+
+```jldoctest
+julia> replace("a", r"." => s"\g<0>1")
+"a1"
+```
+
+你可以在后双引号的后面加上 `i`, `m`, `s` 和 `x` 等标志对正则表达式进行修改。这些标志和 Perl 里面的含义一样，详见以下对 [perlre 手册](http://perldoc.perl.org/perlre.html#Modifiers) 的摘录：
+
+```@raw html
+<!-- You can modify the behavior of regular expressions by some combination of the flags `i`, `m`,
+`s`, and `x` after the closing double quote mark. These flags have the same meaning as they do
+in Perl, as explained in this excerpt from the [perlre manpage](http://perldoc.perl.org/perlre.html#Modifiers): -->
+```
+
+```
+i   Do case-insensitive pattern matching.
+
+    If locale matching rules are in effect, the case map is taken
+    from the current locale for code points less than 255, and
+    from Unicode rules for larger code points. However, matches
+    that would cross the Unicode rules/non-Unicode rules boundary
+    (ords 255/256) will not succeed.
+
+m   Treat string as multiple lines.  That is, change "^" and "$"
+    from matching the start or end of the string to matching the
+    start or end of any line anywhere within the string.
+
+s   Treat string as single line.  That is, change "." to match any
+    character whatsoever, even a newline, which normally it would
+    not match.
+
+    Used together, as r""ms, they let the "." match any character
+    whatsoever, while still allowing "^" and "$" to match,
+    respectively, just after and just before newlines within the
+    string.
+
+x   Tells the regular expression parser to ignore most whitespace
+    that is neither backslashed nor within a character class. You
+    can use this to break up your regular expression into
+    (slightly) more readable parts. The '#' character is also
+    treated as a metacharacter introducing a comment, just as in
+    ordinary code.
+```
+
+例如，下面的正则表达式已打开所有三个标志：
+
+```@raw html
+<!-- For example, the following regex has all three flags turned on: -->
+```
+
+```jldoctest
+julia> r"a+.*b+.*?d$"ism
+r"a+.*b+.*?d$"ims
+
+julia> match(r"a+.*b+.*?d$"ism, "Goodbye,\nOh, angry,\nBad world\n")
+RegexMatch("angry,\nBad world")
+```
+
+`r"..."` 文本的构造没有插值和转义（除了引号 `"` 仍然需要转义）。下面例子展示了它和标准字符串文本之间差别：
+
+```@raw html
+<!-- The `r"..."` literal is constructed without interpolation and unescaping (except for
+quotation mark `"` which still has to be escaped). Here is an example
+showing the difference from standard string literals: -->
+```
+
+```julia-repl
+julia> x = 10
+10
+
+julia> r"$x"
+r"$x"
+
+julia> "$x"
+"10"
+
+julia> r"\x"
+r"\x"
+
+julia> "\x"
+ERROR: syntax: invalid escape sequence
+```
+
+Julia 也支持 `r"""..."""` 形式的三引号正则表达式字符串（可能对包含引号和换行符的正则表达式很方便）。
+
+```@raw html
+<!-- Triple-quoted regex strings, of the form `r"""..."""`, are also supported (and may be convenient
+for regular expressions containing quotation marks or newlines). -->
+```
+
+## 字节数组文本
+
+```@raw html
+<!-- ## Byte Array Literals -->
+```
+
+另一个有用的非标准字符串文本是字节数组文本：`b"..."`。这种形式使你能够用字符串表示法来表达只读文本字节数组，也即 [`UInt8`](@ref) 值的数组。字节数组文本的规则如下：
+
+```@raw html
+<!-- Another useful non-standard string literal is the byte-array string literal: `b"..."`. This
+form lets you use string notation to express read only literal byte arrays -- i.e. arrays of
+[`UInt8`](@ref) values. The type of those objects is `CodeUnits{UInt8, String}`.
+The rules for byte array literals are the following: -->
+```
+
+  * ASCII 字符和 ASCII 转义生成单个字节。
+  * `\x` 和八进制转义序列生成与转义值对应的*字节*。
+  * Unicode 转义序列生成编码 UTF-8 中该代码点的字节序列。
+
+```@raw html
+<!-- 
+  * ASCII characters and ASCII escapes produce a single byte.
+  * `\x` and octal escape sequences produce the *byte* corresponding to the escape value.
+  * Unicode escape sequences produce a sequence of bytes encoding that code point in UTF-8.
+-->
+```
+
+这些规则有一些重叠，这是因为 `\x` 的行为和小于 0x80(128) 的八进制转义被前两个规则同时包括了；然而这两个规则又是一致的。通过这些规则可以方便地同时使用 ASCII 字符，任意字节值，以及 UTF-8 序列来生成字节数组。下面是一个用到全部三个规则的例子：
+
+```@raw html
+<!-- There is some overlap between these rules since the behavior of `\x` and octal escapes less than
+0x80 (128) are covered by both of the first two rules, but here these rules agree. Together, these
+rules allow one to easily use ASCII characters, arbitrary byte values, and UTF-8 sequences to
+produce arrays of bytes. Here is an example using all three: -->
+```
+
+```jldoctest
+julia> b"DATA\xff\u2200"
+8-element Base.CodeUnits{UInt8,String}:
+ 0x44
+ 0x41
+ 0x54
+ 0x41
+ 0xff
+ 0xe2
+ 0x88
+ 0x80
+```
+
+其中，ASCII 字符串 "DATA" 对应于字节 68, 65, 84, 65。`\xff` 生成单个字节 255。Unicode 转义 `\u2200` 在 UTF-8 中被编码为三个字节 226, 136, 128。注意生成的字节数组不对应任何有效 UTF-8 字符串。
+
+```@raw html
+<!-- The ASCII string "DATA" corresponds to the bytes 68, 65, 84, 65. `\xff` produces the single byte 255.
+The Unicode escape `\u2200` is encoded in UTF-8 as the three bytes 226, 136, 128. Note that the
+resulting byte array does not correspond to a valid UTF-8 string: -->
+```
+
+```jldoctest
+julia> isvalid("DATA\xff\u2200")
+false
+```
+
+如前所述，`CodeUnits{UInt8,String}` 类型的行为类似于只读 `UInt8` 数组。如果需要标准数组，你可以 `Vector{UInt8} 进行转换。
+
+```@raw html
+<!-- As it was mentioned `CodeUnits{UInt8,String}` type behaves like read only array of `UInt8` and
+if you need a standard vector you can convert it using `Vector{UInt8}`: -->
+```
+
+```jldoctest
+julia> x = b"123"
+3-element Base.CodeUnits{UInt8,String}:
+ 0x31
+ 0x32
+ 0x33
+
+julia> x[1]
+0x31
+
+julia> x[1] = 0x32
+ERROR: setindex! not defined for Base.CodeUnits{UInt8,String}
+[...]
+
+julia> Vector{UInt8}(x)
+3-element Array{UInt8,1}:
+ 0x31
+ 0x32
+ 0x33
+```
+
+同时，要注意到 `xff` 和 `\uff` 之间的显著差别：前面的转义序列编码为*字节 255*，而后面的代表代码点 255，它在 UTF-8 中编码为两个字节：
+
+```@raw html
+<!-- Also observe the significant distinction between `\xff` and `\uff`: the former escape sequence
+encodes the *byte 255*, whereas the latter escape sequence represents the *code point 255*, which
+is encoded as two bytes in UTF-8: -->
+```
+
+```jldoctest
+julia> b"\xff"
+1-element Base.CodeUnits{UInt8,String}:
+ 0xff
+
+julia> b"\uff"
+2-element Base.CodeUnits{UInt8,String}:
+ 0xc3
+ 0xbf
+```
+
+字符文本也用到了相同的行为。
+
+```@raw html
+<!-- Character literals use the same behavior. -->
+```
+
+对于小于 `\u80` 的代码点，每个代码点的 UTF-8 编码恰好只是由相应 `\x` 转义产生的单个字节，因此忽略两者的差别无伤大雅。然而，从 `x80` 到 `\xff` 的转义比起从 `u80` 到 `\uff` 的转义来，就有一个主要的差别：前者都只编码为一个字节，它没有形成任何有效 UTF-8 数据，除非它后面有非常特殊的连接字节；而后者则都代表 2 字节编码的 Unicode 代码点。
+
+```@raw html
+<!-- For code points less than `\u80`, it happens that the
+UTF-8 encoding of each code point is just the single byte produced by the corresponding `\x` escape,
+so the distinction can safely be ignored. For the escapes `\x80` through `\xff` as compared to
+`\u80` through `\uff`, however, there is a major difference: the former escapes all encode single
+bytes, which -- unless followed by very specific continuation bytes -- do not form valid UTF-8
+data, whereas the latter escapes all represent Unicode code points with two-byte encodings. -->
+```
+
+如果这些还是太难理解，试着读一下 ["每个软件开发人员绝对必须知道的最基础 Unicode 和字符集知识"]。它是一个优质的 Unicode 和　UTF-8 指南，或许能帮助解除一些这方面的疑惑。
+
+```@raw html
+<!-- If this is all extremely confusing, try reading ["The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets"](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/).　
+It's an excellent introduction to Unicode and UTF-8, and may help alleviate
+some confusion regarding the matter. -->
+```
+
+## 版本号文本
+
+```@raw html
+<!-- ## Version Number Literals -->
+```
+
+版本号很容易用 [`v"..."`](@ref @v_str) 形式的非标准字符串文本表示。版本号文本生成遵循 [语义版本](http://semver.org) 规范的 [`VersionNumber`](@ref) 对象，因此由主、次、补丁数号构成，后跟预发行 (pre-release) 和生成阿尔法数注释 (build alpha-numeric)。例如，[`VersionNumber`](@ref) 可分为主版本号 `0`，次版本号 `2`，补丁版本号 `1`，预发行版号 `rc1`，以及生成版本为 `win64`。输入版本文本时，除了主版本号以外所有内容都是可选的，因此 `v"0.2"` 等效于 `v"0.2.0"` (预发行号和生成注释为空), `v"2"` 等效于 `v"2.0.0"`，等等。
+
+```@raw html
+<!-- Version numbers can easily be expressed with non-standard string literals of the form [`v"..."`](@ref @v_str).
+Version number literals create [`VersionNumber`](@ref) objects which follow the
+specifications of [semantic versioning](http://semver.org),
+and therefore are composed of major, minor and patch numeric values, followed by pre-release and
+build alpha-numeric annotations. For example, `v"0.2.1-rc1+win64"` is broken into major version
+`0`, minor version `2`, patch version `1`, pre-release `rc1` and build `win64`. When entering
+a version literal, everything except the major version number is optional, therefore e.g.  `v"0.2"`
+is equivalent to `v"0.2.0"` (with empty pre-release/build annotations), `v"2"` is equivalent to
+`v"2.0.0"`, and so on. -->
+```
+
+`VersionNumber` 对象在轻松正确地比较两个（或更多）版本时非常有用。例如，常数 `VERSION` 把 Julia 的版本号保留为一个 `VersionNumber` 对象，因此可以像下面这样用简单的声明定义一些特定版本的行为：
+
+```@raw html
+<!-- `VersionNumber` objects are mostly useful to easily and correctly compare two (or more) versions.
+For example, the constant c holds Julia version number as a `VersionNumber` object, and
+therefore one can define some version-specific behavior using simple statements as: -->
+```
+
+```julia
+if v"0.2" <= VERSION < v"0.3-"
+    # do something specific to 0.2 release series
+end
+```
+
+注意在上例中用到了非标准版本号 `v"0.3-"`，其中有尾随符 `-`：这个符号是 Julia 标准的扩展，它可以用来表明低于任何 `0.3` 发行版的版本，包括所有的预发行版。所以上例中代码只能在稳定版本 `0.2` 上运行，而不能在 `v"0.3.0-rc1"` 这样的版本上运行。为了支持非稳定（即预发行）的 `0.2` 版本，下限检查应像这样应该改为：`v"0.2-" <= VERSION`。
+
+```@raw html
+<!-- Note that in the above example the non-standard version number `v"0.3-"` is used, with a trailing
+`-`: this notation is a Julia extension of the standard, and it's used to indicate a version which
+is lower than any `0.3` release, including all of its pre-releases. So in the above example the
+code would only run with stable `0.2` versions, and exclude such versions as `v"0.3.0-rc1"`. In
+order to also allow for unstable (i.e. pre-release) `0.2` versions, the lower bound check should
+be modified like this: `v"0.2-" <= VERSION`. -->
+```
+
+另一个非标准版本规范扩展使得能够使用 `+` 来表示生成版本的上限，例如 `VERSION > v"0.2-rc1+"` 可以用来表示任意高于 `0.2-rc1` 和其任意生成版本的版本：它对 `v"0.2-rc1+win64"` 返回 `false` 而对 `v"0.2-rc2"` 返回 `true`。
+
+```@raw html
+<!-- Another non-standard version specification extension allows one to use a trailing `+` to express
+an upper limit on build versions, e.g.  `VERSION > v"0.2-rc1+"` can be used to mean any version
+above `0.2-rc1` and any of its builds: it will return `false` for version `v"0.2-rc1+win64"` and
+`true` for `v"0.2-rc2"`. -->
+```
+
+在比较中使用这样的特殊版本是个好法子（特别是，总是应该对高版本使用尾随 `-`，除非有好理由不这样），但它们不应该被用作任何内容的实际版本，因为它们在语义版本控制方案中无效。
+
+```@raw html
+<!-- It is good practice to use such special versions in comparisons (particularly, the trailing `-`
+should always be used on upper bounds unless there's a good reason not to), but they must not
+be used as the actual version number of anything, as they are invalid in the semantic versioning
+scheme. -->
+```
+
+除了用于常数 [`VERSION`](@ref)，[`VERSION`](@ref) 对象在 `Pkg` 模块中被广泛用于指定包版本和其依赖。
+
+```@raw html
+<!-- Besides being used for the [`VERSION`](@ref) constant, c objects are widely used
+in the `Pkg` module, to specify packages versions and their dependencies. -->
+```
+
+## 原始字符串文本
+
+```@raw html
+<!-- ## Raw String Literals -->
+```
+
+无插值和非转义的原始字符串可用 `raw"..."` 形式的非标准字符串文本表示。原始字符串文本生成普通的 `String` 对象，它无需插值和非转义地包含和输入完全一样的封闭式内容。这对于包含其他语言中使用 "$" 或 "\" 作为特殊字符的代码或标记的字符串很有用。
+
+```@raw html
+<!-- Raw strings without interpolation or unescaping can be expressed with
+non-standard string literals of the form `raw"..."`. Raw string literals create
+ordinary `String` objects which contain the enclosed contents exactly as
+entered with no interpolation or unescaping. This is useful for strings which
+contain code or markup in other languages which use `$` or `\` as special
+characters. -->
+```
+
+例外的是，引号仍必须转义，例如 `raw"\""` 等效于 `"\""`。为了能够表达所有字符串，反斜杠也必须转义，不过只是当它刚好出现在引号前面时。
+
+```@raw html
+<!-- The exception is that quotation marks still must be escaped, e.g. `raw"\""` is equivalent
+to `"\""`.
+To make it possible to express all strings, backslashes then also must be escaped, but
+only when appearing right before a quote character: -->
+```
+
+```jldoctest
+julia> println(raw"\\ \\\"")
+\\ \"
+```
+
+请注意，前两个反斜杠在输出中逐字显示，这是因为它们不是在引号前面。然而，接下来的一个反斜杠字符转义了后面的一个反斜杠，又由于这些反斜杠出现在引号前面，最后一个反斜杠转义了一个引号。
+
+```@raw html
+<!-- Notice that the first two backslashes appear verbatim in the output, since they do not
+precede a quote character.
+However, the next backslash character escapes the backslash that follows it, and the
+last backslash escapes a quote, since these backslashes appear before a quote. -->
 ```
