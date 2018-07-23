@@ -40,7 +40,7 @@ const PAGES = [
         # "manual/noteworthy-differences.md",
         # "manual/unicode-input.md",
     ],
-    "Base" => [
+    "基础组件" => [
         "base/base.md",
         "base/collections.md",
         "base/math.md",
