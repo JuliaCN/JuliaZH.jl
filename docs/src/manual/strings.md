@@ -296,6 +296,7 @@ julia> str[4:9]
 
 ```@raw html
 <!-- Notice that the expressions `str[k]` and `str[k:k]` do not give the same result: -->
+```
 
 ```jldoctest helloworldstring
 julia> str[6]
@@ -744,7 +745,7 @@ julia> str = """
          """
 "  Hello,\n  world.\n"
 ```
- 
+
 在这里，后三引号 `"""` 前面的最后一（空）行设置了缩进级别。
 
 
@@ -1019,7 +1020,7 @@ Regex
 若要检查正则表达式是否匹配某字符串，就用 [`occursin`](@ref)：
 
 ```@raw html
-<!-- 
+<!--
 To check if a regex matches a string, use [`occursin`](@ref): -->
 ```
 
@@ -1109,7 +1110,7 @@ RegexMatch("3")
   * 作为向量的捕获子字符串的偏移：`m.offsets`
 
 ```@raw html
-<!-- 
+<!--
   * the entire substring matched: `m.match`
   * the captured substrings as an array of strings: `m.captures`
   * the offset at which the whole match begins: `m.offset`
@@ -1234,7 +1235,7 @@ in Perl, as explained in this excerpt from the [perlre manpage](http://perldoc.p
 
 ```
 i   不区分大小写的模式匹配
-    
+
     若区域设置规则有效，相应映射中代码点小于 255 的部分取自当前区域设置，更大代码点的部分取自 Unicode 规则。
     然而，跨越 Unicode 规则和 非 Unicode 规则边界的匹配将失败。
 
@@ -1327,7 +1328,7 @@ for regular expressions containing quotation marks or newlines). -->
 
 ```@raw html
 <!-- ## Byte Array Literals -->
-``` 
+```
 
 另一个有用的非标准字符串字面量是字节数组字面量：`b"..."`。这种形式使你能够用字符串表示法来表达只读字面量字节数组，也即 [`UInt8`](@ref) 值的数组。字节数组字面量的规则如下：
 
@@ -1343,7 +1344,7 @@ The rules for byte array literals are the following: -->
   * Unicode 转义序列生成编码 UTF-8 中该代码点的字节序列。
 
 ```@raw html
-<!-- 
+<!--
   * ASCII characters and ASCII escapes produce a single byte.
   * `\x` and octal escape sequences produce the *byte* corresponding to the escape value.
   * Unicode escape sequences produce a sequence of bytes encoding that code point in UTF-8.
