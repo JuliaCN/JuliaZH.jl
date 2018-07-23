@@ -4,13 +4,7 @@
 <!-- # Strings -->
 ```
 
-字符串是字符的有限序列。当# 字符串
-
-```@raw html
-<!-- # Strings -->
-```
-
-字符串是字符的有限序列。当然，真正麻烦的问题是，字符到底是什么。英文使用者所熟悉的字符是`A`，`B`，`C` 等等字母，数字以及常见标点符号。这些字符和它们到 0 到 127 之间的整数值的映射一起通过 [ASCII](https://en.wikipedia.org/wiki/ASCII) 标准被标准化。当然，在非英语语言中有大量其它字符，这其中包括加上重音等修改的 ASCII 字符的变体——相关的文字有例如斯拉夫字母和希腊字母；以及和 ASCII 和英语完全不相关的文字，包括阿拉伯文、中文、希伯来文、印地文、日文和韩文。[Unicode]https://en.wikipedia.org/wiki/Unicode) 标准则解决了字符定义问题的复杂性，从而被广泛的认为是解决这个问题的权威标准。根据需要，你可以完全忽略这些复杂性，装作只存在ASCII字符；你也可以去写这样的代码，它们能处理当操作非 ASCII 文本时可能遇到的任何字符或编码。Julia 使得纯 ASCII 文本的处理简单而高效，同时又使得 Unicode 文本的处理尽可能的简单和高效。特别是，你可以写出 C 风格字符串的代码来处理ASCII字符串，它们在性能和语义方面都将将按预期工作。若这种代码遇到了非　ASCII　文本，它会优雅地失败，同时给出清晰的错误信息，而不是悄悄地导致错误的结果。当这种失败发生时，修改代码以兼容非　ASCII 数据就很简单了。
+字符串是字符的有限序列。当然，真正麻烦的问题是，字符到底是什么。英文使用者所熟悉的字符是 `A`，`B`，`C` 等等字母，数字以及常见标点符号。这些字符和它们到 0 到 127 之间的整数值的映射一起通过 [ASCII](https://en.wikipedia.org/wiki/ASCII) 标准被标准化。当然，在非英语语言中有大量其它字符，这其中包括加上重音等修改的 ASCII 字符的变体——相关的文字有例如斯拉夫字母和希腊字母；以及和 ASCII、英语完全不相关的文字，包括阿拉伯文、中文、希伯来文、印地文、日文和韩文。[Unicode](https://en.wikipedia.org/wiki/Unicode) 标准则解决了字符定义问题的复杂性，从而被广泛的认为是解决这个问题的权威标准。根据需要，你可以完全忽略这些复杂性，装作只存在ASCII字符；你也可以去写这样的代码，它们能处理当操作非 ASCII 文本时可能遇到的任何字符或编码。Julia 使纯 ASCII 文本的处理简单而高效，同时又使得 Unicode 文本的处理尽可能的简单和高效。特别是，你可以写出 C 风格字符串的代码来处理ASCII字符串，它们在性能和语义方面都将将按预期工作。若这种代码遇到了非 ASCII 文本，它会优雅地失败，同时给出清晰的错误信息，而不是悄悄地导致错误的结果。当这种失败发生时，修改代码以兼容非 ASCII 数据就很简单了。
 
 ```@raw html
 <!-- Strings are finite sequences of characters. Of course, the real trouble comes when one asks what a character is. The characters that English speakers are familiar with are the letters `A`, `B`,`C`, etc., together with numerals and common punctuation symbols. These characters are standardized together with a mapping to integer values between 0 and 127 by the [ASCII](https://en.wikipedia.org/wiki/ASCII) standard. There are, of course, many other characters used in non-English languages, including variants of the ASCII characters with accents and other modifications, related scripts such as Cyrillic and Greek, and scripts completely unrelated to ASCII and English, including Arabic, Chinese, Hebrew, Hindi, Japanese, and Korean. The [Unicode](https://en.wikipedia.org/wiki/Unicode) standard tackles the complexities of what exactly a character is, and is generally accepted as the definitive standard addressing this problem. Depending on your needs, you can either ignore these complexities entirely and just pretend that only ASCII characters exist, or you can write code that can handle any of the characters or encodings that one may encounter when handling non-ASCII text. Julia makes dealing with plain ASCII text simple and efficient, and handling Unicode is as simple and
@@ -23,8 +17,8 @@ Julia 的字符串有一些重要的特性：
 <!-- There are a few noteworthy high-level features about Julia's strings: -->
 ```
 
-  * 内置的用于字符串（和字符串字面量）的具体类型是 [`String`](@ref)。它通过 [UTF-8](https://en.wikipedia.org/wiki/UTF-8)　编码全面地支持 [Unicode](https://en.wikipedia.org/wiki/Unicode)　字符。(有一个 [`transcode`](@ref) 函数用来和 Unicode 编码互转)
-  * 所有的字符串类型都是抽象类型 `AbstractString` 的子类型，而一些外部包定义了别的 `AbstractString` 子类型（例如别的编码）。若要定义需要字符串参数的函数，你应当声明此类型为　`AbstractString`　来让这函数接受任何字符串类型。
+  * 内置的用于字符串（和字符串字面量）的具体类型是 [`String`](@ref)。它通过 [UTF-8](https://en.wikipedia.org/wiki/UTF-8) 编码全面地支持 [Unicode](https://en.wikipedia.org/wiki/Unicode) 字符。(有一个 [`transcode`](@ref) 函数用来和 Unicode 编码互转)
+  * 所有的字符串类型都是抽象类型 `AbstractString` 的子类型，而一些外部包定义了别的 `AbstractString` 子类型（例如别的编码）。若要定义需要字符串参数的函数，你应当声明此类型为 `AbstractString` 来让这函数接受任何字符串类型。
   * 类似 C 和 Java，但是和大多数动态语言不同的是，Julia 有优秀的表示单字符的类型，即 [`AbstractChar`](@ref)。[`Char`](@ref) 是 `AbstractChar` 的内置子类型，它能表示任何 Unicode 字符的 32 位原始类型（基于 UTF-8 编码）。
   * 如 Java 中那样，字符串不可改——任何 `AbstractString` 对象的值不可改变。若要构造不同的字符串值，应当从其它字符串的部分构造一个新的字符串。
   * 从概念上讲，字符串是从索引到字符的*部分函数*：对于某些索引值，它不返回字符值，而是引发异常。这允许通过编码表示形式的字节索引来实现高效的字符串索引，而不是通过字符索引——它不能简单高效地实现可变宽度的 Unicode 字符串编码。
@@ -82,7 +76,7 @@ julia> typeof(ans)
 Char
 ```
 
-你可以轻松地把 `Char`　转换为它的整数值，即代码点：
+你可以轻松地把 `Char` 转换为它的整数值，即代码点：
 
 ```@raw html
 <!--  You can easily convert a `Char` to its integer value, i.e. code point:  -->
@@ -123,7 +117,7 @@ julia> Char(0x110000)
 julia> isvalid(Char, 0x110000)
 false
 ```
-在此文档中，有效的 Unicode 代码点是从 `U+00` 到 `U+d7ff` 以及 `U+e000` 到`U+10ffff`。它们还没全部被赋予明确的含义，也还没必要被应用解释；然而，所有的这些值都被认为是有效的 Unicode 字符。
+在此文档中，有效的 Unicode 代码点是从 `U+00` 到 `U+d7ff` 以及 `U+e000` 到 `U+10ffff`。它们还未全部被赋予明确的含义，也还没必要被应用解释；然而，所有的这些值都被认为是有效的 Unicode 字符。
 
 ```@raw html
 <!--  As of this writing, the valid Unicode code points are `U+00` through `U+d7ff` and `U+e000` through
@@ -131,7 +125,7 @@ false
 interpretable by applications, but all of these values are considered to be valid Unicode characters.   -->
 ```
 
-你可以在单引号中输入任何 Unicode 字符，通过使用 `\u` 加上至多４个十六进制数字或者 `\U`　加上至多８个十六进制数（最长的有效值也只需要６个）：
+你可以在单引号中输入任何 Unicode 字符，通过使用 `\u` 加上至多４个十六进制数字或者 `\U` 加上至多８个十六进制数（最长的有效值也只需要６个）：
 
 ```@raw html
 <!--  You can input any Unicode character in single quotes using `\u` followed by up to four hexadecimal
@@ -182,10 +176,10 @@ julia> Int('\177')
 127
 ```
 
-你可以对 `Char` 的值进行比较和进行有限的算术运算
+你可以对 `Char` 的值进行比较和有限的算术运算
 
 ```@raw html
-<!--  You can do comparisons and a limited amount of arithmetic with `Char` values: -->
+<!-- You can do comparisons and a limited amount of arithmetic with `Char` values: -->
 ```
 
 ```jldoctest
@@ -211,7 +205,7 @@ julia> 'A' + 1
 <!--  ## String Basics -->
 ```
 
-字符串文本由双引号或三重双引号分隔：
+字符串字面量由双引号或三重双引号分隔：
 
 ```@raw html
 <!--  String literals are delimited by double quotes or triple double quotes: -->
@@ -241,7 +235,7 @@ julia> str[end]
 '\n': ASCII/Unicode U+000a (category Cc: Other, control)
 ```
 
-包括字符串，许多的 Julia 对象都可以用整数进行索引。第一个元素的索引由 [`firstindex(str)`](@ref) 返回，最后一个由 [`lastindex(str)`](@ref) 返回。关键字 `end` 可以在索引操作中用作给定维度的最后一个索引。在 Julia 中，大多数索引都是基于 1 的：许多整数索引的对象的第一个元素都在索引为 1 处。（下面我们将会看到，这并不一定意味着最后一个元素位于索引为 `n` 处——`n` 为此字符串的长度。）
+包括字符串，许多的 Julia 对象都可以用整数进行索引。第一个元素的索引由 [`firstindex(str)`](@ref) 返回，最后一个由 [`lastindex(str)`](@ref) 返回。关键字 `end` 可以在索引操作中用作给定维度的最后一个索引。在 Julia 中，大多数索引都是从 1 开始的：许多整数索引的对象的第一个元素都在索引为 1 处。（下面我们将会看到，这并不一定意味着最后一个元素位于索引为 `n` 处——`n` 为此字符串的长度。）
 
 ```@raw html
 <!--  
@@ -318,7 +312,7 @@ julia> str[6:6]
 happens to contain only a single character. In Julia these are very different things. -->
 ```
 
-范围索引复制了原字符串的选定部分。此外，也可以用 [`SubString`](@ref) 类型创建字符串的视图。
+范围索引复制了原字符串的选定部分。此外，也可以用 [`SubString`](@ref) 类型创建字符串的视图，例如：
 
 ```@raw html
 <!-- Range indexing makes a copy of the selected part of the original string.
@@ -337,7 +331,7 @@ julia> typeof(substr)
 SubString{String}
 ```
 
-像　[`chop`](@ref)，[`chomp`](@ref) 和 [`strip`](@ref) 一样的几个标准函数都返回 [`SubString`](@ref)。
+像 [`chop`](@ref)，[`chomp`](@ref) 和 [`strip`](@ref) 一样的几个标准函数都返回 [`SubString`](@ref)。
 
 ```@raw html
 <!-- Several standard functions like [`chop`](@ref), [`chomp`](@ref) or [`strip`](@ref) return a [`SubString`](@ref). -->
@@ -349,7 +343,7 @@ SubString{String}
 <!-- ## Unicode and UTF-8 -->
 ```
 
-Julia 完全支持 Unicode 字符和字符串。[如上所述](@ref man-characters)，在字符文本中，Unicode 代码点可以用 Unicode `\u` and `\U` 转义序列表示，也可以用所有标准 C 转义序列表示。这些同样可以用来写字符串文本：
+Julia 完全支持 Unicode 字符和字符串。[如上所述](@ref)，在字符字面量中，Unicode 代码点可以用 Unicode `\u` and `\U` 转义序列表示，也可以用所有标准 C 转义序列表示。这些同样可以用来写字符串字面量：
 
 ```@raw html
 <!-- Julia fully supports Unicode characters and strings. As [discussed above](@ref man-characters), in character
@@ -362,7 +356,7 @@ julia> s = "\u2200 x \u2203 y"
 "∀ x ∃ y"
 ```
 
-这些 Unicode 字符是作为转义还是特殊字符显示取决于你终端的地区设置以及它对 Unicode 的支持。字符串文本用 UTF-8 编码实现编码。UTF-8 是一种可变宽度的编码，也就是说并非所有字符都以相同的字节数被编码。在 UTF-8 中，ASCII 字符——代码点小于 0x80(128) 的那些——如它们在 ASCII 中一样使用单字节编码；而代码点 0x80 及以上的字符使用最多 4 个字节编码。这意味着并非每个索引到 UTF-8 字符串的字节都必须是一个字符的有效索引。如果在这种无效字节索引处索引字符串，将会报错：
+这些 Unicode 字符是作为转义还是特殊字符显示取决于你终端的地区设置以及它对 Unicode 的支持。字符串字面量用 UTF-8 编码实现编码。UTF-8 是一种可变宽度的编码，也就是说并非所有字符都以相同的字节数被编码。在 UTF-8 中，ASCII 字符——代码点小于 0x80(128) 的那些——如它们在 ASCII 中一样使用单字节编码；而代码点 0x80 及以上的字符使用最多 4 个字节编码。这意味着并非每个索引到 UTF-8 字符串的字节都必须是一个字符的有效索引。如果在这种无效字节索引处索引字符串，将会报错：
 
 ```@raw html
 <!-- Whether these Unicode characters are displayed as escapes or shown as special characters depends
@@ -392,7 +386,7 @@ julia> s[4]
 ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
 ```
 
-在这种情况下，字符 `∀` 是一个三字节字符，因此索引 2 和 3 都是无效的，而下一个字符的索引是 4；这个接下来的有效索引可以用 [`nextind(s,1)`](@ref)　来计算，再接下来的用 `nextind(s,4)`, 依此类推。
+在这种情况下，字符 `∀` 是一个三字节字符，因此索引 2 和 3 都是无效的，而下一个字符的索引是 4；这个接下来的有效索引可以用 [`nextind(s,1)`](@ref) 来计算，再接下来的用 `nextind(s,4)`，依此类推。
 
 ```@raw html
 <!-- In this case, the character `∀` is a three-byte character, so the indices 2 and 3 are invalid
@@ -419,7 +413,7 @@ julia> s[1:4]
 "∀ "
 ```
 
-由于可变长度的编码，字符串中的字符串数（由 [`length(s)`](@ref) 给出）并不问题等于最后一个索引的数字。如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。因此总有 `length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s` 的字符进行迭代的一个啰嗦而低效的方式：
+由于可变长度的编码，字符串中的字符数（由 [`length(s)`](@ref) 给出）并不问题等于最后一个索引的数字。如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。因此总有 `length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s` 的字符进行迭代的一个啰嗦而低效的方式：
 
 ```@raw html
 <!-- Because of variable-length encodings, the number of characters in a string (given by [`length(s)`](@ref))
@@ -447,7 +441,7 @@ x
 y
 ```
 
-空行上面其实是有空格的。幸运的是，上面的拙劣写法不是对字符串中字符进行迭代所必须的——因为你只仅需把字符串本身用作迭代对象，而不需要额外处理：
+空行上面其实是有空格的。幸运的是，上面的拙劣写法不是对字符串中字符进行迭代所必须的——因为你只需把字符串本身用作迭代对象，而不需要额外处理：
 
 ```@raw html
 <!-- The blank lines actually have spaces on them. Fortunately, the above awkward idiom is unnecessary
@@ -516,7 +510,7 @@ julia> foreach(display, s2)
 '\U1fffff': Unicode U+1fffff (category In: Invalid, too high)
 ```
 
-我们可以看到字符串 `s` 中的前两个代码单元形成了一个过长的空格字符编码。这是无效的，但是在字符串中作为单个字符是可以接受的。接下来的两个代码单元形成了一个有效的 3 位 UTF-8 序列开头。然而，第五个代码单元 `\xe2` 不是它有效的延续，所以代码单元 3 和 4 在这个字符串中也被解释为格式错误的字符。类似地，由于 `|` 不是它有效的延续，代码单元 5 形成了一个格式错误的字符。最后字符串 `s2` 包含了一个太高的代码点。
+我们可以看到字符串 `s` 中的前两个代码单元形成了一个过长的空格字符编码。这是无效的，但是在字符串中作为单个字符是可以接受的。接下来的两个代码单元形成了一个有效的 3 位 UTF-8 序列开头。然而，第五个代码单元 `\xe2` 不是它的有效延续，所以代码单元 3 和 4 在这个字符串中也被解释为格式错误的字符。同理，由于 `|` 不是它的有效延续，代码单元 5 形成了一个格式错误的字符。最后字符串 `s2` 包含了一个太高的代码点。
 
 ```@raw html
 <!-- We can see that the first two code units in the string `s` form an overlong encoding of
@@ -528,7 +522,7 @@ character because `|` is not a valid continuation to it. Finally the string `s2`
 one too high code point. -->
 ```
 
-Julia 默认使用 UTF-8 编码，对于新编码的支持可以通过包加上。例如，[LegacyStrings.jl](https://github.com/JuliaArchive/LegacyStrings.jl) 包实现了 `UTF16String` 和 `UTF32String` 类型。关于其它编码的额外讨论以及实现支持它们的方法暂时超过了这篇文档的讨论范围。UTF-8 编码的相关问题的进一步讨论参见下面的 [字节数组文本](@ref man-byte-array-literals) 章节。[`transcode`](@ref) 函数可在各种 UTF-xx 编码之间转换，主要用于外部数据和包。
+Julia 默认使用 UTF-8 编码，对于新编码的支持可以通过包加上。例如，[LegacyStrings.jl](https://github.com/JuliaArchive/LegacyStrings.jl) 包实现了 `UTF16String` 和 `UTF32String` 类型。关于其它编码的额外讨论以及如何实现对它们的支持暂时超过了这篇文档的讨论范围。UTF-8 编码相关问题的进一步讨论参见下面的 [字节数组字面量](@ref) 章节。[`transcode`](@ref) 函数可在各种 UTF-xx 编码之间转换，主要用于外部数据和包。
 
 ```@raw html
 <!-- Julia uses the UTF-8 encoding by default, and support for new encodings can be added by packages.
@@ -563,7 +557,7 @@ julia> string(greet, ", ", whom, ".\n")
 "Hello, world.\n"
 ```
 
-意识到像对无效 UTF-8 字符进行串联这样的潜在危险情形是非常重要的。得到字符串可能会包含和输入字符串不同的字符，并且其中字符的数目也可能少于被串联字符串中字符数目之和，例如：
+意识到像对无效 UTF-8 字符进行串联这样的潜在危险情形是非常重要的。生成的字符串可能会包含和输入字符串不同的字符，并且其中字符的数目也可能少于被串联字符串中字符数目之和，例如：
 
 ```@raw html
 <-- It's important to be aware of potentially dangerous situations such as concatenation of invalid UTF-8 strings.
@@ -618,7 +612,7 @@ julia> greet * ", " * whom * ".\n"
 concatenation, this use of `*` has precedent in mathematics, particularly in abstract algebra. -->
 ```
 
-在数学上，`+` 通常表示对易算符——运算对象的顺序不重要。一个例子是矩阵加法：对于任何形状相同的矩阵 `A` 和 `B`，都有　`A + B == B + A`。与之相反，`＊` 通常表示不对易算符——运算对象的顺序很重要。例如，对于矩阵乘法，一般 `A * B != B * A`。同矩阵乘法类似，字符串串联是不对易的：`greet * whom != whom * greet`。在这一点上，对于插入字符串的串联操作，`*` 是一个自然而然的选择，和在数学中的用法一致。
+在数学上，`+` 通常表示对易算符——运算对象的顺序不重要。一个例子是矩阵加法：对于任何形状相同的矩阵 `A` 和 `B`，都有 `A + B == B + A`。与之相反，`＊` 通常表示不对易算符——运算对象的顺序很重要。例如，对于矩阵乘法，一般 `A * B != B * A`。同矩阵乘法类似，字符串串联是不对易的：`greet * whom != whom * greet`。在这一点上，对于插入字符串的串联操作，`*` 是一个自然而然的选择，与它在数学中的用法一致。
 
 ```@raw html
 <!-- In mathematics, `+` usually denotes a *commutative* operation, where the order of the operands does
@@ -630,7 +624,7 @@ order of the operands *does* matter. An example of this is matrix multiplication
 operator, consistent with common mathematical use. -->
 ```
 
-更确切地说，有限长度字符串集合 *S* 和字符串串联操作 `*` 构成了一个自由群 (*S*, `*`)。该集合的单位元是空字符串，`""`。当一个自由群不对易，它的运算通常表示为 `\cdot`，`*`，或者类似的符号，而不是暗示对易性的 `+`。
+更确切地说，有限长度字符串集合 *S* 和字符串串联操作 `*` 构成了一个自由群 (*S*, `*`)。该集合的单位元是空字符串，`""`。当一个自由群不对易时，它的运算通常表示为 `\cdot`，`*`，或者类似的符号，而非暗示对易性的 `+`。
 
 ```@raw html
 <!-- More precisely, the set of all finite-length strings *S* together with the string concatenation operator
@@ -646,7 +640,7 @@ implies commutativity. -->
 <!-- ## Interpolation -->
 ```
 
-但是，用串联构造字符串有时有些麻烦。为了减少对于 [`string`](@ref) 的冗余调用或者重复乘法，Julia 允许像 Perl 中一样使用 `$` 对字符串文本进行插值：
+但是，用串联构造字符串有时有些麻烦。为了减少对于 [`string`](@ref) 的冗余调用或者重复乘法，Julia 允许像 Perl 中一样使用 `$` 对字符串字面量进行插值：
 
 ```@raw html
 Constructing strings using concatenation can become a bit cumbersome, however. To reduce the need for these
@@ -659,7 +653,7 @@ julia> "$greet, $whom.\n"
 "Hello, world.\n"
 ```
 
-这更易读更方便，而且等效于上面的字符串串联——系统把这个显然一行的字符串文本重写成带参数的字符串文本串联。
+这更易读更方便，而且等效于上面的字符串串联——系统把这个显然一行的字符串字面量重写成带参数的字符串字面量串联。
 
 ```@raw html
 <!-- This is more readable and convenient and equivalent to the above string concatenation -- the system
@@ -678,7 +672,7 @@ julia> "1 + 2 = $(1 + 2)"
 "1 + 2 = 3"
 ```
 
-串联和插值都调用 [`string`](@ref) 操作以转换对象为字符串形式。多数非 `AbstractString` 对象被转换为和它们作为文本表达式输入的方式密切对应的字符串。
+串联和插值都调用 [`string`](@ref) 以转换对象为字符串形式。多数非 `AbstractString` 对象被转换为和它们作为文本表达式输入的方式密切对应的字符串。
 
 ```@raw html
 <!-- Both concatenation and string interpolation call [`string`](@ref) to convert objects into string
@@ -697,7 +691,7 @@ julia> "v: $v"
 "v: [1, 2, 3]"
 ```
 
-[`string`](@ref) 是 `AbstractString` 和 `AbstractChar` 值的标识，所以它们作为它们自身被插入字符串，无需引用，无需转义：
+[`string`](@ref) 是 `AbstractString` 和 `AbstractChar` 值的标识，所以它们作为自身被插入字符串，无需引用，无需转义：
 
 ```@raw html
 <!-- [`string`](@ref) is the identity for `AbstractString` and `AbstractChar` values, so these are interpolated
@@ -712,7 +706,7 @@ julia> "hi, $c"
 "hi, x"
 ```
 
-若要在字符串文本中包含文本 `$`，就用反斜杠转义：
+若要在字符串字面量中包含文本 `$`，就用反斜杠转义：
 
 ```@raw html
 <!-- To include a literal `$` in a string literal, escape it with a backslash: -->
@@ -723,7 +717,7 @@ julia> print("I have \$100 in my account.\n")
 I have $100 in my account.
 ```
 
-## 三引号字符串文本
+## 三引号字符串字面量
 
 ```@raw html
 <!-- ## Triple-Quated String Literals -->
@@ -750,15 +744,15 @@ julia> str = """
          """
 "  Hello,\n  world.\n"
 ```
-
-在这里，结尾 `"""` 前面的最后一（空）行设置了缩进级别。
+ 
+在这里，后三引号 `"""` 前面的最后一（空）行设置了缩进级别。
 
 
 ```@raw html
 <!-- In this case the final (empty) line before the closing `"""` sets the indentation level. -->
 ```
 
-反缩进级别被确定为所有行中空格或制表符的最大公共起始序列，不包括起始 `"""` 后面的一行以及只包含空格或制表符的行（总包含结尾 `"""` 的行）。那么对于所有不包括起始 `"""` 后面文本的行而言，公共起始序列就被移除了（包括只含空格和制表符而以此序列开始的行），例如：
+反缩进级别被确定为所有行中空格或制表符的最大公共起始序列，不包括前三引号 `"""` 后面的一行以及只包含空格或制表符的行（总包含结尾 `"""` 的行）。那么对于所有不包括前三引号 `"""` 后面文本的行而言，公共起始序列就被移除了（包括只含空格和制表符而以此序列开始的行），例如：
 
 ```@raw html
 <!-- The dedentation level is determined as the longest common starting sequence of spaces or
@@ -776,7 +770,7 @@ julia> """    This
 "    This\nis\n  a test"
 ```
 
-接下来，如果起始 `"""` 后面紧跟换行符，那么换行符就从生成的字符串中被剥离。
+接下来，如果前三引号 `"""` 后面紧跟换行符，那么换行符就从生成的字符串中被剥离。
 
 ```@raw html
 <!-- Next, if the opening `"""` is followed by a newline,
@@ -834,7 +828,7 @@ julia> """
 Trailing whitespace is left unaltered.
 ```
 
-三引号字符串文本可无需转义地包含 `"` 符号。
+三引号字符串字面量可不带转义地包含 `"` 符号。
 
 ```@raw html
 <!-- Triple-quoted string literals can contain `"` symbols without escaping. -->
@@ -891,7 +885,7 @@ julia> findfirst(isequal('p'), "xylophone")
 julia> findfirst(isequal('z'), "xylophone")
 ```
 
-你可以带上第三个参数，用 [`findnext`](@ref) 函数在定偏移量处搜索字符。
+你可以带上第三个参数，用 [`findnext`](@ref) 函数在给定偏移量处搜索字符。
 
 ```@raw html
 <!-- You can start the search for a character at a given offset by using [`findnext`](@ref)
@@ -928,7 +922,7 @@ julia> occursin('o', "Xylophon")
 true
 ```
 
-最后一例表明 [`occursin`](@ref) 也可用于搜寻字符文本。
+最后一例表明 [`occursin`](@ref) 也可用于搜寻字符字面量。
 
 ```@raw html
 <!-- The last example shows that [`occursin`](@ref) can also look for a character literal. -->
@@ -978,13 +972,13 @@ julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
 -->
 ```
 
-## 非标准字符串文本
+## 非标准字符串字面量
 
 ```@raw html
 <!-- ## Non-Standard String Literals -->
 ```
 
-有时当你想构造字符串或者使用字符串语义，标准的字符串构造却不能很好的满足需求。Julia 为这种情形提供了 [非标准字符串文本](@ref)。非标准字符串文本看似常规双引号字符串文本，但却直接由标识符前缀而并不那么像普通的字符串文本。下面将提到，正则表达式，字节数组文本和版本号文本都是非标准字符串文本的例子。其它例子见 [元编程](@ref) 章。
+有时当你想构造字符串或者使用字符串语义，标准的字符串构造却不能很好的满足需求。Julia 为这种情形提供了 [非标准字符串字面量](@ref)。非标准字符串字面量看似常规双引号字符串字面量，但却直接加上了标识符前缀因而并不那么像普通的字符串字面量。下面将提到，正则表达式，字节数组字面量和版本号字面量都是非标准字符串字面量的例子。其它例子见 [元编程](@ref) 章。
 
 ```@raw html
 <!-- There are situations when you want to construct a string or use string semantics, but the behavior
@@ -1002,7 +996,7 @@ are given in the [Metaprogramming](@ref) section. -->
 <!-- ## Regular Expressions -->
 ```
 
-Julia 具有与 Perl 兼容的正则表达式 (regexes)，就像 [PCRE](http://www.pcre.org/) 包所提供的那样。正则表达式以两种方式和字符串相关：一个显然的关联是，正则表达式被用于找到字符串中的正则模式；另一个关联是，正则表达式自身就是作为字符串输入，它们被解析到可用来高效搜索字符串中模式的状态机中。在 Julia 中正则表达式的输入使用了前缀各类以 `r` 开头的标识符的非标准字符串文本。最基本的不打开任何选项的正则表达式只用到了 `r"..."`：
+Julia 具有与 Perl 兼容的正则表达式 (regexes)，就像 [PCRE](http://www.pcre.org/) 包所提供的那样。正则表达式以两种方式和字符串相关：一个显然的关联是，正则表达式被用于找到字符串中的正则模式；另一个关联是，正则表达式自身就是作为字符串输入，它们被解析到可用来高效搜索字符串中模式的状态机中。在 Julia 中正则表达式的输入使用了前缀各类以 `r` 开头的标识符的非标准字符串字面量。最基本的不打开任何选项的正则表达式只用到了 `r"..."`：
 
 ```@raw html
 <!-- Julia has Perl-compatible regular expressions (regexes), as provided by the [PCRE](http://www.pcre.org/)
@@ -1123,7 +1117,7 @@ RegexMatch("3")
 -->
 ```
 
-当捕获不匹配时，`m.captures` 在该处不再包含一个子字符串，而是 `什么也不` 包含；此外，`m.offsets` 的偏移量为 0（回想一下，Julia 的索引是从 1 开始的，因此字符串的零偏移是无效的）。下面是两个有些勉强的例子：
+当捕获不匹配时，`m.captures` 在该处不再包含一个子字符串，而是 `什么也不` 包含；此外，`m.offsets` 的偏移量为 0（回想一下，Julia 的索引是从 1 开始的，因此字符串的零偏移是无效的）。下面是两个有些牵强的例子：
 
 ```@raw html
 <!-- For when a capture doesn't match, instead of a substring, `m.captures` contains `nothing` in that
@@ -1239,6 +1233,21 @@ in Perl, as explained in this excerpt from the [perlre manpage](http://perldoc.p
 ```
 
 ```
+i   不区分大小写的模式匹配
+    
+    若区域设置规则有效，相应映射中代码点小于 255 的部分取自当前区域设置，更大代码点的部分取自 Unicode 规则。
+    然而，跨越 Unicode 规则和 非 Unicode 规则边界的匹配将失败。
+
+m   将字符串视为多行。也即更改 "^" 和 "$", 使其从匹配字符串的开头和结尾变为匹配字符串中任意一行的开头或结尾。
+
+s   将字符串视为单行。也即更改 "." 以匹配任何字符，即使是通常不能匹配的换行符。
+
+    像这样一起使用，r""ms，它们让 "." 匹配任何字符，同时也支持分别在字符串中换行符的后面和前面用 "^" 和 "$" 进行匹配。
+
+x   令正则表达式解析器忽略多数既不是反斜杠也不属于字符类的空白。它可以用来把正则表达式分解成（略为）更易读的部分。和普通代码中一样，`#` 字符也被当作引入注释的元字符。
+```
+
+```
 i   Do case-insensitive pattern matching.
 
     If locale matching rules are in effect, the case map is taken
@@ -1282,7 +1291,7 @@ julia> match(r"a+.*b+.*?d$"ism, "Goodbye,\nOh, angry,\nBad world\n")
 RegexMatch("angry,\nBad world")
 ```
 
-`r"..."` 文本的构造没有插值和转义（除了引号 `"` 仍然需要转义）。下面例子展示了它和标准字符串文本之间差别：
+`r"..."` 文本的构造没有插值和转义（除了引号 `"` 仍然需要转义）。下面例子展示了它和标准字符串字面量之间的差别：
 
 ```@raw html
 <!-- The `r"..."` literal is constructed without interpolation and unescaping (except for
@@ -1307,20 +1316,20 @@ julia> "\x"
 ERROR: syntax: invalid escape sequence
 ```
 
-Julia 也支持 `r"""..."""` 形式的三引号正则表达式字符串（可能对包含引号和换行符的正则表达式很方便）。
+Julia 也支持 `r"""..."""` 形式的三引号正则表达式字符串（或许便于处理包含引号和换行符的正则表达式）。
 
 ```@raw html
 <!-- Triple-quoted regex strings, of the form `r"""..."""`, are also supported (and may be convenient
 for regular expressions containing quotation marks or newlines). -->
 ```
 
-## 字节数组文本
+## 字节数组字面量
 
 ```@raw html
 <!-- ## Byte Array Literals -->
-```
+``` 
 
-另一个有用的非标准字符串文本是字节数组文本：`b"..."`。这种形式使你能够用字符串表示法来表达只读文本字节数组，也即 [`UInt8`](@ref) 值的数组。字节数组文本的规则如下：
+另一个有用的非标准字符串字面量是字节数组字面量：`b"..."`。这种形式使你能够用字符串表示法来表达只读字面量字节数组，也即 [`UInt8`](@ref) 值的数组。字节数组字面量的规则如下：
 
 ```@raw html
 <!-- Another useful non-standard string literal is the byte-array string literal: `b"..."`. This
@@ -1341,7 +1350,7 @@ The rules for byte array literals are the following: -->
 -->
 ```
 
-这些规则有一些重叠，这是因为 `\x` 的行为和小于 0x80(128) 的八进制转义被前两个规则同时包括了；然而这两个规则又是一致的。通过这些规则可以方便地同时使用 ASCII 字符，任意字节值，以及 UTF-8 序列来生成字节数组。下面是一个用到全部三个规则的例子：
+这些规则有一些重叠，这是因为 `\x` 的行为和小于 0x80(128) 的八进制转义被前两个规则同时包括了；但这两个规则又是一致的。通过这些规则可以方便地同时使用 ASCII 字符，任意字节值，以及 UTF-8 序列来生成字节数组。下面是一个用到全部三个规则的例子：
 
 ```@raw html
 <!-- There is some overlap between these rules since the behavior of `\x` and octal escapes less than
@@ -1404,7 +1413,7 @@ julia> Vector{UInt8}(x)
  0x33
 ```
 
-同时，要注意到 `xff` 和 `\uff` 之间的显著差别：前面的转义序列编码为*字节 255*，而后面的代表代码点 255，它在 UTF-8 中编码为两个字节：
+同时，要注意到 `xff` 和 `\uff` 之间的显著差别：前面的转义序列编码为*字节 255*，而后者代表 *代码点 255*，它在 UTF-8 中编码为两个字节：
 
 ```@raw html
 <!-- Also observe the significant distinction between `\xff` and `\uff`: the former escape sequence
@@ -1423,7 +1432,7 @@ julia> b"\uff"
  0xbf
 ```
 
-字符文本也用到了相同的行为。
+字符字面量也用到了相同的行为。
 
 ```@raw html
 <!-- Character literals use the same behavior. -->
@@ -1440,7 +1449,7 @@ bytes, which -- unless followed by very specific continuation bytes -- do not fo
 data, whereas the latter escapes all represent Unicode code points with two-byte encodings. -->
 ```
 
-如果这些还是太难理解，试着读一下 ["每个软件开发人员绝对必须知道的最基础 Unicode 和字符集知识"]。它是一个优质的 Unicode 和　UTF-8 指南，或许能帮助解除一些这方面的疑惑。
+如果这些还是太难理解，试着读一下 ["每个软件开发人员绝对必须知道的最基础 Unicode 和字符集知识"](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/)。它是一个优质的 Unicode 和 UTF-8 指南，或许能帮助解除一些这方面的疑惑。
 
 ```@raw html
 <!-- If this is all extremely confusing, try reading ["The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets"](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/).　
@@ -1448,13 +1457,13 @@ It's an excellent introduction to Unicode and UTF-8, and may help alleviate
 some confusion regarding the matter. -->
 ```
 
-## 版本号文本
+## 版本号字面量
 
 ```@raw html
 <!-- ## Version Number Literals -->
 ```
 
-版本号很容易用 [`v"..."`](@ref @v_str) 形式的非标准字符串文本表示。版本号文本生成遵循 [语义版本](http://semver.org) 规范的 [`VersionNumber`](@ref) 对象，因此由主、次、补丁数号构成，后跟预发行 (pre-release) 和生成阿尔法数注释 (build alpha-numeric)。例如，[`VersionNumber`](@ref) 可分为主版本号 `0`，次版本号 `2`，补丁版本号 `1`，预发行版号 `rc1`，以及生成版本为 `win64`。输入版本文本时，除了主版本号以外所有内容都是可选的，因此 `v"0.2"` 等效于 `v"0.2.0"` (预发行号和生成注释为空), `v"2"` 等效于 `v"2.0.0"`，等等。
+版本号很容易用 [`v"..."`](@ref) 形式的非标准字符串字面量表示。版本号字面量生成遵循 [语义版本](http://semver.org) 规范的 [`VersionNumber`](@ref) 对象，因此由主、次、补丁号构成，后跟预发行 (pre-release) 和生成阿尔法数注释 (build alpha-numeric)。例如，`v"0.2.1-rc1+win64"` 可分为主版本号 `0`，次版本号 `2`，补丁版本号 `1`，预发行版号 `rc1`，以及生成版本 `win64`。输入版本字面量时，除了主版本号以外所有内容都是可选的，因此 `v"0.2"` 等效于 `v"0.2.0"` (预发行号和生成注释为空), `v"2"` 等效于 `v"2.0.0"`，等等。
 
 ```@raw html
 <!-- Version numbers can easily be expressed with non-standard string literals of the form [`v"..."`](@ref @v_str).
@@ -1511,20 +1520,20 @@ be used as the actual version number of anything, as they are invalid in the sem
 scheme. -->
 ```
 
-除了用于常数 [`VERSION`](@ref)，[`VERSION`](@ref) 对象在 `Pkg` 模块中被广泛用于指定包版本和其依赖。
+除了用于常数 [`VERSION`](@ref)，c 对象在 `Pkg` 模块中被广泛用于指定包版本和其依赖。
 
 ```@raw html
 <!-- Besides being used for the [`VERSION`](@ref) constant, c objects are widely used
 in the `Pkg` module, to specify packages versions and their dependencies. -->
 ```
 
-## 原始字符串文本
+## 原始字符串字面量
 
 ```@raw html
 <!-- ## Raw String Literals -->
 ```
 
-无插值和非转义的原始字符串可用 `raw"..."` 形式的非标准字符串文本表示。原始字符串文本生成普通的 `String` 对象，它无需插值和非转义地包含和输入完全一样的封闭式内容。这对于包含其他语言中使用 "$" 或 "\" 作为特殊字符的代码或标记的字符串很有用。
+无插值和非转义的原始字符串可用 `raw"..."` 形式的非标准字符串字面量表示。原始字符串字面量生成普通的 `String` 对象，它无需插值和非转义地包含和输入完全一样的封闭式内容。这对于包含其他语言中使用 "$" 或 "\" 作为特殊字符的代码或标记的字符串很有用。
 
 ```@raw html
 <!-- Raw strings without interpolation or unescaping can be expressed with
@@ -1549,7 +1558,7 @@ julia> println(raw"\\ \\\"")
 \\ \"
 ```
 
-请注意，前两个反斜杠在输出中逐字显示，这是因为它们不是在引号前面。然而，接下来的一个反斜杠字符转义了后面的一个反斜杠，又由于这些反斜杠出现在引号前面，最后一个反斜杠转义了一个引号。
+请注意，前两个反斜杠在输出中逐字显示，这是因为它们不是在引号前面。然而，接下来的一个反斜杠字符转义了后面的一个反斜杠；又由于这些反斜杠出现在引号前面，最后一个反斜杠转义了一个引号。
 
 ```@raw html
 <!-- Notice that the first two backslashes appear verbatim in the output, since they do not
