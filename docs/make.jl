@@ -8,8 +8,8 @@ const PAGES = [
         "manual/variables.md",
         "manual/integers-and-floating-point-numbers.md",
         # "manual/mathematical-operations.md",
-        # "manual/complex-and-rational-numbers.md",
-        # "manual/strings.md",
+        "manual/complex-and-rational-numbers.md",
+        "manual/strings.md",
         # "manual/functions.md",
         # "manual/control-flow.md",
         # "manual/variables-and-scoping.md",
@@ -40,7 +40,7 @@ const PAGES = [
         # "manual/noteworthy-differences.md",
         # "manual/unicode-input.md",
     ],
-    "Base" => [
+    "基础组件" => [
         "base/base.md",
         "base/collections.md",
         "base/math.md",

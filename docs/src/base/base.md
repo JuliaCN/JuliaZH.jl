@@ -1,21 +1,46 @@
-# Essentials
 
-## Introduction
+```@raw html
+<!-- # Essentials -->
+```
+# 重要组件
 
-Julia Base contains a range of functions and macros appropriate for performing
+```@raw html
+<!-- ## Introduction -->
+```
+
+## 简介
+
+```@raw html
+<!-- Julia Base contains a range of functions and macros appropriate for performing
 scientific and numerical computing, but is also as broad as those of many general purpose programming
 languages.  Additional functionality is available from a growing collection of available packages.
-Functions are grouped by topic below.
+Functions are grouped by topic below. -->
+```
 
-Some general notes:
+Julia的基础模块不仅包含了一系列为科学计算和数值计算打造的函数和宏，也包含了广泛的
+为一般目的编程所需的基础设置。额外的功能可以通过增加包来获得。函数被组织为如下的主题。
+
+```@raw html
+<!-- Some general notes:
 
   * To use module functions, use `import Module` to import the module, and `Module.fn(x)` to use the
     functions.
   * Alternatively, `using Module` will import all exported `Module` functions into the current namespace.
   * By convention, function names ending with an exclamation point (`!`) modify their arguments.
-    Some functions have both modifying (e.g., `sort!`) and non-modifying (`sort`) versions.
+    Some functions have both modifying (e.g., `sort!`) and non-modifying (`sort`) versions. -->
+```
 
-## Getting Around
+一些一般的注记：
+
+  * 如需使用模块里的函数，请通过 `import Module` 来载入模块，然后使用 `Module.fn(x)` 来使用这个函数。
+  * 或者，你也可以通过 `using Module` 来载入所有被 `Module` 暴露的函数到当前的命名空间中
+  * 按照约定，函数名称以感叹号（`!`）结尾的将会修改它们的输入，一些函数会有修改（副作用）和不修改两种版本
+
+```@raw html
+<!-- ## Getting Around -->
+```
+
+## 随便看看
 
 ```@docs
 Base.exit
@@ -35,7 +60,11 @@ Base.@show
 ans
 ```
 
-## Keywords
+```@raw html
+<!-- ## Keywords -->
+```
+
+## 关键词
 
 ```@docs
 module
@@ -69,7 +98,11 @@ primitive type
 ;
 ```
 
-## Base Modules
+```@raw html
+<!-- ## Base Modules -->
+```
+## 基础库
+
 ```@docs
 Base.Base
 Base.Broadcast
@@ -83,7 +116,10 @@ Base.Threads
 Base.GC
 ```
 
-## All Objects
+```@raw html
+<!-- ## All Objects -->
+```
+## 所有的对象
 
 ```@docs
 Core.:(===)
@@ -115,9 +151,15 @@ Base.widen
 Base.identity
 ```
 
-## Properties of Types
+```@raw html
+<!-- ## Properties of Types -->
+```
+## 类型的性质
 
-### Type relations
+```@raw html
+<!-- ### Type relations -->
+```
+### 类型之间的关系
 
 ```@docs
 Base.supertype
@@ -130,7 +172,10 @@ Base.promote_rule
 Base.isdispatchtuple
 ```
 
-### Declared structure
+```@raw html
+<!-- ### Declared structure -->
+```
+### 声明的结构
 
 ```@docs
 Base.isimmutable
@@ -142,7 +187,10 @@ Base.fieldnames
 Base.fieldname
 ```
 
-### Memory layout
+```@raw html
+<!-- ### Memory layout -->
+```
+### 内存布局
 
 ```@docs
 Base.sizeof(::Type)
@@ -157,7 +205,10 @@ Base.datatype_haspadding
 Base.datatype_pointerfree
 ```
 
-### Special values
+```@raw html
+<!-- ### Special values -->
+```
+### 特殊值
 
 ```@docs
 Base.typemin
@@ -170,7 +221,10 @@ Base.eps(::AbstractFloat)
 Base.instances
 ```
 
-## Special Types
+```@raw html
+<!-- ## Special Types -->
+```
+## 特别的类型
 
 ```@docs
 Core.Any
@@ -187,7 +241,10 @@ Base.something
 Base.Enums.@enum
 ```
 
-## Generic Functions
+```@raw html
+<!-- ## Generic Functions -->
+```
+## 一般的函数
 
 ```@docs
 Core.Function
@@ -200,7 +257,10 @@ Base.:(|>)
 Base.:(∘)
 ```
 
-## Syntax
+```@raw html
+<!-- ## Syntax -->
+```
+## 句法
 
 ```@docs
 Core.eval
@@ -221,7 +281,11 @@ Base.@simd
 Base.@polly
 ```
 
-## Missing Values
+```@raw html
+<!-- ## Missing Values -->
+```
+## 缺失值
+
 ```@docs
 Base.Missing
 Base.missing
@@ -230,7 +294,10 @@ Base.ismissing
 Base.skipmissing
 ```
 
-## System
+```@raw html
+<!-- ## System -->
+```
+## 系统
 
 ```@docs
 Base.run
@@ -269,14 +336,20 @@ Base.Sys.windows_version
 Base.@static
 ```
 
-## Versioning
+```@raw html
+<!-- ## Versioning -->
+```
+## 版本
 
 ```@docs
 Base.VersionNumber
 Base.@v_str
 ```
 
-## Errors
+```@raw html
+<!-- ## Errors -->
+```
+## 错误
 
 ```@docs
 Base.error
@@ -315,7 +388,10 @@ Base.retry
 Base.ExponentialBackOff
 ```
 
-## Events
+```@raw html
+<!-- ## Events -->
+```
+## 事件
 
 ```@docs
 Base.Timer(::Function, ::Real)
@@ -324,7 +400,10 @@ Base.AsyncCondition
 Base.AsyncCondition(::Function)
 ```
 
-## Reflection
+```@raw html
+<!-- ## Reflection -->
+```
+## 反射
 
 ```@docs
 Base.nameof(::Module)
@@ -340,7 +419,11 @@ Base.functionloc(::Any, ::Any)
 Base.functionloc(::Method)
 ```
 
-## Internals
+```@raw html
+<!-- ## Internals -->
+```
+
+## 内部构件
 
 ```@docs
 Base.GC.gc
