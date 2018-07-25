@@ -218,6 +218,8 @@ julia> fetch(s)
  1.20939  1.57158
 ```
 
+注意这里执行的是`1 .+ fetch(r)`而不是`1 .+ r`。这是因为我们并不知道这段代码会在哪个进程中执行，因此，通常需要用[`fetch`](@ref)将`r`中的数据挪到当前计算加法的进程中。这时候[`@spawn`](@ref)会很智能地在拥有`r`的进程中执行计算，此时，[`fetch`](@ref)就相当于什么都不用做。(2018-07-25 译者注：我看过源码，这句话完全瞎说的，一点都不智能，[discourse](https://discourse.julialang.org/t/understanding-pid-and-rrid-in-future-objects-related-to-spawn-and-spawnat-in-documentation/9462)上也有人提出同样的疑惑，并没有人正面回答。)
+
 ```@raw html
 <!--
 Note that we used `1 .+ fetch(r)` instead of `1 .+ r`. This is because we do not know where the
@@ -227,12 +229,16 @@ on the process that owns `r`, so the [`fetch`](@ref) will be a no-op (no work is
 -->
 ```
 
+显然，[`@spawn`](@ref)并非Julia内置的一部分，而是通过[宏](@ref man-macros)定义的，因此，你也可以自己定义类似的结构。
+
 ```@raw html
 <!--
 (It is worth noting that [`@spawn`](@ref) is not built-in but defined in Julia as a [macro](@ref man-macros).
 It is possible to define your own such constructs.)
 -->
 ```
+
+有一点一定要注意，一旦执行了`fetch`，[`Future`](@ref) 就会将结果缓存起来，之后执行[`fetch`](@ref)的时候就不涉及到网络传输了。一旦所有的[`Future`](@ref)都获取到了值，那么远端存储的值就会被删掉。
 
 ```@raw html
 <!--
@@ -242,11 +248,15 @@ have fetched, the remote stored value is deleted.
 -->
 ```
 
+## 访问代码以及加载库
+
 ```@raw html
 <!--
 ## Code Availability and Loading Packages
 -->
 ```
+
+对于想要并行执行的代码，需要所有对所有线程都可见。例如，在Julia命令行中输入以下命令：
 
 ```@raw html
 <!--
@@ -271,11 +281,15 @@ Stacktrace:
 [...]
 ```
 
+进程1知道函数`rand2`的存在，但进程2并不知道。
+
 ```@raw html
 <!--
 Process 1 knew about the function `rand2`, but process 2 did not.
 -->
 ```
+
+大多数情况下，你会从文件或者库中加载代码，在此过程中你可以灵活地控制哪个进程加载哪部分代码。假设有这样一个文件，`DummyModule.jl`，其代码如下：
 
 ```@raw html
 <!--
@@ -301,6 +315,8 @@ println("loaded")
 end
 ```
 
+为了在所有进程中引用`MyType`，`DummyModule.jl`需要在每个进程中载入。单独执行`include("DummyModule.jl")`只会在一个线程中将其载入。为了让每个线程都载入它，可以用[`@everywhere`](@ref)宏来实现(启动Julia的时候，执行`julia -p 2`)。
+
 ```@raw html
 <!--
 In order to refer to `MyType` across all processes, `DummyModule.jl` needs to be loaded on
@@ -316,6 +332,8 @@ loaded
       From worker 3:    loaded
       From worker 2:    loaded
 ```
+
+和往常一样，这么做并不会将`DummyModule`引入到每个线程的命名空间中，除非显式地使用`using`或`import`。此外，显式地将`DummyModule`引入一个线程中，并不会影响其它线程：
 
 ```@raw html
 <!--
@@ -340,6 +358,8 @@ julia> fetch(@spawnat 2 DummyModule.MyType(7))
 MyType(7)
 ```
 
+不过，我们仍然可以在已经包含(include)过`DummyModule`的进程中，发送`MyType`类型的实例，尽管此时该进程的命名空间中并没有`MyType`变量:
+
 ```@raw html
 <!--
 However, it's still possible, for instance, to send a `MyType` to a process which has loaded
@@ -352,6 +372,8 @@ julia> put!(RemoteChannel(2), MyType(7))
 RemoteChannel{Channel{Any}}(2, 1, 13)
 ```
 
+文件代码还可以在启动的时候，通过`-L`参数指定，从而提前在多个进程中载入，然后通过一个driver.jl文件控制执行逻辑:
+
 ```@raw html
 <!--
 A file can also be preloaded on multiple processes at startup with the `-L` flag, and a
@@ -363,12 +385,16 @@ driver script can be used to drive the computation:
 julia -p <n> -L file1.jl -L file2.jl driver.jl
 ```
 
+上面执行`driver.jl`的进程id为1，就跟提供交互式命令行的Julia进程一样。
+
 ```@raw html
 <!--
 The Julia process running the driver script in the example above has an `id` equal to 1, just
 like a process providing an interactive prompt.
 -->
 ```
+
+最后，如果`DummyModule.jl`不是一个单独的文件，而是一个包的话，那么`using DummyModule`只会在所有线程中*载入*`DummyModule.jl`，也就是说`DummyModule`只会在`using`执行的线程中被引入命名空间。
 
 ```@raw html
 <!--
@@ -378,17 +404,24 @@ the process where `using` was called.
 -->
 ```
 
+## 启动和管理worker进程
+
 ```@raw html
 <!--
 ## Starting and managing worker processes
 -->
 ```
 
+Julia自带两种集群管理模式：
+
 ```@raw html
 <!--
 The base Julia installation has in-built support for two types of clusters:
 -->
 ```
+
+  * 本地集群，前面通过启动时指定`-p`参数就是这种模式
+  * 跨机器的集群，通过`--machine-file`指定。这种模式采用没有密码的`ssh`登陆并对应的机器上（与host相同的路径下）启动Julia的worker进程。
 
 ```@raw html
 <!--
@@ -397,6 +430,8 @@ The base Julia installation has in-built support for two types of clusters:
     to start Julia worker processes (from the same path as the current host) on the specified machines.
 -->
 ```
+
+[`addprocs`](@ref), [`rmprocs`](@ref), [`workers`](@ref)这些函数可以分别用来对集群中的进程进行增加，删除和修改。
 
 ```@raw html
 <!--
@@ -414,12 +449,16 @@ julia> addprocs(2)
  3
 ```
 
+在master主线程中，`Distributed`模块必须显式地在调用[`addprocs`](@ref)之前载入，该模块会自动在其它进程中可见。
+
 ```@raw html
 <!--
 Module `Distributed` must be explicitly loaded on the master process before invoking [`addprocs`](@ref).
 It is automatically made available on the worker processes.
 -->
 ```
+
+需要注意的时，worker进程并不会执行`~/.julia/config/startup.jl`启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。
 
 ```@raw html
 <!--
@@ -429,6 +468,8 @@ of the other running processes.
 -->
 ```
 
+其它类型的集群可以通过自己写一个`ClusterManager`来实现，下面[ClusterManagers](@ref)部分会介绍。
+
 ```@raw html
 <!--
 Other types of clusters can be supported by writing your own custom `ClusterManager`, as described
@@ -436,11 +477,15 @@ below in the [ClusterManagers](@ref) section.
 -->
 ```
 
+## 数据转移
+
 ```@raw html
 <!--
 ## Data Movement
 -->
 ```
+
+分布式程序的性能瓶颈主要是由发送消息和数据转移造成的，减少发送消息和转移数据的数量对于获取高性能和可扩展性至关重要，因此，深入了解Julia分布式程序是如何转移数据的非常有必要。
 
 ```@raw html
 <!--
@@ -451,6 +496,8 @@ programming constructs.
 -->
 ```
 
+[`fetch`](@ref)可以看作是显式地转移数据的操作，因为它直接要求获取数据到本地机器。[`@spawn`](@ref)（以及相关的操作）也会移动数据，不过不那么明显，因此称作隐式地数据转移操作。比较以下两种方式，构造一个随机矩阵并求平方：
+
 ```@raw html
 <!--
 [`fetch`](@ref) can be considered an explicit data movement operation, since it directly asks
@@ -459,6 +506,8 @@ also moves data, but this is not as obvious, hence it can be called an implicit 
 operation. Consider these two approaches to constructing and squaring a random matrix:
 -->
 ```
+
+方法1：
 
 ```@raw html
 <!--
@@ -476,6 +525,8 @@ julia> Bref = @spawn A^2;
 julia> fetch(Bref);
 ```
 
+方法2：
+
 ```@raw html
 <!--
 Method 2:
@@ -490,6 +541,8 @@ julia> Bref = @spawn rand(1000,1000)^2;
 julia> fetch(Bref);
 ```
 
+二者的差别似乎微乎其微，不过受于[`@spawn`](@ref)的实现，二者其实有很大的区别。第一种方法中，首先在本地构造了一个随机矩阵，然后将其发送到另外一个线程计算平方，而第二种方法中，随机矩阵的构造以及求平方计算都在另外一个进程。因此，第二种方法传输的数据要比第一种方法少得多。
+
 ```@raw html
 <!--
 The difference seems trivial, but in fact is quite significant due to the behavior of [`@spawn`](@ref).
@@ -498,6 +551,8 @@ it is squared. In the second method, a random matrix is both constructed and squ
 process. Therefore the second method sends much less data than the first.
 -->
 ```
+
+在上面这个简单的例子中，两种方法很好区分并作出选择。不过，在实际的程序中设计如何转移数据时，需要经过深思熟虑。例如，如果第一个进程需要使用`A`，那么第一种方法就更合适些。或者，如果计算`A`非常复杂，而所有的进程中又只有当前进程有数据`A`，那么转移数据`A`就不可避免了。又或者，当前进程在[`@spawn`](@ref) 和 `fetch(Bref)`之间几乎没什么可做的，那么最好就不用并行了。又比如，假设`rand(1000,1000)`操作换成了某种非常复杂的操作，那么也许为这个操作再增加一个[`@spawn`](@ref)是个不错的方式。
 
 ```@raw html
 <!--
@@ -511,6 +566,10 @@ is replaced with a more expensive operation. Then it might make sense to add ano
 statement just for this step.
 -->
 ```
+
+# 全局变量
+
+通过`@spawn`在远端执行的表达式，或者通过`remotecall`调用的闭包，有可能引用全局变量。在`Main`模块中的全局绑定和其它模块中的全局绑定有所不同，来看看下面的例子:
 
 ```@raw html
 <!--
