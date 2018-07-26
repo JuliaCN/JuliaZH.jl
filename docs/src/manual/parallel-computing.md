@@ -707,6 +707,8 @@ and hence a binding for `B` does not exist on worker 2.
 -->
 ```
 
+幸运的是，许多有用的并行计算并不涉及数据转移。一个典型的例子就是蒙特卡洛模拟，每个进程都独立地完成一些模拟试验。这里用[`@spawn`](@ref)在两个进程进行抛硬币的试验，首先，将下面的代码写入`count_heads.jl`文件:
+
 ```@raw html
 <!--
 Fortunately, many useful parallel computations do not require data movement. A common example
@@ -725,6 +727,8 @@ function count_heads(n)
     c
 end
 ```
+
+函数`count_heads`只是简单地将`n`个随机0-1值累加，下面在两个机器上进行试验，病将结果叠加：
 
 ```@raw html
 <!--
@@ -746,6 +750,8 @@ julia> fetch(a)+fetch(b)
 100001564
 ```
 
+上面的例子展示了一种非常常见而且有用的并行编程模式，在一些进程中执行多次独立的迭代，然后将它们的结果通过某个函数合并到一起，这个合并操作通常称作**聚合**(*reduction*)，也就是一般意义上的tensor-rank-reducing，比如将一个向量合并成一个数，或者是将一个tensor合并到某一行或者某一列等。在代码中，通常具有`x = f(x, v[i])`这种形式，其中`x`是一个叠加器，`f`是一个聚合函数，而`v[i]`则是将要被聚合的值。一般来说，`f`要求满足结合律，这样不管执行的顺序如何，都不会影响计算结果。
+
 ```@raw html
 <!--
 This example demonstrates a powerful and often-used parallel programming pattern. Many iterations
@@ -758,6 +764,8 @@ for `f` to be associative, so that it does not matter what order the operations 
 in.
 -->
 ```
+
+前面的代码中，调用`count_heads`的方式可以被抽象出来，之前我们显式地调用了两次[`@spawn`](@ref)，这将并行计算限制在了两个进程上，为了将并行计算扩展到任意多进程，可以使用*parallel for loop*这种形式，在Julia中可以用[`@distributed`](@ref)宏来实现：
 
 ```@raw html
 <!--
@@ -774,6 +782,8 @@ nheads = @distributed (+) for i = 1:200000000
 end
 ```
 
+上面的写法将多次迭代分配到了不同的线程，然后通过一个聚合函数（这里是`(+)`）合并计算结果，其中，每次迭代的结果作为`for`循环中的表达式的结果，最后整个循环的结果聚合后得到最终的结果。
+
 ```@raw html
 <!--
 This construct implements the pattern of assigning iterations to multiple processes, and combining
@@ -783,6 +793,8 @@ to the final answer.
 -->
 ```
 
+注意，尽管这里for循环看起来跟串行的for循环差不多，实际表现完全不同。这里的迭代并没有特定的执行顺序，而且由于所有的迭代都在不同的进程中进行，其中变量的写入对全局来说不可见。所有并行的for循环中的变量都会复制并广播到每个进程。
+
 ```@raw html
 <!--
 Note that although parallel for loops look like serial for loops, their behavior is dramatically
@@ -791,6 +803,8 @@ or arrays will not be globally visible since iterations run on different process
 used inside the parallel loop will be copied and broadcast to each process.
 -->
 ```
+
+比如，下面这段代码并不会像你想要的那样执行：
 
 ```@raw html
 <!--
@@ -804,6 +818,8 @@ a = zeros(100000)
     a[i] = i
 end
 ```
+
+这段代码并不会把`a`的所有元素初始化，因为每个进程都会有一份`a`的拷贝，因此类似的for循环一定要避免。幸运的是，[Shared Arrays](@ref man-shared-arrays)可以用来突破这种限制：
 
 ```@raw html
 <!--
@@ -822,6 +838,8 @@ a = SharedArray{Float64}(10)
 end
 ```
 
+当然，对于for循环外面的变量来说，如果是只读的话，使用起来完全没问题：
+
 ```@raw html
 <!--
 Using "outside" variables in parallel loops is perfectly reasonable if the variables are read-only:
@@ -835,11 +853,15 @@ a = randn(1000)
 end
 ```
 
+这里每次迭代都会从共享给每个进程的向量`a`中随机选一个样本，然后用来计算`f`。
+
 ```@raw html
 <!--
 Here each iteration applies `f` to a randomly-chosen sample from a vector `a` shared by all processes.
 -->
 ```
+
+可以看到，如果不需要的话，聚合函数可以省略掉，此时，for循环会异步执行，将独立的任务发送给所有的进程，然后不用等待执行完成，而是立即返回一个[`Future`](@ref)数组，调用者可以在之后的某个时刻通过调用[`fetch`](@ref)来等待[`Future`](@ref)执行完成，或者通过在并行的for循环之前添加一个[`@sync`](@ref)，就像`@sync @distributed for`。
 
 ```@raw html
 <!--
@@ -850,6 +872,8 @@ the [`Future`](@ref) completions at a later point by calling [`fetch`](@ref) on 
 for completion at the end of the loop by prefixing it with [`@sync`](@ref), like `@sync @distributed for`.
 -->
 ```
+
+在一些不需要聚合函数的情况下，我们可能只是像对某个范围内的整数应用一个函数(或者，更一般地，某个序列中的所有元素)，这种操作称作**并行的map**，在Julia中有一个对应的函数[`pmap`](@ref)。例如，可以像下面这样计算一些随机大矩阵的奇异值：
 
 ```@raw html
 <!--
@@ -866,6 +890,8 @@ julia> M = Matrix{Float64}[rand(1000,1000) for i = 1:10];
 julia> pmap(svdvals, M);
 ```
 
+Julia中的[`pmap`](@ref)是被设计用来处理一些计算量比较复杂的函数的并行化的。与之对比的是，`@distributed for`是用来处理一些每次迭代计算都很轻量的计算，比如简单地对两个数求和。[`pmap`](@ref) 和 `@distributed for`都只会用到worker的进程。对于`@distributed for`而言，最后的聚合计算由发起者的进程完成。
+
 ```@raw html
 <!--
 Julia's [`pmap`](@ref) is designed for the case where each function call does a large amount
@@ -876,17 +902,23 @@ process.
 -->
 ```
 
+## 远程引用的同步
+
 ```@raw html
 <!--
 ## Synchronization With Remote References
 -->
 ```
 
+## 调度
+
 ```@raw html
 <!--
 ## Scheduling
 -->
 ```
+
+Julia的并行编程使用[Tasks (aka Coroutines)](@ref man-tasks)来切换多个计算。无论何时，当代码请求通信操作，如[`fetch`](@ref)或[`wait`](@ref)时，当前Task会挂起，调度器会选择另外一个Task去执行，直到一个Task等待的事件完成的时候才会再次恢复执行。
 
 ```@raw html
 <!--
@@ -897,6 +929,8 @@ the event it is waiting for completes.
 -->
 ```
 
+对于许多问题而言，并不需要直接考虑Task，不过，Task可以用来同时等待多个事件，从而实现**动态调度**。在动态调度的过程中，程序可以决定计算什么，或者根据其它任务执行结束的时间决定接下来在哪里执行计算。这对于不可预测或不平衡的计算量来说是必须的，因为我们只希望给那些已经完成了其当前任务的进程分配更多的任务。
+
 ```@raw html
 <!--
 For many problems, it is not necessary to think about tasks directly. However, they can be used
@@ -906,6 +940,8 @@ finish. This is needed for unpredictable or unbalanced workloads, where we want 
 work to processes only when they finish their current tasks.
 -->
 ```
+
+例如，考虑下面这个计算不同大小矩阵的奇异值的任务：
 
 ```@raw html
 <!--
@@ -918,6 +954,8 @@ julia> M = Matrix{Float64}[rand(800,800), rand(600,600), rand(800,800), rand(600
 
 julia> pmap(svdvals, M);
 ```
+
+如果一个进程既处理 800 * 800 的矩阵，又处理 600 * 600的矩阵，我们恐怕没法得到想要的可扩展性。解决的办法是，当每个进程完成了其当前的任务之后，*喂给*它新的任务。例如，考虑下面这个[`pmap`](@ref)实现：
 
 ```@raw html
 <!--
@@ -954,6 +992,8 @@ function pmap(f, lst)
 end
 ```
 
+[`@async`](@ref)跟[`@spawn`](@ref)有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个**喂养**的task，每个task都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task并不会立即执行，只有在执行到[`@sync`](@ref)结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。所有的喂养taks都能够通过`nextidx`共享状态，这也就意味着，只有在执行完[`remotecall_fetch`](@ref)之后才会发生上下午切换（idx发生改变）。
+
 ```@raw html
 <!--
 [`@async`](@ref) is similar to [`@spawn`](@ref), but only runs tasks on the local process. We
@@ -968,11 +1008,15 @@ when [`remotecall_fetch`](@ref) is called.
 -->
 ```
 
+## 频道(Channels)
+
 ```@raw html
 <!--
 ## Channels
 -->
 ```
+
+在[Control Flow](@ref)中有关[`Task`](@ref)的部分，已经讨论了如何协调多个函数的执行。[`Channel`](@ref)可以很方便地在多个运行中的task传递数据，特别是那些涉及I/O的操作。
 
 ```@raw html
 <!--
@@ -981,6 +1025,8 @@ a co-operative manner. [`Channel`](@ref)s can be quite useful to pass data betwe
 those involving I/O operations.
 -->
 ```
+
+典型的I/O操作包括读写文件、访问web服务、执行外部程序等。在所有这些场景中，如果其它task可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。
 
 ```@raw html
 <!--
@@ -991,11 +1037,17 @@ to complete.
 -->
 ```
 
+一个channel可以看做是一个管道，一端可读，另一端可写。
+
 ```@raw html
 <!--
 A channel can be visualized as a pipe, i.e., it has a write end and read end.
 -->
 ```
+
+  * 不同的task可以通过[`put!`](@ref)往同一个channel并发地写入。
+  * 不同的task也可以通过[`take!`](@ref)从同一个channel并发地取数据
+  * 举个例子：
 
 ```@raw html
 <!--
@@ -1026,6 +1078,13 @@ A channel can be visualized as a pipe, i.e., it has a write end and read end.
         @async foo()
     end
     ```
+
+  * Channel可以通过`Channel{T}(sz)`构造，得到的channel只能存储类型`T`的数据。如果`T`没有指定，那么channel可以存任意类型。`sz`表示该channel能够存储的最大元素个数。比如`Channel(32)`得到的channel最多可以存储32个元素。而`Channel{MyType}(64)`则可以最多存储64个`MyType`类型的数据。
+  * 如果一个[`Channel`](@ref)是空的，读取的task(即执行[`take!`](@ref)的task)会被阻塞直到有新的数据准备好了。
+  * 如果一个[`Channel`](@ref)是满的，那么写入的task(即执行[`put!`](@ref)的task)则会被阻塞，直到Channel有空余。
+  * [`isready`](@ref)可以用来检查一个channel中是否有已经准备好的元素，而[`wait`](@ref)则用来等待一个元素准备好。
+  * 一个[`Channel`](@ref)一开始处于开启状态，也就是说可以被[`take!`](@ref)读取和[`put!`](@ref)写入。[`close`](@ref)会关闭一个[`Channel`](@ref)，对于一个已经关闭的[`Channel`](@ref)，[`put!](@ref)会失败，例如：
+
 ```@raw html
 <!--
   * Channels are created via the `Channel{T}(sz)` constructor. The channel will only hold objects
@@ -1056,6 +1115,8 @@ ERROR: InvalidStateException("Channel is closed.",:closed)
 Stacktrace:
 [...]
 ```
+
+  * [`take!`](@ref) 和 [`fetch`](@ref) (只读取，不会将元素从channle中删掉)仍然可以从一个已经关闭的channel中读数据，直到channel被取空了为止，例如：
 
 ```@raw html
 <!--
