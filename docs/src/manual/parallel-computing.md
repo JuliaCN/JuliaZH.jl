@@ -586,6 +586,8 @@ A = rand(10,10)
 remotecall_fetch(()->sum(A), 2)
 ```
 
+这个例子中[`sum`](@ref)必须已经在远程的线程中定义了。注意这里`A`是当前线程中的一个全局变量，起初worker 2在其`Main`中并没有一个叫做`A`的变量。上面代码中，将闭包`()->sum(A)`发送到worker 2之后，会在worker 2中定义一个变量`Main.A`，而且，`Main.A`即使在执行完`remotecall_fetch`之后，仍然会存在与worker 2中。远程调用中包含的全局（这里仅仅指`Main`模块中的）引用会按如下方式管理：
+
 ```@raw html
 <!--
 In this case [`sum`](@ref) MUST be defined in the remote process.
@@ -596,17 +598,23 @@ with embedded global references (under `Main` module only) manage globals as fol
 -->
 ```
 
+- 在全局调用中引用的全局绑定会在将要执行该调用的worker中被创建。
+
 ```@raw html
 <!--
 - New global bindings are created on destination workers if they are referenced as part of a remote call.
 -->
 ```
 
+- 全局常量仍然在远端结点定义为常量。
+
 ```@raw html
 <!--
 - Global constants are declared as constants on remote nodes too.
 -->
 ```
+
+- 全局绑定会在下一次远程调用中引用到的时候，当其值发生改变时，再次发送给目标worker。此外，集群并不会所有结点的全局绑定。例如：
 
 ```@raw html
 <!--
@@ -624,12 +632,16 @@ with embedded global references (under `Main` module only) manage globals as fol
   A = nothing
   ```
 
+  执行以上代码之后，worker 2 和worker 3中的`Main.A`的值时不同的，同时，节点1上的值则为`nothing`。
+
 ```@raw html
 <!--
   Executing the above snippet results in `Main.A` on worker 2 having a different value from
   `Main.A` on worker 3, while the value of `Main.A` on node 1 is set to `nothing`.
 -->
 ```
+
+也许你也注意到了，在master主节点上被赋值为`nothing`之后，全局变量的内存会被回收，但在worker节点上的全局变量并没有被回收掉。执行[`clear`](@ref)可以手动将远端结点上的特定全局变量置为`nothing`，然后对应的内存会被周期性的垃圾回收机制回收。
 
 ```@raw html
 <!--
@@ -641,12 +653,16 @@ collection cycle.
 -->
 ```
 
+因此，在远程调用中，需要非常小心地引用全局变量。事实上，应当尽量避免引用全局变量，如果必须引用，那么可以考虑用`let`代码块将全局变量局部化：
+
 ```@raw html
 <!--
 Thus programs should be careful referencing globals in remote calls. In fact, it is preferable to avoid them
 altogether if possible. If you must reference globals, consider using `let` blocks to localize global variables.
 -->
 ```
+
+例如：
 
 ```@raw html
 <!--
@@ -674,6 +690,8 @@ Core                Module
 Main                Module
 ```
 
+可以看到，`A`作为全局变量在worker 2中有定义，而`B`是一个局部变量，因而最后在worker 2 中并没有`B`的绑定。
+
 ```@raw html
 <!--
 As can be seen, global variable `A` is defined on worker 2, but `B` is captured as a local variable
@@ -681,6 +699,7 @@ and hence a binding for `B` does not exist on worker 2.
 -->
 ```
 
+## 并行的Map和Loop
 
 ```@raw html
 <!--
