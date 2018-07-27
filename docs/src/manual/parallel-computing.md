@@ -1141,6 +1141,8 @@ Stacktrace:
 [...]
 ```
 
+`Channel`可以在`for`循环中遍历，此时，循环会一直运行知道`Channel`中有数据，遍历过程中会取遍加入到`Channel`中的所有值。一旦`Channel`关闭或者取空了，`for`循环就好终止。
+
 ```@raw html
 <!--
 A `Channel` can be used as an iterable object in a `for` loop, in which case the loop runs as
@@ -1148,6 +1150,8 @@ long as the `Channel` has data or is open. The loop variable takes on all values
 `Channel`. The `for` loop is terminated once the `Channel` is closed and emptied.
 -->
 ```
+
+例如，下面的`for`循环会等待新的数据：
 
 ```@raw html
 <!--
@@ -1162,6 +1166,8 @@ julia> foreach(i->put!(c, i), 1:3) # add a few entries
 
 julia> data = [i for i in c]
 ```
+
+而下面的则会返回已经读取的数据：
 
 ```@raw html
 <!--
@@ -1182,6 +1188,8 @@ julia> data = [i for i in c]
  2
  3
 ```
+
+考虑这样一个用channel做task之间通信的例子。首先，起4个task来处理一个`jobs` channel中的数据。`jobs`中的每个任务通过`job_id`来表示，然后每个task模拟读取一个`job_id`，然后随机等待一会儿，然后往一个`results`channel中写入一个Tuple，分别包含`job_id`和执行的时间，最后将结果打印出来：。
 
 ```@raw html
 <!--
@@ -1241,6 +1249,8 @@ julia> @elapsed while n > 0 # print out results
 0.029772311
 ```
 
+当前版本的Julia会将所有task分发到一个操作系统的线程，因此，涉及IO的操作会从并行执行中获利，而计算密集型的task则会顺序地在单独这个线程上执行。未来Julia将支持在多个线程上调度task，从而让计算密集型task也能从并行计算中获利。
+
 ```@raw html
 <!--
 The current version of Julia multiplexes all tasks onto a single OS thread. Thus, while tasks
@@ -1251,17 +1261,23 @@ too.
 -->
 ```
 
+## 远程引用和AbstractChannel
+
 ```@raw html
 <!--
 ## Remote References and AbstractChannels
 -->
 ```
 
+远程引用通常指某种`AbstractChannel`的实现。
+
 ```@raw html
 <!--
 Remote references always refer to an implementation of an `AbstractChannel`.
 -->
 ```
+
+一个具体的`AbstractChannel`（有点像`Channel`）需要将[`put!`](@ref), [`take!`](@ref), [`fetch`](@ref), [`isready`](@ref) 和 [`wait`](@ref)都实现。通过[`Future`](@ref)引用的远程对象存储在一个`Channel{Any}(1)`中（容量为1，类型为`Any`）。
 
 ```@raw html
 <!--
@@ -1272,12 +1288,16 @@ The remote object referred to by a [`Future`](@ref) is stored in a `Channel{Any}
 -->
 ```
 
+[`RemoteChannel`](@ref)可以被反复写入，可以指向任意大小和类型的channel（或者是任意`AbstractChannel`的实现）。
+
 ```@raw html
 <!--
 [`RemoteChannel`](@ref), which is rewritable, can point to any type and size of channels, or any
 other implementation of an `AbstractChannel`.
 -->
 ```
+
+`RemoteChannel(f::Function, pid)()`构造器可以构造一些引用，而这些引用指向的channel可以容纳多个某种具体类型的数据。其中`f`是将要在`pid`上执行的函数，其返回值必须是`AbstractChannel`类型。
 
 ```@raw html
 <!--
@@ -1287,6 +1307,8 @@ return an `AbstractChannel`.
 -->
 ```
 
+例如，`RemoteChannel(()->Channel{Int}(10), pid)`会创建一个channel，其类型是`Int`，容量是10，这个channel存在于`pid`进程中。
+
 ```@raw html
 <!--
 For example, `RemoteChannel(()->Channel{Int}(10), pid)`, will return a reference to a channel
@@ -1294,12 +1316,16 @@ of type `Int` and size 10. The channel exists on worker `pid`.
 -->
 ```
 
+针对[`RemoteChannel`](@ref)的[`put!`](@ref), [`take!`](@ref), [`fetch`](@ref), [`isready`](@ref) 和 [`wait`](@ref)方法会被重定向到其底层存储着channel的进程。
+
 ```@raw html
 <!--
 Methods [`put!`](@ref), [`take!`](@ref), [`fetch`](@ref), [`isready`](@ref) and [`wait`](@ref)
 on a [`RemoteChannel`](@ref) are proxied onto the backing store on the remote process.
 -->
 ```
+
+因此，[`RemoteChannel`](@ref)可以用来引用用户自定义的`AbstractChannel`对象。在[Examples repository](https://github.com/JuliaArchive/Examples)中的`dictchannel.jl`文件中有一个简单的例子，其中使用了一个字典用于远端存储。
 
 ```@raw html
 <!--
@@ -1310,11 +1336,21 @@ remote store.
 -->
 ```
 
+## Channel 和 RemoteChannel
+
 ```@raw html
 <!--
 ## Channels and RemoteChannels
 -->
 ```
+
+  * 一个[`Channel`](@ref)仅对局部的进程可见，worker 2无法直接访问worker 3上的`Channel`，反之亦如此。不过[`RemoteChannel`](@ref)可以跨worker获取和写入数据。
+  * [`RemoteChannel`](@ref)可以看作是对`Channel`的封装。
+  * [`RemoteChannel`](@ref)的`pid`就是其封装的channel所在的进程id。
+  * 任意拥有[`RemoteChannel`](@ref)引用的进程都可以对其进行读写，数据会自动发送到[`RemoteChannel`](@ref)底层channel的进程（或从中获取数据）
+  * 序列化`Channel`会将其中的所有数据也都序列化，因此反序列化的时候也就可以得到一个原始数据的拷贝。
+  * 不过，对[`RemoteChannel`](@ref)的序列化则只会序列化其底层指向的channel的id，因此反序列化之后得到的对象仍然会指向之前存储的对象。
+
 
 ```@raw html
 <!--
@@ -1335,12 +1371,16 @@ remote store.
 -->
 ```
 
+前面channel的例子可以稍作修改之后，用于进程之间的通信，具体看下面的例子。
+
 ```@raw html
 <!--
 The channels example from above can be modified for interprocess communication,
 as shown below.
 -->
 ```
+
+首先，起4个worker进程处理同一个remote channel `jobs`，其中的每个job都有一个对应的`job_id`，然后每个task读取一个`job_id`，然后模拟随机等待一段时间，然后往存储结果的`RemoteChannel`中写入一个Tuple对象，其中包含`job_id`和等待的时间。最后将结果打印出来。
 
 ```@raw html
 <!--
@@ -1401,11 +1441,15 @@ julia> @elapsed while n > 0 # print out results
 0.055971741
 ```
 
+## 远程调用和分布式垃圾回收
+
 ```@raw html
 <!--
 ## Remote References and Distributed Garbage Collection
 -->
 ```
+
+远程引用所指向的对象可以在其所有引用都被集群删除之后被释放掉。
 
 ```@raw html
 <!--
@@ -1413,6 +1457,8 @@ Objects referred to by remote references can be freed only when *all* held refer
 in the cluster are deleted.
 -->
 ```
+
+存储具体值的节点会记录哪些worker已经引用了它。每当某个[`RemoteChannel`](@ref)或某个（还没被获取的）[`Future`](@ref)序列化到一个worker中时，会通知相应的节点。而且每当某个[`RemoteChannel`](@ref)或某个（还没被获取的）[`Future`](@ref)被本地的垃圾回收器回收的时候，相应的节点也会收到通知。所有这些都是通过一个集群内部序列化器实现的，而所有的远程引用都只有在运行中的集群才有效，目前序列化和反序列化到`IO`暂时还不支持。
 
 ```@raw html
 <!--
@@ -1426,6 +1472,8 @@ regular `IO` objects is not supported.
 -->
 ```
 
+上面说到的**通知**都是通过发送"跟踪"信息来实现的，当一个引用被序列化的时候，就会发送"添加引用"的信息，而一个引用被本地的垃圾回收器回收的时候，就会发送一个"删除引用"的信息。
+
 ```@raw html
 <!--
 The notifications are done via sending of "tracking" messages--an "add reference" message when
@@ -1434,6 +1482,8 @@ is locally garbage collected.
 -->
 ```
 
+由于[`Future`](@ref)是一次写入然后换成在本地，因此[`fetch`](@ref)一个[`Future`](@ref)会向拥有该值的节点发送更新引用的跟踪信息。
+
 ```@raw html
 <!--
 Since [`Future`](@ref)s are write-once and cached locally, the act of [`fetch`](@ref)ing a
@@ -1441,11 +1491,15 @@ Since [`Future`](@ref)s are write-once and cached locally, the act of [`fetch`](
 -->
 ```
 
+一旦指向某个值的引用都被删除了，对应的节点会将其释放。
+
 ```@raw html
 <!--
 The node which owns the value frees it once all references to it are cleared.
 -->
 ```
+
+对于[`Future`](@ref)来说，序列化一个已经获取了值的[`Future`](@ref)到另外一个节点时，会将其值也一并序列化过去，因为原始的远端的值可能已经被回收释放了。
 
 ```@raw html
 <!--
@@ -1454,12 +1508,16 @@ sends the value since the original remote store may have collected the value by 
 -->
 ```
 
+此外需要注意的是，本地的垃圾回收到底发生在什么时候取决于具体对象的大小以及当时系统的内存压力。
+
 ```@raw html
 <!--
 It is important to note that *when* an object is locally garbage collected depends on the size
 of the object and the current memory pressure in the system.
 -->
 ```
+
+对于远端引用，其引用本身的大小很小，不过在远端节点存储着的值可能相当大。由于本地的对象并不会立即被回收，于是一个比较好的做法是，对本地的[`RemoteChannel`](@ref)或者是还没获取值的[`Future`](@ref)执行[`finalize`](@ref)。对于已经获取了值的[`Future`](@ref)来说，由于已经在调用[`fetch`](@ref)的时候已经将引用删除了，因此就不必再[`finalize`](@ref)了。显式地调用[`finalize`](@ref)会立即向远端节点发送信息并删除其引用。
 
 ```@raw html
 <!--
@@ -1473,17 +1531,23 @@ sent to the remote node to go ahead and remove its reference to the value.
 -->
 ```
 
+一旦执行了finalize之后，引用就不可用了。
+
 ```@raw html
 <!--
 Once finalized, a reference becomes invalid and cannot be used in any further calls.
 -->
 ```
 
+## [共享数组](@id man-shared-arrays)
+
 ```@raw html
 <!--
 ## [Shared Arrays](@id man-shared-arrays)
 -->
 ```
+
+共享数组使用系统共享内存将数组映射到多个进程上，尽管和[`DArray`](https://github.com/JuliaParallel/DistributedArrays.jl)有点像，但其实际表现有很大不同。在[`DArray`](https://github.com/JuliaParallel/DistributedArrays.jl)中，每个进程可以访问数据中的一块，但任意两个进程都不能共享同一块数据，而对于[`SharedArray`](@ref)，每个进程都可以访问整个数组。如果你想在一台机器上，让一大块数据能够被多个进程访问到，那么[`SharedArray`](@ref)是个不错的选择。
 
 ```@raw html
 <!--
@@ -1497,12 +1561,16 @@ data jointly accessible to two or more processes on the same machine.
 -->
 ```
 
+共享数组由`SharedArray`提供，必须在所有相关的worker中都显式地加载。
+
 ```@raw html
 <!--
 Shared Array support is available via module `SharedArrays` which must be explicitly loaded on
 all participating workers.
 -->
 ```
+
+对[`SharedArray`](@ref)索引（访问和复制）操作就跟普通的数组一样，由于底层的内存对本地的进程是可见的，索引的效率很高，因此大多数单进程上的算法对[`SharedArray`](@ref)来说都是适用的，除非某些算法必须使用[`Array`](@ref)类型（此时可以通过调用[`sdata`](@ref)来获取[`SharedArray`](@ref)数组）。对于其它类型的`AbstractArray`类型数组来说，[`sdata`](@ref)仅仅会返回数组本身，因此，可以放心地使用[`sdata`](@ref)对任意类型的`Array`进行操作。
 
 ```@raw html
 <!--
@@ -1515,6 +1583,8 @@ just returns the object itself, so it's safe to use [`sdata`](@ref) on any `Arra
 -->
 ```
 
+共享数组可以通过以下形式构造:
+
 ```@raw html
 <!--
 The constructor for a shared array is of the form:
@@ -1525,6 +1595,8 @@ The constructor for a shared array is of the form:
 SharedArray{T,N}(dims::NTuple; init=false, pids=Int[])
 ```
 
+上面的代码会创建一个N维，类型为`T`，大小为`dims`的共享数组，通过`pids`指定可见的进程。与分布式数组不同的是，只有通过`pids`指定的worker才可见。
+
 ```@raw html
 <!--
 which creates an `N`-dimensional shared array of a bits type `T` and size `dims` across the processes specified
@@ -1534,6 +1606,8 @@ same host).
 -->
 ```
 
+如果提供了一个类型为`initfn(S::SharedArray)`的`init`函数，那么所有相关的worker都会调用它。你可以让每个worker都在共享数组不同的地方执行`init`函数，从而实现并行初始化。
+
 ```@raw html
 <!--
 If an `init` function, of signature `initfn(S::SharedArray)`, is specified, it is called on all
@@ -1541,6 +1615,8 @@ the participating workers. You can specify that each worker runs the `init` func
 portion of the array, thereby parallelizing initialization.
 -->
 ```
+
+下面是个例子：
 
 ```@raw html
 <!--
@@ -1575,6 +1651,8 @@ julia> S
  2  7  4  4
 ```
 
+[`SharedArrays.localindices`](@ref)提供了一个以为的切片，可以很方便地用来将task分配到各个进程上。当然你可以按你想要的方式做区分：
+
 ```@raw html
 <!--
 [`SharedArrays.localindices`](@ref) provides disjoint one-dimensional ranges of indices, and is sometimes
@@ -1590,6 +1668,8 @@ julia> S = SharedArray{Int,2}((3,4), init = S -> S[indexpids(S):length(procs(S))
  3  3  3  3
  4  4  4  4
 ```
+
+由于所有的进程都能够访问底层的数据，因此一定要小心避免出现冲突：
 
 ```@raw html
 <!--
@@ -1608,6 +1688,8 @@ conflicts. For example:
 end
 ```
 
+上面的代码会导致不确定的结果，因为每个进程都将**整个**数组赋值为其`pid`，从而导致最后一个执行完成的进程会保留其`pid`。
+
 ```@raw html
 <!--
 would result in undefined behavior. Because each process fills the *entire* array with its own
@@ -1615,6 +1697,8 @@ would result in undefined behavior. Because each process fills the *entire* arra
 its `pid` retained.
 -->
 ```
+
+考虑更复杂的一种情况：
 
 ```@raw html
 <!--
@@ -1625,6 +1709,8 @@ As a more extended and complex example, consider running the following "kernel" 
 ```julia
 q[i,j,t+1] = q[i,j,t] + u[i,j,t]
 ```
+
+这个例子中，如果首先将任务用按照一维的索引作区分，那么就会出问题：如果`q[i,j,t]`位于分配给某个worker的最后一个位置，而`q[i,j,t+1]`位于下一个worker的开始位置，那么后面这个worker开始计算的时候，可能`q[i,j,t]`还没有准备好，这时候，更好的做法是，手动分区，比如可以定义一个函数，按照`(irange,jrange)`给每个worker分配任务。
 
 ```@raw html
 <!--
@@ -1649,6 +1735,8 @@ julia> @everywhere function myrange(q::SharedArray)
        end
 ```
 
+然后定义计算内核：
+
 ```@raw html
 <!--
 Next, define the kernel:
@@ -1665,6 +1753,8 @@ julia> @everywhere function advection_chunk!(q, u, irange, jrange, trange)
        end
 ```
 
+然后定义一个wrapper：
+
 ```@raw html
 <!--
 We also define a convenience wrapper for a `SharedArray` implementation
@@ -1676,6 +1766,8 @@ julia> @everywhere advection_shared_chunk!(q, u) =
            advection_chunk!(q, u, myrange(q)..., 1:size(q,3)-1)
 ```
 
+接下来，比较三个不同的版本，第一个是单进程版本：
+
 ```@raw html
 <!--
 Now let's compare three different versions, one that runs in a single process:
@@ -1685,6 +1777,8 @@ Now let's compare three different versions, one that runs in a single process:
 ```julia-repl
 julia> advection_serial!(q, u) = advection_chunk!(q, u, 1:size(q,1), 1:size(q,2), 1:size(q,3)-1);
 ```
+
+然后是使用[`@distributed`](@ref):
 
 ```@raw html
 <!--
@@ -1705,6 +1799,8 @@ julia> function advection_parallel!(q, u)
        end;
 ```
 
+最后是使用分区：
+
 ```@raw html
 <!--
 and one that delegates in chunks:
@@ -1722,6 +1818,8 @@ julia> function advection_shared!(q, u)
        end;
 ```
 
+如果创建好了`SharedArray`之后，计算这些函数的执行时间，那么可以得到以下结果（用`julia -p 4`启动）：
+
 ```@raw html
 <!--
 If we create `SharedArray`s and time these functions, we get the following results (with `julia -p 4`):
@@ -1733,6 +1831,8 @@ julia> q = SharedArray{Float64,3}((500,500,500));
 
 julia> u = SharedArray{Float64,3}((500,500,500));
 ```
+
+先执行一次以便JIT编译，然后用[`@time`](@ref)宏测试其第二次执行的时间：
 
 ```@raw html
 <!--
@@ -1756,12 +1856,16 @@ julia> @time advection_shared!(q,u);
  238.119 milliseconds (2264 allocations: 169 KB)
 ```
 
+这里`advection_shared!`最大的优势在于，最小程度地降低了woker之间的通信，从而让每个worker能针对被分配的部分持续地计算一段时间。
+
 ```@raw html
 <!--
 The biggest advantage of `advection_shared!` is that it minimizes traffic among the workers, allowing
 each to compute for an extended time on the assigned piece.
 -->
 ```
+
+## 共享数组与分布式垃圾回收
 
 ```@raw html
 <!--
