@@ -108,7 +108,7 @@ as in traditional object-oriented dispatch. Operators are just functions with sp
 Existing code then seamlessly applies to the new data types. -->
 ```
 
-类型系统和多重派发式 Julia 语言最主要的特征（尽管类型和多重派发并不必要被显式使用）：函数通过函数名称和不同类型变量的组合进行定义，然后在调用时会派发
+类型系统和多重派发是 Julia 语言最主要的特征（尽管类型和多重派发并不必要被显式使用）：函数通过函数名称和不同类型变量的组合进行定义，然后在调用时会派发
 最接近（most specific）的定义上去。这样的编程模型非常适合数学化的编程，尤其是在传统的面向对象派发中，一些函数的第一个变量理论上并不“拥有”这样一个操作时。
 而在Julia中运算符只是函数的一个特殊标记——例如，为用户定义的新类型添加加法运算，你只要为`+`函数定义一个新的方法就可以了。
 已有的代码就可以无缝接入这个新的类型。
@@ -123,8 +123,7 @@ over the past decades. -->
 ```
 
 一部分是因为动态类型推导（可以被可选的类型标注增强），另一部分是因为在这个语言建立之初就对性能非常看重，Julia 的计算性能超过了其它的
-动态语言，甚至能够与静态编译语言竞争。对于大型数值问题，速度一直都是，也一直会是一个重要的关注点：这些年以来，被处理的数据量的增长有
-着Moore定律。
+动态语言，甚至能够与静态编译语言竞争。对于大型数值问题，速度一直都是，也一直会是一个重要的关注点：这些年以来，被处理的数据量的增长有着Moore定律。
 
 ```@raw html
 <!-- Julia aims to create an unprecedented combination of ease-of-use, power, and efficiency in a single
