@@ -624,15 +624,15 @@ with embedded global references (under `Main` module only) manage globals as fol
 -->
 ```
 
-  ```julia
-  A = rand(10,10)
-  remotecall_fetch(()->sum(A), 2) # worker 2
-  A = rand(10,10)
-  remotecall_fetch(()->sum(A), 3) # worker 3
-  A = nothing
-  ```
+```julia
+A = rand(10,10)
+remotecall_fetch(()->sum(A), 2) # worker 2
+A = rand(10,10)
+remotecall_fetch(()->sum(A), 3) # worker 3
+A = nothing
+```
 
-  执行以上代码之后，worker 2 和worker 3中的`Main.A`的值时不同的，同时，节点1上的值则为`nothing`。
+执行以上代码之后，worker 2 和worker 3中的`Main.A`的值时不同的，同时，节点1上的值则为`nothing`。
 
 ```@raw html
 <!--
@@ -1058,26 +1058,26 @@ A channel can be visualized as a pipe, i.e., it has a write end and read end.
 -->
 ```
 
-    ```julia
-    # Given Channels c1 and c2,
-    c1 = Channel(32)
-    c2 = Channel(32)
+```julia
+# Given Channels c1 and c2,
+c1 = Channel(32)
+c2 = Channel(32)
 
-    # and a function `foo` which reads items from from c1, processes the item read
-    # and writes a result to c2,
-    function foo()
-        while true
-            data = take!(c1)
-            [...]               # process data
-            put!(c2, result)    # write out result
-        end
+# and a function `foo` which reads items from from c1, processes the item read
+# and writes a result to c2,
+function foo()
+    while true
+        data = take!(c1)
+        [...]               # process data
+        put!(c2, result)    # write out result
     end
+end
 
-    # we can schedule `n` instances of `foo` to be active concurrently.
-    for _ in 1:n
-        @async foo()
-    end
-    ```
+# we can schedule `n` instances of `foo` to be active concurrently.
+for _ in 1:n
+    @async foo()
+end
+```
 
   * Channel可以通过`Channel{T}(sz)`构造，得到的channel只能存储类型`T`的数据。如果`T`没有指定，那么channel可以存任意类型。`sz`表示该channel能够存储的最大元素个数。比如`Channel(32)`得到的channel最多可以存储32个元素。而`Channel{MyType}(64)`则可以最多存储64个`MyType`类型的数据。
   * 如果一个[`Channel`](@ref)是空的，读取的task(即执行[`take!`](@ref)的task)会被阻塞直到有新的数据准备好了。
@@ -2188,6 +2188,12 @@ would typically specify only `io` or `host` / `port`:
   * 如果指定了`io`，那么就会用来读取host/port信息。每个worker会在启动时打印地址和端口，这样worker就可以自由监听可用的端口，而不必手动配置worker的端口。
   * 如果`io`没有指定，那么`host`和`port`就会用来连接。
   * `count`， `exename`和`exeflags`用于从一个worker上启动额外的worker。例如，一个集群管理器可能对每个节点都只启动一个worker，然后再用它来启动额外的worker。
+    * `count` 可以是一个整数`n`，用来指定启动`n`个worker
+    * `count` 还可以是`:auto`，用来启动跟那台机器上CPU个数（逻辑上的核的个数）相同的worker
+    * `exename`是`julia`可执行文件的全路径
+    * `exeflags`应该设置成传递给将要启动的worker命令行参数
+  * `tunnel`, `bind_addr`, `sshflags`和`max_parallel`会在从worker与master进程建立ssh隧道时用到
+  * `userdata`用来提供给自定义集群管理器存储自己的worker相关的信息
 
 ```@raw html
 <!--
@@ -2200,13 +2206,6 @@ would typically specify only `io` or `host` / `port`:
     workers.
 -->
 ```
-
-      * `count` 可以是一个整数`n`，用来指定启动`n`个worker
-      * `count` 还可以是`:auto`，用来启动跟那台机器上CPU个数（逻辑上的核的个数）相同的worker
-      * `exename`是`julia`可执行文件的全路径
-      * `exeflags`应该设置成传递给将要启动的worker命令行参数
-  * `tunnel`, `bind_addr`, `sshflags`和`max_parallel`会在从worker与master进程建立ssh隧道时用到
-  * `userdata`用来提供给自定义集群管理器存储自己的worker相关的信息
 
 ```@raw html
 <!--
@@ -2401,6 +2400,8 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
   * `addprocs(N)`使用的`LocalManager`，默认只会绑定到回环接口（loopback interface），这就意味着，之后在远程主机上（恶意）启动的worker无法连接到集群中，在执行`addprocs(4)`之后，又跟一个`addprocs(["remote_host"])`会失败。有些用户可能希望创建一个集群同时管理本地系统和几个远端系统，这可以通过在绑定`LocalManager`到外部网络接口的时候，指定一个`restrict`参数：`addprocs(4; restrict=false)`
   * `addprocs(list_of_remote_hosts)`使用的`SSHManager`，通过SSH在远程主机上启动worker，后续的master-worker，worker-worker之间的连接使用普通未加密的TCP/IP socket。远程主机必须开启无密码登陆，额外的ssh参数可以通过`sshflags`指定。
   * 如果想要通过SSH连接master-worker，那么用`addprocs(list_of_remote_hosts; tunnel=true, sshflags=<ssh keys and other flags>)`就可以很容易地实现。一个典型的应用场景是，本地的笔记本运行着Julia的REPL(也就是master)，其它的机器在云端（比方说Amazon的EC2），此时远端的机器只需要开放22端口，通过公钥认证即可（PKI）。认证信息可以通过`sshflags`配置，如 ```sshflags=`-e <keyfile>` ```
+  在一个（默认的）多对多的拓补结构中，所有的worker通过TCP socket连接到其它worker，因而集群中节点的安全策略必须保证worker在某个端口范围内能自由连接（根据操作系统的不同会有所不同）。
+  可以通过自定义`ClusterManager`实现worker-worker之间通信的加密和解密。
 
 ```@raw html
 <!--
@@ -2426,8 +2427,6 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
 -->
 ```
 
-    在一个（默认的）多对多的拓补结构中，所有的worker通过TCP socket连接到其它worker，因而集群中节点的安全策略必须保证worker在某个端口范围内能自由连接（根据操作系统的不同会有所不同）。
-
 ```@raw html
 <!--
     In an all-to-all topology (the default), all workers connect to each other via plain TCP sockets.
@@ -2435,8 +2434,6 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
     the ephemeral port range (varies by OS).
 -->
 ```
-
-    可以通过自定义`ClusterManager`实现worker-worker之间通信的加密和解密。
 
 ```@raw html
 <!--
@@ -2795,7 +2792,7 @@ julia> acc[]
 1000
 ```
 
-!!! 注意
+!!! note
     并非**所有的**原始类型都能放在`Atomic`标签内封装起来，支持的类型有`Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `Float16`, `Float32`, 以及 `Float64`。此外，`Int128`和`UInt128`在AAarch32和ppc64le上不支持。
 
 ```@raw html
