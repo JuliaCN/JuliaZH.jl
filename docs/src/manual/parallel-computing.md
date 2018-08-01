@@ -1873,6 +1873,8 @@ each to compute for an extended time on the assigned piece.
 -->
 ```
 
+和远程引用一样，共享数组也依赖于创建节点上的垃圾回收来释放所有参与的worker上的引用。因此，创建大量生命周期比较短的数组，并尽可能快地显式finilize这些对象，代码会更高效，这样与之对用的内存和文件句柄都会更快地释放。
+
 ```@raw html
 <!--
 Like remote references, shared arrays are also dependent on garbage collection on the creating
@@ -1882,11 +1884,19 @@ This results in both memory and file handles mapping the shared segment being re
 -->
 ```
 
+## 集群管理器（ClusterManagers）
+
 ```@raw html
 <!--
 ## ClusterManagers
 -->
 ```
+
+Julia通过集群管理器实现对多个进程（所构成的逻辑上的集群）的启动，管理以及网络通信。一个`ClusterManager`负责：
+
+  * 在一个集群环境中启动worker进程
+  * 管理每个worker生命周期内的事件
+  * （可选），提供数据传输
 
 ```@raw html
 <!--
@@ -1903,6 +1913,12 @@ cluster managers. A `ClusterManager` is responsible for
 -->
 ```
 
+一个Julia集群由以下特点：
+
+  * 初始进程，称为`master`,其`id`为1
+  * 只有master进程可以增加或删除worker进程
+  * 所有进程之间都可以直接通信
+
 ```@raw html
 <!--
 A Julia cluster has the following characteristics:
@@ -1916,6 +1932,17 @@ A Julia cluster has the following characteristics:
   * All processes can directly communicate with each other.
 -->
 ```
+
+worker之间的连接（用的时内置的TCP/IP传输）按照以下方式进行：
+  
+  * master进程对一个`ClusterManager`对象调用[`addprocs`](@ref)
+  * [`addprocs`](@ref)调用对应的[`launch`](@ref)方法，然后在对应的机器上启动相应数量的worker进程
+  * 每个worker监听一个端口，然后将其host和port信息传给[`stdout`](@ref)
+  * 集群管理器捕获[`stdout`](@ref)中每个worker的信息，并提供给master进程
+  * master进程解析信息并与相应的worker建立TCP/IP连接
+  * 每个worker都会被通知集群中的其它worker
+  * 每个worker与`id`小于自己的worker连接
+  * 这样，一个网络就建立了，从而，每个worker都可以与其它worker建立连接
 
 ```@raw html
 <!--
@@ -1940,6 +1967,8 @@ manner:
 -->
 ```
 
+尽管默认的传输层使用的时[`TCPSocket`](@ref)，对于一个自定义的集群管理器来说，完全可以使用其它传输方式。
+
 ```@raw html
 <!--
 While the default transport layer uses plain [`TCPSocket`](@ref), it is possible for a Julia cluster to
@@ -1947,11 +1976,16 @@ provide its own transport.
 -->
 ```
 
+Julia提供了两种内置的集群管理器：
+
 ```@raw html
 <!--
 Julia provides two in-built cluster managers:
 -->
 ```
+
+  * `LocalManager`, 调用[`addprocs()`](@ref) 或 [`addprocs(np::Integer)`](@ref)时会用到。
+  * `SSHManager`，调用[`addprocs(hostnames::Array)`](@ref)时，传递一个hostnames的列表。
 
 ```@raw html
 <!--
@@ -1960,12 +1994,20 @@ Julia provides two in-built cluster managers:
 -->
 ```
 
+`LocalManager`用来在同一个host上启动多个worker，从而利用多核/多处理器硬件。
+
 ```@raw html
 <!--
 `LocalManager` is used to launch additional workers on the same host, thereby leveraging multi-core
 and multi-processor hardware.
 -->
 ```
+
+因此，一个最小的集群管理器需要：
+
+ * 是一个`ClusterManager`抽象类的一个子类
+ * 实现[`launch`](@ref)接口，用来启动新的worker
+ * 实现[`manage`](@ref)，在一个worker的生命周期中多次被调用（例如，发送中断信号）
 
 ```@raw html
 <!--
@@ -1982,6 +2024,8 @@ Thus, a minimal cluster manager would need to:
 -->
 ```
 
+[`addprocs(manager::FooManager)`](@ref addprocs) 需要 `FooManager` 实现：
+
 ```@raw html
 <!--
 [`addprocs(manager::FooManager)`](@ref addprocs) requires `FooManager` to implement:
@@ -1997,6 +2041,8 @@ function manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symb
     [...]
 end
 ```
+
+作为一个例子，我们来看下`LocalManager`是怎么实现的：
 
 ```@raw html
 <!--
@@ -2019,11 +2065,18 @@ function manage(manager::LocalManager, id::Integer, config::WorkerConfig, op::Sy
 end
 ```
 
+[`launch`](@ref)方法接收以下参数：
+
 ```@raw html
 <!--
 The [`launch`](@ref) method takes the following arguments:
 -->
 ```
+
+  * `manager::ClusterManager`: 调用[`addprocs`](@ref)时所用到的集群管理器
+  * `params::Dict`: 所有的关键字参数都会传递到[`addprocs`](@ref)中
+  * `launched::Array`: 用来存储一个或多个`WorkerConfig`
+  * `c::Condition`: 在workers启动后被通知的条件变量
 
 ```@raw html
 <!--
@@ -2034,6 +2087,8 @@ The [`launch`](@ref) method takes the following arguments:
 -->
 ```
 
+[`launch`](@ref)会在一个异步的task中调用，该task结束之后，意味着所有请求的worker都已经启动好了。因此，[`launch`](@ref)函数**必须**在所有worker启动之后，尽快退出。
+
 ```@raw html
 <!--
 The [`launch`](@ref) method is called asynchronously in a separate task. The termination of
@@ -2042,6 +2097,8 @@ function MUST exit as soon as all the requested workers have been launched.
 -->
 ```
 
+新启动的worker之间采用的是多对多的连接方式。在命令行中指定参数`--worker[=<cookie>]`会让所有启动的进程把自己当作worker，然后通过TCP/IP构建连接。
+
 ```@raw html
 <!--
 Newly launched workers are connected to each other and the master process in an all-to-all manner.
@@ -2049,6 +2106,8 @@ Specifying the command line argument `--worker[=<cookie>]` results in the launch
 initializing themselves as workers and connections being set up via TCP/IP sockets.
 -->
 ```
+
+集群中所有的worker默认使用同一个master的[cookie](@ref man-cluster-cookie)。如果cookie没有指定，（比如没有通过`--worker`指定），那么worker会尝试从它的标准输入中读取。`LocalManager`和`SSHManager`都是通过标准输入来将cookie传递给新启动的worker。
 
 ```@raw html
 <!--
@@ -2059,6 +2118,8 @@ unspecified, i.e, with the `--worker` option, the worker tries to read it from i
 -->
 ```
 
+默认情况下，一个worker会监听从[`getipaddr()`](@ref)函数返回的地址上的一个开放端口。若要指定监听的地址，可以通过额外的参数`--bind-to bind_addr[:port]`指定，这对于多host的情况来说很方便。
+
 ```@raw html
 <!--
 By default a worker will listen on a free port at the address returned by a call to [`getipaddr()`](@ref).
@@ -2067,6 +2128,8 @@ This is useful for multi-homed hosts.
 -->
 ```
 
+对于非TCP/IP传输，可以选择MPI作为一种实现，此时一定**不要**指定`--worker`参数，另外，新启动的worker必须调用`init_worker(cookie)`之后再使用并行的结构体。
+
 ```@raw html
 <!--
 As an example of a non-TCP/IP transport, an implementation may choose to use MPI, in which case
@@ -2074,6 +2137,8 @@ As an example of a non-TCP/IP transport, an implementation may choose to use MPI
 before using any of the parallel constructs.
 -->
 ```
+
+对于每个已经启动的worker，[`launch`](@ref)方法必须往`launched`中添加一个`WorkerConfig`对象（相应的值已经初始化）。
 
 ```@raw html
 <!--
@@ -2111,12 +2176,18 @@ mutable struct WorkerConfig
 end
 ```
 
+`WorkerConfig`中的大多数字段都是内置的集群管理器会用到，对于自定义的管理器，通常只需要指定`io`或`host`/`port`:
+
 ```@raw html
 <!--
 Most of the fields in `WorkerConfig` are used by the inbuilt managers. Custom cluster managers
 would typically specify only `io` or `host` / `port`:
 -->
 ```
+
+  * 如果指定了`io`，那么就会用来读取host/port信息。每个worker会在启动时打印地址和端口，这样worker就可以自由监听可用的端口，而不必手动配置worker的端口。
+  * 如果`io`没有指定，那么`host`和`port`就会用来连接。
+  * `count`， `exename`和`exeflags`用于从一个worker上启动额外的worker。例如，一个集群管理器可能对每个节点都只启动一个worker，然后再用它来启动额外的worker。
 
 ```@raw html
 <!--
@@ -2130,6 +2201,13 @@ would typically specify only `io` or `host` / `port`:
 -->
 ```
 
+      * `count` 可以是一个整数`n`，用来指定启动`n`个worker
+      * `count` 还可以是`:auto`，用来启动跟那台机器上CPU个数（逻辑上的核的个数）相同的worker
+      * `exename`是`julia`可执行文件的全路径
+      * `exeflags`应该设置成传递给将要启动的worker命令行参数
+  * `tunnel`, `bind_addr`, `sshflags`和`max_parallel`会在从worker与master进程建立ssh隧道时用到
+  * `userdata`用来提供给自定义集群管理器存储自己的worker相关的信息
+
 ```@raw html
 <!--
       * `count` with an integer value `n` will launch a total of `n` workers.
@@ -2142,12 +2220,18 @@ would typically specify only `io` or `host` / `port`:
 -->
 ```
 
+`manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symbol)`会在一个worker生命周期中的不同时刻被调用，其中op的值可能是：
+
 ```@raw html
 <!--
 `manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symbol)` is called at different
 times during the worker's lifetime with appropriate `op` values:
 -->
 ```
+
+  * `:register`/`:deregister`，从Julia的worker池子中添加/删除一个worker
+  * `:interrupt`，当`interrupt(workers)`被调用是，此时，`ClusterManager`应该给相应的worker发送终端信号
+  * `:finalize`，用于清理操作。
 
 ```@raw html
 <!--
@@ -2158,11 +2242,15 @@ times during the worker's lifetime with appropriate `op` values:
 -->
 ```
 
+## 自定义集群管理器的传输方式
+
 ```@raw html
 <!--
 ## Cluster Managers with Custom Transports
 -->
 ```
+
+将默认的 TCP/IP 多对多 socket 连接替换成一个自定义的传输层需要做很多工作。每个Julia进程都有与其连接的worker数量相同的通信task。例如，在一个有32个进程的多对多集群中：
 
 ```@raw html
 <!--
@@ -2171,6 +2259,11 @@ little more involved. Each Julia process has as many communication tasks as the 
 connected to. For example, consider a Julia cluster of 32 processes in an all-to-all mesh network:
 -->
 ```
+
+  * 每个进程都有31个通信task
+  * 每个task在一个**消息处理循环**中从一个远端worker读取所有的输入信息
+  * 每个消息处理循环等待一个`IO`对象（比如，在默认实现中是一个[`TCPSocket`](@ref)），然后读取整个信息，处理，等待下一个
+  * 发送消息则可以直接在任意Julia task中完成，而不只是通信task，同样，也是通过相应的`IO`对象
 
 ```@raw html
 <!--
@@ -2182,6 +2275,8 @@ connected to. For example, consider a Julia cluster of 32 processes in an all-to
     via the appropriate `IO` object.
 -->
 ```
+
+要替换默认的传输方式，需要新的实现能够在远程worker之间建立连接，同时提供一个可以用来被消息处理循环等待的`IO`对象。集群管理器的回调函数需要实现如下函数：
 
 ```@raw html
 <!--
@@ -2196,11 +2291,15 @@ connect(manager::FooManager, pid::Integer, config::WorkerConfig)
 kill(manager::FooManager, pid::Int, config::WorkerConfig)
 ```
 
+默认的实现（使用的是TCP/IP socket）是`connect(manager::ClusterManager, pid::Integer, config::WorkerConfig)`。
+
 ```@raw html
 <!--
 The default implementation (which uses TCP/IP sockets) is implemented as `connect(manager::ClusterManager, pid::Integer, config::WorkerConfig)`.
 -->
 ```
+
+`connect`需要返回一对`IO`对象，一个用于从`pid`worker读取数据，另一个用于往`pid`写数据。自定义的集群管理器可以用内存中的`BUfferStream`作为一个管道将自定义的（很可能是非`IO`的）传输与Julia内置的并行基础设施衔接起来。
 
 ```@raw html
 <!--
@@ -2211,12 +2310,16 @@ transport and Julia's in-built parallel infrastructure.
 -->
 ```
 
+`BufferStream`是一个内存中的[`IOBuffer`](@ref)，其表现很像`IO`，就是一个**流**（stream），可以异步地处理。
+
 ```@raw html
 <!--
 A `BufferStream` is an in-memory [`IOBuffer`](@ref) which behaves like an `IO`--it is a stream which can
 be handled asynchronously.
 -->
 ```
+
+在[Examples repository](https://github.com/JuliaArchive/Examples)的`clustermanager/0mq`目录中，包含一个使用ZeroMQ连接Julia worker的例子，用的是星型拓补结构。需要注意的是：Julia的进程仍然是**逻辑上**相互连接的，任意worker都可以与其它worker直接相连而无需感知到0MQ作为传输层的存在。
 
 ```@raw html
 <!--
@@ -2227,6 +2330,13 @@ connected to each other--any worker can message any other worker directly withou
 of 0MQ being used as the transport layer.
 -->
 ```
+
+在使用自定义传输的时候：
+
+  * Julia的workers必须**不能**通过`--worker`启动。如果启动的时候使用了`--worker`，那么新启动的worker会默认使用基于TCP/IP socket的实现
+  * 对于每个worker逻辑上的输入连接，必须调用`Base.process_messages(rd::IO, wr::IO)()`，这会创建一个新的task来处理worker消息的读写
+  * `init_worker(cookie, manager::FooManager)`必须作为worker进程初始化的一部分呢被调用
+  * `WorkerConfig`中的`connect_at::Any`字段可以被集群管理器在调用[`launch`](@ref)的时候设置，该字段的值会发送到所有的[`connect`](@ref)回调中。通常，其中包含的是**如何连接到**一个worker的信息。例如，在TCP/IP socket传输中，用这个字段存储`(host, port)`来声明如何连接到一个worker。
 
 ```@raw html
 <!--
@@ -2249,6 +2359,8 @@ When using custom transports:
 -->
 ```
 
+`kill(manager, pid, config)`用来从一个集群中删除一个worker，在master进程中，对应的`IO`对象必须通过对应的实现来关闭，从而保证正确地释放资源。默认的实现简单地对指定的远端worker执行`exit()`即可。
+
 ```@raw html
 <!--
 `kill(manager, pid, config)` is called to remove a worker from the cluster. On the master process,
@@ -2257,6 +2369,8 @@ The default implementation simply executes an `exit()` call on the specified rem
 -->
 ```
 
+在例子目录中，`clustermanager/simple`展示了一个简单地实现，使用的是UNIX下的socket。
+
 ```@raw html
 <!--
 The Examples folder `clustermanager/simple` is an example that shows a simple implementation using UNIX domain
@@ -2264,11 +2378,15 @@ sockets for cluster setup.
 -->
 ```
 
+## LocalManager和SSHManager的网络要求
+
 ```@raw html
 <!--
 ## Network Requirements for LocalManager and SSHManager
 -->
 ```
+
+Julia集群设计的时候，默认是在一个安全的环境中执行，比如本地的笔记本，部门的集群，甚至是云端。这部分将介绍`LocalManager`和`SSHManager`的网络安全要点：
 
 ```@raw html
 <!--
@@ -2277,6 +2395,12 @@ as local laptops, departmental clusters, or even the cloud. This section covers 
 requirements for the inbuilt `LocalManager` and `SSHManager`:
 -->
 ```
+
+  * master进程不监听任何端口，它只负责向外连接worker
+  * 每个worker都只绑定一个本地的接口，同时监听一个系统分配的临时端口
+  * `addprocs(N)`使用的`LocalManager`，默认只会绑定到回环接口（loopback interface），这就意味着，之后在远程主机上（恶意）启动的worker无法连接到集群中，在执行`addprocs(4)`之后，又跟一个`addprocs(["remote_host"])`会失败。有些用户可能希望创建一个集群同时管理本地系统和几个远端系统，这可以通过在绑定`LocalManager`到外部网络接口的时候，指定一个`restrict`参数：`addprocs(4; restrict=false)`
+  * `addprocs(list_of_remote_hosts)`使用的`SSHManager`，通过SSH在远程主机上启动worker，后续的master-worker，worker-worker之间的连接使用普通未加密的TCP/IP socket。远程主机必须开启无密码登陆，额外的ssh参数可以通过`sshflags`指定。
+  * 如果想要通过SSH连接master-worker，那么用`addprocs(list_of_remote_hosts; tunnel=true, sshflags=<ssh keys and other flags>)`就可以很容易地实现。一个典型的应用场景是，本地的笔记本运行着Julia的REPL(也就是master)，其它的机器在云端（比方说Amazon的EC2），此时远端的机器只需要开放22端口，通过公钥认证即可（PKI）。认证信息可以通过`sshflags`配置，如 ```sshflags=`-e <keyfile>` ```
 
 ```@raw html
 <!--
@@ -2302,6 +2426,8 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
 -->
 ```
 
+    在一个（默认的）多对多的拓补结构中，所有的worker通过TCP socket连接到其它worker，因而集群中节点的安全策略必须保证worker在某个端口范围内能自由连接（根据操作系统的不同会有所不同）。
+
 ```@raw html
 <!--
     In an all-to-all topology (the default), all workers connect to each other via plain TCP sockets.
@@ -2310,6 +2436,8 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
 -->
 ```
 
+    可以通过自定义`ClusterManager`实现worker-worker之间通信的加密和解密。
+
 ```@raw html
 <!--
     Securing and encrypting all worker-worker traffic (via SSH) or encrypting individual messages
@@ -2317,11 +2445,15 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
 -->
 ```
 
+## [集群 Cookie](@id man-cluster-cookie)
+
 ```@raw html
 <!--
 ## [Cluster Cookie](@id man-cluster-cookie)
 -->
 ```
+
+集群上所有的进程都共享同一个cookie，默认时master进程随机生成的字符串。
 
 ```@raw html
 <!--
@@ -2329,6 +2461,11 @@ All processes in a cluster share the same cookie which, by default, is a randoml
 on the master process:
 -->
 ```
+
+  * [`cluster_cookie()`](@ref) 返回cookie，而`cluster_cookie(cookie)()`设置并返回新的cookie。
+  * 所有的连接都进行双向认证，从而保证只有master启动的worker才能相互连接。
+  * cookie可以在worker启动的时候，通过参数`--worker=<cookie>`指定，如果参数`--worker`没有指定cookie，那么worker会从它的标准输入中([`stdin`](@ref))读取，`stdin`会在cookie获取之后立即关闭。
+  * `ClusterManager`可以通过[`cluster_cookie()`](@ref)从master中过去cookie，不适用默认TCP/IP传输的集群管理器（即没有指定`--worker`）必须用于master相同的cookie调用`init_worker(cookie, manager)`。
 
 ```@raw html
 <!--
@@ -2345,6 +2482,8 @@ on the master process:
 -->
 ```
 
+注意，在对安全性要求很高的环境中，可以通过自定义`ClusterManager`实现。例如，cookie可以提前共享，然后不必再启动参数中指定。
+
 ```@raw html
 <!--
 Note that environments requiring higher levels of security can implement this via a custom `ClusterManager`.
@@ -2352,11 +2491,15 @@ For example, cookies can be pre-shared and hence not specified as a startup argu
 -->
 ```
 
+## 指定网络拓补结构（实验性）
+
 ```@raw html
 <!--
 ## Specifying Network Topology (Experimental)
 -->
 ```
+
+可以通过传递到`addprocs`中的参数`topology`来指定worker之间如何连接。
 
 ```@raw html
 <!--
@@ -2364,6 +2507,10 @@ The keyword argument `topology` passed to `addprocs` is used to specify how the 
 connected to each other:
 -->
 ```
+
+  * `:all_to_all`,默认的，所有worker之间相互都连接
+  * `:master_worker`,只有主进程，即`pid`为1的进程能够与worker建立连接
+  * `:custom`: 集群管理器的`launch`方法通过`WorkerConfig`中的`ident`和`connect_idents`指定连接的拓补结构。一个worker通过集群管理器提供的`ident`来连接到所有`connect_idents`指定的worker。
 
 ```@raw html
 <!--
@@ -2375,6 +2522,8 @@ connected to each other:
 -->
 ```
 
+关键字参数`lazy=true|false`只会影响`topology`选项中的`:all_to_all`。如果是`true`，那么集群启动的时候master会连接所有的worker，然后worker之间的特定连接会在初次唤醒的是建立连接，这有利于降低集群初始化的时候对资源的分配。`lazy`的默认值是`true`。
+
 ```@raw html
 <!--
 Keyword argument `lazy=true|false` only affects `topology` option `:all_to_all`. If `true`, the cluster
@@ -2385,6 +2534,8 @@ program. Default value for `lazy` is `true`.
 -->
 ```
 
+目前，在没有建立连接的两个worker之间传递消息会出错，目前该行为是实验性的，未来的版本中可能会改变。
+
 ```@raw html
 <!--
 Currently, sending a message between unconnected workers results in an error. This behaviour,
@@ -2393,11 +2544,15 @@ in future releases.
 -->
 ```
 
+## 多线程（实验性）
+
 ```@raw html
 <!--
 ## Multi-Threading (Experimental)
 -->
 ```
+
+除了task，远程调用，远程应用之外，Julia从`v0.5`开始就原生支持多线程。本部分内容是实验性的，未来相关接口可能会改变。
 
 ```@raw html
 <!--
@@ -2407,11 +2562,15 @@ in the future.
 -->
 ```
 
+### 设置
+
 ```@raw html
 <!--
 ### Setup
 -->
 ```
+
+Julia默认启动一个线程执行代码，这点可以通过[`Threads.nthreads()`](@ref)确认：
 
 ```@raw html
 <!--
@@ -2425,6 +2584,8 @@ julia> Threads.nthreads()
 1
 ```
 
+Julia启动时的线程数可以通过环境变量`JULIA_NUM_THREADS`设置，下面启动4个线程：
+
 ```@raw html
 <!--
 The number of threads Julia starts up with is controlled by an environment variable called `JULIA_NUM_THREADS`.
@@ -2436,6 +2597,8 @@ Now, let's start up Julia with 4 threads:
 export JULIA_NUM_THREADS=4
 ```
 
+(上面的代码只能在Linux和OSX系统中运行，如果你在以上平台中使用的是C shell，那么将`export`改成`set`，如果你是在Windows上运行，那么将`export`改成`set`同时启动julia时指定`julia.exe`的完整路径。)
+
 ```@raw html
 <!--
 (The above command works on bourne shells on Linux and OSX. Note that if you're using a C shell
@@ -2443,6 +2606,8 @@ on these platforms, you should use the keyword `set` instead of `export`. If you
 start up the command line in the location of `julia.exe` and use `set` instead of `export`.)
 -->
 ```
+
+现在确认下确实有4个线程：
 
 ```@raw html
 <!--
@@ -2455,6 +2620,8 @@ julia> Threads.nthreads()
 4
 ```
 
+不过我们现在是在master线程，用[`Threads.threadid`](@ref)确认下：
+
 ```@raw html
 <!--
 But we are currently on the master thread. To check, we use the function [`Threads.threadid`](@ref)
@@ -2466,11 +2633,15 @@ julia> Threads.threadid()
 1
 ```
 
+### `@threads`宏
+
 ```@raw html
 <!--
 ### The `@threads` Macro
 -->
 ```
+
+下面用一个简单的例子测试我们原生的线程，首先创建一个全零的数组：
 
 ```@raw html
 <!--
@@ -2493,12 +2664,16 @@ julia> a = zeros(10)
  0.0
 ```
 
+现在用4个线程模拟操作这个数组，每个线程往对应的位置写入线程ID。
+
 ```@raw html
 <!--
 Let us operate on this array simultaneously using 4 threads. We'll have each thread write its
 thread ID into each location.
 -->
 ```
+
+Julia用[`Threads.@threads`](@ref)宏实现并行循环，该宏加在`for`循环前面，提示Julia循环部分是一个多线程的区域：
 
 ```@raw html
 <!--
@@ -2512,6 +2687,8 @@ julia> Threads.@threads for i = 1:10
            a[i] = Threads.threadid()
        end
 ```
+
+每次迭代会分配到各个线程，然后每个线程往对应位置写入线程ID：
 
 ```@raw html
 <!--
@@ -2535,11 +2712,15 @@ julia> a
  4.0
 ```
 
+注意[`Threads.@threads`](@ref)并没有一个像[`@distributed`](@ref)一样的可选的reduction参数。
+
 ```@raw html
 <!--
 Note that [`Threads.@threads`](@ref) does not have an optional reduction parameter like [`@distributed`](@ref).
 -->
 ```
+
+Julia支持访问和修改值的**原子**操作，即，以一种线程安全的方式来避免[竞态条件](https://en.wikipedia.org/wiki/Race_condition)。一个值（必须是基本类型的，primitive type）可以通过[`Threads.Atomic`](@ref)来包装起来从而支持原子操作。下面看个例子：
 
 ```@raw html
 <!--
@@ -2577,6 +2758,8 @@ julia> ids
  4.0
 ```
 
+如果不加`Atomic`的话，那么会因为竞态条件而得到错误的结果，下面是一个没有避免竞态条件的例子：
+
 ```@raw html
 <!--
 Had we tried to do the addition without the atomic tag, we might have gotten the
@@ -2612,6 +2795,9 @@ julia> acc[]
 1000
 ```
 
+!!! 注意
+    并非**所有的**原始类型都能放在`Atomic`标签内封装起来，支持的类型有`Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `Float16`, `Float32`, 以及 `Float64`。此外，`Int128`和`UInt128`在AAarch32和ppc64le上不支持。
+
 ```@raw html
 <!--
 !!! note
@@ -2621,6 +2807,8 @@ julia> acc[]
     `Int128` and `UInt128` are not supported on AAarch32 and ppc64le.
 -->
 ```
+
+在使用多线程时，要非常小心使用了不纯的函数[pure function](https://en.wikipedia.org/wiki/Pure_function)，例如，用到了[以!结尾的函数](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)，通常这类函数会修改其参数，因而时不纯的。此外还有些函数没有以`!`结尾，其实也是有副作用的，比如[`findfirst(regex, str)`](@ref)就会改变`regex`参数，或者时[`rand()`](@ref)会修改`Base.GLOBAL_RNG`:
 
 ```@raw html
 <!--
@@ -2668,12 +2856,16 @@ julia> srand(1); g() # the result for a single thread is 1000
 781
 ```
 
+此时，应该重新设计代码来避免可能的竞态条件或者是使用[同步机制](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1)。
+
 ```@raw html
 <!--
 In such cases one should redesign the code to avoid the possibility of a race condition or use
 [synchronization primitives](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1).
 -->
 ```
+
+例如，为了修正上面`findfirst`的例子，每个线程都要拷贝一份`rx`。
 
 ```@raw html
 <!--
@@ -2698,12 +2890,16 @@ julia> f_fix()
 1000
 ```
 
+现在使用`Regex("1")`而不是`r"1"`来保证Julia对每个`rx`向量的元素都创建了一个`Regex`的对象。
+
 ```@raw html
 <!--
 We now use `Regex("1")` instead of `r"1"` to make sure that Julia
 creates separate instances of `Regex` object for each entry of `rx` vector.
 -->
 ```
+
+`rand`的例子更复杂点，因为我们需要保证每个线程使用的是不重叠的随机数序列，这可以简单地通过`Future.randjump`函数保证：
 
 ```@raw html
 <!--
@@ -2712,7 +2908,6 @@ uses non-overlapping pseudorandom number sequences. This can be simply ensured
 by using the `Future.randjump` function:
 -->
 ```
-
 
 ```julia-repl
 julia> using Random; import Future
@@ -2734,6 +2929,8 @@ julia> g_fix(r)
 1000
 ```
 
+这里将`r`向量发送到`g_fix`，由于生成多个随机数是很昂贵的操作，因此我们不希望每次执行函数都重复该操作。
+
 ```@raw html
 <!--
 We pass `r` vector to `g_fix` as generating several RGNs is an expensive
@@ -2741,11 +2938,15 @@ operation so we do not want to repeat it every time we run the function.
 -->
 ```
 
+## @threadcall （实验性）
+
 ```@raw html
 <!--
 ## @threadcall (Experimental)
 -->
 ```
+
+所有的I/O task，计时器，REPL命令等都是通过一个事件循环复用的一个系统线程。有一个补丁版的libuv([http://docs.libuv.org/en/v1.x/](http://docs.libuv.org/en/v1.x/))提供了该功能，从而在同一个系统线程上协调调度多个task。I/O task和计时器在等待某个事件发生时，会隐式地退出（yield），而显式地调用[`yield`](@ref)则会允许其它task被调度。
 
 ```@raw html
 <!--
@@ -2757,6 +2958,8 @@ occur. Calling [`yield`](@ref) explicitly allows for other tasks to be scheduled
 -->
 ```
 
+因此，一个执行[`ccall`](@ref)的task会阻止Julia的调度器执行其它task，直到调用返回，这种情况对于所有外部库的调用都存在，例外的情况是，某些自定义的C代码调用返回到了Julia中（此时有可能yield）或者C代码执行了`jl_yield()`（C中等价的[`yield`](@ref)）。
+
 ```@raw html
 <!--
 Thus, a task executing a [`ccall`](@ref) effectively prevents the Julia scheduler from executing any other
@@ -2766,6 +2969,8 @@ calls into custom C code that call back into Julia (which may then yield) or C c
 -->
 ```
 
+注意，尽管Julia的代码默认是单线程的，但是Julia调用的库可能会用到其内部的多线程，例如，BLAS会在一台机器上使用尽可能多的线程。
+
 ```@raw html
 <!--
 Note that while Julia code runs on a single thread (by default), libraries used by Julia may launch
@@ -2773,6 +2978,8 @@ their own internal threads. For example, the BLAS library may start as many thre
 cores on a machine.
 -->
 ```
+
+[`@threadcall`](@ref)就是要解决[`ccall`](@ref)会卡住主线程的这个问题，它会在一个额外的线程中调度C函数的执行，有一个默认大小为4的线程库用来做这个事情，该线程库的大小可以通过环境变量`UV_THREADPOOL_SIZE`控制。在等待一个空闲线程，以及在函数执行过程中某个线程空闲下来时，（主线程的事件循环中）正在请求的task会yield到其它task，注意，`@threadcall`并不会返回，直到执行结束。从用户的角度来看，就是一个和其它Julia API一样会阻塞的模块。
 
 ```@raw html
 <!--
@@ -2786,11 +2993,15 @@ therefore a blocking call like other Julia APIs.
 -->
 ```
 
+非常关键的一点是，被调用的函数不会再调用回Julia。
+
 ```@raw html
 <!--
 It is very important that the called function does not call back into Julia.
 -->
 ```
+
+`@threadcall` 在Julia未来的版本中可能会被移除或改变。
 
 ```@raw html
 <!--
