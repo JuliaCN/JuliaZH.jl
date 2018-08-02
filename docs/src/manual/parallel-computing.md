@@ -1044,7 +1044,7 @@ have fetched, the remote stored value is deleted.
 -->
 ```
 
-[`@async`](@ref)跟[`@spawn`](@ref)有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个**喂养**的task，每个task都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task并不会立即执行，只有在执行到[`@sync`](@ref)结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。在v0.7之后，所有的喂养taks都能够通过`nextidx`共享状态，因为他们都在同一个进程中。尽管`Tasks`是协调调度的，但在某些情况下仍然有可能发送死锁，如[asynchronous I\O](https://docs.julialang.org/en/stable/manual/faq/#Asynchronous-IO-and-concurrent-synchronous-writes-1)。上下文只会在特定时候发生切换，在这里就是执行[`remotecall_fetch`](@ref)。当然，这是当前版本（dev v0.7）的实现，未来版本中可能会改变，有望在M个进程中最多跑N个task，即[M:N 线程](https://en.wikipedia.org/wiki/Thread_(computing)#Models)。然后，`nextidx`需要加锁，从而让多个进程能够安全地对一个资源同时进行读写。
+[`@async`](@ref)跟[`@spawn`](@ref)有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个**喂养**的task，每个task都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task并不会立即执行，只有在执行到[`@sync`](@ref)结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。在v0.7之后，所有的喂养task都能够通过`nextidx`共享状态，因为他们都在同一个进程中。尽管`Tasks`是协调调度的，但在某些情况下仍然有可能发送死锁，如[asynchronous I\O](https://docs.julialang.org/en/stable/manual/faq/#Asynchronous-IO-and-concurrent-synchronous-writes-1)。上下文只会在特定时候发生切换，在这里就是执行[`remotecall_fetch`](@ref)。当然，这是当前版本（dev v0.7）的实现，未来版本中可能会改变，有望在M个进程中最多跑N个task，即[M:N 线程](https://en.wikipedia.org/wiki/Thread_(computing)#Models)。然后，`nextidx`需要加锁，从而让多个进程能够安全地对一个资源同时进行读写。
 
 ```@raw html
 <!--
