@@ -24,7 +24,7 @@ const PAGES = [
         # "manual/arrays.md",
         # "manual/missing.md",
         # "manual/networking-and-streams.md",
-        # "manual/parallel-computing.md",
+        "manual/parallel-computing.md",
         # "manual/running-external-programs.md",
         # "manual/calling-c-and-fortran-code.md",
         # "manual/handling-operating-system-variation.md",
