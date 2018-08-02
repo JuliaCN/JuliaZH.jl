@@ -6,31 +6,827 @@
 -->
 ```
 
-本文将详细介绍Julia中的以下几种并行编程模型：
+对于多线程和并行计算的新手来说，首先感受下Julia提供的不同层次的并行计算方式会很有帮助，主要可以分为以下三大类：
 
 ```@raw html
 <!--
-This part of the manual details the following types of parallel programming available in Julia.
+For newcomers to multi-threading and parallel computing it can be useful to first appreciate
+the different levels of parallelism offered by Julia. We can divide them in three main categories :
 -->
 ```
 
-1. 单节点或多节点上基于多进程的分布式内存模型
-2. 单节点上基于多进程的内存共享模型
-3. 多线程
+1. Julia协程(绿色线程)
+2. 多线程
+3. 多核或分布式进程
 
 ```@raw html
 <!--
-1. Distributed memory using multiple processes on one or more nodes
-2. Shared memory using multiple processes on a single node
-3. Multi-threading
+1. Julia Coroutines (Green Threading)
+2. Multi-Threading
+3. Multi-Core or Distributed Processing
 -->
 ```
 
-# 分布式内存并行
+首先考虑Julia中的[任务 Tasks (又称 协程 Coroutines)](@ref man-tasks)以及一些其它依赖于Julia运行时的模块，Julia能够通过控制内部`Tasks`之间的通信来允许计算的挂起和恢复，而不必手动与操作系统的调度器交互。此外，Julia还支持`Tasks`之间通过[`wait`](@ref)和[`fetch`](@ref)操作通信。通信和数据同步是通过[`Channel`](@ref)提供的管道在管理。
 
 ```@raw html
 <!--
-# Distributed Memory Parallelism
+We will first consider Julia [Tasks (aka Coroutines)](@ref man-tasks) and other modules that rely on the Julia runtime library, that allow to suspend and resume computations with full control of inter-`Tasks` communication without having to manually interface with the operative system's scheduler.
+Julia also allows to communicate between `Tasks` through operations like [`wait`](@ref) and [`fetch`](@ref).
+Communication and data synchronization is managed through [`Channel`](@ref)s, which are the conduit
+that allows inter-`Tasks` communication.
+-->
+```
+
+Julia还支持实验性的多线程功能，在执行时通过分叉(fork)，然后有一个匿名函数在所有线程上运行，可以看作时一种*分叉-汇合*(fork-join)的方式，并行执行的线程必须在分叉之后，汇合到Julia主线程上，从而继续串行执行。多线程是通过`Base.Threads`模块提供的，目前仍然是实验性的，主要是因为目前Julia还不是完全线程安全的。在进行I/O操作和task切换的时候某些特定的段错误会出现，最新的进展请关注[the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading)，多线程应该只在你考虑全局变量，锁以及原子操作的时候使用，后面我们会详细讲解。
+
+```@raw html
+<!--
+Julia also supports experimental multi-threading, where execution is forked and an anonymous function is run across all
+threads.
+Described as a fork-join approach, parallel threads are branched off and they all have to join the Julia main thread to make serial execution continue.
+Multi-threading is supported using the `Base.Threads` module that is still considered experimental, as Julia is
+not fully thread-safe yet. In particular segfaults seem to emerge for I\O operations and task switching.
+As an un up-to-date reference, keep an eye on [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading).
+Multi-Threading should only be used if you take into consideration global variables, locks and
+atomics, so we will explain it later.
+-->
+```
+
+最后会介绍Julia的分布式并行计算，从科学计算的角度出发，Julia原生支持在多核/多机器上部署进程，此外还会介绍分布式编程有关的一些实用的包，如`MPI.jl`和`DistributedArrays.jl`。
+
+```@raw html
+<!--
+In the end we will present Julia's way to distributed and parallel computing. With scientific computing
+in mind, Julia natively implements interfaces to distribute a process through multiple cores or machines.
+Also we will mention useful external packages for distributed programming like `MPI.jl` and `DistributedArrays.jl`.
+-->
+```
+
+# 协程
+
+```@raw html
+<!--
+# Coroutines
+-->
+```
+
+Julia的并行编程平台采用[任务 Tasks (又称 协程 Coroutines)](@ref man-tasks)来进行多个计算之间的切换。为了表示轻量线程之间的执行顺序，必须提供一种通信的原语。Julia提供了`Channel(func::Function, ctype=Any, csize=0, taskref=nothing)`，根据`func`创建task，然后将其绑定到一个新的大小为`csize`类型为`ctype`的channel，并调度task。`Channels`可以看作是一种task之间通信的方式，`Channel{T}(sz::Int)`会创建一个类型为`T`大小为`sz`的channel。无论何时发起一个通信操作，如[`fetch`](@ref)或[`wait`](@ref)，当前task都会挂起，然后调度器会选择其它task去执行，在一个task等待的事件结束之后会重新恢复执行。
+
+```@raw html
+<!--
+Julia's parallel programming platform uses [Tasks (aka Coroutines)](@ref man-tasks) to switch among multiple computations.
+To express an order of execution between lightweight threads communication primitives are necessary.
+Julia offers `Channel(func::Function, ctype=Any, csize=0, taskref=nothing)` that creates a new task from `func`,
+binds it to a new channel of type `ctype` and size `csize` and schedule the task.
+`Channels` can serve as a way to communicate between tasks, as `Channel{T}(sz::Int)` creates a buffered channel of type `T` and size `sz`.
+Whenever code performs a communication operation like [`fetch`](@ref) or [`wait`](@ref),
+the current task is suspended and a scheduler picks another task to run.
+A task is restarted when the event it is waiting for completes.
+-->
+```
+
+对于许多问题而言，并不需要直接考虑Task，不过，Task可以用来同时等待多个事件，从而实现**动态调度**。在动态调度的过程中，程序可以决定计算什么，或者根据其它任务执行结束的时间决定接下来在哪里执行计算。这对于不可预测或不平衡的计算量来说是必须的，因为我们只希望给那些已经完成了其当前任务的进程分配更多的任务。
+
+
+```@raw html
+<!--
+For many problems, it is not necessary to think about tasks directly. However, they can be used
+to wait for multiple events at the same time, which provides for *dynamic scheduling*. In dynamic
+scheduling, a program decides what to compute or where to compute it based on when other jobs
+finish. This is needed for unpredictable or unbalanced workloads, where we want to assign more
+work to processes only when they finish their current tasks.
+-->
+```
+
+
+## 频道(Channels)
+
+```@raw html
+<!--
+## Channels
+-->
+```
+
+在[Control Flow](@ref)中有关[`Task`](@ref)的部分，已经讨论了如何协调多个函数的执行。[`Channel`](@ref)可以很方便地在多个运行中的task传递数据，特别是那些涉及I/O的操作。
+
+```@raw html
+<!--
+The section on [`Task`](@ref)s in [Control Flow](@ref) discussed the execution of multiple functions in
+a co-operative manner. [`Channel`](@ref)s can be quite useful to pass data between running tasks, particularly
+those involving I/O operations.
+-->
+```
+
+典型的I/O操作包括读写文件、访问web服务、执行外部程序等。在所有这些场景中，如果其它task可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。
+
+```@raw html
+<!--
+Examples of operations involving I/O include reading/writing to files, accessing web services,
+executing external programs, etc. In all these cases, overall execution time can be improved if
+other tasks can be run while a file is being read, or while waiting for an external service/program
+to complete.
+-->
+```
+
+一个channel可以看做是一个管道，一端可读，另一端可写。
+
+```@raw html
+<!--
+A channel can be visualized as a pipe, i.e., it has a write end and read end.
+-->
+```
+
+  * 不同的task可以通过[`put!`](@ref)往同一个channel并发地写入。
+  * 不同的task也可以通过[`take!`](@ref)从同一个channel并发地取数据
+  * 举个例子：
+
+```@raw html
+<!--
+  * Multiple writers in different tasks can write to the same channel concurrently via [`put!`](@ref)
+    calls.
+  * Multiple readers in different tasks can read data concurrently via [`take!`](@ref) calls.
+  * As an example:
+-->
+```
+
+```julia
+# Given Channels c1 and c2,
+c1 = Channel(32)
+c2 = Channel(32)
+
+# and a function `foo` which reads items from from c1, processes the item read
+# and writes a result to c2,
+function foo()
+    while true
+        data = take!(c1)
+        [...]               # process data
+        put!(c2, result)    # write out result
+    end
+end
+
+# we can schedule `n` instances of `foo` to be active concurrently.
+for _ in 1:n
+    @async foo()
+end
+```
+
+  * Channel可以通过`Channel{T}(sz)`构造，得到的channel只能存储类型`T`的数据。如果`T`没有指定，那么channel可以存任意类型。`sz`表示该channel能够存储的最大元素个数。比如`Channel(32)`得到的channel最多可以存储32个元素。而`Channel{MyType}(64)`则可以最多存储64个`MyType`类型的数据。
+  * 如果一个[`Channel`](@ref)是空的，读取的task(即执行[`take!`](@ref)的task)会被阻塞直到有新的数据准备好了。
+  * 如果一个[`Channel`](@ref)是满的，那么写入的task(即执行[`put!`](@ref)的task)则会被阻塞，直到Channel有空余。
+  * [`isready`](@ref)可以用来检查一个channel中是否有已经准备好的元素，而[`wait`](@ref)则用来等待一个元素准备好。
+  * 一个[`Channel`](@ref)一开始处于开启状态，也就是说可以被[`take!`](@ref)读取和[`put!`](@ref)写入。[`close`](@ref)会关闭一个[`Channel`](@ref)，对于一个已经关闭的[`Channel`](@ref)，[`put!](@ref)会失败，例如：
+
+```@raw html
+<!--
+  * Channels are created via the `Channel{T}(sz)` constructor. The channel will only hold objects
+    of type `T`. If the type is not specified, the channel can hold objects of any type. `sz` refers
+    to the maximum number of elements that can be held in the channel at any time. For example, `Channel(32)`
+    creates a channel that can hold a maximum of 32 objects of any type. A `Channel{MyType}(64)` can
+    hold up to 64 objects of `MyType` at any time.
+  * If a [`Channel`](@ref) is empty, readers (on a [`take!`](@ref) call) will block until data is available.
+  * If a [`Channel`](@ref) is full, writers (on a [`put!`](@ref) call) will block until space becomes available.
+  * [`isready`](@ref) tests for the presence of any object in the channel, while [`wait`](@ref)
+    waits for an object to become available.
+  * A [`Channel`](@ref) is in an open state initially. This means that it can be read from and written to
+    freely via [`take!`](@ref) and [`put!`](@ref) calls. [`close`](@ref) closes a [`Channel`](@ref).
+    On a closed [`Channel`](@ref), [`put!`](@ref) will fail. For example:
+-->
+```
+
+```julia-repl
+julia> c = Channel(2);
+
+julia> put!(c, 1) # `put!` on an open channel succeeds
+1
+
+julia> close(c);
+
+julia> put!(c, 2) # `put!` on a closed channel throws an exception.
+ERROR: InvalidStateException("Channel is closed.",:closed)
+Stacktrace:
+[...]
+```
+
+  * [`take!`](@ref) 和 [`fetch`](@ref) (只读取，不会将元素从channle中删掉)仍然可以从一个已经关闭的channel中读数据，直到channel被取空了为止，例如：
+
+```@raw html
+<!--
+  * [`take!`](@ref) and [`fetch`](@ref) (which retrieves but does not remove the value) on a closed
+    channel successfully return any existing values until it is emptied. Continuing the above example:
+-->
+```
+
+```julia-repl
+julia> fetch(c) # Any number of `fetch` calls succeed.
+1
+
+julia> fetch(c)
+1
+
+julia> take!(c) # The first `take!` removes the value.
+1
+
+julia> take!(c) # No more data available on a closed channel.
+ERROR: InvalidStateException("Channel is closed.",:closed)
+Stacktrace:
+[...]
+```
+
+`Channel`可以在`for`循环中遍历，此时，循环会一直运行知道`Channel`中有数据，遍历过程中会取遍加入到`Channel`中的所有值。一旦`Channel`关闭或者取空了，`for`循环就好终止。
+
+```@raw html
+<!--
+A `Channel` can be used as an iterable object in a `for` loop, in which case the loop runs as
+long as the `Channel` has data or is open. The loop variable takes on all values added to the
+`Channel`. The `for` loop is terminated once the `Channel` is closed and emptied.
+-->
+```
+
+例如，下面的`for`循环会等待新的数据：
+
+```@raw html
+<!--
+For example, the following would cause the `for` loop to wait for more data:
+-->
+```
+
+```julia-repl
+julia> c = Channel{Int}(10);
+
+julia> foreach(i->put!(c, i), 1:3) # add a few entries
+
+julia> data = [i for i in c]
+```
+
+而下面的则会返回已经读取的数据：
+
+```@raw html
+<!--
+while this will return after reading all data:
+-->
+```
+
+```julia-repl
+julia> c = Channel{Int}(10);
+
+julia> foreach(i->put!(c, i), 1:3); # add a few entries
+
+julia> close(c);                    # `for` loops can exit
+
+julia> data = [i for i in c]
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3
+```
+
+考虑这样一个用channel做task之间通信的例子。首先，起4个task来处理一个`jobs` channel中的数据。`jobs`中的每个任务通过`job_id`来表示，然后每个task模拟读取一个`job_id`，然后随机等待一会儿，然后往一个`results`channel中写入一个Tuple，分别包含`job_id`和执行的时间，最后将结果打印出来：。
+
+```@raw html
+<!--
+Consider a simple example using channels for inter-task communication. We start 4 tasks to process
+data from a single `jobs` channel. Jobs, identified by an id (`job_id`), are written to the channel.
+Each task in this simulation reads a `job_id`, waits for a random amount of time and writes back
+a tuple of `job_id` and the simulated time to the results channel. Finally all the `results` are
+printed out.
+-->
+```
+
+```julia-repl
+julia> const jobs = Channel{Int}(32);
+
+julia> const results = Channel{Tuple}(32);
+
+julia> function do_work()
+           for job_id in jobs
+               exec_time = rand()
+               sleep(exec_time)                # simulates elapsed time doing actual work
+                                               # typically performed externally.
+               put!(results, (job_id, exec_time))
+           end
+       end;
+
+julia> function make_jobs(n)
+           for i in 1:n
+               put!(jobs, i)
+           end
+       end;
+
+julia> n = 12;
+
+julia> @async make_jobs(n); # feed the jobs channel with "n" jobs
+
+julia> for i in 1:4 # start 4 tasks to process requests in parallel
+           @async do_work()
+       end
+
+julia> @elapsed while n > 0 # print out results
+           job_id, exec_time = take!(results)
+           println("$job_id finished in $(round(exec_time,2)) seconds")
+           n = n - 1
+       end
+4 finished in 0.22 seconds
+3 finished in 0.45 seconds
+1 finished in 0.5 seconds
+7 finished in 0.14 seconds
+2 finished in 0.78 seconds
+5 finished in 0.9 seconds
+9 finished in 0.36 seconds
+6 finished in 0.87 seconds
+8 finished in 0.79 seconds
+10 finished in 0.64 seconds
+12 finished in 0.5 seconds
+11 finished in 0.97 seconds
+0.029772311
+```
+
+当前版本的Julia会将所有task分发到一个操作系统的线程，因此，涉及IO的操作会从并行执行中获利，而计算密集型的task则会顺序地在单独这个线程上执行。未来Julia将支持在多个线程上调度task，从而让计算密集型task也能从并行计算中获利。
+
+```@raw html
+<!--
+The current version of Julia multiplexes all tasks onto a single OS thread. Thus, while tasks
+involving I/O operations benefit from parallel execution, compute bound tasks are effectively
+executed sequentially on a single OS thread. Future versions of Julia may support scheduling of
+tasks on multiple threads, in which case compute bound tasks will see benefits of parallel execution
+too.
+-->
+```
+
+# 多线程（实验性功能）
+
+```@raw html
+<!--
+## Multi-Threading (Experimental)
+-->
+```
+
+除了task之外，Julia还原生支持多线程。本部分内容是实验性的，未来相关接口可能会改变。
+
+```@raw html
+<!--
+In addition to tasks Julia forwards natively supports multi-threading.
+supports multi-threading. Note that this section is experimental and the interfaces may change
+in the future.
+-->
+```
+
+### 设置
+
+```@raw html
+<!--
+### Setup
+-->
+```
+
+Julia默认启动一个线程执行代码，这点可以通过[`Threads.nthreads()`](@ref)确认：
+
+```@raw html
+<!--
+By default, Julia starts up with a single thread of execution. This can be verified by using the
+command [`Threads.nthreads()`](@ref):
+-->
+```
+
+```julia-repl
+julia> Threads.nthreads()
+1
+```
+
+Julia启动时的线程数可以通过环境变量`JULIA_NUM_THREADS`设置，下面启动4个线程：
+
+```@raw html
+<!--
+The number of threads Julia starts up with is controlled by an environment variable called `JULIA_NUM_THREADS`.
+Now, let's start up Julia with 4 threads:
+-->
+```
+
+```bash
+export JULIA_NUM_THREADS=4
+```
+
+(上面的代码只能在Linux和OSX系统中运行，如果你在以上平台中使用的是C shell，那么将`export`改成`set`，如果你是在Windows上运行，那么将`export`改成`set`同时启动julia时指定`julia.exe`的完整路径。)
+
+```@raw html
+<!--
+(The above command works on bourne shells on Linux and OSX. Note that if you're using a C shell
+on these platforms, you should use the keyword `set` instead of `export`. If you're on Windows,
+start up the command line in the location of `julia.exe` and use `set` instead of `export`.)
+-->
+```
+
+现在确认下确实有4个线程：
+
+```@raw html
+<!--
+Let's verify there are 4 threads at our disposal.
+-->
+```
+
+```julia-repl
+julia> Threads.nthreads()
+4
+```
+
+不过我们现在是在master线程，用[`Threads.threadid`](@ref)确认下：
+
+```@raw html
+<!--
+But we are currently on the master thread. To check, we use the function [`Threads.threadid`](@ref)
+-->
+```
+
+```julia-repl
+julia> Threads.threadid()
+1
+```
+
+### `@threads`宏
+
+```@raw html
+<!--
+### The `@threads` Macro
+-->
+```
+
+下面用一个简单的例子测试我们原生的线程，首先创建一个全零的数组：
+
+```@raw html
+<!--
+Let's work a simple example using our native threads. Let us create an array of zeros:
+-->
+```
+
+```jldoctest
+julia> a = zeros(10)
+10-element Array{Float64,1}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+```
+
+现在用4个线程模拟操作这个数组，每个线程往对应的位置写入线程ID。
+
+```@raw html
+<!--
+Let us operate on this array simultaneously using 4 threads. We'll have each thread write its
+thread ID into each location.
+-->
+```
+
+Julia用[`Threads.@threads`](@ref)宏实现并行循环，该宏加在`for`循环前面，提示Julia循环部分是一个多线程的区域：
+
+```@raw html
+<!--
+Julia supports parallel loops using the [`Threads.@threads`](@ref) macro. This macro is affixed
+in front of a `for` loop to indicate to Julia that the loop is a multi-threaded region:
+-->
+```
+
+```julia-repl
+julia> Threads.@threads for i = 1:10
+           a[i] = Threads.threadid()
+       end
+```
+
+每次迭代会分配到各个线程，然后每个线程往对应位置写入线程ID：
+
+```@raw html
+<!--
+The iteration space is split amongst the threads, after which each thread writes its thread ID
+to its assigned locations:
+-->
+```
+
+```julia-repl
+julia> a
+10-element Array{Float64,1}:
+ 1.0
+ 1.0
+ 1.0
+ 2.0
+ 2.0
+ 2.0
+ 3.0
+ 3.0
+ 4.0
+ 4.0
+```
+
+注意[`Threads.@threads`](@ref)并没有一个像[`@distributed`](@ref)一样的可选的reduction参数。
+
+```@raw html
+<!--
+Note that [`Threads.@threads`](@ref) does not have an optional reduction parameter like [`@distributed`](@ref).
+-->
+```
+
+Julia支持访问和修改值的**原子**操作，即，以一种线程安全的方式来避免[竞态条件](https://en.wikipedia.org/wiki/Race_condition)。一个值（必须是基本类型的，primitive type）可以通过[`Threads.Atomic`](@ref)来包装起来从而支持原子操作。下面看个例子：
+
+```@raw html
+<!--
+Julia supports accessing and modifying values *atomically*, that is, in a thread-safe way to avoid
+[race conditions](https://en.wikipedia.org/wiki/Race_condition). A value (which must be of a primitive
+type) can be wrapped as [`Threads.Atomic`](@ref) to indicate it must be accessed in this way.
+Here we can see an example:
+-->
+```
+
+```julia-repl
+julia> i = Threads.Atomic{Int}(0);
+
+julia> ids = zeros(4);
+
+julia> old_is = zeros(4);
+
+julia> Threads.@threads for id in 1:4
+           old_is[id] = Threads.atomic_add!(i, id)
+           ids[id] = id
+       end
+
+julia> old_is
+4-element Array{Float64,1}:
+ 0.0
+ 1.0
+ 7.0
+ 3.0
+
+julia> ids
+4-element Array{Float64,1}:
+ 1.0
+ 2.0
+ 3.0
+ 4.0
+```
+
+如果不加`Atomic`的话，那么会因为竞态条件而得到错误的结果，下面是一个没有避免竞态条件的例子：
+
+```@raw html
+<!--
+Had we tried to do the addition without the atomic tag, we might have gotten the
+wrong answer due to a race condition. An example of what would happen if we didn't
+avoid the race:
+-->
+```
+
+```julia-repl
+julia> using Base.Threads
+
+julia> nthreads()
+4
+
+julia> acc = Ref(0)
+Base.RefValue{Int64}(0)
+
+julia> @threads for i in 1:1000
+          acc[] += 1
+       end
+
+julia> acc[]
+926
+
+julia> acc = Atomic{Int64}(0)
+Atomic{Int64}(0)
+
+julia> @threads for i in 1:1000
+          atomic_add!(acc, 1)
+       end
+
+julia> acc[]
+1000
+```
+
+!!! note
+    并非**所有的**原始类型都能放在`Atomic`标签内封装起来，支持的类型有`Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `Float16`, `Float32`, 以及 `Float64`。此外，`Int128`和`UInt128`在AAarch32和ppc64le上不支持。
+
+```@raw html
+<!--
+!!! note
+    Not *all* primitive types can be wrapped in an `Atomic` tag. Supported types
+    are `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`,
+    `UInt64`, `UInt128`, `Float16`, `Float32`, and `Float64`. Additionally,
+    `Int128` and `UInt128` are not supported on AAarch32 and ppc64le.
+-->
+```
+
+## 副作用和可变的函数参数
+
+在使用多线程时，要非常小心使用了不纯的函数[pure function](https://en.wikipedia.org/wiki/Pure_function)，例如，用到了[以!结尾的函数](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)，通常这类函数会修改其参数，因而是不纯的。此外还有些函数没有以`!`结尾，其实也是有副作用的，比如[`findfirst(regex, str)`](@ref)就会改变`regex`参数，或者是[`rand()`](@ref)会修改`Base.GLOBAL_RNG`:
+
+```@raw html
+<!--
+## Side effects and mutable function arguments
+
+When using multi-threading we have to be careful when using functions that are not
+[pure](https://en.wikipedia.org/wiki/Pure_function) as we might get a wrong answer.
+For instance functions that have their
+[name ending with `!`](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)
+by convention modify their arguments and thus are not pure. However, there are
+functions that have side effects and their name does not end with `!`. For
+instance [`findfirst(regex, str)`](@ref) mutates its `regex` argument or
+[`rand()`](@ref) changes `Base.GLOBAL_RNG` :
+-->
+```
+
+```julia-repl
+julia> using Base.Threads
+
+julia> nthreads()
+4
+
+julia> function f()
+           s = repeat(["123", "213", "231"], outer=1000)
+           x = similar(s, Int)
+           rx = r"1"
+           @threads for i in 1:3000
+               x[i] = findfirst(rx, s[i]).start
+           end
+           count(v -> v == 1, x)
+       end
+f (generic function with 1 method)
+
+julia> f() # the correct result is 1000
+1017
+
+julia> function g()
+           a = zeros(1000)
+           @threads for i in 1:1000
+               a[i] = rand()
+           end
+           length(unique(a))
+       end
+g (generic function with 1 method)
+
+julia> srand(1); g() # the result for a single thread is 1000
+781
+```
+
+此时，应该重新设计代码来避免可能的竞态条件或者是使用[同步机制](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1)。
+
+```@raw html
+<!--
+In such cases one should redesign the code to avoid the possibility of a race condition or use
+[synchronization primitives](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1).
+-->
+```
+
+例如，为了修正上面`findfirst`的例子，每个线程都要拷贝一份`rx`。
+
+```@raw html
+<!--
+For example in order to fix `findfirst` example above one needs to have a
+separate copy of `rx` variable for each thread:
+-->
+```
+
+```julia-repl
+julia> function f_fix()
+             s = repeat(["123", "213", "231"], outer=1000)
+             x = similar(s, Int)
+             rx = [Regex("1") for i in 1:nthreads()]
+             @threads for i in 1:3000
+                 x[i] = findfirst(rx[threadid()], s[i]).start
+             end
+             count(v -> v == 1, x)
+         end
+f_fix (generic function with 1 method)
+
+julia> f_fix()
+1000
+```
+
+现在使用`Regex("1")`而不是`r"1"`来保证Julia对每个`rx`向量的元素都创建了一个`Regex`的对象。
+
+```@raw html
+<!--
+We now use `Regex("1")` instead of `r"1"` to make sure that Julia
+creates separate instances of `Regex` object for each entry of `rx` vector.
+-->
+```
+
+`rand`的例子更复杂点，因为我们需要保证每个线程使用的是不重叠的随机数序列，这可以简单地通过`Future.randjump`函数保证：
+
+```@raw html
+<!--
+The case of `rand` is a bit more complex as we have to ensure that each thread
+uses non-overlapping pseudorandom number sequences. This can be simply ensured
+by using the `Future.randjump` function:
+-->
+```
+
+```julia-repl
+julia> using Random; import Future
+
+julia> function g_fix(r)
+           a = zeros(1000)
+           @threads for i in 1:1000
+               a[i] = rand(r[threadid()])
+           end
+           length(unique(a))
+       end
+g_fix (generic function with 1 method)
+
+julia>  r = let m = MersenneTwister(1)
+                [m; accumulate(Future.randjump, m, fill(big(10)^20, nthreads()-1))]
+            end;
+
+julia> g_fix(r)
+1000
+```
+
+这里将`r`向量发送到`g_fix`，由于生成多个随机数是很昂贵的操作，因此我们不希望每次执行函数都重复该操作。
+
+```@raw html
+<!--
+We pass `r` vector to `g_fix` as generating several RGNs is an expensive
+operation so we do not want to repeat it every time we run the function.
+-->
+```
+
+## @threadcall （实验性功能）
+
+```@raw html
+<!--
+## @threadcall (Experimental)
+-->
+```
+
+所有的I/O task，计时器，REPL命令等都是通过一个事件循环复用的一个系统线程。有一个补丁版的libuv([http://docs.libuv.org/en/v1.x/](http://docs.libuv.org/en/v1.x/))提供了该功能，从而在同一个系统线程上协调调度多个task。I/O task和计时器在等待某个事件发生时，会隐式地退出（yield），而显式地调用[`yield`](@ref)则会允许其它task被调度。
+
+```@raw html
+<!--
+All I/O tasks, timers, REPL commands, etc are multiplexed onto a single OS thread via an event
+loop. A patched version of libuv ([http://docs.libuv.org/en/v1.x/](http://docs.libuv.org/en/v1.x/))
+provides this functionality. Yield points provide for co-operatively scheduling multiple tasks
+onto the same OS thread. I/O tasks and timers yield implicitly while waiting for the event to
+occur. Calling [`yield`](@ref) explicitly allows for other tasks to be scheduled.
+-->
+```
+
+因此，一个执行[`ccall`](@ref)的task会阻止Julia的调度器执行其它task，直到调用返回，这种情况对于所有外部库的调用都存在，例外的情况是，某些自定义的C代码调用返回到了Julia中（此时有可能yield）或者C代码执行了`jl_yield()`（C中等价的[`yield`](@ref)）。
+
+```@raw html
+<!--
+Thus, a task executing a [`ccall`](@ref) effectively prevents the Julia scheduler from executing any other
+tasks till the call returns. This is true for all calls into external libraries. Exceptions are
+calls into custom C code that call back into Julia (which may then yield) or C code that calls
+`jl_yield()` (C equivalent of [`yield`](@ref)).
+-->
+```
+
+注意，尽管Julia的代码默认是单线程的，但是Julia调用的库可能会用到其内部的多线程，例如，BLAS会在一台机器上使用尽可能多的线程。
+
+```@raw html
+<!--
+Note that while Julia code runs on a single thread (by default), libraries used by Julia may launch
+their own internal threads. For example, the BLAS library may start as many threads as there are
+cores on a machine.
+-->
+```
+
+[`@threadcall`](@ref)就是要解决[`ccall`](@ref)会卡住主线程的这个问题，它会在一个额外的线程中调度C函数的执行，有一个默认大小为4的线程库用来做这个事情，该线程库的大小可以通过环境变量`UV_THREADPOOL_SIZE`控制。在等待一个空闲线程，以及在函数执行过程中某个线程空闲下来时，（主线程的事件循环中）正在请求的task会yield到其它task，注意，`@threadcall`并不会返回，直到执行结束。从用户的角度来看，就是一个和其它Julia API一样会阻塞的模块。
+
+```@raw html
+<!--
+The [`@threadcall`](@ref) macro addresses scenarios where we do not want a [`ccall`](@ref) to block the main Julia
+event loop. It schedules a C function for execution in a separate thread. A threadpool with a
+default size of 4 is used for this. The size of the threadpool is controlled via environment variable
+`UV_THREADPOOL_SIZE`. While waiting for a free thread, and during function execution once a thread
+is available, the requesting task (on the main Julia event loop) yields to other tasks. Note that
+`@threadcall` does not return till the execution is complete. From a user point of view, it is
+therefore a blocking call like other Julia APIs.
+-->
+```
+
+非常关键的一点是，被调用的函数不会再调用回Julia。
+
+```@raw html
+<!--
+It is very important that the called function does not call back into Julia.
+-->
+```
+
+`@threadcall` 在Julia未来的版本中可能会被移除或改变。
+
+```@raw html
+<!--
+`@threadcall` may be removed/changed in future versions of Julia.
+-->
+```
+
+# 多核或分布式进程
+
+```@raw html
+<!--
+# Multi-Core or Distributed Processing
 -->
 ```
 
@@ -218,7 +1014,7 @@ julia> fetch(s)
  1.20939  1.57158
 ```
 
-注意这里执行的是`1 .+ fetch(r)`而不是`1 .+ r`。这是因为我们并不知道这段代码会在哪个进程中执行，因此，通常需要用[`fetch`](@ref)将`r`中的数据挪到当前计算加法的进程中。这时候[`@spawn`](@ref)会很智能地在拥有`r`的进程中执行计算，此时，[`fetch`](@ref)就相当于什么都不用做。(2018-07-25 译者注：我看过源码，这句话完全瞎说的，一点都不智能，[discourse](https://discourse.julialang.org/t/understanding-pid-and-rrid-in-future-objects-related-to-spawn-and-spawnat-in-documentation/9462)上也有人提出同样的疑惑，并没有人正面回答。)
+注意这里执行的是`1 .+ fetch(r)`而不是`1 .+ r`。这是因为我们并不知道这段代码会在哪个进程中执行，因此，通常需要用[`fetch`](@ref)将`r`中的数据挪到当前计算加法的进程中。这时候[`@spawn`](@ref)会很智能地在拥有`r`的进程中执行计算，此时，[`fetch`](@ref)就相当于什么都不用做。(2018-08-02 译者注：[issue#28350](https://github.com/JuliaLang/julia/issues/28350))
 
 ```@raw html
 <!--
@@ -245,6 +1041,28 @@ It is possible to define your own such constructs.)
 An important thing to remember is that, once fetched, a [`Future`](@ref) will cache its value
 locally. Further [`fetch`](@ref) calls do not entail a network hop. Once all referencing [`Future`](@ref)s
 have fetched, the remote stored value is deleted.
+-->
+```
+
+[`@async`](@ref)跟[`@spawn`](@ref)有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个**喂养**的task，每个task都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task并不会立即执行，只有在执行到[`@sync`](@ref)结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。在v0.7之后，所有的喂养taks都能够通过`nextidx`共享状态，因为他们都在同一个进程中。尽管`Tasks`是协调调度的，但在某些情况下仍然有可能发送死锁，如[asynchronous I\O](https://docs.julialang.org/en/stable/manual/faq/#Asynchronous-IO-and-concurrent-synchronous-writes-1)。上下文只会在特定时候发生切换，在这里就是执行[`remotecall_fetch`](@ref)。当然，这是当前版本（dev v0.7）的实现，未来版本中可能会改变，有望在M个进程中最多跑N个task，即[M:N 线程](https://en.wikipedia.org/wiki/Thread_(computing)#Models)。然后，`nextidx`需要加锁，从而让多个进程能够安全地对一个资源同时进行读写。
+
+```@raw html
+<!--
+[`@async`](@ref) is similar to [`@spawn`](@ref), but only runs tasks on the local process. We
+use it to create a "feeder" task for each process. Each task picks the next index that needs to
+be computed, then waits for its process to finish, then repeats until we run out of indices. Note
+that the feeder tasks do not begin to execute until the main task reaches the end of the [`@sync`](@ref)
+block, at which point it surrenders control and waits for all the local tasks to complete before
+returning from the function.
+As for v0.7 and beyond, the feeder tasks are able to share state via `nextidx` because
+they all run on the same process.
+Even if `Tasks` are scheduled cooperatively, locking may still be required in some contexts, as in [asynchronous I\O](https://docs.julialang.org/en/stable/manual/faq/#Asynchronous-IO-and-concurrent-synchronous-writes-1).
+This means context switches only occur at well-defined points: in this case,
+when [`remotecall_fetch`](@ref) is called. This is the current state of implementation (dev v0.7) and it may change
+for future Julia versions, as it is intended to make it possible to run up to N `Tasks` on M `Process`, aka
+[M:N Threading](https://en.wikipedia.org/wiki/Thread_(computing)#Models). Then a lock acquiring\releasing
+model for `nextidx` will be needed, as it is not safe to let multiple processes read-write a resource at
+the same time.
 -->
 ```
 
@@ -567,7 +1385,7 @@ statement just for this step.
 -->
 ```
 
-# 全局变量
+## 全局变量
 
 通过`@spawn`在远端执行的表达式，或者通过`remotecall`调用的闭包，有可能引用全局变量。在`Main`模块中的全局绑定和其它模块中的全局绑定有所不同，来看看下面的例子:
 
@@ -632,7 +1450,7 @@ remotecall_fetch(()->sum(A), 3) # worker 3
 A = nothing
 ```
 
-执行以上代码之后，worker 2 和worker 3中的`Main.A`的值时不同的，同时，节点1上的值则为`nothing`。
+执行以上代码之后，worker 2 和worker 3中的`Main.A`的值是不同的，同时，节点1上的值则为`nothing`。
 
 ```@raw html
 <!--
@@ -728,7 +1546,7 @@ function count_heads(n)
 end
 ```
 
-函数`count_heads`只是简单地将`n`个随机0-1值累加，下面在两个机器上进行试验，病将结果叠加：
+函数`count_heads`只是简单地将`n`个随机0-1值累加，下面在两个机器上进行试验，并将结果叠加：
 
 ```@raw html
 <!--
@@ -750,7 +1568,7 @@ julia> fetch(a)+fetch(b)
 100001564
 ```
 
-上面的例子展示了一种非常常见而且有用的并行编程模式，在一些进程中执行多次独立的迭代，然后将它们的结果通过某个函数合并到一起，这个合并操作通常称作**聚合**(*reduction*)，也就是一般意义上的tensor-rank-reducing，比如将一个向量合并成一个数，或者是将一个tensor合并到某一行或者某一列等。在代码中，通常具有`x = f(x, v[i])`这种形式，其中`x`是一个叠加器，`f`是一个聚合函数，而`v[i]`则是将要被聚合的值。一般来说，`f`要求满足结合律，这样不管执行的顺序如何，都不会影响计算结果。
+上面的例子展示了一种非常常见而且有用的并行编程模式，在一些进程中执行多次独立的迭代，然后将它们的结果通过某个函数合并到一起，这个合并操作通常称作**聚合**(*reduction*)，也就是一般意义上的**张量降维**(tensor-rank-reducing)，比如将一个向量降维成一个数，或者是将一个tensor降维到某一行或者某一列等。在代码中，通常具有`x = f(x, v[i])`这种形式，其中`x`是一个叠加器，`f`是一个聚合函数，而`v[i]`则是将要被聚合的值。一般来说，`f`要求满足结合律，这样不管执行的顺序如何，都不会影响计算结果。
 
 ```@raw html
 <!--
@@ -899,365 +1717,6 @@ of work. In contrast, `@distributed for` can handle situations where each iterat
 merely summing two numbers. Only worker processes are used by both [`pmap`](@ref) and `@distributed for`
 for the parallel computation. In case of `@distributed for`, the final reduction is done on the calling
 process.
--->
-```
-
-## 远程引用的同步
-
-```@raw html
-<!--
-## Synchronization With Remote References
--->
-```
-
-## 调度
-
-```@raw html
-<!--
-## Scheduling
--->
-```
-
-Julia的并行编程使用[Tasks (aka Coroutines)](@ref man-tasks)来切换多个计算。无论何时，当代码请求通信操作，如[`fetch`](@ref)或[`wait`](@ref)时，当前Task会挂起，调度器会选择另外一个Task去执行，直到一个Task等待的事件完成的时候才会再次恢复执行。
-
-```@raw html
-<!--
-Julia's parallel programming platform uses [Tasks (aka Coroutines)](@ref man-tasks) to switch among multiple
-computations. Whenever code performs a communication operation like [`fetch`](@ref) or [`wait`](@ref),
-the current task is suspended and a scheduler picks another task to run. A task is restarted when
-the event it is waiting for completes.
--->
-```
-
-对于许多问题而言，并不需要直接考虑Task，不过，Task可以用来同时等待多个事件，从而实现**动态调度**。在动态调度的过程中，程序可以决定计算什么，或者根据其它任务执行结束的时间决定接下来在哪里执行计算。这对于不可预测或不平衡的计算量来说是必须的，因为我们只希望给那些已经完成了其当前任务的进程分配更多的任务。
-
-```@raw html
-<!--
-For many problems, it is not necessary to think about tasks directly. However, they can be used
-to wait for multiple events at the same time, which provides for *dynamic scheduling*. In dynamic
-scheduling, a program decides what to compute or where to compute it based on when other jobs
-finish. This is needed for unpredictable or unbalanced workloads, where we want to assign more
-work to processes only when they finish their current tasks.
--->
-```
-
-例如，考虑下面这个计算不同大小矩阵的奇异值的任务：
-
-```@raw html
-<!--
-As an example, consider computing the singular values of matrices of different sizes:
--->
-```
-
-```julia-repl
-julia> M = Matrix{Float64}[rand(800,800), rand(600,600), rand(800,800), rand(600,600)];
-
-julia> pmap(svdvals, M);
-```
-
-如果一个进程既处理 800 * 800 的矩阵，又处理 600 * 600的矩阵，我们恐怕没法得到想要的可扩展性。解决的办法是，当每个进程完成了其当前的任务之后，*喂给*它新的任务。例如，考虑下面这个[`pmap`](@ref)实现：
-
-```@raw html
-<!--
-If one process handles both 800×800 matrices and another handles both 600×600 matrices, we will
-not get as much scalability as we could. The solution is to make a local task to "feed" work to
-each process when it completes its current task. For example, consider a simple [`pmap`](@ref)
-implementation:
--->
-```
-
-```julia
-function pmap(f, lst)
-    np = nprocs()  # determine the number of processes available
-    n = length(lst)
-    results = Vector{Any}(n)
-    i = 1
-    # function to produce the next work item from the queue.
-    # in this case it's just an index.
-    nextidx() = (global i; idx=i; i+=1; idx)
-    @sync begin
-        for p=1:np
-            if p != myid() || np == 1
-                @async begin
-                    while true
-                        idx = nextidx()
-                        idx > n && break
-                        results[idx] = remotecall_fetch(f, p, lst[idx])
-                    end
-                end
-            end
-        end
-    end
-    results
-end
-```
-
-[`@async`](@ref)跟[`@spawn`](@ref)有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个**喂养**的task，每个task都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task并不会立即执行，只有在执行到[`@sync`](@ref)结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。所有的喂养taks都能够通过`nextidx`共享状态，这也就意味着，只有在执行完[`remotecall_fetch`](@ref)之后才会发生上下午切换（idx发生改变）。
-
-```@raw html
-<!--
-[`@async`](@ref) is similar to [`@spawn`](@ref), but only runs tasks on the local process. We
-use it to create a "feeder" task for each process. Each task picks the next index that needs to
-be computed, then waits for its process to finish, then repeats until we run out of indices. Note
-that the feeder tasks do not begin to execute until the main task reaches the end of the [`@sync`](@ref)
-block, at which point it surrenders control and waits for all the local tasks to complete before
-returning from the function. The feeder tasks are able to share state via `nextidx` because
-they all run on the same process. No locking is required, since the threads are scheduled cooperatively
-and not preemptively. This means context switches only occur at well-defined points: in this case,
-when [`remotecall_fetch`](@ref) is called.
--->
-```
-
-## 频道(Channels)
-
-```@raw html
-<!--
-## Channels
--->
-```
-
-在[Control Flow](@ref)中有关[`Task`](@ref)的部分，已经讨论了如何协调多个函数的执行。[`Channel`](@ref)可以很方便地在多个运行中的task传递数据，特别是那些涉及I/O的操作。
-
-```@raw html
-<!--
-The section on [`Task`](@ref)s in [Control Flow](@ref) discussed the execution of multiple functions in
-a co-operative manner. [`Channel`](@ref)s can be quite useful to pass data between running tasks, particularly
-those involving I/O operations.
--->
-```
-
-典型的I/O操作包括读写文件、访问web服务、执行外部程序等。在所有这些场景中，如果其它task可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。
-
-```@raw html
-<!--
-Examples of operations involving I/O include reading/writing to files, accessing web services,
-executing external programs, etc. In all these cases, overall execution time can be improved if
-other tasks can be run while a file is being read, or while waiting for an external service/program
-to complete.
--->
-```
-
-一个channel可以看做是一个管道，一端可读，另一端可写。
-
-```@raw html
-<!--
-A channel can be visualized as a pipe, i.e., it has a write end and read end.
--->
-```
-
-  * 不同的task可以通过[`put!`](@ref)往同一个channel并发地写入。
-  * 不同的task也可以通过[`take!`](@ref)从同一个channel并发地取数据
-  * 举个例子：
-
-```@raw html
-<!--
-  * Multiple writers in different tasks can write to the same channel concurrently via [`put!`](@ref)
-    calls.
-  * Multiple readers in different tasks can read data concurrently via [`take!`](@ref) calls.
-  * As an example:
--->
-```
-
-```julia
-# Given Channels c1 and c2,
-c1 = Channel(32)
-c2 = Channel(32)
-
-# and a function `foo` which reads items from from c1, processes the item read
-# and writes a result to c2,
-function foo()
-    while true
-        data = take!(c1)
-        [...]               # process data
-        put!(c2, result)    # write out result
-    end
-end
-
-# we can schedule `n` instances of `foo` to be active concurrently.
-for _ in 1:n
-    @async foo()
-end
-```
-
-  * Channel可以通过`Channel{T}(sz)`构造，得到的channel只能存储类型`T`的数据。如果`T`没有指定，那么channel可以存任意类型。`sz`表示该channel能够存储的最大元素个数。比如`Channel(32)`得到的channel最多可以存储32个元素。而`Channel{MyType}(64)`则可以最多存储64个`MyType`类型的数据。
-  * 如果一个[`Channel`](@ref)是空的，读取的task(即执行[`take!`](@ref)的task)会被阻塞直到有新的数据准备好了。
-  * 如果一个[`Channel`](@ref)是满的，那么写入的task(即执行[`put!`](@ref)的task)则会被阻塞，直到Channel有空余。
-  * [`isready`](@ref)可以用来检查一个channel中是否有已经准备好的元素，而[`wait`](@ref)则用来等待一个元素准备好。
-  * 一个[`Channel`](@ref)一开始处于开启状态，也就是说可以被[`take!`](@ref)读取和[`put!`](@ref)写入。[`close`](@ref)会关闭一个[`Channel`](@ref)，对于一个已经关闭的[`Channel`](@ref)，[`put!](@ref)会失败，例如：
-
-```@raw html
-<!--
-  * Channels are created via the `Channel{T}(sz)` constructor. The channel will only hold objects
-    of type `T`. If the type is not specified, the channel can hold objects of any type. `sz` refers
-    to the maximum number of elements that can be held in the channel at any time. For example, `Channel(32)`
-    creates a channel that can hold a maximum of 32 objects of any type. A `Channel{MyType}(64)` can
-    hold up to 64 objects of `MyType` at any time.
-  * If a [`Channel`](@ref) is empty, readers (on a [`take!`](@ref) call) will block until data is available.
-  * If a [`Channel`](@ref) is full, writers (on a [`put!`](@ref) call) will block until space becomes available.
-  * [`isready`](@ref) tests for the presence of any object in the channel, while [`wait`](@ref)
-    waits for an object to become available.
-  * A [`Channel`](@ref) is in an open state initially. This means that it can be read from and written to
-    freely via [`take!`](@ref) and [`put!`](@ref) calls. [`close`](@ref) closes a [`Channel`](@ref).
-    On a closed [`Channel`](@ref), [`put!`](@ref) will fail. For example:
--->
-```
-
-```julia-repl
-julia> c = Channel(2);
-
-julia> put!(c, 1) # `put!` on an open channel succeeds
-1
-
-julia> close(c);
-
-julia> put!(c, 2) # `put!` on a closed channel throws an exception.
-ERROR: InvalidStateException("Channel is closed.",:closed)
-Stacktrace:
-[...]
-```
-
-  * [`take!`](@ref) 和 [`fetch`](@ref) (只读取，不会将元素从channle中删掉)仍然可以从一个已经关闭的channel中读数据，直到channel被取空了为止，例如：
-
-```@raw html
-<!--
-  * [`take!`](@ref) and [`fetch`](@ref) (which retrieves but does not remove the value) on a closed
-    channel successfully return any existing values until it is emptied. Continuing the above example:
--->
-```
-
-```julia-repl
-julia> fetch(c) # Any number of `fetch` calls succeed.
-1
-
-julia> fetch(c)
-1
-
-julia> take!(c) # The first `take!` removes the value.
-1
-
-julia> take!(c) # No more data available on a closed channel.
-ERROR: InvalidStateException("Channel is closed.",:closed)
-Stacktrace:
-[...]
-```
-
-`Channel`可以在`for`循环中遍历，此时，循环会一直运行知道`Channel`中有数据，遍历过程中会取遍加入到`Channel`中的所有值。一旦`Channel`关闭或者取空了，`for`循环就好终止。
-
-```@raw html
-<!--
-A `Channel` can be used as an iterable object in a `for` loop, in which case the loop runs as
-long as the `Channel` has data or is open. The loop variable takes on all values added to the
-`Channel`. The `for` loop is terminated once the `Channel` is closed and emptied.
--->
-```
-
-例如，下面的`for`循环会等待新的数据：
-
-```@raw html
-<!--
-For example, the following would cause the `for` loop to wait for more data:
--->
-```
-
-```julia-repl
-julia> c = Channel{Int}(10);
-
-julia> foreach(i->put!(c, i), 1:3) # add a few entries
-
-julia> data = [i for i in c]
-```
-
-而下面的则会返回已经读取的数据：
-
-```@raw html
-<!--
-while this will return after reading all data:
--->
-```
-
-```julia-repl
-julia> c = Channel{Int}(10);
-
-julia> foreach(i->put!(c, i), 1:3); # add a few entries
-
-julia> close(c);                    # `for` loops can exit
-
-julia> data = [i for i in c]
-3-element Array{Int64,1}:
- 1
- 2
- 3
-```
-
-考虑这样一个用channel做task之间通信的例子。首先，起4个task来处理一个`jobs` channel中的数据。`jobs`中的每个任务通过`job_id`来表示，然后每个task模拟读取一个`job_id`，然后随机等待一会儿，然后往一个`results`channel中写入一个Tuple，分别包含`job_id`和执行的时间，最后将结果打印出来：。
-
-```@raw html
-<!--
-Consider a simple example using channels for inter-task communication. We start 4 tasks to process
-data from a single `jobs` channel. Jobs, identified by an id (`job_id`), are written to the channel.
-Each task in this simulation reads a `job_id`, waits for a random amount of time and writes back
-a tuple of `job_id` and the simulated time to the results channel. Finally all the `results` are
-printed out.
--->
-```
-
-```julia-repl
-julia> const jobs = Channel{Int}(32);
-
-julia> const results = Channel{Tuple}(32);
-
-julia> function do_work()
-           for job_id in jobs
-               exec_time = rand()
-               sleep(exec_time)                # simulates elapsed time doing actual work
-                                               # typically performed externally.
-               put!(results, (job_id, exec_time))
-           end
-       end;
-
-julia> function make_jobs(n)
-           for i in 1:n
-               put!(jobs, i)
-           end
-       end;
-
-julia> n = 12;
-
-julia> @async make_jobs(n); # feed the jobs channel with "n" jobs
-
-julia> for i in 1:4 # start 4 tasks to process requests in parallel
-           @async do_work()
-       end
-
-julia> @elapsed while n > 0 # print out results
-           job_id, exec_time = take!(results)
-           println("$job_id finished in $(round(exec_time,2)) seconds")
-           n = n - 1
-       end
-4 finished in 0.22 seconds
-3 finished in 0.45 seconds
-1 finished in 0.5 seconds
-7 finished in 0.14 seconds
-2 finished in 0.78 seconds
-5 finished in 0.9 seconds
-9 finished in 0.36 seconds
-6 finished in 0.87 seconds
-8 finished in 0.79 seconds
-10 finished in 0.64 seconds
-12 finished in 0.5 seconds
-11 finished in 0.97 seconds
-0.029772311
-```
-
-当前版本的Julia会将所有task分发到一个操作系统的线程，因此，涉及IO的操作会从并行执行中获利，而计算密集型的task则会顺序地在单独这个线程上执行。未来Julia将支持在多个线程上调度task，从而让计算密集型task也能从并行计算中获利。
-
-```@raw html
-<!--
-The current version of Julia multiplexes all tasks onto a single OS thread. Thus, while tasks
-involving I/O operations benefit from parallel execution, compute bound tasks are effectively
-executed sequentially on a single OS thread. Future versions of Julia may support scheduling of
-tasks on multiple threads, in which case compute bound tasks will see benefits of parallel execution
-too.
 -->
 ```
 
@@ -1933,7 +2392,7 @@ A Julia cluster has the following characteristics:
 -->
 ```
 
-worker之间的连接（用的时内置的TCP/IP传输）按照以下方式进行：
+worker之间的连接（用的是内置的TCP/IP传输）按照以下方式进行：
   
   * master进程对一个`ClusterManager`对象调用[`addprocs`](@ref)
   * [`addprocs`](@ref)调用对应的[`launch`](@ref)方法，然后在对应的机器上启动相应数量的worker进程
@@ -1967,7 +2426,7 @@ manner:
 -->
 ```
 
-尽管默认的传输层使用的时[`TCPSocket`](@ref)，对于一个自定义的集群管理器来说，完全可以使用其它传输方式。
+尽管默认的传输层使用的是[`TCPSocket`](@ref)，对于一个自定义的集群管理器来说，完全可以使用其它传输方式。
 
 ```@raw html
 <!--
@@ -2450,7 +2909,7 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
 -->
 ```
 
-集群上所有的进程都共享同一个cookie，默认时master进程随机生成的字符串。
+集群上所有的进程都共享同一个cookie，默认是master进程随机生成的字符串。
 
 ```@raw html
 <!--
@@ -2488,7 +2947,7 @@ For example, cookies can be pre-shared and hence not specified as a startup argu
 -->
 ```
 
-## 指定网络拓补结构（实验性）
+## 指定网络拓补结构（实验性功能）
 
 ```@raw html
 <!--
@@ -2541,470 +3000,213 @@ in future releases.
 -->
 ```
 
-## 多线程（实验性）
+## 一些值得关注的外部库
 
 ```@raw html
 <!--
-## Multi-Threading (Experimental)
+## Noteworthy external packages
 -->
 ```
 
-除了task，远程调用，远程应用之外，Julia从`v0.5`开始就原生支持多线程。本部分内容是实验性的，未来相关接口可能会改变。
+除了Julia自带的并行机制之外，还有许多外部的库值得一提。例如[MPI.jl](https://github.com/JuliaParallel/MPI.jl)提供了一个`MPI`协议的Julia的封装，或者是在[Shared Arrays](@ref)提到的[DistributedArrays.jl](https://github.com/JuliaParallel/Distributedarrays.jl)，此外尤其值得一提的是Julia的GPU编程生态，包括：
+
+1. 底层（C内核）的[OpenCL.jl](https://github.com/JuliaGPU/OpenCL.jl) 和 [CUDAdrv.jl](https://github.com/JuliaGPU/CUDAdrv.jl)，分别提供了OpenCL和 CUDA的封装。
+
+2. 底层（Julia内核）的接口，如[CUDAnative.jl](https://github.com/JuliaGPU/CUDAnative.jl)，提供了Julia原生的CUDA实现。
+
+3. 高层的特定抽象，如[CuArrays.jl](https://github.com/JuliaGPU/CuArrays.jl) 和 [CLArrays.jl](https://github.com/JuliaGPU/CLArrays.jl)。
+
+4. 高层的库，如[ArrayFire.jl](https://github.com/JuliaComputing/ArrayFire.jl) 和 [GPUArrays.jl](https://github.com/JuliaGPU/GPUArrays.jl)。
 
 ```@raw html
 <!--
-In addition to tasks, remote calls, and remote references, Julia from `v0.5` forwards natively
-supports multi-threading. Note that this section is experimental and the interfaces may change
-in the future.
+Outside of Julia parallelism there are plenty of external packages that should be mentioned.
+For example [MPI.jl](https://github.com/JuliaParallel/MPI.jl) is a Julia wrapper for the `MPI` protocol, or
+[DistributedArrays.jl](https://github.com/JuliaParallel/Distributedarrays.jl), as presented in [Shared Arrays](@ref).
+A mention must be done to the Julia's GPU programming ecosystem, which includes :
+
+1. Low-level (C kernel) based operations [OpenCL.jl](https://github.com/JuliaGPU/OpenCL.jl) and [CUDAdrv.jl](https://github.com/JuliaGPU/CUDAdrv.jl) which are respectively an OpenCL interface and a CUDA wrapper.
+
+2. Low-level (Julia Kernel) interfaces like [CUDAnative.jl](https://github.com/JuliaGPU/CUDAnative.jl) which is a Julia native CUDA implementation.
+
+3. High-level vendor specific abstractions like [CuArrays.jl](https://github.com/JuliaGPU/CuArrays.jl) and [CLArrays.jl](https://github.com/JuliaGPU/CLArrays.jl)
+
+4. High-level libraries like [ArrayFire.jl](https://github.com/JuliaComputing/ArrayFire.jl) and [GPUArrays.jl](https://github.com/JuliaGPU/GPUArrays.jl)
 -->
 ```
 
-### 设置
+下面的例子将介绍如何用`DistributedArrays.jl`和`CuArrays.jl`通过`distribute()`和`CuArray()`将数组分配到多个进程。记住在载入`DistributedArrays.jl`时，需要用[`@everywhere`](@ref)将其载入到多个进程中。
 
 ```@raw html
 <!--
-### Setup
+In the following example we will use both `DistributedArrays.jl` and `CuArrays.jl` to distribute an array across multiple
+processes by first casting it through `distribute()` and `CuArray()`.
 -->
 ```
 
-Julia默认启动一个线程执行代码，这点可以通过[`Threads.nthreads()`](@ref)确认：
+```@raw html
+<!--
+Remember when importing `DistributedArrays.jl` to import it across all processes using [`@everywhere`](@ref)
+-->
+```
+
+
+```julia-repl
+$ ./julia -p 4
+
+julia> addprocs()
+
+julia> @everywhere using DistributedArrays
+
+julia> using CuArrays
+
+julia> B = ones(10_000) ./ 2;
+
+julia> A = ones(10_000) .* π;
+
+julia> C = 2 .* A ./ B;
+
+julia> all(C .≈ 4*π)
+true
+
+julia> typeof(C)
+Array{Float64,1}
+
+julia> dB = distribute(B);
+
+julia> dA = distribute(A);
+
+julia> dC = 2 .* dA ./ dB;
+
+julia> all(dC .≈ 4*π)
+true
+
+julia> typeof(dC)
+DistributedArrays.DArray{Float64,1,Array{Float64,1}}
+
+julia> cuB = CuArray(B);
+
+julia> cuA = CuArray(A);
+
+julia> cuC = 2 .* cuA ./ cuB;
+
+julia> all(cuC .≈ 4*π);
+true
+
+julia> typeof(cuC)
+CuArray{Float64,1}
+```
+
+要牢记，当前一些Julia的特性并没有被CUDAnative.jl [^2] 支持，尤其是一些像`sin`之类的函数需要换成`CUDAnative.sin`(cc: @maleadt)。
 
 ```@raw html
 <!--
-By default, Julia starts up with a single thread of execution. This can be verified by using the
-command [`Threads.nthreads()`](@ref):
+Keep in mind that some Julia features are not currently supported by CUDAnative.jl [^2] , especially some functions like `sin` will need to be replaced with `CUDAnative.sin`(cc: @maleadt).
+-->
+```
+
+下面的例子中，通过`DistributedArrays.jl`和`CuArrays.jl`将一个数组分配到多个进程，然后调用一个函数。
+
+```@raw html
+<!--
+In the following example we will use both `DistributedArrays.jl` and `CuArrays.jl` to distribute an array across multiple
+processes and call a generic function on it.
+-->
+```
+
+```julia
+function power_method(M, v)
+    for i in 1:100
+        v = M*v
+        v /= norm(v)
+    end
+
+    return v, norm(M*v) / norm(v)  # or  (M*v) ./ v
+end
+```
+
+`power_method`重复创建一个新的向量然后对其归一化，这里并没有在函数中指定类型信息，来看看是否对前面提到的类型适用：
+
+```@raw html
+<!--
+`power_method` repeteavely creates a new vector and normalizes it. We have not specified any type signature in
+function declaration, let's see if it works with the aforementioned datatypes:
 -->
 ```
 
 ```julia-repl
-julia> Threads.nthreads()
-1
+julia> M = [2. 1; 1 1];
+
+julia> v = rand(2)
+2-element Array{Float64,1}:
+0.40395
+0.445877
+
+julia> power_method(M,v)
+([0.850651, 0.525731], 2.618033988749895)
+
+julia> cuM = CuArray(M);
+
+julia> cuv = CuArray(v);
+
+julia> curesult = power_method(cuM, cuv);
+
+julia> typeof(curesult)
+CuArray{Float64,1}
+
+julia> dM = distribute(M);
+
+julia> dv = distribute(v);
+
+julia> dC = power_method(dM, dv);
+
+julia> typeof(dC)
+Tuple{DistributedArrays.DArray{Float64,1,Array{Float64,1}},Float64}
 ```
 
-Julia启动时的线程数可以通过环境变量`JULIA_NUM_THREADS`设置，下面启动4个线程：
+最后，我们来看看`MPI.jl`，这个库时Julia对MPI协议的封装。一一介绍其中的每个函数太累赘了，这里领会其实现协议的方法就够了。
+
+考虑下面这个简单的脚本，它做的只是调用每个子进程，然后初始化其rank，然后在master访问时，对rank求和。
 
 ```@raw html
 <!--
-The number of threads Julia starts up with is controlled by an environment variable called `JULIA_NUM_THREADS`.
-Now, let's start up Julia with 4 threads:
+To end this short exposure to external packages, we can consider `MPI.jl`, a Julia wrapper
+of the MPI protocol. As it would take too long to consider every inner function, it would be better
+to simply appreciate the approach used to implement the protocol.
 -->
 ```
-
-```bash
-export JULIA_NUM_THREADS=4
-```
-
-(上面的代码只能在Linux和OSX系统中运行，如果你在以上平台中使用的是C shell，那么将`export`改成`set`，如果你是在Windows上运行，那么将`export`改成`set`同时启动julia时指定`julia.exe`的完整路径。)
 
 ```@raw html
 <!--
-(The above command works on bourne shells on Linux and OSX. Note that if you're using a C shell
-on these platforms, you should use the keyword `set` instead of `export`. If you're on Windows,
-start up the command line in the location of `julia.exe` and use `set` instead of `export`.)
+Consider this toy script which simply calls each subprocess, instantiate its rank and when the master
+process is reached, performs the ranks' sum
 -->
 ```
 
-现在确认下确实有4个线程：
+```julia
+import MPI
 
-```@raw html
-<!--
-Let's verify there are 4 threads at our disposal.
--->
+MPI.Init()
+
+comm = MPI.COMM_WORLD
+MPI.Barrier(comm)
+
+root = 0
+r = MPI.Comm_rank(comm)
+
+sr = MPI.Reduce(r, MPI.SUM, root, comm)
+
+if(MPI.Comm_rank(comm) == root)
+   @printf("sum of ranks: %s\n", sr)
+end
+
+MPI.Finalize()
 ```
 
-```julia-repl
-julia> Threads.nthreads()
-4
+```
+mpirun -np 4 ./julia example.jl
 ```
 
-不过我们现在是在master线程，用[`Threads.threadid`](@ref)确认下：
-
-```@raw html
-<!--
-But we are currently on the master thread. To check, we use the function [`Threads.threadid`](@ref)
--->
-```
-
-```julia-repl
-julia> Threads.threadid()
-1
-```
-
-### `@threads`宏
-
-```@raw html
-<!--
-### The `@threads` Macro
--->
-```
-
-下面用一个简单的例子测试我们原生的线程，首先创建一个全零的数组：
-
-```@raw html
-<!--
-Let's work a simple example using our native threads. Let us create an array of zeros:
--->
-```
-
-```jldoctest
-julia> a = zeros(10)
-10-element Array{Float64,1}:
- 0.0
- 0.0
- 0.0
- 0.0
- 0.0
- 0.0
- 0.0
- 0.0
- 0.0
- 0.0
-```
-
-现在用4个线程模拟操作这个数组，每个线程往对应的位置写入线程ID。
-
-```@raw html
-<!--
-Let us operate on this array simultaneously using 4 threads. We'll have each thread write its
-thread ID into each location.
--->
-```
-
-Julia用[`Threads.@threads`](@ref)宏实现并行循环，该宏加在`for`循环前面，提示Julia循环部分是一个多线程的区域：
-
-```@raw html
-<!--
-Julia supports parallel loops using the [`Threads.@threads`](@ref) macro. This macro is affixed
-in front of a `for` loop to indicate to Julia that the loop is a multi-threaded region:
--->
-```
-
-```julia-repl
-julia> Threads.@threads for i = 1:10
-           a[i] = Threads.threadid()
-       end
-```
-
-每次迭代会分配到各个线程，然后每个线程往对应位置写入线程ID：
-
-```@raw html
-<!--
-The iteration space is split amongst the threads, after which each thread writes its thread ID
-to its assigned locations:
--->
-```
-
-```julia-repl
-julia> a
-10-element Array{Float64,1}:
- 1.0
- 1.0
- 1.0
- 2.0
- 2.0
- 2.0
- 3.0
- 3.0
- 4.0
- 4.0
-```
-
-注意[`Threads.@threads`](@ref)并没有一个像[`@distributed`](@ref)一样的可选的reduction参数。
-
-```@raw html
-<!--
-Note that [`Threads.@threads`](@ref) does not have an optional reduction parameter like [`@distributed`](@ref).
--->
-```
-
-Julia支持访问和修改值的**原子**操作，即，以一种线程安全的方式来避免[竞态条件](https://en.wikipedia.org/wiki/Race_condition)。一个值（必须是基本类型的，primitive type）可以通过[`Threads.Atomic`](@ref)来包装起来从而支持原子操作。下面看个例子：
-
-```@raw html
-<!--
-Julia supports accessing and modifying values *atomically*, that is, in a thread-safe way to avoid
-[race conditions](https://en.wikipedia.org/wiki/Race_condition). A value (which must be of a primitive
-type) can be wrapped as [`Threads.Atomic`](@ref) to indicate it must be accessed in this way.
-Here we can see an example:
--->
-```
-
-```julia-repl
-julia> i = Threads.Atomic{Int}(0);
-
-julia> ids = zeros(4);
-
-julia> old_is = zeros(4);
-
-julia> Threads.@threads for id in 1:4
-           old_is[id] = Threads.atomic_add!(i, id)
-           ids[id] = id
-       end
-
-julia> old_is
-4-element Array{Float64,1}:
- 0.0
- 1.0
- 7.0
- 3.0
-
-julia> ids
-4-element Array{Float64,1}:
- 1.0
- 2.0
- 3.0
- 4.0
-```
-
-如果不加`Atomic`的话，那么会因为竞态条件而得到错误的结果，下面是一个没有避免竞态条件的例子：
-
-```@raw html
-<!--
-Had we tried to do the addition without the atomic tag, we might have gotten the
-wrong answer due to a race condition. An example of what would happen if we didn't
-avoid the race:
--->
-```
-
-```julia-repl
-julia> using Base.Threads
-
-julia> nthreads()
-4
-
-julia> acc = Ref(0)
-Base.RefValue{Int64}(0)
-
-julia> @threads for i in 1:1000
-          acc[] += 1
-       end
-
-julia> acc[]
-926
-
-julia> acc = Atomic{Int64}(0)
-Atomic{Int64}(0)
-
-julia> @threads for i in 1:1000
-          atomic_add!(acc, 1)
-       end
-
-julia> acc[]
-1000
-```
-
-!!! note
-    并非**所有的**原始类型都能放在`Atomic`标签内封装起来，支持的类型有`Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `Float16`, `Float32`, 以及 `Float64`。此外，`Int128`和`UInt128`在AAarch32和ppc64le上不支持。
-
-```@raw html
-<!--
-!!! note
-    Not *all* primitive types can be wrapped in an `Atomic` tag. Supported types
-    are `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`,
-    `UInt64`, `UInt128`, `Float16`, `Float32`, and `Float64`. Additionally,
-    `Int128` and `UInt128` are not supported on AAarch32 and ppc64le.
--->
-```
-
-在使用多线程时，要非常小心使用了不纯的函数[pure function](https://en.wikipedia.org/wiki/Pure_function)，例如，用到了[以!结尾的函数](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)，通常这类函数会修改其参数，因而时不纯的。此外还有些函数没有以`!`结尾，其实也是有副作用的，比如[`findfirst(regex, str)`](@ref)就会改变`regex`参数，或者时[`rand()`](@ref)会修改`Base.GLOBAL_RNG`:
-
-```@raw html
-<!--
-When using multi-threading we have to be careful when using functions that are not
-[pure](https://en.wikipedia.org/wiki/Pure_function) as we might get a wrong answer.
-For instance functions that have their
-[name ending with `!`](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)
-by convention modify their arguments and thus are not pure. However, there are
-functions that have side effects and their name does not end with `!`. For
-instance [`findfirst(regex, str)`](@ref) mutates its `regex` argument or
-[`rand()`](@ref) changes `Base.GLOBAL_RNG` :
--->
-```
-
-```julia-repl
-julia> using Base.Threads
-
-julia> nthreads()
-4
-
-julia> function f()
-           s = repeat(["123", "213", "231"], outer=1000)
-           x = similar(s, Int)
-           rx = r"1"
-           @threads for i in 1:3000
-               x[i] = findfirst(rx, s[i]).start
-           end
-           count(v -> v == 1, x)
-       end
-f (generic function with 1 method)
-
-julia> f() # the correct result is 1000
-1017
-
-julia> function g()
-           a = zeros(1000)
-           @threads for i in 1:1000
-               a[i] = rand()
-           end
-           length(unique(a))
-       end
-g (generic function with 1 method)
-
-julia> srand(1); g() # the result for a single thread is 1000
-781
-```
-
-此时，应该重新设计代码来避免可能的竞态条件或者是使用[同步机制](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1)。
-
-```@raw html
-<!--
-In such cases one should redesign the code to avoid the possibility of a race condition or use
-[synchronization primitives](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1).
--->
-```
-
-例如，为了修正上面`findfirst`的例子，每个线程都要拷贝一份`rx`。
-
-```@raw html
-<!--
-For example in order to fix `findfirst` example above one needs to have a
-separate copy of `rx` variable for each thread:
--->
-```
-
-```julia-repl
-julia> function f_fix()
-             s = repeat(["123", "213", "231"], outer=1000)
-             x = similar(s, Int)
-             rx = [Regex("1") for i in 1:nthreads()]
-             @threads for i in 1:3000
-                 x[i] = findfirst(rx[threadid()], s[i]).start
-             end
-             count(v -> v == 1, x)
-         end
-f_fix (generic function with 1 method)
-
-julia> f_fix()
-1000
-```
-
-现在使用`Regex("1")`而不是`r"1"`来保证Julia对每个`rx`向量的元素都创建了一个`Regex`的对象。
-
-```@raw html
-<!--
-We now use `Regex("1")` instead of `r"1"` to make sure that Julia
-creates separate instances of `Regex` object for each entry of `rx` vector.
--->
-```
-
-`rand`的例子更复杂点，因为我们需要保证每个线程使用的是不重叠的随机数序列，这可以简单地通过`Future.randjump`函数保证：
-
-```@raw html
-<!--
-The case of `rand` is a bit more complex as we have to ensure that each thread
-uses non-overlapping pseudorandom number sequences. This can be simply ensured
-by using the `Future.randjump` function:
--->
-```
-
-```julia-repl
-julia> using Random; import Future
-
-julia> function g_fix(r)
-           a = zeros(1000)
-           @threads for i in 1:1000
-               a[i] = rand(r[threadid()])
-           end
-           length(unique(a))
-       end
-g_fix (generic function with 1 method)
-
-julia>  r = let m = MersenneTwister(1)
-                [m; accumulate(Future.randjump, m, fill(big(10)^20, nthreads()-1))]
-            end;
-
-julia> g_fix(r)
-1000
-```
-
-这里将`r`向量发送到`g_fix`，由于生成多个随机数是很昂贵的操作，因此我们不希望每次执行函数都重复该操作。
-
-```@raw html
-<!--
-We pass `r` vector to `g_fix` as generating several RGNs is an expensive
-operation so we do not want to repeat it every time we run the function.
--->
-```
-
-## @threadcall （实验性）
-
-```@raw html
-<!--
-## @threadcall (Experimental)
--->
-```
-
-所有的I/O task，计时器，REPL命令等都是通过一个事件循环复用的一个系统线程。有一个补丁版的libuv([http://docs.libuv.org/en/v1.x/](http://docs.libuv.org/en/v1.x/))提供了该功能，从而在同一个系统线程上协调调度多个task。I/O task和计时器在等待某个事件发生时，会隐式地退出（yield），而显式地调用[`yield`](@ref)则会允许其它task被调度。
-
-```@raw html
-<!--
-All I/O tasks, timers, REPL commands, etc are multiplexed onto a single OS thread via an event
-loop. A patched version of libuv ([http://docs.libuv.org/en/v1.x/](http://docs.libuv.org/en/v1.x/))
-provides this functionality. Yield points provide for co-operatively scheduling multiple tasks
-onto the same OS thread. I/O tasks and timers yield implicitly while waiting for the event to
-occur. Calling [`yield`](@ref) explicitly allows for other tasks to be scheduled.
--->
-```
-
-因此，一个执行[`ccall`](@ref)的task会阻止Julia的调度器执行其它task，直到调用返回，这种情况对于所有外部库的调用都存在，例外的情况是，某些自定义的C代码调用返回到了Julia中（此时有可能yield）或者C代码执行了`jl_yield()`（C中等价的[`yield`](@ref)）。
-
-```@raw html
-<!--
-Thus, a task executing a [`ccall`](@ref) effectively prevents the Julia scheduler from executing any other
-tasks till the call returns. This is true for all calls into external libraries. Exceptions are
-calls into custom C code that call back into Julia (which may then yield) or C code that calls
-`jl_yield()` (C equivalent of [`yield`](@ref)).
--->
-```
-
-注意，尽管Julia的代码默认是单线程的，但是Julia调用的库可能会用到其内部的多线程，例如，BLAS会在一台机器上使用尽可能多的线程。
-
-```@raw html
-<!--
-Note that while Julia code runs on a single thread (by default), libraries used by Julia may launch
-their own internal threads. For example, the BLAS library may start as many threads as there are
-cores on a machine.
--->
-```
-
-[`@threadcall`](@ref)就是要解决[`ccall`](@ref)会卡住主线程的这个问题，它会在一个额外的线程中调度C函数的执行，有一个默认大小为4的线程库用来做这个事情，该线程库的大小可以通过环境变量`UV_THREADPOOL_SIZE`控制。在等待一个空闲线程，以及在函数执行过程中某个线程空闲下来时，（主线程的事件循环中）正在请求的task会yield到其它task，注意，`@threadcall`并不会返回，直到执行结束。从用户的角度来看，就是一个和其它Julia API一样会阻塞的模块。
-
-```@raw html
-<!--
-The [`@threadcall`](@ref) macro addresses scenarios where we do not want a [`ccall`](@ref) to block the main Julia
-event loop. It schedules a C function for execution in a separate thread. A threadpool with a
-default size of 4 is used for this. The size of the threadpool is controlled via environment variable
-`UV_THREADPOOL_SIZE`. While waiting for a free thread, and during function execution once a thread
-is available, the requesting task (on the main Julia event loop) yields to other tasks. Note that
-`@threadcall` does not return till the execution is complete. From a user point of view, it is
-therefore a blocking call like other Julia APIs.
--->
-```
-
-非常关键的一点是，被调用的函数不会再调用回Julia。
-
-```@raw html
-<!--
-It is very important that the called function does not call back into Julia.
--->
-```
-
-`@threadcall` 在Julia未来的版本中可能会被移除或改变。
-
-```@raw html
-<!--
-`@threadcall` may be removed/changed in future versions of Julia.
--->
-```
 
 [^1]:
     在这里，MPI 指的是MPI-1标准。从MPI-2开始，MPI标准委员会引入了一种新的通信机制，统称远程内存访问(Remote Memory Access, RMA)。引入远程内存访问机制的目的是为了方便单向通信模式，更多信息可以访问最新的MPI标准[http://mpi-forum.org/docs](http://mpi-forum.org/docs/)
@@ -3018,3 +3220,6 @@ It is very important that the called function does not call back into Julia.
     patterns. For additional information on the latest MPI standard, see [http://mpi-forum.org/docs](http://mpi-forum.org/docs/).
 -->
 ```
+
+[^2]:
+    [Julia GPU man pages](http://juliagpu.github.io/CUDAnative.jl/stable/man/usage.html#Julia-support-1)
