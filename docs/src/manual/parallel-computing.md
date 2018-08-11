@@ -133,7 +133,7 @@ to complete.
 
 ```@raw html
 <!--
-A channel can be visualized as a pipe, i.e., it has a write end and read end.
+A channel can be visualized as a pipe, i.e., it has a write end and a read end :
 -->
 ```
 
@@ -167,30 +167,30 @@ end
 
 # we can schedule `n` instances of `foo` to be active concurrently.
 for _ in 1:n
-    @async foo()
+    @schedule foo()
 end
 ```
 
-  * Channel可以通过`Channel{T}(sz)`构造，得到的channel只能存储类型`T`的数据。如果`T`没有指定，那么channel可以存任意类型。`sz`表示该channel能够存储的最大元素个数。比如`Channel(32)`得到的channel最多可以存储32个元素。而`Channel{MyType}(64)`则可以最多存储64个`MyType`类型的数据。
-  * 如果一个[`Channel`](@ref)是空的，读取的task(即执行[`take!`](@ref)的task)会被阻塞直到有新的数据准备好了。
-  * 如果一个[`Channel`](@ref)是满的，那么写入的task(即执行[`put!`](@ref)的task)则会被阻塞，直到Channel有空余。
-  * [`isready`](@ref)可以用来检查一个channel中是否有已经准备好的元素，而[`wait`](@ref)则用来等待一个元素准备好。
-  * 一个[`Channel`](@ref)一开始处于开启状态，也就是说可以被[`take!`](@ref)读取和[`put!`](@ref)写入。[`close`](@ref)会关闭一个[`Channel`](@ref)，对于一个已经关闭的[`Channel`](@ref)，[`put!](@ref)会失败，例如：
+* Channel可以通过`Channel{T}(sz)`构造，得到的channel只能存储类型`T`的数据。如果`T`没有指定，那么channel可以存任意类型。`sz`表示该channel能够存储的最大元素个数。比如`Channel(32)`得到的channel最多可以存储32个元素。而`Channel{MyType}(64)`则可以最多存储64个`MyType`类型的数据。
+* 如果一个[`Channel`](@ref)是空的，读取的task(即执行[`take!`](@ref)的task)会被阻塞直到有新的数据准备好了。
+* 如果一个[`Channel`](@ref)是满的，那么写入的task(即执行[`put!`](@ref)的task)则会被阻塞，直到Channel有空余。
+* [`isready`](@ref)可以用来检查一个channel中是否有已经准备好的元素，而[`wait`](@ref)则用来等待一个元素准备好。
+* 一个[`Channel`](@ref)一开始处于开启状态，也就是说可以被[`take!`](@ref)读取和[`put!`](@ref)写入。[`close`](@ref)会关闭一个[`Channel`](@ref)，对于一个已经关闭的[`Channel`](@ref)，[`put!](@ref)会失败，例如：
 
 ```@raw html
 <!--
-  * Channels are created via the `Channel{T}(sz)` constructor. The channel will only hold objects
-    of type `T`. If the type is not specified, the channel can hold objects of any type. `sz` refers
-    to the maximum number of elements that can be held in the channel at any time. For example, `Channel(32)`
-    creates a channel that can hold a maximum of 32 objects of any type. A `Channel{MyType}(64)` can
-    hold up to 64 objects of `MyType` at any time.
-  * If a [`Channel`](@ref) is empty, readers (on a [`take!`](@ref) call) will block until data is available.
-  * If a [`Channel`](@ref) is full, writers (on a [`put!`](@ref) call) will block until space becomes available.
-  * [`isready`](@ref) tests for the presence of any object in the channel, while [`wait`](@ref)
-    waits for an object to become available.
-  * A [`Channel`](@ref) is in an open state initially. This means that it can be read from and written to
-    freely via [`take!`](@ref) and [`put!`](@ref) calls. [`close`](@ref) closes a [`Channel`](@ref).
-    On a closed [`Channel`](@ref), [`put!`](@ref) will fail. For example:
+* Channels are created via the `Channel{T}(sz)` constructor. The channel will only hold objects
+  of type `T`. If the type is not specified, the channel can hold objects of any type. `sz` refers
+  to the maximum number of elements that can be held in the channel at any time. For example, `Channel(32)`
+  creates a channel that can hold a maximum of 32 objects of any type. A `Channel{MyType}(64)` can
+  hold up to 64 objects of `MyType` at any time.
+* If a [`Channel`](@ref) is empty, readers (on a [`take!`](@ref) call) will block until data is available.
+* If a [`Channel`](@ref) is full, writers (on a [`put!`](@ref) call) will block until space becomes available.
+* [`isready`](@ref) tests for the presence of any object in the channel, while [`wait`](@ref)
+  waits for an object to become available.
+* A [`Channel`](@ref) is in an open state initially. This means that it can be read from and written to
+  freely via [`take!`](@ref) and [`put!`](@ref) calls. [`close`](@ref) closes a [`Channel`](@ref).
+  On a closed [`Channel`](@ref), [`put!`](@ref) will fail. For example:
 -->
 ```
 
@@ -315,10 +315,10 @@ julia> function make_jobs(n)
 
 julia> n = 12;
 
-julia> @async make_jobs(n); # feed the jobs channel with "n" jobs
+julia> @schedule make_jobs(n); # feed the jobs channel with "n" jobs
 
 julia> for i in 1:4 # start 4 tasks to process requests in parallel
-           @async do_work()
+           @schedule do_work()
        end
 
 julia> @elapsed while n > 0 # print out results
@@ -357,7 +357,7 @@ too.
 
 ```@raw html
 <!--
-## Multi-Threading (Experimental)
+# Multi-Threading (Experimental)
 -->
 ```
 
@@ -366,16 +366,15 @@ too.
 ```@raw html
 <!--
 In addition to tasks Julia forwards natively supports multi-threading.
-supports multi-threading. Note that this section is experimental and the interfaces may change
-in the future.
+Note that this section is experimental and the interfaces may change in the future.
 -->
 ```
 
-### 设置
+## 设置
 
 ```@raw html
 <!--
-### Setup
+## Setup
 -->
 ```
 
@@ -442,11 +441,11 @@ julia> Threads.threadid()
 1
 ```
 
-### `@threads`宏
+## `@threads`宏
 
 ```@raw html
 <!--
-### The `@threads` Macro
+## The `@threads` Macro
 -->
 ```
 
@@ -526,6 +525,14 @@ julia> a
 ```@raw html
 <!--
 Note that [`Threads.@threads`](@ref) does not have an optional reduction parameter like [`@distributed`](@ref).
+-->
+```
+
+## 原子操作
+
+```@raw html
+<!--
+## Atomic Operations
 -->
 ```
 
@@ -619,12 +626,16 @@ julia> acc[]
 
 ## 副作用和可变的函数参数
 
+```@raw html
+<!--
+## Side effects and mutable function arguments
+-->
+```
+
 在使用多线程时，要非常小心使用了不纯的函数[pure function](https://en.wikipedia.org/wiki/Pure_function)，例如，用到了[以!结尾的函数](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)，通常这类函数会修改其参数，因而是不纯的。此外还有些函数没有以`!`结尾，其实也是有副作用的，比如[`findfirst(regex, str)`](@ref)就会改变`regex`参数，或者是[`rand()`](@ref)会修改`Base.GLOBAL_RNG`:
 
 ```@raw html
 <!--
-## Side effects and mutable function arguments
-
 When using multi-threading we have to be careful when using functions that are not
 [pure](https://en.wikipedia.org/wiki/Pure_function) as we might get a wrong answer.
 For instance functions that have their
@@ -665,7 +676,7 @@ julia> function g()
        end
 g (generic function with 1 method)
 
-julia> srand(1); g() # the result for a single thread is 1000
+julia> Random.seed!(1); g() # the result for a single thread is 1000
 781
 ```
 
@@ -718,7 +729,7 @@ creates separate instances of `Regex` object for each entry of `rx` vector.
 <!--
 The case of `rand` is a bit more complex as we have to ensure that each thread
 uses non-overlapping pseudorandom number sequences. This can be simply ensured
-by using the `Future.randjump` function:
+by using `Future.randjump` function:
 -->
 ```
 
@@ -746,7 +757,7 @@ julia> g_fix(r)
 
 ```@raw html
 <!--
-We pass `r` vector to `g_fix` as generating several RGNs is an expensive
+We pass the `r` vector to `g_fix` as generating several RGNs is an expensive
 operation so we do not want to repeat it every time we run the function.
 -->
 ```
@@ -810,7 +821,7 @@ therefore a blocking call like other Julia APIs.
 
 ```@raw html
 <!--
-It is very important that the called function does not call back into Julia.
+It is very important that the called function does not call back into Julia, as it will segfault.
 -->
 ```
 
@@ -860,7 +871,7 @@ Julia的消息传递机制与一些其它的框架不太一样，比如 MPI [^1]
 
 ```@raw html
 <!--
-Julia's implementation of message passing is different from other environments such as MPI [^1]
+Julia's implementation of message passing is different from other environments such as MPI [^1].
 Communication in Julia is generally "one-sided", meaning that the programmer needs to explicitly
 manage only one process in a two-process operation. Furthermore, these operations typically do
 not look like "message send" and "message receive" but rather resemble higher-level operations
@@ -1387,11 +1398,16 @@ statement just for this step.
 
 ## 全局变量
 
+```@raw html
+<!--
+## Global variables
+-->
+```
+
 通过`@spawn`在远端执行的表达式，或者通过`remotecall`调用的闭包，有可能引用全局变量。在`Main`模块中的全局绑定和其它模块中的全局绑定有所不同，来看看下面的例子:
 
 ```@raw html
 <!--
-# Global variables
 Expressions executed remotely via `@spawn`, or closures specified for remote execution using
 `remotecall` may refer to global variables. Global bindings under module `Main` are treated
 a little differently compared to global bindings in other modules. Consider the following code
@@ -1803,28 +1819,28 @@ remote store.
 -->
 ```
 
-  * 一个[`Channel`](@ref)仅对局部的进程可见，worker 2无法直接访问worker 3上的`Channel`，反之亦如此。不过[`RemoteChannel`](@ref)可以跨worker获取和写入数据。
-  * [`RemoteChannel`](@ref)可以看作是对`Channel`的封装。
-  * [`RemoteChannel`](@ref)的`pid`就是其封装的channel所在的进程id。
+  * 一个[`Channel`](@ref)仅对局部的进程可见，worker 2无法直接访问worker 3上的[`Channel`](@ref)，反之亦如此。不过[`RemoteChannel`](@ref)可以跨worker获取和写入数据。
+  * [`RemoteChannel`](@ref)可以看作是对[`Channel`](@ref)的封装。
+  * [`RemoteChannel`](@ref)的`pid`就是其封装的[`Channel`](@ref)所在的进程id。
   * 任意拥有[`RemoteChannel`](@ref)引用的进程都可以对其进行读写，数据会自动发送到[`RemoteChannel`](@ref)底层channel的进程（或从中获取数据）
-  * 序列化`Channel`会将其中的所有数据也都序列化，因此反序列化的时候也就可以得到一个原始数据的拷贝。
-  * 不过，对[`RemoteChannel`](@ref)的序列化则只会序列化其底层指向的channel的id，因此反序列化之后得到的对象仍然会指向之前存储的对象。
+  * 序列化[`Channel`](@ref)会将其中的所有数据也都序列化，因此反序列化的时候也就可以得到一个原始数据的拷贝。
+  * 不过，对[`RemoteChannel`](@ref)的序列化则只会序列化其底层指向的[`Channel`](@ref)的id，因此反序列化之后得到的对象仍然会指向之前存储的对象。
 
 
 ```@raw html
 <!--
-  * A [`Channel`](@ref) is local to a process. Worker 2 cannot directly refer to a `Channel` on worker 3 and
+  * A [`Channel`](@ref) is local to a process. Worker 2 cannot directly refer to a [`Channel`](@ref) on worker 3 and
     vice-versa. A [`RemoteChannel`](@ref), however, can put and take values across workers.
-  * A [`RemoteChannel`](@ref) can be thought of as a *handle* to a `Channel`.
+  * A [`RemoteChannel`](@ref) can be thought of as a *handle* to a [`Channel`](@ref).
   * The process id, `pid`, associated with a [`RemoteChannel`](@ref) identifies the process where
-    the backing store, i.e., the backing `Channel` exists.
+    the backing store, i.e., the backing [`Channel`](@ref) exists.
   * Any process with a reference to a [`RemoteChannel`](@ref) can put and take items from the channel.
     Data is automatically sent to (or retrieved from) the process a [`RemoteChannel`](@ref) is associated
     with.
-  * Serializing  a `Channel` also serializes any data present in the channel. Deserializing it therefore
+  * Serializing  a [`Channel`](@ref) also serializes any data present in the channel. Deserializing it therefore
     effectively makes a copy of the original object.
   * On the other hand, serializing a [`RemoteChannel`](@ref) only involves the serialization of an
-    identifier that identifies the location and instance of `Channel` referred to by the handle. A
+    identifier that identifies the location and instance of [`Channel`](@ref) referred to by the handle. A
     deserialized [`RemoteChannel`](@ref) object (on any worker), therefore also points to the same
     backing store as the original.
 -->
@@ -1900,11 +1916,11 @@ julia> @elapsed while n > 0 # print out results
 0.055971741
 ```
 
-## 远程调用和分布式垃圾回收
+### 远程调用和分布式垃圾回收
 
 ```@raw html
 <!--
-## Remote References and Distributed Garbage Collection
+### Remote References and Distributed Garbage Collection
 -->
 ```
 
@@ -2324,11 +2340,11 @@ each to compute for an extended time on the assigned piece.
 -->
 ```
 
-## 共享数组与分布式垃圾回收
+### 共享数组与分布式垃圾回收
 
 ```@raw html
 <!--
-## Shared Arrays and Distributed Garbage Collection
+### Shared Arrays and Distributed Garbage Collection
 -->
 ```
 
@@ -2663,11 +2679,6 @@ would typically specify only `io` or `host` / `port`:
   * `count`, `exename` and `exeflags` are relevant for launching additional workers from a worker.
     For example, a cluster manager may launch a single worker per node, and use that to launch additional
     workers.
--->
-```
-
-```@raw html
-<!--
       * `count` with an integer value `n` will launch a total of `n` workers.
       * `count` with a value of `:auto` will launch as many workers as the number of CPU threads (logical cores) on that machine.
       * `exename` is the name of the `julia` executable including the full path.
@@ -2700,11 +2711,11 @@ times during the worker's lifetime with appropriate `op` values:
 -->
 ```
 
-## 自定义集群管理器的传输方式
+### 自定义集群管理器的传输方式
 
 ```@raw html
 <!--
-## Cluster Managers with Custom Transports
+### Cluster Managers with Custom Transports
 -->
 ```
 
@@ -2836,11 +2847,11 @@ sockets for cluster setup.
 -->
 ```
 
-## LocalManager和SSHManager的网络要求
+### LocalManager和SSHManager的网络要求
 
 ```@raw html
 <!--
-## Network Requirements for LocalManager and SSHManager
+### Network Requirements for LocalManager and SSHManager
 -->
 ```
 
@@ -2901,11 +2912,11 @@ requirements for the inbuilt `LocalManager` and `SSHManager`:
 -->
 ```
 
-## [集群 Cookie](@id man-cluster-cookie)
+### [集群 Cookie](@id man-cluster-cookie)
 
 ```@raw html
 <!--
-## [Cluster Cookie](@id man-cluster-cookie)
+### [Cluster Cookie](@id man-cluster-cookie)
 -->
 ```
 
