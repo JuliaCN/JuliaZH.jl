@@ -32,7 +32,7 @@ script:
  # build docs
  - julia -e 'using Pkg; Pkg.add("Documenter")'
  - cp -r zh_CN/* ./
- - julia /doc/make.jl
+ - cd doc && julia make.jl
 
 after_success:
   # # push coverage results to Coveralls
