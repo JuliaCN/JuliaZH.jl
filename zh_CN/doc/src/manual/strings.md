@@ -20,8 +20,8 @@ corrupt results. When this happens, modifying the code to handle non-ASCII data 
 
 关于Julia的字符串类型有一些值得注意的高级特性：
 
-  * The built-in concrete type used for strings (and string literals) in Julia is [`String`](@ref).
-    This supports the full range of [Unicode](https://en.wikipedia.org/wiki/Unicode) characters via
+  * Julia中用于字符串（和字符串文字）的内置具体类型是[`String`](@ref)。
+    它支持全部[Unicode](https://en.wikipedia.org/wiki/Unicode)字符
     the [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding. (A [`transcode`](@ref) function is
     provided to convert to/from other Unicode encodings.)
   * All string types are subtypes of the abstract type `AbstractString`, and external packages define

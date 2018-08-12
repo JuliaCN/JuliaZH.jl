@@ -2,16 +2,13 @@
 
 ## Introduction
 
-Julia Base contains a range of functions and macros appropriate for performing
-scientific and numerical computing, but is also as broad as those of many general purpose programming
-languages.  Additional functionality is available from a growing collection of available packages.
-Functions are grouped by topic below.
+Julia Base包含一系列针对科学及数学计算而特殊设计的函数和宏，丰富性同传统的通用编程语言相当。同时，用户可以通过安装拓展包来增加Julia语言的功能。函数按主题划分如下：
 
 Some general notes:
 
-  * To use module functions, use `import Module` to import the module, and `Module.fn(x)` to use the
+  * 可以通过`Import Module`导入想要使用的模块，并利用`Module.fn(x)`语句来实现对模块内函数的调用。
     functions.
-  * Alternatively, `using Module` will import all exported `Module` functions into the current namespace.
+  * 此外，`using Module`语句会将名为`Module`的模块中的所有可调函数引入当前的命名空间。
   * By convention, function names ending with an exclamation point (`!`) modify their arguments.
     Some functions have both modifying (e.g., `sort!`) and non-modifying (`sort`) versions.
 

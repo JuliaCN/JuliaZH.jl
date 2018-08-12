@@ -522,7 +522,7 @@ julia> const z = 100
 julia> z = 100
 100
 ```
-The last rule applies for immutable objects even if the vairable binding would change, e.g.:
+最后一条规则适用于不可变对象，即使变量绑定会改变，例如：
 ```julia-repl
 julia> const s1 = "1"
 "1"

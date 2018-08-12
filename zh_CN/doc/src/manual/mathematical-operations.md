@@ -4,7 +4,7 @@ Julia 为它所有的基础数值类型，提供了整套的基础算术和位�
 
 ## 算术运算符
 
-以下 [算术运算符](https://en.wikipedia.org/wiki/Arithmetic#Arithmetic_operations
+以下 [算术运算符](https://en.wikipedia.org/wiki/Arithmetic#Arithmetic_operations)
 支持所有的基本算术类型：
 
 | 表达式 | 名称           | 描述                            |
@@ -173,7 +173,7 @@ For example, it is not clear whether `1.+x` means `1. + x` or `1 .+ x`.
 Therefore this syntax is disallowed, and spaces must be used around
 the operator in such cases.
 
-## Numeric Comparisons
+## 数值比较
 
 Standard comparison operations are defined for all the primitive numeric types:
 
@@ -335,7 +335,7 @@ comparison is undefined. It is strongly recommended not to use expressions with 
 as printing) in chained comparisons. If side effects are required, the short-circuit `&&` operator
 should be used explicitly (see [Short-Circuit Evaluation](@ref)).
 
-### Elementary Functions
+### 基础函数
 
 Julia provides a comprehensive collection of mathematical functions and operators. These mathematical
 operations are defined over as broad a class of numerical values as permit sensible definitions,

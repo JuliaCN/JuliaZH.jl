@@ -441,7 +441,7 @@ Julia 所使用的默认模式总是 [`RoundNearest`](@ref)，指的是会舍入
 
   * 浮点算术的权威性指南是 [IEEE 754-2008 Standard](http://standards.ieee.org/findstds/standard/754-2008.html);
     然而在网上无法免费获得。
-  * 关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 在这个主题上的 [文章](https://www.johndcook.com/blog/2009/04/06/anatomy-of-a-floating-point-number/)以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的 [介绍](https://www.johndcook.com/blog/2009/04/06/numbers-are-a-leaky-abstraction/)
+  * 关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 在这个主题上的 [文章](https://www.johndcook.com/blog/2009/04/06/anatomy-of-a-floating-point-number/)以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的[介绍](https://www.johndcook.com/blog/2009/04/06/numbers-are-a-leaky-abstraction/)
      
      
      

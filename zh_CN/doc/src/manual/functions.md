@@ -1,8 +1,6 @@
 # [函数](@id man-functions)
 
-In Julia, a function is an object that maps a tuple of argument values to a return value. Julia
-functions are not pure mathematical functions, in the sense that functions can alter and be affected
-by the global state of the program. The basic syntax for defining functions in Julia is:
+在Julia里，函数是一个将参数值元组映射到返回值的对象。Julia的函数不是纯粹的数学函数，在某种意义上，函数可以改变并受程序的全局状态的影响。在Julia中定义函数的基本语法是：
 
 ```jldoctest
 julia> function f(x,y)
@@ -11,8 +9,7 @@ julia> function f(x,y)
 f (generic function with 1 method)
 ```
 
-There is a second, more terse syntax for defining a function in Julia. The traditional function
-declaration syntax demonstrated above is equivalent to the following compact "assignment form":
+在Julia中定义函数还有第二种更简洁的语法。上述的传统函数声明语法等效于以下紧凑性的“赋值形式”：
 
 ```jldoctest fofxy
 julia> f(x,y) = x + y
@@ -31,8 +28,7 @@ julia> f(2,3)
 5
 ```
 
-Without parentheses, the expression `f` refers to the function object, and can be passed around
-like any value:
+没有括号的表达式`f`指的是函数对象，可以像任何值一样传递：
 
 ```jldoctest fofxy
 julia> g = f;
@@ -60,13 +56,9 @@ are identical to the passed values. Modifications to mutable values (such as `Ar
 a function will be visible to the caller. This is the same behavior found in Scheme, most Lisps,
 Python, Ruby and Perl, among other dynamic languages.
 
-## The `return` Keyword
+## `return`关键词
 
-The value returned by a function is the value of the last expression evaluated, which, by default,
-is the last expression in the body of the function definition. In the example function, `f`, from
-the previous section this is the value of the expression `x + y`. As in C and most other imperative
-or functional languages, the `return` keyword causes a function to return immediately, providing
-an expression whose value is returned:
+函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在示例函数中`f`，从上一节开始，这是表达式的 `x + y`值。与在C和大多数其他命令式或函数式语言中一样，`return`关键字会导致函数立即返回，从而提供返回值的表达式：
 
 ```julia
 function g(x,y)
@@ -75,8 +67,7 @@ function g(x,y)
 end
 ```
 
-Since function definitions can be entered into interactive sessions, it is easy to compare these
-definitions:
+由于函数定义可以输入到交互式会话中，因此可以很容易的比较这些定义：
 
 ```jldoctest
 julia> f(x,y) = x + y
@@ -121,12 +112,9 @@ julia> hypot(3, 4)
 5.0
 ```
 
-There are three possible points of return from this function, returning the values of three different
-expressions, depending on the values of `x` and `y`. The `return` on the last line could be omitted
-since it is the last expression.
+这个函数有三个可能的返回处，返回三个不同表达式的值，具体取决于`x`和`y`的值。 最后一行的`return`可以省略，因为它是最后一个表达式。
 
-A return type can also be specified in the function declaration using the `::` operator. This converts
-the return value to the specified type.
+也可以使用`::`运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。
 
 ```jldoctest
 julia> function g(x, y)::Int8
@@ -137,8 +125,7 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-This function will always return an `Int8` regardless of the types of `x` and `y`.
-See [Type Declarations](@ref) for more on return types.
+这个函数将忽略`x` 和`y`的类型，返回`Int8`类型的值。有关返回类型的更多信息，请参见 [类型说明](@ref)。
 
 ## Operators Are Functions
 
@@ -184,7 +171,7 @@ A few special expressions correspond to calls to functions with non-obvious name
 | `A.n`             | [`getproperty`](@ref Base.getproperty) |
 | `A.n = x`         | [`setproperty!`](@ref Base.setproperty!) |
 
-## [Anonymous Functions](@id man-anonymous-functions)
+## [匿名函数](@id man-anonymous-functions)
 
 Functions in Julia are [first-class objects](https://en.wikipedia.org/wiki/First-class_citizen):
 they can be assigned to variables, and called using the standard function call syntax from the
@@ -236,7 +223,7 @@ A zero-argument anonymous function is written as `()->3`. The idea of a function
 may seem strange, but is useful for "delaying" a computation. In this usage, a block of code is
 wrapped in a zero-argument function, which is later invoked by calling it as `f`.
 
-## Tuples
+## 元组（Tuples）
 
 Julia has a built-in data structure called a *tuple* that is closely related to function
 arguments and return values.
@@ -258,9 +245,7 @@ julia> x[2]
 "hello"
 ```
 
-Notice that a length-1 tuple must be written with a comma, `(1,)`, since `(1)` would just
-be a parenthesized value.
-`()` represents the empty (length-0) tuple.
+注意，长度为1的元组必须使用逗号`(1,)`，而`(1)`只是一个带括号的值。`()`表示空元组（长度为0）。
 
 ## Named Tuples
 
@@ -278,7 +263,7 @@ julia> x.a
 Named tuples are very similar to tuples, except that fields can additionally be accessed by name
 using dot syntax (`x.a`).
 
-## Multiple Return Values
+## 多返回值
 
 In Julia, one returns a tuple of values to simulate returning multiple values. However, tuples
 can be created and destructured without needing parentheses, thereby providing an illusion that
@@ -322,7 +307,7 @@ function foo(a,b)
 end
 ```
 
-This has the exact same effect as the previous definition of `foo`.
+这与之前的定义的`foo`函数具有完全相同的效果。
 
 ## Argument destructuring
 
@@ -771,7 +756,7 @@ julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]
  true
 ```
 
-## Further Reading
+## 更多阅读
 
 We should mention here that this is far from a complete picture of defining functions. Julia has
 a sophisticated type system and allows multiple dispatch on argument types. None of the examples

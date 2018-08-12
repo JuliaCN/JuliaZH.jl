@@ -196,7 +196,7 @@ julia> typeof(ex)
 Expr
 ```
 
-### Interpolation
+### 插值
 
 Direct construction of `Expr` objects with value arguments is powerful, but `Expr` constructors
 can be tedious compared to "normal" Julia syntax. As an alternative, Julia allows *interpolation* of
