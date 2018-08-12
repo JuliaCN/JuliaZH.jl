@@ -1,0 +1,653 @@
+[main]
+host = https://www.transifex.com
+
+[manual-zh_cn.arraysmd]
+file_filter = <lang>/doc/src/manual/arrays.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.calling-c-and-fortran-codemd]
+file_filter = <lang>/doc/src/manual/calling-c-and-fortran-code.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.code-loadingmd]
+file_filter = <lang>/doc/src/manual/code-loading.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.complex-and-rational-numbersmd]
+file_filter = <lang>/doc/src/manual/complex-and-rational-numbers.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.constructorsmd]
+file_filter = <lang>/doc/src/manual/constructors.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.control-flowmd]
+file_filter = <lang>/doc/src/manual/control-flow.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.conversion-and-promotionmd]
+file_filter = <lang>/doc/src/manual/conversion-and-promotion.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.documentationmd]
+file_filter = <lang>/doc/src/manual/documentation.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.embeddingmd]
+file_filter = <lang>/doc/src/manual/embedding.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.environment-variablesmd]
+file_filter = <lang>/doc/src/manual/environment-variables.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.faqmd]
+file_filter = <lang>/doc/src/manual/faq.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.functionsmd]
+file_filter = <lang>/doc/src/manual/functions.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.getting-startedmd]
+file_filter = <lang>/doc/src/manual/getting-started.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.handling-operating-system-variationmd]
+file_filter = <lang>/doc/src/manual/handling-operating-system-variation.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.indexmd]
+file_filter = <lang>/doc/src/manual/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.integers-and-floating-point-numbersmd]
+file_filter = <lang>/doc/src/manual/integers-and-floating-point-numbers.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.interfacesmd]
+file_filter = <lang>/doc/src/manual/interfaces.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.mathematical-operationsmd]
+file_filter = <lang>/doc/src/manual/mathematical-operations.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.metaprogrammingmd]
+file_filter = <lang>/doc/src/manual/metaprogramming.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.methodsmd]
+file_filter = <lang>/doc/src/manual/methods.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.missingmd]
+file_filter = <lang>/doc/src/manual/missing.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.modulesmd]
+file_filter = <lang>/doc/src/manual/modules.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.networking-and-streamsmd]
+file_filter = <lang>/doc/src/manual/networking-and-streams.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.noteworthy-differencesmd]
+file_filter = <lang>/doc/src/manual/noteworthy-differences.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.parallel-computingmd]
+file_filter = <lang>/doc/src/manual/parallel-computing.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.performance-tipsmd]
+file_filter = <lang>/doc/src/manual/performance-tips.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.profilemd]
+file_filter = <lang>/doc/src/manual/profile.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.running-external-programsmd]
+file_filter = <lang>/doc/src/manual/running-external-programs.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.stacktracesmd]
+file_filter = <lang>/doc/src/manual/stacktraces.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.stringsmd]
+file_filter = <lang>/doc/src/manual/strings.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.style-guidemd]
+file_filter = <lang>/doc/src/manual/style-guide.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.typesmd]
+file_filter = <lang>/doc/src/manual/types.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.unicode-inputmd]
+file_filter = <lang>/doc/src/manual/unicode-input.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.variables-and-scopingmd]
+file_filter = <lang>/doc/src/manual/variables-and-scoping.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.variablesmd]
+file_filter = <lang>/doc/src/manual/variables.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.workflow-tipsmd]
+file_filter = <lang>/doc/src/manual/workflow-tips.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+
+[devdocs-zh_cn.astmd]
+file_filter = <lang>/doc/src/devdocs/ast.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.backtracesmd]
+file_filter = <lang>/doc/src/devdocs/backtraces.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.boundscheckmd]
+file_filter = <lang>/doc/src/devdocs/boundscheck.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.callconvmd]
+file_filter = <lang>/doc/src/devdocs/callconv.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.cartesianmd]
+file_filter = <lang>/doc/src/devdocs/cartesian.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.compilermd]
+file_filter = <lang>/doc/src/devdocs/compiler.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.debuggingtipsmd]
+file_filter = <lang>/doc/src/devdocs/debuggingtips.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.evalmd]
+file_filter = <lang>/doc/src/devdocs/eval.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.functionsmd]
+file_filter = <lang>/doc/src/devdocs/functions.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.gc-samd]
+file_filter = <lang>/doc/src/devdocs/gc-sa.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.inferencemd]
+file_filter = <lang>/doc/src/devdocs/inference.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.initmd]
+file_filter = <lang>/doc/src/devdocs/init.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.isbitsunionarraysmd]
+file_filter = <lang>/doc/src/devdocs/isbitsunionarrays.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.llvmmd]
+file_filter = <lang>/doc/src/devdocs/llvm.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.locksmd]
+file_filter = <lang>/doc/src/devdocs/locks.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.metamd]
+file_filter = <lang>/doc/src/devdocs/meta.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.objectmd]
+file_filter = <lang>/doc/src/devdocs/object.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.offset-arraysmd]
+file_filter = <lang>/doc/src/devdocs/offset-arrays.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.reflectionmd]
+file_filter = <lang>/doc/src/devdocs/reflection.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.requiremd]
+file_filter = <lang>/doc/src/devdocs/require.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.sanitizersmd]
+file_filter = <lang>/doc/src/devdocs/sanitizers.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.ssairmd]
+file_filter = <lang>/doc/src/devdocs/ssair.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.stdiomd]
+file_filter = <lang>/doc/src/devdocs/stdio.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.subarraysmd]
+file_filter = <lang>/doc/src/devdocs/subarrays.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.sysimgmd]
+file_filter = <lang>/doc/src/devdocs/sysimg.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.typesmd]
+file_filter = <lang>/doc/src/devdocs/types.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[devdocs-zh_cn.valgrindmd]
+file_filter = <lang>/doc/src/devdocs/valgrind.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+
+[base-zh_cn.arraysmd]
+file_filter = <lang>/doc/src/base/arrays.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.basemd]
+file_filter = <lang>/doc/src/base/base.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.cmd]
+file_filter = <lang>/doc/src/base/c.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.collectionsmd]
+file_filter = <lang>/doc/src/base/collections.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.constantsmd]
+file_filter = <lang>/doc/src/base/constants.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.filemd]
+file_filter = <lang>/doc/src/base/file.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.io-networkmd]
+file_filter = <lang>/doc/src/base/io-network.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.iteratorsmd]
+file_filter = <lang>/doc/src/base/iterators.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.libcmd]
+file_filter = <lang>/doc/src/base/libc.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.mathmd]
+file_filter = <lang>/doc/src/base/math.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.multi-threadingmd]
+file_filter = <lang>/doc/src/base/multi-threading.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.numbersmd]
+file_filter = <lang>/doc/src/base/numbers.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.parallelmd]
+file_filter = <lang>/doc/src/base/parallel.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.punctuationmd]
+file_filter = <lang>/doc/src/base/punctuation.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.simd-typesmd]
+file_filter = <lang>/doc/src/base/simd-types.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.sortmd]
+file_filter = <lang>/doc/src/base/sort.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.stacktracesmd]
+file_filter = <lang>/doc/src/base/stacktraces.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[base-zh_cn.stringsmd]
+file_filter = <lang>/doc/src/base/strings.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+
+[stdlib-zh_cn.base64md]
+file_filter = <lang>/stdlib/Base64/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.crc32cmd]
+file_filter = <lang>/stdlib/CRC32c/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.datesmd]
+file_filter = <lang>/stdlib/Dates/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.delimitedfilesmd]
+file_filter = <lang>/stdlib/DelimitedFiles/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.distributedmd]
+file_filter = <lang>/stdlib/Distributed/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.filewatchingmd]
+file_filter = <lang>/stdlib/FileWatching/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.interactiveutilsmd]
+file_filter = <lang>/stdlib/InteractiveUtils/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.libdlmd]
+file_filter = <lang>/stdlib/Libdl/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.libgit2md]
+file_filter = <lang>/stdlib/LibGit2/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.linearalgebramd]
+file_filter = <lang>/stdlib/LinearAlgebra/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.loggingmd]
+file_filter = <lang>/stdlib/Logging/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.markdownmd]
+file_filter = <lang>/stdlib/Markdown/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.mmapmd]
+file_filter = <lang>/stdlib/Mmap/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.pkgmd]
+file_filter = <lang>/stdlib/Pkg/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.printfmd]
+file_filter = <lang>/stdlib/Printf/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.profilemd]
+file_filter = <lang>/stdlib/Profile/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.randommd]
+file_filter = <lang>/stdlib/Random/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.replmd]
+file_filter = <lang>/stdlib/REPL/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.serializationmd]
+file_filter = <lang>/stdlib/Serialization/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.shamd]
+file_filter = <lang>/stdlib/SHA/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.sharedarraysmd]
+file_filter = <lang>/stdlib/SharedArrays/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.socketsmd]
+file_filter = <lang>/stdlib/Sockets/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.sparsearraysmd]
+file_filter = <lang>/stdlib/SparseArrays/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.statisticsmd]
+file_filter = <lang>/stdlib/Statistics/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.testmd]
+file_filter = <lang>/stdlib/Test/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.unicodemd]
+file_filter = <lang>/stdlib/Unicode/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.uuidsmd]
+file_filter = <lang>/stdlib/UUIDs/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
