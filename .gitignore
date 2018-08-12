@@ -4,7 +4,8 @@
 
 .DS_Store
 
-stdlib
+./stdlib
+
 doc/src/base
 doc/src/devdocs
 doc/src/manual
