@@ -5,6 +5,7 @@ os:
   - osx
 julia:
   - 0.7
+  - 1.0
   - nightly
 notifications:
   email: false
@@ -26,14 +27,15 @@ git:
 #  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
 
 ## uncomment the following lines to override the default test script
-#script:
-#  - julia -e 'Pkg.clone(pwd()); Pkg.build("JuliaZH"); Pkg.test("JuliaZH"; coverage=true)'
+script:
+ # - julia -e 'Pkg.clone(pwd()); Pkg.build("JuliaZH"); Pkg.test("JuliaZH"; coverage=true)'
+ # build docs
+ - julia -e 'using Pkg; Pkg.add("Documenter")'
+ - cp -r zh_CN/* ./
+ - julia /doc/make.jl
+
 after_success:
   # # push coverage results to Coveralls
   # - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   # # push coverage results to Codecov
   # - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
-  # add Documenter
-  - julia -e 'using Pkg; Pkg.add("Documenter")'
-  # push documents to gh-pages
-  - julia -e 'using Pkg; cd(Pkg.dir("JuliaZH")); include(joinpath("docs", "make.jl"))'
