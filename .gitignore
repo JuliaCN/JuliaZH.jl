@@ -2,8 +2,19 @@
 *.jl.*.cov
 *.jl.mem
 
-docs/build/
-docs/site/
+.DS_Store
+
+/stdlib/*
+
+doc/src/base
+doc/src/devdocs
+doc/src/manual
+
+doc/build/
+doc/site/
+
+doc/src/stdlib/
+doc/deps
 
 *.ipynb_checkpoints
 **/*.ipynb_checkpoints
