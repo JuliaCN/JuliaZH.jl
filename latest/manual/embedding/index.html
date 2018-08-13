@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>嵌入 Julia · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-89508993-1', 'auto');
+ga('send', 'pageview');
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/embedding/index.html"/><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><a href="../../index.html"><img class="logo" src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><h1>Julia中文文档</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">主页</a></li><li><span class="toctext">手册</span><ul><li><a class="toctext" href="../getting-started/">起步</a></li><li><a class="toctext" href="../variables/">变量</a></li><li><a class="toctext" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="toctext" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="toctext" href="../complex-and-rational-numbers/">复数和分数</a></li><li><a class="toctext" href="../strings/">字符串</a></li><li><a class="toctext" href="../functions/">函数</a></li><li><a class="toctext" href="../control-flow/">流程控制</a></li><li><a class="toctext" href="../variables-and-scoping/">Scope of Variables</a></li><li><a class="toctext" href="../types/">类型</a></li><li><a class="toctext" href="../methods/">方法</a></li><li><a class="toctext" href="../constructors/">构造函数</a></li><li><a class="toctext" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="toctext" href="../interfaces/">Interfaces</a></li><li><a class="toctext" href="../modules/">Modules</a></li><li><a class="toctext" href="../documentation/">文档</a></li><li><a class="toctext" href="../metaprogramming/">元编程</a></li><li><a class="toctext" href="../arrays/">多维数组</a></li><li><a class="toctext" href="../missing/">缺失值</a></li><li><a class="toctext" href="../networking-and-streams/">Networking and Streams</a></li><li><a class="toctext" href="../parallel-computing/">并行计算</a></li><li><a class="toctext" href="../running-external-programs/">运行外部程序</a></li><li><a class="toctext" href="../calling-c-and-fortran-code/">调用C和Fortran代码</a></li><li><a class="toctext" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="toctext" href="../environment-variables/">环境变量</a></li><li class="current"><a class="toctext" href>嵌入 Julia</a><ul class="internal"><li><a class="toctext" href="#高级别嵌入-1">高级别嵌入</a></li></ul></li><li><a class="toctext" href="../code-loading/">Code Loading</a></li><li><a class="toctext" href="../profile/">Profiling</a></li><li><a class="toctext" href="../stacktraces/">Stack Traces</a></li><li><a class="toctext" href="../performance-tips/">性能建议</a></li><li><a class="toctext" href="../workflow-tips/">工作流程建议</a></li><li><a class="toctext" href="../style-guide/">代码风格指南</a></li><li><a class="toctext" href="../faq/">常见问题</a></li><li><a class="toctext" href="../noteworthy-differences/">Noteworthy Differences from other Languages</a></li><li><a class="toctext" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="toctext">Base</span><ul><li><a class="toctext" href="../../base/base/">Essentials</a></li><li><a class="toctext" href="../../base/collections/">Collections and Data Structures</a></li><li><a class="toctext" href="../../base/math/">Mathematics</a></li><li><a class="toctext" href="../../base/numbers/">Numbers</a></li><li><a class="toctext" href="../../base/strings/">【字符串】（@id lib-strings）</a></li><li><a class="toctext" href="../../base/arrays/">Arrays</a></li><li><a class="toctext" href="../../base/parallel/">Tasks</a></li><li><a class="toctext" href="../../base/multi-threading/">多线程</a></li><li><a class="toctext" href="../../base/constants/">Constants</a></li><li><a class="toctext" href="../../base/file/">文件系统</a></li><li><a class="toctext" href="../../base/io-network/">I/O and Network</a></li><li><a class="toctext" href="../../base/punctuation/">Punctuation</a></li><li><a class="toctext" href="../../base/sort/">排序及相关函数</a></li><li><a class="toctext" href="../../base/iterators/">Iteration utilities</a></li><li><a class="toctext" href="../../base/c/">C Interface</a></li><li><a class="toctext" href="../../base/libc/">C Standard Library</a></li><li><a class="toctext" href="../../base/stacktraces/">StackTraces</a></li><li><a class="toctext" href="../../base/simd-types/">SIMD Support</a></li></ul></li><li><span class="toctext">Developer Documentation</span><ul><li><a class="toctext" href="../../devdocs/reflection/">Reflection and introspection</a></li><li><span class="toctext">Documentation of Julia&#39;s Internals</span><ul><li><a class="toctext" href="../../devdocs/init/">Initialization of the Julia runtime</a></li><li><a class="toctext" href="../../devdocs/ast/">Julia ASTs</a></li><li><a class="toctext" href="../../devdocs/types/">More about types</a></li><li><a class="toctext" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="toctext" href="../../devdocs/eval/">Eval of Julia code</a></li><li><a class="toctext" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="toctext" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="toctext" href="../../devdocs/functions/">Julia Functions</a></li><li><a class="toctext" href="../../devdocs/cartesian/">Base.Cartesian</a></li><li><a class="toctext" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="toctext" href="../../devdocs/subarrays/">SubArrays</a></li><li><a class="toctext" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="toctext" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="toctext" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="toctext" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="toctext" href="../../devdocs/boundscheck/">Bounds checking</a></li><li><a class="toctext" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="toctext" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="toctext" href="../../devdocs/require/">Module loading</a></li><li><a class="toctext" href="../../devdocs/inference/">Inference</a></li></ul></li><li><span class="toctext">Developing/debugging Julia&#39;s C code</span><ul><li><a class="toctext" href="../../devdocs/backtraces/">Reporting and analyzing crashes (segfaults)</a></li><li><a class="toctext" href="../../devdocs/debuggingtips/">gdb debugging tips</a></li><li><a class="toctext" href="../../devdocs/valgrind/">Using Valgrind with Julia</a></li><li><a class="toctext" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li><li><span class="toctext">中文文档开发</span><ul><li><a class="toctext" href="../../juliacn/style-guide/">翻译格式指引</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>手册</li><li><a href>嵌入 Julia</a></li></ul><a class="edit-page" href="https://github.com/JuliaCN/JuliaZH.jl/blob/master/doc/src/manual/embedding.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>嵌入 Julia</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="嵌入-Julia-1" href="#嵌入-Julia-1">嵌入 Julia</a></h1><p>正如我们在 <a href="manual/@ref">Calling C and Fortran Code</a> 中看到的, Julia 有着简单高效的方法来调用 C 编写的函数。但有时恰恰相反，我们需要在 C 中调用 Julia 的函数。这可以将 Julia 代码集成到一个更大的C/C++项目而无需在 C/C++ 中重写所有内容。Julia 有一个 C API 来实现这一目标。几乎所有编程语言都能以某种方式来调用 C 语言的函数，因此 Julia 的 C API 也就能够进行更多语言的桥接。(例如在 Python 或是 C# 中调用 Julia ).</p><h2><a class="nav-anchor" id="高级别嵌入-1" href="#高级别嵌入-1">高级别嵌入</a></h2><p>我们从一个简单的 C 程序开始初始化 Julia 并调用一些 Julia 代码：</p><pre><code class="language-c">#include &lt;julia.h&gt;
+JULIA_DEFINE_FAST_TLS() // only define this once, in an executable (not in a shared library) if you want fast code.
+
+int main(int argc, char *argv[])
+{
+    /* required: setup the Julia context */
+    jl_init();
+
+    /* run Julia commands */
+    jl_eval_string(&quot;print(sqrt(2.0))&quot;);
+
+    /* strongly recommended: notify Julia that the
+         program is about to terminate. this allows
+         Julia time to cleanup pending write requests
+         and run all finalizers
+    */
+    jl_atexit_hook(0);
+    return 0;
+}</code></pre><p>为构建这个程序，你必须将 Julia 头文件的路径放入 include 路径并链接 <code>libjulia</code> 。例如 Julia 被安装到 <code>$JULIA_DIR</code>，则可以用 <code>gcc</code> 来编译上面的测试程序 <code>test.c</code>：</p><pre><code class="language-none">gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib test.c -ljulia $JULIA_DIR/lib/julia/libstdc++.so.6</code></pre><p>然后如果将环境变量 <code>JULIA_BINDIR</code> 设置为 <code>$JULIA_DIR/bin</code>，那么输出的程序<code>test</code>将会被执行。</p><p>或者查看 Julia 源代码目录 <code>test/embedding/</code> 文件夹下的 <code>embedding.c</code> 文件。 文件 <code>ui/repl.c</code> 则是另一个简单示例，用于设置链接 <code>libjulia</code> 时 <code>jl_options</code> 的选项 。</p><p>在调用任何其他 Julia C 函数之前第一件必须要做的事是初始化 Julia，通过调用 <code>jl_init</code> 尝试自动确定 Julia 的安装位置来实现。如果需要自定义位置或指定要加载的系统映像，请改用 <code>jl_init_with_image</code>。</p><p>测试程序中的第二个语句通过调用 <code>jl_eval_string</code> 来执行 Julia 语句。</p><p>在程序结束之前，强烈建议调用 <code>jl_atexit_hook</code>。上面的示例程序在 <code>main</code> 返回之前进行了调用。</p><p>!!! 注意     现在，动态链接 <code>libjulia</code> 的共享库需要传递选项 <code>RTLD_GLOBAL</code> 。比如在 Python 中像这样调用：</p><pre><code class="language-none">    &gt;&gt;&gt; julia=CDLL(&#39;./libjulia.dylib&#39;,RTLD_GLOBAL)
+    &gt;&gt;&gt; julia.jl_init.argtypes = []
+    &gt;&gt;&gt; julia.jl_init()
+    250593296
+    ```
+
+!!! 注意
+    如果 Julia 程序需要访问 主可执行文件 中的符号，那么除了下面描述的由 `julia-config.jl` 生成的标记之外，可能还需要在 Linux 上的编译时添加 `-Wl,--export-dynamic` 链接器标志。编译共享库时则不必要。
+
+### 使用 julia-config 自动确定构建参数
+
+`julia-config.jl` 创建脚本是为了帮助确定使用嵌入的 Julia 程序所需的构建参数。此脚本使用由其调用的特定 Julia 分发的构建参数和系统配置来导出嵌入程序的必要编译器标志以与该分发交互。此脚本位于 Julia 的 share 目录中。
+
+#### 例子
+</code></pre><p>c #include &lt;julia.h&gt;</p><p>int main(int argc, char *argv[]) {     jl<em>init();     (void)jl</em>eval<em>string(&quot;println(sqrt(2.0))&quot;);     jl</em>atexit_hook(0);     return 0; }</p><pre><code class="language-none">
+#### 在命令行中
+
+命令行脚本简单用法：假设 `julia-config.jl` 位于 `/usr/local/julia/share/julia`，它可以直接在命令行上调用，并采用 3 个标志的任意组合：
+</code></pre><p>/usr/local/julia/share/julia/julia-config.jl Usage: julia-config [–cflags|–ldflags|–ldlibs]</p><pre><code class="language-none">
+如果上面的示例源代码保存为文件 `embed_example.c`，则以下命令将其编译为 Linux 和 Windows 上运行的程序（MSYS2 环境），或者如果在 OS/X 上，则用 `clang` 替换 `gcc`。：
+</code></pre><p>/usr/local/julia/share/julia/julia-config.jl –cflags –ldflags –ldlibs | xargs gcc embed_example.c</p><pre><code class="language-none">
+#### 在 Makefiles 中使用
+
+但通常来说，嵌入的项目会比上面更复杂，因此一般会提供 makefile 支持。由于使用了 **shell** 宏扩展，我们就假设用 GNU make 。
+另外，尽管很多时候 `julia-config.jl` 会在目录 `/usr/local` 中出现多次，不过也未必如此，但 Julia 也定位 `julia-config.jl`，并且可以使用 makefile 来利用它。上面的示例程序使用 Makefile 来扩展。：
+</code></pre><p>makefiles JL<em>SHARE = $(shell julia -e &#39;print(joinpath(Sys.BINDIR, Base.DATAROOTDIR, &quot;julia&quot;))&#39;) CFLAGS += $(Expr(:incomplete, &quot;incomplete: premature end of input&quot;))</em>SHARE)/julia-config.jl –cflags) CXXFLAGS += $(shell JL_SHARE/julia-config.jl –cflags) LDFLAGS += $(shell JL_SHARE/julia-config.jl –ldflags) LDLIBS += $(shell JL_SHARE/julia-config.jl –ldlibs)</p><p>all: embed_example</p><pre><code class="language-none">
+现在构建的命令就只需要简简单单的`make`了。
+
+## 转换类型
+
+真正的应用程序不仅仅要执行表达式，还要返回表达式的值给宿主程序。`jl_eval_string` 返回 一个 `jl_value_t*`，它是指向堆分配的 Julia 对象的指针。存储像 [`Float64`](@ref) 这些简单数据类型叫做 `装箱`，然后提取存储的基础类型数据叫 `拆箱`。我们改进的示例程序在 Julia 中计算 2 的平方根，并在 C 中读取回结果，如下所示：
+</code></pre><p>c jl<em>value</em>t *ret = jl<em>eval</em>string(&quot;sqrt(2.0)&quot;);</p><p>if (jl<em>typeis(ret, jl</em>float64<em>type)) {     double ret</em>unboxed = jl<em>unbox</em>float64(ret);     printf(&quot;sqrt(2.0) in C: %e \n&quot;, ret_unboxed); } else {     printf(&quot;ERROR: unexpected return type from sqrt(::Float64)\n&quot;); }</p><pre><code class="language-none">
+为了检查 `ret` 是否为特定的 Julia 类型，我们可以使用 `jl_isa`，`jl_typeis` 或 `jl_is_...` 函数。通过输入 `typeof(sqrt(2.0))`到 Julia shell，我们可以看到返回类型是 [`Float64`](@ref)（在C中是 `double` 类型）。要将装箱的 Julia 值转换为 C 的double，上面的代码片段使用了 `jl_unbox_float64`函数。
+
+相应的, 用 `jl_box_...` 函数是另一种转换的方式。
+</code></pre><p>c jl<em>value</em>t *a = jl<em>box</em>float64(3.0); jl<em>value</em>t *b = jl<em>box</em>float32(3.0f); jl<em>value</em>t *c = jl<em>box</em>int32(3);</p><pre><code class="language-none">
+正如我们将在下面看到的那样，装箱需要在调用 Julia 函数时使用特定参数。
+
+## 调用 Julia 函数
+
+虽然 `jl_eval_string` 允许 C 获取 Julia 表达式的结果，但它不允许将在 C 中计算的参数传递给 Julia。因此需要使用 `jl_call` 来直接调用Julia函数：
+</code></pre><p>c jl<em>function</em>t *func = jl<em>get</em>function(jl<em>base</em>module, &quot;sqrt&quot;); jl<em>value</em>t *argument = jl<em>box</em>float64(2.0); jl<em>value</em>t *ret = jl_call1(func, argument);</p><pre><code class="language-none">
+在第一步中，通过调用 `jl_get_function` 检索出 Julia 函数 `sqrt` 的句柄(handle)。
+传递给 `jl_get_function` 的第一个参数是 指向 定义`sqrt`所在的 `Base` 模块 的指针。
+然后，double 值通过 `jl_box_float64` 被装箱。
+最后，使用 `jl_call1` 调用该函数。也有 `jl_call0`，`jl_call2`和`jl_call3` 函数，方便地处理不同数量的参数。
+要传递更多参数，使用 `jl_call`：
+</code></pre><p>c jl<em>value</em>t *jl<em>call(jl</em>function<em>t *f, jl</em>value<em>t **args, int32</em>t nargs)</p><pre><code class="language-none">
+它的第二个参数 `args` 是 `jl_value_t*` 类型的数组，`nargs` 是参数的个数 
+
+## 内存管理
+
+正如我们所见，Julia 对象在 C 中表示为指针。这就出现了 谁来负责释放这些对象的问题。
+
+通常，Julia 对象由垃圾收集器（GC）释放，但 GC 不会自动就懂我们正C中保留对Julia值的引用。这意味着 GC 会在你的掌控之外释放对象，从而使指针无效。
+
+GC 只会在 Julia 对象分配后运行。像 `jl_box_float64` 这种函数调用会触发内存分配，且有可能会发生在Julia代码运行过程中的任何时期。
+但是在两次 `jl_...` 调用之间使用指针通常是安全的。但是为了确保值可以在 `jl_...` 调用中存活，我们必须告诉 Julia 我们保留对 Julia 值的引用。可以使用 `JL_GC_PUSH` 宏来完成：
+</code></pre><p>c jl<em>value</em>t *ret = jl<em>eval</em>string(&quot;sqrt(2.0)&quot;); JL<em>GC</em>PUSH1(&amp;ret); // Do something with ret JL<em>GC</em>POP();</p><pre><code class="language-none">
+调用 `JL_GC_POP` 释放先前 `JL_GC_PUSH` 建立的引用。
+请注意 `JL_GC_PUSH` 正在堆栈上运行，所以在销毁堆栈之前它必须与之前的 `JL_GC_POP` 完全配对。
+
+使用 `JL_GC_PUSH2`，`JL_GC_PUSH3` 和 `JL_GC_PUSH4` 宏可以一次 push 多个Julia 值。
+要推送一个 Julia值的数组，可以使用 `JL_GC_PUSHARGS` 宏，它的用法如下：
+</code></pre><p>c jl<em>value</em>t **args; JL<em>GC</em>PUSHARGS(args, 2); // args can now hold 2 <code>jl_value_t*</code> objects args[0] = some<em>value; args[1] = some</em>other<em>value; // Do something with args (e.g. call jl</em>... functions) JL<em>GC</em>POP();</p><pre><code class="language-none">
+垃圾收集器也假设在这种情况下工作。即它知道每个老一代对象都指向年轻一代对象。
+每次更新指针时，都必须使用 `jl_gc_wb` (write barrier，写屏障) 函数将指针通知给收集器，如下所示：
+</code></pre><p>c jl<em>value</em>t <em>parent = some<em>old</em>value, *child = some<em>young</em>value; ((some<em>specific</em>type</em>)parent)-&gt;field = child; jl<em>gc</em>wb(parent, child);</p><pre><code class="language-none">
+通常情况下不可能在运行时预测 值是否是旧的，因此 写屏障 必须被插入在所有显式存储之后。一个需要注意的例外是如果 `parent` 对象刚分配，垃圾收集之后并不执行。请记住大多数 `jl_...` 函数有时候都会执行垃圾收集。
+
+直接更新数据时，对于指针数组来说 写屏障 也是必需的 例如：
+</code></pre><p>c jl<em>array</em>t *some<em>array = ...; // e.g. a Vector{Any} void <strong>data = (void</strong>)jl</em>array<em>data(some</em>array); jl<em>value</em>t *some<em>value = ...; data[0] = some</em>value; jl<em>gc</em>wb(some<em>array, some</em>value);</p><pre><code class="language-none">
+### 控制垃圾收集器
+
+有一些函数能够控制GC。在正常使用情况下这些不是必要的。
+
+| 函数             | 描述                                  |
+|:-------------------- |:-------------------------------------------- |
+| `jl_gc_collect()`    | 强制执行 GC                               |
+| `jl_gc_enable(0)`    | 禁用 GC， 返回前一个状态作为 int 类型 |
+| `jl_gc_enable(1)`    | 启用 GC， 返回前一个状态作为 int 类型 |
+| `jl_gc_is_enabled()` | 返回当前状态作为 int 类型                  |
+
+## 使用数组
+
+Julia 和 C 可以不通过复制而共享数组数据。下面一个例子将展示它是如何工作的。
+
+Julia数组用数据类型 `jl_array_t *` 表示。基本上，`jl_array_t` 是一个包含以下内容的结构：
+
+  * 关于数据类型的信息
+  * 指向数据块的指针
+  * 关于数组长度的信息
+
+为了让事情比较简单，我们从一维数组开始，创建一个存有 10 个 FLoat64 类型的数组如下所示：
+</code></pre><p>c jl<em>value</em>t* array<em>type = jl</em>apply<em>array</em>type((jl<em>value</em>t<em>)jl<em>float64</em>type, 1); jl<em>array</em>t</em> x          = jl<em>alloc</em>array<em>1d(array</em>type, 10);</p><pre><code class="language-none">
+或者，如果您已经分配了数组，则可以生成一个简易的包装器来包裹其数据：
+</code></pre><p>c double <em>existingArray = (double</em>)malloc(sizeof(double)*10); jl<em>array</em>t *x = jl<em>ptr</em>to<em>array</em>1d(array_type, existingArray, 10, 0);</p><pre><code class="language-none">
+最后一个参数是一个布尔值，表示 Julia 是否应该获取数据的所有权。 如果这个参数 不为零，当数组不再被引用时，GC 会在数据的指针上调用 `free` 。
+
+为了访问 x 的数据，我们可以使用 `jl_array_data`：
+</code></pre><p>c double <em>xData = (double</em>)jl<em>array</em>data(x);</p><pre><code class="language-none">
+现在我们可以填充这个数组：
+</code></pre><p>c for(size<em>t i=0; i&lt;jl</em>array_len(x); i++)     xData[i] = i;</p><pre><code class="language-none">
+现在让我们调用一个对 `x` 就地操作的 Julia 函数：
+</code></pre><p>c jl<em>function</em>t <em>func = jl<em>get</em>function(jl<em>base</em>module, &quot;reverse!&quot;); jl<em>call1(func, (jl</em>value_t</em>)x);</p><pre><code class="language-none">
+通过打印数组，可以验证 `x` 的元素现在是否已被逆置 (reversed)。
+
+### 获取返回的数组
+
+如果 Julia 函数返回一个数组，`jl_eval_string` 和 `jl_call` 的返回值可以被强制转换为`jl_array_t *`：
+</code></pre><p>c jl<em>function</em>t <em>func  = jl<em>get</em>function(jl<em>base</em>module, &quot;reverse&quot;); jl<em>array</em>t *y = (jl<em>array</em>t</em>)jl<em>call1(func, (jl</em>value_t*)x);</p><pre><code class="language-none">
+现在使用 `jl_array_data` 可以像前面一样访问 `y` 的内容。一如既往地，一定要在使用数组的时候确保 持有使用数组的引用。
+
+### 多维数组
+
+Julia的多维数组以 列序优先 存储在内存中。这是一些 创建一个2D数组并访问其属性 的代码：
+</code></pre><p>c // Create 2D array of float64 type jl<em>value</em>t *array<em>type = jl</em>apply<em>array</em>type(jl<em>float64</em>type, 2); jl<em>array</em>t *x  = jl<em>alloc</em>array<em>2d(array</em>type, 10, 5);</p><p>// Get array pointer double <em>p = (double</em>)jl<em>array</em>data(x); // Get number of dimensions int ndims = jl<em>array</em>ndims(x); // Get the size of the i-th dim size<em>t size0 = jl</em>array<em>dim(x,0); size</em>t size1 = jl<em>array</em>dim(x,1);</p><p>// Fill array with data for(size<em>t i=0; i&lt;size1; i++)     for(size</em>t j=0; j&lt;size0; j++)         p[j + size0*i] = i + j;</p><pre><code class="language-none">
+请注意，虽然 Julia 的数组使用基于 1 的索引，但C API 中使用基于 0 的索引（例如 在调用`jl_array_dim`）以便用C代码的习惯来阅读。
+
+## 异常
+
+Julia 代码可以抛出异常。比如：
+</code></pre><p>c jl<em>eval</em>string(&quot;this<em>function</em>does<em>not</em>exist()&quot;);</p><pre><code class="language-none">
+这个调用似乎什么都没做。但可以检查异常是否抛出：
+</code></pre><p>c if (jl<em>exception</em>occurred())     printf(&quot;%s \n&quot;, jl<em>typeof</em>str(jl<em>exception</em>occurred()));</p><pre><code class="language-none">
+如果您使用 支持异常的语言的 Julia C API（例如Python，C＃，C ++），使用 检查是否有异常的函数 将每个调用 包装到 `libjulia` 中是有意义的，然后异常在宿主语言中重新抛出。
+
+### 抛出 Julia 异常
+
+在编写 Julia 可调用函数时，可能需要验证参数 并抛出异常表示错误。
+典型的类型检查像这样：
+</code></pre><p>c if (!jl<em>typeis(val, jl</em>float64<em>type)) {     jl</em>type<em>error(function</em>name, (jl<em>value</em>t*)jl<em>float64</em>type, val); }</p><pre><code class="language-none">
+可以使用以下函数 引发一般异常：
+</code></pre><p>c void jl<em>error(const char *str); void jl</em>errorf(const char *fmt, ...);</p><pre><code class="language-none">
+`jl_error`采用 C 字符串，而 `jl_errorf` 像 `printf` 一样调用:
+
+</code></pre><p>c jl_errorf(&quot;argument x = %d is too large&quot;, x); ```</p><p>在这个例子中假定 <code>x</code> 是一个 int 值。</p><footer><hr/><a class="previous" href="../environment-variables/"><span class="direction">Previous</span><span class="title">环境变量</span></a><a class="next" href="../code-loading/"><span class="direction">Next</span><span class="title">Code Loading</span></a></footer></article></body></html>

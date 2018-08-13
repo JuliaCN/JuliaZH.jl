@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>流程控制 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-89508993-1', 'auto');
+ga('send', 'pageview');
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/control-flow/index.html"/><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><a href="../../index.html"><img class="logo" src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><h1>Julia中文文档</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">主页</a></li><li><span class="toctext">手册</span><ul><li><a class="toctext" href="../getting-started/">起步</a></li><li><a class="toctext" href="../variables/">变量</a></li><li><a class="toctext" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="toctext" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="toctext" href="../complex-and-rational-numbers/">复数和分数</a></li><li><a class="toctext" href="../strings/">字符串</a></li><li><a class="toctext" href="../functions/">函数</a></li><li class="current"><a class="toctext" href>流程控制</a><ul class="internal"><li><a class="toctext" href="#man-compound-expressions-1">复合表达式</a></li><li><a class="toctext" href="#man-conditional-evaluation-1">条件表达式</a></li><li><a class="toctext" href="#短路求值-1">短路求值</a></li><li><a class="toctext" href="#man-loops-1">重复计算：循环</a></li><li><a class="toctext" href="#异常处理-1">异常处理</a></li><li><a class="toctext" href="#man-tasks-1">任务 (又名 协程)</a></li></ul></li><li><a class="toctext" href="../variables-and-scoping/">Scope of Variables</a></li><li><a class="toctext" href="../types/">类型</a></li><li><a class="toctext" href="../methods/">方法</a></li><li><a class="toctext" href="../constructors/">构造函数</a></li><li><a class="toctext" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="toctext" href="../interfaces/">Interfaces</a></li><li><a class="toctext" href="../modules/">Modules</a></li><li><a class="toctext" href="../documentation/">文档</a></li><li><a class="toctext" href="../metaprogramming/">元编程</a></li><li><a class="toctext" href="../arrays/">多维数组</a></li><li><a class="toctext" href="../missing/">缺失值</a></li><li><a class="toctext" href="../networking-and-streams/">Networking and Streams</a></li><li><a class="toctext" href="../parallel-computing/">并行计算</a></li><li><a class="toctext" href="../running-external-programs/">运行外部程序</a></li><li><a class="toctext" href="../calling-c-and-fortran-code/">调用C和Fortran代码</a></li><li><a class="toctext" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="toctext" href="../environment-variables/">环境变量</a></li><li><a class="toctext" href="../embedding/">嵌入 Julia</a></li><li><a class="toctext" href="../code-loading/">Code Loading</a></li><li><a class="toctext" href="../profile/">Profiling</a></li><li><a class="toctext" href="../stacktraces/">Stack Traces</a></li><li><a class="toctext" href="../performance-tips/">性能建议</a></li><li><a class="toctext" href="../workflow-tips/">工作流程建议</a></li><li><a class="toctext" href="../style-guide/">代码风格指南</a></li><li><a class="toctext" href="../faq/">常见问题</a></li><li><a class="toctext" href="../noteworthy-differences/">Noteworthy Differences from other Languages</a></li><li><a class="toctext" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="toctext">Base</span><ul><li><a class="toctext" href="../../base/base/">Essentials</a></li><li><a class="toctext" href="../../base/collections/">Collections and Data Structures</a></li><li><a class="toctext" href="../../base/math/">Mathematics</a></li><li><a class="toctext" href="../../base/numbers/">Numbers</a></li><li><a class="toctext" href="../../base/strings/">【字符串】（@id lib-strings）</a></li><li><a class="toctext" href="../../base/arrays/">Arrays</a></li><li><a class="toctext" href="../../base/parallel/">Tasks</a></li><li><a class="toctext" href="../../base/multi-threading/">多线程</a></li><li><a class="toctext" href="../../base/constants/">Constants</a></li><li><a class="toctext" href="../../base/file/">文件系统</a></li><li><a class="toctext" href="../../base/io-network/">I/O and Network</a></li><li><a class="toctext" href="../../base/punctuation/">Punctuation</a></li><li><a class="toctext" href="../../base/sort/">排序及相关函数</a></li><li><a class="toctext" href="../../base/iterators/">Iteration utilities</a></li><li><a class="toctext" href="../../base/c/">C Interface</a></li><li><a class="toctext" href="../../base/libc/">C Standard Library</a></li><li><a class="toctext" href="../../base/stacktraces/">StackTraces</a></li><li><a class="toctext" href="../../base/simd-types/">SIMD Support</a></li></ul></li><li><span class="toctext">Developer Documentation</span><ul><li><a class="toctext" href="../../devdocs/reflection/">Reflection and introspection</a></li><li><span class="toctext">Documentation of Julia&#39;s Internals</span><ul><li><a class="toctext" href="../../devdocs/init/">Initialization of the Julia runtime</a></li><li><a class="toctext" href="../../devdocs/ast/">Julia ASTs</a></li><li><a class="toctext" href="../../devdocs/types/">More about types</a></li><li><a class="toctext" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="toctext" href="../../devdocs/eval/">Eval of Julia code</a></li><li><a class="toctext" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="toctext" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="toctext" href="../../devdocs/functions/">Julia Functions</a></li><li><a class="toctext" href="../../devdocs/cartesian/">Base.Cartesian</a></li><li><a class="toctext" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="toctext" href="../../devdocs/subarrays/">SubArrays</a></li><li><a class="toctext" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="toctext" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="toctext" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="toctext" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="toctext" href="../../devdocs/boundscheck/">Bounds checking</a></li><li><a class="toctext" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="toctext" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="toctext" href="../../devdocs/require/">Module loading</a></li><li><a class="toctext" href="../../devdocs/inference/">Inference</a></li></ul></li><li><span class="toctext">Developing/debugging Julia&#39;s C code</span><ul><li><a class="toctext" href="../../devdocs/backtraces/">Reporting and analyzing crashes (segfaults)</a></li><li><a class="toctext" href="../../devdocs/debuggingtips/">gdb debugging tips</a></li><li><a class="toctext" href="../../devdocs/valgrind/">Using Valgrind with Julia</a></li><li><a class="toctext" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li><li><span class="toctext">中文文档开发</span><ul><li><a class="toctext" href="../../juliacn/style-guide/">翻译格式指引</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>手册</li><li><a href>流程控制</a></li></ul><a class="edit-page" href="https://github.com/JuliaCN/JuliaZH.jl/blob/master/doc/src/manual/control-flow.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>流程控制</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="流程控制-1" href="#流程控制-1">流程控制</a></h1><p>Julia 提供了大量的流程控制组件：</p><ul><li><a href="#man-compound-expressions-1">复合表达式</a>: <code>begin</code> 和 <code>(;)</code>。</li><li><a href="#man-conditional-evaluation-1">条件表达式</a>: <code>if</code>-<code>elseif</code>-<code>else</code> 和 <code>?:</code> (三元运算符)。</li><li><a href="#短路求值-1">短路求值</a>: <code>&amp;&amp;</code>, <code>||</code> 和链式比较。</li><li><a href="#man-loops-1">重复计算：循环</a>: <code>while</code> 和 <code>for</code>.</li><li><a href="#异常处理-1">异常处理</a>: <code>try</code>-<code>catch</code>, <a href="../../base/base/#Base.error"><code>error</code></a> 和 <a href="../../base/base/#Core.throw"><code>throw</code></a>.</li><li><a href="#man-tasks-1">任务（又名协程）</a>: <a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a>.</li></ul><p>最开始的五个流程控制机制是标准的高级编程语言通用的。 <a href="manual/@ref"><code>任务</code></a>不是那么通用：他们提供了非局部的流程控制，可以在暂时中止的计算间进行切换。这是一种强大的组件：Julia中的异常处理和协同多任务都是使用任务实现的。通常的编程并不需要直接使用任务，但是某些问题可以用任务更简单地处理。</p><h2><a class="nav-anchor" id="man-compound-expressions-1" href="#man-compound-expressions-1">复合表达式</a></h2><p>有时一个表达式能够有序地计算若干子表达式，并返回最后一个子表达式的值作为它的值是很方便的。Julia有两个组件来完成这个: <code>begin</code> 代码块 和 <code>(;)</code> 链。这两个复合表达式组件的值都是最后一个子表达式的值。下面是一个<code>begin</code> 代码块的例子：</p><pre><code class="language-julia-repl">julia&gt; z = begin
+           x = 1
+           y = 2
+           x + y
+       end
+3</code></pre><p>因为这些是非常简短的表达式，它们可以简单地被放到一行里，这也是<code>(;)</code> 链的由来：</p><pre><code class="language-julia-repl">julia&gt; z = (x = 1; y = 2; x + y)
+3</code></pre><p>这个语法在定义简洁的单行函数的时候特别有用，参见 <a href="../faq/#函数-1">函数</a>。尽管很典型，但是并不要求<code>begin</code> 代码块是多行的，或者 <code>(;)</code> 链是单行的：</p><pre><code class="language-julia-repl">julia&gt; begin x = 1; y = 2; x + y end
+3
+
+julia&gt; (x = 1;
+        y = 2;
+        x + y)
+3</code></pre><h2><a class="nav-anchor" id="man-conditional-evaluation-1" href="#man-conditional-evaluation-1">条件表达式</a></h2><p>条件表达式（Conditional evaluation）可以根据布尔表达式的值，让部分代码被执行或者不被执行。下面是对 <code>if</code>-<code>elseif</code>-<code>else</code> 条件语法的分析：</p><pre><code class="language-julia">if x &lt; y
+    println(&quot;x is less than y&quot;)
+elseif x &gt; y
+    println(&quot;x is greater than y&quot;)
+else
+    println(&quot;x is equal to y&quot;)
+end</code></pre><p>如果表达式 <code>x &lt; y</code> 是 <code>true</code>，那么对应的代码块被执行；否则判断条件表达式 <code>x &gt; y</code> ，如果它是 <code>true</code>，对应的代码块被执行；如果没有表达式是 true， <code>else</code> 代码块被执行。下面是执行例子：</p><pre><code class="language-julia-repl">julia&gt; function test(x, y)
+           if x &lt; y
+               println(&quot;x is less than y&quot;)
+           elseif x &gt; y
+               println(&quot;x is greater than y&quot;)
+           else
+               println(&quot;x is equal to y&quot;)
+           end
+       end
+test (generic function with 1 method)
+
+julia&gt; test(1, 2)
+x is less than y
+
+julia&gt; test(2, 1)
+x is greater than y
+
+julia&gt; test(1, 1)
+x is equal to y</code></pre><p><code>elseif</code> 和 <code>else</code> 代码块是可选的，并且可以使用任意多个 <code>elseif</code> 代码块。 <code>if</code>-<code>elseif</code>-<code>else</code> 组件中的第一个条件表达式为 <code>true</code> 时，其他条件表达式才会被执行，当对应的代码块被执行后，其余的表达式或者代码块不会被执行。</p><p><code>if</code> 代码块是 &quot;有渗漏的&quot;, 也就是说它们没有引入局部作用域。这意味着在 <code>if</code> 语句中新定义的变量尽管它们没有在它之前定义过，依然可以在 <code>if</code> 代码块之后被使用。所以我们可以定义上面的 <code>test</code> 函数为</p><pre><code class="language-julia-repl">julia&gt; function test(x,y)
+           if x &lt; y
+               relation = &quot;less than&quot;
+           elseif x == y
+               relation = &quot;equal to&quot;
+           else
+               relation = &quot;greater than&quot;
+           end
+           println(&quot;x is &quot;, relation, &quot; y.&quot;)
+       end
+test (generic function with 1 method)
+
+julia&gt; test(2, 1)
+x is greater than y.</code></pre><p>变量 <code>relation</code> 在 <code>if</code> 代码块中被声明，但是在外部使用. 但是，在使用这种行为的时候，要保证那个变量在所有可能的代码路径下都有被定义。下面对以上函数的修改会导致运行时错误</p><pre><code class="language-julia-repl">julia&gt; function test(x,y)
+           if x &lt; y
+               relation = &quot;less than&quot;
+           elseif x == y
+               relation = &quot;equal to&quot;
+           end
+           println(&quot;x is &quot;, relation, &quot; y.&quot;)
+       end
+test (generic function with 1 method)
+
+julia&gt; test(1,2)
+x is less than y.
+
+julia&gt; test(2,1)
+ERROR: UndefVarError: relation not defined
+Stacktrace:
+ [1] test(::Int64, ::Int64) at ./none:7</code></pre><p><code>if</code> 代码块也会返回一个值，这可能对于一些以前使用其他语言的用户来说不是很直观。 它仅仅是被执行的分支中最后一个被执行的语句的返回值。 所以</p><pre><code class="language-julia-repl">julia&gt; x = 3
+3
+
+julia&gt; if x &gt; 0
+           &quot;positive!&quot;
+       else
+           &quot;negative...&quot;
+       end
+&quot;positive!&quot;</code></pre><p>注意的是在Julia中，非常短的条件表达式（单行）会被频繁地用短路求值来表示，会在下一节中介绍。</p><p>与 C, MATLAB, Perl, Python, and Ruby 不同，但跟 Java ，还有一些别的严谨的类型语言类似, – 一个条件表达式的值如果不是<code>true</code> 或者 <code>false</code> 的话，会返回错误:</p><pre><code class="language-julia-repl">julia&gt; if 1
+           println(&quot;true&quot;)
+       end
+ERROR: TypeError: non-boolean (Int64) used in boolean context</code></pre><p>这个错误显示条件值有一个错误的类型: <a href="../../base/numbers/#Core.Int64"><code>Int64</code></a> ，而不是期望的 <a href="../../base/numbers/#Core.Bool"><code>Bool</code></a>.</p><p>所谓的 &quot;三元运算符&quot;, <code>?:</code>, 很类似 <code>if</code>-<code>elseif</code>-<code>else</code> 语法,它需要条件选择依赖于单个表达式的值，而不是依赖大段的代码块的条件执行。它因为是在很多语言中唯一一个有三个操作数的运算符而得名：</p><pre><code class="language-julia">a ? b : c</code></pre><p>在 <code>?</code> 之前的表达式 <code>a</code>, 是一个条件表达式, 三元运算符计算在<code>:</code> 之前的表达式 <code>b</code>，如果条件<code>a</code> 是 <code>true</code>，或者 。如果它是  <code>false</code>, 执行<code>:</code> 后面的表达式 <code>c</code>  。注意的是， <code>?</code> 和 <code>:</code> 旁边的空格是强制的。类似 <code>a?b:c</code> 的表达式不是一个有效的三元表达式（但在<code>?</code> 和 <code>:</code> 之后的换行是允许的 ）。</p><p>最简单理解这种行为的方式的看一个例子。在上面的例子中，在三个分支中都有调用 <code>println</code> : 唯一的选择是打印哪一个字符串。这可以用三元运算符更紧凑地改写。为了更明白。我们先尝试两个选择的版本：</p><pre><code class="language-julia-repl">julia&gt; x = 1; y = 2;
+
+julia&gt; println(x &lt; y ? &quot;less than&quot; : &quot;not less than&quot;)
+less than
+
+julia&gt; x = 1; y = 0;
+
+julia&gt; println(x &lt; y ? &quot;less than&quot; : &quot;not less than&quot;)
+not less than</code></pre><p>如果表达式 <code>x &lt; y</code> 为真，整个三元运算符会执行字符串 <code>&quot;less than&quot;</code> ，否则执行字符串 <code>&quot;not less than&quot;</code>。 原本的三个选择例子需要同时使用多次链式使用三元运算符 ：</p><pre><code class="language-julia-repl">julia&gt; test(x, y) = println(x &lt; y ? &quot;x is less than y&quot;    :
+                            x &gt; y ? &quot;x is greater than y&quot; : &quot;x is equal to y&quot;)
+test (generic function with 1 method)
+
+julia&gt; test(1, 2)
+x is less than y
+
+julia&gt; test(2, 1)
+x is greater than y
+
+julia&gt; test(1, 1)
+x is equal to y</code></pre><p>为了方便链式传值，运算符从右到左连接到一起。</p><p>重要地是，与 <code>if</code>-<code>elseif</code>-<code>else</code> 类似，<code>:</code> 之前和之后的表达式只有在条件表达式为 <code>true</code> 或者 <code>false</code> 时才会被相应地执行：</p><pre><code class="language-julia-repl">julia&gt; v(x) = (println(x); x)
+v (generic function with 1 method)
+
+julia&gt; 1 &lt; 2 ? v(&quot;yes&quot;) : v(&quot;no&quot;)
+yes
+&quot;yes&quot;
+
+julia&gt; 1 &gt; 2 ? v(&quot;yes&quot;) : v(&quot;no&quot;)
+no
+&quot;no&quot;</code></pre><h2><a class="nav-anchor" id="短路求值-1" href="#短路求值-1">短路求值</a></h2><p>短路求值非常类似条件求值 。这种行为在多数有<code>&amp;&amp;</code> and <code>||</code> 布尔运算符地命令式编程语言都可以找到: 在一系列由这些运算符连接的布尔表达式中，为了得到整个链的最终布尔值，仅仅只有最小数量的表达式被计算。 更明确的说，这意味着：</p><ul><li>在表达式 <code>a &amp;&amp; b</code> 中， 子表达式 <code>b</code> 仅当 <code>a</code> 为 <code>true</code> 的时候才会被执行。</li><li>在表达式 <code>a || b</code> 中，子表达式 <code>b</code> 仅在 <code>a</code> 为 <code>false</code> 的时候才会被执行。</li></ul><p>原因是 如果 <code>a</code> 是 <code>false</code>，无论 <code>b</code> 的值是多少，<code>a &amp;&amp; b</code> 一定是 <code>false</code> 。同理, 如果 <code>a</code> 是 <code>true</code>，无论 <code>b</code> 的值是多少，<code>a || b</code> 的值一定是 true 。<code>&amp;&amp;</code> 和 <code>||</code> 都依赖于右边，但是 <code>&amp;&amp;</code> 比 <code>||</code> 有更高的优先级。这种现象很容易实验：</p><pre><code class="language-julia-repl">julia&gt; t(x) = (println(x); true)
+t (generic function with 1 method)
+
+julia&gt; f(x) = (println(x); false)
+f (generic function with 1 method)
+
+julia&gt; t(1) &amp;&amp; t(2)
+1
+2
+true
+
+julia&gt; t(1) &amp;&amp; f(2)
+1
+2
+false
+
+julia&gt; f(1) &amp;&amp; t(2)
+1
+false
+
+julia&gt; f(1) &amp;&amp; f(2)
+1
+false
+
+julia&gt; t(1) || t(2)
+1
+true
+
+julia&gt; t(1) || f(2)
+1
+true
+
+julia&gt; f(1) || t(2)
+1
+2
+true
+
+julia&gt; f(1) || f(2)
+1
+2
+false</code></pre><p>你可以用同样的方式简单地实验不同<code>&amp;&amp;</code> 和 <code>||</code> 运算符的组合条件下的关联和优先级。</p><p>这种行为在Julia中经常被用来作为简短 <code>if</code> 语句的替代。 可以用 <code>&lt;cond&gt; &amp;&amp; &lt;statement&gt;</code> (可读为: &lt;cond&gt; <em>and then</em> &lt;statement&gt;)来替换 <code>if &lt;cond&gt; &lt;statement&gt; end</code>。 类似的， 可以用 <code>&lt;cond&gt; || &lt;statement&gt;</code> (可读为: &lt;cond&gt; <em>or else</em> &lt;statement&gt;)来替换 <code>if ! &lt;cond&gt; &lt;statement&gt; end</code>.</p><p>例如, 可以像这样定义递归阶乘程序：</p><pre><code class="language-julia-repl">julia&gt; function fact(n::Int)
+           n &gt;= 0 || error(&quot;n must be non-negative&quot;)
+           n == 0 &amp;&amp; return 1
+           n * fact(n-1)
+       end
+fact (generic function with 1 method)
+
+julia&gt; fact(5)
+120
+
+julia&gt; fact(0)
+1
+
+julia&gt; fact(-1)
+ERROR: n must be non-negative
+Stacktrace:
+ [1] error at ./error.jl:33 [inlined]
+ [2] fact(::Int64) at ./none:2
+ [3] top-level scope</code></pre><p><em>没有</em> 短路计算的布尔运算可以用位布尔运算符来完成，见 <a href="manual/@ref">数学运算符和初等函数</a>: <code>&amp;</code> 和 <code>|</code>。这些是普通的函数，同时也刚好支持中缀运算符语法，但总是计算他们的参数：</p><pre><code class="language-julia-repl">julia&gt; f(1) &amp; t(2)
+1
+2
+false
+
+julia&gt; t(1) | t(2)
+1
+2
+true</code></pre><p>就像条件表达式中的 <code>if</code>, <code>elseif</code> 或者三元运算符, the operands of <code>&amp;&amp;</code> 或者 <code>||</code> 一定是布尔值 (<code>true</code> 或者 <code>false</code>)。在条件链中， 除最后一项外，使用一个非布尔值是错误的：</p><pre><code class="language-julia-repl">julia&gt; 1 &amp;&amp; true
+ERROR: TypeError: non-boolean (Int64) used in boolean context</code></pre><p>另一方面，在条件链的末尾可以用任意类型的表达式。根据前面的条件，它会被执行并返回：</p><pre><code class="language-julia-repl">julia&gt; true &amp;&amp; (x = (1, 2, 3))
+(1, 2, 3)
+
+julia&gt; false &amp;&amp; (x = (1, 2, 3))
+false</code></pre><h2><a class="nav-anchor" id="man-loops-1" href="#man-loops-1">重复计算：循环</a></h2><p>有两个用于重复计算表达式的组件：<code>while</code> 循环和 <code>for</code> 循环。下面是一个 <code>while</code> 循环的例子：</p><pre><code class="language-julia-repl">julia&gt; i = 1;
+
+julia&gt; while i &lt;= 5
+           println(i)
+           global i += 1
+       end
+1
+2
+3
+4
+5</code></pre><p><code>while</code> 循环计算条件表达式（例子中为 <code>i &lt;= 5</code>），只要它为 <code>true</code>，就一直执行<code>while</code>  循环的主体部分。如果当<code>while</code> 循环第一次执行时，条件表达式为 <code>false</code>，那么主体的代码就一次也不会被执行。</p><p><code>for</code> 循环使得常见的重复计算语句更容易写。 因为类似之前 <code>while</code> 循环中的向上和向下计数如此常见，可以用<code>for</code> 循环更简明地表达：</p><pre><code class="language-julia-repl">julia&gt; for i = 1:5
+           println(i)
+       end
+1
+2
+3
+4
+5</code></pre><p>这里的 <code>1:5</code> 是一个范围对象, 代表数字 1, 2, 3, 4, 5的序列。<code>for</code> 循环在这些值之中迭代，对每一个变量<code>i</code> 进行赋值。 <code>for</code> 循环与之前<code>while</code> 循环的一个非常重要区别是，变量可见时的作用域。如果变量 <code>i</code> 没有在另一个作用域里引入，在 <code>for</code> 循环内，它就只在<code>for</code> 内部可见，在外部和后面均不可见。你需要一个新的交互式会话实例或者一个新的变量名来测试这个：</p><pre><code class="language-julia-repl">julia&gt; for j = 1:5
+           println(j)
+       end
+1
+2
+3
+4
+5
+
+julia&gt; j
+ERROR: UndefVarError: j not defined</code></pre><p>参见 <a href="../variables-and-scoping/#scope-of-variables-1">变量作用域</a> 中对变量作用域的详细解释和它在 Julia 中如何工作。</p><p>一般来说，<code>for</code> 循环构造可以在任一个容器中迭代。 在这个时候，相比<code>=</code>，另外的（但完全相同）关键字 <code>in</code> 或者 <code>∈</code> 更常用，因为它使得代码更清晰：</p><pre><code class="language-julia-repl">julia&gt; for i in [1,4,0]
+           println(i)
+       end
+1
+4
+0
+
+julia&gt; for s ∈ [&quot;foo&quot;,&quot;bar&quot;,&quot;baz&quot;]
+           println(s)
+       end
+foo
+bar
+baz</code></pre><p>在手册后面的章节中会介绍和讨论各种不同的迭代容器（比如, <a href="../arrays/#man-multi-dim-arrays-1">多维数组</a>）。</p><p>有时在测试条件不成立之前终止一个<code>while</code> 的重复，或者当迭起对象的结尾之前停止一个 <code>for</code> 循环的迭代会更方便。这可以用关键字 <code>break</code> 来完成：</p><pre><code class="language-julia-repl">julia&gt; i = 1;
+
+julia&gt; while true
+           println(i)
+           if i &gt;= 5
+               break
+           end
+           global i += 1
+       end
+1
+2
+3
+4
+5
+
+julia&gt; for j = 1:1000
+           println(j)
+           if j &gt;= 5
+               break
+           end
+       end
+1
+2
+3
+4
+5</code></pre><p>没有关键字 <code>break</code> 的话，上面的 <code>while</code> 循环永远不会自己结束，<code>for</code> 循环会迭代到1000。使用<code>break</code> 的话，这些循环都会提前结束。</p><p>在其他的环境下，能够结束迭代，立刻进入下一步会更灵活。<code>continue</code> 关键字可以完成这个：</p><pre><code class="language-julia-repl">julia&gt; for i = 1:10
+           if i % 3 != 0
+               continue
+           end
+           println(i)
+       end
+3
+6
+9</code></pre><p>这是一个有点做作的例子，因为我们可以通过否定这个条件，把 <code>println</code> 调用放到 <code>if</code> 代码块里，更清晰地得到同样的结果。在更实际的应用中，在 <code>continue</code> 后面还会有更多的代码要运行，从调用<code>continue</code> 开始还有多个。</p><p>多个嵌套的 <code>for</code> 循环可以合并到一个外部循环，形成它的迭代对象的笛卡尔积：</p><pre><code class="language-julia-repl">julia&gt; for i = 1:2, j = 3:4
+           println((i, j))
+       end
+(1, 3)
+(1, 4)
+(2, 3)
+(2, 4)</code></pre><p>有了这个语法，迭代变量依然参考外部循环变量； 例如 <code>for i = 1:n, j = 1:i</code> 是合法的。但是在一个循环里面的 <code>break</code> 语句会推出整个嵌套循环，不仅仅是内层循环。每次内层循环运行的时候， 变量 (<code>i</code> 和 <code>j</code>) 会被赋值为他们当前的迭代变量值。所以对 <code>i</code> 的赋值对于接下来的迭代是不可见的：</p><pre><code class="language-julia-repl">julia&gt; for i = 1:2, j = 3:4
+           println((i, j))
+           i = 0
+       end
+(1, 3)
+(1, 4)
+(2, 3)
+(2, 4)</code></pre><p>如果这个例子给每个变量一个关键字 <code>for</code> 来重写，那么输出会不一样：第二个和第四个变量包含 <code>0</code>。</p><h2><a class="nav-anchor" id="异常处理-1" href="#异常处理-1">异常处理</a></h2><p>当一个意外条件发生时，一个函数可能不能给调用函数返回一个合理的值。在这种情况下，最好让意外条件终止程序，同时打印出调试的错误信息，或者当程序提供了代码来处理这些意外的情况，那么允许代码采取相应的对策。</p><h3><a class="nav-anchor" id="内置的-Exception-1" href="#内置的-Exception-1">内置的 <code>Exception</code></a></h3><p>当一个意外的情况发生时，会抛出<code>Exception</code>s。下面列出的内置 <code>Exception</code>s 都会中断正常的控制流程。</p><table><tr><th><code>Exception</code></th></tr><tr><td><a href="../../base/base/#Core.ArgumentError"><code>ArgumentError</code></a></td></tr><tr><td><a href="../../base/base/#Core.BoundsError"><code>BoundsError</code></a></td></tr><tr><td><a href="../../base/base/#Base.CompositeException"><code>CompositeException</code></a></td></tr><tr><td><a href="../../base/base/#Core.DivideError"><code>DivideError</code></a></td></tr><tr><td><a href="../../base/base/#Core.DomainError"><code>DomainError</code></a></td></tr><tr><td><a href="../../base/base/#Base.EOFError"><code>EOFError</code></a></td></tr><tr><td><a href="../../base/base/#Core.ErrorException"><code>ErrorException</code></a></td></tr><tr><td><a href="../../base/base/#Core.InexactError"><code>InexactError</code></a></td></tr><tr><td><a href="../../base/base/#Core.InitError"><code>InitError</code></a></td></tr><tr><td><a href="../../base/base/#Core.InterruptException"><code>InterruptException</code></a></td></tr><tr><td><code>InvalidStateException</code></td></tr><tr><td><a href="../../base/base/#Base.KeyError"><code>KeyError</code></a></td></tr><tr><td><a href="../../base/base/#Core.LoadError"><code>LoadError</code></a></td></tr><tr><td><a href="../../base/base/#Core.OutOfMemoryError"><code>OutOfMemoryError</code></a></td></tr><tr><td><a href="../../base/base/#Core.ReadOnlyMemoryError"><code>ReadOnlyMemoryError</code></a></td></tr><tr><td><a href="manual/@ref"><code>RemoteException</code></a></td></tr><tr><td><a href="../../base/base/#Core.MethodError"><code>MethodError</code></a></td></tr><tr><td><a href="../../base/base/#Core.OverflowError"><code>OverflowError</code></a></td></tr><tr><td><a href="../../base/base/#Base.Meta.ParseError"><code>Meta.ParseError</code></a></td></tr><tr><td><a href="../../base/base/#Base.SystemError"><code>SystemError</code></a></td></tr><tr><td><a href="../../base/base/#Core.TypeError"><code>TypeError</code></a></td></tr><tr><td><a href="../../base/base/#Core.UndefRefError"><code>UndefRefError</code></a></td></tr><tr><td><a href="../../base/base/#Core.UndefVarError"><code>UndefVarError</code></a></td></tr><tr><td><a href="../../base/base/#Base.StringIndexError"><code>StringIndexError</code></a></td></tr></table><p>例如，  <a href="../../base/math/#Base.sqrt-Tuple{Real}"><code>sqrt</code></a> 函数抛出 <a href="../../base/base/#Core.DomainError"><code>DomainError</code></a> 如果参数为负实数：</p><pre><code class="language-julia-repl">julia&gt; sqrt(-1)
+ERROR: DomainError with -1.0:
+sqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
+Stacktrace:
+[...]</code></pre><p>你可以用下面的方式定义自己的异常：</p><pre><code class="language-julia-repl">julia&gt; struct MyCustomException &lt;: Exception end</code></pre><h3><a class="nav-anchor" id="[throw](@ref)-函数-1" href="#[throw](@ref)-函数-1"><a href="../../base/base/#Core.throw"><code>throw</code></a> 函数</a></h3><p>可以用<a href="../../base/base/#Core.throw"><code>throw</code></a>显式地创建异常。例如，一个函数只对非负数有定义，如果参数是负数地时候，可以写<a href="../../base/base/#Core.throw"><code>throw</code></a> 一个 <a href="../../base/base/#Core.DomainError"><code>DomainError</code></a>。</p><pre><code class="language-julia-repl">julia&gt; f(x) = x&gt;=0 ? exp(-x) : throw(DomainError(x, &quot;argument must be nonnegative&quot;))
+f (generic function with 1 method)
+
+julia&gt; f(1)
+0.36787944117144233
+
+julia&gt; f(-1)
+ERROR: DomainError with -1:
+argument must be nonnegative
+Stacktrace:
+ [1] f(::Int64) at ./none:1</code></pre><p>注意 <a href="../../base/base/#Core.DomainError"><code>DomainError</code></a> 没有括号的时候不是一个异常，而是一个异常的类型。 它需要被调用来获得一个<code>Exception</code> 对象：</p><pre><code class="language-julia-repl">julia&gt; typeof(DomainError(nothing)) &lt;: Exception
+true
+
+julia&gt; typeof(DomainError) &lt;: Exception
+false</code></pre><p>另外，一些用于错误报告的异常类型接受一个或者多个参数：</p><pre><code class="language-julia-repl">julia&gt; throw(UndefVarError(:x))
+ERROR: UndefVarError: x not defined</code></pre><p>这个机制可以很轻易地依据 <a href="../../base/base/#Core.UndefVarError"><code>UndefVarError</code></a> 的写法，用来自定义异常类型：</p><pre><code class="language-julia-repl">julia&gt; struct MyUndefVarError &lt;: Exception
+           var::Symbol
+       end
+
+julia&gt; Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, &quot; not defined&quot;)</code></pre><p>!!! 注意：当写一个错误信息的时候，把第一个单词小写更好。例如，<code>size(A) == size(B) || throw(DimensionMismatch(&quot;size of A not equal to size of B&quot;))</code></p><p>优于</p><pre><code class="language-none">`size(A) == size(B) || throw(DimensionMismatch(&quot;Size of A not equal to size of B&quot;))`.</code></pre><p>但是，有时第一个字母大写更合理，例如如果函数的一个参数     是一个大写字母：<code>size(A,1) == size(B,2) || throw(DimensionMismatch(&quot;A has first dimension...&quot;))</code>。</p><h3><a class="nav-anchor" id="错误-1" href="#错误-1">错误</a></h3><p><a href="../../base/base/#Base.error"><code>error</code></a> 函数用来产生一个 <a href="../../base/base/#Core.ErrorException"><code>ErrorException</code></a> 来中断正常的控制流程。</p><p>假设我们希望当计算一个负数的平方根的时候，停止执行。为了实现它，我们可以定义一个挑剔的 <a href="../../base/math/#Base.sqrt-Tuple{Real}"><code>sqrt</code></a> 函数，当它的参数是负数时，产生一个错误：</p><pre><code class="language-julia-repl">julia&gt; fussy_sqrt(x) = x &gt;= 0 ? sqrt(x) : error(&quot;negative x not allowed&quot;)
+fussy_sqrt (generic function with 1 method)
+
+julia&gt; fussy_sqrt(2)
+1.4142135623730951
+
+julia&gt; fussy_sqrt(-1)
+ERROR: negative x not allowed
+Stacktrace:
+ [1] error at ./error.jl:33 [inlined]
+ [2] fussy_sqrt(::Int64) at ./none:1
+ [3] top-level scope</code></pre><p>如果另一个函数调用 <code>fussy_sqrt</code> 和一个负数, 它会立马返回， 在交互会话中显示错误信息，而不会继续执行调用的函数：</p><pre><code class="language-julia-repl">julia&gt; function verbose_fussy_sqrt(x)
+           println(&quot;before fussy_sqrt&quot;)
+           r = fussy_sqrt(x)
+           println(&quot;after fussy_sqrt&quot;)
+           return r
+       end
+verbose_fussy_sqrt (generic function with 1 method)
+
+julia&gt; verbose_fussy_sqrt(2)
+before fussy_sqrt
+after fussy_sqrt
+1.4142135623730951
+
+julia&gt; verbose_fussy_sqrt(-1)
+before fussy_sqrt
+ERROR: negative x not allowed
+Stacktrace:
+ [1] error at ./error.jl:33 [inlined]
+ [2] fussy_sqrt at ./none:1 [inlined]
+ [3] verbose_fussy_sqrt(::Int64) at ./none:3
+ [4] top-level scope</code></pre><h3><a class="nav-anchor" id="try/catch-语句-1" href="#try/catch-语句-1"><code>try/catch</code> 语句</a></h3><p><code>try/catch</code> 语句允许测试 <code>Exception</code>s。 例如，一个自定义的平方根函数可以使用<code>Exception</code>s，按照需要自动调用实数或者复数平方根：</p><pre><code class="language-julia-repl">julia&gt; f(x) = try
+           sqrt(x)
+       catch
+           sqrt(complex(x, 0))
+       end
+f (generic function with 1 method)
+
+julia&gt; f(1)
+1.0
+
+julia&gt; f(-1)
+0.0 + 1.0im</code></pre><p>值得注意的时在实际计算这个函数的时候，需要比较 <code>x</code> 与0，而不是捕获一个异常。 这个异常比简单地比较和分支慢得多。</p><p><code>try/catch</code> 语句允许保存 <code>Exception</code> 到一个变量中。下面的做作的例子中，如果 <code>x</code> 是可索引的，计算<code>x</code> 的第二项的平方根，否则假设 <code>x</code> 是一个实数，并返回它的平方根：</p><pre><code class="language-julia-repl">julia&gt; sqrt_second(x) = try
+           sqrt(x[2])
+       catch y
+           if isa(y, DomainError)
+               sqrt(complex(x[2], 0))
+           elseif isa(y, BoundsError)
+               sqrt(x)
+           end
+       end
+sqrt_second (generic function with 1 method)
+
+julia&gt; sqrt_second([1 4])
+2.0
+
+julia&gt; sqrt_second([1 -4])
+0.0 + 2.0im
+
+julia&gt; sqrt_second(9)
+3.0
+
+julia&gt; sqrt_second(-9)
+ERROR: DomainError with -9.0:
+sqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
+Stacktrace:
+[...]</code></pre><p>注意 <code>catch</code> 后面的字符会被一直认为是异常的名字，所以在写 <code>try/catch</code> 单行表达式时，需要特别小心。下面的代码<em>不会</em> 在错误的情况下，返回 <code>x</code> 的值：</p><pre><code class="language-julia">try bad() catch x end</code></pre><p>正确的是在<code>catch</code>后使用一个分号或者插入一个换行：</p><pre><code class="language-julia">try bad() catch; x end
+
+try bad()
+catch
+    x
+end</code></pre><p><code>try/catch</code> 组件的强大之处在于能够将高度嵌套的计算立刻解耦成更高层次地调用函数。有时没有错误产生，但需要能够解耦堆栈，并传值到上层。Julia 提供了 <a href="../../base/base/#Base.rethrow"><code>rethrow</code></a>, <a href="../../base/base/#Base.backtrace"><code>backtrace</code></a> 和 <a href="../../base/base/#Base.catch_backtrace"><code>catch_backtrace</code></a> 函数进行更高级的错误处理。</p><h3><a class="nav-anchor" id="finally-子句-1" href="#finally-子句-1"><code>finally</code> 子句</a></h3><p>在进行状态改变或者使用类似文件的资源的编程时，经常需要在代码结束的时候进行必要的清理工作（比如关闭文件）。由于异常会使得部分代码块在正常结束之前退出，可能使得工作变得复杂。<code>finally</code>关键字提供了一种方式，使得无论特定代码块如何退出，代码块中的部分代码都能运行。</p><p>例如，这里是我们如何确保一个打开的文件被关闭：</p><pre><code class="language-julia">f = open(&quot;file&quot;)
+try
+    # operate on file f
+finally
+    close(f)
+end</code></pre><p>当控制流离开 <code>try</code> 代码块（例如，遇到 <code>return</code>，或者正常结束），<code>close(f)</code> 就会被执行。如果 <code>try</code> 代码块由于异常退出，这个异常会继续传递。<code>catch</code> 代码块可以和 <code>try</code> 还有 <code>finally</code> 配合使用。这时 <code>finally</code> 代码块会在 <code>catch</code> 处理错误之后才运行。</p><h2><a class="nav-anchor" id="man-tasks-1" href="#man-tasks-1">任务 (又名 协程)</a></h2><p>任务（Task）是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。这个特性有时被叫做其它名字，例如 对称协程（symmetric coroutines），轻量级线程（lightweight threads），合作多任务处理（cooperative multitasking），或者单次续延（one-shot continuations）。</p><p>当一部分计算任务（在实际中，执行一个特定的函数）可以被设计成一个<a href="manual/@ref"><code>任务</code></a>，就可以中断它，并切换到另一个<a href="manual/@ref"><code>任务</code></a>。原本的<a href="manual/@ref"><code>任务</code></a>可以恢复到它上次中断的地方，并继续执行。第一眼感觉，这个跟函数调用很类似。但是有两个关键的区别。首先，是切换任务并不使用任何空间，所以任意数量的任务切换都不会使用调用堆栈。其次，在可以以任何次序在任务间切换，而不像函数调用那样，被调用函数必须在返回主调用函数之前结束执行。</p><p>这种流程控制的方式使得解决一个特定问题更简便。在一些问题中，多个需求并不是有函数调用来自然连接的；在需要完成的工作之间并没有明确的“调用者”或者“被调用者”。一个例子是生产-消费问题，一个复杂的流程产生数据，另一个复杂的流程消费他们。消费者不能简单的调用生产函数来获得一个值，因为生产者可能有更多的值需要创建，还没有准备好返回。用任务的话，生产者和消费者能同时运行他们所需要的任意时间，根据需要传递值回来或者过去。</p><p>Julia提供了 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 机制来解决这个问题。 一个<a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 是一个先进先出的队列，允许多个任务对它可以进行读和写。</p><p>让我们定义一个生产者任务，调用 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 来生产数值。为了消费数值，我们需要对生产者开始新任务进行排班。可以使用一个特殊的<a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 组件来运行一个与任务队列（channel）绑定的任务，这个特殊的任务队列能接受包含一个参数的函数作为它的参数。然后可以用<a href="../../base/parallel/#Base.take!-Tuple{Channel}"><code>take!</code></a>从任务队列对象里不断地提取值：</p><pre><code class="language-julia-repl">julia&gt; function producer(c::Channel)
+           put!(c, &quot;start&quot;)
+           for n=1:4
+               put!(c, 2n)
+           end
+           put!(c, &quot;stop&quot;)
+       end;
+
+julia&gt; chnl = Channel(producer);
+
+julia&gt; take!(chnl)
+&quot;start&quot;
+
+julia&gt; take!(chnl)
+2
+
+julia&gt; take!(chnl)
+4
+
+julia&gt; take!(chnl)
+6
+
+julia&gt; take!(chnl)
+8
+
+julia&gt; take!(chnl)
+&quot;stop&quot;</code></pre><p>一种思考这种行为地方式是，<code>生产者</code> 能够多次返回。 Between 在两次调用<a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a>之间，生产者地执行是被 中断的，消费者接管控制。 </p><p>返回的 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 可以被用作一个 <code>for</code> 循环的迭代对象, 循环变量 可以是所有产生的值。 当任务队列关闭时，循环被终止。</p><pre><code class="language-julia-repl">julia&gt; for x in Channel(producer)
+           println(x)
+       end
+start
+2
+4
+6
+8
+stop</code></pre><p>注意我们并不需要显式在生产者中关闭任务队列。这是因为<a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 对 <a href="../../base/parallel/#Core.Task"><code>Task</code></a>的绑定同时也意味着任务队列的生命周期与绑定的任务一致。当任务结束时，任务队列对象会自动关闭。多个任务队列可以绑定到一个任务中，反之亦然。</p><p>当 <a href="../../base/parallel/#Core.Task"><code>Task</code></a>构造器只有一个不含函数的函数， 的<a href="../../base/parallel/#Base.Channel"><code>Channel</code></a>方法创建绑定任务的任务队列，需要一个接受一个 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a>类型作为参数的函数。一个通用模式是对生产者参数化，此时需要一个部分函数应用来创建一个无参数，或者一个参数的 <a href="../functions/#man-anonymous-functions-1">匿名函数</a>。</p><p>对于 <a href="manual/@ref"><code>任务</code></a>对象，这个也可以直接完成或者用一个简便的宏。</p><pre><code class="language-julia">function mytask(myarg)
+    ...
+end
+
+taskHdl = Task(() -&gt; mytask(7))
+# or, equivalently
+taskHdl = @task mytask(7)</code></pre><p>为了安排更高级的工作分配模式， <a href="../../stdlib/Sockets/#Base.bind"><code>bind</code></a> 和 <a href="../../base/parallel/#Base.schedule"><code>schedule</code></a>可以与<a href="../../base/parallel/#Core.Task"><code>Task</code></a> 和<a href="../../base/parallel/#Base.Channel"><code>Channel</code></a>构造器配合使用，显示地连接一些任务队列和生产者/消费者任务。</p><p>注意目前Julia的任务并不分配到或者运行在不同的CPU核心。真正的内核进程将在<a href="manual/@ref">分布式计算</a>进行讨论。</p><h3><a class="nav-anchor" id="核心任务操作-1" href="#核心任务操作-1">核心任务操作</a></h3><p>让我们来学习底层构造器<a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a>来理解任务是如何切换工作。<code>yieldto(task,value)</code> 中断当前任务，切换到特定的<code>任务</code>，并且任务的最后一次<a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a>调用会有特定的<code>返回值</code>。注意<a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a> 是唯一一个需要用任务类型的流程控制的操作，仅需要切换到不同的任务，而不需要调用或者返回。这也就是为什么这个特性会被叫做“对称协程（symmetric coroutines）”；每一个任务以相同的机制进行切换或者被切换。</p><p><a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a> 功能强大，但大多数任务的使用都不会直接调用它。思考为什么会这样。如果你切换当前任务，你很可能会在某个时候想切换回来。但知道什么时候切换回来和那个任务负责切换回来需要大量的协调。例如，<a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 和 <a href="../../base/parallel/#Base.take!-Tuple{Channel}"><code>take!</code></a> 是阻塞操作，当在渠道环境中使用时，维持状态以记住消费者是谁。不需要人为地记录消费任务，正是使得 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a>比底层 <a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a>易用的原因。</p><p>除了<a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a>之外，也需要一些其它的基本函数来更高效地使用任务。</p><ul><li><a href="../../base/parallel/#Base.current_task"><code>current_task</code></a> 获取当前运行任务的索引。</li><li><a href="../../base/parallel/#Base.istaskdone"><code>istaskdone</code></a> 查询一个任务是否退出.</li><li><a href="../../base/parallel/#Base.istaskstarted"><code>istaskstarted</code></a> 查询一个任务是否已经开始运行。</li><li><a href="../../base/parallel/#Base.task_local_storage-Tuple{Any}"><code>task_local_storage</code></a> 操纵针对当前任务的键值存储。</li></ul><h3><a class="nav-anchor" id="任务和事件-1" href="#任务和事件-1">任务和事件</a></h3><p>多数任务切换是在等待如I/O请求的事件，由Julia Base里的调度器执行。调度器维持一个可运行任务的队列，并执行一个事件循环，来根据例如收到消息等外部事件来重启任务。</p><p>等待一个事件的基本函数是<a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>。多个对象都能执行 <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>；例如，给定一个<code>Process</code> 对象，<a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>将等待它退出。<a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>通常是隐式的，例如，<a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>可能发生在调用 <a href="../../base/io-network/#Base.read"><code>read</code></a>时等待数据可用。</p><p>在所有这些情况下，<a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a> 最终会操作一个 <a href="../../base/parallel/#Base.Condition"><code>Condition</code></a> 对象，由它负责排队和重启任务。当一个任务在一个<a href="../../base/parallel/#Base.Condition"><code>Condition</code></a>上调用 <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>时，该任务就被标记为不可执行，加到条件的队列中，并切回调度器。调度器将选择另一个任务来运行，或者阻止外部事件的等待。如果所有运行良好，最终一个事件处理器将在这个条件下调用<a href="../../base/parallel/#Base.notify"><code>notify</code></a>，使得等待该条件的任务又变成可运行。</p><p>调用 <a href="../../base/parallel/#Core.Task"><code>Task</code></a>显式创建的任务对于调度器时来说一开始时不知道的。如果你希望的话，你可以使用 <a href="../../base/parallel/#Base.yieldto"><code>yieldto</code></a>来人为管理任务。但是当这种任务等待一个事件时，正如期待的那样，当事件发生时，它将自动重启。也能由调度器在任何可能的时候，运行一个任务，而无需等待任何事件。这可以调用<a href="../../base/parallel/#Base.schedule"><code>schedule</code></a>，或者使用 <a href="../../stdlib/Distributed/#Base.@async"><code>@async</code></a> 宏（见 <a href="../parallel-computing/#并行计算-1">并行计算</a>中的详细说明）。</p><h3><a class="nav-anchor" id="任务状态-1" href="#任务状态-1">任务状态</a></h3><p>任务由一个<code>state</code> 属性来描述他们的执行状态。一个<a href="../../base/parallel/#Core.Task"><code>Task</code></a> <code>state</code> 时下面符号中的一个：</p><table><tr><th>符号</th><th>含义</th></tr><tr><td><code>:runnable</code></td><td>正在运行，或者可以被切换到</td></tr><tr><td><code>:waiting</code></td><td>被阻塞，等待一个特定事件</td></tr><tr><td><code>:queued</code></td><td>处在调度器中的运行队列中，即将被重启</td></tr><tr><td><code>:done</code></td><td>成功结束执行</td></tr><tr><td><code>:failed</code></td><td>以一个没被捕获的异常结束</td></tr></table><footer><hr/><a class="previous" href="../functions/"><span class="direction">Previous</span><span class="title">函数</span></a><a class="next" href="../variables-and-scoping/"><span class="direction">Next</span><span class="title">Scope of Variables</span></a></footer></article></body></html>
