@@ -101,4 +101,4 @@ julia [switches] -- [programfile] [args...]
 
 ## 资源
 
-除了本手册以外，官方网站还提供了一个有用的[学习资源列表](https://julialang.org/learning/)来帮助新用户学习 Julia。
+除了本手册以外，官方网站还提供了一个有用的**[学习资源列表](https://julialang.org/learning/)**来帮助新用户学习 Julia。
