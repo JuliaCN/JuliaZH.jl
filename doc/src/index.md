@@ -149,7 +149,7 @@ Julia 的目标是创建一个前所未有的集易用、强大、高效于一�
   * 用户定义的类型和内建类型一样快和兼容
   * 无需特意编写向量化的代码；非向量化的代码就很快
   * 为并行计算和分布式计算设计
-  * 轻量级的“绿色”线程（([协程](https://en.wikipedia.org/wiki/Coroutine))）
+  * 轻量级的“绿色”线程 ([协程](https://en.wikipedia.org/wiki/Coroutine))
   * 低调又牛逼的类型系统
   * 优雅、可扩展的类型转换
   * 高效支持[Unicode](https://en.wikipedia.org/wiki/Unicode)，包括但不限于[UTF-8](https://en.wikipedia.org/wiki/UTF-8)
