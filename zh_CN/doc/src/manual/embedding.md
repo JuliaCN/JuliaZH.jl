@@ -156,7 +156,7 @@ jl_value_t *ret = jl_call1(func, argument);
 jl_value_t *jl_call(jl_function_t *f, jl_value_t **args, int32_t nargs)
 ```
 
-它的第二个参数 `args` 是 `jl_value_t*` 类型的数组，`nargs` 是参数的个数 
+它的第二个参数 `args` 是 `jl_value_t*` 类型的数组，`nargs` 是参数的个数
 
 ## 内存管理
 
@@ -348,4 +348,3 @@ jl_errorf("argument x = %d is too large", x);
 ```
 
 在这个例子中假定 `x` 是一个 int 值。
-

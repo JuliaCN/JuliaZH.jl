@@ -431,7 +431,7 @@ julia> bitstring(nextfloat(x))
 ### 舍入模式
 
 一个数如果没有精确的浮点表示，就必须被舍入到一个合适的可表示的值。然而，如果想的话，可以根据舍入模式改变舍入的方式，如 [IEEE 754
-standard](https://en.wikipedia.org/wiki/IEEE_754-2008)所述。 
+standard](https://en.wikipedia.org/wiki/IEEE_754-2008)所述。
 
 Julia 所使用的默认模式总是 [`RoundNearest`](@ref)，指的是会舍入到最接近的可表示的值，这个被舍入的值会使用尽量少的有效位数。
 
@@ -442,17 +442,17 @@ Julia 所使用的默认模式总是 [`RoundNearest`](@ref)，指的是会舍入
   * 浮点算术的权威性指南是 [IEEE 754-2008 Standard](http://standards.ieee.org/findstds/standard/754-2008.html);
     然而在网上无法免费获得。
   * 关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 在这个主题上的 [文章](https://www.johndcook.com/blog/2009/04/06/anatomy-of-a-floating-point-number/)以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的[介绍](https://www.johndcook.com/blog/2009/04/06/numbers-are-a-leaky-abstraction/)
-     
-     
-     
-     
+
+
+
+
   * 同样推荐 Bruce Dawson 的[一系列关于浮点数的博客文章](https://randomascii.wordpress.com/2012/05/20/thats-not-normalthe-performance-of-odd-floats)。
   * 想要一个对浮点数和使用浮点数计算时产生的数值精度问题的极好的、有深度的讨论，可以参见 David Goldberg 的文章 [What Every Computer Scientist Should Know About Floating-Point Arithmetic](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.6768&rep=rep1&type=pdf)。
-     
+
   * 更多延伸文档，包括浮点数的历史、基础理论、问题以及数值计算中很多其它主题的讨论，可以参见 [William Kahan](https://en.wikipedia.org/wiki/William_Kahan) 的[写作集](https://people.eecs.berkeley.edu/~wkahan/)。他以“浮点数之父”闻名。特别感兴趣的话可以看 [An Interview with the Old Man of Floating-Point](https://people.eecs.berkeley.edu/~wkahan/ieee754status/754story.html)。
-     
-     
-     
+
+
+
 
 ## 任意精度算术
 
