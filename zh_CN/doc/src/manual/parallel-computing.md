@@ -7,10 +7,9 @@
 2. 多线程
 3. 多核心或分布式处理
 
-We will first consider Julia [Tasks (aka Coroutines)](@ref man-tasks) and other modules that rely on the Julia runtime library, that allow to suspend and resume computations with full control of inter-`Tasks` communication without having to manually interface with the operative system's scheduler.
-Julia also allows to communicate between `Tasks` through operations like [`wait`](@ref) and [`fetch`](@ref).
-Communication and data synchronization is managed through [`Channel`](@ref)s, which are the conduit
-that allows inter-`Tasks` communication.
+我们首先考虑 Julia 任务 [Tasks](@ref man-tasks) 以及其它依赖于 Julia  实时库(runtime library)的模块，通过实时库，可以在挂起和继续计算任务时对内部 'Tasks' 间的通信进行完全控制，并且控制过程无需手动与操作系统的调度进行交互。
+Julia 同样允许利用一些操作在 'Tasks' 间进行通信，比如 ['wait'](@ref) 以及 ['fetch'](@ref)。
+另外，通信和数据同步是通过 ['Channel'](@ref) 完成的，它也是实现内部 'Tasks' 通信的基石。
 
 Julia also supports experimental multi-threading, where execution is forked and an anonymous function is run across all
 threads.
@@ -21,11 +20,11 @@ As an un up-to-date reference, keep an eye on [the issue tracker](https://github
 Multi-Threading should only be used if you take into consideration global variables, locks and
 atomics, so we will explain it later.
 
-In the end we will present Julia's way to distributed and parallel computing. With scientific computing
-in mind, Julia natively implements interfaces to distribute a process through multiple cores or machines.
-Also we will mention useful external packages for distributed programming like `MPI.jl` and `DistributedArrays.jl`.
+最后我们将介绍 Julia 的分布式并行计算的实现方法。鉴于以科学计算为主要目的，
+Julia 底层上提供了通过多核心或多机器对任务并行的接口。
+同时我们还将介绍一些有用的分布式编程的外部包，比如 'MPI.jl' 以及 'DistributedArrays.jl'。
 
-# Coroutines
+# 协程
 
 Julia's parallel programming platform uses [Tasks (aka Coroutines)](@ref man-tasks) to switch among multiple computations.
 To express an order of execution between lightweight threads communication primitives are necessary.

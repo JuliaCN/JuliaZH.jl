@@ -40,7 +40,7 @@ up front are:
   * There is no meaningful concept of a "compile-time type": the only type a value has is its actual
     type when the program is running. This is called a "run-time type" in object-oriented languages
     where the combination of static compilation with polymorphism makes this distinction significant.
-  * Only values, not variables, have types -- variables are simply names bound to values.
+  * 值有类型，变量没有类型——变量仅仅是绑定了值的名字而已。
   * Both abstract and concrete types can be parameterized by other types. They can also be parameterized
     by symbols, by values of any type for which [`isbits`](@ref) returns true (essentially, things
     like numbers and bools that are stored like C types or `struct`s with no pointers to other objects),
@@ -51,14 +51,13 @@ Julia's type system is designed to be powerful and expressive, yet clear, intuit
 Many Julia programmers may never feel the need to write code that explicitly uses types. Some
 kinds of programming, however, become clearer, simpler, faster and more robust with declared types.
 
-## Type Declarations
+## 类型断言
 
-The `::` operator can be used to attach type annotations to expressions and variables in programs.
-There are two primary reasons to do this:
+`::`运算符可以用来在程序中给表达式和变量附加类型注释。这有两个主要原因：
 
-1. As an assertion to help confirm that your program works the way you expect,
-2. To provide extra type information to the compiler, which can then improve performance in some
-   cases
+1. 作为断言，帮助程序确认能是否正常运行，
+2. 给编译器提供额外的类型信息，这可能帮助程序提升性能
+   ，在某些情况下
 
 When appended to an expression computing a value, the `::` operator is read as "is an instance
 of". It can be used anywhere to assert that the value of the expression on the left is an instance
@@ -76,7 +75,7 @@ julia> (1+2)::Int
 3
 ```
 
-This allows a type assertion to be attached to any expression in-place.
+可以在任何表达式的所在位置做类型断言。
 
 When appended to a variable on the left-hand side of an assignment, or as part of a `local` declaration,
 the `::` operator means something a bit different: it declares the variable to always have the
@@ -97,21 +96,18 @@ julia> typeof(ans)
 Int8
 ```
 
-This feature is useful for avoiding performance "gotchas" that could occur if one of the assignments
-to a variable changed its type unexpectedly.
+这个特性用于避免性能“陷阱”，即给一个变量赋值时意外更改了类型。
 
-This "declaration" behavior only occurs in specific contexts:
+此“声明”行为仅发生在特定上下文中：
 
 ```julia
 local x::Int8  # in a local declaration
 x::Int8 = 10   # as the left-hand side of an assignment
 ```
 
-and applies to the whole current scope, even before the declaration. Currently, type declarations
-cannot be used in global scope, e.g. in the REPL, since Julia does not yet have constant-type
-globals.
+并适用于整个当前范围，甚至在声明之前。目前，声明类型不能用于全局范围，例如在 REPL 中就不可以，因为Julia 还没有定型的全局变量。
 
-Declarations can also be attached to function definitions:
+声明也可以附加到函数定义：
 
 ```julia
 function sinc(x)::Float64
@@ -122,10 +118,9 @@ function sinc(x)::Float64
 end
 ```
 
-Returning from this function behaves just like an assignment to a variable with a declared type:
-the value is always converted to `Float64`.
+从此函数返回的值就像对具有声明类型的变量的赋值：值始终转换为`Float64`。
 
-## Abstract Types
+## 抽象类型
 
 Abstract types cannot be instantiated, and serve only as nodes in the type graph, thereby describing
 sets of related concrete types: those concrete types which are their descendants. We begin with
@@ -148,23 +143,16 @@ numbers. Abstract types allow the construction of a hierarchy of types, providin
 into which concrete types can fit. This allows you, for example, to easily program to any type
 that is an integer, without restricting an algorithm to a specific type of integer.
 
-Abstract types are declared using the [`abstract type`](@ref) keyword. The general syntaxes for declaring an
-abstract type are:
+使用[`abstract type`](@ref)关键词来声明抽象类型。抽象类型的一般语法时：
 
 ```
 abstract type «name» end
 abstract type «name» <: «supertype» end
 ```
 
-The `abstract type` keyword introduces a new abstract type, whose name is given by `«name»`. This
-name can be optionally followed by [`<:`](@ref) and an already-existing type, indicating that the newly
-declared abstract type is a subtype of this "parent" type.
+该`abstract type` 关键字引入了一个新的抽象类型，`«name»`为其名称。此名称后面可以跟[`<:`](@ref)和一个已存在的类型，表示新声明的抽象类型是此“父”类型的子类型。
 
-When no supertype is given, the default supertype is `Any` -- a predefined abstract type that
-all objects are instances of and all types are subtypes of. In type theory, `Any` is commonly
-called "top" because it is at the apex of the type graph. Julia also has a predefined abstract
-"bottom" type, at the nadir of the type graph, which is written as `Union{}`. It is the exact
-opposite of `Any`: no object is an instance of `Union{}` and all types are supertypes of `Union{}`.
+如果没有给出父类型，则默认父类型为`Any`——所有对象和类型都是这个抽象类型的子类型。在类型理论中，`Any`通常称为"top"，因为它位于类型图的顶峰。Julia还有一个预定义的抽象"bottom"类型，在类型图的最低点，写成`Union{}`。这与`Any`完全相反：任何对象都不是`Union{}`的实例，所有的类型都是`Union{}`的父类型。
 
 Let's consider some of the abstract types that make up Julia's numerical hierarchy:
 
@@ -177,19 +165,9 @@ abstract type Signed   <: Integer end
 abstract type Unsigned <: Integer end
 ```
 
-The [`Number`](@ref) type is a direct child type of `Any`, and [`Real`](@ref) is its child.
-In turn, `Real` has two children (it has more, but only two are shown here; we'll get to
-the others later): [`Integer`](@ref) and [`AbstractFloat`](@ref), separating the world into
-representations of integers and representations of real numbers. Representations of real
-numbers include, of course, floating-point types, but also include other types, such as
-rationals. Hence, `AbstractFloat` is a proper subtype of `Real`, including only
-floating-point representations of real numbers. Integers are further subdivided into
-[`Signed`](@ref) and [`Unsigned`](@ref) varieties.
+[`Number`](@ref)类型为`Any`类型的直接子类型，并且[`Real`](@ref)为它的子类型。反过来，`Real`有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到更多的类型）： [`Integer`](@ref) 和[`AbstractFloat`](@ref)，将”数字世界“分为整数和实数的两部分。实数当然还包括浮点类型和其他类型，例如有理数。因此，`AbstractFloat`是一个`Real`的子类型，仅包括实数的浮点表示。整数被进一步细分为[`Signed`](@ref)和[`Unsigned`](@ref) 两类。
 
-The `<:` operator in general means "is a subtype of", and, used in declarations like this, declares
-the right-hand type to be an immediate supertype of the newly declared type. It can also be used
-in expressions as a subtype operator which returns `true` when its left operand is a subtype of
-its right operand:
+`<:`运算符的含义是”前者是后者的子类型“，被用于声明类型，它声明右侧是左侧新声明类型的直接父类型。也可以用来判断左侧是不是右侧的子类型，当其左侧是右侧的子类型时返回`true`
 
 ```jldoctest
 julia> Integer <: Number
@@ -199,8 +177,7 @@ julia> Integer <: AbstractFloat
 false
 ```
 
-An important use of abstract types is to provide default implementations for concrete types. To
-give a simple example, consider:
+抽象类型的一个重要用途是为具体类型提供默认实现。举一个简单的例子：
 
 ```julia
 function myplus(x,y)
@@ -223,7 +200,7 @@ function myplus(x::Int,y::Int)
 end
 ```
 
-and finally, it invokes this specific method.
+最后，调用这个具体的函数。
 
 Thus, abstract types allow programmers to write generic functions that can later be used as the
 default method by many combinations of concrete types. Thanks to multiple dispatch, the programmer
@@ -234,12 +211,9 @@ a function whose arguments are abstract types, because it is recompiled for each
 concrete types with which it is invoked. (There may be a performance issue, however, in the case
 of function arguments that are containers of abstract types; see [Performance Tips](@ref man-performance-tips).)
 
-## Primitive Types
+## 位类型
 
-A primitive type is a concrete type whose data consists of plain old bits. Classic examples of primitive
-types are integers and floating-point values. Unlike most languages, Julia lets you declare your
-own primitive types, rather than providing only a fixed set of built-in ones. In fact, the standard
-primitive types are all defined in the language itself:
+位类型是具体类型，其数据是由位构成。位类型的经典示例是整数和浮点数。与大多数语言不同，Julia允许您声明自己的位类型，而不是仅提供一组固定的内置类型。实际上，标准位类型都是在语言本身中定义的：
 
 ```julia
 primitive type Float16 <: AbstractFloat 16 end
@@ -261,20 +235,14 @@ primitive type Int128  <: Signed   128 end
 primitive type UInt128 <: Unsigned 128 end
 ```
 
-The general syntaxes for declaring a primitive type are:
+声明位类型的一般语法是：
 
 ```
 primitive type «name» «bits» end
 primitive type «name» <: «supertype» «bits» end
 ```
 
-The number of bits indicates how much storage the type requires and the name gives the new type
-a name. A primitive type can optionally be declared to be a subtype of some supertype. If a supertype
-is omitted, then the type defaults to having `Any` as its immediate supertype. The declaration
-of [`Bool`](@ref) above therefore means that a boolean value takes eight bits to store, and has
-[`Integer`](@ref) as its immediate supertype. Currently, only sizes that are multiples of
-8 bits are supported. Therefore, boolean values, although they really need just a single bit,
-cannot be declared to be any smaller than eight bits.
+bits表示该类型需要多少存储空间，name为新类型指定名称。可已经一个位类型声明为某个父类型的子类型。如果省略父类型，则默认`Any`为其直接父类型。上述声明中意味着[`Bool`](@ref)类型需要8位来储存，并且直接父类型为[`Integer`](@ref)。目前，仅支持8位倍数的大小。因此，布尔值虽然确实只需要一位，但不能声明为小于八位的值。
 
 The types [`Bool`](@ref), [`Int8`](@ref) and [`UInt8`](@ref) all have identical representations:
 they are eight-bit chunks of memory. Since Julia's type system is nominative, however, they
@@ -287,7 +255,7 @@ arguments. This is why a nominative type system is necessary: if structure deter
 which in turn dictates behavior, then it would be impossible to make [`Bool`](@ref) behave
 any differently than [`Int8`](@ref) or [`UInt8`](@ref).
 
-## Composite Types
+## 复合类型
 
 [Composite types](https://en.wikipedia.org/wiki/Composite_data_type) are called records, structs,
 or objects in various languages. A composite type is a collection of named fields,
@@ -309,8 +277,7 @@ for more information on methods and dispatch). Thus, it would be inappropriate f
 named bags of methods "inside" each object ends up being a highly beneficial aspect of the language
 design.
 
-Composite types are introduced with the [`struct`](@ref) keyword followed by a block of field names, optionally
-annotated with types using the `::` operator:
+[`struct`](@ref)关键词用于构造复合类型，后跟一个字段的名称，可选择使用`::`运算符注释类型：
 
 ```jldoctest footype
 julia> struct Foo
@@ -320,10 +287,9 @@ julia> struct Foo
        end
 ```
 
-Fields with no type annotation default to `Any`, and can accordingly hold any type of value.
+没有类型注释的字段默认位`Any`类型，所以可以保存任何类型的值。
 
-New objects of type `Foo` are created by applying the `Foo` type object like a function
-to values for its fields:
+类型为`Foo`的新对象是通过将`Foo`类型对象（如函数）应用于其字段的值来创建的：
 
 ```jldoctest footype
 julia> foo = Foo("Hello, world.", 23, 1.5)
@@ -339,8 +305,7 @@ automatically (these are called *default constructors*). One accepts any argumen
 that match the field types exactly. The reason both of these are generated is that this makes
 it easier to add new definitions without inadvertently replacing a default constructor.
 
-Since the `bar` field is unconstrained in type, any value will do. However, the value for `baz`
-must be convertible to `Int`:
+由于`bar`字段在类型上不受限制，因此任何值都可以。但是`baz`的值必须可转换为`Int`类型：
 
 ```jldoctest footype
 julia> Foo((), 23.5, 1)
@@ -349,14 +314,14 @@ Stacktrace:
 [...]
 ```
 
-You may find a list of field names using the [`fieldnames`](@ref) function.
+可以使用[`fieldnames`](@ref) 函数找到字段名称列表.
 
 ```jldoctest footype
 julia> fieldnames(Foo)
 (:bar, :baz, :qux)
 ```
 
-You can access the field values of a composite object using the traditional `foo.bar` notation:
+可以使用传统的`foo.bar`表示法访问复合对象的字段值：
 
 ```jldoctest footype
 julia> foo.bar
@@ -394,17 +359,15 @@ julia> NoFields() === NoFields()
 true
 ```
 
-The [`===`](@ref) function confirms that the "two" constructed instances of `NoFields` are actually one
-and the same. Singleton types are described in further detail [below](@ref man-singleton-types).
+ [`===`](@ref)函数用来确认”两个“构造的实例`NoFields`实际上是同一个。单态类型将在[下面](@ref man-singleton-types)进一步详细描述。
 
 There is much more to say about how instances of composite types are created, but that discussion
 depends on both [Parametric Types](@ref) and on [Methods](@ref), and is sufficiently important
 to be addressed in its own section: [Constructors](@ref man-constructors).
 
-## Mutable Composite Types
+## 可变复合类型
 
-If a composite type is declared with `mutable struct` instead of `struct`, then instances of
-it can be modified:
+如果使用`mutable struct`而不是声明复合类型`struct`，则可以修改它的实例：
 
 ```jldoctest bartype
 julia> mutable struct Bar
@@ -475,12 +438,11 @@ A `DataType` may be abstract or concrete. If it is concrete, it has a specified 
 layout, and (optionally) field names. Thus a primitive type is a `DataType` with nonzero size, but
 no field names. A composite type is a `DataType` that has field names or is empty (zero size).
 
-Every concrete value in the system is an instance of some `DataType`.
+在这个系统里的每一个具体的值都是某个`DataType`的实例。
 
 ## Type Unions
 
-A type union is a special abstract type which includes as objects all instances of any of its
-argument types, constructed using the special [`Union`](@ref) keyword:
+类型共用体是一种特殊的抽象类型，它包含作为对象的任何参数类型的所有实例，使用特殊[`Union`](@ref)关键字构造：
 
 ```jldoctest
 julia> IntOrString = Union{Int,AbstractString}
@@ -570,7 +532,7 @@ julia> Point{AbstractString} <: Point
 true
 ```
 
-Other types, of course, are not subtypes of it:
+当然，其他类型不是它的子类型：
 
 ```jldoctest pointtype
 julia> Float64 <: Point
@@ -580,7 +542,7 @@ julia> AbstractString <: Point
 false
 ```
 
-Concrete `Point` types with different values of `T` are never subtypes of each other:
+`Point`不同`T`值所声明的具体类型之间，不能互相作为子类型：
 
 ```jldoctest pointtype
 julia> Point{Float64} <: Point{Int64}
@@ -622,8 +584,7 @@ function norm(p::Point{Real})
 end
 ```
 
-A correct way to define a method that accepts all arguments of type `Point{T}` where `T` is
-a subtype of [`Real`](@ref) is:
+一种正确的方法来定义一个接受类型的所有参数的方法，`Point{T}`其中`T`是一个子类型[`Real`](@ref)：
 
 ```julia
 function norm(p::Point{<:Real})
@@ -631,10 +592,9 @@ function norm(p::Point{<:Real})
 end
 ```
 
-(Equivalently, one could define `function norm(p::Point{T} where T<:Real)` or
-`function norm(p::Point{T}) where T<:Real`; see [UnionAll Types](@ref).)
+(等效地, 另一种定义方法 `function norm(p::Point{T} where T<:Real)` 或`function norm(p::Point{T}) where T<:Real`; 查看[UnionAll Types](@ref).)
 
-More examples will be discussed later in [Methods](@ref).
+稍后将在[方法](@ref)中讨论更多示例。
 
 How does one construct a `Point` object? It is possible to define custom constructors for composite
 types, which will be discussed in detail in [Constructors](@ref man-constructors), but in the absence of any special
@@ -653,7 +613,7 @@ julia> typeof(ans)
 Point{Float64}
 ```
 
-For the default constructor, exactly one argument must be supplied for each field:
+对于默认的构造函数，必须为每个字段提供一个参数：
 
 ```jldoctest pointtype
 julia> Point{Float64}(1.0)
@@ -687,8 +647,7 @@ julia> typeof(ans)
 Point{Int64}
 ```
 
-In the case of `Point`, the type of `T` is unambiguously implied if and only if the two arguments
-to `Point` have the same type. When this isn't the case, the constructor will fail with a [`MethodError`](@ref):
+在上例中，当且仅当两个参数类型相同时，`T`的类型才能明确暗示，同时'Point`具有相同的类型。如果不是这种情况，即参数类型不同时，构造函数将失败并显示[`MethodError`](@ref)：
 
 ```jldoctest pointtype
 julia> Point(1,2.5)
@@ -697,8 +656,7 @@ Closest candidates are:
   Point(::T, !Matched::T) where T at none:2
 ```
 
-Constructor methods to appropriately handle such mixed cases can be defined, but that will not
-be discussed until later on in [Constructors](@ref man-constructors).
+可以定义适当处理此类混合情况的函数构造方法，将在后面的[构造函数](@ref man-constructors)中讨论。
 
 ### Parametric Abstract Types
 
@@ -752,7 +710,7 @@ julia> struct Point{T} <: Pointy{T}
        end
 ```
 
-Given such a declaration, for each choice of `T`, we have `Point{T}` as a subtype of `Pointy{T}`:
+鉴于此类声明，对每个`T` ，都有 `Point{T}` 是 `Pointy{T}` 的子类型：
 
 ```jldoctest pointytype
 julia> Point{Float64} <: Pointy{Float64}
@@ -765,7 +723,7 @@ julia> Point{AbstractString} <: Pointy{AbstractString}
 true
 ```
 
-This relationship is also invariant:
+它们仍然不互为子类：
 
 ```jldoctest pointytype
 julia> Point{Float64} <: Pointy{Real}
@@ -839,7 +797,7 @@ It only makes sense to take ratios of integer values, so the parameter type `T` 
 to being a subtype of [`Integer`](@ref), and a ratio of integers represents a value on the
 real number line, so any [`Rational`](@ref) is an instance of the [`Real`](@ref) abstraction.
 
-### Tuple Types
+### 元组类型
 
 Tuples are an abstraction of the arguments of a function -- without the function itself. The salient
 aspects of a function's arguments are their order and their types. Therefore a tuple type is similar
@@ -853,16 +811,15 @@ struct Tuple2{A,B}
 end
 ```
 
-However, there are three key differences:
+然而，有三个主要差异：
 
-  * Tuple types may have any number of parameters.
+  * 元组类型可以具有任意数量的参数。
   * Tuple types are *covariant* in their parameters: `Tuple{Int}` is a subtype of `Tuple{Any}`. Therefore
-    `Tuple{Any}` is considered an abstract type, and tuple types are only concrete if their parameters
+    `Tuple{Any}`被认为是一种抽象类型，而元组类型只有它们的参数有时才具体
     are.
-  * Tuples do not have field names; fields are only accessed by index.
+  * 元组没有字段名称; 字段只能通过索引访问。
 
-Tuple values are written with parentheses and commas. When a tuple is constructed, an appropriate
-tuple type is generated on demand:
+元组值用括号和逗号书写。构造元组时，会根据需要生成适当的元组类型：
 
 ```jldoctest
 julia> typeof((1,"foo",2.5))
@@ -887,8 +844,7 @@ signature (when the signature matches).
 
 ### Vararg Tuple Types
 
-The last parameter of a tuple type can be the special type [`Vararg`](@ref), which denotes any number
-of trailing elements:
+元组类型的最后一个参数可以是特殊类型[`Vararg`](@ref)，它表示任意数量的尾随参数：
 
 ```jldoctest
 julia> mytupletype = Tuple{AbstractString,Vararg{Int}}
@@ -938,7 +894,7 @@ julia> NamedTuple{(:a, :b)}((1,""))
 If field types are specified, the arguments are converted. Otherwise the types of the arguments
 are used directly.
 
-#### [Singleton Types](@id man-singleton-types)
+#### [单态类型](@id man-singleton-types)
 
 There is a special kind of abstract parametric type that must be mentioned here: singleton types.
 For each type, `T`, the "singleton type" `Type{T}` is an abstract type whose only instance is
@@ -973,7 +929,7 @@ julia> isa(Real, Type)
 true
 ```
 
-Any object that is not a type is not an instance of `Type`:
+只有对象是类型时，才是 `Type`的实例：
 
 ```jldoctest
 julia> isa(1, Type)

@@ -1,9 +1,6 @@
 # [构造函数](@id man-constructors)
 
-Constructors [^1] are functions that create new objects -- specifically, instances of [Composite Types](@ref).
-In Julia, type objects also serve as constructor functions: they create new instances of themselves
-when applied to an argument tuple as a function. This much was already mentioned briefly when
-composite types were introduced. For example:
+构造函数 [^1] 是用来创建新对象 -- 确切地说，是创建 [Composite Type](@ref) 的实例，的函数。在 Julia 中，类型对象也同时充当构造函数的角色：它们可以被当作函数应用到参数元组上来创建自己的新实例。这一点在介绍复合类型（Composite Types）时已经大致谈过了。例如：
 
 ```jldoctest footype
 julia> struct Foo
@@ -21,30 +18,17 @@ julia> foo.baz
 2
 ```
 
-For many types, forming new objects by binding their field values together is all that is ever
-needed to create instances. There are, however, cases where more functionality is required when
-creating composite objects. Sometimes invariants must be enforced, either by checking arguments
-or by transforming them. [Recursive data structures](https://en.wikipedia.org/wiki/Recursion_%28computer_science%29#Recursive_data_structures_.28structural_recursion.29),
-especially those that may be self-referential, often cannot be constructed cleanly without first
-being created in an incomplete state and then altered programmatically to be made whole, as a
-separate step from object creation. Sometimes, it's just convenient to be able to construct objects
-with fewer or different types of parameters than they have fields. Julia's system for object construction
-addresses all of these cases and more.
+对很多类型来说，创建新对象时只需要为它们的所有字段绑定上值就足够产生新实例了。然而，在某些情形下，创建复合对象需要更多的功能。有时必须通过检查或改变参数来确保不变性。[Recursive data structures](https://en.wikipedia.org/wiki/Recursion_omputer_science%29#Recursive_data_structures_.28structural_recursion.29)，
+特别是那些可能引用自身的数据结构，它们需要首先被不完整地构造，然后作为创建对象的单独步骤，
+通过编程的方式完成补全，否则它们不能被干净地构造。这时，能够用比字段少的参数或者
+不同类型的参数来创建对象就很方便。Julia 的对象构造系统解决了所有这些问题。
 
 [^1]:
-    Nomenclature: while the term "constructor" generally refers to the entire function which constructs
-    objects of a type, it is common to abuse terminology slightly and refer to specific constructor
-    methods as "constructors". In such situations, it is generally clear from context that the term
-    is used to mean "constructor method" rather than "constructor function", especially as it is often
-    used in the sense of singling out a particular method of the constructor from all of the others.
+命名法：虽然术语“构造函数”通常是指构造一个类型的对象的整个函数，但通常会略微滥用术语将特定的构造方法称为“构造函数”。这种情况下，通常可以从上下文中清楚地看出术语是用于表示“构造方法”而不是“构造函数”，因为它通常用于从所有构造方法中挑出构造函数的特定方法的场合。
 
-## Outer Constructor Methods
+## 外部构造方法
 
-A constructor is just like any other function in Julia in that its overall behavior is defined
-by the combined behavior of its methods. Accordingly, you can add functionality to a constructor
-by simply defining new methods. For example, let's say you want to add a constructor method for
-`Foo` objects that takes only one argument and uses the given value for both the `bar` and `baz`
-fields. This is simple:
+构造函数与 Julia 中的其他任何函数一样，其整体行为由其各个方法的组合行为定义。因此，你可以通过简单地定义新方法来向构造函数添加功能。例如，假设你想为 `Foo` 对象添加一个构造方法，该方法只接受一个参数并用该参数同时绑定为 `bar` 和 `baz`  字段的值。这很简单：
 
 ```jldoctest footype
 julia> Foo(x) = Foo(x,x)
@@ -54,8 +38,7 @@ julia> Foo(1)
 Foo(1, 1)
 ```
 
-You could also add a zero-argument `Foo` constructor method that supplies default values for both
-of the `bar` and `baz` fields:
+你也可以为 `Foo` 添加新的零参数构造方法，它为字段 `bar` 和 `baz` 提供默认值：
 
 ```jldoctest footype
 julia> Foo() = Foo(0)
@@ -65,27 +48,20 @@ julia> Foo()
 Foo(0, 0)
 ```
 
-Here the zero-argument constructor method calls the single-argument constructor method, which
-in turn calls the automatically provided two-argument constructor method. For reasons that will
-become clear very shortly, additional constructor methods declared as normal methods like this
-are called *outer* constructor methods. Outer constructor methods can only ever create a new instance
-by calling another constructor method, such as the automatically provided default ones.
+这里零参数构造方法调用的单参数方法，单参数构造方法又调用了自动提供的双参数构造方法。
+像这样附加的以普通函数形式声明的构造方法被称为 *外部* 构造方法，这样称呼的原因马上就会清楚。
+外部构造方法只能通过调用其他构造方法来创建新实例，比如自动提供的默认构造方法。
 
-## Inner Constructor Methods
+## 内部构造方法
 
-While outer constructor methods succeed in addressing the problem of providing additional convenience
-methods for constructing objects, they fail to address the other two use cases mentioned in the
-introduction of this chapter: enforcing invariants, and allowing construction of self-referential
-objects. For these problems, one needs *inner* constructor methods. An inner constructor method
-is much like an outer constructor method, with two differences:
+尽管外部构造方法成功地为构造对象提供了额外的便利，它无法解决另外两个在本章导言里提到的另外
+两种用例：确保不变性和允许创建引用自身的对象。因此，我们需要 *内部* 构造方法。内部构造方法
+和外部构造方法很相像，但有两点不同：
 
-1. It is declared inside the block of a type declaration, rather than outside of it like normal methods.
-2. It has access to a special locally existent function called [`new`](@ref) that creates objects of the
-   block's type.
+1. 内部构造方法在类型声明内部声明，而不是和普通方法一样在外部。
+2. 内部构造方法能够访问一个特殊的局部存在的函数, 称为 [`new`](@ref) ，这个函数能够创建该类型的对象。
 
-For example, suppose one wants to declare a type that holds a pair of real numbers, subject to
-the constraint that the first number is not greater than the second one. One could declare it
-like this:
+例如, 假设你要声明一个保存一对实数的类型,，但要约束第一个数不大于第二个数。你可以像这样声明它 ：
 
 ```jldoctest pairtype
 julia> struct OrderedPair
@@ -95,7 +71,7 @@ julia> struct OrderedPair
        end
 ```
 
-Now `OrderedPair` objects can only be constructed such that `x <= y`:
+现在 `OrderedPair` 对象只能在 `x <= y` 时构造：
 
 ```jldoctest pairtype; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> OrderedPair(1, 2)
@@ -109,20 +85,17 @@ Stacktrace:
  [3] top-level scope
 ```
 
-If the type were declared `mutable`, you could reach in and directly change the field values to
-violate this invariant, but messing around with an object's internals uninvited is considered poor form.
-You (or someone else) can also provide additional outer constructor methods at any later point, but
-once a type is declared, there is no way to add more inner constructor methods. Since outer constructor
-methods can only create objects by calling other constructor methods, ultimately, some inner constructor
-must be called to create an object. This guarantees that all objects of the declared type must come into
-existence by a call to one of the inner constructor methods provided with the type, thereby giving
-some degree of enforcement of a type's invariants.
+如果类型被声明为 `mutable`，你就能获取并直接修改字段的值来破坏不变性，但不请自来弄乱
+对象内部被认为是不好的形式。你 （或者其他人）可以在以后任何时候提供附加的外部构造方法，
+但一旦一个类型已经被声明了，就没有办法来添加更多的内部构造方法了。因为外部构造方法只能通过
+调用其他的构造方法来构造创建对象，所以最终构造对象的一定是某个内部构造函数。这保证了
+声明过的类型的所有对象必须通过调用随类型提供的内部构造方法之一而存在，从而在某种程度上
+保证了类型的不变性。
 
-If any inner constructor method is defined, no default constructor method is provided: it is presumed
-that you have supplied yourself with all the inner constructors you need. The default constructor
-is equivalent to writing your own inner constructor method that takes all of the object's fields
-as parameters (constrained to be of the correct type, if the corresponding field has a type),
-and passes them to `new`, returning the resulting object:
+只要定义了任何一个内部构造方法，就不会再提供默认的构造方法：Julia 假定你已经为自己
+提供了所需的所有内部构造方法。默认构造方法等效于一个你自己编写的内部构造函数方法，
+该方法将所有对象的字段作为参数（如果相应的字段具有类型，则约束为正确的类型），
+并将它们传递给 `new`，返回结果对象：
 
 ```jldoctest
 julia> struct Foo
@@ -133,9 +106,8 @@ julia> struct Foo
 
 ```
 
-This declaration has the same effect as the earlier definition of the `Foo` type without an explicit
-inner constructor method. The following two types are equivalent -- one with a default constructor,
-the other with an explicit constructor:
+这个声明与前面没有显式内部构造方法的 `Foo` 类型的定义效果相同。
+以下两个类型是等价的 -- 一个具有默认构造方法，另一个具有显式构造方法：
 
 ```jldoctest
 julia> struct T1

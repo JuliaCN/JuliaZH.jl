@@ -1,13 +1,13 @@
 # [多维数组](@id man-multi-dim-arrays)
 
-与大多数技术计算语言一样，Julia提供了一流的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其他容器的代价。Julia没有用任何特殊方式处理数组。Julia的数组库几乎完全是用Julia自身实现的，它的性能源自编译器，和其它Julia代码没什么不同。这样一来，用户就可以通过继承[`AbstractArray`](@ref)的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅[manual section on the AbstractArray interface](@ref man-interface-array)。
+与大多数技术计算语言一样，Julia提供了一流的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其他容器的代价。Julia用同样的方式来处理数组。就像和其他用Julia写的代码一样，Julia的数组库几乎完全是用Julia自身实现的，它的性能源自编译器。这样一来，用户就可以通过继承[`AbstractArray`](@ref)的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅[manual section on the AbstractArray interface](@ref man-interface-array)。
 
 数组是存储在多维网格中对象的集合。在最一般的情况下， 数组中的对象可能是 `Any` 类型。
 对于大多数计算上的需求，数组中对象的类型应该更加具体，例如 [`Float64`](@ref) 或 [`Int32`](@ref)。
 
 一般来说，与许多其他技术计算语言不同，Julia 不希望为了性能而以向量化的方式编写程序。Julia 的编译器使用类型推断，并为标量数组索引生成优化的代码，允许以方便和可读的方式编写程序，而不牺牲性能，并且有时使用更少的内存。
 
-在Julia中，所有函数的参数都是 [passed by sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing) (也就是传指针)。一些科学计算语言用传值的方式传递数组，这阻止这个值的被调用者在调用函数中被意外修改，也导致无法避免不必要的数组赋值。简便起见，以一个 `!` 结束的函数名表示它会修改或者销毁它的一个或者多个参数的值（例如，[`sort`](@ref) 和 [`sort!`](@ref)）。被调用者必须显式复制，以保证他们不会修改他们本不应该修改的输入。很多不可变的函数时在实现的时候，对输入的显式副本调用一个在结尾加上 `!` 的同名函数，并返回该副本。
+在Julia中，所有函数的参数都是 [passed by sharing](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing) (也就是传指针)。一些科学计算语言用传值的方式传递数组，这防止了这个值的被调用者在调用函数中被意外修改，也导致无法避免不必要的数组赋值。简便起见，以一个 `!` 结束的函数名表示它会修改或者销毁它的一个或者多个参数的值（例如，[`sort`](@ref) 和 [`sort!`](@ref)）。被调用者必须显式复制，以保证他们不会修改他们本不应该修改的输入。很多不可变的函数时在实现的时候，对输入的显式副本调用一个在结尾加上 `!` 的同名函数，并返回该副本。
 
 ## 基本函数
 
@@ -16,40 +16,40 @@
 | [`eltype(A)`](@ref)    | `A`中元素的类型                                        |
 | [`length(A)`](@ref)    | `A` 中元素的数量                                                    |
 | [`ndims(A)`](@ref)     | `A` 的维数                                                  |
-| [`size(A)`](@ref)      | 包含`A`的维度的元组                                         |
+| [`size(A)`](@ref)      | 一个包含`A`的维度的元组                                         |
 | [`size(A,n)`](@ref)    | `A`第`n`维的大小                                              |
 | [`axes(A)`](@ref)   | 一个包含`A`有效索引的元祖                                      |
-| [`axes(A,n)`](@ref) | 描述在`n`维上有效索引的一个范围                         |
+| [`axes(A,n)`](@ref) | 一个描述第`n`维有效索引的范围                         |
 | [`eachindex(A)`](@ref) | 一个访问`A` 中每一个位置的高效迭代器                          |
 | [`stride(A,k)`](@ref)  | 在`k`维上的间隔（stride）（相邻元素间的线性索引距离） |
 | [`strides(A)`](@ref)   | 每一维上的间隔的元组                                         |
 
 ## 构造和初始化
 
-Julia 提供了许多用于构造和初始化数组的函数。 在以下列表中这样的函数，使用 `dims ...` 参数调用可以是一个表示维数大小的元组或一系列维数大小作为可变数量的参数传递。 大多数这些函数也接受第一个表示数组的元素类型的输入`T`。 如果类型 `T` 被省略，它将默认为[`Float64`]（@ ref）。
+Julia 提供了许多用于构造和初始化数组的函数。 在下列函数中，使用 `dims ...` 参数调用可以是一个表示维数大小的元组或一系列维数大小作为可变数量的参数传递。 大多数这些函数也接受第一个表示数组的元素类型的输入`T`。 如果类型 `T` 被省略，它将默认为[`Float64`]（@ ref）。
 
 | 函数                           | 描述                                                                                                                                                                                                                                  |
 |:---------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`Array{T}(undef, dims...)`](@ref)             | 一个没有初始化的密集 [`数组`](@ref)                                                                                                                                                                                                              |
-| [`zeros(T, dims...)`](@ref)                    | 元素均为0的一个`数组`                                                                                                                                                                                                                      |
-| [`ones(T, dims...)`](@ref)                     | 元素均为1的一个`数组`                                                                                                                                                                                                                       |
+| [`zeros(T, dims...)`](@ref)                    | 一个全零`数组`                                                                                                                                                                                                                      |
+| [`ones(T, dims...)`](@ref)                     | 一个元素均为1的`数组`                                                                                                                                                                                                                       |
 | [`trues(dims...)`](@ref)                       | 一个每个元素都为 `true` 的 [`BitArray`](@ref)                                                                                                                                                                                                  |
 | [`falses(dims...)`](@ref)                      | 一个每个元素都为 `false` 的 `BitArray`                                                                                                                                                                                                         |
-| [`reshape(A, dims...)`](@ref)                  | 一个包含跟`A` 相同数据的数组，但维数不同                                                                                                                                                                      |
+| [`reshape(A, dims...)`](@ref)                  | 一个包含跟`A` 相同数据但维数不同的数组                                                                                                                                                                      |
 | [`copy(A)`](@ref)                              | 复制 `A`                                                                                                                                                                                                                                     |
-| [`deepcopy(A)`](@ref)                          | 复制 `A`，递归复制其元素                                                                                                                                                                                                   |
-| [`similar(A, T, dims...)`](@ref)               | 与`A`（密集，稀疏等）相同类型的未初始化数组，但具有指定的元素类型和维数。 第二个和第三个参数都是可选的，如果省略则默认为元素类型和 `A` 的维数。 |
+| [`deepcopy(A)`](@ref)                          | 复制 `A`，递归地复制其元素                                                                                                                                                                                                   |
+| [`similar(A, T, dims...)`](@ref)               | 一个与`A`具有相同类型（这里指的是密集，稀疏等）的未初始化数组，但具有指定的元素类型和维数。 第二个和第三个参数都是可选的，如果省略则默认为元素类型和 `A` 的维数。 |
 | [`reinterpret(T, A)`](@ref)                    | 与 `A` 具有相同二进制数据的数组，但元素类型为 `T`                                                                                                                                                                         |
-| [`rand(T, dims...)`](@ref)                     | 一个随机`数组`，元素值是``[0,1}``半开区间中的均匀分布且服从iid[^ 1]                                                                                                                                       |
-| [`randn(T, dims...)`](@ref)                    | 一个随机`数组`，元素为标准正态分布，服从iid                                                                                                                                                                         |
+| [`rand(T, dims...)`](@ref)                     | 一个随机`数组`，元素值是``[0,1}``半开区间中的均匀分布且服从一阶独立同分布                                                                                                                                       |
+| [`randn(T, dims...)`](@ref)                    | 一个随机`数组`，元素为标准正态分布，服从独立同分布                                                                                                                                                                         |
 | [`Matrix{T}(I, m, n)`](@ref)                   | `m`行`n`列的单位矩阵                                                                                                                                                                                                                   |
-| [`range(start, stop=stop, length=n)`](@ref)    | 从`start`到`stop`的`n`个线性间隔元素的范围                                                                                                                                                                                 |
+| [`range(start, stop=stop, length=n)`](@ref)    | 从`start`到`stop`的带有`n`个线性间隔元素的范围                                                                                                                                                                                 |
 | [`fill!(A, x)`](@ref)                          | 用值 `x` 填充数组 `A`                                                                                                                                                                                                        |
-| [`fill(x, dims...)`](@ref)                     | 用值 `x` 填充一个`数组`                                                                                                                                                                                                         |
+| [`fill(x, dims...)`](@ref)                     | 一个被值`x`填充的`数组`                                                                                                                                                                                                         |
 
 [^1]: *iid*，独立同分布
 
-语法`[A，B，C，...]`构造其参数的一维数组（向量）。 如果所有参数有一个共同的[promotion type](@ref conversion-and-promotion)，然后他们会被用[`convert`](@ ref)转换为该类型。
+语法`[A，B，C，...]`构造其参数的1维数组（向量）。 如果所有参数有一个共同的类型提升类型[promotion type](@ref conversion-and-promotion)，然后他们会被用[`convert`](@ ref)转换为该类型。
 
 要查看各种方法，我们可以将不同维数传递给这些构造函数，请考虑以下示例：
 ```jldoctest
@@ -70,13 +70,13 @@ julia> zeros((2, 2))
 ```
 这里的 `(2, 2)` 是一个 [`Tuple`](@ref).
 
-## 连接
+## 拼接
 
-可以使用以下函数构造和连接数组：
+可以使用以下函数构造和拼接数组：
 
 | 函数                    | 描述                                     |
 |:--------------------------- |:----------------------------------------------- |
-| [`cat(A...; dims=k)`](@ref) | 沿着维度 `k` 连接输入数组 |
+| [`cat(A...; dims=k)`](@ref) | 沿着s的第`k`拼接数组 |
 | [`vcat(A...)`](@ref)        | `cat(A...; dims=1)` 的简写               |
 | [`hcat(A...)`](@ref)        | `cat(A...; dims=2)` 的简写               |
 
@@ -93,7 +93,7 @@ julia> hcat([1 2], 3)
  1  2  3
 ```
 
-连接函数很常用，因此它们有特殊的语法：
+这些拼接函数非常常用，因此它们有特殊的语法：
 
 | 表达式        | 调用             |
 |:----------------- |:----------------- |
@@ -101,7 +101,7 @@ julia> hcat([1 2], 3)
 | `[A B C ...]`     | [`hcat`](@ref)  |
 | `[A B; C D; ...]` | [`hvcat`](@ref) |
 
-[`hvcat`](@ref) 可以连接在列数组（用分号分隔）和行数组（用空格分隔）。
+[`hvcat`](@ref) 可以在第1维列数组（用分号分隔）和第2维行数组（用空格分隔）进行连接。
 请考虑以下语法示例：
 ```jldoctest
 julia> [[1; 2]; [3, 4]]
@@ -137,7 +137,7 @@ julia> Int8[[1 2] [3 4]]
  1  2  3  4
 ```
 
-## Comprehensions
+## 推导式
 
 推导提供了构造数组的通用且强大的方法。 推导语法类似于数学中的集合构造符号：
 
@@ -565,9 +565,9 @@ julia> x[mask]
  16
 ```
 
-## Iteration
+## 迭代
 
-The recommended ways to iterate over a whole array are
+迭代整个数组的推荐方法是
 
 ```julia
 for a in A
@@ -602,7 +602,7 @@ i = CartesianIndex(3, 2)
 In contrast with `for i = 1:length(A)`, iterating with [`eachindex`](@ref) provides an efficient way to
 iterate over any array type.
 
-## Array traits
+## 数组特点
 
 If you write a custom [`AbstractArray`](@ref) type, you can specify that it has fast linear indexing using
 
@@ -613,13 +613,13 @@ Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 This setting will cause `eachindex` iteration over a `MyArray` to use integers. If you don't
 specify this trait, the default value `IndexCartesian()` is used.
 
-## Array and Vectorized Operators and Functions
+## 数组、矢量化操作符及函数
 
-The following operators are supported for arrays:
+以下操作符支持数组整体操作
 
-1. Unary arithmetic -- `-`, `+`
-2. Binary arithmetic -- `-`, `+`, `*`, `/`, `\`, `^`
-3. Comparison -- `==`, `!=`, `≈` ([`isapprox`](@ref)), `≉`
+1. 一元运算符 -- `-`, `+`
+2. 二元运算符 -- `-`, `+`, `*`, `/`, `\`, `^`
+3. 比较操作符-- `==`, `!=`, `≈` ([`isapprox`](@ref)), `≉`
 
 Most of the binary arithmetic operators listed above also operate elementwise
 when one argument is scalar: `-`, `+`, and `*` when either argument is scalar,
@@ -684,7 +684,7 @@ is equivalent to `broadcast(f, args...)`, providing a convenient syntax to broad
 ([dot syntax](@ref man-vectorized)). Nested "dot calls" `f.(...)` (including calls to `.+` etcetera)
 [automatically fuse](@ref man-dot-operators) into a single `broadcast` call.
 
-另外，[`broadcast`](@ref)并不局限于数组（参见函数文档），对于元组依然有效。对于其他非数组，元组或 引用[`Ref`](@ref)(除了指针 [`Ptr`](@ref))的参数，视作“scalar” 
+另外，[`broadcast`](@ref)并不局限于数组（参见函数文档），对于元组依然有效。对于其他非数组，元组或 引用[`Ref`](@ref)(除了指针 [`Ptr`](@ref))的参数，视作“scalar”
 
 ```jldoctest
 julia> convert.(Float32, [1, 2])

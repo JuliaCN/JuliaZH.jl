@@ -1,7 +1,6 @@
 # 运行外部程序
 
-Julia borrows backtick notation for commands from the shell, Perl, and Ruby. However, in Julia,
-writing
+Julia 从 shell、Perl 以及 Ruby 那里借来了使用命令的反引号。
 
 ```jldoctest
 julia> `echo hello`

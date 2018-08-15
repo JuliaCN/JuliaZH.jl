@@ -1,7 +1,6 @@
 # 文档
 
-Julia enables package developers and users to document functions, types and other objects easily
-via a built-in documentation system since Julia 0.4.
+自Julia 0.4 开始，julia允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。
 
 The basic syntax is simple: any string appearing at the top-level right before an object
 (function, macro, type or instance) will be interpreted as documenting it (these are called *docstrings*).
