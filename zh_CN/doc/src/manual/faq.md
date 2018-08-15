@@ -59,9 +59,7 @@ When calling `change_value!(x)` in the above example, `y` is a newly created var
 to the value of `x`, i.e. `10`; then `y` is rebound to the constant `17`, while the variable
 `x` of the outer scope is left untouched.
 
-But here is a thing you should pay attention to: suppose `x` is bound to an object of type `Array`
-(or any other *mutable* type). From within the function, you cannot "unbind" `x` from this Array,
-but you can change its content. For example:
+但是这里有一个需要注意的点: 假设 'x' 被绑定至 'Array' 类型 (或者其他 *可变* 的类型). 在函数中,你无法改变'x' 的'Array'类型, 但是你可以改变其内容. 例如
 
 ```jldoctest
 julia> x = [1,2,3]
@@ -90,13 +88,13 @@ array (bound to `x` at the call site, and bound to `A` within the function). Not
 the function call, `x` is still bound to the same array, but the content of that array changed:
 the variables `A` and `x` were distinct bindings referring to the same mutable `Array` object.
 
-### Can I use `using` or `import` inside a function?
+### 是否可以在函数内部使用 `using` 或 `import` ？
 
-No, you are not allowed to have a `using` or `import` statement inside a function.  If you want
-to import a module but only use its symbols inside a specific function or set of functions, you
-have two options:
+不可以，在函数内部含有 `using` 或 `import` 语句是不被允许的。
+如果你希望导入一个模块，但只在特定的一个或一组函数中使用它的符号，
+有以下两种方式：
 
-1. Use `import`:
+1. 使用 `import` ：
 
    ```julia
    import Foo

@@ -1,14 +1,14 @@
-# Code Loading
+# 代码加载
 
-Julia has two mechanisms for loading code:
+Julia加载代码有两种机制：
 
-1. **Code inclusion:** e.g. `include("source.jl")`. Inclusion allows you to split a single program across multiple source files. The expression `include("source.jl")` causes the contents of the file `source.jl` to be evaluated in the global scope of the module where the `include` call occurs. If `include("source.jl")` is called multiple times, `source.jl` is evaluated multiple times. The included path, `source.jl`, is interpreted relative to the file where the `include` call occurs. This makes it simple to relocate a subtree of source files. In the REPL, included paths are interpreted relative to the current working directory, `pwd()`.
-2. **Package loading:** e.g. `import X` or `using X`. The import mechanism allows you to load a package—i.e. an independent, reusable collection of Julia code, wrapped in a module—and makes the resulting module available by the name `X` inside of the importing module. If the same `X` package is imported multiple times in the same Julia session, it is only loaded the first time—on subsequent imports, the importing module gets a reference to the same module. It should be noted, however, that `import X` can load different packages in different contexts: `X` can refer to one package named `X` in the main project but potentially different packages named `X` in each dependency. More on this below.
+1. **代码包含：**例如：include("source.jl")。include允许以多个源文件的形式来组织程序。 表达式include（”source.jl“）使文件`source.jl`的内容在全局范围（调用include的模块）内被计算。 如果多次调用include（“source.jl”）`，会多次计算`source.jl`。 source.jl的包含路径解释为调用include命令的文件路径。这样便于重新定位源文件层次结构。 在REPL中，include路径为当前工作目录pwd（）。
+2. **加载包：**例如 `import X`或`using X`。 import通过加载包 ( 一个独立的，可重用的Julia代码集合，包含在一个模块中 )，并导入模块内部的名称“X”，使得模块X可用。 如果在同一个Julia会话中，多次导入包`X`，那么后续导入模块为第一次导入模块的引用。 应该注意，`import X`可以在不同的上下文中加载不同的包：`X`可以引用主工程中名为`X`的一个包，但他们可能依赖的包是完全不同的。 更多机制说明如下。
 
-Code inclusion is quite straightforward: it simply parses and evaluates a source file in the context of the caller. Package loading is built on top of code inclusion and is quite a bit more complex. The rest of this chapter, therefore, focuses on the behavior and mechanics of package loading.
+代码包含是非常直接的：在调用者的上下文中解析和评价源文件。 包加载是建立在代码包含之上的，并且相当复杂。 因此，本章的其余部分将重点介绍程序包加载的行为和机制。
 
-!!! note
-    You only need to read this chapter if you want to understand the technical details of package loading in Julia. If you just want to install and use packages, simply use Julia's built-in package manager to add packages to your environment and write `import X` or `using X` in your code to load packages that you've added.
+!!! 注
+   除非你想了解Julia中包加载的技术细节，您才需要阅读本章。如果您只想安装和使用包，只需使用Julia的内置软件包管理器，将包添加到环境中，并在代码中使用表达式`import X`或`using X`来加载包即可。
 
 A *package* is a source tree with a standard layout providing functionality that can be reused by other Julia projects. A package is loaded by `import X` or  `using X` statements. These statements also make the module named `X`, which results from loading the package code, available within the module where the import statement occurs. The meaning of `X` in `import X` is context-dependent: which `X` package is loaded depends on what code the statement occurs in. The effect of `import X` depends on two questions:
 

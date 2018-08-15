@@ -125,7 +125,7 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-这个函数将忽略`x` 和`y`的类型，返回`Int8`类型的值。有关返回类型的更多信息，请参见 [类型说明](@ref)。
+这个函数将忽略`x` 和`y`的类型，返回`Int8`类型的值。有关返回类型的更多信息，请参见 [Type Declarations](@ref)。
 
 ## Operators Are Functions
 

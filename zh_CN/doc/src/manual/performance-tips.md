@@ -6,16 +6,15 @@
 
 全局变量的值和类型随时都会发生变化。 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。
 
-Any code that is performance critical or being benchmarked should be inside a function.
+任何注重性能或者需要测试性能的代码都应该被放置在函数之中。
 
-We find that global names are frequently constants, and declaring them as such greatly improves
-performance:
+我们发现全局名称经常是常量，将它们声明为常量可以巨大的提升性能。
 
 ```julia
 const DEFAULT_VAL = 0
 ```
 
-Uses of non-constant globals can be optimized by annotating their types at the point of use:
+对于非常量的全局变量可以通过在使用的地方标注它们的类型来优化效率。
 
 ```julia
 global x = rand(1000)
@@ -29,14 +28,12 @@ function loop_over_global()
 end
 ```
 
-Passing arguments to functions is better style. It leads to more reusable code and clarifies what the inputs and outputs are.
+一个更好的编程风格是将变量作为参数传给函数。这样可以使得代码更易复用，以及清晰的展示函数的输入和输出。
 
-!!! note
-    All code in the REPL is evaluated in global scope, so a variable defined and assigned
-    at toplevel will be a **global** variable. Variables defined in at top level scope inside
-    modules are also global.
+!!! 注意
+    所有的REPL中的代码都是在全局作用域中求值的，因此在顶层的变量的定义与赋值都会成为一个**全局**变量。在模块的顶层作用域定义的变量也是全局变量。
 
-In the following REPL session:
+在下面的REPL会话中：
 
 ```julia-repl
 julia> x = 1.0
@@ -48,12 +45,11 @@ julia> x = 1.0
 julia> global x = 1.0
 ```
 
-so all the performance issues discussed previously apply.
+因此，所有上文关于性能问题的讨论都适用于它们。
 
-## Measure performance with [`@time`](@ref) and pay attention to memory allocation
+## 使用 [`@time`](@ref)评估性能以及注意内存分配
 
-A useful tool for measuring performance is the [`@time`](@ref) macro. We here repeat the example
-with the global variable above, but this time with the type annotation removed:
+[`@time`](@ref) 宏是一个有用的性能评估工具。这里我们将重复上面全局变量的例子，但是这次移除类型声明：
 
 ```jldoctest; setup = :(using Random; Random.seed!(1234)), filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(1000);
@@ -75,21 +71,11 @@ julia> @time sum_global()
 496.84883432553846
 ```
 
-On the first call (`@time sum_global()`) the function gets compiled. (If you've not yet used [`@time`](@ref)
-in this session, it will also compile functions needed for timing.)  You should not take the results
-of this run seriously. For the second run, note that in addition to reporting the time, it also
-indicated that a significant amount of memory was allocated. We are here just computing a sum over all elements in
-a vector of 64-bit floats so there should be no need to allocate memory (at least not on the heap which is what `@time` reports).
+在第一次调用函数(`@time sum_global()`)的时候，它会被编译。（如果你这次会话中还没有使用过[`@time`](@ref)，这时也会编译计时需要的相关函数。）你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64比特浮点向量元素和，因此这里应该没有申请内存的必要的（至少不用在`@time`报告的堆上申请内存）。
 
-Unexpected memory allocation is almost always a sign of some problem with your code, usually a
-problem with type-stability or creating many small temporary arrays.
-Consequently, in addition to the allocation itself, it's very likely
-that the code generated for your function is far from optimal. Take such indications seriously
-and follow the advice below.
+未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数没有生成最佳的代码。认真对待这些现象，遵循接下来的建议。
 
-If we instead pass `x` as an argument to the function it no longer allocates memory
-(the allocation reported below is due to running the `@time` macro in global scope)
-and is significantly faster after the first call:
+如果你换成将`x`作为参数传给函数，就可以避免内存的分配（这里报告的内存分配是由于在全局作用域中运行`@time`导致的），而且在第一次运行之后运行速度也会得到显著的提高。
 
 ```jldoctest sumarg; setup = :(using Random; Random.seed!(1234)), filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(1000);
@@ -111,8 +97,7 @@ julia> @time sum_arg(x)
 496.84883432553846
 ```
 
-The 5 allocations seen are from running the `@time` macro itself in global scope. If we instead run
-the timing in a function, we can see that indeed no allocations are performed:
+这里出现的5个内存分配是由于在全局作用域中运行`@time`宏导致的。如果我们在函数中运行时间测试，我们将发现事实上并没有发生任何内存分配。
 
 ```jldoctest sumarg; filter = r"[0-9\.]+ seconds"
 julia> time_sum(x) = @time sum_arg(x);

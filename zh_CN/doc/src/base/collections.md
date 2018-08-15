@@ -1,4 +1,4 @@
-# Collections and Data Structures
+# 集合和数据结构
 
 ## [Iteration](@id lib-collections-iteration)
 
@@ -11,7 +11,7 @@ for i in iter   # or  "for i = iter"
 end
 ```
 
-is translated into:
+被转换成
 
 ```julia
 next = iterate(iter)
@@ -22,9 +22,8 @@ while next !== nothing
 end
 ```
 
-The `state` object may be anything, and should be chosen appropriately for each iterable type.
-See the [manual section on the iteration interface](@ref man-interface-iteration) for more details about defining a custom
-iterable type.
+“state”对象能够是任何对象，并且对于每个可迭代的种类应该选择合适的“state”对象。
+详情请参照「关于迭代接口的Manual部分」来获得关于定义一个常见迭代种类的更多细节
 
 ```@docs
 Base.iterate
@@ -49,7 +48,7 @@ Fully implemented by:
   * [`Pair`](@ref)
   * [`NamedTuple`](@ref)
 
-## Constructors and Types
+## 构造器和类型
 
 ```@docs
 Base.AbstractRange
@@ -68,7 +67,7 @@ Base.empty!
 Base.length
 ```
 
-Fully implemented by:
+完全由以下执行：
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
