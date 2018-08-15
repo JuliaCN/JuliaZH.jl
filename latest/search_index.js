@@ -26,26 +26,26 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/getting-started/#",
-    "page": "起步",
-    "title": "起步",
+    "page": "入门",
+    "title": "入门",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "manual/getting-started/#man-getting-started-1",
-    "page": "起步",
-    "title": "起步",
+    "page": "入门",
+    "title": "入门",
     "category": "section",
-    "text": "不管是用编译好的程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。 只要按照 https://julialang.org/downloads/ 的提示就可以轻松下载并安装 Julia。启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 julia 就可以启动：io = IOBuffer()\nBase.banner(io)\nbanner = String(take!(io))\nimport Markdown\nMarkdown.parse(\"```\\n\\$ julia\\n\\n$(banner)\\njulia> 1 + 2\\n3\\n\\njulia> ans\\n3\\n```\")输入 CTRL-D （同时按Ctrl 键和 d 键）或 exit() 便可以退出交互式会话。在交互式模式中，julia 会显示一个横幅并提示用户输入。一旦用户输入了一段完整的代码，例如 1 + 2，然后敲回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 ans总会存储上一次执行代码的结果，需要注意的是，变量ans 只在交互式会话中才有，不适用于其它方法运行的 Julia。在交互式会话中，要运行写在源文件 file.jl 中的代码，只需输入 include(\"file.jl\")。如果想非交互式地执行文件中的代码，可以把文件名作为 julia 命令的第一个参数：$ julia script.jl arg1 arg2...如这个例子所示，julia 后跟着的命令行参数会被作为程序 script.jl 的命令行参数。这些参数使用全局常量 ARGS 来传递，脚本自身的名字会以全局常量 PROGRAM_FILE 传入。注意当脚本以命令行里的 -e 选项输入时，ARGS 也会被设定（见下面的 julia 帮助输出）但是 PROGRAM_FILE 会是空的。比如说，如果想把输入给一个脚本的参数给显示出来，你可以这么写：$ julia -e \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' foo bar\n\nfoo\nbar或者你可以把代码写到一个脚本文件中再执行它：$ echo \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' > script.jl\n$ julia script.jl foo bar\nscript.jl\nfoo\nbar可以使用 -- 分隔符来将传给脚本文件和 Julia 本身的命令行参数区分开：$ julia --color=yes -O -- foo.jl arg1 arg2..使用选项 -p 或者 --machine-file 可以在并行模式下启动 Julia。-p n 会启动额外的 n 个 worker，使用 --machine-file file 会为 file 文件中的每一行启动一个 worker。被定义在 file 中的机器必须能够通过一个不需要密码的 ssh 登陆访问到，且 Julia 的安装位置需要和当前主机相同。定义机器的格式为 [count*][user@]host[:port] [bind_addr[:port]]。user 默认值是当前用户，port 默认值是标准 ssh 端口。count 是在这个节点上的 worker 的数量，默认是 1。可选的 bind-to bind_addr[:port] 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。如果你有一些代码，想让 Julia 每次启动都会自动执行，可以把它们放在~/.julia/config/startup.jl中：$ echo \'println(\"Greetings! 你好! 안녕하세요?\")\' > ~/.julia/config/startup.jl\n$ julia\nGreetings! 你好! 안녕하세요?\n\n...还有很多种运行 Julia 代码和提供选项的方法，和 perl 和 ruby 语言支持的方法类似：julia [switches] -- [programfile] [args...]选项 描述\n-v, --version 显示版本信息\n-h, --help 打印本条信息\n-J, --sysimage <file> 用指定的镜像文件（ system image file）启动\n-H, --home <dir> 配置julia可执行文件的路径\n--startup-file={yes|no} 是否载入 ~/.julia/config/startup.jl\n--handle-signals={yes|no} 开启或关闭Julia默认的signal handlers\n--sysimage-native-code={yes|no} 在可能的情况下，使用系统镜像里的原生代码\n--compiled-modules={yes|no} 开启或关闭module的增量预编译功能\n-e, --eval <expr> 执行 <expr>\n-E, --print <expr> 执行 <expr> 并显示结果\n-L, --load <file> 立即在所有进程中载入 <file>\n-p, --procs {N|auto} 这里的整数N表示启动N个额外的进程；auto表示启动与CPU线程数目（logical cores）一样多的进程\n--machine-file <file> Run processes on hosts listed in <file>\n-i 非交互式模式；REPL运行且isinteractive()为true\n-q, --quiet 静启动；REPL启动时无横幅，不显示警告\n--banner={yes|no|auto} 开启或关闭REPL横幅\n--color={yes|no|auto} 开启或关闭文字颜色\n--history-file={yes|no} 载入或导出历史记录\n--depwarn={yes|no|error} 开启或关闭语法弃用警告，error 表示将弃用警告转换为错误。\n--warn-overwrite={yes|no} 开启或关闭method overwrite警告\n-C, --cpu-target <target> Limit usage of cpu features up to <target>; set to help to see the available options\n-O, --optimize={0,1,2,3} 设置编译器优化级别，若未配置此选项，则默认等级为2，若配置了此选项却没指定具体级别，则默认级别为3.\n-g, -g <level> 开启或配置debug信息的生成等级，若未配置此选项，则默认debug信息的级别为1，若配置了此选项却没指定具体级别，则默认级别为2。\n--inline={yes|no} 控制是否允许函数内联，此选项会覆盖源文件中的@inline声明\n--check-bounds={yes|no} 将边界检查设置为始终检查或永远不检查，使用此选项会导致源文件中的相应声明会被忽略\n--math-mode={ieee,fast} 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的@fastmath声明\n--code-coverage={none|user|all} 对源文件中每行代码执行的次数计数\n--code-coverage 等价于--code-coverage=user\n--track-allocation={none|user|all} 对源文件中每行代码的内存分配计数，单位byte\n--track-allocation equivalent to --track-allocation=user"
+    "text": "无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。 只要按照 https://julialang.org/downloads/ 的提示就可以轻松下载并安装 Julia。启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 julia 就可以启动：io = IOBuffer()\nBase.banner(io)\nbanner = String(take!(io))\nimport Markdown\nMarkdown.parse(\"```\\n\\$ julia\\n\\n$(banner)\\njulia> 1 + 2\\n3\\n\\njulia> ans\\n3\\n```\")输入 CTRL-D（同时按 Ctrl 键和 d 键）或 exit() 便可以退出交互式会话。在交互式模式中，julia 会显示一个横幅并提示用户输入。一旦用户输入了一段完整的代码，例如 1 + 2，然后敲回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 ans 总会存储上一次执行代码的结果，需要注意的是，变量 ans 只在交互式会话中才有，不适用于其它方法运行的 Julia。在交互式会话中，要运行写在源文件 file.jl 中的代码，只需输入 include(\"file.jl\")。如果想非交互式地执行文件中的代码，可以把文件名作为 julia 命令的第一个参数：$ julia script.jl arg1 arg2...如这个例子所示，julia 后跟着的命令行参数会被作为程序 script.jl 的命令行参数。这些参数使用全局常量 ARGS 来传递，脚本自身的名字会以全局常量 PROGRAM_FILE 传入。注意当脚本以命令行里的 -e 选项输入时，ARGS 也会被设定（见下面的 julia 帮助输出）但是 PROGRAM_FILE 会是空的。比如说，如果想把输入给一个脚本的参数给显示出来，你可以这么写：$ julia -e \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' foo bar\n\nfoo\nbar或者你可以把代码写到一个脚本文件中再执行它：$ echo \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' > script.jl\n$ julia script.jl foo bar\nscript.jl\nfoo\nbar可以使用 -- 分隔符来将传给脚本文件和 Julia 本身的命令行参数区分开：$ julia --color=yes -O -- foo.jl arg1 arg2..使用选项 -p 或者 --machine-file 可以在并行模式下启动 Julia。 -p n 会启动额外的 n 个 worker，使用 --machine-file file 会为 file 文件中的每一行启动一个 worker。 定义在 file 中的机器必须能够通过一个不需要密码的 ssh 登陆访问到，且 Julia 的安装位置需要和当前主机相同。 定义机器的格式为 [count*][user@]host[:port] [bind_addr[:port]]。 user 默认值是当前用户； port 默认值是标准 ssh 端口； count 是在这个节点上的 worker 的数量，默认是 1； 可选的 bind-to bind_addr[:port] 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。如果你想让 Julia 每次启动都自动执行一些代码，你可以把它们放在 ~/.julia/config/startup.jl 中：$ echo \'println(\"Greetings! 你好! 안녕하세요?\")\' > ~/.julia/config/startup.jl\n$ julia\nGreetings! 你好! 안녕하세요?\n\n...和 perl 和 ruby 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：julia [switches] -- [programfile] [args...]选项 描述\n-v, --version 显示版本信息\n-h, --help 打印本条帮助信息\n-J, --sysimage <file> 用指定的镜像文件 (system image file) 启动\n-H, --home <dir> 设置 julia 可执行文件的路径\n--startup-file={yes|no} 是否载入 ~/.julia/config/startup.jl\n--handle-signals={yes|no} 开启或关闭 Julia 默认的 signal handlers\n--sysimage-native-code={yes|no} 在可能的情况下，使用系统镜像里的原生代码\n--compiled-modules={yes|no} 开启或关闭 module 的增量预编译功能\n-e, --eval <expr> 执行 <expr>\n-E, --print <expr> 执行 <expr> 并显示结果\n-L, --load <file> 立即在所有进程中载入 <file>\n-p, --procs {N|auto} 这里的整数 N 表示启动 N 个额外的工作进程；auto 表示启动与 CPU 线程数目（logical cores）一样多的进程\n--machine-file <file> 再 <file> 中列出的主机上运行进程\n-i 非交互式模式；REPL 运行且 isinteractive() 为 true\n-q, --quiet 安静的启动；REPL 启动时无横幅，不显示警告\n--banner={yes|no|auto} 开启或关闭 REPL 横幅\n--color={yes|no|auto} 开启或关闭文字颜色\n--history-file={yes|no} 载入或导出历史记录\n--depwarn={yes|no|error} 开启或关闭语法弃用警告，error 表示将弃用警告转换为错误。\n--warn-overwrite={yes|no} 开启或关闭方法重写警告\n-C, --cpu-target <target> Limit usage of cpu features up to <target>; set to help to see the available options\n-O, --optimize={0,1,2,3} 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。\n-g, -g <level> 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。\n--inline={yes|no} 控制是否允许函数内联，此选项会覆盖源文件中的 @inline 声明\n--check-bounds={yes|no} 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明\n--math-mode={ieee,fast} 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 @fastmath 声明\n--code-coverage={none|user|all} 对源文件中每行代码执行的次数计数\n--code-coverage 等价于 --code-coverage=user\n--track-allocation={none|user|all} 对源文件中每行代码的内存分配计数，单位 byte\n--track-allocation equivalent to --track-allocation=user"
 },
 
 {
     "location": "manual/getting-started/#资源-1",
-    "page": "起步",
+    "page": "入门",
     "title": "资源",
     "category": "section",
-    "text": "除了本手册以外，官方网站上还有很多其它可以帮助新用户学习 Julia 的资源（英文），这里是一个学习资源的列表：learning"
+    "text": "除了本手册以外，官方网站还提供了一个有用的学习资源列表来帮助新用户学习 Julia。"
 },
 
 {
@@ -61,15 +61,15 @@ var documenterSearchIndex = {"docs": [
     "page": "变量",
     "title": "变量",
     "category": "section",
-    "text": "Julia语言中，变量是与某个值相关联（或绑定）的名字。你可以用它来保存一个值（例如某些计算得到的结果），供之后的代码使用。例如：# Assign the value 10 to the variable x\njulia> x = 10\n10\n\n# Doing math with x\'s value\njulia> x + 1\n11\n\n# Reassign x\'s value\njulia> x = 1 + 1\n2\n\n# You can assign values of other types, like strings of text\njulia> x = \"Hello World!\"\n\"Hello World!\"Julia为变量命名提供了非常灵活的系统。变量名是大小写敏感的。变量名不包含语义，意思是说，Julia不会根据变量的命名而区别对待它们。（译者注: 在一些其他语言里，你可能要在不同类型的变量的名字中使用不同的前后缀）julia> x = 1.0\n1.0\n\njulia> y = -3\n-3\n\njulia> Z = \"My string\"\n\"My string\"\n\njulia> customary_phrase = \"Hello world!\"\n\"Hello world!\"\n\njulia> UniversalDeclarationOfHumanRightsStart = \"人人生而自由，在尊严和权利上一律平等。\"\n\"人人生而自由，在尊严和权利上一律平等。\"你还可以使用Unicode字符（使用UTF-8编码）来命名：julia> δ = 0.00001\n1.0e-5\n\njulia> 안녕하세요 = \"Hello\"\n\"Hello\"在Julia REPL和几个其他的Julia编辑环境中，很多 Unicode 的数学符号可以使用反斜杠加 LaTeX 符号名并跟上一个 tab 健打出。 例如：变量名δ可以通过 \\delta-tab 来输入，甚至可以用 \\alpha-tab-\\hat-tab-\\_2-tab 来输入 α̂₂  这种复杂的变量名。如果你在某个地方（比如别人的代码里）看到了一个不知道怎么输入的符号，你可以在REPL中输入?，然后粘贴那个符号，帮助文档会告诉你输入方法。如果有需要的话，Julia甚至允许你重定义内置常量和函数。（这样做可能引发潜在的混淆，所以并不推荐）julia> pi = 3\n3\n\njulia> pi\n3\n\njulia> sqrt = 4\n4然而，如果你试图重定义一个已经在使用中的内置常量或函数，Julia会报错：julia> pi\nπ = 3.1415926535897...\n\njulia> pi = 3\nERROR: cannot assign variable MathConstants.pi from module Main\n\njulia> sqrt(100)\n10.0\n\njulia> sqrt = 4\nERROR: cannot assign variable Base.sqrt from module Main"
+    "text": "Julia语言中，变量是与某个值相关联（或绑定）的名字。你可以用它来保存一个值（例如某些计算得到的结果），供之后的代码使用。例如：# Assign the value 10 to the variable x\njulia> x = 10\n10\n\n# Doing math with x\'s value\njulia> x + 1\n11\n\n# Reassign x\'s value\njulia> x = 1 + 1\n2\n\n# You can assign values of other types, like strings of text\njulia> x = \"Hello World!\"\n\"Hello World!\"Julia 提供了非常灵活的变量命名策略。变量名是大小写敏感的。且不包含语义，意思是说，Julia 不会根据变量的名字来区别对待它们。 （译者注: 如 不会出现 全大写的变量，系统自动认为是常量；或者加上特定前后缀，自动识别为整数变量等变量类型，或者全局变量等变量作用域。）julia> x = 1.0\n1.0\n\njulia> y = -3\n-3\n\njulia> Z = \"My string\"\n\"My string\"\n\njulia> customary_phrase = \"Hello world!\"\n\"Hello world!\"\n\njulia> UniversalDeclarationOfHumanRightsStart = \"人人生而自由，在尊严和权利上一律平等。\"\n\"人人生而自由，在尊严和权利上一律平等。\"你还可以使用 UTF-8 编码的 Unicode 字符作为变量名：julia> δ = 0.00001\n1.0e-5\n\njulia> 안녕하세요 = \"Hello\"\n\"Hello\"在 Julia REPL 和几个其他的 Julia 编辑环境中，很多 Unicode 的数学符号可以使用反斜杠加 LaTeX 符号名再按 tab 健打出。 例如：变量名 δ 可以通过 \\delta tab 来输入，甚至可以用 \\alpha tab \\hat tab \\_2 tab 来输入 α̂₂  这种复杂的变量名。 如果你在某个地方（比如别人的代码里）看到了一个不知道怎么输入的符号，你可以在REPL中输入 ?，然后粘贴那个符号，帮助文档会告诉你输入方法。如果有需要的话，Julia 甚至允许你重定义内置常量和函数。（这样做可能引发潜在的混淆，所以并不推荐）julia> pi = 3\n3\n\njulia> pi\n3\n\njulia> sqrt = 4\n4然而，如果你试图重定义一个已经在使用中的内置常量或函数，Julia 会报错：julia> pi\nπ = 3.1415926535897...\n\njulia> pi = 3\nERROR: cannot assign variable MathConstants.pi from module Main\n\njulia> sqrt(100)\n10.0\n\njulia> sqrt = 4\nERROR: cannot assign variable Base.sqrt from module Main"
 },
 
 {
-    "location": "manual/variables/#合法的变量名字-1",
+    "location": "manual/variables/#合法的变量名-1",
     "page": "变量",
-    "title": "合法的变量名字",
+    "title": "合法的变量名",
     "category": "section",
-    "text": "变量名字必须以英文字母（A-Z 或 a-z）、下划线或编码大于 00A0 的 Unicode 字符的一个子集开头。具体来说指的是，Unicode字符分类 中的 Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其它像字母的符号（例如Sm类别数学符号中的一部分）。 变量名的非首字符还允许使用惊叹号‘!’、数字（包括0-9和其他Nd/No类别中的Unicode字符）以及其它 Unicode 字符：变音符号和其他修改标记（Mn/Mc/Me/Sk类别）、标点和连接符（Pc类别）、引号和少许其他字符。像 +这样的运算符也是合法的标识符，但是它们会被特别地解析。在一些语境中，运算符可以像变量一样使用，比如 (+) 表示加函数，语句 (+) = f 会把它重新赋值。大部分Unicode中缀运算符（Sm类别中的），像 ⊕ ，则会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 const ⊗ = kron 将 ⊗ 定义为中缀的Kronecker积）。运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 +̂ₐ″被解析成一个与 + 具有相同优先级的中缀运算符。内建语句的名字是唯一明确被禁止的变量名：julia> else = false\nERROR: syntax: unexpected \"else\"\n\njulia> try = \"No\"\nERROR: syntax: unexpected \"=\"有一些Unicode字符在标识符中被认为是等价的。输入Unicode组合字符（如重音标记的字符）的不同方式是等价的（具体地，Julia语言中的标识符使用NFC正规化）。Unicode字符 ɛ（U+025B：拉丁字母小写开放e）和 µ （U+00B5：微记号）被视为等价于对应的希腊字母，因为前者使用一些输入法易于键入。"
+    "text": "变量名字必须以英文字母（A-Z 或 a-z）、下划线或编码大于 00A0 的 Unicode 字符的一个子集开头。 具体来说指的是，Unicode字符分类 中的 Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其它像字母的符号（例如Sm类别数学符号中的一部分）。 变量名的非首字符还允许使用惊叹号 !、数字（包括 0-9 和其他 Nd/No 类别中的 Unicode 字符）以及其它 Unicode 字符：变音符号和其他修改标记（Mn/Mc/Me/Sk 类别）、标点和连接符（Pc类别）、引号和少许其他字符。像 + 这样的运算符也是合法的标识符，但是它们会被特别地解析。 在一些语境中，运算符可以像变量一样使用，比如 (+) 表示加函数，语句 (+) = f 会把它重新赋值。 大部分Sm 类别中的 Unicode 中缀运算符，像 ⊕ ，则会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 const ⊗ = kron 将 ⊗ 定义为中缀的 Kronecker 积）。 运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 +̂ₐ″ 被解析成一个与  + 具有相同优先级的中缀运算符。内建语句的名字是唯一明确被禁止的变量名：julia> else = false\nERROR: syntax: unexpected \"else\"\n\njulia> try = \"No\"\nERROR: syntax: unexpected \"=\"有一些 Unicode 字符在标识符中被认为是等价的。输入 Unicode 组合字符（如重音标记的字符）的不同方式是等价的（具体地，Julia 语言中的标识符使用 NFC 正规化）。 Unicode 字符 ɛ（U+025B：拉丁字母小写开放 e）和 µ （U+00B5：微记号）被视为等价于对应的希腊字母，因为前者使用一些输入法易于键入。"
 },
 
 {
@@ -77,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "变量",
     "title": "命名规范",
     "category": "section",
-    "text": "虽然Julia语言对合法名字的限制非常少，但是遵循以下这些命名规范是非常有用的：变量的名字采用小写。\n用下划线分隔名字中的单词（_），但是不鼓励使用下划线， 除非在不使用下划线时名字会非常难读。\nType和Module的名字使用大写字母开头，并且用大写字母 而不是下划线分隔单词。\n函数和宏的名字使用小写，不使用下划线。\n对参数进行写操作的函数使用!结尾。这些函数有时叫做 “mutating”或“in-place”函数，因为它们在被调用后，不止返回一个值 还会更改输入参数的内容。关于命名规范的更多信息，可查看代码风格指南。"
+    "text": "虽然 Julia 语言对合法名字的限制非常少，但是遵循以下这些命名规范是非常有用的：变量的名字采用小写。\n用下划线分隔名字中的单词（_），但是不鼓励使用下划线， 除非在不使用下划线时名字会非常难读。\nType 和 Module 的名字使用大写字母开头，并且用大写字母 而不是下划线分隔单词。\n函数 和 宏 的名字使用小写，不使用下划线。\n对参数进行写操作的函数使用 ! 结尾。这些函数有时叫做 “mutating” 或 “in-place” 函数，因为它们在被调用后，不止返回一个值 还会更改输入参数的内容。关于命名规范的更多信息，可查看 Style Guide。"
 },
 
 {
@@ -93,7 +93,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "整数和浮点数",
     "category": "section",
-    "text": "整数和浮点值是算术和计算的基础。这些数值的内建表示被称作数值原始类型（numeric primitive），且整数和浮点数在代码中作为即时的值被称作数值字面量（numeric literal）。例如，1 是个整型字面量，1.0 是个浮点型字面量，它们在内存中作为对象的二进制表示就是数值原始类型。Julia 提供了很丰富的原始数值类型，并基于它们定义了一整套算术，还提供按位运算符以及一些标准数学函数。这些函数能够直接映射到现代计算机原生支持的数值类型及运算上，因此 Julia 可以充分地利用运算资源。此外，Julia 还为任意精度算术提供了软件支持，它能够处理那些无法高效地使用原生硬件表示的数值运算，当然，这需要相对的牺牲一些性能。以下是 Julia 的原始数值类型：整数类型:类型 带符号？ 比特数 最小值 最大值\nInt8 ✓ 8 -2^7 2^7 - 1\nUInt8  8 0 2^8 - 1\nInt16 ✓ 16 -2^15 2^15 - 1\nUInt16  16 0 2^16 - 1\nInt32 ✓ 32 -2^31 2^31 - 1\nUInt32  32 0 2^32 - 1\nInt64 ✓ 64 -2^63 2^63 - 1\nUInt64  64 0 2^64 - 1\nInt128 ✓ 128 -2^127 2^127 - 1\nUInt128  128 0 2^128 - 1\nBool N/A 8 false (0) true (1)浮点类型:类型 精度 比特数\nFloat16 half 16\nFloat32 single 32\nFloat64 double 64此外，对复数和分数的完整支持是在这些原始类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的类型提升系统，所有的数值类型都无需现实转换就可以很自然地相互进行运算。"
+    "text": "整数和浮点值是算术和计算的基础。这些数值的内建表示被称作数值原始类型（numeric primitive），且整数和浮点数在代码中作为立即数时称作数值字面量（numeric literal）。例如，1 是个整型字面量，1.0 是个浮点型字面量，它们在内存中作为对象的二进制表示就是数值原始类型。Julia 提供了很丰富的原始数值类型，并基于它们定义了一整套算术，还提供按位运算符以及一些标准数学函数。这些函数能够直接映射到现代计算机原生支持的数值类型及运算上，因此 Julia 可以充分地利用运算资源。此外，Julia 还为任意精度算术提供了软件支持，它能够处理那些无法高效地使用原生硬件表示的数值运算，当然，这需要相对的牺牲一些性能。以下是 Julia 的原始数值类型：整数类型:类型 带符号？ 比特数 最小值 最大值\nInt8 ✓ 8 -2^7 2^7 - 1\nUInt8  8 0 2^8 - 1\nInt16 ✓ 16 -2^15 2^15 - 1\nUInt16  16 0 2^16 - 1\nInt32 ✓ 32 -2^31 2^31 - 1\nUInt32  32 0 2^32 - 1\nInt64 ✓ 64 -2^63 2^63 - 1\nUInt64  64 0 2^64 - 1\nInt128 ✓ 128 -2^127 2^127 - 1\nUInt128  128 0 2^128 - 1\nBool N/A 8 false (0) true (1)浮点类型:类型 精度 比特数\nFloat16 half 16\nFloat32 single 32\nFloat64 double 64此外，对复数和分数的完整支持是在这些原始类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的类型提升系统，所有的数值类型都无需现实转换就可以很自然地相互进行运算。"
 },
 
 {
@@ -157,7 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "舍入模式",
     "category": "section",
-    "text": "一个数如果没有精确的浮点表示，就必须被舍入到一个合适的可表示的值。然而，如果想的话，可以根据舍入模式改变舍入的方式，如 IEEE 754 standard所述。 Julia 所使用的默认模式总是 RoundNearest，指的是会舍入到最接近的可表示的值，这个被舍入的值会使用尽量少的有效位数。"
+    "text": "一个数如果没有精确的浮点表示，就必须被舍入到一个合适的可表示的值。然而，如果想的话，可以根据舍入模式改变舍入的方式，如 IEEE 754 standard所述。Julia 所使用的默认模式总是 RoundNearest，指的是会舍入到最接近的可表示的值，这个被舍入的值会使用尽量少的有效位数。"
 },
 
 {
@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "背景及参考",
     "category": "section",
-    "text": "浮点算术带来了很多微妙之处，它们可能对于那些不熟悉底层实现细节的用户会是很出人意料的。然而，这些微妙之处在大部分科学计算的书籍中以及以下的参考资料中都有详细介绍:浮点算术的权威性指南是 IEEE 754-2008 Standard; 然而在网上无法免费获得。\n关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 在这个主题上的 文章以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的介绍\n同样推荐 Bruce Dawson 的一系列关于浮点数的博客文章。\n想要一个对浮点数和使用浮点数计算时产生的数值精度问题的极好的、有深度的讨论，可以参见 David Goldberg 的文章 What Every Computer Scientist Should Know About Floating-Point Arithmetic。\n更多延伸文档，包括浮点数的历史、基础理论、问题以及数值计算中很多其它主题的讨论，可以参见 William Kahan 的写作集。他以“浮点数之父”闻名。特别感兴趣的话可以看 An Interview with the Old Man of Floating-Point。"
+    "text": "浮点算术带来了很多微妙之处，它们可能对于那些不熟悉底层实现细节的用户会是很出人意料的。然而，这些微妙之处在大部分科学计算的书籍中以及以下的参考资料中都有详细介绍:浮点算术的权威性指南是 IEEE 754-2008 Standard; 然而在网上无法免费获得。\n关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 在这个主题上的 文章以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的介绍同样推荐 Bruce Dawson 的一系列关于浮点数的博客文章。\n想要一个对浮点数和使用浮点数计算时产生的数值精度问题的极好的、有深度的讨论，可以参见 David Goldberg 的文章 What Every Computer Scientist Should Know About Floating-Point Arithmetic。\n更多延伸文档，包括浮点数的历史、基础理论、问题以及数值计算中很多其它主题的讨论，可以参见 William Kahan 的写作集。他以“浮点数之父”闻名。特别感兴趣的话可以看 An Interview with the Old Man of Floating-Point。"
 },
 
 {
@@ -338,23 +338,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/complex-and-rational-numbers/#",
-    "page": "复数和分数",
-    "title": "复数和分数",
+    "page": "复数和有理数",
+    "title": "复数和有理数",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "manual/complex-and-rational-numbers/#复数和分数-1",
-    "page": "复数和分数",
-    "title": "复数和分数",
+    "location": "manual/complex-and-rational-numbers/#复数和有理数-1",
+    "page": "复数和有理数",
+    "title": "复数和有理数",
     "category": "section",
     "text": "Julia 语言自带预定义的表示复数与分数的类型，并且支持它们的各种数学运算和基础函数。由于也定义了复数与分数的转换与提升，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。"
 },
 
 {
     "location": "manual/complex-and-rational-numbers/#复数-1",
-    "page": "复数和分数",
+    "page": "复数和有理数",
     "title": "复数",
     "category": "section",
     "text": "在Julia中,全局常量 im 被绑定到复数 i，表示 -1 的主平方根。由于 i 是一个很流行的用作索引的变量名，所以直接把它作为全局常量被认为是很危险的。由于 Julia 允许数值文本作为系数与标识符并置，这种绑定就足够为复数提供很方便的语法，类似于传统的数学记法：julia> 1 + 2im\n1 + 2im你可以对复数进行各种标准算术操作：julia> (1 + 2im)*(2 - 3im)\n8 + 1im\n\njulia> (1 + 2im)/(1 - 2im)\n-0.6 + 0.8im\n\njulia> (1 + 2im) + (1 - 2im)\n2 + 0im\n\njulia> (-3 + 2im) - (5 - 1im)\n-8 + 3im\n\njulia> (-1 + 2im)^2\n-3 - 4im\n\njulia> (-1 + 2im)^2.5\n2.729624464784009 - 6.9606644595719im\n\njulia> (-1 + 2im)^(1 + 1im)\n-0.27910381075826657 + 0.08708053414102428im\n\njulia> 3(2 - 5im)\n6 - 15im\n\njulia> 3(2 - 5im)^2\n-63 - 60im\n\njulia> 3(2 - 5im)^-1.0\n0.20689655172413796 + 0.5172413793103449im类型提升机制也确保你可以使用不同类型的操作数的组合：julia> 2(1 - 1im)\n2 - 2im\n\njulia> (2 + 3im) - 1\n1 + 3im\n\njulia> (1 + 2im) + 0.5\n1.5 + 2.0im\n\njulia> (2 + 3im) - 0.5im\n2.0 + 2.5im\n\njulia> 0.75(1 + 2im)\n0.75 + 1.5im\n\njulia> (2 + 3im) / 2\n1.0 + 1.5im\n\njulia> (1 - 3im) / (2 + 2im)\n-0.5 - 1.0im\n\njulia> 2im^2\n-2 + 0im\n\njulia> 1 + 3/4im\n1.0 - 0.75im注意 3/4im == 3/(4*im) == -(3/4*im)，因为文本系数比除法的优先级更高。Julia 提供了一些用来操作复数值的标准函数：julia> z = 1 + 2im\n1 + 2im\n\njulia> real(1 + 2im) # real part of z\n1\n\njulia> imag(1 + 2im) # imaginary part of z\n2\n\njulia> conj(1 + 2im) # complex conjugate of z\n1 - 2im\n\njulia> abs(1 + 2im) # absolute value of z\n2.23606797749979\n\njulia> abs2(1 + 2im) # squared absolute value\n5\n\njulia> angle(1 + 2im) # phase angle in radians\n1.1071487177940904按照惯例，复数的绝对值（abs）是从零点到它的距离。abs2 给出绝对值的平方，作用于复数上时非常有用,可以避免做平方根的操作。[angle] 返回以弧度为单位的相位角（这也被称为辐角函数）。所有其它的基础函数在复数上也都有完整的定义：julia> sqrt(1im)\n0.7071067811865476 + 0.7071067811865475im\n\njulia> sqrt(1 + 2im)\n1.272019649514069 + 0.7861513777574233im\n\njulia> cos(1 + 2im)\n2.0327230070196656 - 3.0518977991518im\n\njulia> exp(1 + 2im)\n-1.1312043837568135 + 2.4717266720048188im\n\njulia> sinh(1 + 2im)\n-0.4890562590412937 + 1.4031192506220405im注意数学函数通常应用于实数就返回实数值，应用于复数就返回复数值。例如，当 sqrt 应用于 -1 与 -1 + 0im 会有不同的表现，虽然 -1 == -1 + 0im：julia> sqrt(-1)\nERROR: DomainError with -1.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]\n\njulia> sqrt(-1 + 0im)\n0.0 + 1.0im从变量构建复数时，文本型数值系数记法不再适用。相反地，乘法必须显式地写出：julia> a = 1; b = 2; a + b*im\n1 + 2im然而，我们并不推荐这样，而应改为使用 complex 函数直接通过实部与虚部构建一个复数值：julia> a = 1; b = 2; complex(a, b)\n1 + 2im这种构建避免了乘法和加法操作。Inf 和 NaN 可能出现在复数的实部和虚部，正如特殊的浮点值章节所描述的：julia> 1 + Inf*im\n1.0 + Inf*im\n\njulia> 1 + NaN*im\n1.0 + NaN*im"
@@ -362,7 +362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/complex-and-rational-numbers/#分数-1",
-    "page": "复数和分数",
+    "page": "复数和有理数",
     "title": "分数",
     "category": "section",
     "text": "Julia 有一个用于表示整数精确比值的分数类型。分数通过 // 运算符构建：julia> 2//3\n2//3如果一个分数的分子和分母含有公因子，它们会被约分到最简形式且分母非负：julia> 6//9\n2//3\n\njulia> -4//8\n-1//2\n\njulia> 5//-15\n-1//3\n\njulia> -4//-12\n1//3整数比值的这种标准化形式是唯一的，所以分数值的相等性可由校验分子与分母都相等来测试。分数值的标准化分子和分母可以使用 numerator 和 denominator 函数得到：julia> numerator(2//3)\n2\n\njulia> denominator(2//3)\n3分子和分母的直接比较通常是不必要的，因为标准算术和比较操作对分数值也有定义：julia> 2//3 == 6//9\ntrue\n\njulia> 2//3 == 9//27\nfalse\n\njulia> 3//7 < 1//2\ntrue\n\njulia> 3//4 > 2//3\ntrue\n\njulia> 2//4 + 1//6\n2//3\n\njulia> 5//12 - 1//4\n1//6\n\njulia> 5//8 * 3//12\n5//32\n\njulia> 6//5 / 10//7\n21//25分数可以很容易地被转换成浮点数：julia> float(3//4)\n0.75对任意整数值 a 和 b（除了 a == 0 且 b == 0 时），从分数到浮点数的转换遵从以下的一致性：julia> a = 1; b = 2;\n\njulia> isequal(float(a//b), a/b)\ntrueJulia接受构建无穷分数值：julia> 5//0\n1//0\n\njulia> -3//0\n-1//0\n\njulia> typeof(ans)\nRational{Int64}但不接受试图构建一个 NaN 分数值：julia> 0//0\nERROR: ArgumentError: invalid rational: zero(Int64)//zero(Int64)\nStacktrace:\n[...]像往常一样，类型提升系统使得分数可以轻松地同其它数值类型进行交互：julia> 3//5 + 1\n8//5\n\njulia> 3//5 - 0.5\n0.09999999999999998\n\njulia> 2//7 * (1 + 2im)\n2//7 + 4//7*im\n\njulia> 2//7 * (1.5 + 2im)\n0.42857142857142855 + 0.5714285714285714im\n\njulia> 3//2 / (1 + 2im)\n3//10 - 3//5*im\n\njulia> 1//2 + 2im\n1//2 + 2//1*im\n\njulia> 1 + 2//3im\n1//1 - 2//3*im\n\njulia> 0.5 == 1//2\ntrue\n\njulia> 0.33 == 1//3\nfalse\n\njulia> 0.33 < 1//3\ntrue\n\njulia> 1//3 - 0.33\n0.0033333333333332993"
@@ -509,7 +509,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "return关键词",
     "category": "section",
-    "text": "函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在示例函数中f，从上一节开始，这是表达式的 x + y值。与在C和大多数其他命令式或函数式语言中一样，return关键字会导致函数立即返回，从而提供返回值的表达式：function g(x,y)\n    return x * y\n    x + y\nend由于函数定义可以输入到交互式会话中，因此可以很容易的比较这些定义：julia> f(x,y) = x + y\nf (generic function with 1 method)\n\njulia> function g(x,y)\n           return x * y\n           x + y\n       end\ng (generic function with 1 method)\n\njulia> f(2,3)\n5\n\njulia> g(2,3)\n6Of course, in a purely linear function body like g, the usage of return is pointless since the expression x + y is never evaluated and we could simply make x * y the last expression in the function and omit the return. In conjunction with other control flow, however, return is of real use. Here, for example, is a function that computes the hypotenuse length of a right triangle with sides of length x and y, avoiding overflow:julia> function hypot(x,y)\n           x = abs(x)\n           y = abs(y)\n           if x > y\n               r = y/x\n               return x*sqrt(1+r*r)\n           end\n           if y == 0\n               return zero(x)\n           end\n           r = x/y\n           return y*sqrt(1+r*r)\n       end\nhypot (generic function with 1 method)\n\njulia> hypot(3, 4)\n5.0这个函数有三个可能的返回处，返回三个不同表达式的值，具体取决于x和y的值。 最后一行的return可以省略，因为它是最后一个表达式。也可以使用::运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。julia> function g(x, y)::Int8\n           return x * y\n       end;\n\njulia> typeof(g(1, 2))\nInt8这个函数将忽略x 和y的类型，返回Int8类型的值。有关返回类型的更多信息，请参见 类型说明。"
+    "text": "函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在示例函数中f，从上一节开始，这是表达式的 x + y值。与在C和大多数其他命令式或函数式语言中一样，return关键字会导致函数立即返回，从而提供返回值的表达式：function g(x,y)\n    return x * y\n    x + y\nend由于函数定义可以输入到交互式会话中，因此可以很容易的比较这些定义：julia> f(x,y) = x + y\nf (generic function with 1 method)\n\njulia> function g(x,y)\n           return x * y\n           x + y\n       end\ng (generic function with 1 method)\n\njulia> f(2,3)\n5\n\njulia> g(2,3)\n6Of course, in a purely linear function body like g, the usage of return is pointless since the expression x + y is never evaluated and we could simply make x * y the last expression in the function and omit the return. In conjunction with other control flow, however, return is of real use. Here, for example, is a function that computes the hypotenuse length of a right triangle with sides of length x and y, avoiding overflow:julia> function hypot(x,y)\n           x = abs(x)\n           y = abs(y)\n           if x > y\n               r = y/x\n               return x*sqrt(1+r*r)\n           end\n           if y == 0\n               return zero(x)\n           end\n           r = x/y\n           return y*sqrt(1+r*r)\n       end\nhypot (generic function with 1 method)\n\njulia> hypot(3, 4)\n5.0这个函数有三个可能的返回处，返回三个不同表达式的值，具体取决于x和y的值。 最后一行的return可以省略，因为它是最后一个表达式。也可以使用::运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。julia> function g(x, y)::Int8\n           return x * y\n       end;\n\njulia> typeof(g(1, 2))\nInt8这个函数将忽略x 和y的类型，返回Int8类型的值。有关返回类型的更多信息，请参见 Type Declarations。"
 },
 
 {
@@ -829,47 +829,47 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "类型",
     "category": "section",
-    "text": "Type systems have traditionally fallen into two quite different camps: static type systems, where every program expression must have a type computable before the execution of the program, and dynamic type systems, where nothing is known about types until run time, when the actual values manipulated by the program are available. Object orientation allows some flexibility in statically typed languages by letting code be written without the precise types of values being known at compile time. The ability to write code that can operate on different types is called polymorphism. All code in classic dynamically typed languages is polymorphic: only by explicitly checking types, or when objects fail to support operations at run-time, are the types of any values ever restricted.Julia\'s type system is dynamic, but gains some of the advantages of static type systems by making it possible to indicate that certain values are of specific types. This can be of great assistance in generating efficient code, but even more significantly, it allows method dispatch on the types of function arguments to be deeply integrated with the language. Method dispatch is explored in detail in Methods, but is rooted in the type system presented here.The default behavior in Julia when types are omitted is to allow values to be of any type. Thus, one can write many useful Julia functions without ever explicitly using types. When additional expressiveness is needed, however, it is easy to gradually introduce explicit type annotations into previously \"untyped\" code. Adding annotations serves three primary purposes: to take advantage of Julia\'s powerful multiple-dispatch mechanism,  to improve human readability, and to catch programmer errors.Describing Julia in the lingo of type systems, it is: dynamic, nominative and parametric. Generic types can be parameterized, and the hierarchical relationships between types are explicitly declared, rather than implied by compatible structure. One particularly distinctive feature of Julia\'s type system is that concrete types may not subtype each other: all concrete types are final and may only have abstract types as their supertypes. While this might at first seem unduly restrictive, it has many beneficial consequences with surprisingly few drawbacks. It turns out that being able to inherit behavior is much more important than being able to inherit structure, and inheriting both causes significant difficulties in traditional object-oriented languages. Other high-level aspects of Julia\'s type system that should be mentioned up front are:There is no division between object and non-object values: all values in Julia are true objects having a type that belongs to a single, fully connected type graph, all nodes of which are equally first-class as types.\nThere is no meaningful concept of a \"compile-time type\": the only type a value has is its actual type when the program is running. This is called a \"run-time type\" in object-oriented languages where the combination of static compilation with polymorphism makes this distinction significant.\nOnly values, not variables, have types – variables are simply names bound to values.\nBoth abstract and concrete types can be parameterized by other types. They can also be parameterized by symbols, by values of any type for which isbits returns true (essentially, things like numbers and bools that are stored like C types or structs with no pointers to other objects), and also by tuples thereof. Type parameters may be omitted when they do not need to be referenced or restricted.Julia\'s type system is designed to be powerful and expressive, yet clear, intuitive and unobtrusive. Many Julia programmers may never feel the need to write code that explicitly uses types. Some kinds of programming, however, become clearer, simpler, faster and more robust with declared types."
+    "text": "Type systems have traditionally fallen into two quite different camps: static type systems, where every program expression must have a type computable before the execution of the program, and dynamic type systems, where nothing is known about types until run time, when the actual values manipulated by the program are available. Object orientation allows some flexibility in statically typed languages by letting code be written without the precise types of values being known at compile time. The ability to write code that can operate on different types is called polymorphism. All code in classic dynamically typed languages is polymorphic: only by explicitly checking types, or when objects fail to support operations at run-time, are the types of any values ever restricted.Julia\'s type system is dynamic, but gains some of the advantages of static type systems by making it possible to indicate that certain values are of specific types. This can be of great assistance in generating efficient code, but even more significantly, it allows method dispatch on the types of function arguments to be deeply integrated with the language. Method dispatch is explored in detail in Methods, but is rooted in the type system presented here.The default behavior in Julia when types are omitted is to allow values to be of any type. Thus, one can write many useful Julia functions without ever explicitly using types. When additional expressiveness is needed, however, it is easy to gradually introduce explicit type annotations into previously \"untyped\" code. Adding annotations serves three primary purposes: to take advantage of Julia\'s powerful multiple-dispatch mechanism,  to improve human readability, and to catch programmer errors.Describing Julia in the lingo of type systems, it is: dynamic, nominative and parametric. Generic types can be parameterized, and the hierarchical relationships between types are explicitly declared, rather than implied by compatible structure. One particularly distinctive feature of Julia\'s type system is that concrete types may not subtype each other: all concrete types are final and may only have abstract types as their supertypes. While this might at first seem unduly restrictive, it has many beneficial consequences with surprisingly few drawbacks. It turns out that being able to inherit behavior is much more important than being able to inherit structure, and inheriting both causes significant difficulties in traditional object-oriented languages. Other high-level aspects of Julia\'s type system that should be mentioned up front are:There is no division between object and non-object values: all values in Julia are true objects having a type that belongs to a single, fully connected type graph, all nodes of which are equally first-class as types.\nThere is no meaningful concept of a \"compile-time type\": the only type a value has is its actual type when the program is running. This is called a \"run-time type\" in object-oriented languages where the combination of static compilation with polymorphism makes this distinction significant.\n值有类型，变量没有类型——变量仅仅是绑定了值的名字而已。\nBoth abstract and concrete types can be parameterized by other types. They can also be parameterized by symbols, by values of any type for which isbits returns true (essentially, things like numbers and bools that are stored like C types or structs with no pointers to other objects), and also by tuples thereof. Type parameters may be omitted when they do not need to be referenced or restricted.Julia\'s type system is designed to be powerful and expressive, yet clear, intuitive and unobtrusive. Many Julia programmers may never feel the need to write code that explicitly uses types. Some kinds of programming, however, become clearer, simpler, faster and more robust with declared types."
 },
 
 {
-    "location": "manual/types/#Type-Declarations-1",
+    "location": "manual/types/#类型断言-1",
     "page": "类型",
-    "title": "Type Declarations",
+    "title": "类型断言",
     "category": "section",
-    "text": "The :: operator can be used to attach type annotations to expressions and variables in programs. There are two primary reasons to do this:As an assertion to help confirm that your program works the way you expect,\nTo provide extra type information to the compiler, which can then improve performance in some casesWhen appended to an expression computing a value, the :: operator is read as \"is an instance of\". It can be used anywhere to assert that the value of the expression on the left is an instance of the type on the right. When the type on the right is concrete, the value on the left must have that type as its implementation – recall that all concrete types are final, so no implementation is a subtype of any other. When the type is abstract, it suffices for the value to be implemented by a concrete type that is a subtype of the abstract type. If the type assertion is not true, an exception is thrown, otherwise, the left-hand value is returned:julia> (1+2)::AbstractFloat\nERROR: TypeError: in typeassert, expected AbstractFloat, got Int64\n\njulia> (1+2)::Int\n3This allows a type assertion to be attached to any expression in-place.When appended to a variable on the left-hand side of an assignment, or as part of a local declaration, the :: operator means something a bit different: it declares the variable to always have the specified type, like a type declaration in a statically-typed language such as C. Every value assigned to the variable will be converted to the declared type using convert:julia> function foo()\n           x::Int8 = 100\n           x\n       end\nfoo (generic function with 1 method)\n\njulia> foo()\n100\n\njulia> typeof(ans)\nInt8This feature is useful for avoiding performance \"gotchas\" that could occur if one of the assignments to a variable changed its type unexpectedly.This \"declaration\" behavior only occurs in specific contexts:local x::Int8  # in a local declaration\nx::Int8 = 10   # as the left-hand side of an assignmentand applies to the whole current scope, even before the declaration. Currently, type declarations cannot be used in global scope, e.g. in the REPL, since Julia does not yet have constant-type globals.Declarations can also be attached to function definitions:function sinc(x)::Float64\n    if x == 0\n        return 1\n    end\n    return sin(pi*x)/(pi*x)\nendReturning from this function behaves just like an assignment to a variable with a declared type: the value is always converted to Float64."
+    "text": "::运算符可以用来在程序中给表达式和变量附加类型注释。这有两个主要原因：作为断言，帮助程序确认能是否正常运行，\n给编译器提供额外的类型信息，这可能帮助程序提升性能 ，在某些情况下When appended to an expression computing a value, the :: operator is read as \"is an instance of\". It can be used anywhere to assert that the value of the expression on the left is an instance of the type on the right. When the type on the right is concrete, the value on the left must have that type as its implementation – recall that all concrete types are final, so no implementation is a subtype of any other. When the type is abstract, it suffices for the value to be implemented by a concrete type that is a subtype of the abstract type. If the type assertion is not true, an exception is thrown, otherwise, the left-hand value is returned:julia> (1+2)::AbstractFloat\nERROR: TypeError: in typeassert, expected AbstractFloat, got Int64\n\njulia> (1+2)::Int\n3可以在任何表达式的所在位置做类型断言。When appended to a variable on the left-hand side of an assignment, or as part of a local declaration, the :: operator means something a bit different: it declares the variable to always have the specified type, like a type declaration in a statically-typed language such as C. Every value assigned to the variable will be converted to the declared type using convert:julia> function foo()\n           x::Int8 = 100\n           x\n       end\nfoo (generic function with 1 method)\n\njulia> foo()\n100\n\njulia> typeof(ans)\nInt8这个特性用于避免性能“陷阱”，即给一个变量赋值时意外更改了类型。此“声明”行为仅发生在特定上下文中：local x::Int8  # in a local declaration\nx::Int8 = 10   # as the left-hand side of an assignment并适用于整个当前范围，甚至在声明之前。目前，声明类型不能用于全局范围，例如在 REPL 中就不可以，因为Julia 还没有定型的全局变量。声明也可以附加到函数定义：function sinc(x)::Float64\n    if x == 0\n        return 1\n    end\n    return sin(pi*x)/(pi*x)\nend从此函数返回的值就像对具有声明类型的变量的赋值：值始终转换为Float64。"
 },
 
 {
-    "location": "manual/types/#Abstract-Types-1",
+    "location": "manual/types/#抽象类型-1",
     "page": "类型",
-    "title": "Abstract Types",
+    "title": "抽象类型",
     "category": "section",
-    "text": "Abstract types cannot be instantiated, and serve only as nodes in the type graph, thereby describing sets of related concrete types: those concrete types which are their descendants. We begin with abstract types even though they have no instantiation because they are the backbone of the type system: they form the conceptual hierarchy which makes Julia\'s type system more than just a collection of object implementations.Recall that in Integers and Floating-Point Numbers, we introduced a variety of concrete types of numeric values: Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Int128, UInt128, Float16, Float32, and Float64. Although they have different representation sizes, Int8, Int16, Int32, Int64 and Int128 all have in common that they are signed integer types. Likewise UInt8, UInt16, UInt32, UInt64 and UInt128 are all unsigned integer types, while Float16, Float32 and Float64 are distinct in being floating-point types rather than integers. It is common for a piece of code to make sense, for example, only if its arguments are some kind of integer, but not really depend on what particular kind of integer. For example, the greatest common denominator algorithm works for all kinds of integers, but will not work for floating-point numbers. Abstract types allow the construction of a hierarchy of types, providing a context into which concrete types can fit. This allows you, for example, to easily program to any type that is an integer, without restricting an algorithm to a specific type of integer.Abstract types are declared using the abstract type keyword. The general syntaxes for declaring an abstract type are:abstract type «name» end\nabstract type «name» <: «supertype» endThe abstract type keyword introduces a new abstract type, whose name is given by «name». This name can be optionally followed by <: and an already-existing type, indicating that the newly declared abstract type is a subtype of this \"parent\" type.When no supertype is given, the default supertype is Any – a predefined abstract type that all objects are instances of and all types are subtypes of. In type theory, Any is commonly called \"top\" because it is at the apex of the type graph. Julia also has a predefined abstract \"bottom\" type, at the nadir of the type graph, which is written as Union{}. It is the exact opposite of Any: no object is an instance of Union{} and all types are supertypes of Union{}.Let\'s consider some of the abstract types that make up Julia\'s numerical hierarchy:abstract type Number end\nabstract type Real     <: Number end\nabstract type AbstractFloat <: Real end\nabstract type Integer  <: Real end\nabstract type Signed   <: Integer end\nabstract type Unsigned <: Integer endThe Number type is a direct child type of Any, and Real is its child. In turn, Real has two children (it has more, but only two are shown here; we\'ll get to the others later): Integer and AbstractFloat, separating the world into representations of integers and representations of real numbers. Representations of real numbers include, of course, floating-point types, but also include other types, such as rationals. Hence, AbstractFloat is a proper subtype of Real, including only floating-point representations of real numbers. Integers are further subdivided into Signed and Unsigned varieties.The <: operator in general means \"is a subtype of\", and, used in declarations like this, declares the right-hand type to be an immediate supertype of the newly declared type. It can also be used in expressions as a subtype operator which returns true when its left operand is a subtype of its right operand:julia> Integer <: Number\ntrue\n\njulia> Integer <: AbstractFloat\nfalseAn important use of abstract types is to provide default implementations for concrete types. To give a simple example, consider:function myplus(x,y)\n    x+y\nendThe first thing to note is that the above argument declarations are equivalent to x::Any and y::Any. When this function is invoked, say as myplus(2,5), the dispatcher chooses the most specific method named myplus that matches the given arguments. (See Methods for more information on multiple dispatch.)Assuming no method more specific than the above is found, Julia next internally defines and compiles a method called myplus specifically for two Int arguments based on the generic function given above, i.e., it implicitly defines and compiles:function myplus(x::Int,y::Int)\n    x+y\nendand finally, it invokes this specific method.Thus, abstract types allow programmers to write generic functions that can later be used as the default method by many combinations of concrete types. Thanks to multiple dispatch, the programmer has full control over whether the default or more specific method is used.An important point to note is that there is no loss in performance if the programmer relies on a function whose arguments are abstract types, because it is recompiled for each tuple of argument concrete types with which it is invoked. (There may be a performance issue, however, in the case of function arguments that are containers of abstract types; see Performance Tips.)"
+    "text": "Abstract types cannot be instantiated, and serve only as nodes in the type graph, thereby describing sets of related concrete types: those concrete types which are their descendants. We begin with abstract types even though they have no instantiation because they are the backbone of the type system: they form the conceptual hierarchy which makes Julia\'s type system more than just a collection of object implementations.Recall that in Integers and Floating-Point Numbers, we introduced a variety of concrete types of numeric values: Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Int128, UInt128, Float16, Float32, and Float64. Although they have different representation sizes, Int8, Int16, Int32, Int64 and Int128 all have in common that they are signed integer types. Likewise UInt8, UInt16, UInt32, UInt64 and UInt128 are all unsigned integer types, while Float16, Float32 and Float64 are distinct in being floating-point types rather than integers. It is common for a piece of code to make sense, for example, only if its arguments are some kind of integer, but not really depend on what particular kind of integer. For example, the greatest common denominator algorithm works for all kinds of integers, but will not work for floating-point numbers. Abstract types allow the construction of a hierarchy of types, providing a context into which concrete types can fit. This allows you, for example, to easily program to any type that is an integer, without restricting an algorithm to a specific type of integer.使用abstract type关键词来声明抽象类型。抽象类型的一般语法时：abstract type «name» end\nabstract type «name» <: «supertype» end该abstract type 关键字引入了一个新的抽象类型，«name»为其名称。此名称后面可以跟<:和一个已存在的类型，表示新声明的抽象类型是此“父”类型的子类型。如果没有给出父类型，则默认父类型为Any——所有对象和类型都是这个抽象类型的子类型。在类型理论中，Any通常称为\"top\"，因为它位于类型图的顶峰。Julia还有一个预定义的抽象\"bottom\"类型，在类型图的最低点，写成Union{}。这与Any完全相反：任何对象都不是Union{}的实例，所有的类型都是Union{}的父类型。Let\'s consider some of the abstract types that make up Julia\'s numerical hierarchy:abstract type Number end\nabstract type Real     <: Number end\nabstract type AbstractFloat <: Real end\nabstract type Integer  <: Real end\nabstract type Signed   <: Integer end\nabstract type Unsigned <: Integer endNumber类型为Any类型的直接子类型，并且Real为它的子类型。反过来，Real有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到更多的类型）： Integer 和AbstractFloat，将”数字世界“分为整数和实数的两部分。实数当然还包括浮点类型和其他类型，例如有理数。因此，AbstractFloat是一个Real的子类型，仅包括实数的浮点表示。整数被进一步细分为Signed和Unsigned 两类。<:运算符的含义是”前者是后者的子类型“，被用于声明类型，它声明右侧是左侧新声明类型的直接父类型。也可以用来判断左侧是不是右侧的子类型，当其左侧是右侧的子类型时返回truejulia> Integer <: Number\ntrue\n\njulia> Integer <: AbstractFloat\nfalse抽象类型的一个重要用途是为具体类型提供默认实现。举一个简单的例子：function myplus(x,y)\n    x+y\nendThe first thing to note is that the above argument declarations are equivalent to x::Any and y::Any. When this function is invoked, say as myplus(2,5), the dispatcher chooses the most specific method named myplus that matches the given arguments. (See Methods for more information on multiple dispatch.)Assuming no method more specific than the above is found, Julia next internally defines and compiles a method called myplus specifically for two Int arguments based on the generic function given above, i.e., it implicitly defines and compiles:function myplus(x::Int,y::Int)\n    x+y\nend最后，调用这个具体的函数。Thus, abstract types allow programmers to write generic functions that can later be used as the default method by many combinations of concrete types. Thanks to multiple dispatch, the programmer has full control over whether the default or more specific method is used.An important point to note is that there is no loss in performance if the programmer relies on a function whose arguments are abstract types, because it is recompiled for each tuple of argument concrete types with which it is invoked. (There may be a performance issue, however, in the case of function arguments that are containers of abstract types; see Performance Tips.)"
 },
 
 {
-    "location": "manual/types/#Primitive-Types-1",
+    "location": "manual/types/#位类型-1",
     "page": "类型",
-    "title": "Primitive Types",
+    "title": "位类型",
     "category": "section",
-    "text": "A primitive type is a concrete type whose data consists of plain old bits. Classic examples of primitive types are integers and floating-point values. Unlike most languages, Julia lets you declare your own primitive types, rather than providing only a fixed set of built-in ones. In fact, the standard primitive types are all defined in the language itself:primitive type Float16 <: AbstractFloat 16 end\nprimitive type Float32 <: AbstractFloat 32 end\nprimitive type Float64 <: AbstractFloat 64 end\n\nprimitive type Bool <: Integer 8 end\nprimitive type Char <: AbstractChar 32 end\n\nprimitive type Int8    <: Signed   8 end\nprimitive type UInt8   <: Unsigned 8 end\nprimitive type Int16   <: Signed   16 end\nprimitive type UInt16  <: Unsigned 16 end\nprimitive type Int32   <: Signed   32 end\nprimitive type UInt32  <: Unsigned 32 end\nprimitive type Int64   <: Signed   64 end\nprimitive type UInt64  <: Unsigned 64 end\nprimitive type Int128  <: Signed   128 end\nprimitive type UInt128 <: Unsigned 128 endThe general syntaxes for declaring a primitive type are:primitive type «name» «bits» end\nprimitive type «name» <: «supertype» «bits» endThe number of bits indicates how much storage the type requires and the name gives the new type a name. A primitive type can optionally be declared to be a subtype of some supertype. If a supertype is omitted, then the type defaults to having Any as its immediate supertype. The declaration of Bool above therefore means that a boolean value takes eight bits to store, and has Integer as its immediate supertype. Currently, only sizes that are multiples of 8 bits are supported. Therefore, boolean values, although they really need just a single bit, cannot be declared to be any smaller than eight bits.The types Bool, Int8 and UInt8 all have identical representations: they are eight-bit chunks of memory. Since Julia\'s type system is nominative, however, they are not interchangeable despite having identical structure. A fundamental difference between them is that they have different supertypes: Bool\'s direct supertype is Integer, Int8\'s is Signed, and UInt8\'s is Unsigned. All other differences between Bool, Int8, and UInt8 are matters of behavior – the way functions are defined to act when given objects of these types as arguments. This is why a nominative type system is necessary: if structure determined type, which in turn dictates behavior, then it would be impossible to make Bool behave any differently than Int8 or UInt8."
+    "text": "位类型是具体类型，其数据是由位构成。位类型的经典示例是整数和浮点数。与大多数语言不同，Julia允许您声明自己的位类型，而不是仅提供一组固定的内置类型。实际上，标准位类型都是在语言本身中定义的：primitive type Float16 <: AbstractFloat 16 end\nprimitive type Float32 <: AbstractFloat 32 end\nprimitive type Float64 <: AbstractFloat 64 end\n\nprimitive type Bool <: Integer 8 end\nprimitive type Char <: AbstractChar 32 end\n\nprimitive type Int8    <: Signed   8 end\nprimitive type UInt8   <: Unsigned 8 end\nprimitive type Int16   <: Signed   16 end\nprimitive type UInt16  <: Unsigned 16 end\nprimitive type Int32   <: Signed   32 end\nprimitive type UInt32  <: Unsigned 32 end\nprimitive type Int64   <: Signed   64 end\nprimitive type UInt64  <: Unsigned 64 end\nprimitive type Int128  <: Signed   128 end\nprimitive type UInt128 <: Unsigned 128 end声明位类型的一般语法是：primitive type «name» «bits» end\nprimitive type «name» <: «supertype» «bits» endbits表示该类型需要多少存储空间，name为新类型指定名称。可已经一个位类型声明为某个父类型的子类型。如果省略父类型，则默认Any为其直接父类型。上述声明中意味着Bool类型需要8位来储存，并且直接父类型为Integer。目前，仅支持8位倍数的大小。因此，布尔值虽然确实只需要一位，但不能声明为小于八位的值。The types Bool, Int8 and UInt8 all have identical representations: they are eight-bit chunks of memory. Since Julia\'s type system is nominative, however, they are not interchangeable despite having identical structure. A fundamental difference between them is that they have different supertypes: Bool\'s direct supertype is Integer, Int8\'s is Signed, and UInt8\'s is Unsigned. All other differences between Bool, Int8, and UInt8 are matters of behavior – the way functions are defined to act when given objects of these types as arguments. This is why a nominative type system is necessary: if structure determined type, which in turn dictates behavior, then it would be impossible to make Bool behave any differently than Int8 or UInt8."
 },
 
 {
-    "location": "manual/types/#Composite-Types-1",
+    "location": "manual/types/#复合类型-1",
     "page": "类型",
-    "title": "Composite Types",
+    "title": "复合类型",
     "category": "section",
-    "text": "Composite types are called records, structs, or objects in various languages. A composite type is a collection of named fields, an instance of which can be treated as a single value. In many languages, composite types are the only kind of user-definable type, and they are by far the most commonly used user-defined type in Julia as well.In mainstream object oriented languages, such as C++, Java, Python and Ruby, composite types also have named functions associated with them, and the combination is called an \"object\". In purer object-oriented languages, such as Ruby or Smalltalk, all values are objects whether they are composites or not. In less pure object oriented languages, including C++ and Java, some values, such as integers and floating-point values, are not objects, while instances of user-defined composite types are true objects with associated methods. In Julia, all values are objects, but functions are not bundled with the objects they operate on. This is necessary since Julia chooses which method of a function to use by multiple dispatch, meaning that the types of all of a function\'s arguments are considered when selecting a method, rather than just the first one (see Methods for more information on methods and dispatch). Thus, it would be inappropriate for functions to \"belong\" to only their first argument. Organizing methods into function objects rather than having named bags of methods \"inside\" each object ends up being a highly beneficial aspect of the language design.Composite types are introduced with the struct keyword followed by a block of field names, optionally annotated with types using the :: operator:julia> struct Foo\n           bar\n           baz::Int\n           qux::Float64\n       endFields with no type annotation default to Any, and can accordingly hold any type of value.New objects of type Foo are created by applying the Foo type object like a function to values for its fields:julia> foo = Foo(\"Hello, world.\", 23, 1.5)\nFoo(\"Hello, world.\", 23, 1.5)\n\njulia> typeof(foo)\nFooWhen a type is applied like a function it is called a constructor. Two constructors are generated automatically (these are called default constructors). One accepts any arguments and calls convert to convert them to the types of the fields, and the other accepts arguments that match the field types exactly. The reason both of these are generated is that this makes it easier to add new definitions without inadvertently replacing a default constructor.Since the bar field is unconstrained in type, any value will do. However, the value for baz must be convertible to Int:julia> Foo((), 23.5, 1)\nERROR: InexactError: Int64(Int64, 23.5)\nStacktrace:\n[...]You may find a list of field names using the fieldnames function.julia> fieldnames(Foo)\n(:bar, :baz, :qux)You can access the field values of a composite object using the traditional foo.bar notation:julia> foo.bar\n\"Hello, world.\"\n\njulia> foo.baz\n23\n\njulia> foo.qux\n1.5Composite objects declared with struct are immutable; they cannot be modified after construction. This may seem odd at first, but it has several advantages:It can be more efficient. Some structs can be packed efficiently into arrays, and in some cases the compiler is able to avoid allocating immutable objects entirely.\nIt is not possible to violate the invariants provided by the type\'s constructors.\nCode using immutable objects can be easier to reason about.An immutable object might contain mutable objects, such as arrays, as fields. Those contained objects will remain mutable; only the fields of the immutable object itself cannot be changed to point to different objects.Where required, mutable composite objects can be declared with the keyword mutable struct, to be discussed in the next section.Immutable composite types with no fields are singletons; there can be only one instance of such types:julia> struct NoFields\n       end\n\njulia> NoFields() === NoFields()\ntrueThe === function confirms that the \"two\" constructed instances of NoFields are actually one and the same. Singleton types are described in further detail below.There is much more to say about how instances of composite types are created, but that discussion depends on both Parametric Types and on Methods, and is sufficiently important to be addressed in its own section: Constructors."
+    "text": "Composite types are called records, structs, or objects in various languages. A composite type is a collection of named fields, an instance of which can be treated as a single value. In many languages, composite types are the only kind of user-definable type, and they are by far the most commonly used user-defined type in Julia as well.In mainstream object oriented languages, such as C++, Java, Python and Ruby, composite types also have named functions associated with them, and the combination is called an \"object\". In purer object-oriented languages, such as Ruby or Smalltalk, all values are objects whether they are composites or not. In less pure object oriented languages, including C++ and Java, some values, such as integers and floating-point values, are not objects, while instances of user-defined composite types are true objects with associated methods. In Julia, all values are objects, but functions are not bundled with the objects they operate on. This is necessary since Julia chooses which method of a function to use by multiple dispatch, meaning that the types of all of a function\'s arguments are considered when selecting a method, rather than just the first one (see Methods for more information on methods and dispatch). Thus, it would be inappropriate for functions to \"belong\" to only their first argument. Organizing methods into function objects rather than having named bags of methods \"inside\" each object ends up being a highly beneficial aspect of the language design.struct关键词用于构造复合类型，后跟一个字段的名称，可选择使用::运算符注释类型：julia> struct Foo\n           bar\n           baz::Int\n           qux::Float64\n       end没有类型注释的字段默认位Any类型，所以可以保存任何类型的值。类型为Foo的新对象是通过将Foo类型对象（如函数）应用于其字段的值来创建的：julia> foo = Foo(\"Hello, world.\", 23, 1.5)\nFoo(\"Hello, world.\", 23, 1.5)\n\njulia> typeof(foo)\nFooWhen a type is applied like a function it is called a constructor. Two constructors are generated automatically (these are called default constructors). One accepts any arguments and calls convert to convert them to the types of the fields, and the other accepts arguments that match the field types exactly. The reason both of these are generated is that this makes it easier to add new definitions without inadvertently replacing a default constructor.由于bar字段在类型上不受限制，因此任何值都可以。但是baz的值必须可转换为Int类型：julia> Foo((), 23.5, 1)\nERROR: InexactError: Int64(Int64, 23.5)\nStacktrace:\n[...]可以使用fieldnames 函数找到字段名称列表.julia> fieldnames(Foo)\n(:bar, :baz, :qux)可以使用传统的foo.bar表示法访问复合对象的字段值：julia> foo.bar\n\"Hello, world.\"\n\njulia> foo.baz\n23\n\njulia> foo.qux\n1.5Composite objects declared with struct are immutable; they cannot be modified after construction. This may seem odd at first, but it has several advantages:It can be more efficient. Some structs can be packed efficiently into arrays, and in some cases the compiler is able to avoid allocating immutable objects entirely.\nIt is not possible to violate the invariants provided by the type\'s constructors.\nCode using immutable objects can be easier to reason about.An immutable object might contain mutable objects, such as arrays, as fields. Those contained objects will remain mutable; only the fields of the immutable object itself cannot be changed to point to different objects.Where required, mutable composite objects can be declared with the keyword mutable struct, to be discussed in the next section.Immutable composite types with no fields are singletons; there can be only one instance of such types:julia> struct NoFields\n       end\n\njulia> NoFields() === NoFields()\ntrue===函数用来确认”两个“构造的实例NoFields实际上是同一个。单态类型将在下面进一步详细描述。There is much more to say about how instances of composite types are created, but that discussion depends on both Parametric Types and on Methods, and is sufficiently important to be addressed in its own section: Constructors."
 },
 
 {
-    "location": "manual/types/#Mutable-Composite-Types-1",
+    "location": "manual/types/#可变复合类型-1",
     "page": "类型",
-    "title": "Mutable Composite Types",
+    "title": "可变复合类型",
     "category": "section",
-    "text": "If a composite type is declared with mutable struct instead of struct, then instances of it can be modified:julia> mutable struct Bar\n           baz\n           qux::Float64\n       end\n\njulia> bar = Bar(\"Hello\", 1.5);\n\njulia> bar.qux = 2.0\n2.0\n\njulia> bar.baz = 1//2\n1//2In order to support mutation, such objects are generally allocated on the heap, and have stable memory addresses. A mutable object is like a little container that might hold different values over time, and so can only be reliably identified with its address. In contrast, an instance of an immutable type is associated with specific field values –- the field values alone tell you everything about the object. In deciding whether to make a type mutable, ask whether two instances with the same field values would be considered identical, or if they might need to change independently over time. If they would be considered identical, the type should probably be immutable.To recap, two essential properties define immutability in Julia:It is not permitted to modify the value of an immutable type.\nFor bits types this means that the bit pattern of a value once set will never change and that value is the identity of a bits type.\nFor composite  types, this means that the identity of the values of its fields will never change. When the fields are bits types, that means their bits will never change, for fields whose values are mutable types like arrays, that means the fields will always refer to the same mutable value even though that mutable value\'s content may itself be modified.\nAn object with an immutable type may be copied freely by the compiler since its immutability makes it impossible to programmatically distinguish between the original object and a copy.\nIn particular, this means that small enough immutable values like integers and floats are typically passed to functions in registers (or stack allocated).\nMutable values, on the other hand are heap-allocated and passed to functions as pointers to heap-allocated values except in cases where the compiler is sure that there\'s no way to tell that this is not what is happening."
+    "text": "如果使用mutable struct而不是声明复合类型struct，则可以修改它的实例：julia> mutable struct Bar\n           baz\n           qux::Float64\n       end\n\njulia> bar = Bar(\"Hello\", 1.5);\n\njulia> bar.qux = 2.0\n2.0\n\njulia> bar.baz = 1//2\n1//2In order to support mutation, such objects are generally allocated on the heap, and have stable memory addresses. A mutable object is like a little container that might hold different values over time, and so can only be reliably identified with its address. In contrast, an instance of an immutable type is associated with specific field values –- the field values alone tell you everything about the object. In deciding whether to make a type mutable, ask whether two instances with the same field values would be considered identical, or if they might need to change independently over time. If they would be considered identical, the type should probably be immutable.To recap, two essential properties define immutability in Julia:It is not permitted to modify the value of an immutable type.\nFor bits types this means that the bit pattern of a value once set will never change and that value is the identity of a bits type.\nFor composite  types, this means that the identity of the values of its fields will never change. When the fields are bits types, that means their bits will never change, for fields whose values are mutable types like arrays, that means the fields will always refer to the same mutable value even though that mutable value\'s content may itself be modified.\nAn object with an immutable type may be copied freely by the compiler since its immutability makes it impossible to programmatically distinguish between the original object and a copy.\nIn particular, this means that small enough immutable values like integers and floats are typically passed to functions in registers (or stack allocated).\nMutable values, on the other hand are heap-allocated and passed to functions as pointers to heap-allocated values except in cases where the compiler is sure that there\'s no way to tell that this is not what is happening."
 },
 
 {
@@ -877,7 +877,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "Declared Types",
     "category": "section",
-    "text": "The three kinds of types (abstract, primitive, composite) discussed in the previous sections are actually all closely related. They share the same key properties:They are explicitly declared.\nThey have names.\nThey have explicitly declared supertypes.\nThey may have parameters.Because of these shared properties, these types are internally represented as instances of the same concept, DataType, which is the type of any of these types:julia> typeof(Real)\nDataType\n\njulia> typeof(Int)\nDataTypeA DataType may be abstract or concrete. If it is concrete, it has a specified size, storage layout, and (optionally) field names. Thus a primitive type is a DataType with nonzero size, but no field names. A composite type is a DataType that has field names or is empty (zero size).Every concrete value in the system is an instance of some DataType."
+    "text": "The three kinds of types (abstract, primitive, composite) discussed in the previous sections are actually all closely related. They share the same key properties:They are explicitly declared.\nThey have names.\nThey have explicitly declared supertypes.\nThey may have parameters.Because of these shared properties, these types are internally represented as instances of the same concept, DataType, which is the type of any of these types:julia> typeof(Real)\nDataType\n\njulia> typeof(Int)\nDataTypeA DataType may be abstract or concrete. If it is concrete, it has a specified size, storage layout, and (optionally) field names. Thus a primitive type is a DataType with nonzero size, but no field names. A composite type is a DataType that has field names or is empty (zero size).在这个系统里的每一个具体的值都是某个DataType的实例。"
 },
 
 {
@@ -885,7 +885,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "Type Unions",
     "category": "section",
-    "text": "A type union is a special abstract type which includes as objects all instances of any of its argument types, constructed using the special Union keyword:julia> IntOrString = Union{Int,AbstractString}\nUnion{Int64, AbstractString}\n\njulia> 1 :: IntOrString\n1\n\njulia> \"Hello!\" :: IntOrString\n\"Hello!\"\n\njulia> 1.0 :: IntOrString\nERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got Float64The compilers for many languages have an internal union construct for reasoning about types; Julia simply exposes it to the programmer. The Julia compiler is able to generate efficient code in the presence of Union types with a small number of types [1], by generating specialized code in separate branches for each possible type.A particularly useful case of a Union type is Union{T, Nothing}, where T can be any type and Nothing is the singleton type whose only instance is the object nothing. This pattern is the Julia equivalent of Nullable, Option or Maybe types in other languages. Declaring a function argument or a field as Union{T, Nothing} allows setting it either to a value of type T, or to nothing to indicate that there is no value. See this FAQ entry for more information."
+    "text": "类型共用体是一种特殊的抽象类型，它包含作为对象的任何参数类型的所有实例，使用特殊Union关键字构造：julia> IntOrString = Union{Int,AbstractString}\nUnion{Int64, AbstractString}\n\njulia> 1 :: IntOrString\n1\n\njulia> \"Hello!\" :: IntOrString\n\"Hello!\"\n\njulia> 1.0 :: IntOrString\nERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got Float64The compilers for many languages have an internal union construct for reasoning about types; Julia simply exposes it to the programmer. The Julia compiler is able to generate efficient code in the presence of Union types with a small number of types [1], by generating specialized code in separate branches for each possible type.A particularly useful case of a Union type is Union{T, Nothing}, where T can be any type and Nothing is the singleton type whose only instance is the object nothing. This pattern is the Julia equivalent of Nullable, Option or Maybe types in other languages. Declaring a function argument or a field as Union{T, Nothing} allows setting it either to a value of type T, or to nothing to indicate that there is no value. See this FAQ entry for more information."
 },
 
 {
@@ -901,7 +901,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "Parametric Composite Types",
     "category": "section",
-    "text": "Type parameters are introduced immediately after the type name, surrounded by curly braces:julia> struct Point{T}\n           x::T\n           y::T\n       endThis declaration defines a new parametric type, Point{T}, holding two \"coordinates\" of type T. What, one may ask, is T? Well, that\'s precisely the point of parametric types: it can be any type at all (or a value of any bits type, actually, although here it\'s clearly used as a type). Point{Float64} is a concrete type equivalent to the type defined by replacing T in the definition of Point with Float64. Thus, this single declaration actually declares an unlimited number of types: Point{Float64}, Point{AbstractString}, Point{Int64}, etc. Each of these is now a usable concrete type:julia> Point{Float64}\nPoint{Float64}\n\njulia> Point{AbstractString}\nPoint{AbstractString}The type Point{Float64} is a point whose coordinates are 64-bit floating-point values, while the type Point{AbstractString} is a \"point\" whose \"coordinates\" are string objects (see Strings).Point itself is also a valid type object, containing all instances Point{Float64}, Point{AbstractString}, etc. as subtypes:julia> Point{Float64} <: Point\ntrue\n\njulia> Point{AbstractString} <: Point\ntrueOther types, of course, are not subtypes of it:julia> Float64 <: Point\nfalse\n\njulia> AbstractString <: Point\nfalseConcrete Point types with different values of T are never subtypes of each other:julia> Point{Float64} <: Point{Int64}\nfalse\n\njulia> Point{Float64} <: Point{Real}\nfalsewarning: Warning\nThis last point is very important: even though Float64 <: Real we DO NOT have Point{Float64} <: Point{Real}.In other words, in the parlance of type theory, Julia\'s type parameters are invariant, rather than being covariant (or even contravariant). This is for practical reasons: while any instance of Point{Float64} may conceptually be like an instance of Point{Real} as well, the two types have different representations in memory:An instance of Point{Float64} can be represented compactly and efficiently as an immediate pair of 64-bit values;\nAn instance of Point{Real} must be able to hold any pair of instances of Real. Since objects that are instances of Real can be of arbitrary size and structure, in practice an instance of Point{Real} must be represented as a pair of pointers to individually allocated Real objects.The efficiency gained by being able to store Point{Float64} objects with immediate values is magnified enormously in the case of arrays: an Array{Float64} can be stored as a contiguous memory block of 64-bit floating-point values, whereas an Array{Real} must be an array of pointers to individually allocated Real objects – which may well be boxed 64-bit floating-point values, but also might be arbitrarily large, complex objects, which are declared to be implementations of the Real abstract type.Since Point{Float64} is not a subtype of Point{Real}, the following method can\'t be applied to arguments of type Point{Float64}:function norm(p::Point{Real})\n    sqrt(p.x^2 + p.y^2)\nendA correct way to define a method that accepts all arguments of type Point{T} where T is a subtype of Real is:function norm(p::Point{<:Real})\n    sqrt(p.x^2 + p.y^2)\nend(Equivalently, one could define function norm(p::Point{T} where T<:Real) or function norm(p::Point{T}) where T<:Real; see UnionAll Types.)More examples will be discussed later in Methods.How does one construct a Point object? It is possible to define custom constructors for composite types, which will be discussed in detail in Constructors, but in the absence of any special constructor declarations, there are two default ways of creating new composite objects, one in which the type parameters are explicitly given and the other in which they are implied by the arguments to the object constructor.Since the type Point{Float64} is a concrete type equivalent to Point declared with Float64 in place of T, it can be applied as a constructor accordingly:julia> Point{Float64}(1.0, 2.0)\nPoint{Float64}(1.0, 2.0)\n\njulia> typeof(ans)\nPoint{Float64}For the default constructor, exactly one argument must be supplied for each field:julia> Point{Float64}(1.0)\nERROR: MethodError: no method matching Point{Float64}(::Float64)\n[...]\n\njulia> Point{Float64}(1.0,2.0,3.0)\nERROR: MethodError: no method matching Point{Float64}(::Float64, ::Float64, ::Float64)\n[...]Only one default constructor is generated for parametric types, since overriding it is not possible. This constructor accepts any arguments and converts them to the field types.In many cases, it is redundant to provide the type of Point object one wants to construct, since the types of arguments to the constructor call already implicitly provide type information. For that reason, you can also apply Point itself as a constructor, provided that the implied value of the parameter type T is unambiguous:julia> Point(1.0,2.0)\nPoint{Float64}(1.0, 2.0)\n\njulia> typeof(ans)\nPoint{Float64}\n\njulia> Point(1,2)\nPoint{Int64}(1, 2)\n\njulia> typeof(ans)\nPoint{Int64}In the case of Point, the type of T is unambiguously implied if and only if the two arguments to Point have the same type. When this isn\'t the case, the constructor will fail with a MethodError:julia> Point(1,2.5)\nERROR: MethodError: no method matching Point(::Int64, ::Float64)\nClosest candidates are:\n  Point(::T, !Matched::T) where T at none:2Constructor methods to appropriately handle such mixed cases can be defined, but that will not be discussed until later on in Constructors."
+    "text": "Type parameters are introduced immediately after the type name, surrounded by curly braces:julia> struct Point{T}\n           x::T\n           y::T\n       endThis declaration defines a new parametric type, Point{T}, holding two \"coordinates\" of type T. What, one may ask, is T? Well, that\'s precisely the point of parametric types: it can be any type at all (or a value of any bits type, actually, although here it\'s clearly used as a type). Point{Float64} is a concrete type equivalent to the type defined by replacing T in the definition of Point with Float64. Thus, this single declaration actually declares an unlimited number of types: Point{Float64}, Point{AbstractString}, Point{Int64}, etc. Each of these is now a usable concrete type:julia> Point{Float64}\nPoint{Float64}\n\njulia> Point{AbstractString}\nPoint{AbstractString}The type Point{Float64} is a point whose coordinates are 64-bit floating-point values, while the type Point{AbstractString} is a \"point\" whose \"coordinates\" are string objects (see Strings).Point itself is also a valid type object, containing all instances Point{Float64}, Point{AbstractString}, etc. as subtypes:julia> Point{Float64} <: Point\ntrue\n\njulia> Point{AbstractString} <: Point\ntrue当然，其他类型不是它的子类型：julia> Float64 <: Point\nfalse\n\njulia> AbstractString <: Point\nfalsePoint不同T值所声明的具体类型之间，不能互相作为子类型：julia> Point{Float64} <: Point{Int64}\nfalse\n\njulia> Point{Float64} <: Point{Real}\nfalsewarning: Warning\nThis last point is very important: even though Float64 <: Real we DO NOT have Point{Float64} <: Point{Real}.In other words, in the parlance of type theory, Julia\'s type parameters are invariant, rather than being covariant (or even contravariant). This is for practical reasons: while any instance of Point{Float64} may conceptually be like an instance of Point{Real} as well, the two types have different representations in memory:An instance of Point{Float64} can be represented compactly and efficiently as an immediate pair of 64-bit values;\nAn instance of Point{Real} must be able to hold any pair of instances of Real. Since objects that are instances of Real can be of arbitrary size and structure, in practice an instance of Point{Real} must be represented as a pair of pointers to individually allocated Real objects.The efficiency gained by being able to store Point{Float64} objects with immediate values is magnified enormously in the case of arrays: an Array{Float64} can be stored as a contiguous memory block of 64-bit floating-point values, whereas an Array{Real} must be an array of pointers to individually allocated Real objects – which may well be boxed 64-bit floating-point values, but also might be arbitrarily large, complex objects, which are declared to be implementations of the Real abstract type.Since Point{Float64} is not a subtype of Point{Real}, the following method can\'t be applied to arguments of type Point{Float64}:function norm(p::Point{Real})\n    sqrt(p.x^2 + p.y^2)\nend一种正确的方法来定义一个接受类型的所有参数的方法，Point{T}其中T是一个子类型Real：function norm(p::Point{<:Real})\n    sqrt(p.x^2 + p.y^2)\nend(等效地, 另一种定义方法 function norm(p::Point{T} where T<:Real) 或function norm(p::Point{T}) where T<:Real; 查看UnionAll Types.)稍后将在方法中讨论更多示例。How does one construct a Point object? It is possible to define custom constructors for composite types, which will be discussed in detail in Constructors, but in the absence of any special constructor declarations, there are two default ways of creating new composite objects, one in which the type parameters are explicitly given and the other in which they are implied by the arguments to the object constructor.Since the type Point{Float64} is a concrete type equivalent to Point declared with Float64 in place of T, it can be applied as a constructor accordingly:julia> Point{Float64}(1.0, 2.0)\nPoint{Float64}(1.0, 2.0)\n\njulia> typeof(ans)\nPoint{Float64}对于默认的构造函数，必须为每个字段提供一个参数：julia> Point{Float64}(1.0)\nERROR: MethodError: no method matching Point{Float64}(::Float64)\n[...]\n\njulia> Point{Float64}(1.0,2.0,3.0)\nERROR: MethodError: no method matching Point{Float64}(::Float64, ::Float64, ::Float64)\n[...]Only one default constructor is generated for parametric types, since overriding it is not possible. This constructor accepts any arguments and converts them to the field types.In many cases, it is redundant to provide the type of Point object one wants to construct, since the types of arguments to the constructor call already implicitly provide type information. For that reason, you can also apply Point itself as a constructor, provided that the implied value of the parameter type T is unambiguous:julia> Point(1.0,2.0)\nPoint{Float64}(1.0, 2.0)\n\njulia> typeof(ans)\nPoint{Float64}\n\njulia> Point(1,2)\nPoint{Int64}(1, 2)\n\njulia> typeof(ans)\nPoint{Int64}在上例中，当且仅当两个参数类型相同时，T的类型才能明确暗示，同时\'Point具有相同的类型。如果不是这种情况，即参数类型不同时，构造函数将失败并显示[MethodError`](@ref)：julia> Point(1,2.5)\nERROR: MethodError: no method matching Point(::Int64, ::Float64)\nClosest candidates are:\n  Point(::T, !Matched::T) where T at none:2可以定义适当处理此类混合情况的函数构造方法，将在后面的构造函数中讨论。"
 },
 
 {
@@ -909,15 +909,15 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "Parametric Abstract Types",
     "category": "section",
-    "text": "Parametric abstract type declarations declare a collection of abstract types, in much the same way:julia> abstract type Pointy{T} endWith this declaration, Pointy{T} is a distinct abstract type for each type or integer value of T. As with parametric composite types, each such instance is a subtype of Pointy:julia> Pointy{Int64} <: Pointy\ntrue\n\njulia> Pointy{1} <: Pointy\ntrueParametric abstract types are invariant, much as parametric composite types are:julia> Pointy{Float64} <: Pointy{Real}\nfalse\n\njulia> Pointy{Real} <: Pointy{Float64}\nfalseThe notation Pointy{<:Real} can be used to express the Julia analogue of a covariant type, while Pointy{>:Int} the analogue of a contravariant type, but technically these represent sets of types (see UnionAll Types).julia> Pointy{Float64} <: Pointy{<:Real}\ntrue\n\njulia> Pointy{Real} <: Pointy{>:Int}\ntrueMuch as plain old abstract types serve to create a useful hierarchy of types over concrete types, parametric abstract types serve the same purpose with respect to parametric composite types. We could, for example, have declared Point{T} to be a subtype of Pointy{T} as follows:julia> struct Point{T} <: Pointy{T}\n           x::T\n           y::T\n       endGiven such a declaration, for each choice of T, we have Point{T} as a subtype of Pointy{T}:julia> Point{Float64} <: Pointy{Float64}\ntrue\n\njulia> Point{Real} <: Pointy{Real}\ntrue\n\njulia> Point{AbstractString} <: Pointy{AbstractString}\ntrueThis relationship is also invariant:julia> Point{Float64} <: Pointy{Real}\nfalse\n\njulia> Point{Float64} <: Pointy{<:Real}\ntrueWhat purpose do parametric abstract types like Pointy serve? Consider if we create a point-like implementation that only requires a single coordinate because the point is on the diagonal line x = y:julia> struct DiagPoint{T} <: Pointy{T}\n           x::T\n       endNow both Point{Float64} and DiagPoint{Float64} are implementations of the Pointy{Float64} abstraction, and similarly for every other possible choice of type T. This allows programming to a common interface shared by all Pointy objects, implemented for both Point and DiagPoint. This cannot be fully demonstrated, however, until we have introduced methods and dispatch in the next section, Methods.There are situations where it may not make sense for type parameters to range freely over all possible types. In such situations, one can constrain the range of T like so:julia> abstract type Pointy{T<:Real} endWith such a declaration, it is acceptable to use any type that is a subtype of Real in place of T, but not types that are not subtypes of Real:julia> Pointy{Float64}\nPointy{Float64}\n\njulia> Pointy{Real}\nPointy{Real}\n\njulia> Pointy{AbstractString}\nERROR: TypeError: in Pointy, in T, expected T<:Real, got Type{AbstractString}\n\njulia> Pointy{1}\nERROR: TypeError: in Pointy, in T, expected T<:Real, got Int64Type parameters for parametric composite types can be restricted in the same manner:struct Point{T<:Real} <: Pointy{T}\n    x::T\n    y::T\nendTo give a real-world example of how all this parametric type machinery can be useful, here is the actual definition of Julia\'s Rational immutable type (except that we omit the constructor here for simplicity), representing an exact ratio of integers:struct Rational{T<:Integer} <: Real\n    num::T\n    den::T\nendIt only makes sense to take ratios of integer values, so the parameter type T is restricted to being a subtype of Integer, and a ratio of integers represents a value on the real number line, so any Rational is an instance of the Real abstraction."
+    "text": "Parametric abstract type declarations declare a collection of abstract types, in much the same way:julia> abstract type Pointy{T} endWith this declaration, Pointy{T} is a distinct abstract type for each type or integer value of T. As with parametric composite types, each such instance is a subtype of Pointy:julia> Pointy{Int64} <: Pointy\ntrue\n\njulia> Pointy{1} <: Pointy\ntrueParametric abstract types are invariant, much as parametric composite types are:julia> Pointy{Float64} <: Pointy{Real}\nfalse\n\njulia> Pointy{Real} <: Pointy{Float64}\nfalseThe notation Pointy{<:Real} can be used to express the Julia analogue of a covariant type, while Pointy{>:Int} the analogue of a contravariant type, but technically these represent sets of types (see UnionAll Types).julia> Pointy{Float64} <: Pointy{<:Real}\ntrue\n\njulia> Pointy{Real} <: Pointy{>:Int}\ntrueMuch as plain old abstract types serve to create a useful hierarchy of types over concrete types, parametric abstract types serve the same purpose with respect to parametric composite types. We could, for example, have declared Point{T} to be a subtype of Pointy{T} as follows:julia> struct Point{T} <: Pointy{T}\n           x::T\n           y::T\n       end鉴于此类声明，对每个T ，都有 Point{T} 是 Pointy{T} 的子类型：julia> Point{Float64} <: Pointy{Float64}\ntrue\n\njulia> Point{Real} <: Pointy{Real}\ntrue\n\njulia> Point{AbstractString} <: Pointy{AbstractString}\ntrue它们仍然不互为子类：julia> Point{Float64} <: Pointy{Real}\nfalse\n\njulia> Point{Float64} <: Pointy{<:Real}\ntrueWhat purpose do parametric abstract types like Pointy serve? Consider if we create a point-like implementation that only requires a single coordinate because the point is on the diagonal line x = y:julia> struct DiagPoint{T} <: Pointy{T}\n           x::T\n       endNow both Point{Float64} and DiagPoint{Float64} are implementations of the Pointy{Float64} abstraction, and similarly for every other possible choice of type T. This allows programming to a common interface shared by all Pointy objects, implemented for both Point and DiagPoint. This cannot be fully demonstrated, however, until we have introduced methods and dispatch in the next section, Methods.There are situations where it may not make sense for type parameters to range freely over all possible types. In such situations, one can constrain the range of T like so:julia> abstract type Pointy{T<:Real} endWith such a declaration, it is acceptable to use any type that is a subtype of Real in place of T, but not types that are not subtypes of Real:julia> Pointy{Float64}\nPointy{Float64}\n\njulia> Pointy{Real}\nPointy{Real}\n\njulia> Pointy{AbstractString}\nERROR: TypeError: in Pointy, in T, expected T<:Real, got Type{AbstractString}\n\njulia> Pointy{1}\nERROR: TypeError: in Pointy, in T, expected T<:Real, got Int64Type parameters for parametric composite types can be restricted in the same manner:struct Point{T<:Real} <: Pointy{T}\n    x::T\n    y::T\nendTo give a real-world example of how all this parametric type machinery can be useful, here is the actual definition of Julia\'s Rational immutable type (except that we omit the constructor here for simplicity), representing an exact ratio of integers:struct Rational{T<:Integer} <: Real\n    num::T\n    den::T\nendIt only makes sense to take ratios of integer values, so the parameter type T is restricted to being a subtype of Integer, and a ratio of integers represents a value on the real number line, so any Rational is an instance of the Real abstraction."
 },
 
 {
-    "location": "manual/types/#Tuple-Types-1",
+    "location": "manual/types/#元组类型-1",
     "page": "类型",
-    "title": "Tuple Types",
+    "title": "元组类型",
     "category": "section",
-    "text": "Tuples are an abstraction of the arguments of a function – without the function itself. The salient aspects of a function\'s arguments are their order and their types. Therefore a tuple type is similar to a parameterized immutable type where each parameter is the type of one field. For example, a 2-element tuple type resembles the following immutable type:struct Tuple2{A,B}\n    a::A\n    b::B\nendHowever, there are three key differences:Tuple types may have any number of parameters.\nTuple types are covariant in their parameters: Tuple{Int} is a subtype of Tuple{Any}. Therefore Tuple{Any} is considered an abstract type, and tuple types are only concrete if their parameters are.\nTuples do not have field names; fields are only accessed by index.Tuple values are written with parentheses and commas. When a tuple is constructed, an appropriate tuple type is generated on demand:julia> typeof((1,\"foo\",2.5))\nTuple{Int64,String,Float64}Note the implications of covariance:julia> Tuple{Int,AbstractString} <: Tuple{Real,Any}\ntrue\n\njulia> Tuple{Int,AbstractString} <: Tuple{Real,Real}\nfalse\n\njulia> Tuple{Int,AbstractString} <: Tuple{Real,}\nfalseIntuitively, this corresponds to the type of a function\'s arguments being a subtype of the function\'s signature (when the signature matches)."
+    "text": "Tuples are an abstraction of the arguments of a function – without the function itself. The salient aspects of a function\'s arguments are their order and their types. Therefore a tuple type is similar to a parameterized immutable type where each parameter is the type of one field. For example, a 2-element tuple type resembles the following immutable type:struct Tuple2{A,B}\n    a::A\n    b::B\nend然而，有三个主要差异：元组类型可以具有任意数量的参数。\nTuple types are covariant in their parameters: Tuple{Int} is a subtype of Tuple{Any}. Therefore Tuple{Any}被认为是一种抽象类型，而元组类型只有它们的参数有时才具体 are.\n元组没有字段名称; 字段只能通过索引访问。元组值用括号和逗号书写。构造元组时，会根据需要生成适当的元组类型：julia> typeof((1,\"foo\",2.5))\nTuple{Int64,String,Float64}Note the implications of covariance:julia> Tuple{Int,AbstractString} <: Tuple{Real,Any}\ntrue\n\njulia> Tuple{Int,AbstractString} <: Tuple{Real,Real}\nfalse\n\njulia> Tuple{Int,AbstractString} <: Tuple{Real,}\nfalseIntuitively, this corresponds to the type of a function\'s arguments being a subtype of the function\'s signature (when the signature matches)."
 },
 
 {
@@ -925,7 +925,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "Vararg Tuple Types",
     "category": "section",
-    "text": "The last parameter of a tuple type can be the special type Vararg, which denotes any number of trailing elements:julia> mytupletype = Tuple{AbstractString,Vararg{Int}}\nTuple{AbstractString,Vararg{Int64,N} where N}\n\njulia> isa((\"1\",), mytupletype)\ntrue\n\njulia> isa((\"1\",1), mytupletype)\ntrue\n\njulia> isa((\"1\",1,2), mytupletype)\ntrue\n\njulia> isa((\"1\",1,2,3.0), mytupletype)\nfalseNotice that Vararg{T} corresponds to zero or more elements of type T. Vararg tuple types are used to represent the arguments accepted by varargs methods (see Varargs Functions).The type Vararg{T,N} corresponds to exactly N elements of type T.  NTuple{N,T} is a convenient alias for Tuple{Vararg{T,N}}, i.e. a tuple type containing exactly N elements of type T."
+    "text": "元组类型的最后一个参数可以是特殊类型Vararg，它表示任意数量的尾随参数：julia> mytupletype = Tuple{AbstractString,Vararg{Int}}\nTuple{AbstractString,Vararg{Int64,N} where N}\n\njulia> isa((\"1\",), mytupletype)\ntrue\n\njulia> isa((\"1\",1), mytupletype)\ntrue\n\njulia> isa((\"1\",1,2), mytupletype)\ntrue\n\njulia> isa((\"1\",1,2,3.0), mytupletype)\nfalseNotice that Vararg{T} corresponds to zero or more elements of type T. Vararg tuple types are used to represent the arguments accepted by varargs methods (see Varargs Functions).The type Vararg{T,N} corresponds to exactly N elements of type T.  NTuple{N,T} is a convenient alias for Tuple{Vararg{T,N}}, i.e. a tuple type containing exactly N elements of type T."
 },
 
 {
@@ -939,9 +939,9 @@ var documenterSearchIndex = {"docs": [
 {
     "location": "manual/types/#man-singleton-types-1",
     "page": "类型",
-    "title": "Singleton Types",
+    "title": "单态类型",
     "category": "section",
-    "text": "There is a special kind of abstract parametric type that must be mentioned here: singleton types. For each type, T, the \"singleton type\" Type{T} is an abstract type whose only instance is the object T. Since the definition is a little difficult to parse, let\'s look at some examples:julia> isa(Float64, Type{Float64})\ntrue\n\njulia> isa(Real, Type{Float64})\nfalse\n\njulia> isa(Real, Type{Real})\ntrue\n\njulia> isa(Float64, Type{Real})\nfalseIn other words, isa(A,Type{B}) is true if and only if A and B are the same object and that object is a type. Without the parameter, Type is simply an abstract type which has all type objects as its instances, including, of course, singleton types:julia> isa(Type{Float64}, Type)\ntrue\n\njulia> isa(Float64, Type)\ntrue\n\njulia> isa(Real, Type)\ntrueAny object that is not a type is not an instance of Type:julia> isa(1, Type)\nfalse\n\njulia> isa(\"foo\", Type)\nfalseUntil we discuss Parametric Methods and conversions, it is difficult to explain the utility of the singleton type construct, but in short, it allows one to specialize function behavior on specific type values. This is useful for writing methods (especially parametric ones) whose behavior depends on a type that is given as an explicit argument rather than implied by the type of one of its arguments.A few popular languages have singleton types, including Haskell, Scala and Ruby. In general usage, the term \"singleton type\" refers to a type whose only instance is a single value. This meaning applies to Julia\'s singleton types, but with that caveat that only type objects have singleton types."
+    "text": "There is a special kind of abstract parametric type that must be mentioned here: singleton types. For each type, T, the \"singleton type\" Type{T} is an abstract type whose only instance is the object T. Since the definition is a little difficult to parse, let\'s look at some examples:julia> isa(Float64, Type{Float64})\ntrue\n\njulia> isa(Real, Type{Float64})\nfalse\n\njulia> isa(Real, Type{Real})\ntrue\n\njulia> isa(Float64, Type{Real})\nfalseIn other words, isa(A,Type{B}) is true if and only if A and B are the same object and that object is a type. Without the parameter, Type is simply an abstract type which has all type objects as its instances, including, of course, singleton types:julia> isa(Type{Float64}, Type)\ntrue\n\njulia> isa(Float64, Type)\ntrue\n\njulia> isa(Real, Type)\ntrue只有对象是类型时，才是 Type的实例：julia> isa(1, Type)\nfalse\n\njulia> isa(\"foo\", Type)\nfalseUntil we discuss Parametric Methods and conversions, it is difficult to explain the utility of the singleton type construct, but in short, it allows one to specialize function behavior on specific type values. This is useful for writing methods (especially parametric ones) whose behavior depends on a type that is given as an explicit argument rather than implied by the type of one of its arguments.A few popular languages have singleton types, including Haskell, Scala and Ruby. In general usage, the term \"singleton type\" refers to a type whose only instance is a single value. This meaning applies to Julia\'s singleton types, but with that caveat that only type objects have singleton types."
 },
 
 {
@@ -1189,23 +1189,23 @@ var documenterSearchIndex = {"docs": [
     "page": "构造函数",
     "title": "构造函数",
     "category": "section",
-    "text": "Constructors [1] are functions that create new objects – specifically, instances of Composite Types. In Julia, type objects also serve as constructor functions: they create new instances of themselves when applied to an argument tuple as a function. This much was already mentioned briefly when composite types were introduced. For example:julia> struct Foo\n           bar\n           baz\n       end\n\njulia> foo = Foo(1, 2)\nFoo(1, 2)\n\njulia> foo.bar\n1\n\njulia> foo.baz\n2For many types, forming new objects by binding their field values together is all that is ever needed to create instances. There are, however, cases where more functionality is required when creating composite objects. Sometimes invariants must be enforced, either by checking arguments or by transforming them. Recursive data structures, especially those that may be self-referential, often cannot be constructed cleanly without first being created in an incomplete state and then altered programmatically to be made whole, as a separate step from object creation. Sometimes, it\'s just convenient to be able to construct objects with fewer or different types of parameters than they have fields. Julia\'s system for object construction addresses all of these cases and more.[1]: Nomenclature: while the term \"constructor\" generally refers to the entire function which constructs objects of a type, it is common to abuse terminology slightly and refer to specific constructor methods as \"constructors\". In such situations, it is generally clear from context that the term is used to mean \"constructor method\" rather than \"constructor function\", especially as it is often used in the sense of singling out a particular method of the constructor from all of the others."
+    "text": "构造函数 [1] 是用来创建新对象 – 确切地说，是创建 Composite Type 的实例，的函数。在 Julia 中，类型对象也同时充当构造函数的角色：它们可以被当作函数应用到参数元组上来创建自己的新实例。这一点在介绍复合类型（Composite Types）时已经大致谈过了。例如：julia> struct Foo\n           bar\n           baz\n       end\n\njulia> foo = Foo(1, 2)\nFoo(1, 2)\n\njulia> foo.bar\n1\n\njulia> foo.baz\n2对很多类型来说，创建新对象时只需要为它们的所有字段绑定上值就足够产生新实例了。然而，在某些情形下，创建复合对象需要更多的功能。有时必须通过检查或改变参数来确保不变性。Recursive data structures， 特别是那些可能引用自身的数据结构，它们需要首先被不完整地构造，然后作为创建对象的单独步骤， 通过编程的方式完成补全，否则它们不能被干净地构造。这时，能够用比字段少的参数或者 不同类型的参数来创建对象就很方便。Julia 的对象构造系统解决了所有这些问题。[1]: 命名法：虽然术语“构造函数”通常是指构造一个类型的对象的整个函数，但通常会略微滥用术语将特定的构造方法称为“构造函数”。这种情况下，通常可以从上下文中清楚地看出术语是用于表示“构造方法”而不是“构造函数”，因为它通常用于从所有构造方法中挑出构造函数的特定方法的场合。"
 },
 
 {
-    "location": "manual/constructors/#Outer-Constructor-Methods-1",
+    "location": "manual/constructors/#外部构造方法-1",
     "page": "构造函数",
-    "title": "Outer Constructor Methods",
+    "title": "外部构造方法",
     "category": "section",
-    "text": "A constructor is just like any other function in Julia in that its overall behavior is defined by the combined behavior of its methods. Accordingly, you can add functionality to a constructor by simply defining new methods. For example, let\'s say you want to add a constructor method for Foo objects that takes only one argument and uses the given value for both the bar and baz fields. This is simple:julia> Foo(x) = Foo(x,x)\nFoo\n\njulia> Foo(1)\nFoo(1, 1)You could also add a zero-argument Foo constructor method that supplies default values for both of the bar and baz fields:julia> Foo() = Foo(0)\nFoo\n\njulia> Foo()\nFoo(0, 0)Here the zero-argument constructor method calls the single-argument constructor method, which in turn calls the automatically provided two-argument constructor method. For reasons that will become clear very shortly, additional constructor methods declared as normal methods like this are called outer constructor methods. Outer constructor methods can only ever create a new instance by calling another constructor method, such as the automatically provided default ones."
+    "text": "构造函数与 Julia 中的其他任何函数一样，其整体行为由其各个方法的组合行为定义。因此，你可以通过简单地定义新方法来向构造函数添加功能。例如，假设你想为 Foo 对象添加一个构造方法，该方法只接受一个参数并用该参数同时绑定为 bar 和 baz  字段的值。这很简单：julia> Foo(x) = Foo(x,x)\nFoo\n\njulia> Foo(1)\nFoo(1, 1)你也可以为 Foo 添加新的零参数构造方法，它为字段 bar 和 baz 提供默认值：julia> Foo() = Foo(0)\nFoo\n\njulia> Foo()\nFoo(0, 0)这里零参数构造方法调用的单参数方法，单参数构造方法又调用了自动提供的双参数构造方法。 像这样附加的以普通函数形式声明的构造方法被称为 外部 构造方法，这样称呼的原因马上就会清楚。 外部构造方法只能通过调用其他构造方法来创建新实例，比如自动提供的默认构造方法。"
 },
 
 {
-    "location": "manual/constructors/#Inner-Constructor-Methods-1",
+    "location": "manual/constructors/#内部构造方法-1",
     "page": "构造函数",
-    "title": "Inner Constructor Methods",
+    "title": "内部构造方法",
     "category": "section",
-    "text": "While outer constructor methods succeed in addressing the problem of providing additional convenience methods for constructing objects, they fail to address the other two use cases mentioned in the introduction of this chapter: enforcing invariants, and allowing construction of self-referential objects. For these problems, one needs inner constructor methods. An inner constructor method is much like an outer constructor method, with two differences:It is declared inside the block of a type declaration, rather than outside of it like normal methods.\nIt has access to a special locally existent function called new that creates objects of the block\'s type.For example, suppose one wants to declare a type that holds a pair of real numbers, subject to the constraint that the first number is not greater than the second one. One could declare it like this:julia> struct OrderedPair\n           x::Real\n           y::Real\n           OrderedPair(x,y) = x > y ? error(\"out of order\") : new(x,y)\n       endNow OrderedPair objects can only be constructed such that x <= y:julia> OrderedPair(1, 2)\nOrderedPair(1, 2)\n\njulia> OrderedPair(2,1)\nERROR: out of order\nStacktrace:\n [1] error at ./error.jl:33 [inlined]\n [2] OrderedPair(::Int64, ::Int64) at ./none:4\n [3] top-level scopeIf the type were declared mutable, you could reach in and directly change the field values to violate this invariant, but messing around with an object\'s internals uninvited is considered poor form. You (or someone else) can also provide additional outer constructor methods at any later point, but once a type is declared, there is no way to add more inner constructor methods. Since outer constructor methods can only create objects by calling other constructor methods, ultimately, some inner constructor must be called to create an object. This guarantees that all objects of the declared type must come into existence by a call to one of the inner constructor methods provided with the type, thereby giving some degree of enforcement of a type\'s invariants.If any inner constructor method is defined, no default constructor method is provided: it is presumed that you have supplied yourself with all the inner constructors you need. The default constructor is equivalent to writing your own inner constructor method that takes all of the object\'s fields as parameters (constrained to be of the correct type, if the corresponding field has a type), and passes them to new, returning the resulting object:julia> struct Foo\n           bar\n           baz\n           Foo(bar,baz) = new(bar,baz)\n       end\nThis declaration has the same effect as the earlier definition of the Foo type without an explicit inner constructor method. The following two types are equivalent – one with a default constructor, the other with an explicit constructor:julia> struct T1\n           x::Int64\n       end\n\njulia> struct T2\n           x::Int64\n           T2(x) = new(x)\n       end\n\njulia> T1(1)\nT1(1)\n\njulia> T2(1)\nT2(1)\n\njulia> T1(1.0)\nT1(1)\n\njulia> T2(1.0)\nT2(1)It is considered good form to provide as few inner constructor methods as possible: only those taking all arguments explicitly and enforcing essential error checking and transformation. Additional convenience constructor methods, supplying default values or auxiliary transformations, should be provided as outer constructors that call the inner constructors to do the heavy lifting. This separation is typically quite natural."
+    "text": "尽管外部构造方法成功地为构造对象提供了额外的便利，它无法解决另外两个在本章导言里提到的另外 两种用例：确保不变性和允许创建引用自身的对象。因此，我们需要 内部 构造方法。内部构造方法 和外部构造方法很相像，但有两点不同：内部构造方法在类型声明内部声明，而不是和普通方法一样在外部。\n内部构造方法能够访问一个特殊的局部存在的函数, 称为 new ，这个函数能够创建该类型的对象。例如, 假设你要声明一个保存一对实数的类型,，但要约束第一个数不大于第二个数。你可以像这样声明它 ：julia> struct OrderedPair\n           x::Real\n           y::Real\n           OrderedPair(x,y) = x > y ? error(\"out of order\") : new(x,y)\n       end现在 OrderedPair 对象只能在 x <= y 时构造：julia> OrderedPair(1, 2)\nOrderedPair(1, 2)\n\njulia> OrderedPair(2,1)\nERROR: out of order\nStacktrace:\n [1] error at ./error.jl:33 [inlined]\n [2] OrderedPair(::Int64, ::Int64) at ./none:4\n [3] top-level scope如果类型被声明为 mutable，你就能获取并直接修改字段的值来破坏不变性，但不请自来弄乱 对象内部被认为是不好的形式。你 （或者其他人）可以在以后任何时候提供附加的外部构造方法， 但一旦一个类型已经被声明了，就没有办法来添加更多的内部构造方法了。因为外部构造方法只能通过 调用其他的构造方法来构造创建对象，所以最终构造对象的一定是某个内部构造函数。这保证了 声明过的类型的所有对象必须通过调用随类型提供的内部构造方法之一而存在，从而在某种程度上 保证了类型的不变性。只要定义了任何一个内部构造方法，就不会再提供默认的构造方法：Julia 假定你已经为自己 提供了所需的所有内部构造方法。默认构造方法等效于一个你自己编写的内部构造函数方法， 该方法将所有对象的字段作为参数（如果相应的字段具有类型，则约束为正确的类型）， 并将它们传递给 new，返回结果对象：julia> struct Foo\n           bar\n           baz\n           Foo(bar,baz) = new(bar,baz)\n       end\n这个声明与前面没有显式内部构造方法的 Foo 类型的定义效果相同。 以下两个类型是等价的 – 一个具有默认构造方法，另一个具有显式构造方法：julia> struct T1\n           x::Int64\n       end\n\njulia> struct T2\n           x::Int64\n           T2(x) = new(x)\n       end\n\njulia> T1(1)\nT1(1)\n\njulia> T2(1)\nT2(1)\n\njulia> T1(1.0)\nT1(1)\n\njulia> T2(1.0)\nT2(1)It is considered good form to provide as few inner constructor methods as possible: only those taking all arguments explicitly and enforcing essential error checking and transformation. Additional convenience constructor methods, supplying default values or auxiliary transformations, should be provided as outer constructors that call the inner constructors to do the heavy lifting. This separation is typically quite natural."
 },
 
 {
@@ -1541,7 +1541,7 @@ var documenterSearchIndex = {"docs": [
     "page": "文档",
     "title": "文档",
     "category": "section",
-    "text": "Julia enables package developers and users to document functions, types and other objects easily via a built-in documentation system since Julia 0.4.The basic syntax is simple: any string appearing at the top-level right before an object (function, macro, type or instance) will be interpreted as documenting it (these are called docstrings). Note that no blank lines or comments may intervene between a docstring and the documented object. Here is a basic example:\"Tell whether there are too foo items in the array.\"\nfoo(xs::Array) = ...Documentation is interpreted as Markdown, so you can use indentation and code fences to delimit code examples from text. Technically, any object can be associated with any other as metadata; Markdown happens to be the default, but one can construct other string macros and pass them to the @doc macro just as well.Here is a more complex example, still using Markdown:\"\"\"\n    bar(x[, y])\n\nCompute the Bar index between `x` and `y`. If `y` is missing, compute\nthe Bar index between all pairs of columns of `x`.\n\n# Examples\n```julia-repl\njulia> bar([1, 2], [1, 2])\n1\n```\n\"\"\"\nfunction bar(x, y) ...As in the example above, we recommend following some simple conventions when writing documentation:Always show the signature of a function at the top of the documentation, with a four-space indent so that it is printed as Julia code.\nThis can be identical to the signature present in the Julia code (like mean(x::AbstractArray)), or a simplified form. Optional arguments should be represented with their default values (i.e. f(x, y=1)) when possible, following the actual Julia syntax. Optional arguments which do not have a default value should be put in brackets (i.e. f(x[, y]) and f(x[, y[, z]])). An alternative solution is to use several lines: one without optional arguments, the other(s) with them. This solution can also be used to document several related methods of a given function. When a function accepts many keyword arguments, only include a <keyword arguments> placeholder in the signature (i.e. f(x; <keyword arguments>)), and give the complete list under an # Arguments section (see point 4 below).\nInclude a single one-line sentence describing what the function does or what the object represents after the simplified signature block. If needed, provide more details in a second paragraph, after a blank line.\nThe one-line sentence should use the imperative form (\"Do this\", \"Return that\") instead of the third person (do not write \"Returns the length...\") when documenting functions. It should end with a period. If the meaning of a function cannot be summarized easily, splitting it into separate composable parts could be beneficial (this should not be taken as an absolute requirement for every single case though).\nDo not repeat yourself.\nSince the function name is given by the signature, there is no need to start the documentation with \"The function bar...\": go straight to the point. Similarly, if the signature specifies the types of the arguments, mentioning them in the description is redundant.\nOnly provide an argument list when really necessary.\nFor simple functions, it is often clearer to mention the role of the arguments directly in the description of the function\'s purpose. An argument list would only repeat information already provided elsewhere. However, providing an argument list can be a good idea for complex functions with many arguments (in particular keyword arguments). In that case, insert it after the general description of the function, under an # Arguments header, with one - bullet for each argument. The list should mention the types and default values (if any) of the arguments:\n\"\"\"\n...\n# Arguments\n- `n::Integer`: the number of elements to compute.\n- `dim::Integer=1`: the dimensions along which to perform the computation.\n...\n\"\"\"\nProvide hints to related functions.\nSometimes there are functions of related functionality. To increase discoverability please provide a short list of these in a See also: paragraph.\nSee also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)\nInclude any code examples in an # Examples section.\nExamples should, whenever possible, be written as doctests. A doctest is a fenced code block (see Code blocks) starting with ```jldoctest and contains any number of julia> prompts together with inputs and expected outputs that mimic the Julia REPL.\nFor example in the following docstring a variable a is defined and the expected result, as printed in a Julia REPL, appears afterwards:\n\"\"\"\nSome nice documentation here.\n\n# Examples\n```jldoctest\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n```\n\"\"\"\nwarning: Warning\nCalling rand and other RNG-related functions should be avoided in doctests since they will not produce consistent outputs during different Julia sessions. If you would like to show some random number generation related functionality, one option is to explicitly construct and seed your own MersenneTwister (or other pseudorandom number generator) and pass it to the functions you are doctesting.Operating system word size (Int32 or Int64) as well as path separator differences (/ or \\) will also affect the reproducibility of some doctests.Note that whitespace in your doctest is significant! The doctest will fail if you misalign the output of pretty-printing an array, for example.\nYou can then run make -C doc doctest=true to run all the doctests in the Julia Manual and API documentation, which will ensure that your example works.\nTo indicate that the output result is truncated, you may write [...] at the line where checking should stop. This is useful to hide a stacktrace (which contains non-permanent references to lines of julia code) when the doctest shows that an exception is thrown, for example:\n```jldoctest\njulia> div(1, 0)\nERROR: DivideError: integer division error\n[...]\n```\nExamples that are untestable should be written within fenced code blocks starting with ```julia so that they are highlighted correctly in the generated documentation.\ntip: Tip\nWherever possible examples should be self-contained and runnable so that readers are able to try them out without having to include any dependencies.\nUse backticks to identify code and equations.\nJulia identifiers and code excerpts should always appear between backticks ` to enable highlighting. Equations in the LaTeX syntax can be inserted between double backticks ``. Use Unicode characters rather than their LaTeX escape sequence, i.e. ``α = 1`` rather than ``\\\\alpha = 1``.\nPlace the starting and ending \"\"\" characters on lines by themselves.\nThat is, write:\n\"\"\"\n...\n\n...\n\"\"\"\nf(x, y) = ...\nrather than:\n\"\"\"...\n\n...\"\"\"\nf(x, y) = ...\nThis makes it more clear where docstrings start and end.\nRespect the line length limit used in the surrounding code.\nDocstrings are edited using the same tools as code. Therefore, the same conventions should apply. It it advised to add line breaks after 92 characters.\nProvide information allowing custom types to implement the function in an # Implementation section. These implementation details intended for developers rather than users, explaining e.g. which functions should be overridden and which functions automatically use appropriate fallbacks, are better kept separate from the main description of the function\'s behavior."
+    "text": "自Julia 0.4 开始，julia允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。The basic syntax is simple: any string appearing at the top-level right before an object (function, macro, type or instance) will be interpreted as documenting it (these are called docstrings). Note that no blank lines or comments may intervene between a docstring and the documented object. Here is a basic example:\"Tell whether there are too foo items in the array.\"\nfoo(xs::Array) = ...Documentation is interpreted as Markdown, so you can use indentation and code fences to delimit code examples from text. Technically, any object can be associated with any other as metadata; Markdown happens to be the default, but one can construct other string macros and pass them to the @doc macro just as well.Here is a more complex example, still using Markdown:\"\"\"\n    bar(x[, y])\n\nCompute the Bar index between `x` and `y`. If `y` is missing, compute\nthe Bar index between all pairs of columns of `x`.\n\n# Examples\n```julia-repl\njulia> bar([1, 2], [1, 2])\n1\n```\n\"\"\"\nfunction bar(x, y) ...As in the example above, we recommend following some simple conventions when writing documentation:Always show the signature of a function at the top of the documentation, with a four-space indent so that it is printed as Julia code.\nThis can be identical to the signature present in the Julia code (like mean(x::AbstractArray)), or a simplified form. Optional arguments should be represented with their default values (i.e. f(x, y=1)) when possible, following the actual Julia syntax. Optional arguments which do not have a default value should be put in brackets (i.e. f(x[, y]) and f(x[, y[, z]])). An alternative solution is to use several lines: one without optional arguments, the other(s) with them. This solution can also be used to document several related methods of a given function. When a function accepts many keyword arguments, only include a <keyword arguments> placeholder in the signature (i.e. f(x; <keyword arguments>)), and give the complete list under an # Arguments section (see point 4 below).\nInclude a single one-line sentence describing what the function does or what the object represents after the simplified signature block. If needed, provide more details in a second paragraph, after a blank line.\nThe one-line sentence should use the imperative form (\"Do this\", \"Return that\") instead of the third person (do not write \"Returns the length...\") when documenting functions. It should end with a period. If the meaning of a function cannot be summarized easily, splitting it into separate composable parts could be beneficial (this should not be taken as an absolute requirement for every single case though).\nDo not repeat yourself.\nSince the function name is given by the signature, there is no need to start the documentation with \"The function bar...\": go straight to the point. Similarly, if the signature specifies the types of the arguments, mentioning them in the description is redundant.\nOnly provide an argument list when really necessary.\nFor simple functions, it is often clearer to mention the role of the arguments directly in the description of the function\'s purpose. An argument list would only repeat information already provided elsewhere. However, providing an argument list can be a good idea for complex functions with many arguments (in particular keyword arguments). In that case, insert it after the general description of the function, under an # Arguments header, with one - bullet for each argument. The list should mention the types and default values (if any) of the arguments:\n\"\"\"\n...\n# Arguments\n- `n::Integer`: the number of elements to compute.\n- `dim::Integer=1`: the dimensions along which to perform the computation.\n...\n\"\"\"\nProvide hints to related functions.\nSometimes there are functions of related functionality. To increase discoverability please provide a short list of these in a See also: paragraph.\nSee also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)\nInclude any code examples in an # Examples section.\nExamples should, whenever possible, be written as doctests. A doctest is a fenced code block (see Code blocks) starting with ```jldoctest and contains any number of julia> prompts together with inputs and expected outputs that mimic the Julia REPL.\nFor example in the following docstring a variable a is defined and the expected result, as printed in a Julia REPL, appears afterwards:\n\"\"\"\nSome nice documentation here.\n\n# Examples\n```jldoctest\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n```\n\"\"\"\nwarning: Warning\nCalling rand and other RNG-related functions should be avoided in doctests since they will not produce consistent outputs during different Julia sessions. If you would like to show some random number generation related functionality, one option is to explicitly construct and seed your own MersenneTwister (or other pseudorandom number generator) and pass it to the functions you are doctesting.Operating system word size (Int32 or Int64) as well as path separator differences (/ or \\) will also affect the reproducibility of some doctests.Note that whitespace in your doctest is significant! The doctest will fail if you misalign the output of pretty-printing an array, for example.\nYou can then run make -C doc doctest=true to run all the doctests in the Julia Manual and API documentation, which will ensure that your example works.\nTo indicate that the output result is truncated, you may write [...] at the line where checking should stop. This is useful to hide a stacktrace (which contains non-permanent references to lines of julia code) when the doctest shows that an exception is thrown, for example:\n```jldoctest\njulia> div(1, 0)\nERROR: DivideError: integer division error\n[...]\n```\nExamples that are untestable should be written within fenced code blocks starting with ```julia so that they are highlighted correctly in the generated documentation.\ntip: Tip\nWherever possible examples should be self-contained and runnable so that readers are able to try them out without having to include any dependencies.\nUse backticks to identify code and equations.\nJulia identifiers and code excerpts should always appear between backticks ` to enable highlighting. Equations in the LaTeX syntax can be inserted between double backticks ``. Use Unicode characters rather than their LaTeX escape sequence, i.e. ``α = 1`` rather than ``\\\\alpha = 1``.\nPlace the starting and ending \"\"\" characters on lines by themselves.\nThat is, write:\n\"\"\"\n...\n\n...\n\"\"\"\nf(x, y) = ...\nrather than:\n\"\"\"...\n\n...\"\"\"\nf(x, y) = ...\nThis makes it more clear where docstrings start and end.\nRespect the line length limit used in the surrounding code.\nDocstrings are edited using the same tools as code. Therefore, the same conventions should apply. It it advised to add line breaks after 92 characters.\nProvide information allowing custom types to implement the function in an # Implementation section. These implementation details intended for developers rather than users, explaining e.g. which functions should be overridden and which functions automatically use appropriate fallbacks, are better kept separate from the main description of the function\'s behavior."
 },
 
 {
@@ -2021,7 +2021,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "多维数组",
     "category": "section",
-    "text": "与大多数技术计算语言一样，Julia提供了一流的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其他容器的代价。Julia没有用任何特殊方式处理数组。Julia的数组库几乎完全是用Julia自身实现的，它的性能源自编译器，和其它Julia代码没什么不同。这样一来，用户就可以通过继承AbstractArray的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅manual section on the AbstractArray interface。数组是存储在多维网格中对象的集合。在最一般的情况下， 数组中的对象可能是 Any 类型。 对于大多数计算上的需求，数组中对象的类型应该更加具体，例如 Float64 或 Int32。一般来说，与许多其他技术计算语言不同，Julia 不希望为了性能而以向量化的方式编写程序。Julia 的编译器使用类型推断，并为标量数组索引生成优化的代码，允许以方便和可读的方式编写程序，而不牺牲性能，并且有时使用更少的内存。在Julia中，所有函数的参数都是 passed by sharing (也就是传指针)。一些科学计算语言用传值的方式传递数组，这阻止这个值的被调用者在调用函数中被意外修改，也导致无法避免不必要的数组赋值。简便起见，以一个 ! 结束的函数名表示它会修改或者销毁它的一个或者多个参数的值（例如，sort 和 sort!）。被调用者必须显式复制，以保证他们不会修改他们本不应该修改的输入。很多不可变的函数时在实现的时候，对输入的显式副本调用一个在结尾加上 ! 的同名函数，并返回该副本。"
+    "text": "与大多数技术计算语言一样，Julia提供了一流的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其他容器的代价。Julia用同样的方式来处理数组。就像和其他用Julia写的代码一样，Julia的数组库几乎完全是用Julia自身实现的，它的性能源自编译器。这样一来，用户就可以通过继承AbstractArray的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅manual section on the AbstractArray interface。数组是存储在多维网格中对象的集合。在最一般的情况下， 数组中的对象可能是 Any 类型。 对于大多数计算上的需求，数组中对象的类型应该更加具体，例如 Float64 或 Int32。一般来说，与许多其他技术计算语言不同，Julia 不希望为了性能而以向量化的方式编写程序。Julia 的编译器使用类型推断，并为标量数组索引生成优化的代码，允许以方便和可读的方式编写程序，而不牺牲性能，并且有时使用更少的内存。在Julia中，所有函数的参数都是 passed by sharing (也就是传指针)。一些科学计算语言用传值的方式传递数组，这防止了这个值的被调用者在调用函数中被意外修改，也导致无法避免不必要的数组赋值。简便起见，以一个 ! 结束的函数名表示它会修改或者销毁它的一个或者多个参数的值（例如，sort 和 sort!）。被调用者必须显式复制，以保证他们不会修改他们本不应该修改的输入。很多不可变的函数时在实现的时候，对输入的显式副本调用一个在结尾加上 ! 的同名函数，并返回该副本。"
 },
 
 {
@@ -2029,7 +2029,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "基本函数",
     "category": "section",
-    "text": "函数 描述\neltype(A) A中元素的类型\nlength(A) A 中元素的数量\nndims(A) A 的维数\nsize(A) 包含A的维度的元组\nsize(A,n) A第n维的大小\naxes(A) 一个包含A有效索引的元祖\naxes(A,n) 描述在n维上有效索引的一个范围\neachindex(A) 一个访问A 中每一个位置的高效迭代器\nstride(A,k) 在k维上的间隔（stride）（相邻元素间的线性索引距离）\nstrides(A) 每一维上的间隔的元组"
+    "text": "函数 描述\neltype(A) A中元素的类型\nlength(A) A 中元素的数量\nndims(A) A 的维数\nsize(A) 一个包含A的维度的元组\nsize(A,n) A第n维的大小\naxes(A) 一个包含A有效索引的元祖\naxes(A,n) 一个描述第n维有效索引的范围\neachindex(A) 一个访问A 中每一个位置的高效迭代器\nstride(A,k) 在k维上的间隔（stride）（相邻元素间的线性索引距离）\nstrides(A) 每一维上的间隔的元组"
 },
 
 {
@@ -2037,15 +2037,15 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "构造和初始化",
     "category": "section",
-    "text": "Julia 提供了许多用于构造和初始化数组的函数。 在以下列表中这样的函数，使用 dims ... 参数调用可以是一个表示维数大小的元组或一系列维数大小作为可变数量的参数传递。 大多数这些函数也接受第一个表示数组的元素类型的输入T。 如果类型 T 被省略，它将默认为[Float64]（@ ref）。函数 描述\nArray{T}(undef, dims...) 一个没有初始化的密集 数组\nzeros(T, dims...) 元素均为0的一个数组\nones(T, dims...) 元素均为1的一个数组\ntrues(dims...) 一个每个元素都为 true 的 BitArray\nfalses(dims...) 一个每个元素都为 false 的 BitArray\nreshape(A, dims...) 一个包含跟A 相同数据的数组，但维数不同\ncopy(A) 复制 A\ndeepcopy(A) 复制 A，递归复制其元素\nsimilar(A, T, dims...) 与A（密集，稀疏等）相同类型的未初始化数组，但具有指定的元素类型和维数。 第二个和第三个参数都是可选的，如果省略则默认为元素类型和 A 的维数。\nreinterpret(T, A) 与 A 具有相同二进制数据的数组，但元素类型为 T\nrand(T, dims...) 一个随机数组，元素值是01半开区间中的均匀分布且服从iid[^ 1]\nrandn(T, dims...) 一个随机数组，元素为标准正态分布，服从iid\nMatrix{T}(I, m, n) m行n列的单位矩阵\nrange(start, stop=stop, length=n) 从start到stop的n个线性间隔元素的范围\nfill!(A, x) 用值 x 填充数组 A\nfill(x, dims...) 用值 x 填充一个数组[1]: iid，独立同分布语法[A，B，C，...]构造其参数的一维数组（向量）。 如果所有参数有一个共同的promotion type，然后他们会被用convert转换为该类型。要查看各种方法，我们可以将不同维数传递给这些构造函数，请考虑以下示例：julia> zeros(Int8, 2, 2)\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros(Int8, (2, 2))\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros((2, 2))\n2×2 Array{Float64,2}:\n 0.0  0.0\n 0.0  0.0这里的 (2, 2) 是一个 Tuple."
+    "text": "Julia 提供了许多用于构造和初始化数组的函数。 在下列函数中，使用 dims ... 参数调用可以是一个表示维数大小的元组或一系列维数大小作为可变数量的参数传递。 大多数这些函数也接受第一个表示数组的元素类型的输入T。 如果类型 T 被省略，它将默认为[Float64]（@ ref）。函数 描述\nArray{T}(undef, dims...) 一个没有初始化的密集 数组\nzeros(T, dims...) 一个全零数组\nones(T, dims...) 一个元素均为1的数组\ntrues(dims...) 一个每个元素都为 true 的 BitArray\nfalses(dims...) 一个每个元素都为 false 的 BitArray\nreshape(A, dims...) 一个包含跟A 相同数据但维数不同的数组\ncopy(A) 复制 A\ndeepcopy(A) 复制 A，递归地复制其元素\nsimilar(A, T, dims...) 一个与A具有相同类型（这里指的是密集，稀疏等）的未初始化数组，但具有指定的元素类型和维数。 第二个和第三个参数都是可选的，如果省略则默认为元素类型和 A 的维数。\nreinterpret(T, A) 与 A 具有相同二进制数据的数组，但元素类型为 T\nrand(T, dims...) 一个随机数组，元素值是01半开区间中的均匀分布且服从一阶独立同分布\nrandn(T, dims...) 一个随机数组，元素为标准正态分布，服从独立同分布\nMatrix{T}(I, m, n) m行n列的单位矩阵\nrange(start, stop=stop, length=n) 从start到stop的带有n个线性间隔元素的范围\nfill!(A, x) 用值 x 填充数组 A\nfill(x, dims...) 一个被值x填充的数组[1]: iid，独立同分布语法[A，B，C，...]构造其参数的1维数组（向量）。 如果所有参数有一个共同的类型提升类型promotion type，然后他们会被用convert转换为该类型。要查看各种方法，我们可以将不同维数传递给这些构造函数，请考虑以下示例：julia> zeros(Int8, 2, 2)\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros(Int8, (2, 2))\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros((2, 2))\n2×2 Array{Float64,2}:\n 0.0  0.0\n 0.0  0.0这里的 (2, 2) 是一个 Tuple."
 },
 
 {
-    "location": "manual/arrays/#连接-1",
+    "location": "manual/arrays/#拼接-1",
     "page": "多维数组",
-    "title": "连接",
+    "title": "拼接",
     "category": "section",
-    "text": "可以使用以下函数构造和连接数组：函数 描述\ncat(A...; dims=k) 沿着维度 k 连接输入数组\nvcat(A...) cat(A...; dims=1) 的简写\nhcat(A...) cat(A...; dims=2) 的简写传递给这些函数的标量值会被当作1个元素的数组。 例如，julia> vcat([1, 2], 3)\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> hcat([1 2], 3)\n1×3 Array{Int64,2}:\n 1  2  3连接函数很常用，因此它们有特殊的语法：表达式 调用\n[A; B; C; ...] vcat\n[A B C ...] hcat\n[A B; C D; ...] hvcathvcat 可以连接在列数组（用分号分隔）和行数组（用空格分隔）。 请考虑以下语法示例：julia> [[1; 2]; [3, 4]]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> [[1 2] [3 4]]\n1×4 Array{Int64,2}:\n 1  2  3  4\n\njulia> [[1 2]; [3 4]]\n2×2 Array{Int64,2}:\n 1  2\n 3  4"
+    "text": "可以使用以下函数构造和拼接数组：函数 描述\ncat(A...; dims=k) 沿着s的第k拼接数组\nvcat(A...) cat(A...; dims=1) 的简写\nhcat(A...) cat(A...; dims=2) 的简写传递给这些函数的标量值会被当作1个元素的数组。 例如，julia> vcat([1, 2], 3)\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> hcat([1 2], 3)\n1×3 Array{Int64,2}:\n 1  2  3这些拼接函数非常常用，因此它们有特殊的语法：表达式 调用\n[A; B; C; ...] vcat\n[A B C ...] hcat\n[A B; C D; ...] hvcathvcat 可以在第1维列数组（用分号分隔）和第2维行数组（用空格分隔）进行连接。 请考虑以下语法示例：julia> [[1; 2]; [3, 4]]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> [[1 2] [3 4]]\n1×4 Array{Int64,2}:\n 1  2  3  4\n\njulia> [[1 2]; [3 4]]\n2×2 Array{Int64,2}:\n 1  2\n 3  4"
 },
 
 {
@@ -2057,9 +2057,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/arrays/#Comprehensions-1",
+    "location": "manual/arrays/#推导式-1",
     "page": "多维数组",
-    "title": "Comprehensions",
+    "title": "推导式",
     "category": "section",
     "text": "推导提供了构造数组的通用且强大的方法。 推导语法类似于数学中的集合构造符号：A = [ F(x,y,...) for x=rx, y=ry, ... ]这种形式的含义是F(x,y,...)取其给定列表中变量x，y等的每个值进行计算。 值可以指定为任何可迭代对象，但通常是1：n或2:(n-1)之类的范围，或者像[1.2, 3.4, 5.7]这样的显式数组值。 结果是一个N-d密集数组，其维数是变量范围rx，ry等的维数串联。每次FF(x,y,...)计算返回一个标量。下面的示例计算当前元素和沿一维网格其左，右相邻元素的加权平均值：julia> x = rand(8)\n8-element Array{Float64,1}:\n 0.843025\n 0.869052\n 0.365105\n 0.699456\n 0.977653\n 0.994953\n 0.41084\n 0.809411\n\njulia> [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]\n6-element Array{Float64,1}:\n 0.736559\n 0.57468\n 0.685417\n 0.912429\n 0.8446\n 0.656511生成的数组类型取决于计算元素的类型。 为了明确地控制类型，可以在推导之前添加类型。 例如，我们可以要求结果为单精度类型：Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]"
 },
@@ -2113,27 +2113,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/arrays/#Iteration-1",
+    "location": "manual/arrays/#迭代-1",
     "page": "多维数组",
-    "title": "Iteration",
+    "title": "迭代",
     "category": "section",
-    "text": "The recommended ways to iterate over a whole array arefor a in A\n    # Do something with the element a\nend\n\nfor i in eachindex(A)\n    # Do something with i and/or A[i]\nendThe first construct is used when you need the value, but not index, of each element. In the second construct, i will be an Int if A is an array type with fast linear indexing; otherwise, it will be a CartesianIndex:julia> A = rand(4,3);\n\njulia> B = view(A, 1:3, 2:3);\n\njulia> for i in eachindex(B)\n           @show i\n       end\ni = CartesianIndex(1, 1)\ni = CartesianIndex(2, 1)\ni = CartesianIndex(3, 1)\ni = CartesianIndex(1, 2)\ni = CartesianIndex(2, 2)\ni = CartesianIndex(3, 2)In contrast with for i = 1:length(A), iterating with eachindex provides an efficient way to iterate over any array type."
+    "text": "迭代整个数组的推荐方法是for a in A\n    # Do something with the element a\nend\n\nfor i in eachindex(A)\n    # Do something with i and/or A[i]\nendThe first construct is used when you need the value, but not index, of each element. In the second construct, i will be an Int if A is an array type with fast linear indexing; otherwise, it will be a CartesianIndex:julia> A = rand(4,3);\n\njulia> B = view(A, 1:3, 2:3);\n\njulia> for i in eachindex(B)\n           @show i\n       end\ni = CartesianIndex(1, 1)\ni = CartesianIndex(2, 1)\ni = CartesianIndex(3, 1)\ni = CartesianIndex(1, 2)\ni = CartesianIndex(2, 2)\ni = CartesianIndex(3, 2)In contrast with for i = 1:length(A), iterating with eachindex provides an efficient way to iterate over any array type."
 },
 
 {
-    "location": "manual/arrays/#Array-traits-1",
+    "location": "manual/arrays/#数组特点-1",
     "page": "多维数组",
-    "title": "Array traits",
+    "title": "数组特点",
     "category": "section",
     "text": "If you write a custom AbstractArray type, you can specify that it has fast linear indexing usingBase.IndexStyle(::Type{<:MyArray}) = IndexLinear()This setting will cause eachindex iteration over a MyArray to use integers. If you don\'t specify this trait, the default value IndexCartesian() is used."
 },
 
 {
-    "location": "manual/arrays/#Array-and-Vectorized-Operators-and-Functions-1",
+    "location": "manual/arrays/#数组、矢量化操作符及函数-1",
     "page": "多维数组",
-    "title": "Array and Vectorized Operators and Functions",
+    "title": "数组、矢量化操作符及函数",
     "category": "section",
-    "text": "The following operators are supported for arrays:Unary arithmetic – -, +\nBinary arithmetic – -, +, *, /, \\, ^\nComparison – ==, !=, ≈ (isapprox), ≉Most of the binary arithmetic operators listed above also operate elementwise when one argument is scalar: -, +, and * when either argument is scalar, and / and \\ when the denominator is scalar. For example, [1, 2] + 3 == [4, 5] and [6, 4] / 2 == [3, 2].Additionally, to enable convenient vectorization of mathematical and other operations, Julia provides the dot syntax f.(args...), e.g. sin.(x) or min.(x,y), for elementwise operations over arrays or mixtures of arrays and scalars (a Broadcasting operation); these have the additional advantage of \"fusing\" into a single loop when combined with other dot calls, e.g. sin.(cos.(x)).Also, every binary operator supports a dot version that can be applied to arrays (and combinations of arrays and scalars) in such fused broadcasting operations, e.g. z .== sin.(x .* y).Note that comparisons such as == operate on whole arrays, giving a single boolean answer. Use dot operators like .== for elementwise comparisons. (For comparison operations like <, only the elementwise .< version is applicable to arrays.)Also notice the difference between max.(a,b), which broadcasts max elementwise over a and b, and maximum(a), which finds the largest value within a. The same relationship holds for min.(a,b) and minimum(a)."
+    "text": "以下操作符支持数组整体操作一元运算符 – -, +\n二元运算符 – -, +, *, /, \\, ^\n比较操作符– ==, !=, ≈ (isapprox), ≉Most of the binary arithmetic operators listed above also operate elementwise when one argument is scalar: -, +, and * when either argument is scalar, and / and \\ when the denominator is scalar. For example, [1, 2] + 3 == [4, 5] and [6, 4] / 2 == [3, 2].Additionally, to enable convenient vectorization of mathematical and other operations, Julia provides the dot syntax f.(args...), e.g. sin.(x) or min.(x,y), for elementwise operations over arrays or mixtures of arrays and scalars (a Broadcasting operation); these have the additional advantage of \"fusing\" into a single loop when combined with other dot calls, e.g. sin.(cos.(x)).Also, every binary operator supports a dot version that can be applied to arrays (and combinations of arrays and scalars) in such fused broadcasting operations, e.g. z .== sin.(x .* y).Note that comparisons such as == operate on whole arrays, giving a single boolean answer. Use dot operators like .== for elementwise comparisons. (For comparison operations like <, only the elementwise .< version is applicable to arrays.)Also notice the difference between max.(a,b), which broadcasts max elementwise over a and b, and maximum(a), which finds the largest value within a. The same relationship holds for min.(a,b) and minimum(a)."
 },
 
 {
@@ -2141,7 +2141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "广播",
     "category": "section",
-    "text": "对于在不同大小的数组上执行逐元素的二元操作有时很有用， 例如将矩阵的每一列加一个向量。一种效率低下的方法可能会将矢量复制到矩阵的大小：julia> a = rand(2,1); A = rand(2,3);\n\njulia> repeat(a,1,3)+A\n2×3 Array{Float64,2}:\n 1.20813  1.82068  1.25387\n 1.56851  1.86401  1.67846当维度较大的时候，这种方法将会十分浪费，所以Julia提供了广播broadcast，它将会将参数中低维度的参数扩展，使得其与其他维度匹配，且不会使用额外的内存，并将所给的函数逐元素地应用。julia> broadcast(+, a, A)\n2×3 Array{Float64,2}:\n 1.20813  1.82068  1.25387\n 1.56851  1.86401  1.67846\n\njulia> b = rand(1,2)\n1×2 Array{Float64,2}:\n 0.867535  0.00457906\n\njulia> broadcast(+, a, b)\n2×2 Array{Float64,2}:\n 1.71056  0.847604\n 1.73659  0.873631Dotted operators such as .+ and .* are equivalent to broadcast calls (except that they fuse, as described below). There is also a broadcast! function to specify an explicit destination (which can also be accessed in a fusing fashion by .= assignment). Moreover, f.(args...) is equivalent to broadcast(f, args...), providing a convenient syntax to broadcast any function (dot syntax). Nested \"dot calls\" f.(...) (including calls to .+ etcetera) automatically fuse into a single broadcast call.另外，broadcast并不局限于数组（参见函数文档），对于元组依然有效。对于其他非数组，元组或 引用Ref(除了指针 Ptr)的参数，视作“scalar” julia> convert.(Float32, [1, 2])\n2-element Array{Float32,1}:\n 1.0\n 2.0\n\njulia> ceil.((UInt8,), [1.2 3.4; 5.6 6.7])\n2×2 Array{UInt8,2}:\n 0x02  0x04\n 0x06  0x07\n\njulia> string.(1:3, \". \", [\"First\", \"Second\", \"Third\"])\n3-element Array{String,1}:\n \"1. First\"\n \"2. Second\"\n \"3. Third\""
+    "text": "对于在不同大小的数组上执行逐元素的二元操作有时很有用， 例如将矩阵的每一列加一个向量。一种效率低下的方法可能会将矢量复制到矩阵的大小：julia> a = rand(2,1); A = rand(2,3);\n\njulia> repeat(a,1,3)+A\n2×3 Array{Float64,2}:\n 1.20813  1.82068  1.25387\n 1.56851  1.86401  1.67846当维度较大的时候，这种方法将会十分浪费，所以Julia提供了广播broadcast，它将会将参数中低维度的参数扩展，使得其与其他维度匹配，且不会使用额外的内存，并将所给的函数逐元素地应用。julia> broadcast(+, a, A)\n2×3 Array{Float64,2}:\n 1.20813  1.82068  1.25387\n 1.56851  1.86401  1.67846\n\njulia> b = rand(1,2)\n1×2 Array{Float64,2}:\n 0.867535  0.00457906\n\njulia> broadcast(+, a, b)\n2×2 Array{Float64,2}:\n 1.71056  0.847604\n 1.73659  0.873631Dotted operators such as .+ and .* are equivalent to broadcast calls (except that they fuse, as described below). There is also a broadcast! function to specify an explicit destination (which can also be accessed in a fusing fashion by .= assignment). Moreover, f.(args...) is equivalent to broadcast(f, args...), providing a convenient syntax to broadcast any function (dot syntax). Nested \"dot calls\" f.(...) (including calls to .+ etcetera) automatically fuse into a single broadcast call.另外，broadcast并不局限于数组（参见函数文档），对于元组依然有效。对于其他非数组，元组或 引用Ref(除了指针 Ptr)的参数，视作“scalar”julia> convert.(Float32, [1, 2])\n2-element Array{Float32,1}:\n 1.0\n 2.0\n\njulia> ceil.((UInt8,), [1.2 3.4; 5.6 6.7])\n2×2 Array{UInt8,2}:\n 0x02  0x04\n 0x06  0x07\n\njulia> string.(1:3, \". \", [\"First\", \"Second\", \"Third\"])\n3-element Array{String,1}:\n \"1. First\"\n \"2. Second\"\n \"3. Third\""
 },
 
 {
@@ -2301,13 +2301,13 @@ var documenterSearchIndex = {"docs": [
     "page": "并行计算",
     "title": "并行计算",
     "category": "section",
-    "text": "对于多线程和并行计算的新手来说，首先了解Jullia所提供的 不同层级并行是非常有用的。这里我们主要将其分成三类：Julia协程（绿色线程）\n多线程\n多核心或分布式处理We will first consider Julia Tasks (aka Coroutines) and other modules that rely on the Julia runtime library, that allow to suspend and resume computations with full control of inter-Tasks communication without having to manually interface with the operative system\'s scheduler. Julia also allows to communicate between Tasks through operations like wait and fetch. Communication and data synchronization is managed through Channels, which are the conduit that allows inter-Tasks communication.Julia also supports experimental multi-threading, where execution is forked and an anonymous function is run across all threads. Described as a fork-join approach, parallel threads are branched off and they all have to join the Julia main thread to make serial execution continue. Multi-threading is supported using the Base.Threads module that is still considered experimental, as Julia is not fully thread-safe yet. In particular segfaults seem to emerge for I\\O operations and task switching. As an un up-to-date reference, keep an eye on the issue tracker. Multi-Threading should only be used if you take into consideration global variables, locks and atomics, so we will explain it later.In the end we will present Julia\'s way to distributed and parallel computing. With scientific computing in mind, Julia natively implements interfaces to distribute a process through multiple cores or machines. Also we will mention useful external packages for distributed programming like MPI.jl and DistributedArrays.jl."
+    "text": "对于多线程和并行计算的新手来说，首先了解Jullia所提供的 不同层级并行是非常有用的。这里我们主要将其分成三类：Julia协程（绿色线程）\n多线程\n多核心或分布式处理我们首先考虑 Julia 任务 Tasks 以及其它依赖于 Julia  实时库(runtime library)的模块，通过实时库，可以在挂起和继续计算任务时对内部 \'Tasks\' 间的通信进行完全控制，并且控制过程无需手动与操作系统的调度进行交互。 Julia 同样允许利用一些操作在 \'Tasks\' 间进行通信，比如 \'wait\' 以及 \'fetch\'。 另外，通信和数据同步是通过 \'Channel\' 完成的，它也是实现内部 \'Tasks\' 通信的基石。Julia also supports experimental multi-threading, where execution is forked and an anonymous function is run across all threads. Described as a fork-join approach, parallel threads are branched off and they all have to join the Julia main thread to make serial execution continue. Multi-threading is supported using the Base.Threads module that is still considered experimental, as Julia is not fully thread-safe yet. In particular segfaults seem to emerge for I\\O operations and task switching. As an un up-to-date reference, keep an eye on the issue tracker. Multi-Threading should only be used if you take into consideration global variables, locks and atomics, so we will explain it later.最后我们将介绍 Julia 的分布式并行计算的实现方法。鉴于以科学计算为主要目的， Julia 底层上提供了通过多核心或多机器对任务并行的接口。 同时我们还将介绍一些有用的分布式编程的外部包，比如 \'MPI.jl\' 以及 \'DistributedArrays.jl\'。"
 },
 
 {
-    "location": "manual/parallel-computing/#Coroutines-1",
+    "location": "manual/parallel-computing/#协程-1",
     "page": "并行计算",
-    "title": "Coroutines",
+    "title": "协程",
     "category": "section",
     "text": "Julia\'s parallel programming platform uses Tasks (aka Coroutines) to switch among multiple computations. To express an order of execution between lightweight threads communication primitives are necessary. Julia offers Channel(func::Function, ctype=Any, csize=0, taskref=nothing) that creates a new task from func, binds it to a new channel of type ctype and size csize and schedule the task. Channels can serve as a way to communicate between tasks, as Channel{T}(sz::Int) creates a buffered channel of type T and size sz. Whenever code performs a communication operation like fetch or wait, the current task is suspended and a scheduler picks another task to run. A task is restarted when the event it is waiting for completes.For many problems, it is not necessary to think about tasks directly. However, they can be used to wait for multiple events at the same time, which provides for dynamic scheduling. In dynamic scheduling, a program decides what to compute or where to compute it based on when other jobs finish. This is needed for unpredictable or unbalanced workloads, where we want to assign more work to processes only when they finish their current tasks."
 },
@@ -2517,7 +2517,7 @@ var documenterSearchIndex = {"docs": [
     "page": "运行外部程序",
     "title": "运行外部程序",
     "category": "section",
-    "text": "Julia borrows backtick notation for commands from the shell, Perl, and Ruby. However, in Julia, writingjulia> `echo hello`\n`echo hello`differs in several aspects from the behavior in various shells, Perl, or Ruby:Instead of immediately running the command, backticks create a Cmd object to represent the command. You can use this object to connect the command to others via pipes, run it, and read or write to it.\nWhen the command is run, Julia does not capture its output unless you specifically arrange for it to. Instead, the output of the command by default goes to stdout as it would using libc\'s system call.\nThe command is never run with a shell. Instead, Julia parses the command syntax directly, appropriately interpolating variables and splitting on words as the shell would, respecting shell quoting syntax. The command is run as julia\'s immediate child process, using fork and exec calls.Here\'s a simple example of running an external program:julia> mycommand = `echo hello`\n`echo hello`\n\njulia> typeof(mycommand)\nCmd\n\njulia> run(mycommand);\nhelloThe hello is the output of the echo command, sent to stdout. The run method itself returns nothing, and throws an ErrorException if the external command fails to run successfully.If you want to read the output of the external command, read can be used instead:julia> a = read(`echo hello`, String)\n\"hello\\n\"\n\njulia> chomp(a) == \"hello\"\ntrueMore generally, you can use open to read from or write to an external command.julia> open(`less`, \"w\", stdout) do io\n           for i = 1:3\n               println(io, i)\n           end\n       end\n1\n2\n3The program name and the individual arguments in a command can be accessed and iterated over as if the command were an array of strings:julia> collect(`echo \"foo bar\"`)\n2-element Array{String,1}:\n \"echo\"\n \"foo bar\"\n\njulia> `echo \"foo bar\"`[2]\n\"foo bar\""
+    "text": "Julia 从 shell、Perl 以及 Ruby 那里借来了使用命令的反引号。julia> `echo hello`\n`echo hello`differs in several aspects from the behavior in various shells, Perl, or Ruby:Instead of immediately running the command, backticks create a Cmd object to represent the command. You can use this object to connect the command to others via pipes, run it, and read or write to it.\nWhen the command is run, Julia does not capture its output unless you specifically arrange for it to. Instead, the output of the command by default goes to stdout as it would using libc\'s system call.\nThe command is never run with a shell. Instead, Julia parses the command syntax directly, appropriately interpolating variables and splitting on words as the shell would, respecting shell quoting syntax. The command is run as julia\'s immediate child process, using fork and exec calls.Here\'s a simple example of running an external program:julia> mycommand = `echo hello`\n`echo hello`\n\njulia> typeof(mycommand)\nCmd\n\njulia> run(mycommand);\nhelloThe hello is the output of the echo command, sent to stdout. The run method itself returns nothing, and throws an ErrorException if the external command fails to run successfully.If you want to read the output of the external command, read can be used instead:julia> a = read(`echo hello`, String)\n\"hello\\n\"\n\njulia> chomp(a) == \"hello\"\ntrueMore generally, you can use open to read from or write to an external command.julia> open(`less`, \"w\", stdout) do io\n           for i = 1:3\n               println(io, i)\n           end\n       end\n1\n2\n3The program name and the individual arguments in a command can be accessed and iterated over as if the command were an array of strings:julia> collect(`echo \"foo bar\"`)\n2-element Array{String,1}:\n \"echo\"\n \"foo bar\"\n\njulia> `echo \"foo bar\"`[2]\n\"foo bar\""
 },
 
 {
@@ -2562,23 +2562,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#",
-    "page": "调用C和Fortran代码",
-    "title": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
+    "title": "调用 C 和 Fortran 代码",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "manual/calling-c-and-fortran-code/#调用C和Fortran代码-1",
-    "page": "调用C和Fortran代码",
-    "title": "调用C和Fortran代码",
+    "location": "manual/calling-c-and-fortran-code/#调用-C-和-Fortran-代码-1",
+    "page": "调用 C 和 Fortran 代码",
+    "title": "调用 C 和 Fortran 代码",
     "category": "section",
-    "text": "在数值计算领域，尽管有很多用C语言或Fortran写的高质量且成熟的库都可以用Julia重写，但为了便捷利用现有的C或Fortran代码，Julia提供简洁且高效的调用方式。Julia的哲学是\"no boilerplate\": Julia可以直接调用C/Fortran的函数，不需要任何\"胶水\"代码，代码生成或其它编译过程 – 即使在交互式会话窗(REPL/Jupyter notebook)中使用也一样. 在Julia中，上述特性可以仅仅通过调用ccall实现，它的语法看起来就像是普通的函数调用。被调用的代码必须是一个shared library(.so, .dylib,.dll). 大多数C和Fortran库都已经是以shared library发布的，但在用GCC或Clang编译自己的代码时，需要添加-shared和-fPIC编译器选项。由于Julia的JIT生成的机器码跟native C call一样，所以在Julia里调用C/Fortran库的overhead与在C里调用是一样的。(Non-library function calls in both C and Julia can be inlined and thus may have even less overhead than calls to shared library functions. When both libraries and executables are generated by LLVM, it is possible to perform whole-program optimizations that can even optimize across this boundary, but Julia does not yet support that. In the future, however, it may do so, yielding even greater performance gains.)我们可以通过(:function, \"library\")或(\"function\", \"library\")这两种形式来索引库中的函数，其中function是函数名，library是库名。对于不同的平台/操作系统，库的载入路径可能会不同，如果库在默认载入路径中，则可以直接将library设为库名，否则，需要将其设为一个完整的路径。3 284/5000 可以单独使用函数名来代替元组（只用:function 或 \"function\"）。 在这种情况下，函数名在当前进程中进行解析。这一调用形式可用于调用C库函数，Julia运行时中的函数或链接到Julia的应用程序中的函数。默认情况下，Fortran编译器会改变变量名[generate mangled names]（https://en.wikipedia.org/wiki/Name_mangling#Fortran）（例如，将函数名转换为小写或大写，通常会添加下划线），要通过[ccall]（@ ref）调用Fortran函数，必须传递与Fortran编译器生成的相对应的标识符。 此外，在调用Fortran函数时，所有输入必须以指针形式传递，并已在堆或栈上分配内存。 这不仅适用于通常是堆分配的数组和其他可变对象，而且适用于整数和浮点数等标量值，这些值通常是栈分配的，并且在使用C或Julia调用约定时通常通过寄存器传递。Finally, you can use ccall to actually generate a call to the library function. Arguments to ccall are as follows:一个 (:function, \"library\") 对，必须为字面值常量形式，\n或\n一个函数指针，（例如，dlsym）。\n返回类型（参见下文，将声明的C类型对应到Julia）\n当包含的函数已经定义时，参数将会在编译时计算。\n输入类型的元组。输入类型必须为字面值元组，而非元组 变量或表达式。\n当包含的函数已经定义时，参数将会在编译时计算。\n紧接着的参数，如果有的话，将会以参数的实际值传递给函数。作为一个完整而简单的例子，下面展示从标准C库函数中调用 clock函数：julia> t = ccall((:clock, \"libc\"), Int32, ())\n2292761\n\njulia> t\n2292761\n\njulia> typeof(ans)\nInt32clock takes no arguments and returns an Int32. One common gotcha is that a 1-tuple must be written with a trailing comma. For example, to call the getenv function to get a pointer to the value of an environment variable, one makes a call like this:julia> path = ccall((:getenv, \"libc\"), Cstring, (Cstring,), \"SHELL\")\nCstring(@0x00007fff5fbffc45)\n\njulia> unsafe_string(path)\n\"/bin/bash\"Note that the argument type tuple must be written as (Cstring,), rather than (Cstring). This is because (Cstring) is just the expression Cstring surrounded by parentheses, rather than a 1-tuple containing Cstring:julia> (Cstring)\nCstring\n\njulia> (Cstring,)\n(Cstring,)In practice, especially when providing reusable functionality, one generally wraps ccall uses in Julia functions that set up arguments and then check for errors in whatever manner the C or Fortran function indicates them, propagating to the Julia caller as exceptions. This is especially important since C and Fortran APIs are notoriously inconsistent about how they indicate error conditions. For example, the getenv C library function is wrapped in the following Julia function, which is a simplified version of the actual definition from env.jl:function getenv(var::AbstractString)\n    val = ccall((:getenv, \"libc\"),\n                Cstring, (Cstring,), var)\n    if val == C_NULL\n        error(\"getenv: undefined variable: \", var)\n    end\n    unsafe_string(val)\nendThe C getenv function indicates an error by returning NULL, but other standard C functions indicate errors in various different ways, including by returning -1, 0, 1 and other special values. This wrapper throws an exception clearly indicating the problem if the caller tries to get a non-existent environment variable:julia> getenv(\"SHELL\")\n\"/bin/bash\"\n\njulia> getenv(\"FOOBAR\")\ngetenv: undefined variable: FOOBARHere is a slightly more complex example that discovers the local machine\'s hostname:function gethostname()\n    hostname = Vector{UInt8}(128)\n    ccall((:gethostname, \"libc\"), Int32,\n          (Ptr{UInt8}, Csize_t),\n          hostname, sizeof(hostname))\n    hostname[end] = 0; # ensure null-termination\n    return unsafe_string(pointer(hostname))\nendThis example first allocates an array of bytes, then calls the C library function gethostname to fill the array in with the hostname, takes a pointer to the hostname buffer, and converts the pointer to a Julia string, assuming that it is a NUL-terminated C string. It is common for C libraries to use this pattern of requiring the caller to allocate memory to be passed to the callee and filled in. Allocation of memory from Julia like this is generally accomplished by creating an uninitialized array and passing a pointer to its data to the C function. This is why we don\'t use the Cstring type here: as the array is uninitialized, it could contain NUL bytes. Converting to a Cstring as part of the ccall checks for contained NUL bytes and could therefore throw a conversion error."
+    "text": "在数值计算领域，尽管有很多用 C 语言或 Fortran 写的高质量且成熟的库都可以用 Julia 重写，但为了便捷利用现有的C或Fortran代码，Julia 提供简洁且高效的调用方式。Julia 的哲学是\"no boilerplate\": Julia 可以直接调用 C/Fortran 的函数，不需要任何\"胶水\"代码，代码生成或其它编译过程 – 即使在交互式会话窗(REPL/Jupyter notebook)中使用也一样. 在 Julia 中，上述特性可以仅仅通过调用ccall实现，它的语法看起来就像是普通的函数调用。被调用的代码必须是一个 shared library (.so, .dylib, .dll). 大多数 C 和 Fortran 库都已经是以 shared library 发布的，但在用 GCC 或 Clang 编译自己的代码时，需要添加 -shared 和 -fPIC 编译器选项。由于 Julia 的 JIT 生成的机器码跟原生 C 代码的调用是一样，所以在 Julia 里调用 C/Fortran 库的 overhead 与直接从 C 里调用是一样的。(Non-library function calls in both C and Julia can be inlined and thus may have even less overhead than calls to shared library functions. When both libraries and executables are generated by LLVM, it is possible to perform whole-program optimizations that can even optimize across this boundary, but Julia does not yet support that. In the future, however, it may do so, yielding even greater performance gains.)我们可以通过 (:function, \"library\") 或 (\"function\", \"library\") 这两种形式来索引库中的函数，其中 function 是函数名，library 是库名。对于不同的平台/操作系统，库的载入路径可能会不同，如果库在默认载入路径中，则可以直接将 library 设为库名，否则，需要将其设为一个完整的路径。3 284/5000 可以单独使用函数名来代替元组（只用:function 或 \"function\"）。 在这种情况下，函数名在当前进程中进行解析。这一调用形式可用于调用C库函数，Julia运行时中的函数或链接到Julia的应用程序中的函数。默认情况下，Fortran编译器会改变变量名[generate mangled names]（https://en.wikipedia.org/wiki/Name_mangling#Fortran）（例如，将函数名转换为小写或大写，通常会添加下划线），要通过[ccall]（@ ref）调用Fortran函数，必须传递与Fortran编译器生成的相对应的标识符。 此外，在调用Fortran函数时，所有输入必须以指针形式传递，并已在堆或栈上分配内存。 这不仅适用于通常是堆分配的数组和其他可变对象，而且适用于整数和浮点数等标量值，这些值通常是栈分配的，并且在使用C或Julia调用约定时通常通过寄存器传递。Finally, you can use ccall to actually generate a call to the library function. Arguments to ccall are as follows:一个 (:function, \"library\") 对，必须为字面值常量形式，\n或\n一个函数指针，（例如，dlsym）。\n返回类型（参见下文，将声明的C类型对应到Julia）\n当包含的函数已经定义时，参数将会在编译时计算。\n输入类型的元组。输入类型必须为字面值元组，而非元组 变量或表达式。\n当包含的函数已经定义时，参数将会在编译时计算。\n紧接着的参数，如果有的话，将会以参数的实际值传递给函数。举一个完整而简单的例子：从标准C库函数中调用 clock函数。julia> t = ccall((:clock, \"libc\"), Int32, ())\n2292761\n\njulia> t\n2292761\n\njulia> typeof(ans)\nInt32clock 不接收任何参数，并返回一个 Int32 。一个常见的问题是必须要用逗号尾随来写一个1-元组。例如，要调用 getenv 函数来获取指向环境变量值的指针，可以这样来调用：julia> path = ccall((:getenv, \"libc\"), Cstring, (Cstring,), \"SHELL\")\nCstring(@0x00007fff5fbffc45)\n\njulia> unsafe_string(path)\n\"/bin/bash\"请注意，参数类型元组必须是 (Cstring,)，而不是 (Cstring) 。 这是因为 (Cstring) 只是括号括起来的表达式 Cstring ，而不是包含 Cstring 的1-元组：julia> (Cstring)\nCstring\n\njulia> (Cstring,)\n(Cstring,)在实践中，特别是在提供可重用功能时，通常在Julia函数中封装 ccall 用于设置参数的，然后在任何指示错误的 C 或 Fortran 函数中检查错误，作为异常传递给 Julia 调用者。这一点尤其重要，因为C和Fortran的API在如何指示错误条件方面存在众所周知的不一致。 例如，C库函数getenv 包含在以下Julia函数中，该函数是env.jl实际定义的简化版本：function getenv(var::AbstractString)\n    val = ccall((:getenv, \"libc\"),\n                Cstring, (Cstring,), var)\n    if val == C_NULL\n        error(\"getenv: undefined variable: \", var)\n    end\n    unsafe_string(val)\nendC函数 getenv 通过返回 NULL 指出了一个错误，但是其他标准C函数通过多种不同的方式来指出错误，包括返回-1, 0, 1和其它特殊值。这一层封装能抛出一个清晰地指出问题的异常，即是否调用者尝试获取一个不存在的环境变量：julia> getenv(\"SHELL\")\n\"/bin/bash\"\n\njulia> getenv(\"FOOBAR\")\ngetenv: undefined variable: FOOBAR这有一个稍微复杂一点的例子，它能发现本机的主机名：function gethostname()\n    hostname = Vector{UInt8}(128)\n    ccall((:gethostname, \"libc\"), Int32,\n          (Ptr{UInt8}, Csize_t),\n          hostname, sizeof(hostname))\n    hostname[end] = 0; # ensure null-termination\n    return unsafe_string(pointer(hostname))\nendThis example first allocates an array of bytes, then calls the C library function gethostname to fill the array in with the hostname, takes a pointer to the hostname buffer, and converts the pointer to a Julia string, assuming that it is a NUL-terminated C string. It is common for C libraries to use this pattern of requiring the caller to allocate memory to be passed to the callee and filled in. Allocation of memory from Julia like this is generally accomplished by creating an uninitialized array and passing a pointer to its data to the C function. This is why we don\'t use the Cstring type here: as the array is uninitialized, it could contain NUL bytes. Converting to a Cstring as part of the ccall checks for contained NUL bytes and could therefore throw a conversion error."
 },
 
 {
     "location": "manual/calling-c-and-fortran-code/#创建和C兼容的Julia函数指针-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "创建和C兼容的Julia函数指针",
     "category": "section",
     "text": "可以将Julia函数传递给接受函数指针参数的原生C函数。例如，要匹配满足下面的C原型：typedef returntype (*functiontype)(argumenttype, ...)The macro @cfunction generates the C-compatible function pointer for a call to a Julia function. Arguments to @cfunction are as follows:一个Julia函数\n返回类型\nA literal tuple of input typesLike ccall, all of these arguments will be evaluated at compile-time, when the containing method is defined.Currently, only the platform-default C calling convention is supported. This means that @cfunction-generated pointers cannot be used in calls where WINAPI expects stdcall function on 32-bit windows, but can be used on WIN64 (where stdcall is unified with the C calling convention).A classic example is the standard C library qsort function, declared as:void qsort(void *base, size_t nmemb, size_t size,\n           int (*compare)(const void*, const void*));The base argument is a pointer to an array of length nmemb, with elements of size bytes each. compare is a callback function which takes pointers to two elements a and b and returns an integer less/greater than zero if a should appear before/after b (or zero if any order is permitted). Now, suppose that we have a 1d array A of values in Julia that we want to sort using the qsort function (rather than Julia\'s built-in sort function). Before we worry about calling qsort and passing arguments, we need to write a comparison function that works for some arbitrary objects (which define <):julia> function mycompare(a, b)::Cint\n           return (a < b) ? -1 : ((a > b) ? +1 : 0)\n       end\nmycompare (generic function with 1 method)Notice that we have to be careful about the return type: qsort expects a function returning a C int, so we annotate the return type of the function to be sure it returns a Cint.In order to pass this function to C, we obtain its address using the macro @cfunction:julia> mycompare_c = @cfunction(mycompare, Cint, (Ref{Cdouble}, Ref{Cdouble}));@cfunction requires three arguments: the Julia function (mycompare), the return type (Cint), and a literal tuple of the input argument types, in this case to sort an array of Cdouble (Float64) elements.The final call to qsort looks like this:julia> A = [1.3, -2.7, 4.4, 3.1]\n4-element Array{Float64,1}:\n  1.3\n -2.7\n  4.4\n  3.1\n\njulia> ccall(:qsort, Cvoid, (Ptr{Cdouble}, Csize_t, Csize_t, Ptr{Cvoid}),\n             A, length(A), sizeof(eltype(A)), mycompare_c)\n\njulia> A\n4-element Array{Float64,1}:\n -2.7\n  1.3\n  3.1\n  4.4As can be seen, A is changed to the sorted array [-2.7, 1.3, 3.1, 4.4]. Note that Julia knows how to convert an array into a Ptr{Cdouble}, how to compute the size of a type in bytes (identical to C\'s sizeof operator), and so on. For fun, try inserting a println(\"mycompare($a, $b)\") line into mycompare, which will allow you to see the comparisons that qsort is performing (and to verify that it is really calling the Julia function that you passed to it)."
@@ -2586,7 +2586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Mapping-C-Types-to-Julia-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Mapping C Types to Julia",
     "category": "section",
     "text": "It is critical to exactly match the declared C type with its declaration in Julia. Inconsistencies can cause code that works correctly on one system to fail or produce indeterminate results on a different system.Note that no C header files are used anywhere in the process of calling C functions: you are responsible for making sure that your Julia types and call signatures accurately reflect those in the C header file. (The Clang package can be used to auto-generate Julia code from a C header file.)"
@@ -2594,7 +2594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Auto-conversion:-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Auto-conversion:",
     "category": "section",
     "text": "Julia automatically inserts calls to the Base.cconvert function to convert each argument to the specified type. For example, the following call:ccall((:foo, \"libfoo\"), Cvoid, (Int32, Float64), x, y)will behave as if the following were written:ccall((:foo, \"libfoo\"), Cvoid, (Int32, Float64),\n      Base.unsafe_convert(Int32, Base.cconvert(Int32, x)),\n      Base.unsafe_convert(Float64, Base.cconvert(Float64, y)))Base.cconvert normally just calls convert, but can be defined to return an arbitrary new object more appropriate for passing to C. This should be used to perform all allocations of memory that will be accessed by the C code. For example, this is used to convert an Array of objects (e.g. strings) to an array of pointers.Base.unsafe_convert handles conversion to Ptr types. It is considered unsafe because converting an object to a native pointer can hide the object from the garbage collector, causing it to be freed prematurely."
@@ -2602,7 +2602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Type-Correspondences:-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Type Correspondences:",
     "category": "section",
     "text": "First, a review of some relevant Julia type terminology:Syntax / Keyword 例子 描述\nmutable struct String \"Leaf Type\" :: A group of related data that includes a type-tag, is managed by the Julia GC, and is defined by object-identity. The type parameters of a leaf type must be fully defined (no TypeVars are allowed) in order for the instance to be constructed.\nabstract type Any, AbstractArray{T, N}, Complex{T} \"Super Type\" :: A super-type (not a leaf-type) that cannot be instantiated, but can be used to describe a group of types.\nT{A} Vector{Int} \"Type Parameter\" :: A specialization of a type (typically used for dispatch or storage optimization).\n  \"TypeVar\" :: The T in the type parameter declaration is referred to as a TypeVar (short for type variable).\nprimitive type Int, Float64 \"Primitive Type\" :: A type with no fields, but a size. It is stored and defined by-value.\nstruct Pair{Int, Int} \"Struct\" :: A type with all fields defined to be constant. It is defined by-value, and may be stored with a type-tag.\n ComplexF64 (isbits) \"Is-Bits\"   :: A primitive type, or a struct type where all fields are other isbits types. It is defined by-value, and is stored without a type-tag.\nstruct ...; end nothing \"Singleton\" :: a Leaf Type or Struct with no fields.\n(...) or tuple(...) (1, 2, 3) \"Tuple\" :: an immutable data-structure similar to an anonymous struct type, or a constant array. Represented as either an array or a struct."
@@ -2610,7 +2610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#man-bits-types-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Bits Types",
     "category": "section",
     "text": "There are several special types to be aware of, as no other type can be defined to behave the same:Float32\nExactly corresponds to the float type in C (or REAL*4 in Fortran).\nFloat64\nExactly corresponds to the double type in C (or REAL*8 in Fortran).\nComplexF32\nExactly corresponds to the complex float type in C (or COMPLEX*8 in Fortran).\nComplexF64\nExactly corresponds to the complex double type in C (or COMPLEX*16 in Fortran).\nSigned\nExactly corresponds to the signed type annotation in C (or any INTEGER type in Fortran). Any Julia type that is not a subtype of Signed is assumed to be unsigned.Ref{T}\nBehaves like a Ptr{T} that can manage its memory via the Julia GC.Array{T,N}\nWhen an array is passed to C as a Ptr{T} argument, it is not reinterpret-cast: Julia requires that the element type of the array matches T, and the address of the first element is passed.\nTherefore, if an Array contains data in the wrong format, it will have to be explicitly converted using a call such as trunc(Int32, a).\nTo pass an array A as a pointer of a different type without converting the data beforehand (for example, to pass a Float64 array to a function that operates on uninterpreted bytes), you can declare the argument as Ptr{Cvoid}.\nIf an array of eltype Ptr{T} is passed as a Ptr{Ptr{T}} argument, Base.cconvert will attempt to first make a null-terminated copy of the array with each element replaced by its Base.cconvert version. This allows, for example, passing an argv pointer array of type Vector{String} to an argument of type Ptr{Ptr{Cchar}}.On all systems we currently support, basic C/C++ value types may be translated to Julia types as follows. Every C type also has a corresponding Julia type with the same name, prefixed by C. This can help for writing portable code (and remembering that an int in C is not the same as an Int in Julia).System Independent:C name Fortran name Standard Julia Alias Julia Base Type\nunsigned char CHARACTER Cuchar UInt8\nbool (only in C++)  Cuchar UInt8\nshort INTEGER*2, LOGICAL*2 Cshort Int16\nunsigned short  Cushort UInt16\nint, BOOL (C, typical) INTEGER*4, LOGICAL*4 Cint Int32\nunsigned int  Cuint UInt32\nlong long INTEGER*8, LOGICAL*8 Clonglong Int64\nunsigned long long  Culonglong UInt64\nintmax_t  Cintmax_t Int64\nuintmax_t  Cuintmax_t UInt64\nfloat REAL*4i Cfloat Float32\ndouble REAL*8 Cdouble Float64\ncomplex float COMPLEX*8 ComplexF32 Complex{Float32}\ncomplex double COMPLEX*16 ComplexF64 Complex{Float64}\nptrdiff_t  Cptrdiff_t Int\nssize_t  Cssize_t Int\nsize_t  Csize_t UInt\nvoid   Cvoid\nvoid and [[noreturn]] or _Noreturn   Union{}\nvoid*   Ptr{Cvoid}\nT* (where T represents an appropriately defined type)   Ref{T}\nchar* (or char[], e.g. a string) CHARACTER*N  Cstring if NUL-terminated, or Ptr{UInt8} if not\nchar** (or *char[])   Ptr{Ptr{UInt8}}\njl_value_t* (any Julia Type)   Any\njl_value_t** (a reference to a Julia Type)   Ref{Any}\nva_arg   Not supported\n... (variadic function specification)   T... (where T is one of the above types, variadic functions of different argument types are not supported)The Cstring type is essentially a synonym for Ptr{UInt8}, except the conversion to Cstring throws an error if the Julia string contains any embedded NUL characters (which would cause the string to be silently truncated if the C routine treats NUL as the terminator).  If you are passing a char* to a C routine that does not assume NUL termination (e.g. because you pass an explicit string length), or if you know for certain that your Julia string does not contain NUL and want to skip the check, you can use Ptr{UInt8} as the argument type. Cstring can also be used as the ccall return type, but in that case it obviously does not introduce any extra checks and is only meant to improve readability of the call.System-dependent:C name Standard Julia Alias Julia Base Type\nchar Cchar Int8 (x86, x86_64), UInt8 (powerpc, arm)\nlong Clong Int (UNIX), Int32 (Windows)\nunsigned long Culong UInt (UNIX), UInt32 (Windows)\nwchar_t Cwchar_t Int32 (UNIX), UInt16 (Windows)note: Note\nWhen calling Fortran, all inputs must be passed by pointers to heap- or stack-allocated values, so all type correspondences above should contain an additional Ptr{..} or Ref{..} wrapper around their type specification.warning: Warning\nFor string arguments (char*) the Julia type should be Cstring (if NUL- terminated data is expected) or either Ptr{Cchar} or Ptr{UInt8} otherwise (these two pointer types have the same effect), as described above, not String. Similarly, for array arguments (T[] or T*), the Julia type should again be Ptr{T}, not Vector{T}.warning: Warning\nJulia\'s Char type is 32 bits, which is not the same as the wide character type (wchar_t or wint_t) on all platforms.warning: Warning\nA return type of Union{} means the function will not return i.e. C++11 [[noreturn]] or C11 _Noreturn (e.g. jl_throw or longjmp). Do not use this for functions that return no value (void) but do return, use Cvoid instead.note: Note\nFor wchar_t* arguments, the Julia type should be Cwstring (if the C routine expects a NUL-terminated string) or Ptr{Cwchar_t} otherwise. Note also that UTF-8 string data in Julia is internally NUL-terminated, so it can be passed to C functions expecting NUL-terminated data without making a copy (but using the Cwstring type will cause an error to be thrown if the string itself contains NUL characters).note: Note\nC functions that take an argument of the type char** can be called by using a Ptr{Ptr{UInt8}} type within Julia. For example, C functions of the form:int main(int argc, char **argv);can be called via the following Julia code:argv = [ \"a.out\", \"arg1\", \"arg2\" ]\nccall(:main, Int32, (Int32, Ptr{Ptr{UInt8}}), length(argv), argv)note: Note\nFor Fortran functions taking variable length strings of type character(len=*) the string lengths are provided as hidden arguments. Type and position of these arguments in the list are compiler specific, where compiler vendors usually default to using Csize_t as type and append the hidden arguments at the end of the argument list. While this behaviour is fixed for some compilers (GNU), others optionally permit placing hidden arguments directly after the character argument (Intel,PGI). For example, Fortran subroutines of the formsubroutine test(str1, str2)\ncharacter(len=*) :: str1,str2can be called via the following Julia code, where the lengths are appendedstr1 = \"foo\"\nstr2 = \"bar\"\nccall(:test, Void, (Ptr{UInt8}, Ptr{UInt8}, Csize_t, Csize_t),\n                    str1, str2, sizeof(str1), sizeof(str2))warning: Warning\nFortran compilers may also add other hidden arguments for pointers, assumed-shape (:) and assumed-size (*) arrays. Such behaviour can be avoided by using ISO_C_BINDING and including bind(c) in the definition of the subroutine, which is strongly recommended for interoperable code. In this case there will be no hidden arguments, at the cost of some language features (e.g. only character(len=1) will be permitted to pass strings).note: Note\nA C function declared to return Cvoid will return the value nothing in Julia."
@@ -2618,7 +2618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Struct-Type-correspondences-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Struct Type correspondences",
     "category": "section",
     "text": "Composite types, aka struct in C or TYPE in Fortran90 (or STRUCTURE / RECORD in some variants of F77), can be mirrored in Julia by creating a struct definition with the same field layout.When used recursively, isbits types are stored inline. All other types are stored as a pointer to the data. When mirroring a struct used by-value inside another struct in C, it is imperative that you do not attempt to manually copy the fields over, as this will not preserve the correct field alignment. Instead, declare an isbits struct type and use that instead. Unnamed structs are not possible in the translation to Julia.Packed structs and union declarations are not supported by Julia.You can get a near approximation of a union if you know, a priori, the field that will have the greatest size (potentially including padding). When translating your fields to Julia, declare the Julia field to be only of that type.Arrays of parameters can be expressed with NTuple:in C:\nstruct B {\n    int A[3];\n};\nb_a_2 = B.A[2];\n\nin Julia:\nstruct B\n    A::NTuple{3, CInt}\nend\nb_a_2 = B.A[3]  # note the difference in indexing (1-based in Julia, 0-based in C)Arrays of unknown size (C99-compliant variable length structs specified by [] or [0]) are not directly supported. Often the best way to deal with these is to deal with the byte offsets directly. For example, if a C library declared a proper string type and returned a pointer to it:struct String {\n    int strlen;\n    char data[];\n};In Julia, we can access the parts independently to make a copy of that string:str = from_c::Ptr{Cvoid}\nlen = unsafe_load(Ptr{Cint}(str))\nunsafe_string(str + Core.sizeof(Cint), len)"
@@ -2626,7 +2626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Type-Parameters-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Type Parameters",
     "category": "section",
     "text": "The type arguments to ccall and @cfunction are evaluated statically, when the method containing the usage is defined. They therefore must take the form of a literal tuple, not a variable, and cannot reference local variables.This may sound like a strange restriction, but remember that since C is not a dynamic language like Julia, its functions can only accept argument types with a statically-known, fixed signature.However, while the type layout must be known statically to compute the intended C ABI, the static parameters of the function are considered to be part of this static environment. The static parameters of the function may be used as type parameters in the call signature, as long as they don\'t affect the layout of the type. For example, f(x::T) where {T} = ccall(:valid, Ptr{T}, (Ptr{T},), x) is valid, since Ptr is always a word-size primitive type. But, g(x::T) where {T} = ccall(:notvalid, T, (T,), x) is not valid, since the type layout of T is not known statically."
@@ -2634,7 +2634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#SIMD-Values-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "SIMD Values",
     "category": "section",
     "text": "Note: This feature is currently implemented on 64-bit x86 and AArch64 platforms only.If a C/C++ routine has an argument or return value that is a native SIMD type, the corresponding Julia type is a homogeneous tuple of VecElement that naturally maps to the SIMD type.  Specifically:The tuple must be the same size as the SIMD type. For example, a tuple representing an __m128 on x86 must have a size of 16 bytes.\nThe element type of the tuple must be an instance of VecElement{T} where T is a primitive type that is 1, 2, 4 or 8 bytes.For instance, consider this C routine that uses AVX intrinsics:#include <immintrin.h>\n\n__m256 dist( __m256 a, __m256 b ) {\n    return _mm256_sqrt_ps(_mm256_add_ps(_mm256_mul_ps(a, a),\n                                        _mm256_mul_ps(b, b)));\n}The following Julia code calls dist using ccall:const m256 = NTuple{8, VecElement{Float32}}\n\na = m256(ntuple(i -> VecElement(sin(Float32(i))), 8))\nb = m256(ntuple(i -> VecElement(cos(Float32(i))), 8))\n\nfunction call_dist(a::m256, b::m256)\n    ccall((:dist, \"libdist\"), m256, (m256, m256), a, b)\nend\n\nprintln(call_dist(a,b))The host machine must have the requisite SIMD registers.  For example, the code above will not work on hosts without AVX support."
@@ -2642,7 +2642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Memory-Ownership-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Memory Ownership",
     "category": "section",
     "text": "malloc/freeMemory allocation and deallocation of such objects must be handled by calls to the appropriate cleanup routines in the libraries being used, just like in any C program. Do not try to free an object received from a C library with Libc.free in Julia, as this may result in the free function being called via the wrong libc library and cause Julia to crash. The reverse (passing an object allocated in Julia to be freed by an external library) is equally invalid."
@@ -2650,7 +2650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#When-to-use-T,-Ptr{T}-and-Ref{T}-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "When to use T, Ptr{T} and Ref{T}",
     "category": "section",
     "text": "In Julia code wrapping calls to external C routines, ordinary (non-pointer) data should be declared to be of type T inside the ccall, as they are passed by value.  For C code accepting pointers, Ref{T} should generally be used for the types of input arguments, allowing the use of pointers to memory managed by either Julia or C through the implicit call to Base.cconvert.  In contrast, pointers returned by the C function called should be declared to be of output type Ptr{T}, reflecting that the memory pointed to is managed by C only. Pointers contained in C structs should be represented as fields of type Ptr{T} within the corresponding Julia struct types designed to mimic the internal structure of corresponding C structs.In Julia code wrapping calls to external Fortran routines, all input arguments should be declared as of type Ref{T}, as Fortran passes all variables by pointers to memory locations. The return type should either be Cvoid for Fortran subroutines, or a T for Fortran functions returning the type T."
@@ -2658,7 +2658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Mapping-C-Functions-to-Julia-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Mapping C Functions to Julia",
     "category": "section",
     "text": ""
@@ -2666,7 +2666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#ccall-/-@cfunction-argument-translation-guide-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "ccall / @cfunction argument translation guide",
     "category": "section",
     "text": "For translating a C argument list to Julia:T, where T is one of the primitive types: char, int, long, short, float, double, complex, enum or any of their typedef equivalents\nT, where T is an equivalent Julia Bits Type (per the table above)\nif T is an enum, the argument type should be equivalent to Cint or Cuint\nargument value will be copied (passed by value)\nstruct T (including typedef to a struct)\nT, where T is a Julia leaf type\nargument value will be copied (passed by value)\nvoid*\ndepends on how this parameter is used, first translate this to the intended pointer type, then determine the Julia equivalent using the remaining rules in this list\nthis argument may be declared as Ptr{Cvoid}, if it really is just an unknown pointer\njl_value_t*\nAny\nargument value must be a valid Julia object\njl_value_t**\nRef{Any}\nargument value must be a valid Julia object (or C_NULL)\nT*\nRef{T}, where T is the Julia type corresponding to T\nargument value will be copied if it is an isbits type otherwise, the value must be a valid Julia object\nT (*)(...) (e.g. a pointer to a function)\nPtr{Cvoid} (you may need to use @cfunction explicitly to create this pointer)\n... (e.g. a vararg)\nT..., where T is the Julia type\ncurrently unsupported by @cfunction\nva_arg\nnot supported by ccall or @cfunction"
@@ -2674,7 +2674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#ccall-/-@cfunction-return-type-translation-guide-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "ccall / @cfunction return type translation guide",
     "category": "section",
     "text": "For translating a C return type to Julia:void\nCvoid (this will return the singleton instance nothing::Cvoid)\nT, where T is one of the primitive types: char, int, long, short, float, double, complex, enum or any of their typedef equivalents\nT, where T is an equivalent Julia Bits Type (per the table above)\nif T is an enum, the argument type should be equivalent to Cint or Cuint\nargument value will be copied (returned by-value)\nstruct T (including typedef to a struct)\nT, where T is a Julia Leaf Type\nargument value will be copied (returned by-value)\nvoid*\ndepends on how this parameter is used, first translate this to the intended pointer type, then determine the Julia equivalent using the remaining rules in this list\nthis argument may be declared as Ptr{Cvoid}, if it really is just an unknown pointer\njl_value_t*\nAny\nargument value must be a valid Julia object\njl_value_t**\nPtr{Any} (Ref{Any} is invalid as a return type)\nargument value must be a valid Julia object (or C_NULL)\nT*\nIf the memory is already owned by Julia, or is an isbits type, and is known to be non-null:\nRef{T}, where T is the Julia type corresponding to T\na return type of Ref{Any} is invalid, it should either be Any (corresponding to jl_value_t*) or Ptr{Any} (corresponding to jl_value_t**)\nC MUST NOT modify the memory returned via Ref{T} if T is an isbits type\nIf the memory is owned by C:\nPtr{T}, where T is the Julia type corresponding to T\nT (*)(...) (e.g. a pointer to a function)\nPtr{Cvoid} (you may need to use @cfunction explicitly to create this pointer)"
@@ -2682,7 +2682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Passing-Pointers-for-Modifying-Inputs-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Passing Pointers for Modifying Inputs",
     "category": "section",
     "text": "Because C doesn\'t support multiple return values, often C functions will take pointers to data that the function will modify. To accomplish this within a ccall, you need to first encapsulate the value inside a Ref{T} of the appropriate type. When you pass this Ref object as an argument, Julia will automatically pass a C pointer to the encapsulated data:width = Ref{Cint}(0)\nrange = Ref{Cfloat}(0)\nccall(:foo, Cvoid, (Ref{Cint}, Ref{Cfloat}), width, range)Upon return, the contents of width and range can be retrieved (if they were changed by foo) by width[] and range[]; that is, they act like zero-dimensional arrays."
@@ -2690,7 +2690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Special-Reference-Syntax-for-ccall-(deprecated):-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Special Reference Syntax for ccall (deprecated):",
     "category": "section",
     "text": "The & syntax is deprecated, use the Ref{T} argument type instead.A prefix & is used on an argument to ccall to indicate that a pointer to a scalar argument should be passed instead of the scalar value itself (required for all Fortran function arguments, as noted above). The following example computes a dot product using a BLAS function.function compute_dot(DX::Vector{Float64}, DY::Vector{Float64})\n    @assert length(DX) == length(DY)\n    n = length(DX)\n    incx = incy = 1\n    product = ccall((:ddot_, \"libLAPACK\"),\n                    Float64,\n                    (Ref{Int32}, Ptr{Float64}, Ref{Int32}, Ptr{Float64}, Ref{Int32}),\n                    n, DX, incx, DY, incy)\n    return product\nendThe meaning of prefix & is not quite the same as in C. In particular, any changes to the referenced variables will not be visible in Julia unless the type is mutable (declared via mutable struct). However, even for immutable structs it will not cause any harm for called functions to attempt such modifications (that is, writing through the passed pointers). Moreover, & may be used with any expression, such as &0 or &f(x).When a scalar value is passed with & as an argument of type Ptr{T}, the value will first be converted to type T."
@@ -2698,7 +2698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Some-Examples-of-C-Wrappers-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Some Examples of C Wrappers",
     "category": "section",
     "text": "Here is a simple example of a C wrapper that returns a Ptr type:mutable struct gsl_permutation\nend\n\n# The corresponding C signature is\n#     gsl_permutation * gsl_permutation_alloc (size_t n);\nfunction permutation_alloc(n::Integer)\n    output_ptr = ccall(\n        (:gsl_permutation_alloc, :libgsl), # name of C function and library\n        Ptr{gsl_permutation},              # output type\n        (Csize_t,),                        # tuple of input types\n        n                                  # name of Julia variable to pass in\n    )\n    if output_ptr == C_NULL # Could not allocate memory\n        throw(OutOfMemoryError())\n    end\n    return output_ptr\nendThe GNU Scientific Library (here assumed to be accessible through :libgsl) defines an opaque pointer, gsl_permutation *, as the return type of the C function gsl_permutation_alloc. As user code never has to look inside the gsl_permutation struct, the corresponding Julia wrapper simply needs a new type declaration, gsl_permutation, that has no internal fields and whose sole purpose is to be placed in the type parameter of a Ptr type.  The return type of the ccall is declared as Ptr{gsl_permutation}, since the memory allocated and pointed to by output_ptr is controlled by C (and not Julia).The input n is passed by value, and so the function\'s input signature is simply declared as (Csize_t,) without any Ref or Ptr necessary. (If the wrapper was calling a Fortran function instead, the corresponding function input signature should instead be (Ref{Csize_t},), since Fortran variables are passed by pointers.) Furthermore, n can be any type that is convertible to a Csize_t integer; the ccall implicitly calls Base.cconvert(Csize_t, n).Here is a second example wrapping the corresponding destructor:# The corresponding C signature is\n#     void gsl_permutation_free (gsl_permutation * p);\nfunction permutation_free(p::Ref{gsl_permutation})\n    ccall(\n        (:gsl_permutation_free, :libgsl), # name of C function and library\n        Cvoid,                             # output type\n        (Ref{gsl_permutation},),          # tuple of input types\n        p                                 # name of Julia variable to pass in\n    )\nendHere, the input p is declared to be of type Ref{gsl_permutation}, meaning that the memory that p points to may be managed by Julia or by C. A pointer to memory allocated by C should be of type Ptr{gsl_permutation}, but it is convertible using Base.cconvert and therefore can be used in the same (covariant) context of the input argument to a ccall. A pointer to memory allocated by Julia must be of type Ref{gsl_permutation}, to ensure that the memory address pointed to is valid and that Julia\'s garbage collector manages the chunk of memory pointed to correctly. Therefore, the Ref{gsl_permutation} declaration allows pointers managed by C or Julia to be used.If the C wrapper never expects the user to pass pointers to memory managed by Julia, then using p::Ptr{gsl_permutation} for the method signature of the wrapper and similarly in the ccall is also acceptable.Here is a third example passing Julia arrays:# The corresponding C signature is\n#    int gsl_sf_bessel_Jn_array (int nmin, int nmax, double x,\n#                                double result_array[])\nfunction sf_bessel_Jn_array(nmin::Integer, nmax::Integer, x::Real)\n    if nmax < nmin\n        throw(DomainError())\n    end\n    result_array = Vector{Cdouble}(nmax - nmin + 1)\n    errorcode = ccall(\n        (:gsl_sf_bessel_Jn_array, :libgsl), # name of C function and library\n        Cint,                               # output type\n        (Cint, Cint, Cdouble, Ref{Cdouble}),# tuple of input types\n        nmin, nmax, x, result_array         # names of Julia variables to pass in\n    )\n    if errorcode != 0\n        error(\"GSL error code $errorcode\")\n    end\n    return result_array\nendThe C function wrapped returns an integer error code; the results of the actual evaluation of the Bessel J function populate the Julia array result_array. This variable can only be used with corresponding input type declaration Ref{Cdouble}, since its memory is allocated and managed by Julia, not C. The implicit call to Base.cconvert(Ref{Cdouble}, result_array) unpacks the Julia pointer to a Julia array data structure into a form understandable by C.Note that for this code to work correctly, result_array must be declared to be of type Ref{Cdouble} and not Ptr{Cdouble}. The memory is managed by Julia and the Ref signature alerts Julia\'s garbage collector to keep managing the memory for result_array while the ccall executes. If Ptr{Cdouble} were used instead, the ccall may still work, but Julia\'s garbage collector would not be aware that the memory declared for result_array is being used by the external C function. As a result, the code may produce a memory leak if result_array never gets freed by the garbage collector, or if the garbage collector prematurely frees result_array, the C function may end up throwing an invalid memory access exception."
@@ -2706,7 +2706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Garbage-Collection-Safety-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Garbage Collection Safety",
     "category": "section",
     "text": "When passing data to a ccall, it is best to avoid using the pointer function. Instead define a convert method and pass the variables directly to the ccall. ccall automatically arranges that all of its arguments will be preserved from garbage collection until the call returns. If a C API will store a reference to memory allocated by Julia, after the ccall returns, you must arrange that the object remains visible to the garbage collector. The suggested way to handle this is to make a global variable of type Array{Ref,1} to hold these values, until the C library notifies you that it is finished with them.Whenever you have created a pointer to Julia data, you must ensure the original data exists until you are done with using the pointer. Many methods in Julia such as unsafe_load and String make copies of data instead of taking ownership of the buffer, so that it is safe to free (or alter) the original data without affecting Julia. A notable exception is unsafe_wrap which, for performance reasons, shares (or can be told to take ownership of) the underlying buffer.The garbage collector does not guarantee any order of finalization. That is, if a contained a reference to b and both a and b are due for garbage collection, there is no guarantee that b would be finalized after a. If proper finalization of a depends on b being valid, it must be handled in other ways."
@@ -2714,7 +2714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Non-constant-Function-Specifications-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Non-constant Function Specifications",
     "category": "section",
     "text": "A (name, library) function specification must be a constant expression. However, it is possible to use computed values as function names by staging through eval as follows:@eval ccall(($(string(\"a\", \"b\")), \"lib\"), ...This expression constructs a name using string, then substitutes this name into a new ccall expression, which is then evaluated. Keep in mind that eval only operates at the top level, so within this expression local variables will not be available (unless their values are substituted with $). For this reason, eval is typically only used to form top-level definitions, for example when wrapping libraries that contain many similar functions. A similar example can be constructed for @cfunction.However, doing this will also be very slow and leak memory, so you should usually avoid this and instead keep reading. The next section discusses how to use indirect calls to efficiently accomplish a similar effect."
@@ -2722,7 +2722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Indirect-Calls-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Indirect Calls",
     "category": "section",
     "text": "The first argument to ccall can also be an expression evaluated at run time. In this case, the expression must evaluate to a Ptr, which will be used as the address of the native function to call. This behavior occurs when the first ccall argument contains references to non-constants, such as local variables, function arguments, or non-constant globals.For example, you might look up the function via dlsym, then cache it in a shared reference for that session. For example:macro dlsym(func, lib)\n    z = Ref{Ptr{Cvoid}}(C_NULL)\n    quote\n        let zlocal = $z[]\n            if zlocal == C_NULL\n                zlocal = dlsym($(esc(lib))::Ptr{Cvoid}, $(esc(func)))::Ptr{Cvoid}\n                $z[] = $zlocal\n            end\n            zlocal\n        end\n    end\nend\n\nmylibvar = Libdl.dlopen(\"mylib\")\nccall(@dlsym(\"myfunc\", mylibvar), Cvoid, ())"
@@ -2730,7 +2730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Closure-cfunctions-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Closure cfunctions",
     "category": "section",
     "text": "The first argument to @cfunction can be marked with a $, in which case the return value will instead be a struct CFunction which closes over the argument. You must ensure that this return object is kept alive until all uses of it are done. The contents and code at the cfunction pointer will be erased via a finalizer when this reference is dropped and atexit. This is not usually needed, since this functionality is not present in C, but can be useful for dealing with ill-designed APIs which don\'t provide a separate closure environment parameter.function qsort(a::Vector{T}, cmp) where T\n    isbits(T) || throw(ArgumentError(\"this method can only qsort isbits arrays\"))\n    callback = @cfunction $cmp Cint (Ref{T}, Ref{T})\n    # Here, `callback` isa Base.CFunction, which will be converted to Ptr{Cvoid}\n    # (and protected against finalization) by the ccall\n    ccall(:qsort, Cvoid, (Ptr{T}, Csize_t, Csize_t, Ptr{Cvoid}),\n        a, length(a), Base.elsize(a), callback)\n    # We could instead use:\n    #    GC.@preserve callback begin\n    #        use(Base.unsafe_convert(Ptr{Cvoid}, callback))\n    #    end\n    # if we needed to use it outside of a `ccall`\n    return a\nend"
@@ -2738,7 +2738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Closing-a-Library-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Closing a Library",
     "category": "section",
     "text": "It is sometimes useful to close (unload) a library so that it can be reloaded. For instance, when developing C code for use with Julia, one may need to compile, call the C code from Julia, then close the library, make an edit, recompile, and load in the new changes. One can either restart Julia or use the Libdl functions to manage the library explicitly, such as:lib = Libdl.dlopen(\"./my_lib.so\") # Open the library explicitly.\nsym = Libdl.dlsym(lib, :my_fcn)   # Get a symbol for the function to call.\nccall(sym, ...) # Use the pointer `sym` instead of the (symbol, library) tuple (remaining arguments are the same).\nLibdl.dlclose(lib) # Close the library explicitly.Note that when using ccall with the tuple input (e.g., ccall((:my_fcn, \"./my_lib.so\"), ...)), the library is opened implicitly and it may not be explicitly closed."
@@ -2746,7 +2746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Calling-Convention-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Calling Convention",
     "category": "section",
     "text": "The second argument to ccall can optionally be a calling convention specifier (immediately preceding return type). Without any specifier, the platform-default C calling convention is used. Other supported conventions are: stdcall, cdecl, fastcall, and thiscall (no-op on 64-bit Windows). For example (from base/libc.jl) we see the same gethostnameccall as above, but with the correct signature for Windows:hn = Vector{UInt8}(256)\nerr = ccall(:gethostname, stdcall, Int32, (Ptr{UInt8}, UInt32), hn, length(hn))For more information, please see the LLVM Language Reference.There is one additional special calling convention llvmcall, which allows inserting calls to LLVM intrinsics directly. This can be especially useful when targeting unusual platforms such as GPGPUs. For example, for CUDA, we need to be able to read the thread index:ccall(\"llvm.nvvm.read.ptx.sreg.tid.x\", llvmcall, Int32, ())As with any ccall, it is essential to get the argument signature exactly correct. Also, note that there is no compatibility layer that ensures the intrinsic makes sense and works on the current target, unlike the equivalent Julia functions exposed by Core.Intrinsics."
@@ -2754,7 +2754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Accessing-Global-Variables-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Accessing Global Variables",
     "category": "section",
     "text": "Global variables exported by native libraries can be accessed by name using the cglobal function. The arguments to cglobal are a symbol specification identical to that used by ccall, and a type describing the value stored in the variable:julia> cglobal((:errno, :libc), Int32)\nPtr{Int32} @0x00007f418d0816b8The result is a pointer giving the address of the value. The value can be manipulated through this pointer using unsafe_load and unsafe_store!."
@@ -2762,7 +2762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Accessing-Data-through-a-Pointer-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Accessing Data through a Pointer",
     "category": "section",
     "text": "The following methods are described as \"unsafe\" because a bad pointer or type declaration can cause Julia to terminate abruptly.Given a Ptr{T}, the contents of type T can generally be copied from the referenced memory into a Julia object using unsafe_load(ptr, [index]). The index argument is optional (default is 1), and follows the Julia-convention of 1-based indexing. This function is intentionally similar to the behavior of getindex and setindex! (e.g. [] access syntax).The return value will be a new object initialized to contain a copy of the contents of the referenced memory. The referenced memory can safely be freed or released.If T is Any, then the memory is assumed to contain a reference to a Julia object (a jl_value_t*), the result will be a reference to this object, and the object will not be copied. You must be careful in this case to ensure that the object was always visible to the garbage collector (pointers do not count, but the new reference does) to ensure the memory is not prematurely freed. Note that if the object was not originally allocated by Julia, the new object will never be finalized by Julia\'s garbage collector.  If the Ptr itself is actually a jl_value_t*, it can be converted back to a Julia object reference by unsafe_pointer_to_objref(ptr). (Julia values v can be converted to jl_value_t* pointers, as Ptr{Cvoid}, by calling pointer_from_objref(v).)The reverse operation (writing data to a Ptr{T}), can be performed using unsafe_store!(ptr, value, [index]). Currently, this is only supported for primitive types or other pointer-free (isbits) immutable struct types.Any operation that throws an error is probably currently unimplemented and should be posted as a bug so that it can be resolved.If the pointer of interest is a plain-data array (primitive type or immutable struct), the function unsafe_wrap(Array, ptr,dims, own = false) may be more useful. The final parameter should be true if Julia should \"take ownership\" of the underlying buffer and call free(ptr) when the returned Array object is finalized.  If the own parameter is omitted or false, the caller must ensure the buffer remains in existence until all access is complete.Arithmetic on the Ptr type in Julia (e.g. using +) does not behave the same as C\'s pointer arithmetic. Adding an integer to a Ptr in Julia always moves the pointer by some number of bytes, not elements. This way, the address values obtained from pointer arithmetic do not depend on the element types of pointers."
@@ -2770,7 +2770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#Thread-safety-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "Thread-safety",
     "category": "section",
     "text": "Some C libraries execute their callbacks from a different thread, and since Julia isn\'t thread-safe you\'ll need to take some extra precautions. In particular, you\'ll need to set up a two-layered system: the C callback should only schedule (via Julia\'s event loop) the execution of your \"real\" callback. To do this, create an AsyncCondition object and wait on it:cond = Base.AsyncCondition()\nwait(cond)The callback you pass to C should only execute a ccall to :uv_async_send, passing cond.handle as the argument, taking care to avoid any allocations or other interactions with the Julia runtime.Note that events may be coalesced, so multiple calls to uv_async_send may result in a single wakeup notification to the condition."
@@ -2778,7 +2778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#关于Callbacks的更多内容-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "关于Callbacks的更多内容",
     "category": "section",
     "text": "关于如何传递callback到C库的更多细节，请参考此博客."
@@ -2786,7 +2786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/calling-c-and-fortran-code/#C-1",
-    "page": "调用C和Fortran代码",
+    "page": "调用 C 和 Fortran 代码",
     "title": "C++",
     "category": "section",
     "text": "如需要直接易用的C++接口，即直接用Julia写封装代码，请参考 Cxx。如需封装C++库的工具，即用C++写封装/胶水代码，请参考CxxWrap。"
@@ -3077,28 +3077,132 @@ var documenterSearchIndex = {"docs": [
     "page": "嵌入 Julia",
     "title": "高级别嵌入",
     "category": "section",
-    "text": "我们从一个简单的 C 程序开始初始化 Julia 并调用一些 Julia 代码：#include <julia.h>\nJULIA_DEFINE_FAST_TLS() // only define this once, in an executable (not in a shared library) if you want fast code.\n\nint main(int argc, char *argv[])\n{\n    /* required: setup the Julia context */\n    jl_init();\n\n    /* run Julia commands */\n    jl_eval_string(\"print(sqrt(2.0))\");\n\n    /* strongly recommended: notify Julia that the\n         program is about to terminate. this allows\n         Julia time to cleanup pending write requests\n         and run all finalizers\n    */\n    jl_atexit_hook(0);\n    return 0;\n}为构建这个程序，你必须将 Julia 头文件的路径放入 include 路径并链接 libjulia 。例如 Julia 被安装到 $JULIA_DIR，则可以用 gcc 来编译上面的测试程序 test.c：gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib test.c -ljulia $JULIA_DIR/lib/julia/libstdc++.so.6然后如果将环境变量 JULIA_BINDIR 设置为 $JULIA_DIR/bin，那么输出的程序test将会被执行。或者查看 Julia 源代码目录 test/embedding/ 文件夹下的 embedding.c 文件。 文件 ui/repl.c 则是另一个简单示例，用于设置链接 libjulia 时 jl_options 的选项 。在调用任何其他 Julia C 函数之前第一件必须要做的事是初始化 Julia，通过调用 jl_init 尝试自动确定 Julia 的安装位置来实现。如果需要自定义位置或指定要加载的系统映像，请改用 jl_init_with_image。测试程序中的第二个语句通过调用 jl_eval_string 来执行 Julia 语句。在程序结束之前，强烈建议调用 jl_atexit_hook。上面的示例程序在 main 返回之前进行了调用。!!! 注意     现在，动态链接 libjulia 的共享库需要传递选项 RTLD_GLOBAL 。比如在 Python 中像这样调用：    >>> julia=CDLL(\'./libjulia.dylib\',RTLD_GLOBAL)\n    >>> julia.jl_init.argtypes = []\n    >>> julia.jl_init()\n    250593296\n    ```\n\n!!! 注意\n    如果 Julia 程序需要访问 主可执行文件 中的符号，那么除了下面描述的由 `julia-config.jl` 生成的标记之外，可能还需要在 Linux 上的编译时添加 `-Wl,--export-dynamic` 链接器标志。编译共享库时则不必要。\n\n### 使用 julia-config 自动确定构建参数\n\n`julia-config.jl` 创建脚本是为了帮助确定使用嵌入的 Julia 程序所需的构建参数。此脚本使用由其调用的特定 Julia 分发的构建参数和系统配置来导出嵌入程序的必要编译器标志以与该分发交互。此脚本位于 Julia 的 share 目录中。\n\n#### 例子\nc #include <julia.h>int main(int argc, char *argv[]) {     jlinit();     (void)jlevalstring(\"println(sqrt(2.0))\");     jlatexit_hook(0);     return 0; }\n#### 在命令行中\n\n命令行脚本简单用法：假设 `julia-config.jl` 位于 `/usr/local/julia/share/julia`，它可以直接在命令行上调用，并采用 3 个标志的任意组合：\n/usr/local/julia/share/julia/julia-config.jl Usage: julia-config [–cflags|–ldflags|–ldlibs]\n如果上面的示例源代码保存为文件 `embed_example.c`，则以下命令将其编译为 Linux 和 Windows 上运行的程序（MSYS2 环境），或者如果在 OS/X 上，则用 `clang` 替换 `gcc`。：\n/usr/local/julia/share/julia/julia-config.jl –cflags –ldflags –ldlibs | xargs gcc embed_example.c\n#### 在 Makefiles 中使用\n\n但通常来说，嵌入的项目会比上面更复杂，因此一般会提供 makefile 支持。由于使用了 **shell** 宏扩展，我们就假设用 GNU make 。\n另外，尽管很多时候 `julia-config.jl` 会在目录 `/usr/local` 中出现多次，不过也未必如此，但 Julia 也定位 `julia-config.jl`，并且可以使用 makefile 来利用它。上面的示例程序使用 Makefile 来扩展。：\nmakefiles JLSHARE = $(shell julia -e \'print(joinpath(Sys.BINDIR, Base.DATAROOTDIR, \"julia\"))\') CFLAGS += $(Expr(:incomplete, \"incomplete: premature end of input\"))SHARE)/julia-config.jl –cflags) CXXFLAGS += $(shell JL_SHARE/julia-config.jl –cflags) LDFLAGS += $(shell JL_SHARE/julia-config.jl –ldflags) LDLIBS += $(shell JL_SHARE/julia-config.jl –ldlibs)all: embed_example\n现在构建的命令就只需要简简单单的`make`了。\n\n## 转换类型\n\n真正的应用程序不仅仅要执行表达式，还要返回表达式的值给宿主程序。`jl_eval_string` 返回 一个 `jl_value_t*`，它是指向堆分配的 Julia 对象的指针。存储像 [`Float64`](@ref) 这些简单数据类型叫做 `装箱`，然后提取存储的基础类型数据叫 `拆箱`。我们改进的示例程序在 Julia 中计算 2 的平方根，并在 C 中读取回结果，如下所示：\nc jlvaluet *ret = jlevalstring(\"sqrt(2.0)\");if (jltypeis(ret, jlfloat64type)) {     double retunboxed = jlunboxfloat64(ret);     printf(\"sqrt(2.0) in C: %e \\n\", ret_unboxed); } else {     printf(\"ERROR: unexpected return type from sqrt(::Float64)\\n\"); }\n为了检查 `ret` 是否为特定的 Julia 类型，我们可以使用 `jl_isa`，`jl_typeis` 或 `jl_is_...` 函数。通过输入 `typeof(sqrt(2.0))`到 Julia shell，我们可以看到返回类型是 [`Float64`](@ref)（在C中是 `double` 类型）。要将装箱的 Julia 值转换为 C 的double，上面的代码片段使用了 `jl_unbox_float64`函数。\n\n相应的, 用 `jl_box_...` 函数是另一种转换的方式。\nc jlvaluet *a = jlboxfloat64(3.0); jlvaluet *b = jlboxfloat32(3.0f); jlvaluet *c = jlboxint32(3);\n正如我们将在下面看到的那样，装箱需要在调用 Julia 函数时使用特定参数。\n\n## 调用 Julia 函数\n\n虽然 `jl_eval_string` 允许 C 获取 Julia 表达式的结果，但它不允许将在 C 中计算的参数传递给 Julia。因此需要使用 `jl_call` 来直接调用Julia函数：\nc jlfunctiont *func = jlgetfunction(jlbasemodule, \"sqrt\"); jlvaluet *argument = jlboxfloat64(2.0); jlvaluet *ret = jl_call1(func, argument);\n在第一步中，通过调用 `jl_get_function` 检索出 Julia 函数 `sqrt` 的句柄(handle)。\n传递给 `jl_get_function` 的第一个参数是 指向 定义`sqrt`所在的 `Base` 模块 的指针。\n然后，double 值通过 `jl_box_float64` 被装箱。\n最后，使用 `jl_call1` 调用该函数。也有 `jl_call0`，`jl_call2`和`jl_call3` 函数，方便地处理不同数量的参数。\n要传递更多参数，使用 `jl_call`：\nc jlvaluet *jlcall(jlfunctiont *f, jlvaluet **args, int32t nargs)\n它的第二个参数 `args` 是 `jl_value_t*` 类型的数组，`nargs` 是参数的个数 \n\n## 内存管理\n\n正如我们所见，Julia 对象在 C 中表示为指针。这就出现了 谁来负责释放这些对象的问题。\n\n通常，Julia 对象由垃圾收集器（GC）释放，但 GC 不会自动就懂我们正C中保留对Julia值的引用。这意味着 GC 会在你的掌控之外释放对象，从而使指针无效。\n\nGC 只会在 Julia 对象分配后运行。像 `jl_box_float64` 这种函数调用会触发内存分配，且有可能会发生在Julia代码运行过程中的任何时期。\n但是在两次 `jl_...` 调用之间使用指针通常是安全的。但是为了确保值可以在 `jl_...` 调用中存活，我们必须告诉 Julia 我们保留对 Julia 值的引用。可以使用 `JL_GC_PUSH` 宏来完成：\nc jlvaluet *ret = jlevalstring(\"sqrt(2.0)\"); JLGCPUSH1(&ret); // Do something with ret JLGCPOP();\n调用 `JL_GC_POP` 释放先前 `JL_GC_PUSH` 建立的引用。\n请注意 `JL_GC_PUSH` 正在堆栈上运行，所以在销毁堆栈之前它必须与之前的 `JL_GC_POP` 完全配对。\n\n使用 `JL_GC_PUSH2`，`JL_GC_PUSH3` 和 `JL_GC_PUSH4` 宏可以一次 push 多个Julia 值。\n要推送一个 Julia值的数组，可以使用 `JL_GC_PUSHARGS` 宏，它的用法如下：\nc jlvaluet **args; JLGCPUSHARGS(args, 2); // args can now hold 2 jl_value_t* objects args[0] = somevalue; args[1] = someothervalue; // Do something with args (e.g. call jl... functions) JLGCPOP();\n垃圾收集器也假设在这种情况下工作。即它知道每个老一代对象都指向年轻一代对象。\n每次更新指针时，都必须使用 `jl_gc_wb` (write barrier，写屏障) 函数将指针通知给收集器，如下所示：\nc jlvaluet parent = someoldvalue, *child = someyoungvalue; ((somespecifictype)parent)->field = child; jlgcwb(parent, child);\n通常情况下不可能在运行时预测 值是否是旧的，因此 写屏障 必须被插入在所有显式存储之后。一个需要注意的例外是如果 `parent` 对象刚分配，垃圾收集之后并不执行。请记住大多数 `jl_...` 函数有时候都会执行垃圾收集。\n\n直接更新数据时，对于指针数组来说 写屏障 也是必需的 例如：\nc jlarrayt *somearray = ...; // e.g. a Vector{Any} void data = (void)jlarraydata(somearray); jlvaluet *somevalue = ...; data[0] = somevalue; jlgcwb(somearray, somevalue);\n### 控制垃圾收集器\n\n有一些函数能够控制GC。在正常使用情况下这些不是必要的。\n\n| 函数             | 描述                                  |\n|:-------------------- |:-------------------------------------------- |\n| `jl_gc_collect()`    | 强制执行 GC                               |\n| `jl_gc_enable(0)`    | 禁用 GC， 返回前一个状态作为 int 类型 |\n| `jl_gc_enable(1)`    | 启用 GC， 返回前一个状态作为 int 类型 |\n| `jl_gc_is_enabled()` | 返回当前状态作为 int 类型                  |\n\n## 使用数组\n\nJulia 和 C 可以不通过复制而共享数组数据。下面一个例子将展示它是如何工作的。\n\nJulia数组用数据类型 `jl_array_t *` 表示。基本上，`jl_array_t` 是一个包含以下内容的结构：\n\n  * 关于数据类型的信息\n  * 指向数据块的指针\n  * 关于数组长度的信息\n\n为了让事情比较简单，我们从一维数组开始，创建一个存有 10 个 FLoat64 类型的数组如下所示：\nc jlvaluet* arraytype = jlapplyarraytype((jlvaluet)jlfloat64type, 1); jlarrayt x          = jlallocarray1d(arraytype, 10);\n或者，如果您已经分配了数组，则可以生成一个简易的包装器来包裹其数据：\nc double existingArray = (double)malloc(sizeof(double)*10); jlarrayt *x = jlptrtoarray1d(array_type, existingArray, 10, 0);\n最后一个参数是一个布尔值，表示 Julia 是否应该获取数据的所有权。 如果这个参数 不为零，当数组不再被引用时，GC 会在数据的指针上调用 `free` 。\n\n为了访问 x 的数据，我们可以使用 `jl_array_data`：\nc double xData = (double)jlarraydata(x);\n现在我们可以填充这个数组：\nc for(sizet i=0; i<jlarray_len(x); i++)     xData[i] = i;\n现在让我们调用一个对 `x` 就地操作的 Julia 函数：\nc jlfunctiont func = jlgetfunction(jlbasemodule, \"reverse!\"); jlcall1(func, (jlvalue_t)x);\n通过打印数组，可以验证 `x` 的元素现在是否已被逆置 (reversed)。\n\n### 获取返回的数组\n\n如果 Julia 函数返回一个数组，`jl_eval_string` 和 `jl_call` 的返回值可以被强制转换为`jl_array_t *`：\nc jlfunctiont func  = jlgetfunction(jlbasemodule, \"reverse\"); jlarrayt *y = (jlarrayt)jlcall1(func, (jlvalue_t*)x);\n现在使用 `jl_array_data` 可以像前面一样访问 `y` 的内容。一如既往地，一定要在使用数组的时候确保 持有使用数组的引用。\n\n### 多维数组\n\nJulia的多维数组以 列序优先 存储在内存中。这是一些 创建一个2D数组并访问其属性 的代码：\nc // Create 2D array of float64 type jlvaluet *arraytype = jlapplyarraytype(jlfloat64type, 2); jlarrayt *x  = jlallocarray2d(arraytype, 10, 5);// Get array pointer double p = (double)jlarraydata(x); // Get number of dimensions int ndims = jlarrayndims(x); // Get the size of the i-th dim sizet size0 = jlarraydim(x,0); sizet size1 = jlarraydim(x,1);// Fill array with data for(sizet i=0; i<size1; i++)     for(sizet j=0; j<size0; j++)         p[j + size0*i] = i + j;\n请注意，虽然 Julia 的数组使用基于 1 的索引，但C API 中使用基于 0 的索引（例如 在调用`jl_array_dim`）以便用C代码的习惯来阅读。\n\n## 异常\n\nJulia 代码可以抛出异常。比如：\nc jlevalstring(\"thisfunctiondoesnotexist()\");\n这个调用似乎什么都没做。但可以检查异常是否抛出：\nc if (jlexceptionoccurred())     printf(\"%s \\n\", jltypeofstr(jlexceptionoccurred()));\n如果您使用 支持异常的语言的 Julia C API（例如Python，C＃，C ++），使用 检查是否有异常的函数 将每个调用 包装到 `libjulia` 中是有意义的，然后异常在宿主语言中重新抛出。\n\n### 抛出 Julia 异常\n\n在编写 Julia 可调用函数时，可能需要验证参数 并抛出异常表示错误。\n典型的类型检查像这样：\nc if (!jltypeis(val, jlfloat64type)) {     jltypeerror(functionname, (jlvaluet*)jlfloat64type, val); }\n可以使用以下函数 引发一般异常：\nc void jlerror(const char *str); void jlerrorf(const char *fmt, ...);\n`jl_error`采用 C 字符串，而 `jl_errorf` 像 `printf` 一样调用:\n\nc jl_errorf(\"argument x = %d is too large\", x); ```在这个例子中假定 x 是一个 int 值。"
+    "text": "我们从一个简单的 C 程序开始初始化 Julia 并调用一些 Julia 代码：#include <julia.h>\nJULIA_DEFINE_FAST_TLS() // only define this once, in an executable (not in a shared library) if you want fast code.\n\nint main(int argc, char *argv[])\n{\n    /* required: setup the Julia context */\n    jl_init();\n\n    /* run Julia commands */\n    jl_eval_string(\"print(sqrt(2.0))\");\n\n    /* strongly recommended: notify Julia that the\n         program is about to terminate. this allows\n         Julia time to cleanup pending write requests\n         and run all finalizers\n    */\n    jl_atexit_hook(0);\n    return 0;\n}为构建这个程序，你必须将 Julia 头文件的路径放入 include 路径并链接 libjulia 。例如 Julia 被安装到 $JULIA_DIR，则可以用 gcc 来编译上面的测试程序 test.c：gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib test.c -ljulia $JULIA_DIR/lib/julia/libstdc++.so.6然后如果将环境变量 JULIA_BINDIR 设置为 $JULIA_DIR/bin，那么输出的程序test将会被执行。或者查看 Julia 源代码目录 test/embedding/ 文件夹下的 embedding.c 文件。 文件 ui/repl.c 则是另一个简单示例，用于设置链接 libjulia 时 jl_options 的选项 。在调用任何其他 Julia C 函数之前第一件必须要做的事是初始化 Julia，通过调用 jl_init 尝试自动确定 Julia 的安装位置来实现。如果需要自定义位置或指定要加载的系统映像，请改用 jl_init_with_image。测试程序中的第二个语句通过调用 jl_eval_string 来执行 Julia 语句。在程序结束之前，强烈建议调用 jl_atexit_hook。上面的示例程序在 main 返回之前进行了调用。note: Note\n现在，动态链接 libjulia 的共享库需要传递选项 RTLD_GLOBAL 。比如在 Python 中像这样调用：>>> julia=CDLL(\'./libjulia.dylib\',RTLD_GLOBAL)\n>>> julia.jl_init.argtypes = []\n>>> julia.jl_init()\n250593296note: Note\n如果 Julia 程序需要访问 主可执行文件 中的符号，那么除了下面描述的由 julia-config.jl 生成的标记之外，可能还需要在 Linux 上的编译时添加 -Wl,--export-dynamic 链接器标志。编译共享库时则不必要。"
+},
+
+{
+    "location": "manual/embedding/#使用-julia-config-自动确定构建参数-1",
+    "page": "嵌入 Julia",
+    "title": "使用 julia-config 自动确定构建参数",
+    "category": "section",
+    "text": "julia-config.jl 创建脚本是为了帮助确定使用嵌入的 Julia 程序所需的构建参数。此脚本使用由其调用的特定 Julia 分发的构建参数和系统配置来导出嵌入程序的必要编译器标志以与该分发交互。此脚本位于 Julia 的 share 目录中。"
+},
+
+{
+    "location": "manual/embedding/#例子-1",
+    "page": "嵌入 Julia",
+    "title": "例子",
+    "category": "section",
+    "text": "#include <julia.h>\n\nint main(int argc, char *argv[])\n{\n    jl_init();\n    (void)jl_eval_string(\"println(sqrt(2.0))\");\n    jl_atexit_hook(0);\n    return 0;\n}"
+},
+
+{
+    "location": "manual/embedding/#在命令行中-1",
+    "page": "嵌入 Julia",
+    "title": "在命令行中",
+    "category": "section",
+    "text": "命令行脚本简单用法：假设 julia-config.jl 位于 /usr/local/julia/share/julia，它可以直接在命令行上调用，并采用 3 个标志的任意组合：/usr/local/julia/share/julia/julia-config.jl\nUsage: julia-config [--cflags|--ldflags|--ldlibs]如果上面的示例源代码保存为文件 embed_example.c，则以下命令将其编译为 Linux 和 Windows 上运行的程序（MSYS2 环境），或者如果在 OS/X 上，则用 clang 替换 gcc。：/usr/local/julia/share/julia/julia-config.jl --cflags --ldflags --ldlibs | xargs gcc embed_example.c"
+},
+
+{
+    "location": "manual/embedding/#在-Makefiles-中使用-1",
+    "page": "嵌入 Julia",
+    "title": "在 Makefiles 中使用",
+    "category": "section",
+    "text": "但通常来说，嵌入的项目会比上面更复杂，因此一般会提供 makefile 支持。由于使用了 shell 宏扩展，我们就假设用 GNU make 。 另外，尽管很多时候 julia-config.jl 会在目录 /usr/local 中出现多次，不过也未必如此，但 Julia 也定位 julia-config.jl，并且可以使用 makefile 来利用它。上面的示例程序使用 Makefile 来扩展。：JL_SHARE = $(shell julia -e \'print(joinpath(Sys.BINDIR, Base.DATAROOTDIR, \"julia\"))\')\nCFLAGS += $(shell $(JL_SHARE)/julia-config.jl --cflags)\nCXXFLAGS += $(shell $(JL_SHARE)/julia-config.jl --cflags)\nLDFLAGS += $(shell $(JL_SHARE)/julia-config.jl --ldflags)\nLDLIBS += $(shell $(JL_SHARE)/julia-config.jl --ldlibs)\n\nall: embed_example现在构建的命令就只需要简简单单的make了。"
+},
+
+{
+    "location": "manual/embedding/#转换类型-1",
+    "page": "嵌入 Julia",
+    "title": "转换类型",
+    "category": "section",
+    "text": "真正的应用程序不仅仅要执行表达式，还要返回表达式的值给宿主程序。jl_eval_string 返回 一个 jl_value_t*，它是指向堆分配的 Julia 对象的指针。存储像 Float64 这些简单数据类型叫做 装箱，然后提取存储的基础类型数据叫 拆箱。我们改进的示例程序在 Julia 中计算 2 的平方根，并在 C 中读取回结果，如下所示：jl_value_t *ret = jl_eval_string(\"sqrt(2.0)\");\n\nif (jl_typeis(ret, jl_float64_type)) {\n    double ret_unboxed = jl_unbox_float64(ret);\n    printf(\"sqrt(2.0) in C: %e \\n\", ret_unboxed);\n}\nelse {\n    printf(\"ERROR: unexpected return type from sqrt(::Float64)\\n\");\n}为了检查 ret 是否为特定的 Julia 类型，我们可以使用 jl_isa，jl_typeis 或 jl_is_... 函数。通过输入 typeof(sqrt(2.0))到 Julia shell，我们可以看到返回类型是 Float64（在C中是 double 类型）。要将装箱的 Julia 值转换为 C 的double，上面的代码片段使用了 jl_unbox_float64函数。相应的, 用 jl_box_... 函数是另一种转换的方式。jl_value_t *a = jl_box_float64(3.0);\njl_value_t *b = jl_box_float32(3.0f);\njl_value_t *c = jl_box_int32(3);正如我们将在下面看到的那样，装箱需要在调用 Julia 函数时使用特定参数。"
+},
+
+{
+    "location": "manual/embedding/#调用-Julia-函数-1",
+    "page": "嵌入 Julia",
+    "title": "调用 Julia 函数",
+    "category": "section",
+    "text": "虽然 jl_eval_string 允许 C 获取 Julia 表达式的结果，但它不允许将在 C 中计算的参数传递给 Julia。因此需要使用 jl_call 来直接调用Julia函数：jl_function_t *func = jl_get_function(jl_base_module, \"sqrt\");\njl_value_t *argument = jl_box_float64(2.0);\njl_value_t *ret = jl_call1(func, argument);在第一步中，通过调用 jl_get_function 检索出 Julia 函数 sqrt 的句柄(handle)。 传递给 jl_get_function 的第一个参数是 指向 定义sqrt所在的 Base 模块 的指针。 然后，double 值通过 jl_box_float64 被装箱。 最后，使用 jl_call1 调用该函数。也有 jl_call0，jl_call2和jl_call3 函数，方便地处理不同数量的参数。 要传递更多参数，使用 jl_call：jl_value_t *jl_call(jl_function_t *f, jl_value_t **args, int32_t nargs)它的第二个参数 args 是 jl_value_t* 类型的数组，nargs 是参数的个数"
+},
+
+{
+    "location": "manual/embedding/#内存管理-1",
+    "page": "嵌入 Julia",
+    "title": "内存管理",
+    "category": "section",
+    "text": "正如我们所见，Julia 对象在 C 中表示为指针。这就出现了 谁来负责释放这些对象的问题。通常，Julia 对象由垃圾收集器（GC）释放，但 GC 不会自动就懂我们正C中保留对Julia值的引用。这意味着 GC 会在你的掌控之外释放对象，从而使指针无效。GC 只会在 Julia 对象分配后运行。像 jl_box_float64 这种函数调用会触发内存分配，且有可能会发生在Julia代码运行过程中的任何时期。 但是在两次 jl_... 调用之间使用指针通常是安全的。但是为了确保值可以在 jl_... 调用中存活，我们必须告诉 Julia 我们保留对 Julia 值的引用。可以使用 JL_GC_PUSH 宏来完成：jl_value_t *ret = jl_eval_string(\"sqrt(2.0)\");\nJL_GC_PUSH1(&ret);\n// Do something with ret\nJL_GC_POP();调用 JL_GC_POP 释放先前 JL_GC_PUSH 建立的引用。 请注意 JL_GC_PUSH 正在堆栈上运行，所以在销毁堆栈之前它必须与之前的 JL_GC_POP 完全配对。使用 JL_GC_PUSH2，JL_GC_PUSH3 和 JL_GC_PUSH4 宏可以一次 push 多个Julia 值。 要推送一个 Julia值的数组，可以使用 JL_GC_PUSHARGS 宏，它的用法如下：jl_value_t **args;\nJL_GC_PUSHARGS(args, 2); // args can now hold 2 `jl_value_t*` objects\nargs[0] = some_value;\nargs[1] = some_other_value;\n// Do something with args (e.g. call jl_... functions)\nJL_GC_POP();垃圾收集器也假设在这种情况下工作。即它知道每个老一代对象都指向年轻一代对象。 每次更新指针时，都必须使用 jl_gc_wb (write barrier，写屏障) 函数将指针通知给收集器，如下所示：jl_value_t *parent = some_old_value, *child = some_young_value;\n((some_specific_type*)parent)->field = child;\njl_gc_wb(parent, child);通常情况下不可能在运行时预测 值是否是旧的，因此 写屏障 必须被插入在所有显式存储之后。一个需要注意的例外是如果 parent 对象刚分配，垃圾收集之后并不执行。请记住大多数 jl_... 函数有时候都会执行垃圾收集。直接更新数据时，对于指针数组来说 写屏障 也是必需的 例如：jl_array_t *some_array = ...; // e.g. a Vector{Any}\nvoid **data = (void**)jl_array_data(some_array);\njl_value_t *some_value = ...;\ndata[0] = some_value;\njl_gc_wb(some_array, some_value);"
+},
+
+{
+    "location": "manual/embedding/#控制垃圾收集器-1",
+    "page": "嵌入 Julia",
+    "title": "控制垃圾收集器",
+    "category": "section",
+    "text": "有一些函数能够控制GC。在正常使用情况下这些不是必要的。函数 描述\njl_gc_collect() 强制执行 GC\njl_gc_enable(0) 禁用 GC， 返回前一个状态作为 int 类型\njl_gc_enable(1) 启用 GC， 返回前一个状态作为 int 类型\njl_gc_is_enabled() 返回当前状态作为 int 类型"
+},
+
+{
+    "location": "manual/embedding/#使用数组-1",
+    "page": "嵌入 Julia",
+    "title": "使用数组",
+    "category": "section",
+    "text": "Julia 和 C 可以不通过复制而共享数组数据。下面一个例子将展示它是如何工作的。Julia数组用数据类型 jl_array_t * 表示。基本上，jl_array_t 是一个包含以下内容的结构：关于数据类型的信息\n指向数据块的指针\n关于数组长度的信息为了让事情比较简单，我们从一维数组开始，创建一个存有 10 个 FLoat64 类型的数组如下所示：jl_value_t* array_type = jl_apply_array_type((jl_value_t*)jl_float64_type, 1);\njl_array_t* x          = jl_alloc_array_1d(array_type, 10);或者，如果您已经分配了数组，则可以生成一个简易的包装器来包裹其数据：double *existingArray = (double*)malloc(sizeof(double)*10);\njl_array_t *x = jl_ptr_to_array_1d(array_type, existingArray, 10, 0);最后一个参数是一个布尔值，表示 Julia 是否应该获取数据的所有权。 如果这个参数 不为零，当数组不再被引用时，GC 会在数据的指针上调用 free 。为了访问 x 的数据，我们可以使用 jl_array_data：double *xData = (double*)jl_array_data(x);现在我们可以填充这个数组：for(size_t i=0; i<jl_array_len(x); i++)\n    xData[i] = i;现在让我们调用一个对 x 就地操作的 Julia 函数：jl_function_t *func = jl_get_function(jl_base_module, \"reverse!\");\njl_call1(func, (jl_value_t*)x);通过打印数组，可以验证 x 的元素现在是否已被逆置 (reversed)。"
+},
+
+{
+    "location": "manual/embedding/#获取返回的数组-1",
+    "page": "嵌入 Julia",
+    "title": "获取返回的数组",
+    "category": "section",
+    "text": "如果 Julia 函数返回一个数组，jl_eval_string 和 jl_call 的返回值可以被强制转换为jl_array_t *：jl_function_t *func  = jl_get_function(jl_base_module, \"reverse\");\njl_array_t *y = (jl_array_t*)jl_call1(func, (jl_value_t*)x);现在使用 jl_array_data 可以像前面一样访问 y 的内容。一如既往地，一定要在使用数组的时候确保 持有使用数组的引用。"
+},
+
+{
+    "location": "manual/embedding/#多维数组-1",
+    "page": "嵌入 Julia",
+    "title": "多维数组",
+    "category": "section",
+    "text": "Julia的多维数组以 列序优先 存储在内存中。这是一些 创建一个2D数组并访问其属性 的代码：// Create 2D array of float64 type\njl_value_t *array_type = jl_apply_array_type(jl_float64_type, 2);\njl_array_t *x  = jl_alloc_array_2d(array_type, 10, 5);\n\n// Get array pointer\ndouble *p = (double*)jl_array_data(x);\n// Get number of dimensions\nint ndims = jl_array_ndims(x);\n// Get the size of the i-th dim\nsize_t size0 = jl_array_dim(x,0);\nsize_t size1 = jl_array_dim(x,1);\n\n// Fill array with data\nfor(size_t i=0; i<size1; i++)\n    for(size_t j=0; j<size0; j++)\n        p[j + size0*i] = i + j;请注意，虽然 Julia 的数组使用基于 1 的索引，但C API 中使用基于 0 的索引（例如 在调用jl_array_dim）以便用C代码的习惯来阅读。"
+},
+
+{
+    "location": "manual/embedding/#异常-1",
+    "page": "嵌入 Julia",
+    "title": "异常",
+    "category": "section",
+    "text": "Julia 代码可以抛出异常。比如：jl_eval_string(\"this_function_does_not_exist()\");这个调用似乎什么都没做。但可以检查异常是否抛出：if (jl_exception_occurred())\n    printf(\"%s \\n\", jl_typeof_str(jl_exception_occurred()));如果您使用 支持异常的语言的 Julia C API（例如Python，C＃，C ++），使用 检查是否有异常的函数 将每个调用 包装到 libjulia 中是有意义的，然后异常在宿主语言中重新抛出。"
+},
+
+{
+    "location": "manual/embedding/#抛出-Julia-异常-1",
+    "page": "嵌入 Julia",
+    "title": "抛出 Julia 异常",
+    "category": "section",
+    "text": "在编写 Julia 可调用函数时，可能需要验证参数 并抛出异常表示错误。 典型的类型检查像这样：if (!jl_typeis(val, jl_float64_type)) {\n    jl_type_error(function_name, (jl_value_t*)jl_float64_type, val);\n}可以使用以下函数 引发一般异常：void jl_error(const char *str);\nvoid jl_errorf(const char *fmt, ...);jl_error采用 C 字符串，而 jl_errorf 像 printf 一样调用:jl_errorf(\"argument x = %d is too large\", x);在这个例子中假定 x 是一个 int 值。"
 },
 
 {
     "location": "manual/code-loading/#",
-    "page": "Code Loading",
-    "title": "Code Loading",
+    "page": "代码加载",
+    "title": "代码加载",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "manual/code-loading/#Code-Loading-1",
-    "page": "Code Loading",
-    "title": "Code Loading",
+    "location": "manual/code-loading/#代码加载-1",
+    "page": "代码加载",
+    "title": "代码加载",
     "category": "section",
-    "text": "Julia has two mechanisms for loading code:Code inclusion: e.g. include(\"source.jl\"). Inclusion allows you to split a single program across multiple source files. The expression include(\"source.jl\") causes the contents of the file source.jl to be evaluated in the global scope of the module where the include call occurs. If include(\"source.jl\") is called multiple times, source.jl is evaluated multiple times. The included path, source.jl, is interpreted relative to the file where the include call occurs. This makes it simple to relocate a subtree of source files. In the REPL, included paths are interpreted relative to the current working directory, pwd().\nPackage loading: e.g. import X or using X. The import mechanism allows you to load a package—i.e. an independent, reusable collection of Julia code, wrapped in a module—and makes the resulting module available by the name X inside of the importing module. If the same X package is imported multiple times in the same Julia session, it is only loaded the first time—on subsequent imports, the importing module gets a reference to the same module. It should be noted, however, that import X can load different packages in different contexts: X can refer to one package named X in the main project but potentially different packages named X in each dependency. More on this below.Code inclusion is quite straightforward: it simply parses and evaluates a source file in the context of the caller. Package loading is built on top of code inclusion and is quite a bit more complex. The rest of this chapter, therefore, focuses on the behavior and mechanics of package loading.note: Note\nYou only need to read this chapter if you want to understand the technical details of package loading in Julia. If you just want to install and use packages, simply use Julia\'s built-in package manager to add packages to your environment and write import X or using X in your code to load packages that you\'ve added.A package is a source tree with a standard layout providing functionality that can be reused by other Julia projects. A package is loaded by import X or  using X statements. These statements also make the module named X, which results from loading the package code, available within the module where the import statement occurs. The meaning of X in import X is context-dependent: which X package is loaded depends on what code the statement occurs in. The effect of import X depends on two questions:What package is X in this context?\nWhere can that X package be found?Understanding how Julia answers these questions is key to understanding package loading."
+    "text": "Julia加载代码有两种机制：代码包含：例如：include(\"source.jl\")。include允许以多个源文件的形式来组织程序。 表达式include（”source.jl“）使文件source.jl的内容在全局范围（调用include的模块）内被计算。 如果多次调用include（“source.jl”），会多次计算source.jl`。 source.jl的包含路径解释为调用include命令的文件路径。这样便于重新定位源文件层次结构。 在REPL中，include路径为当前工作目录pwd（）。\n加载包：例如 import X或using X。 import通过加载包 ( 一个独立的，可重用的Julia代码集合，包含在一个模块中 )，并导入模块内部的名称“X”，使得模块X可用。 如果在同一个Julia会话中，多次导入包X，那么后续导入模块为第一次导入模块的引用。 应该注意，import X可以在不同的上下文中加载不同的包：X可以引用主工程中名为X的一个包，但他们可能依赖的包是完全不同的。 更多机制说明如下。代码包含是非常直接的：在调用者的上下文中解析和评价源文件。 包加载是建立在代码包含之上的，并且相当复杂。 因此，本章的其余部分将重点介绍程序包加载的行为和机制。!!! 注    除非你想了解Julia中包加载的技术细节，您才需要阅读本章。如果您只想安装和使用包，只需使用Julia的内置软件包管理器，将包添加到环境中，并在代码中使用表达式import X或using X来加载包即可。A package is a source tree with a standard layout providing functionality that can be reused by other Julia projects. A package is loaded by import X or  using X statements. These statements also make the module named X, which results from loading the package code, available within the module where the import statement occurs. The meaning of X in import X is context-dependent: which X package is loaded depends on what code the statement occurs in. The effect of import X depends on two questions:What package is X in this context?\nWhere can that X package be found?Understanding how Julia answers these questions is key to understanding package loading."
 },
 
 {
     "location": "manual/code-loading/#Federation-of-packages-1",
-    "page": "Code Loading",
+    "page": "代码加载",
     "title": "Federation of packages",
     "category": "section",
     "text": "Julia supports federated management of packages. This means that multiple independent parties can maintain both public and private packages and registries of them, and that projects can depend on a mix of public and private packages from different registries. Packages from various registries are installed and managed using a common set of tools and workflows. The Pkg package manager ships with Julia 0.7/1.0 and lets you install and manage dependencies of your projects, by creating and manipulating project files, which describe what your project depends on, and manifest files that snapshot exact versions of your project\'s complete dependency graph.One consequence of federation is that there cannot be a central authority for package naming. Different entities may use the same name to refer to unrelated packages. This possibility is unavoidable since these entities do not coordinate and may not even know about each other. Because of the lack of a central naming authority, a single project can quite possibly end up depending on different packages with the same name. Julia\'s package loading mechanism handles this by not requiring package names to be globally unique, even within the dependency graph of a single project. Instead, packages are identified by universally unique identifiers (UUIDs) which are assigned to them before they are registered. The question \"what is X?\" is answered by determining the UUID of X.Since the decentralized naming problem is somewhat abstract, it may help to walk through a concrete scenario to understand the issue. Suppose you\'re developing an application called App, which uses two packages: Pub and  Priv. Priv is a private package that you created, whereas Pub is a public package that you use but don\'t control. When you created Priv, there was no public package by that name. Subsequently, however, an unrelated package also named Priv has been published and become popular. In fact, the Pub package has started to use it. Therefore, when you next upgrade Pub to get the latest bug fixes and features, App will end up—through no action of yours other than upgrading—depending on two different packages named Priv. App has a direct dependency on your private Priv package, and an indirect dependency, through Pub, on the new public Priv package. Since these two Priv packages are different but both required for App to continue working correctly, the expression import Priv must refer to different Priv packages depending on whether it occurs in App\'s code or in Pub\'s code. Julia\'s package loading mechanism allows this by distinguishing the two Priv packages by context and UUID. How this distinction works is determined by environments, as explained in the following sections."
@@ -3106,7 +3210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/code-loading/#Environments-1",
-    "page": "Code Loading",
+    "page": "代码加载",
     "title": "Environments",
     "category": "section",
     "text": "An environment determines what import X and using X mean in various code contexts and what files these statements cause to be loaded. Julia understands three kinds of environments:A project environment is a directory with a project file and an optional manifest file. The project file determines what the names and identities of the direct dependencies of a project are. The manifest file, if present, gives a complete dependency graph, including all direct and indirect dependencies, exact versions of each dependency, and sufficient information to locate and load the correct version.\nA package directory is a directory containing the source trees of a set of packages as subdirectories. This kind of environment was the only kind that existed in Julia 0.6 and earlier. If X is a subdirectory of a package directory and X/src/X.jl exists, then the package X is available in the package directory environment and X/src/X.jl is the source file by which it is loaded.\nA stacked environment is an ordered set of project environments and package directories, overlaid to make a single composite environment in which all the packages available in its constituent environments are available. Julia\'s load path is a stacked environment, for example.These three kinds of environment each serve a different purpose:Project environments provide reproducibility. By checking a project environment into version control—e.g. a git repository—along with the rest of the project\'s source code, you can reproduce the exact state of the project and all of its dependencies since the manifest file captures the exact version of every dependency and can be rematerialized easily.\nPackage directories provide low-overhead convenience when a project environment would be overkill: are handy when you have a set of packages and just want to put them somewhere and use them as they are without having to create and maintain a project environment for them.\nStacked environments allow for augmentation of the primary environment with additional tools. You can push an environment including development tools onto the stack and they will be available from the REPL and scripts but not from inside of packages.As an abstraction, an environment provides three maps: roots, graph and paths. When resolving the meaning of import X, roots and graph are used to determine the identity of X and answer the question \"what is X?\", while the paths map is used to locate the source code of X and answer the question \"where is X?\" The specific roles of the three maps are:roots: name::Symbol ⟶ uuid::UUID\nAn environment\'s roots map assigns package names to UUIDs for all the top-level dependencies that the environment makes available to the main project (i.e. the ones that can be loaded in Main). When Julia encounters import X in the main project, it looks up the identity of X as roots[:X].\ngraph: context::UUID ⟶ name::Symbol ⟶ uuid::UUID\nAn environment\'s graph is a multilevel map which assigns, for each context UUID, a map from names to UUIDs, similar to the roots map but specific to that context. When Julia sees import X in the code of the package whose UUID is context, it looks up the identity of X as graph[context][:X]. In particular, this means that import X can refer to different packages depending on context.\npaths: uuid::UUID × name::Symbol ⟶ path::String\nThe paths map assigns to each package UUID-name pair, the location of the entry-point source file of that package. After the identity of X in import X has been resolved to a UUID via roots or graph (depending on whether it is loaded from the main project or an dependency), Julia determines what file to load to acquire X by looking up paths[uuid,:X] in the environment. Including this file should create a module named X. After the first time this package is loaded, any import resolving to the same uuid will simply create a new binding to the same already-loaded package module.Each kind of environment defines these three maps differently, as detailed in the following sections.note: Note\nFor clarity of exposition, the examples throughout this chapter include fully materialized data structures for roots, graph and paths. However, these maps are really only abstractions—for efficiency, Julia\'s package loading code does not actually materialize them. Instead, it queries them through internal APIs and lazily computes only as much of each structure as is necessary to load a given package."
@@ -3114,7 +3218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/code-loading/#Project-environments-1",
-    "page": "Code Loading",
+    "page": "代码加载",
     "title": "Project environments",
     "category": "section",
     "text": "A project environment is determined by a directory containing a project file, Project.toml, and optionally a manifest file, Manifest.toml. These files can also be named JuliaProject.toml and JuliaManifest.toml, in which case Project.toml and Manifest.toml are ignored; this allows for coexistence with other tools that might consider files named Project.toml and Manifest.toml significant. For pure Julia projects, however, the names Project.toml and Manifest.toml should be preferred. The roots, graph and paths maps of a project environment are defined as follows.The roots map of the environment is determined by the contents of the project file, specifically, its top-level name and uuid entries and its [deps] section (all optional). Consider the following example project file for the hypothetical application, App, as described above:name = \"App\"\nuuid = \"8f986787-14fe-4607-ba5d-fbff2944afa9\"\n\n[deps]\nPriv = \"ba13f791-ae1d-465a-978b-69c3ad90f72b\"\nPub  = \"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"This project file implies the following roots map, if it were materialized as a Julia dictionary:roots = Dict(\n    :App  => UUID(\"8f986787-14fe-4607-ba5d-fbff2944afa9\"),\n    :Priv => UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\"),\n    :Pub  => UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"),\n)Given this roots map, in the code of App the statement import Priv will cause Julia to look up roots[:Priv], which yields ba13f791-ae1d-465a-978b-69c3ad90f72b, the UUID of the Priv package that is to be loaded in that context. This UUID identifies which Priv package to load and use when the main application evaluates import Priv.The dependency graph of a project environment is determined by the contents of the manifest file, if present, or if there is no manifest file, graph is empty. A manifest file contains a stanza for each direct or indirect dependency of a project, including for each one, its UUID and a source tree hash or an explicit path to the source code. Consider the following example manifest file for App:[[Priv]] # the private one\ndeps = [\"Pub\", \"Zebra\"]\nuuid = \"ba13f791-ae1d-465a-978b-69c3ad90f72b\"\npath = \"deps/Priv\"\n\n[[Priv]] # the public one\nuuid = \"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"\ngit-tree-sha1 = \"1bf63d3be994fe83456a03b874b409cfd59a6373\"\nversion = \"0.1.5\"\n\n[[Pub]]\nuuid = \"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"\ngit-tree-sha1 = \"9ebd50e2b0dd1e110e842df3b433cb5869b0dd38\"\nversion = \"2.1.4\"\n\n  [Pub.deps]\n  Priv = \"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"\n  Zebra = \"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"\n\n[[Zebra]]\nuuid = \"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"\ngit-tree-sha1 = \"e808e36a5d7173974b90a15a353b564f3494092f\"\nversion = \"3.4.2\"This manifest file describes a possible complete dependency graph for the App project:There are two different Priv packages that the application needs—a private one which is a direct dependency and a public one which is an indirect dependency through Pub:\nThe private Priv depends on the Pub and Zebra packages.\nThe public Priv has no dependencies.\nThe application also depends on the Pub package, which in turn depends on the public Priv and the same Zebra package which the private Priv package depends on.A materialized representation of this dependency graph looks like this:graph = Dict{UUID,Dict{Symbol,UUID}}(\n    # Priv – the private one:\n    UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\") => Dict{Symbol,UUID}(\n        :Pub   => UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"),\n        :Zebra => UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"),\n    ),\n    # Priv – the public one:\n    UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\") => Dict{Symbol,UUID}(),\n    # Pub:\n    UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\") => Dict{Symbol,UUID}(\n        :Priv  => UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"),\n        :Zebra => UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"),\n    ),\n    # Zebra:\n    UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\") => Dict{Symbol,UUID}(),\n)Given this dependency graph, when Julia sees import Priv in the Pub package—which has UUID c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1—it looks up:graph[UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\")][:Priv]and gets 2d15fe94-a1f7-436c-a4d8-07a9a496e01c , which indicates that in the context of the Pub package,  import Priv refers to the public Priv package, rather than the private one which the app depends on directly. This is how the name Priv can refer to different packages in the main project than it does in one of the packages dependencies, which allows for name collisions in the package ecosystem.What happens if import Zebra is evaluated in the main App code base? Since Zebra does not appear in the project file, the import will fail even though Zebra does appear in the manifest file. Moreover, if import Zebra occurs in the public Priv package—the one with UUID 2d15fe94-a1f7-436c-a4d8-07a9a496e01c—then that would also fail since that Priv package has no declared dependencies in the manifest file and therefore cannot load any packages. The Zebra package can only be loaded by packages for which it appear as an explicit dependency in the manifest file: the  Pub package and one of the Priv packages.The paths map of a project environment is also determined by the manifest file if present and is empty if there is no manifest. The path of a package uuid named X is determined by these two rules:If the manifest stanza matching uuid has a path entry, use that path relative to the manifest file.\nOtherwise, if the manifest stanza matching uuid has a git-tree-sha1 entry, compute a deterministic hash function of uuid and git-tree-sha1—call it slug—and look for packages/X/$slug in each directory in the Julia DEPOT_PATH global array. Use the first such directory that exists.If applying these rules doesn\'t find a loadable path, the package should be considered not installed and the system should raise an error or prompt the user to install the appropriate package version.In the example manifest file above, to find the path of the first Priv package—the one with UUID ba13f791-ae1d-465a-978b-69c3ad90f72b—Julia looks for its stanza in the manifest file, sees that it has a path entry, looks at deps/Priv relative to the App project directory—let\'s suppose the App code lives in /home/me/projects/App—sees that /home/me/projects/App/deps/Priv exists and therefore loads Priv from there.If, on the other hand, Julia was loading the other Priv package—the one with UUID 2d15fe94-a1f7-436c-a4d8-07a9a496e01c—it finds its stanza in the manifest, see that it does not have a path entry, but that it does have a git-tree-sha1 entry. It then computes the slug for this UUID/SHA-1 pair, which is HDkr (the exact details of this computation aren\'t important, but it is consistent and deterministic). This means that the path to this Priv package will be packages/Priv/HDkr/src/Priv.jl in one of the package depots. Suppose the contents of DEPOT_PATH is [\"/users/me/.julia\", \"/usr/local/julia\"]; then Julia will look at the following paths to see if they exist:/home/me/.julia/packages/Priv/HDkr/src/Priv.jl\n/usr/local/julia/packages/Priv/HDkr/src/Priv.jlJulia uses the first of these that exists to load the public Priv package.Here is a materialized paths map for the App project environment:paths = Dict{Tuple{UUID,Symbol},String}(\n    # Priv – the private one:\n    (UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\"), :Priv) =>\n        # relative entry-point inside `App` repo:\n        \"/home/me/projects/App/deps/Priv/src/Priv.jl\",\n    # Priv – the public one:\n    (UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"), :Priv) =>\n        # package installed in the system depot:\n        \"/usr/local/julia/packages/Priv/HDkr/src/Priv.jl\",\n    # Pub:\n    (UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"), :Pub) =>\n        # package installed in the user depot:\n        \"/home/me/.julia/packages/Pub/oKpw/src/Pub.jl\",\n    # Zebra:\n    (UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"), :Zebra) =>\n        # package installed in the system depot:\n        \"/usr/local/julia/packages/Zebra/me9k/src/Zebra.jl\",\n)This example map includes three different kinds of package locations:The private Priv package is \"vendored\" inside of App repository.\nThe public Priv and Zebra packages are in the system depot, where packages installed and managed by the system administrator live. These are available to all users on the system.\nThe Pub package is in the user depot, where packages installed by the user live. These are only available to the user who installed them."
@@ -3122,7 +3226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/code-loading/#Package-directories-1",
-    "page": "Code Loading",
+    "page": "代码加载",
     "title": "Package directories",
     "category": "section",
     "text": "Package directories provide a kind of environment that approximates package loading in Julia 0.6 and earlier, and which resembles package loading in many other dynamic languages. The set of packages available in a package directory corresponds to the set of subdirectories it contains that look like packages: if X/src/X.jl is a file in a package directory, then X is considered to be a package and X/src/X.jl is the file you load to get X. Which packages can \"see\" each other as dependencies depends on whether they contain project files or not and what appears in the [deps] sections of those project files.The roots map is determined by the subdirectories X of a package directory for which X/src/X.jl exists and whether X/Project.toml exists and has a top-level uuid entry. Specifically :X => uuid goes in roots for each such X where uuid is defined as:If X/Project.toml exists and has a uuid entry, then uuid is that value.\nIf X/Project.toml exists and but does not have a top-level UUID entry, uuid is a dummy UUID generated by hashing the canonical path of X/Project.toml.\nIf X/Project.toml does not exist, then uuid is the all-zero nil UUID.The dependency graph of a project directory is determined by the presence and contents of project files in the subdirectory of each package. The rules are:If a package subdirectory has no project file, then it is omitted from graph and import statements in its code are treated as top-level, the same as the main project and REPL.\nIf a package subdirectory has a project file, then the graph entry for its UUID is the [deps] map of the project file, which is considered to be empty if the section is absent.As an example, suppose a package directory has the following structure and content:Aardvark/\n    src/Aardvark.jl:\n        import Bobcat\n        import Cobra\n\nBobcat/\n    Project.toml:\n        [deps]\n        Cobra = \"4725e24d-f727-424b-bca0-c4307a3456fa\"\n        Dingo = \"7a7925be-828c-4418-bbeb-bac8dfc843bc\"\n\n    src/Bobcat.jl:\n        import Cobra\n        import Dingo\n\nCobra/\n    Project.toml:\n        uuid = \"4725e24d-f727-424b-bca0-c4307a3456fa\"\n        [deps]\n        Dingo = \"7a7925be-828c-4418-bbeb-bac8dfc843bc\"\n\n    src/Cobra.jl:\n        import Dingo\n\nDingo/\n    Project.toml:\n        uuid = \"7a7925be-828c-4418-bbeb-bac8dfc843bc\"\n\n    src/Dingo.jl:\n        # no importsHere is a corresponding roots structure, materialized as a dictionary:roots = Dict{Symbol,UUID}(\n    :Aardvark => UUID(\"00000000-0000-0000-0000-000000000000\"), # no project file, nil UUID\n    :Bobcat   => UUID(\"85ad11c7-31f6-5d08-84db-0a4914d4cadf\"), # dummy UUID based on path\n    :Cobra    => UUID(\"4725e24d-f727-424b-bca0-c4307a3456fa\"), # UUID from project file\n    :Dingo    => UUID(\"7a7925be-828c-4418-bbeb-bac8dfc843bc\"), # UUID from project file\n)Here is the corresponding graph structure, materialized as a dictionary:graph = Dict{UUID,Dict{Symbol,UUID}}(\n    # Bobcat:\n    UUID(\"85ad11c7-31f6-5d08-84db-0a4914d4cadf\") => Dict{Symbol,UUID}(\n        :Cobra => UUID(\"4725e24d-f727-424b-bca0-c4307a3456fa\"),\n        :Dingo => UUID(\"7a7925be-828c-4418-bbeb-bac8dfc843bc\"),\n    ),\n    # Cobra:\n    UUID(\"4725e24d-f727-424b-bca0-c4307a3456fa\") => Dict{Symbol,UUID}(\n        :Dingo => UUID(\"7a7925be-828c-4418-bbeb-bac8dfc843bc\"),\n    ),\n    # Dingo:\n    UUID(\"7a7925be-828c-4418-bbeb-bac8dfc843bc\") => Dict{Symbol,UUID}(),\n)A few general rules to note:A package without a project file can depend on any top-level dependency, and since every package in a package directory is available at the top-level, it can import all packages in the environment.\nA package with a project file cannot depend on one without a project file since packages with project files can only load packages in graph and packages without project files do not appear in graph.\nA package with a project file but no explicit UUID can only be depended on by packages without project files since dummy UUIDs assigned to these packages are strictly internal.Observe the following specific instances of these rules in our example:Aardvark can import on any of Bobcat, Cobra or Dingo; it does import Bobcat and Cobra.\nBobcat can and does import both Cobra and Dingo, which both have project files with UUIDs and are declared as dependencies in Bobcat\'s [deps] section.\nBobcat cannot possibly depend on Aardvark since Aardvark does not have a project file.\nCobra can and does import Dingo, which has a project file and UUID, and is declared as a dependency in Cobra\'s  [deps] section.\nCobra cannot depend on Aardvark or Bobcat since neither have real UUIDs.\nDingo cannot import anything because it has a project file without a [deps] section.The paths map in a package directory is simple: it maps subdirectory names to their corresponding entry-point paths. In other words, if the path to our example project directory is /home/me/animals then the paths map would be materialized as this dictionary:paths = Dict{Tuple{UUID,Symbol},String}(\n    (UUID(\"00000000-0000-0000-0000-000000000000\"), :Aardvark) =>\n        \"/home/me/AnimalPackages/Aardvark/src/Aardvark.jl\",\n    (UUID(\"85ad11c7-31f6-5d08-84db-0a4914d4cadf\"), :Bobcat) =>\n        \"/home/me/AnimalPackages/Bobcat/src/Bobcat.jl\",\n    (UUID(\"4725e24d-f727-424b-bca0-c4307a3456fa\"), :Cobra) =>\n        \"/home/me/AnimalPackages/Cobra/src/Cobra.jl\",\n    (UUID(\"7a7925be-828c-4418-bbeb-bac8dfc843bc\"), :Dingo) =>\n        \"/home/me/AnimalPackages/Dingo/src/Dingo.jl\",\n)Since all packages in a package directory environment are, by definition, subdirectories with the expected entry-point files, their paths map entries always have this form."
@@ -3130,7 +3234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/code-loading/#Environment-stacks-1",
-    "page": "Code Loading",
+    "page": "代码加载",
     "title": "Environment stacks",
     "category": "section",
     "text": "The third and final kind of environment is one that combines other environments by overlaying several of them, making the packages in each available in a single composite environment. These composite environments are called environment stacks. The Julia LOAD_PATH global defines an environment stack—the environment in which the Julia process operates. If you want your Julia process to have access only to the packages in one project or package directory, make it the only entry in LOAD_PATH. It is often quite useful, however, to have access to some of your favorite tools—standard libraries, profilers, debuggers, personal utilities, etc.—even if they are not dependencies of the project you\'re working on. By pushing an environment containing these tools onto the load path, you immediately have access to them in top-level code without needing to add them to your project.The mechanism for combining the roots, graph and paths data structures of the components of an environment stack is simple: they are simply merged as dictionaries, favoring earlier entries over later ones in the case of key collisions. In other words, if we have stack = [env₁, env₂, …] then we have:roots = reduce(merge, reverse([roots₁, roots₂, …]))\ngraph = reduce(merge, reverse([graph₁, graph₂, …]))\npaths = reduce(merge, reverse([paths₁, paths₂, …]))The subscripted rootsᵢ, graphᵢ and pathsᵢ variables correspond to the subscripted environments, envᵢ, contained stack. The reverse is present because merge favors the last argument rather than first when there are collisions between keys in its argument dictionaries. That\'s all there is to stacked environments. There are a couple of noteworthy features of this design:The primary environment—i.e.the first environment in a stack—is faithfully embedded in a stacked environment. The full dependency graph of the first environment in a stack is guaranteed to be included intact in the stacked environment including the same versions of all dependencies.\nPackages in non-primary environments can end up using incompatible versions of their dependencies even if their own environments are entirely compatible. This can happen when one of their dependencies is shadowed by a version in an earlier environment in the stack.Since the primary environment is typically the environment of a project you\'re working on, while environments later in the stack contain additional tools, this is the right tradeoff: it\'s better to break your dev tools but keep the project working. When such incompatibilities occur, you\'ll typically want to upgrade your dev tools to versions that are compatible with the main project."
@@ -3138,7 +3242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/code-loading/#Conclusion-1",
-    "page": "Code Loading",
+    "page": "代码加载",
     "title": "Conclusion",
     "category": "section",
     "text": "Federated package management and precise software reproducibility are difficult but worthy goals in a package system. In combination, these goals lead to a more complex package loading mechanism than most dynamic languages have, but it also yields scalability and reproducibility that is more commonly associated with static languages. Fortunately, most Julia users can remain oblivious to the technical details of code loading and simply use the built-in package manager to add a package X to the appropriate project and manifest files and then write import X to load X without a further thought."
@@ -3269,15 +3373,15 @@ var documenterSearchIndex = {"docs": [
     "page": "性能建议",
     "title": "避免全局变量",
     "category": "section",
-    "text": "全局变量的值和类型随时都会发生变化。 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。Any code that is performance critical or being benchmarked should be inside a function.We find that global names are frequently constants, and declaring them as such greatly improves performance:const DEFAULT_VAL = 0Uses of non-constant globals can be optimized by annotating their types at the point of use:global x = rand(1000)\n\nfunction loop_over_global()\n    s = 0.0\n    for i in x::Vector{Float64}\n        s += i\n    end\n    return s\nendPassing arguments to functions is better style. It leads to more reusable code and clarifies what the inputs and outputs are.note: Note\nAll code in the REPL is evaluated in global scope, so a variable defined and assigned at toplevel will be a global variable. Variables defined in at top level scope inside modules are also global.In the following REPL session:julia> x = 1.0等价于julia> global x = 1.0so all the performance issues discussed previously apply."
+    "text": "全局变量的值和类型随时都会发生变化。 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。任何注重性能或者需要测试性能的代码都应该被放置在函数之中。我们发现全局名称经常是常量，将它们声明为常量可以巨大的提升性能。const DEFAULT_VAL = 0对于非常量的全局变量可以通过在使用的地方标注它们的类型来优化效率。global x = rand(1000)\n\nfunction loop_over_global()\n    s = 0.0\n    for i in x::Vector{Float64}\n        s += i\n    end\n    return s\nend一个更好的编程风格是将变量作为参数传给函数。这样可以使得代码更易复用，以及清晰的展示函数的输入和输出。!!! 注意     所有的REPL中的代码都是在全局作用域中求值的，因此在顶层的变量的定义与赋值都会成为一个全局变量。在模块的顶层作用域定义的变量也是全局变量。在下面的REPL会话中：julia> x = 1.0等价于julia> global x = 1.0因此，所有上文关于性能问题的讨论都适用于它们。"
 },
 
 {
-    "location": "manual/performance-tips/#Measure-performance-with-[@time](@ref)-and-pay-attention-to-memory-allocation-1",
+    "location": "manual/performance-tips/#使用-[@time](@ref)评估性能以及注意内存分配-1",
     "page": "性能建议",
-    "title": "Measure performance with @time and pay attention to memory allocation",
+    "title": "使用 @time评估性能以及注意内存分配",
     "category": "section",
-    "text": "A useful tool for measuring performance is the @time macro. We here repeat the example with the global variable above, but this time with the type annotation removed:julia> x = rand(1000);\n\njulia> function sum_global()\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_global()\n  0.017705 seconds (15.28 k allocations: 694.484 KiB)\n496.84883432553846\n\njulia> @time sum_global()\n  0.000140 seconds (3.49 k allocations: 70.313 KiB)\n496.84883432553846On the first call (@time sum_global()) the function gets compiled. (If you\'ve not yet used @time in this session, it will also compile functions needed for timing.)  You should not take the results of this run seriously. For the second run, note that in addition to reporting the time, it also indicated that a significant amount of memory was allocated. We are here just computing a sum over all elements in a vector of 64-bit floats so there should be no need to allocate memory (at least not on the heap which is what @time reports).Unexpected memory allocation is almost always a sign of some problem with your code, usually a problem with type-stability or creating many small temporary arrays. Consequently, in addition to the allocation itself, it\'s very likely that the code generated for your function is far from optimal. Take such indications seriously and follow the advice below.If we instead pass x as an argument to the function it no longer allocates memory (the allocation reported below is due to running the @time macro in global scope) and is significantly faster after the first call:julia> x = rand(1000);\n\njulia> function sum_arg(x)\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_arg(x)\n  0.007701 seconds (821 allocations: 43.059 KiB)\n496.84883432553846\n\njulia> @time sum_arg(x)\n  0.000006 seconds (5 allocations: 176 bytes)\n496.84883432553846The 5 allocations seen are from running the @time macro itself in global scope. If we instead run the timing in a function, we can see that indeed no allocations are performed:julia> time_sum(x) = @time sum_arg(x);\n\njulia> time_sum(x)\n  0.000001 seconds\n496.84883432553846In some situations, your function may need to allocate memory as part of its operation, and this can complicate the simple picture above. In such cases, consider using one of the tools below to diagnose problems, or write a version of your function that separates allocation from its algorithmic aspects (see Pre-allocating outputs).note: Note\nFor more serious benchmarking, consider the BenchmarkTools.jl package which among other things evaluates the function multiple times in order to reduce noise."
+    "text": "@time 宏是一个有用的性能评估工具。这里我们将重复上面全局变量的例子，但是这次移除类型声明：julia> x = rand(1000);\n\njulia> function sum_global()\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_global()\n  0.017705 seconds (15.28 k allocations: 694.484 KiB)\n496.84883432553846\n\njulia> @time sum_global()\n  0.000140 seconds (3.49 k allocations: 70.313 KiB)\n496.84883432553846在第一次调用函数(@time sum_global())的时候，它会被编译。（如果你这次会话中还没有使用过@time，这时也会编译计时需要的相关函数。）你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64比特浮点向量元素和，因此这里应该没有申请内存的必要的（至少不用在@time报告的堆上申请内存）。未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数没有生成最佳的代码。认真对待这些现象，遵循接下来的建议。如果你换成将x作为参数传给函数，就可以避免内存的分配（这里报告的内存分配是由于在全局作用域中运行@time导致的），而且在第一次运行之后运行速度也会得到显著的提高。julia> x = rand(1000);\n\njulia> function sum_arg(x)\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_arg(x)\n  0.007701 seconds (821 allocations: 43.059 KiB)\n496.84883432553846\n\njulia> @time sum_arg(x)\n  0.000006 seconds (5 allocations: 176 bytes)\n496.84883432553846这里出现的5个内存分配是由于在全局作用域中运行@time宏导致的。如果我们在函数中运行时间测试，我们将发现事实上并没有发生任何内存分配。julia> time_sum(x) = @time sum_arg(x);\n\njulia> time_sum(x)\n  0.000001 seconds\n496.84883432553846In some situations, your function may need to allocate memory as part of its operation, and this can complicate the simple picture above. In such cases, consider using one of the tools below to diagnose problems, or write a version of your function that separates allocation from its algorithmic aspects (see Pre-allocating outputs).note: Note\nFor more serious benchmarking, consider the BenchmarkTools.jl package which among other things evaluates the function multiple times in order to reduce noise."
 },
 
 {
@@ -3765,15 +3869,15 @@ var documenterSearchIndex = {"docs": [
     "page": "常见问题",
     "title": "向函数传递了参数 x，在函数中做了修改，但是在函数外变量 x 的值还是没有变。为什么？",
     "category": "section",
-    "text": "假设函数被如此调用：julia> x = 10\n10\n\njulia> function change_value!(y)\n           y = 17\n       end\nchange_value! (generic function with 1 method)\n\njulia> change_value!(x)\n17\n\njulia> x # x is unchanged!\n10In Julia, the binding of a variable x cannot be changed by passing x as an argument to a function. When calling change_value!(x) in the above example, y is a newly created variable, bound initially to the value of x, i.e. 10; then y is rebound to the constant 17, while the variable x of the outer scope is left untouched.But here is a thing you should pay attention to: suppose x is bound to an object of type Array (or any other mutable type). From within the function, you cannot \"unbind\" x from this Array, but you can change its content. For example:julia> x = [1,2,3]\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> function change_array!(A)\n           A[1] = 5\n       end\nchange_array! (generic function with 1 method)\n\njulia> change_array!(x)\n5\n\njulia> x\n3-element Array{Int64,1}:\n 5\n 2\n 3Here we created a function change_array!, that assigns 5 to the first element of the passed array (bound to x at the call site, and bound to A within the function). Notice that, after the function call, x is still bound to the same array, but the content of that array changed: the variables A and x were distinct bindings referring to the same mutable Array object."
+    "text": "假设函数被如此调用：julia> x = 10\n10\n\njulia> function change_value!(y)\n           y = 17\n       end\nchange_value! (generic function with 1 method)\n\njulia> change_value!(x)\n17\n\njulia> x # x is unchanged!\n10In Julia, the binding of a variable x cannot be changed by passing x as an argument to a function. When calling change_value!(x) in the above example, y is a newly created variable, bound initially to the value of x, i.e. 10; then y is rebound to the constant 17, while the variable x of the outer scope is left untouched.但是这里有一个需要注意的点: 假设 \'x\' 被绑定至 \'Array\' 类型 (或者其他 可变 的类型). 在函数中,你无法改变\'x\' 的\'Array\'类型, 但是你可以改变其内容. 例如julia> x = [1,2,3]\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> function change_array!(A)\n           A[1] = 5\n       end\nchange_array! (generic function with 1 method)\n\njulia> change_array!(x)\n5\n\njulia> x\n3-element Array{Int64,1}:\n 5\n 2\n 3Here we created a function change_array!, that assigns 5 to the first element of the passed array (bound to x at the call site, and bound to A within the function). Notice that, after the function call, x is still bound to the same array, but the content of that array changed: the variables A and x were distinct bindings referring to the same mutable Array object."
 },
 
 {
-    "location": "manual/faq/#Can-I-use-using-or-import-inside-a-function?-1",
+    "location": "manual/faq/#是否可以在函数内部使用-using-或-import-？-1",
     "page": "常见问题",
-    "title": "Can I use using or import inside a function?",
+    "title": "是否可以在函数内部使用 using 或 import ？",
     "category": "section",
-    "text": "No, you are not allowed to have a using or import statement inside a function.  If you want to import a module but only use its symbols inside a specific function or set of functions, you have two options:Use import:\nimport Foo\nfunction bar(...)\n    # ... refer to Foo symbols via Foo.baz ...\nend\nThis loads the module Foo and defines a variable Foo that refers to the module, but does not import any of the other symbols from the module into the current namespace.  You refer to the Foo symbols by their qualified names Foo.bar etc.\nWrap your function in a module:\nmodule Bar\nexport bar\nusing Foo\nfunction bar(...)\n    # ... refer to Foo.baz as simply baz ....\nend\nend\nusing Bar\nThis imports all the symbols from Foo, but only inside the module Bar."
+    "text": "不可以，在函数内部含有 using 或 import 语句是不被允许的。 如果你希望导入一个模块，但只在特定的一个或一组函数中使用它的符号， 有以下两种方式：使用 import ：\nimport Foo\nfunction bar(...)\n    # ... refer to Foo symbols via Foo.baz ...\nend\nThis loads the module Foo and defines a variable Foo that refers to the module, but does not import any of the other symbols from the module into the current namespace.  You refer to the Foo symbols by their qualified names Foo.bar etc.\nWrap your function in a module:\nmodule Bar\nexport bar\nusing Foo\nfunction bar(...)\n    # ... refer to Foo.baz as simply baz ....\nend\nend\nusing Bar\nThis imports all the symbols from Foo, but only inside the module Bar."
 },
 
 {
@@ -6266,23 +6370,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#",
-    "page": "Collections and Data Structures",
-    "title": "Collections and Data Structures",
+    "page": "集合和数据结构",
+    "title": "集合和数据结构",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/collections/#Collections-and-Data-Structures-1",
-    "page": "Collections and Data Structures",
-    "title": "Collections and Data Structures",
+    "location": "base/collections/#集合和数据结构-1",
+    "page": "集合和数据结构",
+    "title": "集合和数据结构",
     "category": "section",
     "text": ""
 },
 
 {
     "location": "base/collections/#Base.iterate",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.iterate",
     "category": "function",
     "text": "iterate(iter [, state]) -> Union{Nothing, Tuple{Any, Any}}\n\nAdvance the iterator to obtain the next element. If no elements remain, nothing should be returned. Otherwise, a 2-tuple of the next element and the new iteration state should be returned.\n\n\n\n\n\n"
@@ -6290,7 +6394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.IteratorSize",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.IteratorSize",
     "category": "type",
     "text": "IteratorSize(itertype::Type) -> IteratorSize\n\nGiven the type of an iterator, return one of the following values:\n\nSizeUnknown() if the length (number of elements) cannot be determined in advance.\nHasLength() if there is a fixed, finite length.\nHasShape{N}() if there is a known length plus a notion of multidimensional shape (as for an array).  In this case N should give the number of dimensions, and the axes function is valid  for the iterator.\nIsInfinite() if the iterator yields values forever.\n\nThe default value (for iterators that do not define this function) is HasLength(). This means that most iterators are assumed to implement length.\n\nThis trait is generally used to select between algorithms that pre-allocate space for their result, and algorithms that resize their result incrementally.\n\njulia> Base.IteratorSize(1:5)\nBase.HasShape{1}()\n\njulia> Base.IteratorSize((2,3))\nBase.HasLength()\n\n\n\n\n\n"
@@ -6298,7 +6402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.IteratorEltype",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.IteratorEltype",
     "category": "type",
     "text": "IteratorEltype(itertype::Type) -> IteratorEltype\n\nGiven the type of an iterator, return one of the following values:\n\nEltypeUnknown() if the type of elements yielded by the iterator is not known in advance.\nHasEltype() if the element type is known, and eltype would return a meaningful value.\n\nHasEltype() is the default, since iterators are assumed to implement eltype.\n\nThis trait is generally used to select between algorithms that pre-allocate a specific type of result, and algorithms that pick a result type based on the types of yielded values.\n\njulia> Base.IteratorEltype(1:5)\nBase.HasEltype()\n\n\n\n\n\n"
@@ -6306,15 +6410,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#lib-collections-iteration-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Iteration",
     "category": "section",
-    "text": "Sequential iteration is implemented by the iterate function. The general for loop:for i in iter   # or  \"for i = iter\"\n    # body\nendis translated into:next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nendThe state object may be anything, and should be chosen appropriately for each iterable type. See the manual section on the iteration interface for more details about defining a custom iterable type.Base.iterate\nBase.IteratorSize\nBase.IteratorEltypeFully implemented by:AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nEachLine\nAbstractString\nSet\nPair\nNamedTuple"
+    "text": "Sequential iteration is implemented by the iterate function. The general for loop:for i in iter   # or  \"for i = iter\"\n    # body\nend被转换成next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nend“state”对象能够是任何对象，并且对于每个可迭代的种类应该选择合适的“state”对象。 详情请参照「关于迭代接口的Manual部分」来获得关于定义一个常见迭代种类的更多细节Base.iterate\nBase.IteratorSize\nBase.IteratorEltypeFully implemented by:AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nEachLine\nAbstractString\nSet\nPair\nNamedTuple"
 },
 
 {
     "location": "base/collections/#Base.AbstractRange",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.AbstractRange",
     "category": "type",
     "text": "AbstractRange{T}\n\nSupertype for ranges with elements of type T. UnitRange and other types are subtypes of this.\n\n\n\n\n\n"
@@ -6322,7 +6426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.OrdinalRange",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.OrdinalRange",
     "category": "type",
     "text": "OrdinalRange{T, S} <: AbstractRange{T}\n\nSupertype for ordinal ranges with elements of type T with spacing(s) of type S. The steps should be always-exact multiples of oneunit, and T should be a \"discrete\" type, which cannot have values smaller than oneunit. For example, Integer or Date types would qualify, whereas Float64 would not (since this type can represent values smaller than oneunit(Float64). UnitRange, StepRange, and other types are subtypes of this.\n\n\n\n\n\n"
@@ -6330,7 +6434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.AbstractUnitRange",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.AbstractUnitRange",
     "category": "type",
     "text": "AbstractUnitRange{T} <: OrdinalRange{T, T}\n\nSupertype for ranges with a step size of oneunit(T) with elements of type T. UnitRange and other types are subtypes of this.\n\n\n\n\n\n"
@@ -6338,7 +6442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.StepRange",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.StepRange",
     "category": "type",
     "text": "StepRange{T, S} <: OrdinalRange{T, S}\n\nRanges with elements of type T with spacing of type S. The step between each element is constant, and the range is defined in terms of a start and stop of type T and a step of type S. Neither T nor S should be floating point types. The syntax a:b:c with b > 1 and a, b, and c all integers creates a StepRange.\n\nExamples\n\njulia> collect(StepRange(1, Int8(2), 10))\n5-element Array{Int64,1}:\n 1\n 3\n 5\n 7\n 9\n\njulia> typeof(StepRange(1, Int8(2), 10))\nStepRange{Int64,Int8}\n\njulia> typeof(1:3:6)\nStepRange{Int64,Int64}\n\n\n\n\n\n"
@@ -6346,7 +6450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.UnitRange",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.UnitRange",
     "category": "type",
     "text": "UnitRange{T<:Real}\n\nA range parameterized by a start and stop of type T, filled with elements spaced by 1 from start until stop is exceeded. The syntax a:b with a and b both Integers creates a UnitRange.\n\nExamples\n\njulia> collect(UnitRange(2.3, 5.2))\n3-element Array{Float64,1}:\n 2.3\n 3.3\n 4.3\n\njulia> typeof(1:10)\nUnitRange{Int64}\n\n\n\n\n\n"
@@ -6354,23 +6458,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.LinRange",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.LinRange",
     "category": "type",
     "text": "LinRange{T}\n\nA range with len linearly spaced elements between its start and stop. The size of the spacing is controlled by len, which must be an Int.\n\nExamples\n\njulia> LinRange(1.5, 5.5, 9)\n9-element LinRange{Float64}:\n 1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/collections/#Constructors-and-Types-1",
-    "page": "Collections and Data Structures",
-    "title": "Constructors and Types",
+    "location": "base/collections/#构造器和类型-1",
+    "page": "集合和数据结构",
+    "title": "构造器和类型",
     "category": "section",
     "text": "Base.AbstractRange\nBase.OrdinalRange\nBase.AbstractUnitRange\nBase.StepRange\nBase.UnitRange\nBase.LinRange"
 },
 
 {
     "location": "base/collections/#Base.isempty",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.isempty",
     "category": "function",
     "text": "isempty(collection) -> Bool\n\nDetermine whether a collection is empty (has no elements).\n\nExamples\n\njulia> isempty([])\ntrue\n\njulia> isempty([1 2 3])\nfalse\n\n\n\n\n\n"
@@ -6378,7 +6482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.empty!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.empty!",
     "category": "function",
     "text": "empty!(collection) -> collection\n\nRemove all elements from a collection.\n\nExamples\n\njulia> A = Dict(\"a\" => 1, \"b\" => 2)\nDict{String,Int64} with 2 entries:\n  \"b\" => 2\n  \"a\" => 1\n\njulia> empty!(A);\n\njulia> A\nDict{String,Int64} with 0 entries\n\n\n\n\n\n"
@@ -6386,7 +6490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.length",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.length",
     "category": "function",
     "text": "length(collection) -> Integer\n\nReturn the number of elements in the collection.\n\nUse lastindex to get the last valid index of an indexable collection.\n\nExamples\n\njulia> length(1:5)\n5\n\njulia> length([1, 2, 3, 4])\n4\n\njulia> length([1 2; 3 4])\n4\n\n\n\n\n\n"
@@ -6394,15 +6498,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#General-Collections-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "General Collections",
     "category": "section",
-    "text": "Base.isempty\nBase.empty!\nBase.lengthFully implemented by:AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nAbstractString\nSet\nNamedTuple"
+    "text": "Base.isempty\nBase.empty!\nBase.length完全由以下执行：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nAbstractString\nSet\nNamedTuple"
 },
 
 {
     "location": "base/collections/#Base.in",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.in",
     "category": "function",
     "text": "in(item, collection) -> Bool\n∈(item, collection) -> Bool\n∋(collection, item) -> Bool\n\nDetermine whether an item is in the given collection, in the sense that it is == to one of the values generated by iterating over the collection. Returns a Bool value, except if item is missing or collection contains missing but not item, in which case missing is returned (three-valued logic, matching the behavior of any and ==).\n\nSome collections follow a slightly different definition. For example, Sets check whether the item isequal to one of the elements. Dicts look for key=>value pairs, and the key is compared using isequal. To test for the presence of a key in a dictionary, use haskey or k in keys(dict). For these collections, the result is always a Bool and never missing.\n\nExamples\n\njulia> a = 1:3:20\n1:3:19\n\njulia> 4 in a\ntrue\n\njulia> 5 in a\nfalse\n\njulia> missing in [1, 2]\nmissing\n\njulia> 1 in [2, missing]\nmissing\n\njulia> 1 in [1, missing]\ntrue\n\njulia> missing in Set([1, 2])\nfalse\n\n\n\n\n\n"
@@ -6410,7 +6514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.:∉",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.:∉",
     "category": "function",
     "text": "∉(item, collection) -> Bool\n∌(collection, item) -> Bool\n\nNegation of ∈ and ∋, i.e. checks that item is not in collection.\n\nExamples\n\njulia> 1 ∉ 2:4\ntrue\n\njulia> 1 ∉ 1:3\nfalse\n\n\n\n\n\n"
@@ -6418,7 +6522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.eltype",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.eltype",
     "category": "function",
     "text": "eltype(type)\n\nDetermine the type of the elements generated by iterating a collection of the given type. For dictionary types, this will be a Pair{KeyType,ValType}. The definition eltype(x) = eltype(typeof(x)) is provided for convenience so that instances can be passed instead of types. However the form that accepts a type argument should be defined for new types.\n\nExamples\n\njulia> eltype(fill(1f0, (2,2)))\nFloat32\n\njulia> eltype(fill(0x1, (2,2)))\nUInt8\n\n\n\n\n\n"
@@ -6426,7 +6530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.indexin",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.indexin",
     "category": "function",
     "text": "indexin(a, b)\n\nReturn an array containing the first index in b for each value in a that is a member of b. The output array contains nothing wherever a is not a member of b.\n\nExamples\n\njulia> a = [\'a\', \'b\', \'c\', \'b\', \'d\', \'a\'];\n\njulia> b = [\'a\', \'b\', \'c\'];\n\njulia> indexin(a, b)\n6-element Array{Union{Nothing, Int64},1}:\n 1\n 2\n 3\n 2\n  nothing\n 1\n\njulia> indexin(b, a)\n3-element Array{Union{Nothing, Int64},1}:\n 1\n 2\n 3\n\n\n\n\n\n"
@@ -6434,7 +6538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.unique",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.unique",
     "category": "function",
     "text": "unique(itr)\n\nReturn an array containing only the unique elements of collection itr, as determined by isequal, in the order that the first of each set of equivalent elements originally appears. The element type of the input is preserved.\n\nExamples\n\njulia> unique([1, 2, 6, 2])\n3-element Array{Int64,1}:\n 1\n 2\n 6\n\njulia> unique(Real[1, 1.0, 2])\n2-element Array{Real,1}:\n 1\n 2\n\n\n\n\n\nunique(f, itr)\n\nReturns an array containing one value from itr for each unique value produced by f applied to elements of itr.\n\nExamples\n\njulia> unique(x -> x^2, [1, -1, 3, -3, 4])\n3-element Array{Int64,1}:\n 1\n 3\n 4\n\n\n\n\n\nunique(A::AbstractArray; dims::Int)\n\nReturn unique regions of A along dimension dims.\n\nExamples\n\njulia> A = map(isodd, reshape(Vector(1:8), (2,2,2)))\n2×2×2 Array{Bool,3}:\n[:, :, 1] =\n  true   true\n false  false\n\n[:, :, 2] =\n  true   true\n false  false\n\njulia> unique(A)\n2-element Array{Bool,1}:\n  true\n false\n\njulia> unique(A, dims=2)\n2×1×2 Array{Bool,3}:\n[:, :, 1] =\n  true\n false\n\n[:, :, 2] =\n  true\n false\n\njulia> unique(A, dims=3)\n2×2×1 Array{Bool,3}:\n[:, :, 1] =\n  true   true\n false  false\n\n\n\n\n\n"
@@ -6442,7 +6546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.unique!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.unique!",
     "category": "function",
     "text": "unique!(A::AbstractVector)\n\nRemove duplicate items as determined by isequal, then return the modified A. unique! will return the elements of A in the order that they occur. If you do not care about the order of the returned data, then calling (sort!(A); unique!(A)) will be much more efficient as long as the elements of A can be sorted.\n\nExamples\n\njulia> unique!([1, 1, 1])\n1-element Array{Int64,1}:\n 1\n\njulia> A = [7, 3, 2, 3, 7, 5];\n\njulia> unique!(A)\n4-element Array{Int64,1}:\n 7\n 3\n 2\n 5\n\njulia> B = [7, 6, 42, 6, 7, 42];\n\njulia> sort!(B);  # unique! is able to process sorted data much more efficiently.\n\njulia> unique!(B)\n3-element Array{Int64,1}:\n  6\n  7\n 42\n\n\n\n\n\n"
@@ -6450,7 +6554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.allunique",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.allunique",
     "category": "function",
     "text": "allunique(itr) -> Bool\n\nReturn true if all values from itr are distinct when compared with isequal.\n\nExamples\n\njulia> a = [1; 2; 3]\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> allunique([a, a])\nfalse\n\n\n\n\n\n"
@@ -6458,7 +6562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.reduce-Tuple{Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.reduce",
     "category": "method",
     "text": "reduce(op, itr; [init])\n\nReduce the given collection itr with the given binary operator op. If provided, the initial value init must be a neutral element for op that will be returned for empty collections. It is unspecified whether init is used for non-empty collections.\n\nFor empty collections, providing init will be necessary, except for some special cases (e.g. when op is one of +, *, max, min, &, |) when Julia can determine the neutral element of op.\n\nReductions for certain commonly-used operators may have special implementations, and should be used instead: maximum(itr), minimum(itr), sum(itr), prod(itr),  any(itr), all(itr).\n\nThe associativity of the reduction is implementation dependent. This means that you can\'t use non-associative operations like - because it is undefined whether reduce(-,[1,2,3]) should be evaluated as (1-2)-3 or 1-(2-3). Use foldl or foldr instead for guaranteed left or right associativity.\n\nSome operations accumulate error. Parallelism will be easier if the reduction can be executed in groups. Future versions of Julia might change the algorithm. Note that the elements are not reordered if you use an ordered collection.\n\nExamples\n\njulia> reduce(*, [2; 3; 4])\n24\n\njulia> reduce(*, [2; 3; 4]; init=-1)\n-24\n\n\n\n\n\n"
@@ -6466,7 +6570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.foldl-Tuple{Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.foldl",
     "category": "method",
     "text": "foldl(op, itr; [init])\n\nLike reduce, but with guaranteed left associativity. If provided, the keyword argument init will be used exactly once. In general, it will be necessary to provide init to work with empty collections.\n\nExamples\n\njulia> foldl(=>, 1:4)\n((1=>2)=>3) => 4\n\njulia> foldl(=>, 1:4; init=0)\n(((0=>1)=>2)=>3) => 4\n\n\n\n\n\n"
@@ -6474,7 +6578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.foldr-Tuple{Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.foldr",
     "category": "method",
     "text": "foldr(op, itr; [init])\n\nLike reduce, but with guaranteed right associativity. If provided, the keyword argument init will be used exactly once. In general, it will be necessary to provide init to work with empty collections.\n\nExamples\n\njulia> foldr(=>, 1:4)\n1 => (2=>(3=>4))\n\njulia> foldr(=>, 1:4; init=0)\n1 => (2=>(3=>(4=>0)))\n\n\n\n\n\n"
@@ -6482,7 +6586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.maximum",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.maximum",
     "category": "function",
     "text": "maximum(itr)\n\nReturns the largest element in a collection.\n\nExamples\n\njulia> maximum(-20.5:10)\n9.5\n\njulia> maximum([1,2,3])\n3\n\n\n\n\n\nmaximum(A::AbstractArray; dims)\n\nCompute the maximum value of an array over the given dimensions. See also the max(a,b) function to take the maximum of two or more arguments, which can be applied elementwise to arrays via max.(a,b).\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> maximum(A, dims=1)\n1×2 Array{Int64,2}:\n 3  4\n\njulia> maximum(A, dims=2)\n2×1 Array{Int64,2}:\n 2\n 4\n\n\n\n\n\n"
@@ -6490,7 +6594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.maximum!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.maximum!",
     "category": "function",
     "text": "maximum!(r, A)\n\nCompute the maximum value of A over the singleton dimensions of r, and write results to r.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> maximum!([1; 1], A)\n2-element Array{Int64,1}:\n 2\n 4\n\njulia> maximum!([1 1], A)\n1×2 Array{Int64,2}:\n 3  4\n\n\n\n\n\n"
@@ -6498,7 +6602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.minimum",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.minimum",
     "category": "function",
     "text": "minimum(itr)\n\nReturns the smallest element in a collection.\n\nExamples\n\njulia> minimum(-20.5:10)\n-20.5\n\njulia> minimum([1,2,3])\n1\n\n\n\n\n\nminimum(A::AbstractArray; dims)\n\nCompute the minimum value of an array over the given dimensions. See also the min(a,b) function to take the minimum of two or more arguments, which can be applied elementwise to arrays via min.(a,b).\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> minimum(A, dims=1)\n1×2 Array{Int64,2}:\n 1  2\n\njulia> minimum(A, dims=2)\n2×1 Array{Int64,2}:\n 1\n 3\n\n\n\n\n\n"
@@ -6506,7 +6610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.minimum!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.minimum!",
     "category": "function",
     "text": "minimum!(r, A)\n\nCompute the minimum value of A over the singleton dimensions of r, and write results to r.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> minimum!([1; 1], A)\n2-element Array{Int64,1}:\n 1\n 3\n\njulia> minimum!([1 1], A)\n1×2 Array{Int64,2}:\n 1  2\n\n\n\n\n\n"
@@ -6514,7 +6618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.extrema",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.extrema",
     "category": "function",
     "text": "extrema(itr) -> Tuple\n\nCompute both the minimum and maximum element in a single pass, and return them as a 2-tuple.\n\nExamples\n\njulia> extrema(2:10)\n(2, 10)\n\njulia> extrema([9,pi,4.5])\n(3.141592653589793, 9.0)\n\n\n\n\n\nextrema(A::AbstractArray; dims) -> Array{Tuple}\n\nCompute the minimum and maximum elements of an array over the given dimensions.\n\nExamples\n\njulia> A = reshape(Vector(1:2:16), (2,2,2))\n2×2×2 Array{Int64,3}:\n[:, :, 1] =\n 1  5\n 3  7\n\n[:, :, 2] =\n  9  13\n 11  15\n\njulia> extrema(A, dims = (1,2))\n1×1×2 Array{Tuple{Int64,Int64},3}:\n[:, :, 1] =\n (1, 7)\n\n[:, :, 2] =\n (9, 15)\n\n\n\n\n\n"
@@ -6522,7 +6626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.argmax",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.argmax",
     "category": "function",
     "text": "argmax(itr) -> Integer\n\nReturn the index of the maximum element in a collection. If there are multiple maximal elements, then the first one will be returned.\n\nThe collection must not be empty.\n\nExamples\n\njulia> argmax([8,0.1,-9,pi])\n1\n\njulia> argmax([1,7,7,6])\n2\n\njulia> argmax([1,7,7,NaN])\n4\n\n\n\n\n\nargmax(A; dims) -> indices\n\nFor an array input, return the indices of the maximum elements over the given dimensions. NaN is treated as greater than all other values.\n\nExamples\n\njulia> A = [1.0 2; 3 4]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> argmax(A, dims=1)\n1×2 Array{CartesianIndex{2},2}:\n CartesianIndex(2, 1)  CartesianIndex(2, 2)\n\njulia> argmax(A, dims=2)\n2×1 Array{CartesianIndex{2},2}:\n CartesianIndex(1, 2)\n CartesianIndex(2, 2)\n\n\n\n\n\n"
@@ -6530,7 +6634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.argmin",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.argmin",
     "category": "function",
     "text": "argmin(itr) -> Integer\n\nReturn the index of the minimum element in a collection. If there are multiple minimal elements, then the first one will be returned.\n\nThe collection must not be empty.\n\nExamples\n\njulia> argmin([8,0.1,-9,pi])\n3\n\njulia> argmin([7,1,1,6])\n2\n\njulia> argmin([7,1,1,NaN])\n4\n\n\n\n\n\nargmin(A; dims) -> indices\n\nFor an array input, return the indices of the minimum elements over the given dimensions. NaN is treated as less than all other values.\n\nExamples\n\njulia> A = [1.0 2; 3 4]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> argmin(A, dims=1)\n1×2 Array{CartesianIndex{2},2}:\n CartesianIndex(1, 1)  CartesianIndex(1, 2)\n\njulia> argmin(A, dims=2)\n2×1 Array{CartesianIndex{2},2}:\n CartesianIndex(1, 1)\n CartesianIndex(2, 1)\n\n\n\n\n\n"
@@ -6538,7 +6642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.findmax",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.findmax",
     "category": "function",
     "text": "findmax(itr) -> (x, index)\n\nReturn the maximum element of the collection itr and its index. If there are multiple maximal elements, then the first one will be returned. If any data element is NaN, this element is returned. The result is in line with max.\n\nThe collection must not be empty.\n\nExamples\n\njulia> findmax([8,0.1,-9,pi])\n(8.0, 1)\n\njulia> findmax([1,7,7,6])\n(7, 2)\n\njulia> findmax([1,7,7,NaN])\n(NaN, 4)\n\n\n\n\n\nfindmax(A; dims) -> (maxval, index)\n\nFor an array input, returns the value and index of the maximum over the given dimensions. NaN is treated as greater than all other values.\n\nExamples\n\njulia> A = [1.0 2; 3 4]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> findmax(A, dims=1)\n([3.0 4.0], CartesianIndex{2}[CartesianIndex(2, 1) CartesianIndex(2, 2)])\n\njulia> findmax(A, dims=2)\n([2.0; 4.0], CartesianIndex{2}[CartesianIndex(1, 2); CartesianIndex(2, 2)])\n\n\n\n\n\n"
@@ -6546,7 +6650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.findmin",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.findmin",
     "category": "function",
     "text": "findmin(itr) -> (x, index)\n\nReturn the minimum element of the collection itr and its index. If there are multiple minimal elements, then the first one will be returned. If any data element is NaN, this element is returned. The result is in line with min.\n\nThe collection must not be empty.\n\nExamples\n\njulia> findmin([8,0.1,-9,pi])\n(-9.0, 3)\n\njulia> findmin([7,1,1,6])\n(1, 2)\n\njulia> findmin([7,1,1,NaN])\n(NaN, 4)\n\n\n\n\n\nfindmin(A; dims) -> (minval, index)\n\nFor an array input, returns the value and index of the minimum over the given dimensions. NaN is treated as less than all other values.\n\nExamples\n\njulia> A = [1.0 2; 3 4]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> findmin(A, dims=1)\n([1.0 2.0], CartesianIndex{2}[CartesianIndex(1, 1) CartesianIndex(1, 2)])\n\njulia> findmin(A, dims=2)\n([1.0; 3.0], CartesianIndex{2}[CartesianIndex(1, 1); CartesianIndex(2, 1)])\n\n\n\n\n\n"
@@ -6554,7 +6658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.findmax!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.findmax!",
     "category": "function",
     "text": "findmax!(rval, rind, A) -> (maxval, index)\n\nFind the maximum of A and the corresponding linear index along singleton dimensions of rval and rind, and store the results in rval and rind. NaN is treated as greater than all other values.\n\n\n\n\n\n"
@@ -6562,7 +6666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.findmin!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.findmin!",
     "category": "function",
     "text": "findmin!(rval, rind, A) -> (minval, index)\n\nFind the minimum of A and the corresponding linear index along singleton dimensions of rval and rind, and store the results in rval and rind. NaN is treated as less than all other values.\n\n\n\n\n\n"
@@ -6570,7 +6674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.sum",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.sum",
     "category": "function",
     "text": "sum(f, itr)\n\nSum the results of calling function f on each element of itr.\n\nThe return type is Int for signed integers of less than system word size, and UInt for unsigned integers of less than system word size.  For all other arguments, a common return type is found to which all arguments are promoted.\n\nExamples\n\njulia> sum(abs2, [2; 3; 4])\n29\n\nNote the important difference between sum(A) and reduce(+, A) for arrays with small integer eltype:\n\njulia> sum(Int8[100, 28])\n128\n\njulia> reduce(+, Int8[100, 28])\n-128\n\nIn the former case, the integers are widened to system word size and therefore the result is 128. In the latter case, no such widening happens and integer overflow results in -128.\n\n\n\n\n\nsum(itr)\n\nReturns the sum of all elements in a collection.\n\nThe return type is Int for signed integers of less than system word size, and UInt for unsigned integers of less than system word size.  For all other arguments, a common return type is found to which all arguments are promoted.\n\nExamples\n\njulia> sum(1:20)\n210\n\n\n\n\n\nsum(A::AbstractArray; dims)\n\nSum elements of an array over the given dimensions.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> sum(A, dims=1)\n1×2 Array{Int64,2}:\n 4  6\n\njulia> sum(A, dims=2)\n2×1 Array{Int64,2}:\n 3\n 7\n\n\n\n\n\n"
@@ -6578,7 +6682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.sum!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.sum!",
     "category": "function",
     "text": "sum!(r, A)\n\nSum elements of A over the singleton dimensions of r, and write results to r.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> sum!([1; 1], A)\n2-element Array{Int64,1}:\n 3\n 7\n\njulia> sum!([1 1], A)\n1×2 Array{Int64,2}:\n 4  6\n\n\n\n\n\n"
@@ -6586,7 +6690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.prod",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.prod",
     "category": "function",
     "text": "prod(f, itr)\n\nReturns the product of f applied to each element of itr.\n\nThe return type is Int for signed integers of less than system word size, and UInt for unsigned integers of less than system word size.  For all other arguments, a common return type is found to which all arguments are promoted.\n\nExamples\n\njulia> prod(abs2, [2; 3; 4])\n576\n\n\n\n\n\nprod(itr)\n\nReturns the product of all elements of a collection.\n\nThe return type is Int for signed integers of less than system word size, and UInt for unsigned integers of less than system word size.  For all other arguments, a common return type is found to which all arguments are promoted.\n\nExamples\n\njulia> prod(1:20)\n2432902008176640000\n\n\n\n\n\nprod(A::AbstractArray; dims)\n\nMultiply elements of an array over the given dimensions.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> prod(A, dims=1)\n1×2 Array{Int64,2}:\n 3  8\n\njulia> prod(A, dims=2)\n2×1 Array{Int64,2}:\n  2\n 12\n\n\n\n\n\n"
@@ -6594,7 +6698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.prod!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.prod!",
     "category": "function",
     "text": "prod!(r, A)\n\nMultiply elements of A over the singleton dimensions of r, and write results to r.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> prod!([1; 1], A)\n2-element Array{Int64,1}:\n  2\n 12\n\njulia> prod!([1 1], A)\n1×2 Array{Int64,2}:\n 3  8\n\n\n\n\n\n"
@@ -6602,7 +6706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.any-Tuple{Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.any",
     "category": "method",
     "text": "any(itr) -> Bool\n\nTest whether any elements of a boolean collection are true, returning true as soon as the first true value in itr is encountered (short-circuiting).\n\nIf the input contains missing values, return missing if all non-missing values are false (or equivalently, if the input contains no true value), following three-valued logic.\n\nExamples\n\njulia> a = [true,false,false,true]\n4-element Array{Bool,1}:\n  true\n false\n false\n  true\n\njulia> any(a)\ntrue\n\njulia> any((println(i); v) for (i, v) in enumerate(a))\n1\ntrue\n\njulia> any([missing, true])\ntrue\n\njulia> any([false, missing])\nmissing\n\n\n\n\n\n"
@@ -6610,7 +6714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.any-Tuple{AbstractArray,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.any",
     "category": "method",
     "text": "any(p, itr) -> Bool\n\nDetermine whether predicate p returns true for any elements of itr, returning true as soon as the first item in itr for which p returns true is encountered (short-circuiting).\n\nIf the input contains missing values, return missing if all non-missing values are false (or equivalently, if the input contains no true value), following three-valued logic.\n\nExamples\n\njulia> any(i->(4<=i<=6), [3,5,7])\ntrue\n\njulia> any(i -> (println(i); i > 3), 1:10)\n1\n2\n3\n4\ntrue\n\njulia> any(i -> i > 0, [1, missing])\ntrue\n\njulia> any(i -> i > 0, [-1, missing])\nmissing\n\njulia> any(i -> i > 0, [-1, 0])\nfalse\n\n\n\n\n\n"
@@ -6618,7 +6722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.any!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.any!",
     "category": "function",
     "text": "any!(r, A)\n\nTest whether any values in A along the singleton dimensions of r are true, and write results to r.\n\nExamples\n\njulia> A = [true false; true false]\n2×2 Array{Bool,2}:\n true  false\n true  false\n\njulia> any!([1; 1], A)\n2-element Array{Int64,1}:\n 1\n 1\n\njulia> any!([1 1], A)\n1×2 Array{Int64,2}:\n 1  0\n\n\n\n\n\n"
@@ -6626,7 +6730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.all-Tuple{Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.all",
     "category": "method",
     "text": "all(itr) -> Bool\n\nTest whether all elements of a boolean collection are true, returning false as soon as the first false value in itr is encountered (short-circuiting).\n\nIf the input contains missing values, return missing if all non-missing values are true (or equivalently, if the input contains no false value), following three-valued logic.\n\nExamples\n\njulia> a = [true,false,false,true]\n4-element Array{Bool,1}:\n  true\n false\n false\n  true\n\njulia> all(a)\nfalse\n\njulia> all((println(i); v) for (i, v) in enumerate(a))\n1\n2\nfalse\n\njulia> all([missing, false])\nfalse\n\njulia> all([true, missing])\nmissing\n\n\n\n\n\n"
@@ -6634,7 +6738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.all-Tuple{AbstractArray,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.all",
     "category": "method",
     "text": "all(p, itr) -> Bool\n\nDetermine whether predicate p returns true for all elements of itr, returning false as soon as the first item in itr for which p returns false is encountered (short-circuiting).\n\nIf the input contains missing values, return missing if all non-missing values are true (or equivalently, if the input contains no false value), following three-valued logic.\n\nExamples\n\njulia> all(i->(4<=i<=6), [4,5,6])\ntrue\n\njulia> all(i -> (println(i); i < 3), 1:10)\n1\n2\n3\nfalse\n\njulia> all(i -> i > 0, [1, missing])\nmissing\n\njulia> all(i -> i > 0, [-1, missing])\nfalse\n\njulia> all(i -> i > 0, [1, 2])\ntrue\n\n\n\n\n\n"
@@ -6642,7 +6746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.all!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.all!",
     "category": "function",
     "text": "all!(r, A)\n\nTest whether all values in A along the singleton dimensions of r are true, and write results to r.\n\nExamples\n\njulia> A = [true false; true false]\n2×2 Array{Bool,2}:\n true  false\n true  false\n\njulia> all!([1; 1], A)\n2-element Array{Int64,1}:\n 0\n 0\n\njulia> all!([1 1], A)\n1×2 Array{Int64,2}:\n 1  0\n\n\n\n\n\n"
@@ -6650,7 +6754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.count",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.count",
     "category": "function",
     "text": "count(p, itr) -> Integer\ncount(itr) -> Integer\n\nCount the number of elements in itr for which predicate p returns true. If p is omitted, counts the number of true elements in itr (which should be a collection of boolean values).\n\nExamples\n\njulia> count(i->(4<=i<=6), [2,3,4,5,6])\n3\n\njulia> count([true, false, true, true])\n3\n\n\n\n\n\n"
@@ -6658,7 +6762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.any-Tuple{Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.any",
     "category": "method",
     "text": "any(p, itr) -> Bool\n\nDetermine whether predicate p returns true for any elements of itr, returning true as soon as the first item in itr for which p returns true is encountered (short-circuiting).\n\nIf the input contains missing values, return missing if all non-missing values are false (or equivalently, if the input contains no true value), following three-valued logic.\n\nExamples\n\njulia> any(i->(4<=i<=6), [3,5,7])\ntrue\n\njulia> any(i -> (println(i); i > 3), 1:10)\n1\n2\n3\n4\ntrue\n\njulia> any(i -> i > 0, [1, missing])\ntrue\n\njulia> any(i -> i > 0, [-1, missing])\nmissing\n\njulia> any(i -> i > 0, [-1, 0])\nfalse\n\n\n\n\n\n"
@@ -6666,7 +6770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.all-Tuple{Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.all",
     "category": "method",
     "text": "all(p, itr) -> Bool\n\nDetermine whether predicate p returns true for all elements of itr, returning false as soon as the first item in itr for which p returns false is encountered (short-circuiting).\n\nIf the input contains missing values, return missing if all non-missing values are true (or equivalently, if the input contains no false value), following three-valued logic.\n\nExamples\n\njulia> all(i->(4<=i<=6), [4,5,6])\ntrue\n\njulia> all(i -> (println(i); i < 3), 1:10)\n1\n2\n3\nfalse\n\njulia> all(i -> i > 0, [1, missing])\nmissing\n\njulia> all(i -> i > 0, [-1, missing])\nfalse\n\njulia> all(i -> i > 0, [1, 2])\ntrue\n\n\n\n\n\n"
@@ -6674,7 +6778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.foreach",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.foreach",
     "category": "function",
     "text": "foreach(f, c...) -> Nothing\n\nCall function f on each element of iterable c. For multiple iterable arguments, f is called elementwise. foreach should be used instead of map when the results of f are not needed, for example in foreach(println, array).\n\nExamples\n\njulia> a = 1:3:7;\n\njulia> foreach(x -> println(x^2), a)\n1\n16\n49\n\n\n\n\n\n"
@@ -6682,7 +6786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.map",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.map",
     "category": "function",
     "text": "map(f, c...) -> collection\n\nTransform collection c by applying f to each element. For multiple collection arguments, apply f elementwise.\n\nSee also: mapslices\n\nExamples\n\njulia> map(x -> x * 2, [1, 2, 3])\n3-element Array{Int64,1}:\n 2\n 4\n 6\n\njulia> map(+, [1, 2, 3], [10, 20, 30])\n3-element Array{Int64,1}:\n 11\n 22\n 33\n\n\n\n\n\n"
@@ -6690,7 +6794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.map!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.map!",
     "category": "function",
     "text": "map!(function, destination, collection...)\n\nLike map, but stores the result in destination rather than a new collection. destination must be at least as large as the first collection.\n\nExamples\n\njulia> x = zeros(3);\n\njulia> map!(x -> x * 2, x, [1, 2, 3]);\n\njulia> x\n3-element Array{Float64,1}:\n 2.0\n 4.0\n 6.0\n\n\n\n\n\n"
@@ -6698,7 +6802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.mapreduce-Tuple{Any,Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.mapreduce",
     "category": "method",
     "text": "mapreduce(f, op, itr; [init])\n\nApply function f to each element in itr, and then reduce the result using the binary function op. If provided, init must be a neutral element for op that will be returne for empty collections. It is unspecified whether init is used for non-empty collections. In general, it will be necessary to provide init to work with empty collections.\n\nmapreduce is functionally equivalent to calling reduce(op, map(f, itr); init=init), but will in general execute faster since no intermediate collection needs to be created. See documentation for reduce and map.\n\nExamples\n\njulia> mapreduce(x->x^2, +, [1:3;]) # == 1 + 4 + 9\n14\n\nThe associativity of the reduction is implementation-dependent. Additionally, some implementations may reuse the return value of f for elements that appear multiple times in itr. Use mapfoldl or mapfoldr instead for guaranteed left or right associativity and invocation of f for every value.\n\n\n\n\n\n"
@@ -6706,7 +6810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.mapfoldl-Tuple{Any,Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.mapfoldl",
     "category": "method",
     "text": "mapfoldl(f, op, itr; [init])\n\nLike mapreduce, but with guaranteed left associativity, as in foldl. If provided, the keyword argument init will be used exactly once. In general, it will be necessary to provide init to work with empty collections.\n\n\n\n\n\n"
@@ -6714,7 +6818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.mapfoldr-Tuple{Any,Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.mapfoldr",
     "category": "method",
     "text": "mapfoldr(f, op, itr; [init])\n\nLike mapreduce, but with guaranteed right associativity, as in foldr. If provided, the keyword argument init will be used exactly once. In general, it will be necessary to provide init to work with empty collections.\n\n\n\n\n\n"
@@ -6722,7 +6826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.first",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.first",
     "category": "function",
     "text": "first(coll)\n\nGet the first element of an iterable collection. Return the start point of an AbstractRange even if it is empty.\n\nExamples\n\njulia> first(2:2:10)\n2\n\njulia> first([1; 2; 3; 4])\n1\n\n\n\n\n\nfirst(s::AbstractString, n::Integer)\n\nGet a string consisting of the first n characters of s.\n\njulia> first(\"∀ϵ≠0: ϵ²>0\", 0)\n\"\"\n\njulia> first(\"∀ϵ≠0: ϵ²>0\", 1)\n\"∀\"\n\njulia> first(\"∀ϵ≠0: ϵ²>0\", 3)\n\"∀ϵ≠\"\n\n\n\n\n\n"
@@ -6730,7 +6834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.last",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.last",
     "category": "function",
     "text": "last(coll)\n\nGet the last element of an ordered collection, if it can be computed in O(1) time. This is accomplished by calling lastindex to get the last index. Return the end point of an AbstractRange even if it is empty.\n\nExamples\n\njulia> last(1:2:10)\n9\n\njulia> last([1; 2; 3; 4])\n4\n\n\n\n\n\nlast(s::AbstractString, n::Integer)\n\nGet a string consisting of the last n characters of s.\n\njulia> last(\"∀ϵ≠0: ϵ²>0\", 0)\n\"\"\n\njulia> last(\"∀ϵ≠0: ϵ²>0\", 1)\n\"0\"\n\njulia> last(\"∀ϵ≠0: ϵ²>0\", 3)\n\"²>0\"\n\n\n\n\n\n"
@@ -6738,7 +6842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.step",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.step",
     "category": "function",
     "text": "step(r)\n\nGet the step size of an AbstractRange object.\n\nExamples\n\njulia> step(1:10)\n1\n\njulia> step(1:2:10)\n2\n\njulia> step(2.5:0.3:10.9)\n0.3\n\njulia> step(range(2.5, stop=10.9, length=85))\n0.1\n\n\n\n\n\n"
@@ -6746,7 +6850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.collect-Tuple{Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.collect",
     "category": "method",
     "text": "collect(collection)\n\nReturn an Array of all items in a collection or iterator. For dictionaries, returns Pair{KeyType, ValType}. If the argument is array-like or is an iterator with the HasShape trait, the result will have the same shape and number of dimensions as the argument.\n\nExamples\n\njulia> collect(1:2:13)\n7-element Array{Int64,1}:\n  1\n  3\n  5\n  7\n  9\n 11\n 13\n\n\n\n\n\n"
@@ -6754,7 +6858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.collect-Tuple{Type,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.collect",
     "category": "method",
     "text": "collect(element_type, collection)\n\nReturn an Array with the given element type of all items in a collection or iterable. The result has the same shape and number of dimensions as collection.\n\nExamples\n\njulia> collect(Float64, 1:2:5)\n3-element Array{Float64,1}:\n 1.0\n 3.0\n 5.0\n\n\n\n\n\n"
@@ -6762,7 +6866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.filter",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.filter",
     "category": "function",
     "text": "filter(f, a::AbstractArray)\n\nReturn a copy of a, removing elements for which f is false. The function f is passed one argument.\n\nExamples\n\njulia> a = 1:10\n1:10\n\njulia> filter(isodd, a)\n5-element Array{Int64,1}:\n 1\n 3\n 5\n 7\n 9\n\n\n\n\n\nfilter(f, d::AbstractDict)\n\nReturn a copy of d, removing elements for which f is false. The function f is passed key=>value pairs.\n\nExamples\n\njulia> d = Dict(1=>\"a\", 2=>\"b\")\nDict{Int64,String} with 2 entries:\n  2 => \"b\"\n  1 => \"a\"\n\njulia> filter(p->isodd(p.first), d)\nDict{Int64,String} with 1 entry:\n  1 => \"a\"\n\n\n\n\n\n"
@@ -6770,7 +6874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.filter!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.filter!",
     "category": "function",
     "text": "filter!(f, a::AbstractVector)\n\nUpdate a, removing elements for which f is false. The function f is passed one argument.\n\nExamples\n\njulia> filter!(isodd, Vector(1:10))\n5-element Array{Int64,1}:\n 1\n 3\n 5\n 7\n 9\n\n\n\n\n\nfilter!(f, d::AbstractDict)\n\nUpdate d, removing elements for which f is false. The function f is passed key=>value pairs.\n\nExample\n\njulia> d = Dict(1=>\"a\", 2=>\"b\", 3=>\"c\")\nDict{Int64,String} with 3 entries:\n  2 => \"b\"\n  3 => \"c\"\n  1 => \"a\"\n\njulia> filter!(p->isodd(p.first), d)\nDict{Int64,String} with 2 entries:\n  3 => \"c\"\n  1 => \"a\"\n\n\n\n\n\n"
@@ -6778,7 +6882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.replace-Tuple{Any,Vararg{Pair,N} where N}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.replace",
     "category": "method",
     "text": "replace(A, old_new::Pair...; [count::Integer])\n\nReturn a copy of collection A where, for each pair old=>new in old_new, all occurrences of old are replaced by new. Equality is determined using isequal. If count is specified, then replace at most count occurrences in total.\n\nThe element type of the result is chosen using promotion (see promote_type) based on the element type of A and on the types of the new values in pairs. If count is omitted and the element type of A is a Union, the element type of the result will not include singleton types which are replaced with values of a different type: for example, Union{T,Missing} will become T if missing is replaced.\n\nSee also replace!.\n\nExamples\n\njulia> replace([1, 2, 1, 3], 1=>0, 2=>4, count=2)\n4-element Array{Int64,1}:\n 0\n 4\n 1\n 3\n\njulia> replace([1, missing], missing=>0)\n2-element Array{Int64,1}:\n 1\n 0\n\n\n\n\n\n"
@@ -6786,7 +6890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.replace-Tuple{Union{Function, Type},Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.replace",
     "category": "method",
     "text": "replace(new::Function, A; [count::Integer])\n\nReturn a copy of A where each value x in A is replaced by new(x) If count is specified, then replace at most count values in total (replacements being defined as new(x) !== x).\n\nExamples\n\njulia> replace(x -> isodd(x) ? 2x : x, [1, 2, 3, 4])\n4-element Array{Int64,1}:\n 2\n 2\n 6\n 4\n\njulia> replace(Dict(1=>2, 3=>4)) do kv\n           first(kv) < 3 ? first(kv)=>3 : kv\n       end\nDict{Int64,Int64} with 2 entries:\n  3 => 4\n  1 => 3\n\n\n\n\n\n"
@@ -6794,7 +6898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.replace!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.replace!",
     "category": "function",
     "text": "replace!(A, old_new::Pair...; [count::Integer])\n\nFor each pair old=>new in old_new, replace all occurrences of old in collection A by new. Equality is determined using isequal. If count is specified, then replace at most count occurrences in total. See also replace.\n\nExamples\n\njulia> replace!([1, 2, 1, 3], 1=>0, 2=>4, count=2)\n4-element Array{Int64,1}:\n 0\n 4\n 1\n 3\n\njulia> replace!(Set([1, 2, 3]), 1=>0)\nSet([0, 2, 3])\n\n\n\n\n\nreplace!(new::Function, A; [count::Integer])\n\nReplace each element x in collection A by new(x). If count is specified, then replace at most count values in total (replacements being defined as new(x) !== x).\n\nExamples\n\njulia> replace!(x -> isodd(x) ? 2x : x, [1, 2, 3, 4])\n4-element Array{Int64,1}:\n 2\n 2\n 6\n 4\n\njulia> replace!(Dict(1=>2, 3=>4)) do kv\n           first(kv) < 3 ? first(kv)=>3 : kv\n       end\nDict{Int64,Int64} with 2 entries:\n  3 => 4\n  1 => 3\n\njulia> replace!(x->2x, Set([3, 6]))\nSet([6, 12])\n\n\n\n\n\n"
@@ -6802,7 +6906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Iterable-Collections-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Iterable Collections",
     "category": "section",
     "text": "Base.in\nBase.:∉\nBase.eltype\nBase.indexin\nBase.unique\nBase.unique!\nBase.allunique\nBase.reduce(::Any, ::Any)\nBase.foldl(::Any, ::Any)\nBase.foldr(::Any, ::Any)\nBase.maximum\nBase.maximum!\nBase.minimum\nBase.minimum!\nBase.extrema\nBase.argmax\nBase.argmin\nBase.findmax\nBase.findmin\nBase.findmax!\nBase.findmin!\nBase.sum\nBase.sum!\nBase.prod\nBase.prod!\nBase.any(::Any)\nBase.any(::AbstractArray, ::Any)\nBase.any!\nBase.all(::Any)\nBase.all(::AbstractArray, ::Any)\nBase.all!\nBase.count\nBase.any(::Any, ::Any)\nBase.all(::Any, ::Any)\nBase.foreach\nBase.map\nBase.map!\nBase.mapreduce(::Any, ::Any, ::Any)\nBase.mapfoldl(::Any, ::Any, ::Any)\nBase.mapfoldr(::Any, ::Any, ::Any)\nBase.first\nBase.last\nBase.step\nBase.collect(::Any)\nBase.collect(::Type, ::Any)\nBase.filter\nBase.filter!\nBase.replace(::Any, ::Pair...)\nBase.replace(::Base.Callable, ::Any)\nBase.replace!"
@@ -6810,7 +6914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.getindex",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.getindex",
     "category": "function",
     "text": "getindex(collection, key...)\n\nRetrieve the value(s) stored at the given key or index within a collection. The syntax a[i,j,...] is converted by the compiler to getindex(a, i, j, ...).\n\nExamples\n\njulia> A = Dict(\"a\" => 1, \"b\" => 2)\nDict{String,Int64} with 2 entries:\n  \"b\" => 2\n  \"a\" => 1\n\njulia> getindex(A, \"a\")\n1\n\n\n\n\n\n"
@@ -6818,7 +6922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.setindex!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.setindex!",
     "category": "function",
     "text": "setindex!(collection, value, key...)\n\nStore the given value at the given key or index within a collection. The syntax a[i,j,...] = x is converted by the compiler to (setindex!(a, x, i, j, ...); x).\n\n\n\n\n\n"
@@ -6826,7 +6930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.firstindex",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.firstindex",
     "category": "function",
     "text": "firstindex(collection) -> Integer\nfirstindex(collection, d) -> Integer\n\nReturn the first index of collection. If d is given, return the first index of collection along dimension d.\n\nExamples\n\njulia> firstindex([1,2,4])\n1\n\njulia> firstindex(rand(3,4,5), 2)\n1\n\n\n\n\n\n"
@@ -6834,7 +6938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.lastindex",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.lastindex",
     "category": "function",
     "text": "lastindex(collection) -> Integer\nlastindex(collection, d) -> Integer\n\nReturn the last index of collection. If d is given, return the last index of collection along dimension d.\n\nThe syntaxes A[end] and A[end, end] lower to A[lastindex(A)] and A[lastindex(A, 1), lastindex(A, 2)], respectively.\n\nExamples\n\njulia> lastindex([1,2,4])\n3\n\njulia> lastindex(rand(3,4,5), 2)\n4\n\n\n\n\n\n"
@@ -6842,7 +6946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Indexable-Collections-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Indexable Collections",
     "category": "section",
     "text": "Base.getindex\nBase.setindex!\nBase.firstindex\nBase.lastindexFully implemented by:Array\nBitArray\nAbstractArray\nSubArrayPartially implemented by:AbstractRange\nUnitRange\nTuple\nAbstractString\nDict\nIdDict\nWeakKeyDict\nNamedTuple"
@@ -6850,7 +6954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.Dict",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.Dict",
     "category": "type",
     "text": "Dict([itr])\n\nDict{K,V}() constructs a hash table with keys of type K and values of type V. Keys are compared with isequal and hashed with hash.\n\nGiven a single iterable argument, constructs a Dict whose key-value pairs are taken from 2-tuples (key,value) generated by the argument.\n\nExamples\n\njulia> Dict([(\"A\", 1), (\"B\", 2)])\nDict{String,Int64} with 2 entries:\n  \"B\" => 2\n  \"A\" => 1\n\nAlternatively, a sequence of pair arguments may be passed.\n\njulia> Dict(\"A\"=>1, \"B\"=>2)\nDict{String,Int64} with 2 entries:\n  \"B\" => 2\n  \"A\" => 1\n\n\n\n\n\n"
@@ -6858,7 +6962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.IdDict",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.IdDict",
     "category": "type",
     "text": "IdDict([itr])\n\nIdDict{K,V}() constructs a hash table using object-id as hash and === as equality with keys of type K and values of type V.\n\nSee Dict for further help.\n\n\n\n\n\n"
@@ -6866,7 +6970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.WeakKeyDict",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.WeakKeyDict",
     "category": "type",
     "text": "WeakKeyDict([itr])\n\nWeakKeyDict() constructs a hash table where the keys are weak references to objects, and thus may be garbage collected even when referenced in a hash table.\n\nSee Dict for further help.  Note, unlike Dict, WeakKeyDict does not convert keys on insertion.\n\n\n\n\n\n"
@@ -6874,7 +6978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.ImmutableDict",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.ImmutableDict",
     "category": "type",
     "text": "ImmutableDict\n\nImmutableDict is a Dictionary implemented as an immutable linked list, which is optimal for small dictionaries that are constructed over many individual insertions Note that it is not possible to remove a value, although it can be partially overridden and hidden by inserting a new value with the same key\n\nImmutableDict(KV::Pair)\n\nCreate a new entry in the Immutable Dictionary for the key => value pair\n\nuse (key => value) in dict to see if this particular combination is in the properties set\nuse get(dict, key, default) to retrieve the most recent value for a particular key\n\n\n\n\n\n"
@@ -6882,7 +6986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.haskey",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.haskey",
     "category": "function",
     "text": "haskey(collection, key) -> Bool\n\nDetermine whether a collection has a mapping for a given key.\n\nExamples\n\njulia> D = Dict(\'a\'=>2, \'b\'=>3)\nDict{Char,Int64} with 2 entries:\n  \'a\' => 2\n  \'b\' => 3\n\njulia> haskey(D, \'a\')\ntrue\n\njulia> haskey(D, \'c\')\nfalse\n\n\n\n\n\n"
@@ -6890,7 +6994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.get-Tuple{Any,Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.get",
     "category": "method",
     "text": "get(collection, key, default)\n\nReturn the value stored for the given key, or the given default value if no mapping for the key is present.\n\nExamples\n\njulia> d = Dict(\"a\"=>1, \"b\"=>2);\n\njulia> get(d, \"a\", 3)\n1\n\njulia> get(d, \"c\", 3)\n3\n\n\n\n\n\n"
@@ -6898,7 +7002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.get",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.get",
     "category": "function",
     "text": "get(collection, key, default)\n\nReturn the value stored for the given key, or the given default value if no mapping for the key is present.\n\nExamples\n\njulia> d = Dict(\"a\"=>1, \"b\"=>2);\n\njulia> get(d, \"a\", 3)\n1\n\njulia> get(d, \"c\", 3)\n3\n\n\n\n\n\nget(f::Function, collection, key)\n\nReturn the value stored for the given key, or if no mapping for the key is present, return f().  Use get! to also store the default value in the dictionary.\n\nThis is intended to be called using do block syntax\n\nget(dict, key) do\n    # default value calculated here\n    time()\nend\n\n\n\n\n\n"
@@ -6906,7 +7010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.get!-Tuple{Any,Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.get!",
     "category": "method",
     "text": "get!(collection, key, default)\n\nReturn the value stored for the given key, or if no mapping for the key is present, store key => default, and return default.\n\nExamples\n\njulia> d = Dict(\"a\"=>1, \"b\"=>2, \"c\"=>3);\n\njulia> get!(d, \"a\", 5)\n1\n\njulia> get!(d, \"d\", 4)\n4\n\njulia> d\nDict{String,Int64} with 4 entries:\n  \"c\" => 3\n  \"b\" => 2\n  \"a\" => 1\n  \"d\" => 4\n\n\n\n\n\n"
@@ -6914,7 +7018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.get!-Tuple{Function,Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.get!",
     "category": "method",
     "text": "get!(f::Function, collection, key)\n\nReturn the value stored for the given key, or if no mapping for the key is present, store key => f(), and return f().\n\nThis is intended to be called using do block syntax:\n\nget!(dict, key) do\n    # default value calculated here\n    time()\nend\n\n\n\n\n\n"
@@ -6922,7 +7026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.getkey",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.getkey",
     "category": "function",
     "text": "getkey(collection, key, default)\n\nReturn the key matching argument key if one exists in collection, otherwise return default.\n\nExamples\n\njulia> D = Dict(\'a\'=>2, \'b\'=>3)\nDict{Char,Int64} with 2 entries:\n  \'a\' => 2\n  \'b\' => 3\n\njulia> getkey(D, \'a\', 1)\n\'a\': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)\n\njulia> getkey(D, \'d\', \'a\')\n\'a\': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)\n\n\n\n\n\n"
@@ -6930,7 +7034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.delete!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.delete!",
     "category": "function",
     "text": "delete!(collection, key)\n\nDelete the mapping for the given key in a collection, and return the collection.\n\nExamples\n\njulia> d = Dict(\"a\"=>1, \"b\"=>2)\nDict{String,Int64} with 2 entries:\n  \"b\" => 2\n  \"a\" => 1\n\njulia> delete!(d, \"b\")\nDict{String,Int64} with 1 entry:\n  \"a\" => 1\n\n\n\n\n\n"
@@ -6938,7 +7042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.pop!-Tuple{Any,Any,Any}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.pop!",
     "category": "method",
     "text": "pop!(collection, key[, default])\n\nDelete and return the mapping for key if it exists in collection, otherwise return default, or throw an error if default is not specified.\n\nExamples\n\njulia> d = Dict(\"a\"=>1, \"b\"=>2, \"c\"=>3);\n\njulia> pop!(d, \"a\")\n1\n\njulia> pop!(d, \"d\")\nERROR: KeyError: key \"d\" not found\nStacktrace:\n[...]\n\njulia> pop!(d, \"e\", 4)\n4\n\n\n\n\n\n"
@@ -6946,7 +7050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.keys",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.keys",
     "category": "function",
     "text": "keys(iterator)\n\nFor an iterator or collection that has keys and values (e.g. arrays and dictionaries), return an iterator over the keys.\n\n\n\n\n\n"
@@ -6954,7 +7058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.values",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.values",
     "category": "function",
     "text": "values(iterator)\n\nFor an iterator or collection that has keys and values, return an iterator over the values. This function simply returns its argument by default, since the elements of a general iterator are normally considered its \"values\".\n\nExamples\n\njulia> d = Dict(\"a\"=>1, \"b\"=>2);\n\njulia> values(d)\nBase.ValueIterator for a Dict{String,Int64} with 2 entries. Values:\n  2\n  1\n\njulia> values([2])\n1-element Array{Int64,1}:\n 2\n\n\n\n\n\nvalues(a::AbstractDict)\n\nReturn an iterator over all values in a collection. collect(values(a)) returns an array of values. Since the values are stored internally in a hash table, the order in which they are returned may vary. But keys(a) and values(a) both iterate a and return the elements in the same order.\n\nExamples\n\njulia> D = Dict(\'a\'=>2, \'b\'=>3)\nDict{Char,Int64} with 2 entries:\n  \'a\' => 2\n  \'b\' => 3\n\njulia> collect(values(D))\n2-element Array{Int64,1}:\n 2\n 3\n\n\n\n\n\n"
@@ -6962,7 +7066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.pairs",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.pairs",
     "category": "function",
     "text": "pairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\npairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\n"
@@ -6970,7 +7074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.merge",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.merge",
     "category": "function",
     "text": "merge(d::AbstractDict, others::AbstractDict...)\n\nConstruct a merged collection from the given collections. If necessary, the types of the resulting collection will be promoted to accommodate the types of the merged collections. If the same key is present in another collection, the value for that key will be the value it has in the last collection listed.\n\nExamples\n\njulia> a = Dict(\"foo\" => 0.0, \"bar\" => 42.0)\nDict{String,Float64} with 2 entries:\n  \"bar\" => 42.0\n  \"foo\" => 0.0\n\njulia> b = Dict(\"baz\" => 17, \"bar\" => 4711)\nDict{String,Int64} with 2 entries:\n  \"bar\" => 4711\n  \"baz\" => 17\n\njulia> merge(a, b)\nDict{String,Float64} with 3 entries:\n  \"bar\" => 4711.0\n  \"baz\" => 17.0\n  \"foo\" => 0.0\n\njulia> merge(b, a)\nDict{String,Float64} with 3 entries:\n  \"bar\" => 42.0\n  \"baz\" => 17.0\n  \"foo\" => 0.0\n\n\n\n\n\nmerge(combine, d::AbstractDict, others::AbstractDict...)\n\nConstruct a merged collection from the given collections. If necessary, the types of the resulting collection will be promoted to accommodate the types of the merged collections. Values with the same key will be combined using the combiner function.\n\nExamples\n\njulia> a = Dict(\"foo\" => 0.0, \"bar\" => 42.0)\nDict{String,Float64} with 2 entries:\n  \"bar\" => 42.0\n  \"foo\" => 0.0\n\njulia> b = Dict(\"baz\" => 17, \"bar\" => 4711)\nDict{String,Int64} with 2 entries:\n  \"bar\" => 4711\n  \"baz\" => 17\n\njulia> merge(+, a, b)\nDict{String,Float64} with 3 entries:\n  \"bar\" => 4753.0\n  \"baz\" => 17.0\n  \"foo\" => 0.0\n\n\n\n\n\nmerge(a::NamedTuple, b::NamedTuple)\n\nConstruct a new named tuple by merging two existing ones. The order of fields in a is preserved, but values are taken from matching fields in b. Fields present only in b are appended at the end.\n\njulia> merge((a=1, b=2, c=3), (b=4, d=5))\n(a = 1, b = 4, c = 3, d = 5)\n\n\n\n\n\nmerge(a::NamedTuple, iterable)\n\nInterpret an iterable of key-value pairs as a named tuple, and perform a merge.\n\njulia> merge((a=1, b=2, c=3), [:b=>4, :d=>5])\n(a = 1, b = 4, c = 3, d = 5)\n\n\n\n\n\n"
@@ -6978,7 +7082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.merge!-Tuple{AbstractDict,Vararg{AbstractDict,N} where N}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.merge!",
     "category": "method",
     "text": "merge!(d::AbstractDict, others::AbstractDict...)\n\nUpdate collection with pairs from the other collections. See also merge.\n\nExamples\n\njulia> d1 = Dict(1 => 2, 3 => 4);\n\njulia> d2 = Dict(1 => 4, 4 => 5);\n\njulia> merge!(d1, d2);\n\njulia> d1\nDict{Int64,Int64} with 3 entries:\n  4 => 5\n  3 => 4\n  1 => 4\n\n\n\n\n\n"
@@ -6986,7 +7090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.merge!-Tuple{Function,AbstractDict,Vararg{AbstractDict,N} where N}",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.merge!",
     "category": "method",
     "text": "merge!(combine, d::AbstractDict, others::AbstractDict...)\n\nUpdate collection with pairs from the other collections. Values with the same key will be combined using the combiner function.\n\nExamples\n\njulia> d1 = Dict(1 => 2, 3 => 4);\n\njulia> d2 = Dict(1 => 4, 4 => 5);\n\njulia> merge!(+, d1, d2);\n\njulia> d1\nDict{Int64,Int64} with 3 entries:\n  4 => 5\n  3 => 4\n  1 => 6\n\njulia> merge!(-, d1, d1);\n\njulia> d1\nDict{Int64,Int64} with 3 entries:\n  4 => 0\n  3 => 0\n  1 => 0\n\n\n\n\n\n"
@@ -6994,7 +7098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.sizehint!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.sizehint!",
     "category": "function",
     "text": "sizehint!(s, n)\n\nSuggest that collection s reserve capacity for at least n elements. This can improve performance.\n\n\n\n\n\n"
@@ -7002,7 +7106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.keytype",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.keytype",
     "category": "function",
     "text": "keytype(type)\n\nGet the key type of an dictionary type. Behaves similarly to eltype.\n\nExamples\n\njulia> keytype(Dict(Int32(1) => \"foo\"))\nInt32\n\n\n\n\n\n"
@@ -7010,7 +7114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.valtype",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.valtype",
     "category": "function",
     "text": "valtype(type)\n\nGet the value type of an dictionary type. Behaves similarly to eltype.\n\nExamples\n\njulia> valtype(Dict(Int32(1) => \"foo\"))\nString\n\n\n\n\n\n"
@@ -7018,7 +7122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Dictionaries-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Dictionaries",
     "category": "section",
     "text": "Dict is the standard dictionary. Its implementation uses hash as the hashing function for the key, and isequal to determine equality. Define these two functions for custom types to override how they are stored in a hash table.IdDict is a special hash table where the keys are always object identities.WeakKeyDict is a hash table implementation where the keys are weak references to objects, and thus may be garbage collected even when referenced in a hash table. Like Dict it uses hash for hashing and isequal for equality, unlike Dict it does not convert keys on insertion.Dicts can be created by passing pair objects constructed with => to a Dict constructor: Dict(\"A\"=>1, \"B\"=>2). This call will attempt to infer type information from the keys and values (i.e. this example creates a Dict{String, Int64}). To explicitly specify types use the syntax Dict{KeyType,ValueType}(...). For example, Dict{String,Int32}(\"A\"=>1, \"B\"=>2).Dictionaries may also be created with generators. For example, Dict(i => f(i) for i = 1:10).Given a dictionary D, the syntax D[x] returns the value of key x (if it exists) or throws an error, and D[x] = y stores the key-value pair x => y in D (replacing any existing value for the key x).  Multiple arguments to D[...] are converted to tuples; for example, the syntax D[x,y]  is equivalent to D[(x,y)], i.e. it refers to the value keyed by the tuple (x,y).Base.Dict\nBase.IdDict\nBase.WeakKeyDict\nBase.ImmutableDict\nBase.haskey\nBase.get(::Any, ::Any, ::Any)\nBase.get\nBase.get!(::Any, ::Any, ::Any)\nBase.get!(::Function, ::Any, ::Any)\nBase.getkey\nBase.delete!\nBase.pop!(::Any, ::Any, ::Any)\nBase.keys\nBase.values\nBase.pairs\nBase.merge\nBase.merge!(::AbstractDict, ::AbstractDict...)\nBase.merge!(::Function, ::AbstractDict, ::AbstractDict...)\nBase.sizehint!\nBase.keytype\nBase.valtypeFully implemented by:IdDict\nDict\nWeakKeyDictPartially implemented by:BitSet\nSet\nEnvDict\nArray\nBitArray\nImmutableDict\nIterators.Pairs"
@@ -7026,7 +7130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.Set",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.Set",
     "category": "type",
     "text": "Set([itr])\n\nConstruct a Set of the values generated by the given iterable object, or an empty set. Should be used instead of BitSet for sparse integer sets, or for sets of arbitrary objects.\n\n\n\n\n\n"
@@ -7034,7 +7138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.BitSet",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.BitSet",
     "category": "type",
     "text": "BitSet([itr])\n\nConstruct a sorted set of Ints generated by the given iterable object, or an empty set. Implemented as a bit string, and therefore designed for dense integer sets. If the set will be sparse (for example, holding a few very large integers), use Set instead.\n\n\n\n\n\n"
@@ -7042,7 +7146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.union",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.union",
     "category": "function",
     "text": "union(s, itrs...)\n∪(s, itrs...)\n\nConstruct the union of sets. Maintain order with arrays.\n\nExamples\n\njulia> union([1, 2], [3, 4])\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> union([1, 2], [2, 4])\n3-element Array{Int64,1}:\n 1\n 2\n 4\n\njulia> union([4, 2], 1:2)\n3-element Array{Int64,1}:\n 4\n 2\n 1\n\njulia> union(Set([1, 2]), 2:3)\nSet([2, 3, 1])\n\n\n\n\n\n"
@@ -7050,7 +7154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.union!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.union!",
     "category": "function",
     "text": "union!(s::Union{AbstractSet,AbstractVector}, itrs...)\n\nConstruct the union of passed in sets and overwrite s with the result. Maintain order with arrays.\n\nExamples\n\njulia> a = Set([1, 3, 4, 5]);\n\njulia> union!(a, 1:2:8);\n\njulia> a\nSet([7, 4, 3, 5, 1])\n\n\n\n\n\n"
@@ -7058,7 +7162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.intersect",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.intersect",
     "category": "function",
     "text": "intersect(s, itrs...)\n∩(s, itrs...)\n\nConstruct the intersection of sets. Maintain order with arrays.\n\nExamples\n\njulia> intersect([1, 2, 3], [3, 4, 5])\n1-element Array{Int64,1}:\n 3\n\njulia> intersect([1, 4, 4, 5, 6], [4, 6, 6, 7, 8])\n2-element Array{Int64,1}:\n 4\n 6\n\njulia> intersect(Set([1, 2]), BitSet([2, 3]))\nSet([2])\n\n\n\n\n\n"
@@ -7066,7 +7170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.setdiff",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.setdiff",
     "category": "function",
     "text": "setdiff(s, itrs...)\n\nConstruct the set of elements in s but not in any of the iterables in itrs. Maintain order with arrays.\n\nExamples\n\njulia> setdiff([1,2,3], [3,4,5])\n2-element Array{Int64,1}:\n 1\n 2\n\n\n\n\n\n"
@@ -7074,7 +7178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.setdiff!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.setdiff!",
     "category": "function",
     "text": "setdiff!(s, itrs...)\n\nRemove from set s (in-place) each element of each iterable from itrs. Maintain order with arrays.\n\nExamples\n\njulia> a = Set([1, 3, 4, 5]);\n\njulia> setdiff!(a, 1:2:6);\n\njulia> a\nSet([4])\n\n\n\n\n\n"
@@ -7082,7 +7186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.symdiff",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.symdiff",
     "category": "function",
     "text": "symdiff(s, itrs...)\n\nConstruct the symmetric difference of elements in the passed in sets. When s is not an AbstractSet, the order is maintained. Note that in this case the multiplicity of elements matters.\n\nExamples\n\njulia> symdiff([1,2,3], [3,4,5], [4,5,6])\n3-element Array{Int64,1}:\n 1\n 2\n 6\n\njulia> symdiff([1,2,1], [2, 1, 2])\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> symdiff(unique([1,2,1]), unique([2, 1, 2]))\n0-element Array{Int64,1}\n\n\n\n\n\n"
@@ -7090,7 +7194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.symdiff!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.symdiff!",
     "category": "function",
     "text": "symdiff!(s::Union{AbstractSet,AbstractVector}, itrs...)\n\nConstruct the symmetric difference of the passed in sets, and overwrite s with the result. When s is an array, the order is maintained. Note that in this case the multiplicity of elements matters.\n\n\n\n\n\n"
@@ -7098,7 +7202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.intersect!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.intersect!",
     "category": "function",
     "text": "intersect!(s::Union{AbstractSet,AbstractVector}, itrs...)\n\nIntersect all passed in sets and overwrite s with the result. Maintain order with arrays.\n\n\n\n\n\n"
@@ -7106,7 +7210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.issubset",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.issubset",
     "category": "function",
     "text": "issubset(a, b)\n⊆(a,b)  -> Bool\n⊇(b, a) -> Bool\n\nDetermine whether every element of a is also in b, using in.\n\nExamples\n\njulia> issubset([1, 2], [1, 2, 3])\ntrue\n\njulia> [1, 2, 3] ⊆ [1, 2]\nfalse\n\njulia> [1, 2, 3] ⊇ [1, 2]\ntrue\n\n\n\n\n\n"
@@ -7114,7 +7218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.:⊈",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.:⊈",
     "category": "function",
     "text": "⊈(a, b)\n⊉(b, a)\n\nNegation of ⊆ and ⊇, i.e. checks that a is not a subset of b.\n\nExamples\n\njulia> (1, 2) ⊈ (2, 3)\ntrue\n\njulia> (1, 2) ⊈ (1, 2, 3)\nfalse\n\n\n\n\n\n"
@@ -7122,7 +7226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.:⊊",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.:⊊",
     "category": "function",
     "text": "⊊(a, b)\n⊋(b, a)\n\nDetermines if a is a subset of, but not equal to, b.\n\nExamples\n\njulia> (1, 2) ⊊ (1, 2, 3)\ntrue\n\njulia> (1, 2) ⊊ (1, 2)\nfalse\n\n\n\n\n\n"
@@ -7130,7 +7234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.issetequal",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.issetequal",
     "category": "function",
     "text": "issetequal(a, b)\n\nDetermine whether a and b have the same elements. Equivalent to a ⊆ b && b ⊆ a.\n\nExamples\n\njulia> issetequal([1, 2], [1, 2, 3])\nfalse\n\njulia> issetequal([1, 2], [2, 1])\ntrue\n\n\n\n\n\n"
@@ -7138,7 +7242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Set-Like-Collections-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Set-Like Collections",
     "category": "section",
     "text": "Base.Set\nBase.BitSet\nBase.union\nBase.union!\nBase.intersect\nBase.setdiff\nBase.setdiff!\nBase.symdiff\nBase.symdiff!\nBase.intersect!\nBase.issubset\nBase.:⊈\nBase.:⊊\nBase.issetequalFully implemented by:BitSet\nSetPartially implemented by:Array"
@@ -7146,7 +7250,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.push!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.push!",
     "category": "function",
     "text": "push!(collection, items...) -> collection\n\nInsert one or more items at the end of collection.\n\nExamples\n\njulia> push!([1, 2, 3], 4, 5, 6)\n6-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n 5\n 6\n\nUse append! to add all the elements of another collection to collection. The result of the preceding example is equivalent to append!([1, 2, 3], [4, 5, 6]).\n\n\n\n\n\n"
@@ -7154,7 +7258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.pop!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.pop!",
     "category": "function",
     "text": "pop!(collection) -> item\n\nRemove an item in collection and return it. If collection is an ordered container, the last item is returned.\n\nExamples\n\njulia> A=[1, 2, 3]\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> pop!(A)\n3\n\njulia> A\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> S = Set([1, 2])\nSet([2, 1])\n\njulia> pop!(S)\n2\n\njulia> S\nSet([1])\n\njulia> pop!(Dict(1=>2))\n1 => 2\n\n\n\n\n\npop!(collection, key[, default])\n\nDelete and return the mapping for key if it exists in collection, otherwise return default, or throw an error if default is not specified.\n\nExamples\n\njulia> d = Dict(\"a\"=>1, \"b\"=>2, \"c\"=>3);\n\njulia> pop!(d, \"a\")\n1\n\njulia> pop!(d, \"d\")\nERROR: KeyError: key \"d\" not found\nStacktrace:\n[...]\n\njulia> pop!(d, \"e\", 4)\n4\n\n\n\n\n\n"
@@ -7162,7 +7266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.pushfirst!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.pushfirst!",
     "category": "function",
     "text": "pushfirst!(collection, items...) -> collection\n\nInsert one or more items at the beginning of collection.\n\nExamples\n\njulia> pushfirst!([1, 2, 3, 4], 5, 6)\n6-element Array{Int64,1}:\n 5\n 6\n 1\n 2\n 3\n 4\n\n\n\n\n\n"
@@ -7170,7 +7274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.popfirst!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.popfirst!",
     "category": "function",
     "text": "popfirst!(collection) -> item\n\nRemove the first item from collection.\n\nExamples\n\njulia> A = [1, 2, 3, 4, 5, 6]\n6-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n 5\n 6\n\njulia> popfirst!(A)\n1\n\njulia> A\n5-element Array{Int64,1}:\n 2\n 3\n 4\n 5\n 6\n\n\n\n\n\n"
@@ -7178,7 +7282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.insert!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.insert!",
     "category": "function",
     "text": "insert!(a::Vector, index::Integer, item)\n\nInsert an item into a at the given index. index is the index of item in the resulting a.\n\nExamples\n\njulia> insert!([6, 5, 4, 2, 1], 4, 3)\n6-element Array{Int64,1}:\n 6\n 5\n 4\n 3\n 2\n 1\n\n\n\n\n\n"
@@ -7186,7 +7290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.deleteat!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.deleteat!",
     "category": "function",
     "text": "deleteat!(a::Vector, i::Integer)\n\nRemove the item at the given i and return the modified a. Subsequent items are shifted to fill the resulting gap.\n\nExamples\n\njulia> deleteat!([6, 5, 4, 3, 2, 1], 2)\n5-element Array{Int64,1}:\n 6\n 4\n 3\n 2\n 1\n\n\n\n\n\ndeleteat!(a::Vector, inds)\n\nRemove the items at the indices given by inds, and return the modified a. Subsequent items are shifted to fill the resulting gap.\n\ninds can be either an iterator or a collection of sorted and unique integer indices, or a boolean vector of the same length as a with true indicating entries to delete.\n\nExamples\n\njulia> deleteat!([6, 5, 4, 3, 2, 1], 1:2:5)\n3-element Array{Int64,1}:\n 5\n 3\n 1\n\njulia> deleteat!([6, 5, 4, 3, 2, 1], [true, false, true, false, true, false])\n3-element Array{Int64,1}:\n 5\n 3\n 1\n\njulia> deleteat!([6, 5, 4, 3, 2, 1], (2, 2))\nERROR: ArgumentError: indices must be unique and sorted\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -7194,7 +7298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.splice!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.splice!",
     "category": "function",
     "text": "splice!(a::Vector, index::Integer, [replacement]) -> item\n\nRemove the item at the given index, and return the removed item. Subsequent items are shifted left to fill the resulting gap. If specified, replacement values from an ordered collection will be spliced in place of the removed item.\n\nExamples\n\njulia> A = [6, 5, 4, 3, 2, 1]; splice!(A, 5)\n2\n\njulia> A\n5-element Array{Int64,1}:\n 6\n 5\n 4\n 3\n 1\n\njulia> splice!(A, 5, -1)\n1\n\njulia> A\n5-element Array{Int64,1}:\n  6\n  5\n  4\n  3\n -1\n\njulia> splice!(A, 1, [-1, -2, -3])\n6\n\njulia> A\n7-element Array{Int64,1}:\n -1\n -2\n -3\n  5\n  4\n  3\n -1\n\nTo insert replacement before an index n without removing any items, use splice!(collection, n:n-1, replacement).\n\n\n\n\n\nsplice!(a::Vector, range, [replacement]) -> items\n\nRemove items in the specified index range, and return a collection containing the removed items. Subsequent items are shifted left to fill the resulting gap. If specified, replacement values from an ordered collection will be spliced in place of the removed items.\n\nTo insert replacement before an index n without removing any items, use splice!(collection, n:n-1, replacement).\n\nExamples\n\njulia> splice!(A, 4:3, 2)\n0-element Array{Int64,1}\n\njulia> A\n8-element Array{Int64,1}:\n -1\n -2\n -3\n  2\n  5\n  4\n  3\n -1\n\n\n\n\n\n"
@@ -7202,7 +7306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.resize!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.resize!",
     "category": "function",
     "text": "resize!(a::Vector, n::Integer) -> Vector\n\nResize a to contain n elements. If n is smaller than the current collection length, the first n elements will be retained. If n is larger, the new elements are not guaranteed to be initialized.\n\nExamples\n\njulia> resize!([6, 5, 4, 3, 2, 1], 3)\n3-element Array{Int64,1}:\n 6\n 5\n 4\n\njulia> a = resize!([6, 5, 4, 3, 2, 1], 8);\n\njulia> length(a)\n8\n\njulia> a[1:6]\n6-element Array{Int64,1}:\n 6\n 5\n 4\n 3\n 2\n 1\n\n\n\n\n\n"
@@ -7210,7 +7314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.append!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.append!",
     "category": "function",
     "text": "append!(collection, collection2) -> collection.\n\nAdd the elements of collection2 to the end of collection.\n\nExamples\n\njulia> append!([1],[2,3])\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> append!([1, 2, 3], [4, 5, 6])\n6-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n 5\n 6\n\nUse push! to add individual items to collection which are not already themselves in another collection. The result is of the preceding example is equivalent to push!([1, 2, 3], 4, 5, 6).\n\n\n\n\n\n"
@@ -7218,7 +7322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.prepend!",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.prepend!",
     "category": "function",
     "text": "prepend!(a::Vector, items) -> collection\n\nInsert the elements of items to the beginning of a.\n\nExamples\n\njulia> prepend!([3],[1,2])\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\n\n\n\n\n"
@@ -7226,7 +7330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Dequeues-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Dequeues",
     "category": "section",
     "text": "Base.push!\nBase.pop!\nBase.pushfirst!\nBase.popfirst!\nBase.insert!\nBase.deleteat!\nBase.splice!\nBase.resize!\nBase.append!\nBase.prepend!Fully implemented by:Vector (a.k.a. 1-dimensional Array)\nBitVector (a.k.a. 1-dimensional BitArray)"
@@ -7234,7 +7338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.Pair",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.Pair",
     "category": "type",
     "text": "Pair(x, y)\nx => y\n\nConstruct a Pair object with type Pair{typeof(x), typeof(y)}. The elements are stored in the fields first and second. They can also be accessed via iteration.\n\nSee also: Dict\n\nExamples\n\njulia> p = \"foo\" => 7\n\"foo\" => 7\n\njulia> typeof(p)\nPair{String,Int64}\n\njulia> p.first\n\"foo\"\n\njulia> for x in p\n           println(x)\n       end\nfoo\n7\n\n\n\n\n\n"
@@ -7242,7 +7346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Base.Iterators.Pairs",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Base.Iterators.Pairs",
     "category": "type",
     "text": "Iterators.Pairs(values, keys) <: AbstractDict{eltype(keys), eltype(values)}\n\nTransforms an indexable container into an Dictionary-view of the same data. Modifying the key-space of the underlying data may invalidate this object.\n\n\n\n\n\n"
@@ -7250,7 +7354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/collections/#Utility-Collections-1",
-    "page": "Collections and Data Structures",
+    "page": "集合和数据结构",
     "title": "Utility Collections",
     "category": "section",
     "text": "Base.Pair\nIterators.Pairs"
@@ -15322,106 +15426,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "juliacn/style-guide/#",
-    "page": "翻译格式指引",
-    "title": "翻译格式指引",
+    "page": "翻译指南",
+    "title": "翻译指南",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "juliacn/style-guide/#翻译格式指引-1",
-    "page": "翻译格式指引",
-    "title": "翻译格式指引",
+    "location": "juliacn/style-guide/#翻译指南-1",
+    "page": "翻译指南",
+    "title": "翻译指南",
     "category": "section",
-    "text": "统一的翻译稿件格式有助于日后维护。请在参与翻译之前阅读这个指引，以保证大家的文档格式基本一致。"
-},
-
-{
-    "location": "juliacn/style-guide/#原文段落组织-1",
-    "page": "翻译格式指引",
-    "title": "原文段落组织",
-    "category": "section",
-    "text": "英文原文如下方式在Markdown里注释：\\`\\`\\`@raw html\n<!-- English -->\n\\`\\`\\`中文翻译写在下面。"
-},
-
-{
-    "location": "juliacn/style-guide/#格式细则-1",
-    "page": "翻译格式指引",
-    "title": "格式细则",
-    "category": "section",
-    "text": "段落英文中的英文两边空格，例如：不要将它的类型声明为 Int专业词汇请用括号注明英文原文，例如而要使用抽象类型（abstract type）文件链接全部保持原文链接（包括wiki，@ref的文档内部交叉引用）\nmaster分支的文档跟进官方repo的master分支。\n对于表格， 如果翻译则请按照段落处理"
-},
-
-{
-    "location": "juliacn/style-guide/#提交规则-1",
-    "page": "翻译格式指引",
-    "title": "提交规则",
-    "category": "section",
-    "text": "提交译文时， 请用 pull request (PR) 提交。 对于翻译中不确定的部分， 请在 PR 里指明。\n对于含有多个 commit 的 PR， 合并时， 请选择  squash and merge 。"
-},
-
-{
-    "location": "juliacn/style-guide/#书写规范-1",
-    "page": "翻译格式指引",
-    "title": "书写规范",
-    "category": "section",
-    "text": ""
-},
-
-{
-    "location": "juliacn/style-guide/#标点符号-1",
-    "page": "翻译格式指引",
-    "title": "标点符号",
-    "category": "section",
-    "text": "中文内容请使用半角中文标点符号， 尤其是逗号以及括号， 冒号， 破折号。 对于引号， 如果被引用的内容包含英文， 则使用英文引号。"
-},
-
-{
-    "location": "juliacn/style-guide/#空格-1",
-    "page": "翻译格式指引",
-    "title": "空格",
-    "category": "section",
-    "text": "译文一律使用空格， 禁止使用 Tab， 仅对注释原文时可以用 Tab 缩进， 缩进为两个空格。 中文和英文以及数字间应加一个空格。"
-},
-
-{
-    "location": "juliacn/style-guide/#粗斜体-1",
-    "page": "翻译格式指引",
-    "title": "粗斜体",
-    "category": "section",
-    "text": "中文部分不应使用斜体， 对于原文斜体部分， 译文里可以酌情修改为粗体。"
-},
-
-{
-    "location": "juliacn/style-guide/#内容规范-1",
-    "page": "翻译格式指引",
-    "title": "内容规范",
-    "category": "section",
-    "text": "力求表达清楚明确， 语句尽量通顺， 请不要逐字翻译， 避免错别字等。"
-},
-
-{
-    "location": "juliacn/style-guide/#代码-1",
-    "page": "翻译格式指引",
-    "title": "代码",
-    "category": "section",
-    "text": "只翻译注释， 如果代码简单易懂， 可不翻译。"
-},
-
-{
-    "location": "juliacn/style-guide/#专有名词-1",
-    "page": "翻译格式指引",
-    "title": "专有名词",
-    "category": "section",
-    "text": "如果没有对应或者不确定的专有词汇， 可以先不译， 保留在译文里。 等确定后可批量修改。"
-},
-
-{
-    "location": "juliacn/style-guide/#人称代词-1",
-    "page": "翻译格式指引",
-    "title": "人称代词",
-    "category": "section",
-    "text": "像 \"we\" 和 \"you\" 这些词汇一般来说可以不译出来， 或者换个说法。 如果译出来更通顺， 就翻译出来。  "
+    "text": "翻译工作正在进行，有任何疑问或建议请到 http://discourse.juliacn.com/c/community/document 反馈。翻译指南请参考: http://discourse.juliacn.com/t/topic/277"
 },
 
 ]}
