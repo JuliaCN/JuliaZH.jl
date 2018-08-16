@@ -1,12 +1,12 @@
-# Noteworthy Differences from other Languages
+# 与其他语言的显著差异
 
-## Noteworthy differences from MATLAB
+## 与MATLAB的显著区别
 
 Although MATLAB users may find Julia's syntax familiar, Julia is not a MATLAB clone. There are
 major syntactic and functional differences. The following are some noteworthy differences that
 may trip up Julia users accustomed to MATLAB:
 
-  * Julia arrays are indexed with square brackets, `A[i,j]`.
+  * Julia数组使用方括号`A[i,j]`进行索引。
   * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。
     as well.
   * Julia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
@@ -141,7 +141,8 @@ For users coming to Julia from R, these are some noteworthy differences:
     you cannot write `diag(M) = fill(1, n)`.
   * Julia discourages populating the main namespace with functions. Most statistical functionality
     for Julia is found in [packages](https://pkg.julialang.org/) under the [JuliaStats organization](https://github.com/JuliaStats).
-    For example:
+    例如：
+
 
       * Functions pertaining to probability distributions are provided by the [Distributions package](https://github.com/JuliaStats/Distributions.jl).
       * The [DataFrames package](https://github.com/JuliaStats/DataFrames.jl) provides data frames.

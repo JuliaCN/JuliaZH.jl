@@ -7,9 +7,9 @@ julia> `echo hello`
 `echo hello`
 ```
 
-differs in several aspects from the behavior in various shells, Perl, or Ruby:
+在多个方面与shell、Perl和Ruby不同：
 
-  * Instead of immediately running the command, backticks create a [`Cmd`](@ref) object to represent the command.
+  * 与立即运行命令行不同，backtick创建[`Cmd`](@ref)对象来表示命令。
     You can use this object to connect the command to others via pipes, [`run`](@ref) it, and [`read`](@ref) or [`write`](@ref)
     to it.
   * When the command is run, Julia does not capture its output unless you specifically arrange for

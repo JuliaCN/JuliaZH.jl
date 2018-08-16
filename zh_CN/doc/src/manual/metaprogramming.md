@@ -11,9 +11,9 @@ code in Julia are represented by Julia data structures, powerful [reflection](ht
 capabilities are available to explore the internals of a program and its types just like any other
 data.
 
-## Program representation
+## 程序表示
 
-Every Julia program starts life as a string:
+每个Julia程序均以字符串开始：
 
 ```jldoctest prog
 julia> prog = "1 + 1"

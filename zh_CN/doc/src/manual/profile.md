@@ -1,4 +1,4 @@
-# Profiling
+# 分析
 
 The `Profile` module provides tools to help developers improve the performance of their
 code. When used, it takes measurements on running code, and produces output that helps you understand
@@ -21,7 +21,7 @@ is subject to operating system load). Moreover, as discussed further below, beca
 collected at a sparse subset of all execution points, the data collected by a sampling profiler
 is subject to statistical noise.
 
-Despite these limitations, sampling profilers have substantial strengths:
+尽管有这些限制，但抽样分析仍然有很大的优势：
 
   * You do not have to make any modifications to your code to take timing measurements (in contrast
     to the alternative [instrumenting profiler](https://github.com/timholy/IProfile.jl)).

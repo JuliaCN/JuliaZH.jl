@@ -1,11 +1,10 @@
-# Stack Traces
+# 堆栈跟踪
 
-The `StackTraces` module provides simple stack traces that are both human readable and
-easy to use programmatically.
+`StackTraces` 模块提供了简单的堆栈跟踪，这些堆栈跟踪既可读又易于编程使用。
 
-## Viewing a stack trace
+## 查看堆栈跟踪
 
-The primary function used to obtain a stack trace is [`stacktrace`](@ref):
+获取堆栈跟踪的主要函数是[`stacktrace`](@ref)：
 
 ```julia-repl
 6-element Array{Base.StackTraces.StackFrame,1}:

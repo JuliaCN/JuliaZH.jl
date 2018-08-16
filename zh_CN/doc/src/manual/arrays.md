@@ -1,6 +1,6 @@
 # [多维数组](@id man-multi-dim-arrays)
 
-与大多数技术计算语言一样，Julia提供了一流的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其他容器的代价。Julia用同样的方式来处理数组。就像和其他用Julia写的代码一样，Julia的数组库几乎完全是用Julia自身实现的，它的性能源自编译器。这样一来，用户就可以通过继承[`AbstractArray`](@ref)的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅[manual section on the AbstractArray interface](@ref man-interface-array)。
+与大多数技术计算语言一样，Julia 提供原生的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其它容器的代价。Julia 用同样的方式来处理数组。就像和其它用 Julia 写的代码一样，Julia 的数组库几乎完全是用 Julia 自身实现的，它的性能源自编译器。这样一来，用户就可以通过继承 [`AbstractArray`](@ref) 的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅[manual section on the AbstractArray interface](@ref man-interface-array)。
 
 数组是存储在多维网格中对象的集合。在最一般的情况下， 数组中的对象可能是 `Any` 类型。
 对于大多数计算上的需求，数组中对象的类型应该更加具体，例如 [`Float64`](@ref) 或 [`Int32`](@ref)。
@@ -684,7 +684,7 @@ is equivalent to `broadcast(f, args...)`, providing a convenient syntax to broad
 ([dot syntax](@ref man-vectorized)). Nested "dot calls" `f.(...)` (including calls to `.+` etcetera)
 [automatically fuse](@ref man-dot-operators) into a single `broadcast` call.
 
-另外，[`broadcast`](@ref)并不局限于数组（参见函数文档），对于元组依然有效。对于其他非数组，元组或 引用[`Ref`](@ref)(除了指针 [`Ptr`](@ref))的参数，视作“scalar”
+另外，[`broadcast`](@ref)并不局限于数组（参见函数文档），对于元组依然有效。对于其他非数组，元组或 引用[`Ref`](@ref)(除了指针 [`Ptr`](@ref))的参数，视作“scalar” 
 
 ```jldoctest
 julia> convert.(Float32, [1, 2])

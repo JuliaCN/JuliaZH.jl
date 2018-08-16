@@ -1,16 +1,11 @@
 # [类型转换和类型提升](@id conversion-and-promotion)
 
-Julia has a system for promoting arguments of mathematical operators to a common type, which has
-been mentioned in various other sections, including [Integers and Floating-Point Numbers](@ref),
-[Mathematical Operations and Elementary Functions](@ref), [Types](@ref man-types), and [Methods](@ref).
-In this section, we explain how this promotion system works, as well as how to extend it to new
-types and apply it to functions besides built-in mathematical operators. Traditionally, programming
-languages fall into two camps with respect to promotion of arithmetic arguments:
+Julia 有一个提升系统，可以将数学运算符的参数提升为通用类型，如在前面章节中提到的[整数和浮点数](@ref)、[数学运算和基础函数](@ref)、[类型](@ref man-types)和[方法](@ref)。在本节中，我们将解释类型提升系统如何工作，以及如何将其扩展到新的类型，并将其应用于除内置数学运算符之外的其他函数。传统上，编程语言在参数的类型提升上分为两大阵营:
 
-  * **Automatic promotion for built-in arithmetic types and operators.** In most languages, built-in
-    numeric types, when used as operands to arithmetic operators with infix syntax, such as `+`,
-    `-`, `*`, and `/`, are automatically promoted to a common type to produce the expected results.
-    C, Java, Perl, and Python, to name a few, all correctly compute the sum `1 + 1.5` as the floating-point
+  * **内置数学类型和运算符的自动类型提升**。大多数语言中，内置
+    数值类型，当作为带有中缀语法的算术运算符的操作数时，例如`+`，
+    '`-`、`*`和 `/`将自动提升为通用类型，以产生预期的结果。
+    举例来说，C、Java、Perl和Python，都将`1 + 1.5`的和作为浮点数
     value `2.5`, even though one of the operands to `+` is an integer. These systems are convenient
     and designed carefully enough that they are generally all-but-invisible to the programmer: hardly
     anyone consciously thinks of this promotion taking place when writing such an expression, but

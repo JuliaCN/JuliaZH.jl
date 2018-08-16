@@ -1,8 +1,8 @@
 # [Numbers](@id lib-numbers)
 
-## Standard Numeric Types
+## 标准数值类型
 
-### Abstract number types
+### 抽象数值类型
 
 ```@docs
 Core.Number
@@ -14,7 +14,7 @@ Core.Unsigned
 Base.AbstractIrrational
 ```
 
-### Concrete number types
+### 具象数值类型
 
 ```@docs
 Core.Float16
@@ -38,7 +38,7 @@ Base.Rational
 Base.Irrational
 ```
 
-## Data Formats
+## 数据格式
 
 ```@docs
 Base.digits
@@ -59,7 +59,7 @@ Base.hex2bytes!
 Base.bytes2hex
 ```
 
-## General Number Functions and Constants
+## 常用数值函数和常量
 
 ```@docs
 Base.one
@@ -98,7 +98,7 @@ Base.Rounding.get_zero_subnormals
 Base.Rounding.set_zero_subnormals
 ```
 
-### Integers
+### 整型
 
 ```@docs
 Base.count_ones
@@ -113,9 +113,9 @@ Base.@int128_str
 Base.@uint128_str
 ```
 
-## BigFloats
+## 长浮点型
 
-The [`BigFloat`](@ref) type implements arbitrary-precision floating-point arithmetic using
+ [`BigFloat`](@ref) 类型实现任意精度的浮点运
 the [GNU MPFR library](http://www.mpfr.org/).
 
 ```@docs

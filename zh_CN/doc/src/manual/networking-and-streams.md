@@ -1,4 +1,4 @@
-# Networking and Streams
+# 网络和流
 
 Julia provides a rich interface to deal with streaming I/O objects such as terminals, pipes and
 TCP sockets. This interface, though asynchronous at the system level, is presented in a synchronous
@@ -6,10 +6,9 @@ manner to the programmer and it is usually unnecessary to think about the underl
 operation. This is achieved by making heavy use of Julia cooperative threading ([coroutine](@ref man-tasks))
 functionality.
 
-## Basic Stream I/O
+## 基础流 I/O
 
-All Julia streams expose at least a [`read`](@ref) and a [`write`](@ref) method, taking the
-stream as their first argument, e.g.:
+所有Julia stream都暴露了[`read`](@ref)和[`write`](@ref)方法，将stream作为它们的第一个参数，如：
 
 ```julia-repl
 julia> write(stdout, "Hello World");  # suppress return value 11 with ;
@@ -19,8 +18,7 @@ julia> read(stdin, Char)
 '\n': ASCII/Unicode U+000a (category Cc: Other, control)
 ```
 
-Note that [`write`](@ref) returns 11, the number of bytes (in `"Hello World"`) written to [`stdout`](@ref),
-but this return value is suppressed with the `;`.
+注意，[`write`](@ref) 返回11，字节数(`"Hello World"`)写入[`stdout`](@ref)，但是返回值使用`;`抑制。
 
 Here Enter was pressed again so that Julia would read the newline. Now, as you can see from this
 example, [`write`](@ref) takes the data to write as its second argument, while [`read`](@ref)
