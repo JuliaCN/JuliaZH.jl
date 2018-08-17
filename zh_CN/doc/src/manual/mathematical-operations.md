@@ -12,19 +12,19 @@ Julia 为它所有的基础数值类型，提供了整套的基础算术和位�
 | `+x`       | 一元加法运算符     | 全等操作                 |
 | `-x`       | 一元减法运算符    | 将值变为其相反数 |
 | `x + y`    | 二元加法运算符    | 执行加法                      |
-| `x - y`    | 二元减法运算符   | performs subtraction                   |
+| `x - y`    | 二元减法运算符   | 执行减法                   |
 | `x * y`    | 乘法运算符          | 执行乘法                |
 | `x / y`    | 除法运算符         | 执行除法                      |
 | `x ÷ y`    | 整除 | 取x/y的整数部分         |
 | `x \ y`    | 反向除法 | 等价于`y / x`                  |
-| `x ^ y`    | 幂操作符          | x的y次幂          |
-| `x % y`    | 取余      | equivalent to `rem(x,y)`               |
+| `x ^ y`    | 幂操作符          | `x`的`y`次幂          |
+| `x % y`    | 取余      | 等价于`rem(x,y)`               |
 
-as well as the negation on [`Bool`](@ref) types:
+以及对[`Bool`](@ref)类型的否定：
 
 | 表达式 | 名称     | 描述                              |
 |:---------- |:-------- |:---------------------------------------- |
-| `!x`       | 否定 | 将`true`和`false`呼唤 |
+| `!x`       | 否定 | 将 `true` 和 `false` 互换 |
 
 Julia's promotion system makes arithmetic operations on mixtures of argument types "just work"
 naturally and automatically. See [Conversion and Promotion](@ref conversion-and-promotion) for details of the promotion
@@ -47,22 +47,21 @@ julia> 3*2/12
 operators. For instance, we would generally write `-x + 2` to reflect that first `x` gets negated,
 and then `2` is added to that result.)
 
-## Bitwise Operators
+## 位运算符
 
-The following [bitwise operators](https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators)
-are supported on all primitive integer types:
+所有原始整数类型都支持以下[按位算符](https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators)：
 
 | 表达式 | 名称                                                                     |
 |:---------- |:------------------------------------------------------------------------ |
-| `~x`       | bitwise not                                                              |
-| `x & y`    | bitwise and                                                              |
-| `x \| y`   | bitwise or                                                               |
-| `x ⊻ y`    | bitwise xor (exclusive or)                                               |
-| `x >>> y`  | [logical shift](https://en.wikipedia.org/wiki/Logical_shift) right       |
-| `x >> y`   | [arithmetic shift](https://en.wikipedia.org/wiki/Arithmetic_shift) right |
-| `x << y`   | logical/arithmetic shift left                                            |
+| `~x`       | 按位取反                                                              |
+| `x & y`    | 按位与                                                              |
+| `x \| y`   | 按位或                                                               |
+| `x ⊻ y`    | 按位异或（逻辑异或）                                               |
+| `x >>> y`  | [逻辑右移](https://en.wikipedia.org/wiki/Logical_shift) right       |
+| `x >> y`   | [算术右移](https://en.wikipedia.org/wiki/Arithmetic_shift) |
+| `x << y`   | 逻辑/算术左移                                            |
 
-Here are some examples with bitwise operators:
+以下是位运算符的一些示例：
 
 ```jldoctest
 julia> ~123
@@ -87,7 +86,7 @@ julia> ~UInt8(123)
 0x84
 ```
 
-## Updating operators
+## 复合赋值操作符
 
 Every binary arithmetic and bitwise operator also has an updating version that assigns the result
 of the operation back into its left operand. The updating version of the binary operator is formed
@@ -179,14 +178,14 @@ Standard comparison operations are defined for all the primitive numeric types:
 
 | Operator                     | 名称                     |
 |:---------------------------- |:------------------------ |
-| [`==`](@ref)                 | equality                 |
-| [`!=`](@ref), [`≠`](@ref !=) | inequality               |
-| [`<`](@ref)                  | less than                |
-| [`<=`](@ref), [`≤`](@ref <=) | less than or equal to    |
-| [`>`](@ref)                  | greater than             |
-| [`>=`](@ref), [`≥`](@ref >=) | greater than or equal to |
+| [`==`](@ref)                 | 相等                 |
+| [`!=`](@ref), [`≠`](@ref !=) | 不等               |
+| [`<`](@ref)                  | 小于                |
+| [`<=`](@ref), [`≤`](@ref <=) | 小于等于    |
+| [`>`](@ref)                  | 大于             |
+| [`>=`](@ref), [`≥`](@ref >=) | 大于等于 |
 
-Here are some simple examples:
+下面是些简单的例子：
 
 ```jldoctest
 julia> 1 == 1
@@ -353,7 +352,7 @@ Julia applies the following order and associativity of operations, from highest 
 | Category       | Operators                                                                                         | Associativity              |
 |:-------------- |:------------------------------------------------------------------------------------------------- |:-------------------------- |
 | Syntax         | `.` followed by `::`                                                                              | Left                       |
-| Exponentiation | `^`                                                                                               | Right                      |
+| 幂 | `^`                                                                                               | Right                      |
 | Unary          | `+ - √`                                                                                           | Right[^1]                  |
 | Bitshifts      | `<< >> >>>`                                                                                       | Left                       |
 | Fractions      | `//`                                                                                              | Left                       |
@@ -460,10 +459,10 @@ See [Conversion and Promotion](@ref conversion-and-promotion) for how to define 
 
 | 函数              | 描述                      | 返回类型 |
 |:--------------------- |:-------------------------------- |:----------- |
-| [`round(x)`](@ref)    | round `x` to the nearest integer | `typeof(x)` |
-| [`round(T, x)`](@ref) | round `x` to the nearest integer | `T`         |
-| [`floor(x)`](@ref)    | round `x` towards `-Inf`         | `typeof(x)` |
-| [`floor(T, x)`](@ref) | round `x` towards `-Inf`         | `T`         |
+| [`round(x)`](@ref)    | `x` 舍到最接近的整数 | `typeof(x)` |
+| [`round(T, x)`](@ref) | `x` 舍到最接近的整数 | `T`         |
+| [`floor(x)`](@ref)    | `x` 舍到`-Inf`         | `typeof(x)` |
+| [`floor(T, x)`](@ref) | `x` 舍到`-Inf`         | `T`         |
 | [`ceil(x)`](@ref)     | round `x` towards `+Inf`         | `typeof(x)` |
 | [`ceil(T, x)`](@ref)  | round `x` towards `+Inf`         | `T`         |
 | [`trunc(x)`](@ref)    | round `x` towards zero           | `typeof(x)` |
@@ -547,5 +546,4 @@ asind  acosd  atand  acotd  asecd  acscd
 
 ### Special functions
 
-Many other special mathematical functions are provided by the package
-[SpecialFunctions.jl](https://github.com/JuliaMath/SpecialFunctions.jl).
+[SpecialFunctions.jl](https://github.com/JuliaMath/SpecialFunctions.jl)包提供了许多其他特殊的数学函数。

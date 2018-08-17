@@ -3,7 +3,7 @@
 对于多线程和并行计算的新手来说，首先了解Jullia所提供的
 不同层级并行是非常有用的。这里我们主要将其分成三类：
 
-1. Julia协程（绿色线程）
+1. Julia 协程（绿色线程）
 2. 多线程
 3. 多核心或分布式处理
 
@@ -11,14 +11,7 @@
 Julia 同样允许利用一些操作在 'Tasks' 间进行通信，比如 ['wait'](@ref) 以及 ['fetch'](@ref)。
 另外，通信和数据同步是通过 ['Channel'](@ref) 完成的，它也是实现内部 'Tasks' 通信的基石。
 
-Julia also supports experimental multi-threading, where execution is forked and an anonymous function is run across all
-threads.
-Described as a fork-join approach, parallel threads are branched off and they all have to join the Julia main thread to make serial execution continue.
-Multi-threading is supported using the `Base.Threads` module that is still considered experimental, as Julia is
-not fully thread-safe yet. In particular segfaults seem to emerge for I\O operations and task switching.
-As an un up-to-date reference, keep an eye on [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading).
-Multi-Threading should only be used if you take into consideration global variables, locks and
-atomics, so we will explain it later.
+Julia还支持实验性的多线程功能，在执行时通过分叉(fork)，然后有一个匿名函数在所有线程上运行，可以看作时一种*分叉-汇合*(fork-join)的方式，并行执行的线程必须在分叉之后，汇合到Julia主线程上，从而继续串行执行。多线程是通过`Base.Threads`模块提供的，目前仍然是实验性的，主要是因为目前Julia还不是完全线程安全的。在进行I/O操作和task切换的时候某些特定的段错误会出现，最新的进展请关注[the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading)，多线程应该只在你考虑全局变量，锁以及原子操作的时候使用，后面我们会详细讲解。
 
 最后我们将介绍 Julia 的分布式并行计算的实现方法。鉴于以科学计算为主要目的，
 Julia 底层上提供了通过多核心或多机器对任务并行的接口。
@@ -26,38 +19,24 @@ Julia 底层上提供了通过多核心或多机器对任务并行的接口。
 
 # 协程
 
-Julia's parallel programming platform uses [Tasks (aka Coroutines)](@ref man-tasks) to switch among multiple computations.
-To express an order of execution between lightweight threads communication primitives are necessary.
-Julia offers `Channel(func::Function, ctype=Any, csize=0, taskref=nothing)` that creates a new task from `func`,
-binds it to a new channel of type `ctype` and size `csize` and schedule the task.
-`Channels` can serve as a way to communicate between tasks, as `Channel{T}(sz::Int)` creates a buffered channel of type `T` and size `sz`.
-Whenever code performs a communication operation like [`fetch`](@ref) or [`wait`](@ref),
-the current task is suspended and a scheduler picks another task to run.
-A task is restarted when the event it is waiting for completes.
+Julia的并行编程平台采用 [Tasks (aka Coroutines)](@ref man-tasks) 来进行多个计算之间的切换。为了表示轻量线程之间的执行顺序，必须提供一种通信的原语。Julia 提供了 `Channel(func::Function, ctype=Any, csize=0, taskref=nothing)`，根据 `func` 创建 task，然后将其绑定到一个新的大小为 `csize` 类型为 `ctype` 的 channel，并调度 task。`Channels` 可以看作是一种task之间通信的方式，`Channel{T}(sz::Int)` 会创建一个类型为 `T` 大小为 `sz` 的 channel。无论何时发起一个通信操作，如 [`fetch`](@ref) 或 [`wait`](@ref)，当前 task 都会挂起，然后调度器会选择其它 task 去执行，在一个 task 等待的事件结束之后会重新恢复执行。
 
-For many problems, it is not necessary to think about tasks directly. However, they can be used
-to wait for multiple events at the same time, which provides for *dynamic scheduling*. In dynamic
-scheduling, a program decides what to compute or where to compute it based on when other jobs
-finish. This is needed for unpredictable or unbalanced workloads, where we want to assign more
-work to processes only when they finish their current tasks.
+对于许多问题而言，并不需要直接考虑 task，不过，task 可以用来同时等待多个事件，从而实现**动态调度**。在动态调度的过程中，程序可以决定计算什么，或者根据其它任务执行结束的时间决定接下来在哪里执行计算。这对于不可预测或不平衡的计算量来说是必须的，因为我们只希望给那些已经完成了其当前任务的进程分配更多的任务。
+
 
 ## Channels
 
-The section on [`Task`](@ref)s in [Control Flow](@ref) discussed the execution of multiple functions in
-a co-operative manner. [`Channel`](@ref)s can be quite useful to pass data between running tasks, particularly
-those involving I/O operations.
+在 [Control Flow](@ref) 中有关 [`Task`](@ref) 的部分，已经讨论了如何协调多个函数的执行。[`Channel`](@ref) 可以很方便地在多个运行中的 task 传递数据，特别是那些涉及 I/O 的操作。
 
-Examples of operations involving I/O include reading/writing to files, accessing web services,
-executing external programs, etc. In all these cases, overall execution time can be improved if
-other tasks can be run while a file is being read, or while waiting for an external service/program
-to complete.
 
-A channel can be visualized as a pipe, i.e., it has a write end and a read end :
+典型的 I/O 操作包括读写文件、访问 web 服务、执行外部程序等。在所有这些场景中，如果其它 task 可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。
 
-  * Multiple writers in different tasks can write to the same channel concurrently via [`put!`](@ref)
-    calls.
-  * Multiple readers in different tasks can read data concurrently via [`take!`](@ref) calls.
-  * As an example:
+一个 channel 可以看做是一个管道，一端可读，另一端可写。
+
+  * 不同的 task 可以通过 [`put!`](@ref) 往同一个 channel 并发地写入。
+     
+  * 不同的 task 也可以通过 [`take!`](@ref) 从同一个 channel 并发地取数据
+  * 举个例子：
 
     ```julia
     # Given Channels c1 and c2,
@@ -79,18 +58,18 @@ A channel can be visualized as a pipe, i.e., it has a write end and a read end :
         @schedule foo()
     end
     ```
-* Channels are created via the `Channel{T}(sz)` constructor. The channel will only hold objects
-  of type `T`. If the type is not specified, the channel can hold objects of any type. `sz` refers
-  to the maximum number of elements that can be held in the channel at any time. For example, `Channel(32)`
-  creates a channel that can hold a maximum of 32 objects of any type. A `Channel{MyType}(64)` can
-  hold up to 64 objects of `MyType` at any time.
-* If a [`Channel`](@ref) is empty, readers (on a [`take!`](@ref) call) will block until data is available.
-* If a [`Channel`](@ref) is full, writers (on a [`put!`](@ref) call) will block until space becomes available.
-* [`isready`](@ref) tests for the presence of any object in the channel, while [`wait`](@ref)
-  waits for an object to become available.
-* A [`Channel`](@ref) is in an open state initially. This means that it can be read from and written to
-  freely via [`take!`](@ref) and [`put!`](@ref) calls. [`close`](@ref) closes a [`Channel`](@ref).
-  On a closed [`Channel`](@ref), [`put!`](@ref) will fail. For example:
+* Channe l可以通过 `Channel{T}(sz)` 构造，得到的 channel 只能存储类型 `T` 的数据。如果 `T` 没有指定，那么 channel 可以存任意类型。`sz` 表示该 channel 能够存储的最大元素个数。比如 `Channel(32)` 得到的 channel 最多可以存储32个元素。而 `Channel{MyType}(64)` 则可以最多存储64个 `MyType` 类型的数据。
+   
+   
+   
+   
+* 如果一个 [`Channel`](@ref) 是空的，读取的 task(即执行 [`take!`](@ref) 的 task)会被阻塞直到有新的数据准备好了。
+* 如果一个 [`Channel`](@ref) 是满的，那么写入的 task(即执行 [`put!`](@ref) 的 task)则会被阻塞，直到 Channel 有空余。
+* [[`isready`](@ref) 可以用来检查一个 channel 中是否有已经准备好的元素，而 [`wait`](@ref) 则用来等待一个元素准备好。](@ref)
+   
+* 一个 [`Channel`](@ref) 一开始处于开启状态，也就是说可以被 [`take!`](@ref) 读取和 [`put!`](@ref) 写入。[`close`](@ref) 会关闭一个 [`Channel`](@ref)，对于一个已经关闭的 [`Channel`](@ref)，[`put!](@ref) 会失败，例如：
+   
+   
 
 ```julia-repl
 julia> c = Channel(2);
@@ -106,8 +85,8 @@ Stacktrace:
 [...]
 ```
 
-  * [`take!`](@ref) and [`fetch`](@ref) (which retrieves but does not remove the value) on a closed
-    channel successfully return any existing values until it is emptied. Continuing the above example:
+  * [`take!`](@ref) 和 [`fetch`](@ref) (只读取，不会将元素从 channel 中删掉)仍然可以从一个已经关闭的 channel 中读数据，直到 channel 被取空了为止，例如：
+     
 
 ```julia-repl
 julia> fetch(c) # Any number of `fetch` calls succeed.
@@ -125,11 +104,9 @@ Stacktrace:
 [...]
 ```
 
-A `Channel` can be used as an iterable object in a `for` loop, in which case the loop runs as
-long as the `Channel` has data or is open. The loop variable takes on all values added to the
-`Channel`. The `for` loop is terminated once the `Channel` is closed and emptied.
+`Channel` 可以在 `for` 循环中遍历，此时，循环会一直运行知道 `Channel` 中有数据，遍历过程中会取遍加入到 `Channel` 中的所有值。一旦 `Channel`关闭或者取空了，`for` 循环就好终止。
 
-For example, the following would cause the `for` loop to wait for more data:
+例如，下面的 `for` 循环会等待新的数据：
 
 ```julia-repl
 julia> c = Channel{Int}(10);
@@ -139,7 +116,7 @@ julia> foreach(i->put!(c, i), 1:3) # add a few entries
 julia> data = [i for i in c]
 ```
 
-while this will return after reading all data:
+而下面的则会返回已经读取的数据：
 
 ```julia-repl
 julia> c = Channel{Int}(10);
@@ -155,11 +132,7 @@ julia> data = [i for i in c]
  3
 ```
 
-Consider a simple example using channels for inter-task communication. We start 4 tasks to process
-data from a single `jobs` channel. Jobs, identified by an id (`job_id`), are written to the channel.
-Each task in this simulation reads a `job_id`, waits for a random amout of time and writes back
-a tuple of `job_id` and the simulated time to the results channel. Finally all the `results` are
-printed out.
+考虑这样一个用 channel 做 task 之间通信的例子。首先，起4个 task 来处理一个 `jobs` channel 中的数据。`jobs` 中的每个任务通过 `job_id` 来表示，然后每个 task 模拟读取一个 `job_id`，然后随机等待一会儿，然后往一个 `results` channel 中写入一个 Tuple，分别包含 `job_id` 和执行的时间，最后将结果打印出来：
 
 ```julia-repl
 julia> const jobs = Channel{Int}(32);
@@ -209,55 +182,48 @@ julia> @elapsed while n > 0 # print out results
 0.029772311
 ```
 
-The current version of Julia multiplexes all tasks onto a single OS thread. Thus, while tasks
-involving I/O operations benefit from parallel execution, compute bound tasks are effectively
-executed sequentially on a single OS thread. Future versions of Julia may support scheduling of
-tasks on multiple threads, in which case compute bound tasks will see benefits of parallel execution
-too.
+当前版本的 Julia 会将所有 task 分发到一个操作系统的线程，因此，涉及 I/O 的操作会从并行执行中获利，而计算密集型的 task 则会顺序地在单独这个线程上执行。未来 Julia 将支持在多个线程上调度 task，从而让计算密集型 task 也能从并行计算中获利。
 
-# Multi-Threading (Experimental)
+# 多线程（实验性功能）
 
-In addition to tasks Julia forwards natively supports multi-threading.
-Note that this section is experimental and the interfaces may change in the future.
+除了 task 之外，Julia 还原生支持多线程。本部分内容是实验性的，未来相关接口可能会改变。
 
-## Setup
+## 设置
 
-By default, Julia starts up with a single thread of execution. This can be verified by using the
-command [`Threads.nthreads()`](@ref):
+Julia 默认启动一个线程执行代码，这点可以通过 [`Threads.nthreads()`](@ref) 来确认：
+
 
 ```julia-repl
 julia> Threads.nthreads()
 1
 ```
 
-The number of threads Julia starts up with is controlled by an environment variable called `JULIA_NUM_THREADS`.
-Now, let's start up Julia with 4 threads:
+Julia 启动时的线程数可以通过环境变量 `JULIA_NUM_THREADS` 设置，下面启动4个线程：
 
 ```bash
 export JULIA_NUM_THREADS=4
 ```
 
-(The above command works on bourne shells on Linux and OSX. Note that if you're using a C shell
-on these platforms, you should use the keyword `set` instead of `export`. If you're on Windows,
-start up the command line in the location of `julia.exe` and use `set` instead of `export`.)
+(上面的代码只能在 Linux 和 OSX 系统中运行，如果你在以上平台中使用的是 C shell，那么将 `export` 改成 `set`，如果你是在 Windows 上运行，那么将 `export` 改成 `set` 同时启动 Julia 时指定 `julia.exe` 的完整路径。)
 
-Let's verify there are 4 threads at our disposal.
+现在确认下确实有4个线程：
 
 ```julia-repl
 julia> Threads.nthreads()
 4
 ```
 
-But we are currently on the master thread. To check, we use the function [`Threads.threadid`](@ref)
+不过我们现在是在 master 线程，用 [`Threads.threadid`](@ref) 确认下：
+
 
 ```julia-repl
 julia> Threads.threadid()
 1
 ```
 
-## The `@threads` Macro
+## `@threads`宏
 
-Let's work a simple example using our native threads. Let us create an array of zeros:
+下面用一个简单的例子测试我们原生的线程，首先创建一个全零的数组：
 
 ```jldoctest
 julia> a = zeros(10)
@@ -274,11 +240,10 @@ julia> a = zeros(10)
  0.0
 ```
 
-Let us operate on this array simultaneously using 4 threads. We'll have each thread write its
-thread ID into each location.
+现在用4个线程模拟操作这个数组，每个线程往对应的位置写入线程ID。
 
-Julia supports parallel loops using the [`Threads.@threads`](@ref) macro. This macro is affixed
-in front of a `for` loop to indicate to Julia that the loop is a multi-threaded region:
+Julia 用 [`Threads.@threads`](@ref) 宏实现并行循环，该宏加在 `for` 循环前面，提示 Julia 循环部分是一个多线程的区域：
+
 
 ```julia-repl
 julia> Threads.@threads for i = 1:10
@@ -286,8 +251,7 @@ julia> Threads.@threads for i = 1:10
        end
 ```
 
-The iteration space is split amongst the threads, after which each thread writes its thread ID
-to its assigned locations:
+每次迭代会分配到各个线程，然后每个线程往对应位置写入线程 ID：
 
 ```julia-repl
 julia> a
@@ -304,14 +268,11 @@ julia> a
  4.0
 ```
 
-Note that [`Threads.@threads`](@ref) does not have an optional reduction parameter like [`@distributed`](@ref).
+注意 [`Threads.@threads`](@ref) 并没有一个像 [`@distributed`](@ref) 一样的可选的 reduction 参数。
 
 ## Atomic Operations
 
-Julia supports accessing and modifying values *atomically*, that is, in a thread-safe way to avoid
-[race conditions](https://en.wikipedia.org/wiki/Race_condition). A value (which must be of a primitive
-type) can be wrapped as [`Threads.Atomic`](@ref) to indicate it must be accessed in this way.
-Here we can see an example:
+Julia 支持访问和修改值的**原子**操作，即以一种线程安全的方式来避免[竞态条件](https://en.wikipedia.org/wiki/Race_condition)。一个值（必须是基本类型的，primitive type）可以通过 [`Threads.Atomic`](@ref) 来包装起来从而支持原子操作。下面看个例子：
 
 ```julia-repl
 julia> i = Threads.Atomic{Int}(0);
@@ -340,9 +301,7 @@ julia> ids
  4.0
 ```
 
-Had we tried to do the addition without the atomic tag, we might have gotten the
-wrong answer due to a race condition. An example of what would happen if we didn't
-avoid the race:
+如果不加 `Atomic` 的话，那么会因为竞态条件而得到错误的结果，下面是一个没有避免竞态条件的例子：
 
 ```julia-repl
 julia> using Base.Threads
@@ -371,22 +330,12 @@ julia> acc[]
 1000
 ```
 
-!!! note
-    Not *all* primitive types can be wrapped in an `Atomic` tag. Supported types
-    are `Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`,
-    `UInt64`, `UInt128`, `Float16`, `Float32`, and `Float64`. Additionally,
-    `Int128` and `UInt128` are not supported on AAarch32 and ppc64le.
+并非**所有的**原始类型都能放在 `Atomic` 标签内封装起来，支持的类型有`Int8`, `Int16`, `Int32`, `Int64`, `Int128`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`, `Float16`, `Float32`, 以及 `Float64`。此外，`Int128` 和 `UInt128` 在 AAarch32 和 ppc64le 上不支持。
 
-## Side effects and mutable function arguments
+## 副作用和可变的函数参数
 
-When using multi-threading we have to be careful when using functions that are not
-[pure](https://en.wikipedia.org/wiki/Pure_function) as we might get a wrong answer.
-For instance functions that have their
-[name ending with `!`](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)
-by convention modify their arguments and thus are not pure. However, there are
-functions that have side effects and their name does not end with `!`. For
-instance [`findfirst(regex, str)`](@ref) mutates its `regex` argument or
-[`rand()`](@ref) changes `Base.GLOBAL_RNG` :
+
+在使用多线程时，要非常小心使用了不纯的函数 [pure function](https://en.wikipedia.org/wiki/Pure_function)，例如，用到了 [以!结尾的函数](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)，通常这类函数会修改其参数，因而是不纯的。此外还有些函数没有以 `!` 结尾，其实也是有副作用的，比如 [`findfirst(regex, str)`](@ref) 就会改变 `regex` 参数，或者是 [`rand()`](@ref) 会修改 `Base.GLOBAL_RNG`:
 
 ```julia-repl
 julia> using Base.Threads
@@ -421,11 +370,9 @@ julia> Random.seed!(1); g() # the result for a single thread is 1000
 781
 ```
 
-In such cases one should redesign the code to avoid the possibility of a race condition or use
-[synchronization primitives](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1).
+此时，应该重新设计代码来避免可能的竞态条件或者是使用 [同步机制](https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1)。
 
-For example in order to fix `findfirst` example above one needs to have a
-separate copy of `rx` variable for each thread:
+例如，为了修正上面 `findfirst` 的例子，每个线程都要拷贝一份 `rx`。
 
 ```julia-repl
 julia> function f_fix()
@@ -443,12 +390,10 @@ julia> f_fix()
 1000
 ```
 
-We now use `Regex("1")` instead of `r"1"` to make sure that Julia
-creates separate instances of `Regex` object for each entry of `rx` vector.
+现在使用 `Regex("1")` 而不是 `r"1"` 来保证 Julia 对每个 `rx` 向量的元素都创建了一个 `Regex` 的对象。
 
-The case of `rand` is a bit more complex as we have to ensure that each thread
-uses non-overlapping pseudorandom number sequences. This can be simply ensured
-by using `Future.randjump` function:
+
+`rand` 的例子更复杂点，因为我们需要保证每个线程使用的是不重叠的随机数序列，这可以简单地通过 `Future.randjump` 函数保证：
 
 
 ```julia-repl
@@ -471,83 +416,48 @@ julia> g_fix(r)
 1000
 ```
 
-We pass the `r` vector to `g_fix` as generating several RGNs is an expensive
-operation so we do not want to repeat it every time we run the function.
+这里将 `r` 向量发送到 `g_fix`，由于生成多个随机数是很昂贵的操作，因此我们不希望每次执行函数都重复该操作。
 
-## @threadcall (Experimental)
+## @threadcall （实验性功能）
 
-All I/O tasks, timers, REPL commands, etc are multiplexed onto a single OS thread via an event
-loop. A patched version of libuv ([http://docs.libuv.org/en/v1.x/](http://docs.libuv.org/en/v1.x/))
-provides this functionality. Yield points provide for co-operatively scheduling multiple tasks
-onto the same OS thread. I/O tasks and timers yield implicitly while waiting for the event to
-occur. Calling [`yield`](@ref) explicitly allows for other tasks to be scheduled.
+所有的 I/O task，计时器，REPL 命令等都是通过一个事件循环复用的一个系统线程。有一个补丁版的 libuv([http://docs.libuv.org/en/v1.x/](http://docs.libuv.org/en/v1.x/)) 提供了该功能，从而在同一个系统线程上协调调度多个 task。I/O task 和计时器在等待某个事件发生时，会隐式地退出（yield），而显式地调用 [`yield`](@ref) 则会允许其它 task 被调度。
 
-Thus, a task executing a [`ccall`](@ref) effectively prevents the Julia scheduler from executing any other
-tasks till the call returns. This is true for all calls into external libraries. Exceptions are
-calls into custom C code that call back into Julia (which may then yield) or C code that calls
-`jl_yield()` (C equivalent of [`yield`](@ref)).
 
-Note that while Julia code runs on a single thread (by default), libraries used by Julia may launch
-their own internal threads. For example, the BLAS library may start as many threads as there are
-cores on a machine.
+因此，一个执行 [`ccall`](@ref) 的 task 会阻止 Julia 的调度器执行其它 task，直到调用返回，这种情况对于所有外部库的调用都存在，例外的情况是，某些自定义的C代码调用返回到了 Julia中（此时有可能 yield ）或者 C 代码执行了 `jl_yield()`（C 中等价的 [`yield`](@ref)）。
 
-The [`@threadcall`](@ref) macro addresses scenarios where we do not want a [`ccall`](@ref) to block the main Julia
-event loop. It schedules a C function for execution in a separate thread. A threadpool with a
-default size of 4 is used for this. The size of the threadpool is controlled via environment variable
-`UV_THREADPOOL_SIZE`. While waiting for a free thread, and during function execution once a thread
-is available, the requesting task (on the main Julia event loop) yields to other tasks. Note that
-`@threadcall` does not return till the execution is complete. From a user point of view, it is
-therefore a blocking call like other Julia APIs.
+注意，尽管 Julia 的代码默认是单线程的，但是 Julia 调用的库可能会用到其内部的多线程，例如，BLAS 会在一台机器上使用尽可能多的线程。
 
-It is very important that the called function does not call back into Julia, as it will segfault.
+[`@threadcall`](@ref) 就是要解决 [`ccall`](@ref) 会卡住主线程的这个问题，它会在一个额外的线程中调度 C 函数的执行，有一个默认大小为4的线程库用来做这个事情，该线程库的大小可以通过环境变量 `UV_THREADPOOL_SIZE` 控制。在等待一个空闲线程，以及在函数执行过程中某个线程空闲下来时，（主线程的事件循环中）正在请求的 task 会 yield 到其它 task，注意，`@threadcall` 并不会返回，直到执行结束。从用户的角度来看，就是一个和其它 Julia API 一样会阻塞的模块。
 
-`@threadcall` may be removed/changed in future versions of Julia.
+
+非常关键的一点是，被调用的函数不会再调用回 Julia。
+
+`@threadcall` 在 Julia 未来的版本中可能会被移除或改变。
+
 
 # 多核心或分布式处理
 
-An implementation of distributed memory parallel computing is provided by module `Distributed`
-as part of the standard library shipped with Julia.
+作为 Julia 标准库之一，`Distributed` 库提供了一种分布式内存并行计算的实现。
 
-Most modern computers possess more than one CPU, and several computers can be combined together
-in a cluster. Harnessing the power of these multiple CPUs allows many computations to be completed
-more quickly. There are two major factors that influence performance: the speed of the CPUs themselves,
-and the speed of their access to memory. In a cluster, it's fairly obvious that a given CPU will
-have fastest access to the RAM within the same computer (node). Perhaps more surprisingly, similar
-issues are relevant on a typical multicore laptop, due to differences in the speed of main memory
-and the [cache](https://www.akkadia.org/drepper/cpumemory.pdf). Consequently, a good multiprocessing
-environment should allow control over the "ownership" of a chunk of memory by a particular CPU.
-Julia provides a multiprocessing environment based on message passing to allow programs to run
-on multiple processes in separate memory domains at once.
+大多数现代计算机都拥有不止一个 CPU，而且多台计算机可以组织在一起形成一个集群。借助多个 CPU 的计算能力，许多计算过程能够更快地完成，这其中影响性能的两个主要因素分别是：CPU 自身的速度以及它们访问内存的速度。显然，在一个集群中，一个 CPU 访问同一个节点的 RAM 速度是最快的，不过令人吃惊的是，在一台典型的多核笔记本电脑上，由于访问主存和[缓存](https://www.akkadia.org/drepper/cpumemory.pdf)的速度存在差别，类似的现象也会存在。因此，一个良好的多进程环境应该能够管理好某一片内存区域“所属”的CPU。Julia提供的多进程环境是基于消息传递来实现的，可以做到同时让程序在多个进程的不同内存区域中运行。
 
-Julia's implementation of message passing is different from other environments such as MPI [^1].
-Communication in Julia is generally "one-sided", meaning that the programmer needs to explicitly
-manage only one process in a two-process operation. Furthermore, these operations typically do
-not look like "message send" and "message receive" but rather resemble higher-level operations
-like calls to user functions.
 
-Distributed programming in Julia is built on two primitives: *remote references* and *remote calls*.
-A remote reference is an object that can be used from any process to refer to an object stored
-on a particular process. A remote call is a request by one process to call a certain function
-on certain arguments on another (possibly the same) process.
+Julia 的消息传递机制与一些其它的框架不太一样，比如 MPI [^1]。在 Julia 中，进程之间的通信通常是**单向**的，这里单向的意思是说，在实现2个进程之间的操作时，只需要显式地管理一个进程即可。此外，这些操作并不像是“发送消息”，“接收消息”这类操作，而是一些高阶的操作，比如调用用户定义的函数。
 
-Remote references come in two flavors: [`Future`](@ref) and [`RemoteChannel`](@ref).
 
-A remote call returns a [`Future`](@ref) to its result. Remote calls return immediately; the process
-that made the call proceeds to its next operation while the remote call happens somewhere else.
-You can wait for a remote call to finish by calling [`wait`](@ref) on the returned [`Future`](@ref),
-and you can obtain the full value of the result using [`fetch`](@ref).
+Julia 中的分布式编程基于两个基本概念：**远程引用**(*remote references*)和**远程调用**(*remote calls*)。远程引用是一个对象，任意一个进程可以通过它访问存储在某个特定进程上的对象。远程调用指是某个进程发起的执行函数的请求，该函数会在另一个（也可能是同一个）进程中执行。
 
-On the other hand, [`RemoteChannel`](@ref) s are rewritable. For example, multiple processes can
-co-ordinate their processing by referencing the same remote `Channel`.
+远程引用有两种类型：[`Future`](@ref) 和 [`RemoteChannel`](@ref)。
 
-Each process has an associated identifier. The process providing the interactive Julia prompt
-always has an `id` equal to 1. The processes used by default for parallel operations are referred
-to as "workers". When there is only one process, process 1 is considered a worker. Otherwise,
-workers are considered to be all processes other than process 1.
+一次远程调用会返回一个 [`Future`](@ref) 作为结果。远程调用会立即返回；也就是说，执行远程调用的进程接下来会继续执行下一个操作，而远程调用则会在另外的进程中进行。你可以通过对返回的 [`Future`](@ref) 执行 [`wait`](@ref) 操作来等待远程调用结束，然后用 [`fetch`](@ref) 获取结果。
 
-Let's try this out. Starting with `julia -p n` provides `n` worker processes on the local machine.
-Generally it makes sense for `n` to equal the number of CPU threads (logical cores) on the machine. Note that the `-p`
-argument implicitly loads module `Distributed`.
+
+对于 [`RemoteChannel`](@ref) 而言，它可以被反复写入。例如，多个进程可以通过引用同一个远程 `Channel` 来协调相互之间的操作。
+
+
+每个进程都有一个对应的 id，提供 Julia 交互环境的进程的 `id` 永远是1。我们把用来执行并行任务的进程称为 “worker”，假如总共只有一个进程，那么进程1就被认为是 worker，否则，除了进程1以外的进程都称作 worker。
+
+一起试一下吧。执行 `julia -p n` 就可以在本地起 `n` 个进程。一般来说，将 `n` 设成与你机器上（物理的内核数）CPU 个数一致比较合适。需要注意 `-p` 参数会隐式地载入 `Distributed` 模块。
 
 
 ```julia
@@ -565,33 +475,22 @@ julia> fetch(s)
  1.16296  1.60607
 ```
 
-The first argument to [`remotecall`](@ref) is the function to call. Most parallel programming
-in Julia does not reference specific processes or the number of processes available, but [`remotecall`](@ref)
-is considered a low-level interface providing finer control. The second argument to [`remotecall`](@ref)
-is the `id` of the process that will do the work, and the remaining arguments will be passed to
-the function being called.
+[`remotecall`](@ref) 的第一个参数是想要调用的函数，第二个参数是执行函数的进程 `id`，其余的参数会喂给将要被调用的函数。在 Julia 中进行并行编程时，一般不需要显示地指明具体在哪个进程上执行，不过 [`remotecall`](@ref) 是一个相对底层的接口用来提供细粒度的管理。
 
-As you can see, in the first line we asked process 2 to construct a 2-by-2 random matrix, and
-in the second line we asked it to add 1 to it. The result of both calculations is available in
-the two futures, `r` and `s`. The [`@spawnat`](@ref) macro evaluates the expression in the second
-argument on the process specified by the first argument.
+可以看到，第一行代码请求进程2构建一个随机矩阵，第二行代码对该矩阵执行加一操作。每次执行的结果存在对应的 Future 中，即 `r` 和 `s`。这里 [`@spawnat`](@ref) 宏会在第一个参数所指定的进程中执行后面第二个参数中的表达式。
 
-Occasionally you might want a remotely-computed value immediately. This typically happens when
-you read from a remote object to obtain data needed by the next local operation. The function
-[`remotecall_fetch`](@ref) exists for this purpose. It is equivalent to `fetch(remotecall(...))`
-but is more efficient.
+有时候，你可能会希望立即获取远程计算的结果，比如，在接下来的操作中就需要读取远程调用的结果，这时候你可以使用 [`remotecall_fetch`](@ref) 函数，其效果相当于 `fetch(remotecall(...))`，不过更高效些。
 
 ```julia-repl
 julia> remotecall_fetch(getindex, 2, r, 1, 1)
 0.18526337335308085
 ```
 
-Remember that [`getindex(r,1,1)`](@ref) is [equivalent](@ref man-array-indexing) to `r[1,1]`, so this call fetches
-the first element of the future `r`.
+回忆下，这里 [`getindex(r,1,1)`](@ref) [相当于](@ref man-array-indexing) `r[1,1]`，因此，上面的调用相当于获取 `r` 的第一个元素。
 
-The syntax of [`remotecall`](@ref) is not especially convenient. The macro [`@spawn`](@ref)
-makes things easier. It operates on an expression rather than a function, and picks where to do
-the operation for you:
+
+[`remotecall`](@ref) 的语法不是很方便，有一个宏 [`@spawn`](@ref) 可以做些简化，其作用于一个表达式，而不是函数，同时会自动帮你选择在哪个进程上执行。
+
 
 ```julia-repl
 julia> r = @spawn rand(2,2)
@@ -606,40 +505,19 @@ julia> fetch(s)
  1.20939  1.57158
 ```
 
-Note that we used `1 .+ fetch(r)` instead of `1 .+ r`. This is because we do not know where the
-code will run, so in general a [`fetch`](@ref) might be required to move `r` to the process
-doing the addition. In this case, [`@spawn`](@ref) is smart enough to perform the computation
-on the process that owns `r`, so the [`fetch`](@ref) will be a no-op (no work is done).
+注意这里执行的是 `1 .+ fetch(r)` 而不是 `1 .+ r`。这是因为我们并不知道这段代码会在哪个进程中执行，因此，通常需要用 [`fetch`](@ref) 将 `r` 中的数据挪到当前计算加法的进程中。这时候 [`@spawn`](@ref) 会很智能地在拥有 `r` 的进程中执行计算，此时，[`fetch`](@ref) 就相当于什么都不用做。(译者注：[issue#28350](https://github.com/JuliaLang/julia/issues/28350))
 
-(It is worth noting that [`@spawn`](@ref) is not built-in but defined in Julia as a [macro](@ref man-macros).
-It is possible to define your own such constructs.)
+显然，[`@spawn`](@ref) 并非 Julia 内置的一部分，而是通过 [宏](@ref man-macros) 定义的，因此，你也可以自己定义类似的结构。
 
-An important thing to remember is that, once fetched, a [`Future`](@ref) will cache its value
-locally. Further [`fetch`](@ref) calls do not entail a network hop. Once all referencing [`Future`](@ref)s
-have fetched, the remote stored value is deleted.
+有一点一定要注意，一旦执行了 `fetch`，[`Future`](@ref) 就会将结果缓存起来，之后执行 [`fetch`](@ref) 的时候就不涉及到网络传输了。一旦所有的 [`Future`](@ref) 都获取到了值，那么远端存储的值就会被删掉。
 
-[`@async`](@ref) is similar to [`@spawn`](@ref), but only runs tasks on the local process. We
-use it to create a "feeder" task for each process. Each task picks the next index that needs to
-be computed, then waits for its process to finish, then repeats until we run out of indices. Note
-that the feeder tasks do not begin to execute until the main task reaches the end of the [`@sync`](@ref)
-block, at which point it surrenders control and waits for all the local tasks to complete before
-returning from the function.
-As for v0.7 and beyond, the feeder tasks are able to share state via `nextidx` because
-they all run on the same process.
-Even if `Tasks` are scheduled cooperatively, locking may still be required in some contexts, as in [asynchronous I\O](https://docs.julialang.org/en/stable/manual/faq/#Asynchronous-IO-and-concurrent-synchronous-writes-1).
-This means context switches only occur at well-defined points: in this case,
-when [`remotecall_fetch`](@ref) is called. This is the current state of implementation (dev v0.7) and it may change
-for future Julia versions, as it is intended to make it possible to run up to N `Tasks` on M `Process`, aka
-[M:N Threading](https://en.wikipedia.org/wiki/Thread_(computing)#Models). Then a lock acquiring\releasing
-model for `nextidx` will be needed, as it is not safe to let multiple processes read-write a resource at
-the same time.
+[`@async`](@ref) 跟 [`@spawn`](@ref) 有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个**喂养**的 task，每个 task 都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task 并不会立即执行，只有在执行到 [`@sync`](@ref) 结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。在v0.7之后，所有的喂养 task 都能够通过 `nextidx` 共享状态，因为他们都在同一个进程中。尽管 `Tasks` 是协调调度的，但在某些情况下仍然有可能发送死锁，如 [asynchronous I\O](https://docs.julialang.org/en/stable/manual/faq/#Asynchronous-IO-and-concurrent-synchronous-writes-1)。上下文只会在特定时候发生切换，在这里就是执行 [`remotecall_fetch`](@ref)。当然，这是当前版本（dev v0.7）的实现，未来版本中可能会改变，有望在 M 个进程中最多跑 N 个 task，即 [M:N 线程](https://en.wikipedia.org/wiki/Thread_(computing)#Models)。然后，`nextidx` 需要加锁，从而让多个进程能够安全地对一个资源同时进行读写。
 
 
 
-## Code Availability and Loading Packages
+## 访问代码以及加载库
 
-Your code must be available on any process that runs it. For example, type the following into
-the Julia prompt:
+对于想要并行执行的代码，需要所有对所有线程都可见。例如，在 Julia 命令行中输入以下命令：
 
 ```julia-repl
 julia> function rand2(dims...)
@@ -657,11 +535,10 @@ Stacktrace:
 [...]
 ```
 
-Process 1 knew about the function `rand2`, but process 2 did not.
+进程1知道函数 `rand2` 的存在，但进程2并不知道。
 
-Most commonly you'll be loading code from files or packages, and you have a considerable amount
-of flexibility in controlling which processes load code. Consider a file, `DummyModule.jl`,
-containing the following code:
+大多数情况下，你会从文件或者库中加载代码，在此过程中你可以灵活地控制哪个进程加载哪部分代码。假设有这样一个文件，`DummyModule.jl`，其代码如下：
+
 
 ```julia
 module DummyModule
@@ -679,10 +556,7 @@ println("loaded")
 end
 ```
 
-In order to refer to `MyType` across all processes, `DummyModule.jl` needs to be loaded on
-every process.  Calling `include("DummyModule.jl")` loads it only on a single process.  To
-load it on every process, use the [`@everywhere`](@ref) macro (starting Julia with `julia -p
-2`):
+为了在所有进程中引用 `MyType`，`DummyModule.jl` 需要在每个进程中载入。单独执行 `include("DummyModule.jl")` 只会在一个线程中将其载入。为了让每个线程都载入它，可以用 [`@everywhere`](@ref) 宏来实现(启动 Julia 的时候，执行 `julia -p 2`)。
 
 ```julia-repl
 julia> @everywhere include("DummyModule.jl")
@@ -691,9 +565,8 @@ loaded
       From worker 2:    loaded
 ```
 
-As usual, this does not bring `DummyModule` into scope on any of the process, which requires
-`using` or `import`.  Moreover, when `DummyModule` is brought into scope on one process, it
-is not on any other:
+和往常一样，这么做并不会将 `DummyModule` 引入到每个线程的命名空间中，除非显式地使用 `using` 或 `import`。此外，显式地将 `DummyModule` 引入一个线程中，并不会影响其它线程：
+
 
 ```julia-repl
 julia> using .DummyModule
@@ -710,38 +583,33 @@ julia> fetch(@spawnat 2 DummyModule.MyType(7))
 MyType(7)
 ```
 
-However, it's still possible, for instance, to send a `MyType` to a process which has loaded
-`DummyModule` even if it's not in scope:
+不过，我们仍然可以在已经包含(include)过 `DummyModule` 的进程中，发送 `MyType` 类型的实例，尽管此时该进程的命名空间中并没有 `MyType` 变量:
 
 ```julia-repl
 julia> put!(RemoteChannel(2), MyType(7))
 RemoteChannel{Channel{Any}}(2, 1, 13)
 ```
 
-A file can also be preloaded on multiple processes at startup with the `-L` flag, and a
-driver script can be used to drive the computation:
+文件代码还可以在启动的时候，通过 `-L` 参数指定，从而提前在多个进程中载入，然后通过一个 driver.jl 文件控制执行逻辑:
 
 ```
 julia -p <n> -L file1.jl -L file2.jl driver.jl
 ```
 
-The Julia process running the driver script in the example above has an `id` equal to 1, just
-like a process providing an interactive prompt.
+上面执行 `driver.jl` 的进程 id 为1，就跟提供交互式命令行的 Julia 进程一样。
 
-Finally, if `DummyModule.jl` is not a standalone file but a package, then `using
-DummyModule` will _load_ `DummyModule.jl` on all processes, but only bring it into scope on
-the process where `using` was called.
 
-## Starting and managing worker processes
+最后，如果 `DummyModule.jl` 不是一个单独的文件，而是一个包的话，那么 `using DummyModule` 只会在所有线程中*载入* `DummyModule.jl`，也就是说 `DummyModule` 只会在 `using` 执行的线程中被引入命名空间。
 
-The base Julia installation has in-built support for two types of clusters:
+## 启动和管理 worker 进程
 
-  * A local cluster specified with the `-p` option as shown above.
-  * A cluster spanning machines using the `--machine-file` option. This uses a passwordless `ssh` login
-    to start Julia worker processes (from the same path as the current host) on the specified machines.
+Julia 自带两种集群管理模式：
 
-Functions [`addprocs`](@ref), [`rmprocs`](@ref), [`workers`](@ref), and others are available
-as a programmatic means of adding, removing and querying the processes in a cluster.
+  * 本地集群，前面通过启动时指定 `-p` 参数就是这种模式
+  * 跨机器的集群，通过 `--machine-file` 指定。这种模式采用没有密码的 `ssh` 登陆并对应的机器上（与 host 相同的路径下）启动 Julia 的 worker 进程。
+     
+
+[`addprocs`](@ref), [`rmprocs`](@ref), [`workers`](@ref) 这些函数可以分别用来对集群中的进程进行增加，删除和修改。
 
 ```julia-repl
 julia> using Distributed
@@ -752,29 +620,20 @@ julia> addprocs(2)
  3
 ```
 
-Module `Distributed` must be explicitly loaded on the master process before invoking [`addprocs`](@ref).
-It is automatically made available on the worker processes.
+在 master 主线程中，`Distributed` 模块必须显式地在调用 [`addprocs`](@ref) 之前载入，该模块会自动在其它进程中可见。
 
-Note that workers do not run a `~/.julia/config/startup.jl` startup script, nor do they synchronize
-their global state (such as global variables, new method definitions, and loaded modules) with any
-of the other running processes.
+需要注意的时，worker 进程并不会执行 `~/.julia/config/startup.jl` 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。
 
-Other types of clusters can be supported by writing your own custom `ClusterManager`, as described
-below in the [ClusterManagers](@ref) section.
 
-## Data Movement
+其它类型的集群可以通过自己写一个 `ClusterManager` 来实现，下面 [ClusterManagers](@ref) 部分会介绍。
 
-Sending messages and moving data constitute most of the overhead in a distributed program. Reducing
-the number of messages and the amount of data sent is critical to achieving performance and scalability.
-To this end, it is important to understand the data movement performed by Julia's various distributed
-programming constructs.
+## 数据转移
 
-[`fetch`](@ref) can be considered an explicit data movement operation, since it directly asks
-that an object be moved to the local machine. [`@spawn`](@ref) (and a few related constructs)
-also moves data, but this is not as obvious, hence it can be called an implicit data movement
-operation. Consider these two approaches to constructing and squaring a random matrix:
+分布式程序的性能瓶颈主要是由发送消息和数据转移造成的，减少发送消息和转移数据的数量对于获取高性能和可扩展性至关重要，因此，深入了解 Julia 分布式程序是如何转移数据的非常有必要。
 
-Method 1:
+[`fetch`](@ref) 可以看作是显式地转移数据的操作，因为它直接要求获取数据到本地机器。[`@spawn`](@ref)（以及相关的操作）也会移动数据，不过不那么明显，因此称作隐式地数据转移操作。比较以下两种方式，构造一个随机矩阵并求平方：
+
+方法1：
 
 ```julia-repl
 julia> A = rand(1000,1000);
@@ -796,44 +655,28 @@ julia> Bref = @spawn rand(1000,1000)^2;
 julia> fetch(Bref);
 ```
 
-The difference seems trivial, but in fact is quite significant due to the behavior of [`@spawn`](@ref).
-In the first method, a random matrix is constructed locally, then sent to another process where
-it is squared. In the second method, a random matrix is both constructed and squared on another
-process. Therefore the second method sends much less data than the first.
+二者的差别似乎微乎其微，不过受于 [`@spawn`](@ref) 的实现，二者其实有很大的区别。第一种方法中，首先在本地构造了一个随机矩阵，然后将其发送到另外一个线程计算平方，而第二种方法中，随机矩阵的构造以及求平方计算都在另外一个进程。因此，第二种方法传输的数据要比第一种方法少得多。
 
-In this toy example, the two methods are easy to distinguish and choose from. However, in a real
-program designing data movement might require more thought and likely some measurement. For example,
-if the first process needs matrix `A` then the first method might be better. Or, if computing
-`A` is expensive and only the current process has it, then moving it to another process might
-be unavoidable. Or, if the current process has very little to do between the [`@spawn`](@ref)
-and `fetch(Bref)`, it might be better to eliminate the parallelism altogether. Or imagine `rand(1000,1000)`
-is replaced with a more expensive operation. Then it might make sense to add another [`@spawn`](@ref)
-statement just for this step.
 
-## Global variables
-Expressions executed remotely via `@spawn`, or closures specified for remote execution using
-`remotecall` may refer to global variables. Global bindings under module `Main` are treated
-a little differently compared to global bindings in other modules. Consider the following code
-snippet:
+在上面这个简单的例子中，两种方法很好区分并作出选择。不过，在实际的程序中设计如何转移数据时，需要经过深思熟虑。例如，如果第一个进程需要使用 `A`，那么第一种方法就更合适些。或者，如果计算 `A` 非常复杂，而所有的进程中又只有当前进程有数据 `A`，那么转移数据 `A` 就不可避免了。又或者，当前进程在 [`@spawn`](@ref) 和 `fetch(Bref)` 之间几乎没什么可做的，那么最好就不用并行了。又比如，假设 `rand(1000,1000)` 操作换成了某种非常复杂的操作，那么也许为这个操作再增加一个 [`@spawn`](@ref) 是个不错的方式。
+
+## 全局变量
+通过 `@spawn` 在远端执行的表达式，或者通过 `remotecall` 调用的闭包，有可能引用全局变量。在 `Main` 模块中的全局绑定和其它模块中的全局绑定有所不同，来看看下面的例子:
 
 ```julia-repl
 A = rand(10,10)
 remotecall_fetch(()->sum(A), 2)
 ```
 
-In this case [`sum`](@ref) MUST be defined in the remote process.
-Note that `A` is a global variable defined in the local workspace. Worker 2 does not have a variable called
-`A` under `Main`. The act of shipping the closure `()->sum(A)` to worker 2 results in `Main.A` being defined
-on 2. `Main.A` continues to exist on worker 2 even after the call `remotecall_fetch` returns. Remote calls
-with embedded global references (under `Main` module only) manage globals as follows:
+这个例子中 [`sum`](@ref) 必须已经在远程的线程中定义了。注意这里 `A` 是当前线程中的一个全局变量，起初 worker 2 在其 `Main` 中并没有一个叫做 `A` 的变量。上面代码中，将闭包 `()->sum(A)` 发送到 worker 2 之后，会在 worker 2 中定义一个变量 `Main.A`，而且，`Main.A` 即使在执行完 `remotecall_fetch` 之后，仍然会存在与 worker 2 中。远程调用中包含的全局（这里仅仅指 `Main` 模块中的）引用会按如下方式管理：
 
-- New global bindings are created on destination workers if they are referenced as part of a remote call.
+- 在全局调用中引用的全局绑定会在将要执行该调用的 worker 中被创建。
 
-- Global constants are declared as constants on remote nodes too.
+- 全局常量仍然在远端结点定义为常量。
 
-- Globals are re-sent to a destination worker only in the context of a remote call, and then only
-  if its value has changed. Also, the cluster does not synchronize global bindings across nodes.
-  For example:
+- 全局绑定会在下一次远程调用中引用到的时候，当其值发生改变时，再次发送给目标 worker。此外，集群并不会所有结点的全局绑定。例如：
+   
+   
 
   ```julia
   A = rand(10,10)
@@ -843,19 +686,15 @@ with embedded global references (under `Main` module only) manage globals as fol
   A = nothing
   ```
 
-  Executing the above snippet results in `Main.A` on worker 2 having a different value from
-  `Main.A` on worker 3, while the value of `Main.A` on node 1 is set to `nothing`.
+  可以看到，`A` 作为全局变量在 worker 2中有定义，而 `B` 是一个局部变量，因而最后在 worker 2 中并没有 `B` 的绑定。
+  执行以上代码之后，worker 2 和 worker 3中的 `Main.A` 的值是不同的，同时，节点1上的值则为 `nothing`。
 
-As you may have realized, while memory associated with globals may be collected when they are reassigned
-on the master, no such action is taken on the workers as the bindings continue to be valid.
-[`clear!`](@ref) can be used to manually reassign specific globals on remote nodes to `nothing` once
-they are no longer required. This will release any memory associated with them as part of a regular garbage
-collection cycle.
+也许你也注意到了，在 master 主节点上被赋值为 `nothing` 之后，全局变量的内存会被回收，但在 worker 节点上的全局变量并没有被回收掉。执行 [`clear`](@ref) 可以手动将远端结点上的特定全局变量置为 `nothing`，然后对应的内存会被周期性的垃圾回收机制回收。
 
-Thus programs should be careful referencing globals in remote calls. In fact, it is preferable to avoid them
-altogether if possible. If you must reference globals, consider using `let` blocks to localize global variables.
+因此，在远程调用中，需要非常小心地引用全局变量。事实上，应当尽量避免引用全局变量，如果必须引用，那么可以考虑用`let`代码块将全局变量局部化：
 
-For example:
+例如：
+
 
 ```julia-repl
 julia> A = rand(10,10);
@@ -877,16 +716,12 @@ Core                Module
 Main                Module
 ```
 
-As can be seen, global variable `A` is defined on worker 2, but `B` is captured as a local variable
-and hence a binding for `B` does not exist on worker 2.
+可以看到，`A` 作为全局变量在 worker 2中有定义，而 `B` 是一个局部变量，因而最后在 worker 2 中并没有 `B` 的绑定。
 
 
-## Parallel Map and Loops
+## 并行的Map和Loop
 
-Fortunately, many useful parallel computations do not require data movement. A common example
-is a Monte Carlo simulation, where multiple processes can handle independent simulation trials
-simultaneously. We can use [`@spawn`](@ref) to flip coins on two processes. First, write the following
-function in `count_heads.jl`:
+幸运的是，许多有用的并行计算并不涉及数据转移。一个典型的例子就是蒙特卡洛模拟，每个进程都独立地完成一些模拟试验。这里用 [`@spawn`](@ref) 在两个进程进行抛硬币的试验，首先，将下面的代码写入 `count_heads.jl` 文件:
 
 ```julia
 function count_heads(n)
@@ -1797,4 +1632,4 @@ mpirun -np 4 ./julia example.jl
     patterns. for additional information on the latest mpi standard, see [http://mpi-forum.org/docs](http://mpi-forum.org/docs/).
 
 [^2]:
-    [Julia GPU man pages](http://juliagpu.github.io/CUDAnative.jl/stable/man/usage.html#Julia-support-1)
+    [Julia GPU操作页](http://juliagpu.github.io/CUDAnative.jl/stable/man/usage.html#Julia-support-1)

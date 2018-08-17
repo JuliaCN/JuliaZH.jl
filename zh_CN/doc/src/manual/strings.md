@@ -1,33 +1,21 @@
 # [字符串](@id man-strings)
 
-Strings are finite sequences of characters. Of course, the real trouble comes when one asks what
-a character is. The characters that English speakers are familiar with are the letters `A`, `B`,
-`C`, etc., together with numerals and common punctuation symbols. These characters are standardized
-together with a mapping to integer values between 0 and 127 by the [ASCII](https://en.wikipedia.org/wiki/ASCII)
-standard. There are, of course, many other characters used in non-English languages, including
-variants of the ASCII characters with accents and other modifications, related scripts such as
-Cyrillic and Greek, and scripts completely unrelated to ASCII and English, including Arabic, Chinese,
-Hebrew, Hindi, Japanese, and Korean. The [Unicode](https://en.wikipedia.org/wiki/Unicode) standard
-tackles the complexities of what exactly a character is, and is generally accepted as the definitive
-standard addressing this problem. Depending on your needs, you can either ignore these complexities
-entirely and just pretend that only ASCII characters exist, or you can write code that can handle
-any of the characters or encodings that one may encounter when handling non-ASCII text. Julia
-makes dealing with plain ASCII text simple and efficient, and handling Unicode is as simple and
-efficient as possible. In particular, you can write C-style string code to process ASCII strings,
-and they will work as expected, both in terms of performance and semantics. If such code encounters
-non-ASCII text, it will gracefully fail with a clear error message, rather than silently introducing
-corrupt results. When this happens, modifying the code to handle non-ASCII data is straightforward.
+字符串是由有限个字符组成的序列。然而, 字符又是什么呢。说英文者所熟悉的字符是字母  `A`, `B`,
+`C`, ...，以及数字和常用的标点符号。这些字符被 [ASCII](https://en.wikipedia.org/wiki/ASCII) 标准统一标准化并且与 0 到 127 范围内的整数一一对应。当然，有很多用于非英文环境的字符，包括因发音和其他形式的修改而形成的 ASCII 字符的变体，例如西里尔字母和希腊字母，以及与 ASCII 和英文完全无关的字母系统，包括阿拉伯语, 中文,
+希伯来语, 印度语, 日本语, 和韩语。[Unicode](https://en.wikipedia.org/wiki/Unicode) 标准被用来解决字符如何定义这一复杂难题，并作为解决这一问题的确切标准而被普遍接受。
+根据自身需求，你可以忽略这种复杂性，只处理 ASCII 字符，或者编写可以处理所有的字符和编码的代码以防非 ASCII 文本的出现。Julia 可以简单高效地处理纯粹的 ASCII 以及 Unicode 文本。
+特别地，你也可以写 C 语言风格的字符串代码用来处理 ASCII 字符串，且在不失性能和语义的前提下达到预期效果。当代码遇到非 ASCII 文本时，Julia会优雅明确地提示错误信息而不是引入乱码。  这时，修改代码以处理非 ASCII 数据是简便直接的。
 
 关于Julia的字符串类型有一些值得注意的高级特性：
 
   * Julia中用于字符串（和字符串文字）的内置具体类型是[`String`](@ref)。
     它支持全部[Unicode](https://en.wikipedia.org/wiki/Unicode)字符
-    the [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding. (A [`transcode`](@ref) function is
-    provided to convert to/from other Unicode encodings.)
-  * All string types are subtypes of the abstract type `AbstractString`, and external packages define
-    additional `AbstractString` subtypes (e.g. for other encodings).  If you define a function expecting
-    a string argument, you should declare the type as `AbstractString` in order to accept any string
-    type.
+    通过[UTF-8](https://en.wikipedia.org/wiki/UTF-8)编码。（[`transcode`](@ref)函数是
+    提供Unicode编码和其他编码转换的函数。）
+  * 所有的字符串类型都是抽象类型`AbstractString`的子类型，外部包定义了
+    补充 `AbstractString` 子类型（例如为其它的编码定义的子类型）。 如果你定义了以字符串为参数的函数 ，
+    你应该声明这个参数类型为 `AbstractString` 用于接受任意的字符串 
+    类型。
   * Like C and Java, but unlike most dynamic languages, Julia has a first-class type for representing
     a single character, called [`AbstractChar`](@ref). The built-in [`Char`](@ref) subtype of `AbstractChar`
     is a 32-bit primitive type that can represent any Unicode character (and which is based
@@ -38,7 +26,7 @@ corrupt results. When this happens, modifying the code to handle non-ASCII data 
     no character value is returned, and instead an exception is thrown. This allows for efficient
     indexing into strings by the byte index of an encoded representation rather than by a character
     index, which cannot be implemented both efficiently and simply for variable-width encodings of
-    Unicode strings.
+    Unicode字符串。
 
 ## [Characters](@id man-characters)
 
@@ -214,12 +202,9 @@ julia> str[6:6]
 ","
 ```
 
-The former is a single character value of type `Char`, while the latter is a string value that
-happens to contain only a single character. In Julia these are very different things.
+前者是`Char`类型的单个字符值，而后者是恰好只包含单个字符的字符串值。 在Julia中这些是非常不同的东西。
 
-Range indexing makes a copy of the selected part of the original string.
-Alternatively, it is possible to create a view into a string using the type [`SubString`](@ref),
-for example:
+范围索引会复制原始字符串的选定部分。或者，可以使用类型[`SubString`](@ref)创建一个字符串值，例如：
 
 ```jldoctest
 julia> str = "long string"
@@ -232,28 +217,18 @@ julia> typeof(substr)
 SubString{String}
 ```
 
-Several standard functions like [`chop`](@ref), [`chomp`](@ref) or [`strip`](@ref)
-return a [`SubString`](@ref).
+几个标准函数，像 [`chop`](@ref), [`chomp`](@ref) 或者[`strip`](@ref)返回一个[`SubString`](@ref)。
 
 ## Unicode编码和UTF-8编码
 
-Julia fully supports Unicode characters and strings. As [discussed above](@ref man-characters), in character
-literals, Unicode code points can be represented using Unicode `\u` and `\U` escape sequences,
-as well as all the standard C escape sequences. These can likewise be used to write string literals:
+Julia 完全支持 Unicode 字符和字符串。[如上所述](@ref man-characters)，在字符字面量中，Unicode 代码点可以用 Unicode `\u` 和 `\U`转义序列表示，也可以用所有标准 C 转义序列表示。这些同样可以用来写字符串字面量：
 
 ```jldoctest unicodestring
 julia> s = "\u2200 x \u2203 y"
 "∀ x ∃ y"
 ```
 
-Whether these Unicode characters are displayed as escapes or shown as special characters depends
-on your terminal's locale settings and its support for Unicode. String literals are encoded using
-the UTF-8 encoding. UTF-8 is a variable-width encoding, meaning that not all characters are encoded
-in the same number of bytes. In UTF-8, ASCII characters -- i.e. those with code points less than
-0x80 (128) -- are encoded as they are in ASCII, using a single byte, while code points 0x80 and
-above are encoded using multiple bytes -- up to four per character. This means that not every
-byte index into a UTF-8 string is necessarily a valid index for a character. If you index into
-a string at such an invalid byte index, an error is thrown:
+这些 Unicode 字符是作为转义还是特殊字符显示取决于你终端的语言环境设置以及它对 Unicode 的支持。字符串字面量用 UTF-8 编码实现编码。UTF-8 是一种可变宽度的编码，也就是说并非所有字符都以相同的字节数被编码。在 UTF-8 中，ASCII 字符——代码点小于 0x80(128) 的那些——如它们在 ASCII 中一样使用单字节编码；而代码点 0x80 及以上的字符使用最多 4 个字节编码。这意味着并非每个索引到 UTF-8 字符串的字节都必须是一个字符的有效索引。如果在这种无效字节索引处索引字符串，将会报错：
 
 ```jldoctest unicodestring
 julia> s[1]
@@ -272,11 +247,9 @@ julia> s[4]
 ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
 ```
 
-In this case, the character `∀` is a three-byte character, so the indices 2 and 3 are invalid
-and the next character's index is 4; this next valid index can be computed by [`nextind(s,1)`](@ref),
-and the next index after that by `nextind(s,4)` and so on.
+在这种情况下，字符 `∀`是一个三字节字符，因此索引 2 和 3 都是无效的，而下一个字符的索引是 4；这个接下来的有效索引可以用[`nextind(s,1)`](@ref)来计算，再接下来的用`nextind(s,4)`，依此类推。
 
-Extraction of a substring using range indexing also expects valid byte indices or an error is thrown:
+使用范围索引提取字字符串也需要有效的字节索引，否则将报错：
 
 ```jldoctest unicodestring
 julia> s[1:1]
@@ -291,12 +264,7 @@ julia> s[1:4]
 "∀ "
 ```
 
-Because of variable-length encodings, the number of characters in a string (given by [`length(s)`](@ref))
-is not always the same as the last index. If you iterate through the indices 1 through [`lastindex(s)`](@ref)
-and index into `s`, the sequence of characters returned when errors aren't thrown is the sequence
-of characters comprising the string `s`. Thus we have the identity that `length(s) <= lastindex(s)`,
-since each character in a string must have its own index. The following is an inefficient and
-verbose way to iterate through the characters of `s`:
+由于可变长度的编码，字符串中的字符数（由 [`length(s)`](@ref)给出）并不问题等于最后一个索引的数字。如果你从 1 到[`lastindex(s)`](@ref)迭代并索引到 `s`，未报错时返回的字符序列是包含字符串`s`的字符序列。因此总有`length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s`的字符进行迭代的一个冗长而低效的方式：
 
 ```jldoctest unicodestring
 julia> for i = firstindex(s):lastindex(s)
@@ -315,9 +283,7 @@ x
 y
 ```
 
-The blank lines actually have spaces on them. Fortunately, the above awkward idiom is unnecessary
-for iterating through the characters in a string, since you can just use the string as an iterable
-object, no exception handling required:
+空行上面其实是有空格的。幸运的是，上面的笨拙写法不是对字符串中字符进行迭代所必须的——因为你只需把字符串本身用作迭代对象，而不需要额外处理：
 
 ```jldoctest unicodestring
 julia> for c in s
@@ -332,11 +298,7 @@ x
 y
 ```
 
-Strings in Julia can contain invalid UTF-8 code unit sequences. This convention allows to
-treat any byte sequence as a `String`. In such situations a rule is that when parsing
-a sequence of code units from left to right characters are formed by the longest sequence of
-8-bit code units that matches the start of one of the following bit patterns
-(each `x` can be `0` or `1`):
+Julia 中的字符串可以包含无效的 UTF-8 代码单元序列。这个惯例允许把任何字序列当作 `String`。在这种情形下的一个规则是，当从左到右解析代码单元序列时，字符由匹配下面开头位模式之一的最长的 8 位代码单元序列组成（每个`x` 可以是`0`或者`1`）：
 
 * `0xxxxxxx`;
 * `110xxxxx` `10xxxxxx`;
@@ -345,8 +307,7 @@ a sequence of code units from left to right characters are formed by the longest
 * `10xxxxxx`;
 * `11111xxx`.
 
-In particular this implies that overlong and too high code unit sequences are accepted.
-This rule is best explained by an example:
+特别地，这意味着过长和太高的代码单元序列也可接受。这个规则最好用一个例子来解释：
 
 ```julia-repl
 julia> s = "\xc0\xa0\xe2\x88\xe2|"
@@ -390,7 +351,7 @@ primarily for working with external data and libraries.
 
 ## 连接
 
-One of the most common and useful string operations is concatenation:
+最常见最有用的字符串操作是连接：
 
 ```jldoctest stringconcat
 julia> greet = "Hello"
@@ -583,7 +544,7 @@ Note that line breaks in literal strings, whether single- or triple-quoted, resu
 combination to end lines. To include a CR in a string, use an explicit escape `\r`; for example,
 you can enter the literal string `"a CRLF line ending\r\n"`.
 
-## Common Operations
+## 常见操作
 
 You can lexicographically compare strings using the standard comparison operators:
 
@@ -676,7 +637,7 @@ quite like a normal string literal.  Regular expressions, byte array literals an
 literals, as described below, are some examples of non-standard string literals. Other examples
 are given in the [Metaprogramming](@ref) section.
 
-## Regular Expressions
+## 正则表达式
 
 Julia has Perl-compatible regular expressions (regexes), as provided by the [PCRE](http://www.pcre.org/)
 library. Regular expressions are related to strings in two ways: the obvious connection is that

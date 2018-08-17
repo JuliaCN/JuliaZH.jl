@@ -16,19 +16,16 @@ julia> f(x,y) = x + y
 f (generic function with 1 method)
 ```
 
-In the assignment form, the body of the function must be a single expression, although it can
-be a compound expression (see [Compound Expressions](@ref man-compound-expressions)). Short, simple function definitions
-are common in Julia. The short function syntax is accordingly quite idiomatic, considerably reducing
-both typing and visual noise.
+尽管函数可以是复合表达式 (见 [Compound Expressions](@ref man-compound-expressions))，但在赋值形式下，函数体必须是一个一行的表达式。简短的函数定义在Julia中是很常见的。非常惯用的短函数语法大大减少了打字和视觉方面的干扰。
 
-A function is called using the traditional parenthesis syntax:
+使用传统的括号语法调用函数：
 
 ```jldoctest fofxy
 julia> f(2,3)
 5
 ```
 
-没有括号的表达式`f`指的是函数对象，可以像任何值一样传递：
+没有括号时，表达式`f`指的是函数对象，可以像任何值一样被传递：
 
 ```jldoctest fofxy
 julia> g = f;
@@ -47,14 +44,9 @@ julia> ∑(2, 3)
 5
 ```
 
-## Argument Passing Behavior
+## 参数传递行为
 
-Julia function arguments follow a convention sometimes called "pass-by-sharing", which means that
-values are not copied when they are passed to functions. Function arguments themselves act as
-new variable *bindings* (new locations that can refer to values), but the values they refer to
-are identical to the passed values. Modifications to mutable values (such as `Array`s) made within
-a function will be visible to the caller. This is the same behavior found in Scheme, most Lisps,
-Python, Ruby and Perl, among other dynamic languages.
+Julia函数参数遵循有时称为“pass-by-sharing”的约定，这意味着变量在被传递给函数时其值并不会被复制。函数参数本身充当新的变量绑定（指向变量值的新地址），它们所指向的值与所传递变量的值完全相同。调用者可以看到对函数内可变值（如数组）的修改。这与Scheme，大多数Lisps，Python，Ruby和Perl以及其他动态语言中的行为相同。
 
 ## `return`关键词
 
@@ -86,11 +78,9 @@ julia> g(2,3)
 6
 ```
 
-Of course, in a purely linear function body like `g`, the usage of `return` is pointless since
-the expression `x + y` is never evaluated and we could simply make `x * y` the last expression
-in the function and omit the `return`. In conjunction with other control flow, however, `return`
-is of real use. Here, for example, is a function that computes the hypotenuse length of a right
-triangle with sides of length `x` and `y`, avoiding overflow:
+当然，在一个单纯的线性执行的函数体内，例如 `g`，使用`return` 是没有意义的，因为表达式`x + y`永远不会被执行到，我们可以简单地把`x * y` 写为最后一个表达式从而省略掉`return`。
+然而在使用其他控制流程的函数体内，`return`却是有用的。
+例如，一个计算两条边长分别为`x`和`y`的三角形的斜边长度时可以避免overflow：
 
 ```jldoctest
 julia> function hypot(x,y)
@@ -125,15 +115,13 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-这个函数将忽略`x` 和`y`的类型，返回`Int8`类型的值。有关返回类型的更多信息，请参见 [Type Declarations](@ref)。
+这个函数将忽略`x` 和`y`的类型，返回`Int8`类型的值。有关返回类型的更多信息，请参见 [类型声明](@ref)。
 
-## Operators Are Functions
+## 操作符也是一类函数
 
-In Julia, most operators are just functions with support for special syntax. (The exceptions are
-operators with special evaluation semantics like `&&` and `||`. These operators cannot be functions
-since [Short-Circuit Evaluation](@ref) requires that their operands are not evaluated before evaluation
-of the operator.) Accordingly, you can also apply them using parenthesized argument lists, just
-as you would any other function:
+在 Julia,大多数操作符只不过是支持一些特殊语法的函数。( `&&` 和`||`等具有特殊评估语义的操作符例外）
+这些操作符不能是函数，因为[Short-Circuit Evaluation](@ref)要求在评估整个运算符之前不评估它们的操作数。
+因此，您也可以使用带括号的参数列表来应用它们，就像你任何其他功能一样：
 
 ```jldoctest
 julia> 1 + 2 + 3
@@ -143,9 +131,9 @@ julia> +(1,2,3)
 6
 ```
 
-The infix form is exactly equivalent to the function application form -- in fact the former is
-parsed to produce the function call internally. This also means that you can assign and pass around
-operators such as [`+`](@ref) and [`*`](@ref) just like you would with other function values:
+中缀形式和函数形式的使用完全等价。
+事实上，前一种形式被内在地解释为函数调用。
+这意味着你可以对操作符，例如 [`+`](@ref) and [`*`](@ref) 进行赋值和传递，就像对其它函数值一样。
 
 ```jldoctest
 julia> f = +;
@@ -154,11 +142,11 @@ julia> f(1,2,3)
 6
 ```
 
-Under the name `f`, the function does not support infix notation, however.
+然而，函数以`f`命名时并不支持中缀形式。
 
-## Operators With Special Names
+## 具有特殊名称的操作符
 
-A few special expressions correspond to calls to functions with non-obvious names. These are:
+有一些特殊的表达式调用的函数调用没有显示的函数名称，它们是：
 
 | 表达式        | 调用                   |
 |:----------------- |:----------------------- |
@@ -223,13 +211,11 @@ A zero-argument anonymous function is written as `()->3`. The idea of a function
 may seem strange, but is useful for "delaying" a computation. In this usage, a block of code is
 wrapped in a zero-argument function, which is later invoked by calling it as `f`.
 
-## 元组（Tuples）
+## 元组
 
-Julia has a built-in data structure called a *tuple* that is closely related to function
-arguments and return values.
-A tuple is a fixed-length container that can hold any values, but cannot be modified
-(it is *immutable*).
-Tuples are constructed with commas and parentheses, and can be accessed via indexing:
+Julia 有一个和函数参数与返回值密切相关的内置数据结构叫做元组（*tuple*）。
+一个元组是一个固定长度的容器，可以容纳任何值，但不可以被修改(是*immutable*的)。
+元组通过圆括号和逗号来构造，其内容可以通过索引来访问：
 
 ```jldoctest
 julia> (1, 1+1)

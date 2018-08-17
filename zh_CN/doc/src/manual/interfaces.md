@@ -1,13 +1,13 @@
-# Interfaces
+# 接口
 
 A lot of the power and extensibility in Julia comes from a collection of informal interfaces.
  By extending a few specific methods to work for a custom type, objects of that type not only
 receive those functionalities, but they are also able to be used in other methods that are written
 to generically build upon those behaviors.
 
-## [Iteration](@id man-interface-iteration)
+## [循环](@id man-interface-iteration)
 
-| Required methods               |                        | Brief description                                                                     |
+| 必须方法               |                        | Brief description                                                                     |
 |:------------------------------ |:---------------------- |:------------------------------------------------------------------------------------- |
 | `iterate(iter)`                |                        | Returns either a tuple of the first item and initial state or [`nothing`](@ref) if empty        |
 | `iterate(iter, state)`         |                        | Returns either a tuple of the next item and next state or `nothing` if no items remain  |

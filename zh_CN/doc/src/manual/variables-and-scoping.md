@@ -1,4 +1,4 @@
-# [Scope of Variables](@id scope-of-variables)
+# [Scope变量](@id scope-of-variables)
 
 The *scope* of a variable is the region of code within which a variable is visible. Variable scoping
 helps avoid variable naming conflicts. The concept is intuitive: two functions can both have arguments
@@ -15,9 +15,9 @@ constructs introducing scope blocks are:
 
 # [](@id man-scope-table)
 
-  * Scope blocks that may nest only in other global scope blocks:
+  * 只能在其他全局作用域块中嵌套的作用域块：
 
-    - global scope
+    - 全局作用域
 
       + module, baremodule
 

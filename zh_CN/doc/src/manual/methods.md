@@ -41,7 +41,7 @@ for structuring and organizing programs.
     it can be omitted altogether, writing just `meth(arg1,arg2)`, with `this` implied as the receiving
     object.
 
-## Defining Methods
+## 定义方法
 
 Until now, we have, in our examples, defined only functions with a single method having unconstrained
 argument types. Such functions behave just like they would in traditional dynamically typed languages.

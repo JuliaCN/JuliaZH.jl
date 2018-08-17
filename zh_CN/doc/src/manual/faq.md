@@ -88,13 +88,13 @@ array (bound to `x` at the call site, and bound to `A` within the function). Not
 the function call, `x` is still bound to the same array, but the content of that array changed:
 the variables `A` and `x` were distinct bindings referring to the same mutable `Array` object.
 
-### 是否可以在函数内部使用 `using` 或 `import` ？
+### 函数内部能否使用 `using` 或 `import`？
 
 不可以，在函数内部含有 `using` 或 `import` 语句是不被允许的。
 如果你希望导入一个模块，但只在特定的一个或一组函数中使用它的符号，
 有以下两种方式：
 
-1. 使用 `import` ：
+1. 使用 `import`：
 
    ```julia
    import Foo
@@ -103,10 +103,10 @@ the variables `A` and `x` were distinct bindings referring to the same mutable `
    end
    ```
 
-   This loads the module `Foo` and defines a variable `Foo` that refers to the module, but does not
+   这会加载 `Foo` 模块，同时定义一个变量 `Foo` 引用该模块，但并不会将其他任何符号从该模块中导入当前的名字空间。`Foo` 等符号可以由限定的名称 `Foo.bar` 等引用。
    import any of the other symbols from the module into the current namespace.  You refer to the
    `Foo` symbols by their qualified names `Foo.bar` etc.
-2. Wrap your function in a module:
+2. 将函数封装到模块中：
 
    ```julia
    module Bar
@@ -119,9 +119,9 @@ the variables `A` and `x` were distinct bindings referring to the same mutable `
    using Bar
    ```
 
-   This imports all the symbols from `Foo`, but only inside the module `Bar`.
+   这会从 `Foo` 中导入所有符号，但仅限于 `Bar` 模块内。
 
-### What does the `...` operator do?
+### 运算符 `...` 有何作用？
 
 ### The two uses of the `...` operator: slurping and splatting
 
@@ -231,11 +231,9 @@ julia> threearr()
 
 ## Types, type declarations, and constructors
 
-### [What does "type-stable" mean?](@id man-type-stability)
+### [何谓“类型稳定”？](@id man-type-stability)
 
-It means that the type of the output is predictable from the types of the inputs.  In particular,
-it means that the type of the output cannot vary depending on the *values* of the inputs. The
-following code is *not* type-stable:
+这意味着输出的类型可以由输入的类型预测出来。特别地，这意味着输出的类型不会因输入的**值**的不同而变化。以下代码**不是**类型稳定的：
 
 ```jldoctest
 julia> function unstable(flag::Bool)
@@ -248,14 +246,12 @@ julia> function unstable(flag::Bool)
 unstable (generic function with 1 method)
 ```
 
-It returns either an `Int` or a [`Float64`](@ref) depending on the value of its argument.
-Since Julia can't predict the return type of this function at compile-time, any computation
-that uses it will have to guard against both types possibly occurring, making generation of
-fast machine code difficult.
+根据参数的不同，该函数可能返回 `Int` 或 [`Float64`](@ref)。
+由于 Julia 无法在编译期预测该函数的返回值类型，任何使用该函数的计算都需要考虑这两种可能的返回类型，这样难以生成高效的机器码。
 
-### [Why does Julia give a `DomainError` for certain seemingly-sensible operations?](@id faq-domain-errors)
+### [为何 Julia 对某个看似合理的操作返回 `DomainError`？](@id faq-domain-errors)
 
-Certain operations make mathematical sense but result in errors:
+某些运算在数学上有意义，但会产生错误：
 
 ```jldoctest
 julia> sqrt(-2.0)
@@ -265,12 +261,7 @@ Stacktrace:
 [...]
 ```
 
-This behavior is an inconvenient consequence of the requirement for type-stability.  In the case
-of [`sqrt`](@ref), most users want `sqrt(2.0)` to give a real number, and would be unhappy if
-it produced the complex number `1.4142135623730951 + 0.0im`.  One could write the [`sqrt`](@ref)
-function to switch to a complex-valued output only when passed a negative number (which is what
-[`sqrt`](@ref) does in some other languages), but then the result would not be [type-stable](@ref man-type-stability)
-and the [`sqrt`](@ref) function would have poor performance.
+这一行为是为了保证类型稳定而带来的不便。对于 [`sqrt`](@ref)，许多用户会希望 `sqrt(2.0)` 产生一个实数，如果得到了复数 `1.4142135623730951 + 0.0im` 则会不高兴。也可以编写 [`sqrt`](@ref) 函数，只有当传递一个负数时才切换到复值输出，但结果将不是类型稳定的，而且 [`sqrt`](@ref) 函数的性能会很差。
 
 In these and other cases, you can get the result you want by choosing an *input type* that conveys
 your willingness to accept an *output type* in which the result can be represented:
@@ -641,7 +632,7 @@ When a file is run as the main script using `julia file.jl` one might want to ac
 functionality like command line argument handling. A way to determine that a file is run in
 this fashion is to check if `abspath(PROGRAM_FILE) == @__FILE__` is `true`.
 
-## Memory
+## 内存
 
 ### Why does `x += y` allocate memory when `x` and `y` are arrays?
 
@@ -778,19 +769,19 @@ but the analogous operation with a zero-dimensional array
 
 ## Julia 版本发布
 
-### 我应该用Julia的正式版（release version），测试版（beta version）还是每夜版（nightly version）？
+### 应该使用 Julia 的正式版（release version），测试版（beta version）还是每夜更新版（nightly version）？
 
 如果您正在寻找稳定的代码库，您可能更喜欢Julia的正式版。 通常每6个月发布一次，为您提供编写代码的稳定平台。
 
 如果您不介意稍微落后于最新的错误修正和更改，觉得稍微更快的修改更具吸引力，您可能更喜欢Julia的测试版。 此外，这些二进制文件在发布之前会进行测试，以确保它们完全正常运行。
 
-如果您想利用该语言的最新更新，并且不介意今天可用的版本偶尔出现实际上并没有正常工作，您可能更喜欢Julia的每夜版。
+如果您想利用该语言的最新更新，并且不介意今天可用的版本偶尔出现实际上并没有正常工作，您可能更喜欢 Julia 的每夜更新版。
 
 最后，您也可以考虑自己从源代码编译Julia。 此选项主要适用于那些适应命令行或对学习感兴趣的人。 如果您是这样，您可能也有兴趣阅读我们的[贡献指南](https://github.com/JuliaLang/julia/blob/master/CONTRIBUTING.md)。
 
 可以在[https://julialang.org/downloads/](https://julialang.org/downloads/)的下载页面上找到每种下载类型的链接。 请注意，并非所有版本的Julia都适用于所有平台。
 
-### When are deprecated functions removed?
+### 已弃用的功能会在何时移除？
 
 Deprecated functions are removed after the subsequent release. For example, functions marked as
 deprecated in the 0.1 release will not be available starting with the 0.2 release.

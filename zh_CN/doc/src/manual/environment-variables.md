@@ -14,7 +14,7 @@ The environment variables that Julia uses generally start with `JULIA`. If
 output will list defined environment variables relevant for Julia, including
 those for which `JULIA` appears in the name.
 
-## File locations
+## 文件位置
 
 ### `JULIA_BINDIR`
 

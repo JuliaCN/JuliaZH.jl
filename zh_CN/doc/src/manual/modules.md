@@ -6,8 +6,7 @@ definitions (aka global variables) without worrying about name conflicts when yo
 together with somebody else's. Within a module, you can control which names from other modules
 are visible (via importing), and specify which of your names are intended to be public (via exporting).
 
-The following example demonstrates the major features of modules. It is not meant to be run, but
-is shown for illustrative purposes:
+下面的示例演示了模块的主要功能。它不需要运行，只是为了说明目的：
 
 ```julia
 module MyModule
@@ -30,8 +29,7 @@ show(io::IO, a::MyType) = print(io, "MyType $(a.x)")
 end
 ```
 
-Note that the style is not to indent the body of the module, since that would typically lead to
-whole files being indented.
+注意，样式不是缩进模块主体，因为这通常会导致整个文件缩进。
 
 This module defines a type `MyType`, and two functions. Function `foo` and type `MyType` are exported,
 and so will be available for importing into other modules.  Function `bar` is private to `MyModule`.
