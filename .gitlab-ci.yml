@@ -3,16 +3,11 @@ image: julia:1.0.0-stretch
 before_script:
   - julia --version
 
-test:
-  script:
-    - cp -r zh_CN/* ./
-    - julia --project --check-bounds=yes -e 'using Pkg; Pkg.add("Documenter"); include("doc/make.jl")'
-
 pages:
   stage: deploy
   script:
     - cp -r zh_CN/* ./
-    - julia --project --check-bounds=yes --color=yes -e 'using Pkg; Pkg.add("Documenter"); include("doc/make.jl")'
+    - DOCUMENTER_DEBUG=true julia --project --check-bounds=yes --color=yes -e 'using Pkg; Pkg.add("Documenter"); include("doc/make.jl")'
     - mv doc/build public
   artifacts:
     paths:
