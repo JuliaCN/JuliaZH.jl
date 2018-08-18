@@ -85,8 +85,8 @@ const PAGES = [
         "base/stacktraces.md",
         "base/simd-types.md",
     ],
-    # "Standard Library" =>
-    #     [stdlib.targetfile for stdlib in STDLIB_DOCS],
+    "Standard Library" =>
+        [stdlib.targetfile for stdlib in STDLIB_DOCS],
     "Developer Documentation" => [
         "devdocs/reflection.md",
         "Documentation of Julia's Internals" => [
@@ -129,7 +129,7 @@ end
 
 # make documents
 makedocs(
-    modules   = [Base, Core],
+    modules   = [Base, Core, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = false,
     doctest   = false,
     linkcheck = "linkcheck=true" in ARGS,

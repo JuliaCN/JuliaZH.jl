@@ -1,0 +1,19 @@
+image: julia:1.0.0-stretch
+
+before_script:
+  - julia --version
+  - echo $TRAVIS_BRANCH
+  - echo $TRAVIS_PULL_REQUEST
+  - echo $TRAVIS_REPO_SLUG
+  - echo $TRAVIS_OS_NAME
+  - echo $TRAVIS_JULIA_VERSION
+
+pages:
+  stage: deploy
+  script:
+    - cp -r zh_CN/* ./
+    - TRAVIS_TAG=CI_COMMIT_TAG DOCUMENTER_DEBUG=true julia --project --check-bounds=yes --color=yes -e 'using Pkg; Pkg.add("Documenter"); include("doc/make.jl")'
+    - mv doc/build public
+  artifacts:
+    paths:
+      - public
