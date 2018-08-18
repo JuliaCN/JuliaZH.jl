@@ -1,0 +1,17 @@
+image: julia:1.0.0-stretch
+
+before_script:
+  - julia --version
+
+test:
+  script:
+    - julia --project --check-bounds=yes -e 'using Pkg; Pkg.add("Documenter")'
+
+pages:
+  stage: deploy
+  script:
+    - julia --project --check-bounds=yes --color=yes -e 'include("doc/make.jl")'
+    - mv doc/build public
+  artifacts:
+    paths:
+      - public
