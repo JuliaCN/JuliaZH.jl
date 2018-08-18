@@ -5,12 +5,12 @@ before_script:
 
 test:
   script:
-    - julia --project --check-bounds=yes -e 'using Pkg; Pkg.add("Documenter")'
+    - julia --project --check-bounds=yes -e 'using Pkg; Pkg.add("Documenter"); include("doc/make.jl")'
 
 pages:
   stage: deploy
   script:
-    - julia --project --check-bounds=yes --color=yes -e 'include("doc/make.jl")'
+    - julia --project --check-bounds=yes --color=yes -e 'using Pkg; Pkg.add("Documenter"); include("doc/make.jl")'
     - mv doc/build public
   artifacts:
     paths:
