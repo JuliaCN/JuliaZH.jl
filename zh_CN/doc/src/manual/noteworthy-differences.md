@@ -195,7 +195,7 @@ For users coming to Julia from R, these are some noteworthy differences:
 ## 与 Python 的显著差异
 
   * Julia requires `end` to end a block. Unlike Python, Julia has no `pass` keyword.
-  * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
+  * In Julia, indexing of arrays, strings, etc. is 1-based not 0-based.
   * Julia's slice indexing includes the last element, unlike in Python. `a[2:3]` in Julia is `a[1:3]`
     in Python.
   * Julia does not support negative indices. In particular, the last element of a list or array is
@@ -217,7 +217,7 @@ For users coming to Julia from R, these are some noteworthy differences:
     the function `f(x=rand()) = x` returns a new random number every time it is invoked without argument.
     On the other hand, the function `g(x=[1,2]) = push!(x,3)` returns `[1,2,3]` every time it is called
     as `g()`.
-  * In Julia `%` is the remainder operator, whereas in Python it is the modulus.
+  * 与 C/C++ 的显著差异
 
 ## 与 C/C++ 的显著差异
 
