@@ -1,23 +1,19 @@
 # JuliaZH.jl
 
 [![Build Status](https://travis-ci.org/JuliaCN/JuliaZH.jl.svg?branch=master)](https://travis-ci.org/JuliaCN/JuliaZH.jl)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliacn.github.io/JuliaZH.jl/stable)
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliacn.github.io/JuliaZH.jl/latest)
 
-Julia中文文档，中文文档是一个标准的Julia包，可以使用包的安装方式来安装，
-如果你只想查看网页版本请访问[Julia 中文文档页面](https://juliacn.github.io/JuliaZH.jl)。
+|    | 国内镜像 | Stable | Latest | Preview |
+|:---:|:---:|:---:|:---:|
+| 文档 | http://docs.juliacn.com | [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliacn.github.io/JuliaZH.jl/stable) | [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliacn.github.io/JuliaZH.jl/latest) | [Gitlab Pages](https://juliacn.gitlab.io/JuliaZH.jl) |
 
-## 使用方法
-
-暂未注册在源中，仅支持0.7版本，请通过以下方式获取最新的master分支
-
-Julia 0.7+ 请使用自带的包管理器安装
+## 安装
 
 ```
-pkg> dev https://github.com/JuliaCN/JuliaZH.jl.git#master
+pkg> add https://github.com/JuliaCN/JuliaZH.jl.git
 ```
 
-在你的代码中使用这个包，就能够获得中文版本的文档：
+## 使用
+在代码中使用这个包，就能够获得中文版本的文档：
 
 ```julia
 julia> using JuliaZH
@@ -42,26 +38,8 @@ search: JuliaZH
   退出REPL之后，重新进入将恢复英文模式。
 ```
 
-<!--
-Julia 0.7+ 请使用自带的包管理器安装
+## 贡献
+我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
 
-```julia
-pkg> add JuliaZH
-```
-
-Julia 0.6 请在REPL中使用如下命令
-
-```julia
-julia> Pkg.add("JuliaZH")
-``` -->
-
-## 贡献文档
-
-请阅读[JuliaZH的开发文档](https://juliacn.github.io/JuliaZH.jl/latest/juliacn/style-guide/)并给我们提交PR或者通过issue讨论。
-
-所有Julia中文文档的贡献者都可以在[贡献者列表](https://github.com/JuliaCN/JuliaZH.jl/graphs/contributors)中找到。此外也感谢曾经参与
-0.3版本文档的[贡献者们](https://github.com/JuliaCN/julia_zh_cn/graphs/contributors)。
-
-## 开源协议
-
-MIT协议
+## 致谢
+所有贡献者都可以在[Transifex上的JuliaCN组织](https://www.transifex.com/juliacn/public/)以及[贡献者列表](https://github.com/JuliaCN/JuliaZH.jl/graphs/contributors)中找到，此外也感谢曾经参与 0.3 版本文档的[贡献者们](https://github.com/JuliaCN/julia_zh_cn/graphs/contributors)。

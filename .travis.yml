@@ -26,9 +26,10 @@ script:
  # build docs
  - cp -r zh_CN/* ./
  - julia -e 'include("doc/make.jl")'
+ - julia --project --check-bounds=yes -e 'using Pkg; Pkg.activate(pwd()); Pkg.instantiate(); Pkg.build(); Pkg.test(; coverage=true)'
 
 after_success:
-  # # push coverage results to Coveralls
-  # - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  # # push coverage results to Codecov
-  # - julia -e 'cd(Pkg.dir("JuliaZH")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  # push coverage results to Coveralls
+  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  # push coverage results to Codecov
+  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
