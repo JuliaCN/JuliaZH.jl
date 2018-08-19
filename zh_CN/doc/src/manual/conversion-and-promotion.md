@@ -34,7 +34,7 @@ the resulting values, now of the same type. User-defined types can easily partic
 promotion system by defining methods for conversion to and from other types, and providing a handful
 of promotion rules defining what types they should promote to when mixed with other types.
 
-## Conversion
+## 类型转换
 
 The standard way to obtain a value of a certain type `T` is to call the type's constructor, `T(x)`.
 However, there are cases where it's convenient to convert a value from one type to another
@@ -44,9 +44,7 @@ One example is assigning a value into an array: if `A` is a `Vector{Float64}`, t
 storing the result in the array.
 This is done via the `convert` function.
 
-The `convert` function generally takes two arguments: the first is a type object and the second is
-a value to convert to that type. The returned value is the value converted to an instance of given type.
-The simplest way to understand this function is to see it in action:
+`convert` 函数通常接受两个参数：第一个是类型对象，第二个是需要转换为该类型的值。返回的是已转换后的值。理解这个函数最简单的办法就是尝试：
 
 ```jldoctest
 julia> x = 12
@@ -78,8 +76,7 @@ julia> convert(Array{Float64}, a)
  4.0  5.0  6.0
 ```
 
-Conversion isn't always possible, in which case a no method error is thrown indicating that `convert`
-doesn't know how to perform the requested conversion:
+类型转换并不总是可行的，有时 `convert` 函数并不知道该如何执行所请求的类型转换就会抛出 no method error 错误。例如下例：
 
 ```jldoctest
 julia> convert(AbstractFloat, "foo")
@@ -93,9 +90,9 @@ not: even though some strings can be parsed as numbers, most strings are not val
 of numbers, and only a very limited subset of them are. Therefore in Julia the dedicated `parse`
 function must be used to perform this operation, making it more explicit.
 
-### When is `convert` called?
+### 什么时候使用 `convert` 函数?
 
-The following language constructs call `convert`:
+构造以下语言结构时需要调用 `convert` 函数：
 
   * Assigning to an array converts to the array's element type.
   * Assigning to a field of an object converts to the declared type of the field.

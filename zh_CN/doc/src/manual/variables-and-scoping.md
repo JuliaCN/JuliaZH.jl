@@ -1,4 +1,4 @@
-# [Scope变量](@id scope-of-variables)
+# [变量作用域](@id scope-of-variables)
 
 The *scope* of a variable is the region of code within which a variable is visible. Variable scoping
 helps avoid variable naming conflicts. The concept is intuitive: two functions can both have arguments

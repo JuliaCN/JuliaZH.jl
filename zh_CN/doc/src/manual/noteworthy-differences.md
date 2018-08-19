@@ -1,12 +1,12 @@
 # 与其他语言的显著差异
 
-## 与MATLAB的显著区别
+## 与 MATLAB 的显著差异
 
 Although MATLAB users may find Julia's syntax familiar, Julia is not a MATLAB clone. There are
 major syntactic and functional differences. The following are some noteworthy differences that
 may trip up Julia users accustomed to MATLAB:
 
-  * Julia数组使用方括号`A[i,j]`进行索引。
+  * Julia 数组使用方括号 `A[i,j]` 进行索引。
   * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。
     as well.
   * Julia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
@@ -81,7 +81,7 @@ may trip up Julia users accustomed to MATLAB:
   * The analogue of extracting (or "dereferencing") all elements of a cell array, e.g. in `vertcat(A{:})`
     in MATLAB, is written using the splat operator in Julia, e.g. as `vcat(A...)`.
 
-## Noteworthy differences from R
+## 与 R 的显著差异
 
 One of Julia's goals is to provide an effective language for data analysis and statistical programming.
 For users coming to Julia from R, these are some noteworthy differences:
@@ -143,7 +143,6 @@ For users coming to Julia from R, these are some noteworthy differences:
     for Julia is found in [packages](https://pkg.julialang.org/) under the [JuliaStats organization](https://github.com/JuliaStats).
     例如：
 
-
       * Functions pertaining to probability distributions are provided by the [Distributions package](https://github.com/JuliaStats/Distributions.jl).
       * The [DataFrames package](https://github.com/JuliaStats/DataFrames.jl) provides data frames.
       * Generalized linear models are provided by the [GLM package](https://github.com/JuliaStats/GLM.jl).
@@ -195,10 +194,10 @@ For users coming to Julia from R, these are some noteworthy differences:
     `filter(z->z>3, x)` and `filter!(z->z>3, x)` as alternatives to the corresponding transliterations
     `x[x.>3]` and `x = x[x.>3]`. Using [`filter!`](@ref) reduces the use of temporary arrays.
 
-## Noteworthy differences from Python
+## 与 Python 的显著差异
 
   * Julia requires `end` to end a block. Unlike Python, Julia has no `pass` keyword.
-  * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
+  * In Julia, indexing of arrays, strings, etc. is 1-based not 0-based.
   * Julia's slice indexing includes the last element, unlike in Python. `a[2:3]` in Julia is `a[1:3]`
     in Python.
   * Julia does not support negative indices. In particular, the last element of a list or array is
@@ -220,27 +219,25 @@ For users coming to Julia from R, these are some noteworthy differences:
     the function `f(x=rand()) = x` returns a new random number every time it is invoked without argument.
     On the other hand, the function `g(x=[1,2]) = push!(x,3)` returns `[1,2,3]` every time it is called
     as `g()`.
-  * In Julia `%` is the remainder operator, whereas in Python it is the modulus.
+  * 与 C/C++ 的显著差异
 
-## Noteworthy differences from C/C++
+## Julia 的数组由方括号索引，方括号中可以包含不止一个维度 `A[i,j]`。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。
 
-  * Julia 的数组由方括号索引，方括号中可以包含不止一个维度 `A[i,j]`。
-    这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。
-    the Julia documentation for the syntax for array construction (it has changed between versions).
-  * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
-  * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。像 `+=` 这样的更新运算符不会以 in-place 的方式执行，而是相当于 `A = A + B`，将左侧绑定到右侧表达式的计算结果上。
-    as well. Updating operators like `+=` do not operate in-place, they are equivalent to `A = A + B`
-    which rebinds the left-hand side to the result of the right-hand side expression.
-  * Julia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 [性能建议](@ref man-performance-tips)）。
+  * the Julia documentation for the syntax for array construction (it has changed between versions).
+    在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
+    Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。像 `+=` 这样的更新运算符不会以 in-place 的方式执行，而是相当于 `A = A + B`，将左侧绑定到右侧表达式的计算结果上。
+  * as well. Updating operators like `+=` do not operate in-place, they are equivalent to `A = A + B`
+  * which rebinds the left-hand side to the result of the right-hand side expression.
+    Julia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 [性能建议](@ref man-performance-tips)）。
     default. To get optimal performance when looping over arrays, the order of the loops should be
-    reversed in Julia relative to C/C++ (see relevant section of [Performance Tips](@ref man-performance-tips)).
-  * Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
+  * reversed in Julia relative to C/C++ (see relevant section of [Performance Tips](@ref man-performance-tips)).
+    Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
     will be visible in the caller.
   * 在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。
     whitespace from a Julia program.
   * 在 Julia 中，没有小数点的数值字面量（如 `42`）生成有符号整数，类型为 `Int`，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 `Int64`（如果 `Int` 是 `Int32`）、`Int128`，或者任意精度的 `BigInt` 类型。不存在诸如 `L`, `LL`, `U`, `UL`, `ULL` 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 `0x` 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同，
     `Int`, but literals too large to fit in the machine word size will automatically be promoted to
-    a larger size type, such as `Int64` (if `Int` is `Int32`), `Int128`, or the arbitrarily large
+  * a larger size type, such as `Int64` (if `Int` is `Int32`), `Int128`, or the arbitrarily large
     `BigInt` type. There are no numeric literal suffixes, such as `L`, `LL`, `U`, `UL`, `ULL` to indicate
     unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals
     (which start with `0x` like C/C++), are unsigned. Hexadecimal literals also, unlike C/C++/Java
@@ -249,6 +246,8 @@ For users coming to Julia from R, these are some noteworthy differences:
     [`UInt16`](@ref), then literals with 5 to 8 hex digits have type `UInt32`, 9 to 16 hex digits type
     `UInt64` and 17 to 32 hex digits type `UInt128`. This needs to be taken into account when defining
     64 位的 `Float64`
+    `UInt64` and 17 to 32 hex digits type `UInt128`. This needs to be taken into account when defining
+    hexadecimal masks, for example `~0xf == 0xf0` is very different from `~0x000f == 0xfff0`. 64 bit `Float64`
     and 32 bit [`Float32`](@ref) bit literals are expressed as `1.0` and `1.0f0` respectively. Floating point
     literals are rounded (and not promoted to the `BigFloat` type) if they can not be exactly represented.
      Floating point literals are closer in behavior to C/C++. Octal (prefixed with `0o`) and binary

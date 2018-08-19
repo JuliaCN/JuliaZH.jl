@@ -1,4 +1,4 @@
-# 【字符串】（@id lib-strings）
+# [字符串](@id lib-strings)
 
 ```@docs
 Core.AbstractChar
