@@ -1,4 +1,22 @@
+# tweaked from https://github.com/JuliaLang/julia/blob/master/doc/make.jl
+# Install dependencies needed to build the documentation.
+empty!(LOAD_PATH)
+push!(LOAD_PATH, @__DIR__, "@stdlib")
+empty!(DEPOT_PATH)
+pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
+using Pkg
+Pkg.instantiate()
+
 using Documenter
+
+# Include the `build_sysimg` file.
+
+baremodule GenStdLib end
+@isdefined(build_sysimg) || @eval module BuildSysImg
+    include(joinpath(@__DIR__, "..", "contrib", "build_sysimg.jl"))
+end
+
+# Documenter Setup.
 
 symlink_q(tgt, link) = isfile(link) || symlink(tgt, link)
 cp_q(src, dest) = isfile(dest) || cp(src, dest)
@@ -85,8 +103,8 @@ const PAGES = [
         "base/stacktraces.md",
         "base/simd-types.md",
     ],
-    # "Standard Library" =>
-    #     [stdlib.targetfile for stdlib in STDLIB_DOCS],
+    "Standard Library" =>
+        [stdlib.targetfile for stdlib in STDLIB_DOCS],
     "Developer Documentation" => [
         "devdocs/reflection.md",
         "Documentation of Julia's Internals" => [
@@ -127,14 +145,14 @@ for stdlib in STDLIB_DOCS
     @eval using $(stdlib.stdlib)
 end
 
-# make documents
+const render_pdf = "pdf" in ARGS
 makedocs(
-    modules   = [Base, Core],
-    clean     = false,
-    doctest   = false,
+    modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
+    clean     = true,
+    doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
     linkcheck = "linkcheck=true" in ARGS,
     checkdocs = :none,
-    format    = "pdf" in ARGS ? :latex : :html,
+    format    = render_pdf ? :latex : :html,
     sitename  = "Julia中文文档",
     authors   = "Julia中文社区",
     analytics = "UA-89508993-1",
