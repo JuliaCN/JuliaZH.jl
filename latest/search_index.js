@@ -9,11 +9,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "#Julia-0.7-中文文档-1",
+    "location": "#Julia-1.0-中文文档-1",
     "page": "主页",
-    "title": "Julia 0.7 中文文档",
+    "title": "Julia 1.0 中文文档",
     "category": "section",
-    "text": "<!-- Welcome to the documentation for Julia 0.7. -->欢迎来到Julia 0.7中文文档。<!-- Please read the [release notes](NEWS.md) to see what has changed since the last release. -->\n\n<!-- 请阅读[发行通知](NEWS.md)来查看最新的更改。 --><!-- ### [Introduction](@id man-introduction) -->"
+    "text": "欢迎来到 Julia 1.0 中文文档。note: 关于中文文档\nJulia 语言相关的本地化工作是一个由社区驱动的开源项目JuliaZH.jl，旨在方便 Julia 的中文用户。我们目前使用 Transifex 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到社区论坛文档区反馈。若有意参与翻译工作，请参考翻译指南。"
 },
 
 {
@@ -21,7 +21,7 @@ var documenterSearchIndex = {"docs": [
     "page": "主页",
     "title": "简介",
     "category": "section",
-    "text": "<!-- Scientific computing has traditionally required the highest performance, yet domain experts have\nlargely moved to slower dynamic languages for daily work. We believe there are many good reasons\nto prefer dynamic languages for these applications, and we do not expect their use to diminish.\nFortunately, modern language design and compiler techniques make it possible to mostly eliminate\nthe performance trade-off and provide a single environment productive enough for prototyping and\nefficient enough for deploying performance-intensive applications. The Julia programming language\nfills this role: it is a flexible dynamic language, appropriate for scientific and numerical computing,\nwith performance comparable to traditional statically-typed languages. -->科学计算对性能一直有着最高的需求， 但现在这个领域的专家开始大量使用比较慢的动态语言来完成日常工作。 我们相信有很多使用动态语言的理由， 所以我们不会舍弃这样的特性。幸运的是，现代语言设计和编译器技术使得为原型设计提供单一的高效开发环境， 并且配置高性能的应用成为可能。Julia 语言在这其中扮演了这样一个角色：作为灵活的动态语言，适合科学和数值计算，性能可与传统静态类型语言媲美。<!-- Because Julia\'s compiler is different from the interpreters used for languages like Python or\nR, you may find that Julia\'s performance is unintuitive at first. If you find that something is\nslow, we highly recommend reading through the [Performance Tips](@ref man-performance-tips) section before trying anything\nelse. Once you understand how Julia works, it\'s easy to write code that\'s nearly as fast as C. -->由于 Julia 的编译器和其它语言比如 Python 或 R 有所不同，一开始您或许会觉得 Julia 中什么样的代码运行效率高，什么样的代码运行效率低似乎并不很直观。 如果您发现 Julia 变慢了，我们非常建议您在尝试其它功能前读一下提高性能的窍门 。只要您理解 Julia 的工作方式， 就会很容易地写出运行效率甚至可以和 C 相媲美的代码。<!-- Julia features optional typing, multiple dispatch, and good performance, achieved using type inference\nand [just-in-time (JIT) compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation),\nimplemented using [LLVM](https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine). It is multi-paradigm,\ncombining features of imperative, functional, and object-oriented programming. Julia provides\nease and expressiveness for high-level numerical computing, in the same way as languages such\nas R, MATLAB, and Python, but also supports general programming. To achieve this, Julia builds\nupon the lineage of mathematical programming languages, but also borrows much from popular dynamic\nlanguages, including [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)), [Perl](https://en.wikipedia.org/wiki/Perl_(programming_language)),\n[Python](https://en.wikipedia.org/wiki/Python_(programming_language)), [Lua](https://en.wikipedia.org/wiki/Lua_(programming_language)),\nand [Ruby](https://en.wikipedia.org/wiki/Ruby_(programming_language)). -->Julia 具有通过类型推倒和即时编译（JIT）在LLVM上实现的可选类型标注，多重派发，良好的性能。它是一个支持过程式，函数式 面向对象编程的多范式语言。它提供了简易和简洁的高等数值计算，它类似于 R 、 MATLAB 和 Python ，支持一般用途的编程。为了达到这个目的 Julia 在数学编程语言的基础上，参考了不少流行动态语言，例如Lisp, Perl, Python, Lua, 和 Ruby。<!-- The most significant departures of Julia from typical dynamic languages are:\n\n  * The core language imposes very little; Julia Base and the standard library is written in Julia itself, including\n    primitive operations like integer arithmetic\n  * A rich language of types for constructing and describing objects, that can also optionally be\n    used to make type declarations\n  * The ability to define function behavior across many combinations of argument types via [multiple dispatch](https://en.wikipedia.org/wiki/Multiple_dispatch)\n  * Automatic generation of efficient, specialized code for different argument types\n  * Good performance, approaching that of statically-compiled languages like C -->Julia 与传统动态语言最大的区别是：核心语言很小；标准库是用 Julia 本身写的，如整数运算在内的基础运算\n完善的类型，方便构造对象和做类型声明\n基于多重派发通过很多不同的参数类型来定义函数行为的能力\n为不同类型自动生成高效，专用的代码\n接近C语言的，良好的性能<!-- Although one sometimes speaks of dynamic languages as being \"typeless\", they are definitely not:\nevery object, whether primitive or user-defined, has a type. The lack of type declarations in\nmost dynamic languages, however, means that one cannot instruct the compiler about the types of\nvalues, and often cannot explicitly talk about types at all. In static languages, on the other\nhand, while one can -- and usually must -- annotate types for the compiler, types exist only at\ncompile time and cannot be manipulated or expressed at run time. In Julia, types are themselves\nrun-time objects, and can also be used to convey information to the compiler. -->尽管，一些人有时说动态语言是“无类型的”，但实际上他们并不是这样：每一个对象，无论是基础的还是用户自己定义的，都有一个类型。 在大多数动态语言中都缺乏类型声明，而这往往意味着无法指示编译器值的类型，也就无法显示地讨论类型。另一方面，静态语言中，虽然可以标记类型 （往往也必须这么做），但是类型只在编译时期才存在，而无法在运行时进行操作和表达。在 Julia 里，类型是它们自己的动态对象，也可以 被用来给编译器提供相应的信息。<!-- While the casual programmer need not explicitly use types or multiple dispatch, they are the core\nunifying features of Julia: functions are defined on different combinations of argument types,\nand applied by dispatching to the most specific matching definition. This model is a good fit\nfor mathematical programming, where it is unnatural for the first argument to \"own\" an operation\nas in traditional object-oriented dispatch. Operators are just functions with special notation\n-- to extend addition to new user-defined data types, you define new methods for the `+` function.\nExisting code then seamlessly applies to the new data types. -->类型系统和多重派发是 Julia 语言最主要的特征（尽管类型和多重派发并不必要被显式使用）：函数通过函数名称和不同类型变量的组合进行定义，然后在调用时会派发 最接近（most specific）的定义上去。这样的编程模型非常适合数学化的编程，尤其是在传统的面向对象派发中，一些函数的第一个变量理论上并不“拥有”这样一个操作时。 而在Julia中运算符只是函数的一个特殊标记——例如，为用户定义的新类型添加加法运算，你只要为+函数定义一个新的方法就可以了。 已有的代码就可以无缝接入这个新的类型。<!-- Partly because of run-time type inference (augmented by optional type annotations), and partly\nbecause of a strong focus on performance from the inception of the project, Julia\'s computational\nefficiency exceeds that of other dynamic languages, and even rivals that of statically-compiled\nlanguages. For large scale numerical problems, speed always has been, continues to be, and probably\nalways will be crucial: the amount of data being processed has easily kept pace with Moore\'s Law\nover the past decades. -->一部分是因为动态类型推导（可以被可选的类型标注增强），另一部分是因为在这个语言建立之初就对性能非常看重，Julia 的计算性能超过了其它的 动态语言，甚至能够与静态编译语言竞争。对于大型数值问题，速度一直都是，也一直会是一个重要的关注点：这些年以来，被处理的数据量的增长有着Moore定律。<!-- Julia aims to create an unprecedented combination of ease-of-use, power, and efficiency in a single\nlanguage. In addition to the above, some advantages of Julia over comparable systems include:\n\n  * Free and open source ([MIT licensed](https://github.com/JuliaLang/julia/blob/master/LICENSE.md))\n  * User-defined types are as fast and compact as built-ins\n  * No need to vectorize code for performance; devectorized code is fast\n  * Designed for parallelism and distributed computation\n  * Lightweight \"green\" threading ([coroutines](https://en.wikipedia.org/wiki/Coroutine))\n  * Unobtrusive yet powerful type system\n  * Elegant and extensible conversions and promotions for numeric and other types\n  * Efficient support for [Unicode](https://en.wikipedia.org/wiki/Unicode), including but not limited\n    to [UTF-8](https://en.wikipedia.org/wiki/UTF-8)\n  * Call C functions directly (no wrappers or special APIs needed)\n  * Powerful shell-like capabilities for managing other processes\n  * Lisp-like macros and other metaprogramming facilities -->Julia 的目标是创建一个前所未有的集易用、强大、高效于一体的语言。除此之外，Julia 的优势还在于：免费开源（MIT协议）\n用户定义的类型和内建类型一样快和兼容\n无需特意编写向量化的代码；非向量化的代码就很快\n为并行计算和分布式计算设计\n轻量级的“绿色”线程 (协程)\n低调又牛逼的类型系统\n优雅、可扩展的类型转换\n高效支持Unicode，包括但不限于UTF-8\n直接调用 C 函数（不需封装或调用特别的 API）\n像 Shell 一样强大的管理其他进程的能力\n像 Lisp 一样的宏和其他元编程工具"
+    "text": "科学计算对性能一直有着最高的需求， 但现在这个领域的专家开始大量使用比较慢的动态语言来完成日常工作。 我们相信有很多使用动态语言的理由， 所以我们不会舍弃这样的特性。幸运的是，现代语言设计和编译器技术使得为原型设计提供单一的高效开发环境， 并且配置高性能的应用成为可能。Julia 语言在这其中扮演了这样一个角色：作为灵活的动态语言，适合科学和数值计算，性能可与传统静态类型语言媲美。由于 Julia 的编译器和其它语言比如 Python 或 R 有所不同，一开始您或许会觉得 Julia 中什么样的代码运行效率高，什么样的代码运行效率低似乎并不很直观。 如果您发现 Julia 变慢了，我们非常建议您在尝试其它功能前读一下提高性能的窍门 。只要您理解 Julia 的工作方式， 就会很容易地写出运行效率甚至可以和 C 相媲美的代码。Julia 具有通过类型推倒和即时编译（JIT）在 LLVM 上实现的可选类型标注，多重派发，良好的性能。它是一个支持过程式，函数式 面向对象编程的多范式语言。它提供了简易和简洁的高等数值计算，它类似于 R 、 MATLAB 和 Python ，支持一般用途的编程。为了达到这个目的 Julia 在数学编程语言的基础上，参考了不少流行动态语言，例如 Lisp, Perl, Python, Lua, 和 Ruby。Julia 与传统动态语言最大的区别是：核心语言很小；标准库是用 Julia 本身写的，如整数运算在内的基础运算\n完善的类型，方便构造对象和做类型声明\n基于多重派发通过很多不同的参数类型来定义函数行为的能力\n为不同类型自动生成高效，专用的代码\n接近 C 语言的，良好的性能尽管，一些人有时说动态语言是“无类型的”，但实际上他们并不是这样：每一个对象，无论是基础的还是用户自己定义的，都有一个类型。 在大多数动态语言中都缺乏类型声明，而这往往意味着无法指示编译器值的类型，也就无法显示地讨论类型。另一方面，静态语言中，虽然可以标记类型 （往往也必须这么做），但是类型只在编译时期才存在，而无法在运行时进行操作和表达。在 Julia 里，类型是它们自己的动态对象，也可以 被用来给编译器提供相应的信息。类型系统和多重派发是 Julia 语言最主要的特征（尽管类型和多重派发并不必要被显式使用）：函数通过函数名称和不同类型变量的组合进行定义，然后在调用时会派发 最接近（most specific）的定义上去。这样的编程模型非常适合数学化的编程，尤其是在传统的面向对象派发中，一些函数的第一个变量理论上并不“拥有”这样一个操作时。 而在Julia中运算符只是函数的一个特殊标记——例如，为用户定义的新类型添加加法运算，你只要为 + 函数定义一个新的方法就可以了。 已有的代码就可以无缝接入这个新的类型。一部分是因为动态类型推导（可以被可选的类型标注增强），另一部分是因为在这个语言建立之初就对性能非常看重，Julia 的计算性能超过了其它的 动态语言，甚至能够与静态编译语言竞争。对于大型数值问题，速度一直都是，也一直会是一个重要的关注点：这些年以来，被处理的数据量的增长有着Moore定律。Julia 的目标是创建一个前所未有的集易用、强大、高效于一体的语言。除此之外，Julia 的优势还在于：免费开源（MIT 许可证）\n用户定义的类型和内建类型一样快和兼容\n无需特意编写向量化的代码；非向量化的代码就很快\n为并行计算和分布式计算设计\n轻量级的“绿色”线程 (协程)\n低调又牛逼的类型系统\n优雅、可扩展的类型转换\n高效支持 Unicode，包括但不限于 UTF-8\n直接调用 C 函数（不需封装或调用特别的 API）\n像 Shell 一样强大的管理其他进程的能力\n像 Lisp 一样的宏和其他元编程工具"
 },
 
 {
@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "入门",
     "title": "入门",
     "category": "section",
-    "text": "无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。 只要按照 https://julialang.org/downloads/ 的提示就可以轻松下载并安装 Julia。启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 julia 就可以启动：io = IOBuffer()\nBase.banner(io)\nbanner = String(take!(io))\nimport Markdown\nMarkdown.parse(\"```\\n\\$ julia\\n\\n$(banner)\\njulia> 1 + 2\\n3\\n\\njulia> ans\\n3\\n```\")输入 CTRL-D（同时按 Ctrl 键和 d 键）或 exit() 便可以退出交互式会话。在交互式模式中，julia 会显示一个横幅并提示用户输入。一旦用户输入了一段完整的代码，例如 1 + 2，然后敲回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 ans 总会存储上一次执行代码的结果，需要注意的是，变量 ans 只在交互式会话中才有，不适用于其它方法运行的 Julia。在交互式会话中，要运行写在源文件 file.jl 中的代码，只需输入 include(\"file.jl\")。如果想非交互式地执行文件中的代码，可以把文件名作为 julia 命令的第一个参数：$ julia script.jl arg1 arg2...如这个例子所示，julia 后跟着的命令行参数会被作为程序 script.jl 的命令行参数。这些参数使用全局常量 ARGS 来传递，脚本自身的名字会以全局常量 PROGRAM_FILE 传入。注意当脚本以命令行里的 -e 选项输入时，ARGS 也会被设定（见下面的 julia 帮助输出）但是 PROGRAM_FILE 会是空的。比如说，如果想把输入给一个脚本的参数给显示出来，你可以这么写：$ julia -e \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' foo bar\n\nfoo\nbar或者你可以把代码写到一个脚本文件中再执行它：$ echo \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' > script.jl\n$ julia script.jl foo bar\nscript.jl\nfoo\nbar可以使用 -- 分隔符来将传给脚本文件和 Julia 本身的命令行参数区分开：$ julia --color=yes -O -- foo.jl arg1 arg2..使用选项 -p 或者 --machine-file 可以在并行模式下启动 Julia。 -p n 会启动额外的 n 个 worker，使用 --machine-file file 会为 file 文件中的每一行启动一个 worker。 定义在 file 中的机器必须能够通过一个不需要密码的 ssh 登陆访问到，且 Julia 的安装位置需要和当前主机相同。 定义机器的格式为 [count*][user@]host[:port] [bind_addr[:port]]。 user 默认值是当前用户； port 默认值是标准 ssh 端口； count 是在这个节点上的 worker 的数量，默认是 1； 可选的 bind-to bind_addr[:port] 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。如果你想让 Julia 每次启动都自动执行一些代码，你可以把它们放在 ~/.julia/config/startup.jl 中：$ echo \'println(\"Greetings! 你好! 안녕하세요?\")\' > ~/.julia/config/startup.jl\n$ julia\nGreetings! 你好! 안녕하세요?\n\n...和 perl 和 ruby 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：julia [switches] -- [programfile] [args...]选项 描述\n-v, --version 显示版本信息\n-h, --help 打印本条帮助信息\n-J, --sysimage <file> 用指定的镜像文件 (system image file) 启动\n-H, --home <dir> 设置 julia 可执行文件的路径\n--startup-file={yes|no} 是否载入 ~/.julia/config/startup.jl\n--handle-signals={yes|no} 开启或关闭 Julia 默认的 signal handlers\n--sysimage-native-code={yes|no} 在可能的情况下，使用系统镜像里的原生代码\n--compiled-modules={yes|no} 开启或关闭 module 的增量预编译功能\n-e, --eval <expr> 执行 <expr>\n-E, --print <expr> 执行 <expr> 并显示结果\n-L, --load <file> 立即在所有进程中载入 <file>\n-p, --procs {N|auto} 这里的整数 N 表示启动 N 个额外的工作进程；auto 表示启动与 CPU 线程数目（logical cores）一样多的进程\n--machine-file <file> 再 <file> 中列出的主机上运行进程\n-i 非交互式模式；REPL 运行且 isinteractive() 为 true\n-q, --quiet 安静的启动；REPL 启动时无横幅，不显示警告\n--banner={yes|no|auto} 开启或关闭 REPL 横幅\n--color={yes|no|auto} 开启或关闭文字颜色\n--history-file={yes|no} 载入或导出历史记录\n--depwarn={yes|no|error} 开启或关闭语法弃用警告，error 表示将弃用警告转换为错误。\n--warn-overwrite={yes|no} 开启或关闭方法重写警告\n-C, --cpu-target <target> Limit usage of cpu features up to <target>; set to help to see the available options\n-O, --optimize={0,1,2,3} 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。\n-g, -g <level> 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。\n--inline={yes|no} 控制是否允许函数内联，此选项会覆盖源文件中的 @inline 声明\n--check-bounds={yes|no} 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明\n--math-mode={ieee,fast} 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 @fastmath 声明\n--code-coverage={none|user|all} 对源文件中每行代码执行的次数计数\n--code-coverage 等价于 --code-coverage=user\n--track-allocation={none|user|all} 对源文件中每行代码的内存分配计数，单位 byte\n--track-allocation equivalent to --track-allocation=user"
+    "text": "无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。 只要按照 https://julialang.org/downloads/ 的提示就可以轻松下载并安装 Julia。启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 julia 就可以启动：io = IOBuffer()\nBase.banner(io)\nbanner = String(take!(io))\nimport Markdown\nMarkdown.parse(\"```\\n\\$ julia\\n\\n$(banner)\\njulia> 1 + 2\\n3\\n\\njulia> ans\\n3\\n```\")输入 CTRL-D（同时按 Ctrl 键和 d 键）或 exit() 便可以退出交互式会话。在交互式模式中，julia 会显示一个横幅并提示用户输入。一旦用户输入了一段完整的代码，例如 1 + 2，然后敲回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 ans 总会存储上一次执行代码的结果，需要注意的是，变量 ans 只在交互式会话中才有，不适用于其它方法运行的 Julia。在交互式会话中，要运行写在源文件 file.jl 中的代码，只需输入 include(\"file.jl\")。如果想非交互式地执行文件中的代码，可以把文件名作为 julia 命令的第一个参数：$ julia script.jl arg1 arg2...如这个例子所示，julia 后跟着的命令行参数会被作为程序 script.jl 的命令行参数。这些参数使用全局常量 ARGS 来传递，脚本自身的名字会以全局常量 PROGRAM_FILE 传入。注意当脚本以命令行里的 -e 选项输入时，ARGS 也会被设定（见下面的 julia 帮助输出）但是 PROGRAM_FILE 会是空的。比如说，如果想把输入给一个脚本的参数给显示出来，你可以这么写：$ julia -e \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' foo bar\n\nfoo\nbar或者你可以把代码写到一个脚本文件中再执行它：$ echo \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' > script.jl\n$ julia script.jl foo bar\nscript.jl\nfoo\nbar可以使用 -- 分隔符来将传给脚本文件和 Julia 本身的命令行参数区分开：$ julia --color=yes -O -- foo.jl arg1 arg2..使用选项 -p 或者 --machine-file 可以在并行模式下启动 Julia。 -p n 会启动额外的 n 个 worker，使用 --machine-file file 会为 file 文件中的每一行启动一个 worker。 定义在 file 中的机器必须能够通过一个不需要密码的 ssh 登陆访问到，且 Julia 的安装位置需要和当前主机相同。 定义机器的格式为 [count*][user@]host[:port] [bind_addr[:port]]。 user 默认值是当前用户； port 默认值是标准 ssh 端口； count 是在这个节点上的 worker 的数量，默认是 1； 可选的 bind-to bind_addr[:port] 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。如果你想让 Julia 每次启动都自动执行一些代码，你可以把它们放在 ~/.julia/config/startup.jl 中：$ echo \'println(\"Greetings! 你好! 안녕하세요?\")\' > ~/.julia/config/startup.jl\n$ julia\nGreetings! 你好! 안녕하세요?\n\n...和 perl 和 ruby 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：julia [switches] -- [programfile] [args...]选项 描述\n-v, --version 显示版本信息\n-h, --help 打印本条帮助信息\n-J, --sysimage <file> 用指定的镜像文件 (system image file) 启动\n-H, --home <dir> 设置 julia 可执行文件的路径\n--startup-file={yes|no} 是否载入 ~/.julia/config/startup.jl\n--handle-signals={yes|no} 开启或关闭 Julia 默认的 signal handlers\n--sysimage-native-code={yes|no} 在可能的情况下，使用系统镜像里的原生代码\n--compiled-modules={yes|no} 开启或关闭 module 的增量预编译功能\n-e, --eval <expr> 执行 <expr>\n-E, --print <expr> 执行 <expr> 并显示结果\n-L, --load <file> 立即在所有进程中载入 <file>\n-p, --procs {N|auto} 这里的整数 N 表示启动 N 个额外的工作进程；auto 表示启动与 CPU 线程数目（logical cores）一样多的进程\n--machine-file <file> 再 <file> 中列出的主机上运行进程\n-i 非交互式模式；REPL 运行且 isinteractive() 为 true\n-q, --quiet 安静的启动；REPL 启动时无横幅，不显示警告\n--banner={yes|no|auto} 开启或关闭 REPL 横幅\n--color={yes|no|auto} 开启或关闭文字颜色\n--history-file={yes|no} 载入或导出历史记录\n--depwarn={yes|no|error} 开启或关闭语法弃用警告，error 表示将弃用警告转换为错误。\n--warn-overwrite={yes|no} 开启或关闭“method overwrite”警告\n-C, --cpu-target <target> Limit usage of cpu features up to <target>; set to help to see the available options\n-O, --optimize={0,1,2,3} 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。\n-g, -g <level> 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。\n--inline={yes|no} 控制是否允许函数内联，此选项会覆盖源文件中的 @inline 声明\n--check-bounds={yes|no} 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明\n--math-mode={ieee,fast} 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 @fastmath 声明\n--code-coverage={none|user|all} 对源文件中每行代码执行的次数计数\n--code-coverage 等价于 --code-coverage=user\n--track-allocation={none|user|all} 对源文件中每行代码的内存分配计数，单位 byte\n--track-allocation 等价于 --track-allocation=user"
 },
 
 {
@@ -61,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "变量",
     "title": "变量",
     "category": "section",
-    "text": "Julia语言中，变量是与某个值相关联（或绑定）的名字。你可以用它来保存一个值（例如某些计算得到的结果），供之后的代码使用。例如：# Assign the value 10 to the variable x\njulia> x = 10\n10\n\n# Doing math with x\'s value\njulia> x + 1\n11\n\n# Reassign x\'s value\njulia> x = 1 + 1\n2\n\n# You can assign values of other types, like strings of text\njulia> x = \"Hello World!\"\n\"Hello World!\"Julia 提供了非常灵活的变量命名策略。变量名是大小写敏感的。且不包含语义，意思是说，Julia 不会根据变量的名字来区别对待它们。 （译者注: 如 Julia 不会自动识别全大写的变量是常量，也不会将有特定前后缀的变量自动识别为某种特定类型的变量，即不会根据变量名字，自动判断变量的任何特性。）julia> x = 1.0\n1.0\n\njulia> y = -3\n-3\n\njulia> Z = \"My string\"\n\"My string\"\n\njulia> customary_phrase = \"Hello world!\"\n\"Hello world!\"\n\njulia> UniversalDeclarationOfHumanRightsStart = \"人人生而自由，在尊严和权利上一律平等。\"\n\"人人生而自由，在尊严和权利上一律平等。\"你还可以使用 UTF-8 编码的 Unicode 字符作为变量名：julia> δ = 0.00001\n1.0e-5\n\njulia> 안녕하세요 = \"Hello\"\n\"Hello\"在 Julia REPL 和几个其他的 Julia 编辑环境中，很多 Unicode 的数学符号可以使用反斜杠加 LaTeX 符号名再按 tab 健打出。 例如：变量名 δ 可以通过 \\delta tab 来输入，甚至可以用 \\alpha tab \\hat tab \\_2 tab 来输入 α̂₂  这种复杂的变量名。 如果你在某个地方（比如别人的代码里）看到了一个不知道怎么输入的符号，你可以在REPL中输入 ?，然后粘贴那个符号，帮助文档会告诉你输入方法。如果有需要的话，Julia 甚至允许你重定义内置常量和函数。（这样做可能引发潜在的混淆，所以并不推荐）julia> pi = 3\n3\n\njulia> pi\n3\n\njulia> sqrt = 4\n4然而，如果你试图重定义一个已经在使用中的内置常量或函数，Julia 会报错：julia> pi\nπ = 3.1415926535897...\n\njulia> pi = 3\nERROR: cannot assign variable MathConstants.pi from module Main\n\njulia> sqrt(100)\n10.0\n\njulia> sqrt = 4\nERROR: cannot assign variable Base.sqrt from module Main"
+    "text": "Julia 语言中，变量是与某个值相关联（或绑定）的名字。你可以用它来保存一个值（例如某些计算得到的结果），供之后的代码使用。例如：# Assign the value 10 to the variable x\njulia> x = 10\n10\n\n# Doing math with x\'s value\njulia> x + 1\n11\n\n# Reassign x\'s value\njulia> x = 1 + 1\n2\n\n# You can assign values of other types, like strings of text\njulia> x = \"Hello World!\"\n\"Hello World!\"Julia 提供了非常灵活的变量命名策略。变量名是大小写敏感的。且不包含语义，意思是说，Julia 不会根据变量的名字来区别对待它们。 （译者注: 如 Julia 不会自动识别全大写的变量是常量，也不会将有特定前后缀的变量自动识别为某种特定类型的变量，即不会根据变量名字，自动判断变量的任何特性。）julia> x = 1.0\n1.0\n\njulia> y = -3\n-3\n\njulia> Z = \"My string\"\n\"My string\"\n\njulia> customary_phrase = \"Hello world!\"\n\"Hello world!\"\n\njulia> UniversalDeclarationOfHumanRightsStart = \"人人生而自由，在尊严和权利上一律平等。\"\n\"人人生而自由，在尊严和权利上一律平等。\"你还可以使用 UTF-8 编码的 Unicode 字符作为变量名：julia> δ = 0.00001\n1.0e-5\n\njulia> 안녕하세요 = \"Hello\"\n\"Hello\"在 Julia REPL 和几个其他的 Julia 编辑环境中，很多 Unicode 的数学符号可以使用反斜杠加 LaTeX 符号名再按 tab 健打出。 例如：变量名 δ 可以通过 \\delta tab 来输入，甚至可以用 \\alpha tab \\hat tab \\_2 tab 来输入 α̂₂  这种复杂的变量名。 如果你在某个地方（比如别人的代码里）看到了一个不知道怎么输入的符号，你可以在REPL中输入 ?，然后粘贴那个符号，帮助文档会告诉你输入方法。如果有需要的话，Julia 甚至允许你重定义内置常量和函数。（这样做可能引发潜在的混淆，所以并不推荐）julia> pi = 3\n3\n\njulia> pi\n3\n\njulia> sqrt = 4\n4然而，如果你试图重定义一个已经在使用中的内置常量或函数，Julia 会报错：julia> pi\nπ = 3.1415926535897...\n\njulia> pi = 3\nERROR: cannot assign variable MathConstants.pi from module Main\n\njulia> sqrt(100)\n10.0\n\njulia> sqrt = 4\nERROR: cannot assign variable Base.sqrt from module Main"
 },
 
 {
@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "变量",
     "title": "合法的变量名",
     "category": "section",
-    "text": "变量名字必须以英文字母（A-Z 或 a-z）、下划线或编码大于 00A0 的 Unicode 字符的一个子集开头。 具体来说指的是，Unicode字符分类 中的 Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其它像字母的符号（例如Sm类别数学符号中的一部分）。 变量名的非首字符还允许使用惊叹号 !、数字（包括 0-9 和其他 Nd/No 类别中的 Unicode 字符）以及其它 Unicode 字符：变音符号和其他修改标记（Mn/Mc/Me/Sk 类别）、标点和连接符（Pc类别）、引号和少许其他字符。像 + 这样的运算符也是合法的标识符，但是它们会被特别地解析。 在一些语境中，运算符可以像变量一样使用，比如 (+) 表示加函数，语句 (+) = f 会把它重新赋值。 大部分Sm 类别中的 Unicode 中缀运算符，像 ⊕ ，则会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 const ⊗ = kron 将 ⊗ 定义为中缀的 Kronecker 积）。 运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 +̂ₐ″ 被解析成一个与  + 具有相同优先级的中缀运算符。内建语句的名字是唯一明确被禁止的变量名：julia> else = false\nERROR: syntax: unexpected \"else\"\n\njulia> try = \"No\"\nERROR: syntax: unexpected \"=\"有一些 Unicode 字符在标识符中被认为是等价的。输入 Unicode 组合字符（如重音标记的字符）的不同方式是等价的（具体地，Julia 语言中的标识符使用 NFC 正规化）。 Unicode 字符 ɛ（U+025B：拉丁字母小写开放 e）和 µ （U+00B5：微记号）被视为等价于对应的希腊字母，因为前者使用一些输入法易于键入。"
+    "text": "变量名字必须以英文字母（A-Z 或 a-z）、下划线或编码大于 00A0 的 Unicode 字符的一个子集开头。 具体来说指的是，Unicode字符分类 中的 Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其它像字母的符号（例如Sm类别数学符号中的一部分）。 变量名的非首字符还允许使用惊叹号 !、数字（包括 0-9 和其他 Nd/No 类别中的 Unicode 字符）以及其它 Unicode 字符：变音符号和其他修改标记（Mn/Mc/Me/Sk 类别）、标点和连接符（Pc类别）、引号和少许其他字符。像 + 这样的运算符也是合法的标识符，但是它们会被特别地解析。 在一些语境中，运算符可以像变量一样使用，比如 (+) 表示加函数，语句 (+) = f 会把它重新赋值。 大部分Sm 类别中的 Unicode 中缀运算符，像 ⊕ ，则会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 const ⊗ = kron 将 ⊗ 定义为中缀的 Kronecker 积）。 运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 +̂ₐ″ 被解析成一个与 + 具有相同优先级的中缀运算符。内置语句的名字是唯一明确被禁止的变量名：julia> else = false\nERROR: syntax: unexpected \"else\"\n\njulia> try = \"No\"\nERROR: syntax: unexpected \"=\"有一些 Unicode 字符在标识符中被认为是等价的。输入 Unicode 组合字符（如重音标记的字符）的不同方式是等价的（具体地，Julia 语言中的标识符使用 NFC 正规化）。 Unicode 字符 ɛ（U+025B：拉丁字母小写开放 e）和 µ （U+00B5：微记号）被视为等价于对应的希腊字母，因为前者使用一些输入法易于键入。"
 },
 
 {
@@ -77,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "变量",
     "title": "命名规范",
     "category": "section",
-    "text": "虽然 Julia 语言对合法名字的限制非常少，但是遵循以下这些命名规范是非常有用的：变量的名字采用小写。\n用下划线分隔名字中的单词（_），但是不鼓励使用下划线， 除非在不使用下划线时名字会非常难读。\nType 和 Module 的名字使用大写字母开头，并且用大写字母 而不是下划线分隔单词。\n函数 和 宏 的名字使用小写，不使用下划线。\n对参数进行写操作的函数使用 ! 结尾。这些函数有时叫做 “mutating” 或 “in-place” 函数，因为它们在被调用后，不止返回一个值 还会更改输入参数的内容。关于命名规范的更多信息，可查看 Style Guide。"
+    "text": "虽然 Julia 语言对合法名字的限制非常少，但是遵循以下这些命名规范是非常有用的：变量的名字采用小写。\n用下划线（_）分隔名字中的单词，但是不鼓励使用下划线， 除非在不使用下划线时名字会非常难读。\nType 和 Module 的名字使用大写字母开头，并且用大写字母 而不是用下划线分隔单词。\n函数 和 宏 的名字使用小写，不使用下划线。\n对输入参数进行写操作的函数使用 ! 结尾。这些函数有时叫做 “mutating” 或 “in-place” 函数，因为它们在被调用后，不仅仅会返回一些值 还会更改输入参数的内容。关于命名规范的更多信息，可查看 代码风格指南。"
 },
 
 {
@@ -93,7 +93,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "整数和浮点数",
     "category": "section",
-    "text": "整数和浮点值是算术和计算的基础。这些数值的内建表示被称作数值原始类型（numeric primitive），且整数和浮点数在代码中作为立即数时称作数值字面量（numeric literal）。例如，1 是个整型字面量，1.0 是个浮点型字面量，它们在内存中作为对象的二进制表示就是数值原始类型。Julia 提供了很丰富的原始数值类型，并基于它们定义了一整套算术，还提供按位运算符以及一些标准数学函数。这些函数能够直接映射到现代计算机原生支持的数值类型及运算上，因此 Julia 可以充分地利用运算资源。此外，Julia 还为任意精度算术提供了软件支持，它能够处理那些无法高效地使用原生硬件表示的数值运算，当然，这需要相对的牺牲一些性能。以下是 Julia 的原始数值类型：整数类型:类型 带符号？ 比特数 最小值 最大值\nInt8 ✓ 8 -2^7 2^7 - 1\nUInt8  8 0 2^8 - 1\nInt16 ✓ 16 -2^15 2^15 - 1\nUInt16  16 0 2^16 - 1\nInt32 ✓ 32 -2^31 2^31 - 1\nUInt32  32 0 2^32 - 1\nInt64 ✓ 64 -2^63 2^63 - 1\nUInt64  64 0 2^64 - 1\nInt128 ✓ 128 -2^127 2^127 - 1\nUInt128  128 0 2^128 - 1\nBool N/A 8 false (0) true (1)浮点类型:类型 精度 比特数\nFloat16 half 16\nFloat32 single 32\nFloat64 double 64此外，对复数和分数的完整支持是在这些原始类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的类型提升系统，所有的数值类型都无需现实转换就可以很自然地相互进行运算。"
+    "text": "整数和浮点值是算术和计算的基础。这些数值的内置表示被称作数值原始类型（numeric primitive），且整数和浮点数在代码中作为立即数时称作数值字面量（numeric literal）。例如，1 是个整型字面量，1.0 是个浮点型字面量，它们在内存中作为对象的二进制表示就是数值原始类型。Julia 提供了很丰富的原始数值类型，并基于它们定义了一整套算术操作，还提供按位运算符以及一些标准数学函数。这些函数能够直接映射到现代计算机原生支持的数值类型及运算上，因此 Julia 可以充分地利用运算资源。此外，Julia 还为任意精度算术提供了软件支持，对于无法使用原生硬件表示的数值类型，Julia 也能够高效地处理其数值运算。当然，这需要相对的牺牲一些性能。以下是 Julia 的原始数值类型：整数类型：类型 带符号？ 比特数 最小值 最大值\nInt8 ✓ 8 -2^7 2^7 - 1\nUInt8  8 0 2^8 - 1\nInt16 ✓ 16 -2^15 2^15 - 1\nUInt16  16 0 2^16 - 1\nInt32 ✓ 32 -2^31 2^31 - 1\nUInt32  32 0 2^32 - 1\nInt64 ✓ 64 -2^63 2^63 - 1\nUInt64  64 0 2^64 - 1\nInt128 ✓ 128 -2^127 2^127 - 1\nUInt128  128 0 2^128 - 1\nBool N/A 8 false (0) true (1)浮点类型:类型 精度 比特数\nFloat16 half 16\nFloat32 single 32\nFloat64 double 64此外，对复数和分数的完整支持是在这些原始数据类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的类型提升系统，所有的数值类型都无需显式转换就可以很自然地相互进行运算。"
 },
 
 {
@@ -101,7 +101,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "整数",
     "category": "section",
-    "text": "整数字面量以标准形式表示：julia> 1\n1\n\njulia> 1234\n1234整型字面量的默认类型取决于目标系统是 32 位架构还是 64 位的：# 32-bit system:\njulia> typeof(1)\nInt32\n\n# 64-bit system:\njulia> typeof(1)\nInt64Julia 的内部变量 Sys.WORD_SIZE 表明了目标系统是 32 位还是 64 位：# 32-bit system:\njulia> Sys.WORD_SIZE\n32\n\n# 64-bit system:\njulia> Sys.WORD_SIZE\n64Julia 也定义了 Int 与 UInt 类型，它们分别是系统有符号和无符号的原生整数类型的别名。# 32-bit system:\njulia> Int\nInt32\njulia> UInt\nUInt32\n\n# 64-bit system:\njulia> Int\nInt64\njulia> UInt\nUInt64那些超过 32 位表示范围的大整数，如果能用 64 位表示，那么无论是什么系统都会用 64 位表示：# 32-bit or 64-bit system:\njulia> typeof(3000000000)\nInt64无符号整数通过 0x 前缀以及十六进制数 0-9a-f 输入和输出（输入也可以使用大写的 A-F）。无符号值的位数决定于使用的十六进制数字的数量：julia> 0x1\n0x01\n\njulia> typeof(ans)\nUInt8\n\njulia> 0x123\n0x0123\n\njulia> typeof(ans)\nUInt16\n\njulia> 0x1234567\n0x01234567\n\njulia> typeof(ans)\nUInt32\n\njulia> 0x123456789abcdef\n0x0123456789abcdef\n\njulia> typeof(ans)\nUInt64\n\njulia> 0x11112222333344445555666677778888\n0x11112222333344445555666677778888\n\njulia> typeof(ans)\nUInt128这种做法是由于当人们使用无符号十六进制字面量表示整数值，通常会用它们来表示一个固定的数值字节序列，而不仅仅是个整数值。还记得这个 ans 变量吗？它存着交互式会话中上一个表达式的运算结果，但以其他方式运行的 Julia 代码中没有这个变量。二进制和八进制字面量也受到支持：julia> 0b10\n0x02\n\njulia> typeof(ans)\nUInt8\n\njulia> 0o010\n0x08\n\njulia> typeof(ans)\nUInt8\n\njulia> 0x00000000000000001111222233334444\n0x00000000000000001111222233334444\n\njulia> typeof(ans)\nUInt128二进制、八进制和十六进制的字面量都会产生无符号的整数类型。当字面量不是开头全是 0 时，它们二进制数据项的位数会是最少需要的位数。当开头都是 0 时，位数决定于一个字面量的最少需要位数，这里的字面量指的是一个有着同样长度但开头都为 1 的数。这样用户就可以控制位数了。那些无法使用 UInt128 类型存储下的值无法写成这样的字面量。二进制、八进制和十六进制的字面量可以在前面紧接着加一个负号 -，这样可以产生一个和原字面量有着同样位数而值为原数的补码的数（二补数）：julia> -0x2\n0xfe\n\njulia> -0x0002\n0xfffe整型等原始数值类型的最小和最大可表示的值可用 typemin 和 typemax 函数得到：julia> (typemin(Int32), typemax(Int32))\n(-2147483648, 2147483647)\n\njulia> for T in [Int8,Int16,Int32,Int64,Int128,UInt8,UInt16,UInt32,UInt64,UInt128]\n           println(\"$(lpad(T,7)): [$(typemin(T)),$(typemax(T))]\")\n       end\n   Int8: [-128,127]\n  Int16: [-32768,32767]\n  Int32: [-2147483648,2147483647]\n  Int64: [-9223372036854775808,9223372036854775807]\n Int128: [-170141183460469231731687303715884105728,170141183460469231731687303715884105727]\n  UInt8: [0,255]\n UInt16: [0,65535]\n UInt32: [0,4294967295]\n UInt64: [0,18446744073709551615]\nUInt128: [0,340282366920938463463374607431768211455]typemin 和 typemax 返回的值的类型总与所给参数的类型相同。 （上面的表达式用了一些我们目前还没有介绍的功能，包括 for 循环、字符串和插值，但对于已有一些编程经验的用户应该是很容易理解的。）"
+    "text": "整数字面量以标准形式表示：julia> 1\n1\n\njulia> 1234\n1234整型字面量的默认类型取决于目标系统是 32 位架构还是 64 位的：# 32-bit system:\njulia> typeof(1)\nInt32\n\n# 64-bit system:\njulia> typeof(1)\nInt64Julia 的内部变量 Sys.WORD_SIZE 表明了目标系统是 32 位还是 64 位：# 32-bit system:\njulia> Sys.WORD_SIZE\n32\n\n# 64-bit system:\njulia> Sys.WORD_SIZE\n64Julia 也定义了 Int 与 UInt 类型，它们分别是系统有符号和无符号的原生整数类型的别名。# 32-bit system:\njulia> Int\nInt32\njulia> UInt\nUInt32\n\n# 64-bit system:\njulia> Int\nInt64\njulia> UInt\nUInt64那些超过 32 位表示范围的大整数，如果能用 64 位表示，那么无论是什么系统都会用 64 位表示：# 32-bit or 64-bit system:\njulia> typeof(3000000000)\nInt64无符号整数通过 0x 前缀以及十六进制数 0-9a-f 输入和输出（输入也可以使用大写的 A-F）。无符号值的位数决定于使用的十六进制数字的数量：julia> 0x1\n0x01\n\njulia> typeof(ans)\nUInt8\n\njulia> 0x123\n0x0123\n\njulia> typeof(ans)\nUInt16\n\njulia> 0x1234567\n0x01234567\n\njulia> typeof(ans)\nUInt32\n\njulia> 0x123456789abcdef\n0x0123456789abcdef\n\njulia> typeof(ans)\nUInt64\n\njulia> 0x11112222333344445555666677778888\n0x11112222333344445555666677778888\n\njulia> typeof(ans)\nUInt128这种做法是由于当人们使用无符号十六进制字面量表示整数值，通常会用它们来表示一个固定的数值字节序列，而不仅仅是个整数值。还记得这个 ans 变量吗？它存着交互式会话中上一个表达式的运算结果，但以其他方式运行的 Julia 代码中没有这个变量。二进制和八进制字面量也支持：julia> 0b10\n0x02\n\njulia> typeof(ans)\nUInt8\n\njulia> 0o010\n0x08\n\njulia> typeof(ans)\nUInt8\n\njulia> 0x00000000000000001111222233334444\n0x00000000000000001111222233334444\n\njulia> typeof(ans)\nUInt128二进制、八进制和十六进制的字面量都会产生无符号的整数类型。当字面量不是开头全是 0 时，它们二进制数据项的位数会是最少需要的位数。当开头都是 0 时，位数决定于一个字面量的最少需要位数，这里的字面量指的是一个有着同样长度但开头都为 1 的数。这样用户就可以控制位数了。那些无法使用 UInt128 类型存储下的值无法写成这样的字面量。二进制、八进制和十六进制的字面量可以在前面紧接着加一个负号 -，这样可以产生一个和原字面量有着同样位数而值为原数的补码的数（二补数）：julia> -0x2\n0xfe\n\njulia> -0x0002\n0xfffe整型等原始数值类型的最小和最大可表示的值可用 typemin 和 typemax 函数得到：julia> (typemin(Int32), typemax(Int32))\n(-2147483648, 2147483647)\n\njulia> for T in [Int8,Int16,Int32,Int64,Int128,UInt8,UInt16,UInt32,UInt64,UInt128]\n           println(\"$(lpad(T,7)): [$(typemin(T)),$(typemax(T))]\")\n       end\n   Int8: [-128,127]\n  Int16: [-32768,32767]\n  Int32: [-2147483648,2147483647]\n  Int64: [-9223372036854775808,9223372036854775807]\n Int128: [-170141183460469231731687303715884105728,170141183460469231731687303715884105727]\n  UInt8: [0,255]\n UInt16: [0,65535]\n UInt32: [0,4294967295]\n UInt64: [0,18446744073709551615]\nUInt128: [0,340282366920938463463374607431768211455]typemin 和 typemax 返回的值的类型总与所给参数的类型相同。 （上面的表达式用了一些我们目前还没有介绍的功能，包括 for 循环、字符串和插值，但对于已有一些编程经验的用户应该是很容易理解的。）"
 },
 
 {
@@ -109,7 +109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "溢出行为",
     "category": "section",
-    "text": "Julia 中，超过了一个类型最大可表示的值时会以一个环绕行为（wraparound behavior）给出结果：julia> x = typemax(Int64)\n9223372036854775807\n\njulia> x + 1\n-9223372036854775808\n\njulia> x + 1 == typemin(Int64)\ntrue因此，Julia 整数的算术实际上是模算数的一种形式。它可以反映出如现代计算机所实现的一样的整数算术的特点。在可能遇到溢出的应用场景中，对溢出产生的环绕行为进行显式的检查是很重要的。否则，推荐使用任意精度算术中的 BigInt 类型作为替代。"
+    "text": "Julia 中，在超过一个类型最大可表示的值时会导致循环行为：julia> x = typemax(Int64)\n9223372036854775807\n\njulia> x + 1\n-9223372036854775808\n\njulia> x + 1 == typemin(Int64)\ntrue因此，Julia 的整数算术实际上是模算数的一种形式，它反映了现代计算机实现底层算术的特点。在可能有溢出产生的程序中，对最值边界出现循环进行显式检查是必要的。否则，推荐使用任意精度算术中的 BigInt 类型作为替代。"
 },
 
 {
@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "机器精度",
     "category": "section",
-    "text": "大多数实数都无法用浮点数准确地表示，因此有必要知道两个相邻可表示的浮点数间的距离。它通常被叫做机器精度。Julia 提供了 eps 函数，它可以给出 1.0 与下一个更大的可表示浮点数之间的距离：julia> eps(Float32)\n1.1920929f-7\n\njulia> eps(Float64)\n2.220446049250313e-16\n\njulia> eps() # same as eps(Float64)\n2.220446049250313e-16这些值分别是 Float32 中的 2.0^-23 和 Float64 中的 2.0^-52。eps 函数也可以接受一个浮点值作为参数，然后给出这个值与下一个可表示的值直接的绝对差。也就是说，eps(x) 产生一个和 x 类型相同的值使得 x + eps(x) 是比 x 更大的下一个可表示的浮点值：julia> eps(1.0)\n2.220446049250313e-16\n\njulia> eps(1000.)\n1.1368683772161603e-13\n\njulia> eps(1e-27)\n1.793662034335766e-43\n\njulia> eps(0.0)\n5.0e-324两个相邻可表示的浮点数之间的距离并不是常数，数值越小，间距越小，数值越大，间距越大。换句话说，可表示的浮点数在实数轴上的零点附近最稠密，并沿着远离零点的方向以指数型的速度变得越来越稀疏。根据定义，eps(1.0) 与 eps(Float64) 相等，因为 1.0 是个 64 位浮点值。Julia 也提供了 nextfloat 和 prevfloat 两个函数分别返回基于参数的下一个更大或更小的可表示的浮点数：julia> x = 1.25f0\n1.25f0\n\njulia> nextfloat(x)\n1.2500001f0\n\njulia> prevfloat(x)\n1.2499999f0\n\njulia> bitstring(prevfloat(x))\n\"00111111100111111111111111111111\"\n\njulia> bitstring(x)\n\"00111111101000000000000000000000\"\n\njulia> bitstring(nextfloat(x))\n\"00111111101000000000000000000001\"这个例子体现了一般原则，即相邻可表示的浮点数也有着相邻的二进制整数表示。"
+    "text": "大多数实数都无法用浮点数准确地表示，因此有必要知道两个相邻可表示的浮点数间的距离。它通常被叫做机器精度。Julia 提供了 eps 函数，它可以给出 1.0 与下一个Julia能表示的浮点数之间的差值：julia> eps(Float32)\n1.1920929f-7\n\njulia> eps(Float64)\n2.220446049250313e-16\n\njulia> eps() # same as eps(Float64)\n2.220446049250313e-16这些值分别是 Float32 中的 2.0^-23 和 Float64 中的 2.0^-52。eps 函数也可以接受一个浮点值作为参数，然后给出这个值与下一个可表示的值直接的绝对差。也就是说，eps(x) 产生一个和 x 类型相同的值使得 x + eps(x) 是比 x 更大的下一个可表示的浮点值：julia> eps(1.0)\n2.220446049250313e-16\n\njulia> eps(1000.)\n1.1368683772161603e-13\n\njulia> eps(1e-27)\n1.793662034335766e-43\n\njulia> eps(0.0)\n5.0e-324两个相邻可表示的浮点数之间的距离并不是常数，数值越小，间距越小，数值越大，间距越大。换句话说，可表示的浮点数在实数轴上的零点附近最稠密，并沿着远离零点的方向以指数型的速度变得越来越稀疏。根据定义，eps(1.0) 与 eps(Float64) 相等，因为 1.0 是个 64 位浮点值。Julia 也提供了 nextfloat 和 prevfloat 两个函数分别返回基于参数的下一个更大或更小的可表示的浮点数：julia> x = 1.25f0\n1.25f0\n\njulia> nextfloat(x)\n1.2500001f0\n\njulia> prevfloat(x)\n1.2499999f0\n\njulia> bitstring(prevfloat(x))\n\"00111111100111111111111111111111\"\n\njulia> bitstring(x)\n\"00111111101000000000000000000000\"\n\njulia> bitstring(nextfloat(x))\n\"00111111101000000000000000000001\"这个例子体现了一般原则，即相邻可表示的浮点数也有着相邻的二进制整数表示。"
 },
 
 {
@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "基础知识与参考文献",
     "category": "section",
-    "text": "浮点算术带来了很多微妙之处，它们可能对于那些不熟悉底层实现细节的用户会是很出人意料的。然而，这些微妙之处在大部分科学计算的书籍中以及以下的参考资料中都有详细介绍:浮点算术的权威指南是 IEEE 754-2008 标准； 然而这篇标准在网上无法免费获得。\n关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 的 文章 以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的 介绍\n同样推荐 Bruce Dawson 的一系列关于浮点数的博客文章。\n想要一个对浮点数和使用浮点数计算时产生的数值精度问题的极好的、有深度的讨论，可以参见 David Goldberg 的文章 What Every Computer Scientist Should Know About Floating-Point Arithmetic。\n更多延伸文档，包括浮点数的历史、基础理论、问题以及数值计算中很多其它主题的讨论，可以参见 William Kahan 的写作集。他以“浮点数之父”闻名。特别感兴趣的话可以看 An Interview with the Old Man of Floating-Point。"
+    "text": "浮点算术带来了很多微妙之处，它们可能对于那些不熟悉底层实现细节的用户会是很出人意料的。然而，这些微妙之处在大部分科学计算的书籍中以及以下的参考资料中都有详细介绍:浮点算术的权威指南是 IEEE 754-2008 标准； 然而这篇标准在网上无法免费获得。\n关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 的文章 以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的介绍\n同样推荐 Bruce Dawson 的一系列关于浮点数的博客文章。\n想要一个对浮点数和使用浮点数计算时产生的数值精度问题的极好的、有深度的讨论，可以参见 David Goldberg 的文章 What Every Computer Scientist Should Know About Floating-Point Arithmetic。\n更多延伸文档，包括浮点数的历史、基础理论、问题以及数值计算中很多其它主题的讨论，可以参见 William Kahan 的写作集。他以“浮点数之父”闻名。特别感兴趣的话可以看 An Interview with the Old Man of Floating-Point。"
 },
 
 {
@@ -173,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "任意精度算术",
     "category": "section",
-    "text": "为了允许使用任意精度的整数与浮点数，Julia 分别包装了 GNU Multiple Precision Arithmetic Library (GMP) 以及 GNU MPFR Library。Julia 中的 BigInt 与 BigFloat 两种类型分别提供了任意精度的整数和浮点数。存在从原始数字类型创建它们的构造器，也可以使用 parse 从 AbstractString 来构造它们。一旦被创建，它们就可以像所有其它数值类型一样参与算术（也是多亏了 Julia 的类型提升和转换机制）。julia> BigInt(typemax(Int64)) + 1\n9223372036854775808\n\njulia> parse(BigInt, \"123456789012345678901234567890\") + 1\n123456789012345678901234567891\n\njulia> parse(BigFloat, \"1.23456789012345678901\")\n1.234567890123456789010000000000000000000000000000000000000000000000000000000004\n\njulia> BigFloat(2.0^66) / 3\n2.459565876494606882133333333333333333333333333333333333333333333333333333333344e+19\n\njulia> factorial(BigInt(40))\n815915283247897734345611269596115894272000000000然而，上面的原始类型与 BigInt/BigFloat 之间的类型提升并不是自动的，需要明确地指定：julia> x = typemin(Int64)\n-9223372036854775808\n\njulia> x = x - 1\n9223372036854775807\n\njulia> typeof(x)\nInt64\n\njulia> y = BigInt(typemin(Int64))\n-9223372036854775808\n\njulia> y = y - 1\n-9223372036854775809\n\njulia> typeof(y)\nBigIntBigFloat 的默认精度（有效数字的位数）和舍入模式可以通过调用 setprecision 和 setrounding 来全局地改变，所有之后的计算都会根据这些改变进行。还有一种方法，可以使用同样的函数以及 do 语句块来只在运行一个特定代码块时改变精度和舍入模式：julia> setrounding(BigFloat, RoundUp) do\n           BigFloat(1) + parse(BigFloat, \"0.1\")\n       end\n1.100000000000000000000000000000000000000000000000000000000000000000000000000003\n\njulia> setrounding(BigFloat, RoundDown) do\n           BigFloat(1) + parse(BigFloat, \"0.1\")\n       end\n1.099999999999999999999999999999999999999999999999999999999999999999999999999986\n\njulia> setprecision(40) do\n           BigFloat(1) + parse(BigFloat, \"0.1\")\n       end\n1.1000000000004"
+    "text": "为了允许使用任意精度的整数与浮点数，Julia 分别包装了 GNU Multiple Precision Arithmetic Library (GMP) 以及 GNU MPFR Library。Julia 中的 BigInt 与 BigFloat 两种类型分别提供了任意精度的整数和浮点数。存在从原始数字类型创建它们的构造器，也可以使用 parse 从 AbstractString 来构造它们。一旦被创建，它们就可以像所有其它数值类型一样参与算术（也是多亏了 Julia 的类型提升和转换机制）。julia> BigInt(typemax(Int64)) + 1\n9223372036854775808\n\njulia> parse(BigInt, \"123456789012345678901234567890\") + 1\n123456789012345678901234567891\n\njulia> parse(BigFloat, \"1.23456789012345678901\")\n1.234567890123456789010000000000000000000000000000000000000000000000000000000004\n\njulia> BigFloat(2.0^66) / 3\n2.459565876494606882133333333333333333333333333333333333333333333333333333333344e+19\n\njulia> factorial(BigInt(40))\n815915283247897734345611269596115894272000000000然而，上面的原始类型与 BigInt/BigFloat 之间的类型提升并不是自动的，需要明确地指定：julia> x = typemin(Int64)\n-9223372036854775808\n\njulia> x = x - 1\n9223372036854775807\n\njulia> typeof(x)\nInt64\n\njulia> y = BigInt(typemin(Int64))\n-9223372036854775808\n\njulia> y = y - 1\n-9223372036854775809\n\njulia> typeof(y)\nBigIntBigFloat 的默认精度（有效数字的位数）和舍入模式可以通过调用 setprecision 和 setrounding 来全局地改变，所有之后的计算都会根据这些改变进行。还有一种方法，可以使用同样的函数以及 do-block 来只在运行一个特定代码块时改变精度和舍入模式：julia> setrounding(BigFloat, RoundUp) do\n           BigFloat(1) + parse(BigFloat, \"0.1\")\n       end\n1.100000000000000000000000000000000000000000000000000000000000000000000000000003\n\njulia> setrounding(BigFloat, RoundDown) do\n           BigFloat(1) + parse(BigFloat, \"0.1\")\n       end\n1.099999999999999999999999999999999999999999999999999999999999999999999999999986\n\njulia> setprecision(40) do\n           BigFloat(1) + parse(BigFloat, \"0.1\")\n       end\n1.1000000000004"
 },
 
 {
@@ -338,23 +338,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/complex-and-rational-numbers/#",
-    "page": "复数和有理数",
-    "title": "复数和有理数",
+    "page": "复数和分数",
+    "title": "复数和分数",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "manual/complex-and-rational-numbers/#复数和有理数-1",
-    "page": "复数和有理数",
-    "title": "复数和有理数",
+    "location": "manual/complex-and-rational-numbers/#复数和分数-1",
+    "page": "复数和分数",
+    "title": "复数和分数",
     "category": "section",
     "text": "Julia 语言自带预定义的表示复数与分数的类型，并且支持它们的各种数学运算和基础函数。由于也定义了复数与分数的转换与提升，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。"
 },
 
 {
     "location": "manual/complex-and-rational-numbers/#复数-1",
-    "page": "复数和有理数",
+    "page": "复数和分数",
     "title": "复数",
     "category": "section",
     "text": "在Julia中,全局常量 im 被绑定到复数 i，表示 -1 的主平方根。由于 i 是一个很流行的用作索引的变量名，所以直接把它作为全局常量被认为是很危险的。由于 Julia 允许数值文本作为系数与标识符并置，这种绑定就足够为复数提供很方便的语法，类似于传统的数学记法：julia> 1 + 2im\n1 + 2im你可以对复数进行各种标准算术操作：julia> (1 + 2im)*(2 - 3im)\n8 + 1im\n\njulia> (1 + 2im)/(1 - 2im)\n-0.6 + 0.8im\n\njulia> (1 + 2im) + (1 - 2im)\n2 + 0im\n\njulia> (-3 + 2im) - (5 - 1im)\n-8 + 3im\n\njulia> (-1 + 2im)^2\n-3 - 4im\n\njulia> (-1 + 2im)^2.5\n2.729624464784009 - 6.9606644595719im\n\njulia> (-1 + 2im)^(1 + 1im)\n-0.27910381075826657 + 0.08708053414102428im\n\njulia> 3(2 - 5im)\n6 - 15im\n\njulia> 3(2 - 5im)^2\n-63 - 60im\n\njulia> 3(2 - 5im)^-1.0\n0.20689655172413796 + 0.5172413793103449im类型提升机制也确保你可以使用不同类型的操作数的组合：julia> 2(1 - 1im)\n2 - 2im\n\njulia> (2 + 3im) - 1\n1 + 3im\n\njulia> (1 + 2im) + 0.5\n1.5 + 2.0im\n\njulia> (2 + 3im) - 0.5im\n2.0 + 2.5im\n\njulia> 0.75(1 + 2im)\n0.75 + 1.5im\n\njulia> (2 + 3im) / 2\n1.0 + 1.5im\n\njulia> (1 - 3im) / (2 + 2im)\n-0.5 - 1.0im\n\njulia> 2im^2\n-2 + 0im\n\njulia> 1 + 3/4im\n1.0 - 0.75im注意 3/4im == 3/(4*im) == -(3/4*im)，因为文本系数比除法的优先级更高。Julia 提供了一些操作复数的标准函数：julia> z = 1 + 2im\n1 + 2im\n\njulia> real(1 + 2im) # real part of z\n1\n\njulia> imag(1 + 2im) # imaginary part of z\n2\n\njulia> conj(1 + 2im) # complex conjugate of z\n1 - 2im\n\njulia> abs(1 + 2im) # absolute value of z\n2.23606797749979\n\njulia> abs2(1 + 2im) # squared absolute value\n5\n\njulia> angle(1 + 2im) # phase angle in radians\n1.1071487177940904按照惯例，复数的绝对值（abs）是从零点到它的距离。abs2 给出绝对值的平方，作用于复数上时非常有用,可以避免做平方根的操作。[angle] 返回以弧度为单位的相位角（这也被称为辐角函数）。所有其它的基础函数在复数上也都有完整的定义：julia> sqrt(1im)\n0.7071067811865476 + 0.7071067811865475im\n\njulia> sqrt(1 + 2im)\n1.272019649514069 + 0.7861513777574233im\n\njulia> cos(1 + 2im)\n2.0327230070196656 - 3.0518977991518im\n\njulia> exp(1 + 2im)\n-1.1312043837568135 + 2.4717266720048188im\n\njulia> sinh(1 + 2im)\n-0.4890562590412937 + 1.4031192506220405im注意数学函数通常应用于实数就返回实数值，应用于复数就返回复数值。例如，当 sqrt 应用于 -1 与 -1 + 0im 会有不同的表现，虽然 -1 == -1 + 0im：julia> sqrt(-1)\nERROR: DomainError with -1.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]\n\njulia> sqrt(-1 + 0im)\n0.0 + 1.0im从变量构建复数时，文本型数值系数记法不再适用。相反地，乘法必须显式地写出：julia> a = 1; b = 2; a + b*im\n1 + 2im然而，我们并不推荐这样做，而应改为使用 complex 函数直接通过实部与虚部构建一个复数值：julia> a = 1; b = 2; complex(a, b)\n1 + 2im这种构建避免了乘法和加法操作。Inf 和 NaN 可能出现在复数的实部和虚部，正如特殊的浮点值章节所描述的：julia> 1 + Inf*im\n1.0 + Inf*im\n\njulia> 1 + NaN*im\n1.0 + NaN*im"
@@ -362,7 +362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/complex-and-rational-numbers/#分数-1",
-    "page": "复数和有理数",
+    "page": "复数和分数",
     "title": "分数",
     "category": "section",
     "text": "Julia 有一个用于表示整数精确比值的分数类型。分数通过 // 运算符构建：julia> 2//3\n2//3如果一个分数的分子和分母含有公因子，它们会被约分到最简形式且分母非负：julia> 6//9\n2//3\n\njulia> -4//8\n-1//2\n\njulia> 5//-15\n-1//3\n\njulia> -4//-12\n1//3整数比值的这种标准化形式是唯一的，所以分数值的相等性可由校验分子与分母都相等来测试。分数值的标准化分子和分母可以使用 numerator 和 denominator 函数得到：julia> numerator(2//3)\n2\n\njulia> denominator(2//3)\n3分子和分母的直接比较通常是不必要的，因为标准算术和比较操作对分数值也有定义：julia> 2//3 == 6//9\ntrue\n\njulia> 2//3 == 9//27\nfalse\n\njulia> 3//7 < 1//2\ntrue\n\njulia> 3//4 > 2//3\ntrue\n\njulia> 2//4 + 1//6\n2//3\n\njulia> 5//12 - 1//4\n1//6\n\njulia> 5//8 * 3//12\n5//32\n\njulia> 6//5 / 10//7\n21//25分数可以很容易地转换成浮点数：julia> float(3//4)\n0.75对任意整数值 a 和 b（除了 a == 0 且 b == 0 时），从分数到浮点数的转换遵从以下的一致性：julia> a = 1; b = 2;\n\njulia> isequal(float(a//b), a/b)\ntrueJulia接受构建无穷分数值：julia> 5//0\n1//0\n\njulia> -3//0\n-1//0\n\njulia> typeof(ans)\nRational{Int64}但不接受试图构建一个 NaN 分数值：julia> 0//0\nERROR: ArgumentError: invalid rational: zero(Int64)//zero(Int64)\nStacktrace:\n[...]像往常一样，类型提升系统使得分数可以轻松地同其它数值类型进行交互：julia> 3//5 + 1\n8//5\n\njulia> 3//5 - 0.5\n0.09999999999999998\n\njulia> 2//7 * (1 + 2im)\n2//7 + 4//7*im\n\njulia> 2//7 * (1.5 + 2im)\n0.42857142857142855 + 0.5714285714285714im\n\njulia> 3//2 / (1 + 2im)\n3//10 - 3//5*im\n\njulia> 1//2 + 2im\n1//2 + 2//1*im\n\njulia> 1 + 2//3im\n1//1 - 2//3*im\n\njulia> 0.5 == 1//2\ntrue\n\njulia> 0.33 == 1//3\nfalse\n\njulia> 0.33 < 1//3\ntrue\n\njulia> 1//3 - 0.33\n0.0033333333333332993"
@@ -533,7 +533,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "匿名函数",
     "category": "section",
-    "text": "Functions in Julia are first-class objects: they can be assigned to variables, and called using the standard function call syntax from the variable they have been assigned to. They can be used as arguments, and they can be returned as values. They can also be created anonymously, without being given a name, using either of these syntaxes:julia> x -> x^2 + 2x - 1\n#1 (generic function with 1 method)\n\njulia> function (x)\n           x^2 + 2x - 1\n       end\n#3 (generic function with 1 method)This creates a function taking one argument x and returning the value of the polynomial x^2 + 2x - 1 at that value. Notice that the result is a generic function, but with a compiler-generated name based on consecutive numbering.The primary use for anonymous functions is passing them to functions which take other functions as arguments. A classic example is map, which applies a function to each value of an array and returns a new array containing the resulting values:julia> map(round, [1.2,3.5,1.7])\n3-element Array{Float64,1}:\n 1.0\n 4.0\n 2.0This is fine if a named function effecting the transform already exists to pass as the first argument to map. Often, however, a ready-to-use, named function does not exist. In these situations, the anonymous function construct allows easy creation of a single-use function object without needing a name:julia> map(x -> x^2 + 2x - 1, [1,3,-1])\n3-element Array{Int64,1}:\n  2\n 14\n -2An anonymous function accepting multiple arguments can be written using the syntax (x,y,z)->2x+y-z. A zero-argument anonymous function is written as ()->3. The idea of a function with no arguments may seem strange, but is useful for \"delaying\" a computation. In this usage, a block of code is wrapped in a zero-argument function, which is later invoked by calling it as f."
+    "text": "函数在Julia里是一等公民：可以指定给变量，和使用标准函数调用语法通过被指定的变量被调用。函数可以用作参数，也可以当作返回值。函数也可以不带函数名地匿名创建，使用如下语法：julia> x -> x^2 + 2x - 1\n#1 (generic function with 1 method)\n\njulia> function (x)\n           x^2 + 2x - 1\n       end\n#3 (generic function with 1 method)这样就创建了一个接受一个参数x和返回当前值下多项式x^2+2x-1的函数。注意到结果是个泛型函数，但是带了编译器生成的连续编号的名字。匿名函数最主要的作用是传递给接收其他函数作为参数的函数。一个经典的例子是map, 为数组的每个值应用一个函数，然后返回一个包含结果的值的新数组：julia> map(round, [1.2,3.5,1.7])\n3-element Array{Float64,1}:\n 1.0\n 4.0\n 2.0This is fine if a named function effecting the transform already exists to pass as the first argument to map. Often, however, a ready-to-use, named function does not exist. In these situations, the anonymous function construct allows easy creation of a single-use function object without needing a name:julia> map(x -> x^2 + 2x - 1, [1,3,-1])\n3-element Array{Int64,1}:\n  2\n 14\n -2An anonymous function accepting multiple arguments can be written using the syntax (x,y,z)->2x+y-z. A zero-argument anonymous function is written as ()->3. The idea of a function with no arguments may seem strange, but is useful for \"delaying\" a computation. In this usage, a block of code is wrapped in a zero-argument function, which is later invoked by calling it as f."
 },
 
 {
@@ -754,23 +754,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/variables-and-scoping/#",
-    "page": "Scope变量",
-    "title": "Scope变量",
+    "page": "变量作用域",
+    "title": "变量作用域",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "manual/variables-and-scoping/#scope-of-variables-1",
-    "page": "Scope变量",
-    "title": "Scope变量",
+    "page": "变量作用域",
+    "title": "变量作用域",
     "category": "section",
     "text": "The scope of a variable is the region of code within which a variable is visible. Variable scoping helps avoid variable naming conflicts. The concept is intuitive: two functions can both have arguments called x without the two x\'s referring to the same thing. Similarly there are many other cases where different blocks of code can use the same name without referring to the same thing. The rules for when the same variable name does or doesn\'t refer to the same thing are called scope rules; this section spells them out in detail.Certain constructs in the language introduce scope blocks, which are regions of code that are eligible to be the scope of some set of variables. The scope of a variable cannot be an arbitrary set of source lines; instead, it will always line up with one of these blocks. There are two main types of scopes in Julia, global scope and local scope, the latter can be nested. The constructs introducing scope blocks are:"
 },
 
 {
     "location": "manual/variables-and-scoping/#man-scope-table-1",
-    "page": "Scope变量",
+    "page": "变量作用域",
     "title": "",
     "category": "section",
     "text": "只能在其他全局作用域块中嵌套的作用域块：\n全局作用域\nmodule, baremodule\nat interactive prompt (REPL)\nlocal scope (don\'t allow nesting)\n(mutable) struct, macro\nScope blocks which may nest anywhere (in global or local scope):\nlocal scope\nfor, while, try-catch-finally, let\nfunctions (either syntax, anonymous & do-blocks)\ncomprehensions, broadcast-fusingNotably missing from this table are begin blocks and if blocks which do not introduce new scope blocks. Both types of scopes follow somewhat different rules which will be explained below.Julia uses lexical scoping, meaning that a function\'s scope does not inherit from its caller\'s scope, but from the scope in which the function was defined. For example, in the following code the x inside foo refers to the x in the global scope of its module Bar:julia> module Bar\n           x = 1\n           foo() = x\n       end;and not a x in the scope where foo is used:julia> import .Bar\n\njulia> x = -1;\n\njulia> Bar.foo()\n1Thus lexical scope means that the scope of variables can be inferred from the source code alone."
@@ -778,7 +778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/variables-and-scoping/#Global-Scope-1",
-    "page": "Scope变量",
+    "page": "变量作用域",
     "title": "Global Scope",
     "category": "section",
     "text": "Each module introduces a new global scope, separate from the global scope of all other modules; there is no all-encompassing global scope. Modules can introduce variables of other modules into their scope through the using or import statements or through qualified access using the dot-notation, i.e. each module is a so-called namespace. Note that variable bindings can only be changed within their global scope and not from an outside module.julia> module A\n           a = 1 # a global in A\'s scope\n       end;\n\njulia> module B\n           module C\n               c = 2\n           end\n           b = C.c    # can access the namespace of a nested global scope\n                      # through a qualified access\n           import ..A # makes module A available\n           d = A.a\n       end;\n\njulia> module D\n           b = a # errors as D\'s global scope is separate from A\'s\n       end;\nERROR: UndefVarError: a not defined\n\njulia> module E\n           import ..A # make module A available\n           A.a = 2    # throws below error\n       end;\nERROR: cannot assign variables in other modulesNote that the interactive prompt (aka REPL) is in the global scope of the module Main."
@@ -786,7 +786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/variables-and-scoping/#Local-Scope-1",
-    "page": "Scope变量",
+    "page": "变量作用域",
     "title": "Local Scope",
     "category": "section",
     "text": "A new local scope is introduced by most code blocks (see above table for a complete list). A local scope inherits all the variables from a parent local scope, both for reading and writing. Additionally, the local scope inherits all globals that are assigned to in its parent global scope block (if it is surrounded by a global if or begin scope). Unlike global scopes, local scopes are not namespaces, thus variables in an inner scope cannot be retrieved from the parent scope through some sort of qualified access.The following rules and examples pertain to local scopes. A newly introduced variable in a local scope does not back-propagate to its parent scope. For example, here the z is not introduced into the top-level scope:julia> for i = 1:10\n           z = i\n       end\n\njulia> z\nERROR: UndefVarError: z not defined(Note, in this and all following examples it is assumed that their top-level is a global scope with a clean workspace, for instance a newly started REPL.)Inside a local scope a variable can be forced to be a new local variable using the local keyword:julia> x = 0;\n\njulia> for i = 1:10\n           local x # this is also the default\n           x = i + 1\n       end\n\njulia> x\n0Inside a local scope a global variable can be assigned to by using the keyword global:julia> for i = 1:10\n           global z\n           z = i\n       end\n\njulia> z\n10The location of both the local and global keywords within the scope block is irrelevant. The following is equivalent to the last example (although stylistically worse):julia> for i = 1:10\n           z = i\n           global z\n       end\n\njulia> z\n10The local and global keywords can also be applied to destructuring assignments, e.g. local x, y = 1, 2. In this case the keyword affects all listed variables.Local scopes are introduced by most block keywords, with notable exceptions of begin and if.In a local scope, all variables are inherited from its parent global scope block unless:an assignment would result in a modified global variable, or\na variable is specifically marked with the keyword local.Thus global variables are only inherited for reading but not for writing:julia> x, y = 1, 2;\n\njulia> function foo()\n           x = 2        # assignment introduces a new local\n           return x + y # y refers to the global\n       end;\n\njulia> foo()\n4\n\njulia> x\n1An explicit global is needed to assign to a global variable:sidebar: Avoiding globals\nAvoiding changing the value of global variables is considered by many to be a programming best-practice. One reason for this is that remotely changing the state of global variables in other modules should be done with care as it makes the local behavior of the program hard to reason about. This is why the scope blocks that introduce local scope require the global keyword to declare the intent to modify a global variable.julia> x = 1;\n\njulia> function foobar()\n           global x = 2\n       end;\n\njulia> foobar();\n\njulia> x\n2Note that nested functions can modify their parent scope\'s local variables:julia> x, y = 1, 2;\n\njulia> function baz()\n           x = 2 # introduces a new local\n           function bar()\n               x = 10       # modifies the parent\'s x\n               return x + y # y is global\n           end\n           return bar() + x # 12 + 10 (x is modified in call of bar())\n       end;\n\njulia> baz()\n22\n\njulia> x, y # verify that global x and y are unchanged\n(1, 2)The reason to allow modifying local variables of parent scopes in nested functions is to allow constructing closures which have a private state, for instance the state variable in the following example:julia> let state = 0\n           global counter() = (state += 1)\n       end;\n\njulia> counter()\n1\n\njulia> counter()\n2See also the closures in the examples in the next two sections. A variable such as x in the first example and state in the second that is inherited from the enclosing scope by the inner function is sometimes called a captured variable. Captured variables can present performance challenges discussed in performance tips.The distinction between inheriting global scope and nesting local scope can lead to some slight differences between functions defined in local vs. global scopes for variable assignments. Consider the modification of the last example by moving bar to the global scope:julia> x, y = 1, 2;\n\njulia> function bar()\n           x = 10 # local, no longer a closure variable\n           return x + y\n       end;\n\njulia> function quz()\n           x = 2 # local\n           return bar() + x # 12 + 2 (x is not modified)\n       end;\n\njulia> quz()\n14\n\njulia> x, y # verify that global x and y are unchanged\n(1, 2)Note that the above nesting rules do not pertain to type and macro definitions as they can only appear at the global scope. There are special scoping rules concerning the evaluation of default and keyword function arguments which are described in the Function section.An assignment introducing a variable used inside a function, type or macro definition need not come before its inner usage:julia> f = y -> y + a;\n\njulia> f(3)\nERROR: UndefVarError: a not defined\nStacktrace:\n[...]\n\njulia> a = 1\n1\n\njulia> f(3)\n4This behavior may seem slightly odd for a normal variable, but allows for named functions – which are just normal variables holding function objects – to be used before they are defined. This allows functions to be defined in whatever order is intuitive and convenient, rather than forcing bottom up ordering or requiring forward declarations, as long as they are defined by the time they are actually called. As an example, here is an inefficient, mutually recursive way to test if positive integers are even or odd:julia> even(n) = (n == 0) ? true : odd(n - 1);\n\njulia> odd(n) = (n == 0) ? false : even(n - 1);\n\njulia> even(3)\nfalse\n\njulia> odd(3)\ntrueJulia provides built-in, efficient functions to test for oddness and evenness called iseven and isodd so the above definitions should only be considered to be examples of scope, not efficient design."
@@ -794,7 +794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/variables-and-scoping/#Let-Blocks-1",
-    "page": "Scope变量",
+    "page": "变量作用域",
     "title": "Let Blocks",
     "category": "section",
     "text": "Unlike assignments to local variables, let statements allocate new variable bindings each time they run. An assignment modifies an existing value location, and let creates new locations. This difference is usually not important, and is only detectable in the case of variables that outlive their scope via closures. The let syntax accepts a comma-separated series of assignments and variable names:julia> x, y, z = -1, -1, -1;\n\njulia> let x = 1, z\n           println(\"x: $x, y: $y\") # x is local variable, y the global\n           println(\"z: $z\") # errors as z has not been assigned yet but is local\n       end\nx: 1, y: -1\nERROR: UndefVarError: z not definedThe assignments are evaluated in order, with each right-hand side evaluated in the scope before the new variable on the left-hand side has been introduced. Therefore it makes sense to write something like let x = x since the two x variables are distinct and have separate storage. Here is an example where the behavior of let is needed:julia> Fs = Vector{Any}(undef, 2); i = 1;\n\njulia> while i <= 2\n           Fs[i] = ()->i\n           global i += 1\n       end\n\njulia> Fs[1]()\n3\n\njulia> Fs[2]()\n3Here we create and store two closures that return variable i. However, it is always the same variable i, so the two closures behave identically. We can use let to create a new binding for i:julia> Fs = Vector{Any}(undef, 2); i = 1;\n\njulia> while i <= 2\n           let i = i\n               Fs[i] = ()->i\n           end\n           global i += 1\n       end\n\njulia> Fs[1]()\n1\n\njulia> Fs[2]()\n2Since the begin construct does not introduce a new scope, it can be useful to use a zero-argument let to just introduce a new scope block without creating any new bindings:julia> let\n           local x = 1\n           let\n               local x = 2\n           end\n           x\n       end\n1Since let introduces a new scope block, the inner local x is a different variable than the outer local x."
@@ -802,7 +802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/variables-and-scoping/#For-Loops-and-Comprehensions-1",
-    "page": "Scope变量",
+    "page": "变量作用域",
     "title": "For Loops and Comprehensions",
     "category": "section",
     "text": "for loops, while loops, and Comprehensions have the following behavior: any new variables introduced in their body scopes are freshly allocated for each loop iteration, as if the loop body were surrounded by a let block:julia> Fs = Vector{Any}(undef, 2);\n\njulia> for j = 1:2\n           Fs[j] = ()->j\n       end\n\njulia> Fs[1]()\n1\n\njulia> Fs[2]()\n2A for loop or comprehension iteration variable is always a new variable:julia> function f()\n           i = 0\n           for i = 1:3\n           end\n           return i\n       end;\n\njulia> f()\n0However, it is occasionally useful to reuse an existing variable as the iteration variable. This can be done conveniently by adding the keyword outer:julia> function f()\n           i = 0\n           for outer i = 1:3\n           end\n           return i\n       end;\n\njulia> f()\n3"
@@ -810,7 +810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/variables-and-scoping/#Constants-1",
-    "page": "Scope变量",
+    "page": "变量作用域",
     "title": "Constants",
     "category": "section",
     "text": "A common use of variables is giving names to specific, unchanging values. Such variables are only assigned once. This intent can be conveyed to the compiler using the const keyword:julia> const e  = 2.71828182845904523536;\n\njulia> const pi = 3.14159265358979323846;Multiple variables can be declared in a single const statement:julia> const a, b = 1, 2\n(1, 2)The const declaration should only be used in global scope on globals. It is difficult for the compiler to optimize code involving global variables, since their values (or even their types) might change at almost any time. If a global variable will not change, adding a const declaration solves this performance problem.Local constants are quite different. The compiler is able to determine automatically when a local variable is constant, so local constant declarations are not necessary, and in fact are currently not supported.Special top-level assignments, such as those performed by the function and struct keywords, are constant by default.Note that const only affects the variable binding; the variable may be bound to a mutable object (such as an array), and that object may still be modified. Additionally when one tries to assign a value a variable that is declared constant the following scenarios are possible:if a new value has a different type than the type of the constant then an error is thrown:julia> const x = 1.0\n1.0\n\njulia> x = 1\nERROR: invalid redefinition of constant xif a new value has the same type as the constant then a warning is printed:julia> const y = 1.0\n1.0\n\njulia> y = 2.0\nWARNING: redefining constant y\n2.0if an assignment would not result in the change of variable value no message is given:julia> const z = 100\n100\n\njulia> z = 100\n100最后一条规则适用于不可变对象，即使变量绑定会改变，例如：julia> const s1 = \"1\"\n\"1\"\n\njulia> s2 = \"1\"\n\"1\"\n\njulia> pointer.([s1, s2], 1)\n2-element Array{Ptr{UInt8},1}:\n Ptr{UInt8} @0x00000000132c9638\n Ptr{UInt8} @0x0000000013dd3d18\n\njulia> s1 = s2\n\"1\"\n\njulia> pointer.([s1, s2], 1)\n2-element Array{Ptr{UInt8},1}:\n Ptr{UInt8} @0x0000000013dd3d18\n Ptr{UInt8} @0x0000000013dd3d18However, for mutable objects the warning is printed as expected:julia> const a = [1]\n1-element Array{Int64,1}:\n 1\n\njulia> a = [1]\nWARNING: redefining constant a\n1-element Array{Int64,1}:\n 1Note that although possible, changing the value of a variable that is declared as constant is strongly discouraged. For instance, if a method references a constant and is already compiled before the constant is changed then it might keep using the old value:julia> const x = 1\n1\n\njulia> f() = x\nf (generic function with 1 method)\n\njulia> f()\n1\n\njulia> x = 2\nWARNING: redefining constant x\n2\n\njulia> f()\n1"
@@ -1257,19 +1257,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/conversion-and-promotion/#Conversion-1",
+    "location": "manual/conversion-and-promotion/#类型转换-1",
     "page": "类型转换和类型提升",
-    "title": "Conversion",
+    "title": "类型转换",
     "category": "section",
-    "text": "The standard way to obtain a value of a certain type T is to call the type\'s constructor, T(x). However, there are cases where it\'s convenient to convert a value from one type to another without the programmer asking for it explicitly. One example is assigning a value into an array: if A is a Vector{Float64}, the expression A[1] = 2 should work by automatically converting the 2 from Int to Float64, and storing the result in the array. This is done via the convert function.The convert function generally takes two arguments: the first is a type object and the second is a value to convert to that type. The returned value is the value converted to an instance of given type. The simplest way to understand this function is to see it in action:julia> x = 12\n12\n\njulia> typeof(x)\nInt64\n\njulia> convert(UInt8, x)\n0x0c\n\njulia> typeof(ans)\nUInt8\n\njulia> convert(AbstractFloat, x)\n12.0\n\njulia> typeof(ans)\nFloat64\n\njulia> a = Any[1 2 3; 4 5 6]\n2×3 Array{Any,2}:\n 1  2  3\n 4  5  6\n\njulia> convert(Array{Float64}, a)\n2×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0Conversion isn\'t always possible, in which case a no method error is thrown indicating that convert doesn\'t know how to perform the requested conversion:julia> convert(AbstractFloat, \"foo\")\nERROR: MethodError: Cannot `convert` an object of type String to an object of type AbstractFloat\n[...]Some languages consider parsing strings as numbers or formatting numbers as strings to be conversions (many dynamic languages will even perform conversion for you automatically), however Julia does not: even though some strings can be parsed as numbers, most strings are not valid representations of numbers, and only a very limited subset of them are. Therefore in Julia the dedicated parse function must be used to perform this operation, making it more explicit."
+    "text": "The standard way to obtain a value of a certain type T is to call the type\'s constructor, T(x). However, there are cases where it\'s convenient to convert a value from one type to another without the programmer asking for it explicitly. One example is assigning a value into an array: if A is a Vector{Float64}, the expression A[1] = 2 should work by automatically converting the 2 from Int to Float64, and storing the result in the array. This is done via the convert function.convert 函数通常接受两个参数：第一个是类型对象，第二个是需要转换为该类型的值。返回的是已转换后的值。理解这个函数最简单的办法就是尝试：julia> x = 12\n12\n\njulia> typeof(x)\nInt64\n\njulia> convert(UInt8, x)\n0x0c\n\njulia> typeof(ans)\nUInt8\n\njulia> convert(AbstractFloat, x)\n12.0\n\njulia> typeof(ans)\nFloat64\n\njulia> a = Any[1 2 3; 4 5 6]\n2×3 Array{Any,2}:\n 1  2  3\n 4  5  6\n\njulia> convert(Array{Float64}, a)\n2×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0类型转换并不总是可行的，有时 convert 函数并不知道该如何执行所请求的类型转换就会抛出 no method error 错误。例如下例：julia> convert(AbstractFloat, \"foo\")\nERROR: MethodError: Cannot `convert` an object of type String to an object of type AbstractFloat\n[...]Some languages consider parsing strings as numbers or formatting numbers as strings to be conversions (many dynamic languages will even perform conversion for you automatically), however Julia does not: even though some strings can be parsed as numbers, most strings are not valid representations of numbers, and only a very limited subset of them are. Therefore in Julia the dedicated parse function must be used to perform this operation, making it more explicit."
 },
 
 {
-    "location": "manual/conversion-and-promotion/#When-is-convert-called?-1",
+    "location": "manual/conversion-and-promotion/#什么时候使用-convert-函数?-1",
     "page": "类型转换和类型提升",
-    "title": "When is convert called?",
+    "title": "什么时候使用 convert 函数?",
     "category": "section",
-    "text": "The following language constructs call convert:Assigning to an array converts to the array\'s element type.\nAssigning to a field of an object converts to the declared type of the field.\nConstructing an object with new converts to the object\'s declared field types.\nAssigning to a variable with a declared type (e.g. local x::T) converts to that type.\nA function with a declared return type converts its return value to that type.\nPassing a value to ccall converts it to the corresponding argument type."
+    "text": "构造以下语言结构时需要调用 convert 函数：Assigning to an array converts to the array\'s element type.\nAssigning to a field of an object converts to the declared type of the field.\nConstructing an object with new converts to the object\'s declared field types.\nAssigning to a variable with a declared type (e.g. local x::T) converts to that type.\nA function with a declared return type converts its return value to that type.\nPassing a value to ccall converts it to the corresponding argument type."
 },
 
 {
@@ -2021,7 +2021,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "多维数组",
     "category": "section",
-    "text": "与大多数技术计算语言一样，Julia 提供原生的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其它容器的代价。Julia 用同样的方式来处理数组。就像和其它用 Julia 写的代码一样，Julia 的数组库几乎完全是用 Julia 自身实现的，它的性能源自编译器。这样一来，用户就可以通过继承 AbstractArray 的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅manual section on the AbstractArray interface。数组是存储在多维网格中对象的集合。在最一般的情况下， 数组中的对象可能是 Any 类型。 对于大多数计算上的需求，数组中对象的类型应该更加具体，例如 Float64 或 Int32。一般来说，与许多其他技术计算语言不同，Julia 不希望为了性能而以向量化的方式编写程序。Julia 的编译器使用类型推断，并为标量数组索引生成优化的代码，允许以方便和可读的方式编写程序，而不牺牲性能，并且有时使用更少的内存。在Julia中，所有函数的参数都是 passed by sharing (也就是传指针)。一些科学计算语言用传值的方式传递数组，这防止了这个值的被调用者在调用函数中被意外修改，也导致无法避免不必要的数组赋值。简便起见，以一个 ! 结束的函数名表示它会修改或者销毁它的一个或者多个参数的值（例如，sort 和 sort!）。被调用者必须显式复制，以保证他们不会修改他们本不应该修改的输入。很多不可变的函数时在实现的时候，对输入的显式副本调用一个在结尾加上 ! 的同名函数，并返回该副本。"
+    "text": "与大多数技术计算语言一样，Julia 提供原生的数组实现。 大多数技术计算语言非常重视其数组实现，但需要付出使用其它容器的代价。Julia 用同样的方式来处理数组。就像和其它用 Julia 写的代码一样，Julia 的数组库几乎完全是用 Julia 自身实现的，它的性能源自编译器。这样一来，用户就可以通过继承 AbstractArray 的方式来创建自定义数组类型。 实现自定义数组类型的更多详细信息，请参阅manual section on the AbstractArray interface。数组是存储在多维网格中对象的集合。在最一般的情况下， 数组中的对象可能是 Any 类型。 对于大多数计算上的需求，数组中对象的类型应该更加具体，例如 Float64 或 Int32。一般来说，与许多其他科学计算语言不同，Julia 不希望为了性能而以矢量化的方式编写程序。Julia 的编译器使用类型推断，并为标量数组索引生成优化的代码，从而能够令用户方便地编写可读性良好的程序，而不牺牲性能，并且时常会减少内存使用。在Julia中，所有函数的参数都是 passed by sharing (比如，传指针)。一些科学计算语言用传值的方式传递数组，尽管这样做可以防止数组在被调函数中被意外地篡改，但这也会导致不必要的数组拷贝。通常，以一个 ! 结尾的函数名表示它会对自己的一个或者多个参数的值进行修改或者销毁（例如，sort 和 sort!）。被调函数必须进行显式拷贝，以确保它们不会无意中修改输入参数。很多 “non-mutating” 函数在实现的时候，都会先进行显式拷贝，然后调用一个以 ! 结尾的同名函数，最后返回之前拷贝的副本。"
 },
 
 {
@@ -2029,7 +2029,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "基本函数",
     "category": "section",
-    "text": "函数 描述\neltype(A) A中元素的类型\nlength(A) A 中元素的数量\nndims(A) A 的维数\nsize(A) 一个包含A的维度的元组\nsize(A,n) A第n维的大小\naxes(A) 一个包含A有效索引的元祖\naxes(A,n) 一个描述第n维有效索引的范围\neachindex(A) 一个访问A 中每一个位置的高效迭代器\nstride(A,k) 在k维上的间隔（stride）（相邻元素间的线性索引距离）\nstrides(A) 每一维上的间隔的元组"
+    "text": "函数 描述\neltype(A) A 中元素的类型\nlength(A) A 中元素的数量\nndims(A) A 的维数\nsize(A) 一个包含 A 各个维度上元素数量的元组\nsize(A,n) A 第 n 维中的元素数量\naxes(A) 一个包含 A 有效索引的元组\naxes(A,n) 第 n 维有效索引的范围\neachindex(A) 一个访问 A 中每一个位置的高效迭代器\nstride(A,k) 在第 k 维上的间隔（stride）（相邻元素间的线性索引距离）\nstrides(A) 包含每一维上的间隔（stride）的元组"
 },
 
 {
@@ -2037,39 +2037,39 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "构造和初始化",
     "category": "section",
-    "text": "Julia 提供了许多用于构造和初始化数组的函数。 在下列函数中，使用 dims ... 参数调用可以是一个表示维数大小的元组或一系列维数大小作为可变数量的参数传递。 大多数这些函数也接受第一个表示数组的元素类型的输入T。 如果类型 T 被省略，它将默认为[Float64]（@ ref）。函数 描述\nArray{T}(undef, dims...) 一个没有初始化的密集 数组\nzeros(T, dims...) 一个全零数组\nones(T, dims...) 一个元素均为1的数组\ntrues(dims...) 一个每个元素都为 true 的 BitArray\nfalses(dims...) 一个每个元素都为 false 的 BitArray\nreshape(A, dims...) 一个包含跟A 相同数据但维数不同的数组\ncopy(A) 复制 A\ndeepcopy(A) 复制 A，递归地复制其元素\nsimilar(A, T, dims...) 一个与A具有相同类型（这里指的是密集，稀疏等）的未初始化数组，但具有指定的元素类型和维数。 第二个和第三个参数都是可选的，如果省略则默认为元素类型和 A 的维数。\nreinterpret(T, A) 与 A 具有相同二进制数据的数组，但元素类型为 T\nrand(T, dims...) 一个随机数组，元素值是01半开区间中的均匀分布且服从一阶独立同分布\nrandn(T, dims...) 一个随机数组，元素为标准正态分布，服从独立同分布\nMatrix{T}(I, m, n) m行n列的单位矩阵\nrange(start, stop=stop, length=n) 从start到stop的带有n个线性间隔元素的范围\nfill!(A, x) 用值 x 填充数组 A\nfill(x, dims...) 一个被值x填充的数组[1]: iid，独立同分布语法[A，B，C，...]构造其参数的1维数组（向量）。 如果所有参数有一个共同的类型提升类型promotion type，然后他们会被用convert转换为该类型。要查看各种方法，我们可以将不同维数传递给这些构造函数，请考虑以下示例：julia> zeros(Int8, 2, 2)\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros(Int8, (2, 2))\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros((2, 2))\n2×2 Array{Float64,2}:\n 0.0  0.0\n 0.0  0.0这里的 (2, 2) 是一个 Tuple."
+    "text": "Julia 提供了许多用于构造和初始化数组的函数。在下列函数中，参数 dims ... 可以是一个包含维数大小的元组，也可以是元组拆开后的一串独立的数字变量。大部分函数的第一个参数都表示数组的元素类型 T 。如果类型 T 被省略，那么将默认为Float64。函数 描述\nArray{T}(undef, dims...) 一个没有初始化的密集 Array\nzeros(T, dims...) 一个全零 Array\nones(T, dims...) 一个元素均为1的 Array\ntrues(dims...) 一个每个元素都为 true 的 BitArray\nfalses(dims...) 一个每个元素都为 false 的 BitArray\nreshape(A, dims...) 一个包含跟 A 相同数据但维数不同的数组\ncopy(A) 拷贝 A\ndeepcopy(A) 深拷贝，即拷贝 A，并递归地拷贝其元素\nsimilar(A, T, dims...) 一个与A具有相同类型（这里指的是密集，稀疏等）的未初始化数组，但具有指定的元素类型和维数。第二个和第三个参数都是可选的，如果省略则默认为元素类型和 A 的维数。\nreinterpret(T, A) 与 A 具有相同二进制数据的数组，但元素类型为 T\nrand(T, dims...) 一个随机 Array，元素值是01半开区间中的均匀分布且服从一阶独立同分布 [1]\nrandn(T, dims...) 一个随机 Array，元素为标准正态分布，服从独立同分布\nMatrix{T}(I, m, n) m 行 n 列的单位矩阵\nrange(start, stop=stop, length=n) 从 start 到 stop 的带有 n 个线性间隔元素的范围\nfill!(A, x) 用值 x 填充数组 A\nfill(x, dims...) 一个被值 x 填充的 Array[1]: iid，独立同分布用 [A，B，C，...] 来构造 1 维数组（向量）。如果所有参数有一个共同的提升类型（promotion type），那么它们会被 convert 函数转换为该类型。要查看各种方法，我们可以将不同维数传递给这些构造函数，请考虑以下示例：julia> zeros(Int8, 2, 2)\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros(Int8, (2, 2))\n2×2 Array{Int8,2}:\n 0  0\n 0  0\n\njulia> zeros((2, 2))\n2×2 Array{Float64,2}:\n 0.0  0.0\n 0.0  0.0这里的 (2, 2) 是一个 Tuple."
 },
 
 {
-    "location": "manual/arrays/#拼接-1",
+    "location": "manual/arrays/#级联-1",
     "page": "多维数组",
-    "title": "拼接",
+    "title": "级联",
     "category": "section",
-    "text": "可以使用以下函数构造和拼接数组：函数 描述\ncat(A...; dims=k) 沿着s的第k拼接数组\nvcat(A...) cat(A...; dims=1) 的简写\nhcat(A...) cat(A...; dims=2) 的简写传递给这些函数的标量值会被当作1个元素的数组。 例如，julia> vcat([1, 2], 3)\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> hcat([1 2], 3)\n1×3 Array{Int64,2}:\n 1  2  3这些拼接函数非常常用，因此它们有特殊的语法：表达式 调用\n[A; B; C; ...] vcat\n[A B C ...] hcat\n[A B; C D; ...] hvcathvcat 可以在第1维列数组（用分号分隔）和第2维行数组（用空格分隔）进行连接。 请考虑以下语法示例：julia> [[1; 2]; [3, 4]]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> [[1 2] [3 4]]\n1×4 Array{Int64,2}:\n 1  2  3  4\n\njulia> [[1 2]; [3 4]]\n2×2 Array{Int64,2}:\n 1  2\n 3  4"
+    "text": "可以使用以下函数构造和级联数组：函数 描述\ncat(A...; dims=k) 沿着 s 的第 k 维级联数组\nvcat(A...) cat(A...; dims=1) 的简写\nhcat(A...) cat(A...; dims=2) 的简写传递给这些函数的标量值会被当作单元素数组。例如，julia> vcat([1, 2], 3)\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> hcat([1 2], 3)\n1×3 Array{Int64,2}:\n 1  2  3这些级联函数非常常用，因此它们有特殊的语法：表达式 调用\n[A; B; C; ...] vcat\n[A B C ...] hcat\n[A B; C D; ...] hvcathvcat 可以在第 1 维列数组（用分号分隔）和第 2 维行数组（用空格分隔）进行级联。 请考虑以下语法示例：julia> [[1; 2]; [3, 4]]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> [[1 2] [3 4]]\n1×4 Array{Int64,2}:\n 1  2  3  4\n\njulia> [[1 2]; [3 4]]\n2×2 Array{Int64,2}:\n 1  2\n 3  4"
 },
 
 {
-    "location": "manual/arrays/#类型数组初始化-1",
+    "location": "manual/arrays/#限定类型数组的初始化-1",
     "page": "多维数组",
-    "title": "类型数组初始化",
+    "title": "限定类型数组的初始化",
     "category": "section",
-    "text": "可以用 T[A, B, C, ...]的方式声明一个元素为某种特定类型的数组。该方法定义一个元素类型为 T 的一维数组并且初始化元素为 A, B, C,....。比如，Any[x, y, z] 声明一个异构数组，该数组可以包含任意类型元素。连接语法可以类似地以类型为前缀，来指定结果的元素类型。julia> [[1 2] [3 4]]\n1×4 Array{Int64,2}:\n 1  2  3  4\n\njulia> Int8[[1 2] [3 4]]\n1×4 Array{Int8,2}:\n 1  2  3  4"
+    "text": "可以用 T[A, B, C, ...] 的方式声明一个元素为某种特定类型的数组。该方法定义一个元素类型为 T 的一维数组并且初始化元素为 A, B, C, ....。比如，Any[x, y, z] 会构建一个异构数组，该数组可以包含任意类型的元素。类似的，级联也可以用类型为前缀，来指定结果的元素类型。julia> [[1 2] [3 4]]\n1×4 Array{Int64,2}:\n 1  2  3  4\n\njulia> Int8[[1 2] [3 4]]\n1×4 Array{Int8,2}:\n 1  2  3  4"
 },
 
 {
-    "location": "manual/arrays/#推导式-1",
+    "location": "manual/arrays/#Comprehensions-1",
     "page": "多维数组",
-    "title": "推导式",
+    "title": "Comprehensions",
     "category": "section",
-    "text": "推导提供了构造数组的通用且强大的方法。 推导语法类似于数学中的集合构造符号：A = [ F(x,y,...) for x=rx, y=ry, ... ]这种形式的含义是F(x,y,...)取其给定列表中变量x，y等的每个值进行计算。 值可以指定为任何可迭代对象，但通常是1：n或2:(n-1)之类的范围，或者像[1.2, 3.4, 5.7]这样的显式数组值。 结果是一个N-d密集数组，其维数是变量范围rx，ry等的维数串联。每次FF(x,y,...)计算返回一个标量。下面的示例计算当前元素和沿一维网格其左，右相邻元素的加权平均值：julia> x = rand(8)\n8-element Array{Float64,1}:\n 0.843025\n 0.869052\n 0.365105\n 0.699456\n 0.977653\n 0.994953\n 0.41084\n 0.809411\n\njulia> [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]\n6-element Array{Float64,1}:\n 0.736559\n 0.57468\n 0.685417\n 0.912429\n 0.8446\n 0.656511生成的数组类型取决于计算元素的类型。 为了明确地控制类型，可以在推导之前添加类型。 例如，我们可以要求结果为单精度类型：Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]"
+    "text": "Comprehensions 提供了构造数组的通用且强大的方法。其语法类似于数学中的集合构造的写法：A = [ F(x,y,...) for x=rx, y=ry, ... ]这种形式的含义是 F(x,y,...) 取其给定列表中变量 x，y 等的每个值进行计算。值可以指定为任何可迭代对象，但通常是 1：n 或 2:(n-1) 之类的范围，或者像 [1.2, 3.4, 5.7] 这样的显式数组值。结果是一个 N-d 密集数组，其维数是变量范围 rx，ry 等的维数串联。每次 FF(x,y,...) 计算返回一个标量。下面的示例计算当前元素和沿一维网格其左，右相邻元素的加权平均值：julia> x = rand(8)\n8-element Array{Float64,1}:\n 0.843025\n 0.869052\n 0.365105\n 0.699456\n 0.977653\n 0.994953\n 0.41084\n 0.809411\n\njulia> [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]\n6-element Array{Float64,1}:\n 0.736559\n 0.57468\n 0.685417\n 0.912429\n 0.8446\n 0.656511生成的数组类型取决于计算元素的类型。为了明确地控制类型，可以在 comprehension 之前添加类型。例如，我们可以要求结果为单精度类型：Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]"
 },
 
 {
-    "location": "manual/arrays/#生成器表达式-1",
+    "location": "manual/arrays/#Generator-表达式-1",
     "page": "多维数组",
-    "title": "生成器表达式",
+    "title": "Generator 表达式",
     "category": "section",
-    "text": "也可以在没有方括号的情况下编写推导，从而产生称为生成器的对象。 可以迭代此对象以按需生成值，而不是预先分配数组并存储它们（请参阅迭代）。 例如，以下表达式在不分配内存的情况下对一个序列进行求和：julia> sum(1/n^2 for n=1:1000)\n1.6439345666815615在参数列表中编写具有多个维度的生成器表达式时，需要使用括号将生成器与后续参数分开：julia> map(tuple, 1/(i+j) for i=1:2, j=1:2, [1:4;])\nERROR: syntax: invalid iteration specificationfor之后的所有逗号分隔的表达式都被解释为范围。 添加括号让我们可以向map中添加第三个参数：julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])\n2×2 Array{Tuple{Float64,Int64},2}:\n (0.5, 1)       (0.333333, 3)\n (0.333333, 2)  (0.25, 4)生成器是通过内部函数实现。 与语言中内部函数的其他情况一样，封闭作用域中的变量可以在内部函数中“捕获”。 例如，sum(p[i] - q[i] for i=1:n) 从封闭作用域中捕获三个变量p，q和n。 捕获的变量可能会出现性能提示中描述的性能问题。通过编写多个for关键字，生成器和推导中的范围可以取决于之前的范围：julia> [(i,j) for i=1:3 for j=1:i]\n6-element Array{Tuple{Int64,Int64},1}:\n (1, 1)\n (2, 1)\n (2, 2)\n (3, 1)\n (3, 2)\n (3, 3)在这些情况下，结果都是一维的。可以使用if关键字过滤生成的值：julia> [(i,j) for i=1:3 for j=1:i if i+j == 4]\n2-element Array{Tuple{Int64,Int64},1}:\n (2, 2)\n (3, 1)"
+    "text": "也可以在没有方括号的情况下编写 comprehension，从而产生称为 generator 的对象。可以迭代此对象以按需生成值，而不是预先分配数组并存储它们（请参阅 Iteration）。例如，以下表达式在不分配内存的情况下对一个序列进行求和：julia> sum(1/n^2 for n=1:1000)\n1.6439345666815615在参数列表中编写具有多个维度的生成器表达式时，需要使用括号将生成器与后续参数分开：julia> map(tuple, 1/(i+j) for i=1:2, j=1:2, [1:4;])\nERROR: syntax: invalid iteration specificationfor之后的所有逗号分隔的表达式都被解释为范围。 添加括号让我们可以向map中添加第三个参数：julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])\n2×2 Array{Tuple{Float64,Int64},2}:\n (0.5, 1)       (0.333333, 3)\n (0.333333, 2)  (0.25, 4)生成器是通过内部函数实现。 与语言中内部函数的其他情况一样，封闭作用域中的变量可以在内部函数中“捕获”。 例如，sum(p[i] - q[i] for i=1:n) 从封闭作用域中捕获三个变量p，q和n。 捕获的变量可能会出现性能提示中描述的性能问题。通过编写多个for关键字，生成器和推导中的范围可以取决于之前的范围：julia> [(i,j) for i=1:3 for j=1:i]\n6-element Array{Tuple{Int64,Int64},1}:\n (1, 1)\n (2, 1)\n (2, 2)\n (3, 1)\n (3, 2)\n (3, 3)在这些情况下，结果都是一维的。可以使用if关键字过滤生成的值：julia> [(i,j) for i=1:3 for j=1:i if i+j == 4]\n2-element Array{Tuple{Int64,Int64},1}:\n (2, 2)\n (3, 1)"
 },
 
 {
@@ -2101,15 +2101,15 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "笛卡尔索引",
     "category": "section",
-    "text": "特殊的CartesianIndex{N}对象表示一个标量索引，其行为类似于跨越多个维度的N维整数元组。 例如：julia> A = reshape(1:32, 4, 4, 2);\n\njulia> A[3, 2, 1]\n7\n\njulia> A[CartesianIndex(3, 2, 1)] == A[3, 2, 1] == 7\ntrueConsidered alone, this may seem relatively trivial; CartesianIndex simply gathers multiple integers together into one object that represents a single multidimensional index. When combined with other indexing forms and iterators that yield CartesianIndexes, however, this can lead directly to very elegant and efficient code. See Iteration below, and for some more advanced examples, see this blog post on multidimensional algorithms and iteration.Arrays of CartesianIndex{N} are also supported. They represent a collection of scalar indices that each span N dimensions, enabling a form of indexing that is sometimes referred to as pointwise indexing. For example, it enables accessing the diagonal elements from the first \"page\" of A from above:julia> page = A[:,:,1]\n4×4 Array{Int64,2}:\n 1  5   9  13\n 2  6  10  14\n 3  7  11  15\n 4  8  12  16\n\njulia> page[[CartesianIndex(1,1),\n             CartesianIndex(2,2),\n             CartesianIndex(3,3),\n             CartesianIndex(4,4)]]\n4-element Array{Int64,1}:\n  1\n  6\n 11\n 16This can be expressed much more simply with dot broadcasting and by combining it with a normal integer index (instead of extracting the first page from A as a separate step). It can even be combined with a : to extract both diagonals from the two pages at the same time:julia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), 1]\n4-element Array{Int64,1}:\n  1\n  6\n 11\n 16\n\njulia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), :]\n4×2 Array{Int64,2}:\n  1  17\n  6  22\n 11  27\n 16  32warning: Warning\nCartesianIndex and arrays of CartesianIndex are not compatible with the end keyword to represent the last index of a dimension. Do not use end in indexing expressions that may contain either CartesianIndex or arrays thereof."
+    "text": "特殊的CartesianIndex{N}对象表示一个标量索引，其行为类似于跨越多个维度的N维整数元组。 例如：julia> A = reshape(1:32, 4, 4, 2);\n\njulia> A[3, 2, 1]\n7\n\njulia> A[CartesianIndex(3, 2, 1)] == A[3, 2, 1] == 7\ntrue如果单独考虑，这可能看起来相对微不足道; CartesianIndex只是将多个整数聚合成一个表示单个多维索引的对象。 但是，当与其他索引形式和迭代器组合产生多个CartesianIndex时，这可以直接形成非常优雅和高效的代码。 请参阅下面的迭代，有关更高级的示例，请参阅关于多维算法和迭代博客文章。也支持CartesianIndex {N}的数组。 它们代表一组标量索引，每个索引都跨越N个维度，从而实现一种有时也称为逐点索引的索引形式，。 例如，它可以从上面的A的第一“页”访问对角元素：julia> page = A[:,:,1]\n4×4 Array{Int64,2}:\n 1  5   9  13\n 2  6  10  14\n 3  7  11  15\n 4  8  12  16\n\njulia> page[[CartesianIndex(1,1),\n             CartesianIndex(2,2),\n             CartesianIndex(3,3),\n             CartesianIndex(4,4)]]\n4-element Array{Int64,1}:\n  1\n  6\n 11\n 16这可以通过dot broadcasting以及普通整数索引（而不是把从“A”中提取第一“页”作为单独的步骤）更加简单地表达。 它甚至可以与: 结合使用，同时从两个页面中提取两个对角线：julia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), 1]\n4-element Array{Int64,1}:\n  1\n  6\n 11\n 16\n\njulia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), :]\n4×2 Array{Int64,2}:\n  1  17\n  6  22\n 11  27\n 16  32warning: Warning\nCartesianIndex 和 CartesianIndex 数组与表示维度的最后一个索引的 end 关键字不兼容。 不要在可能包含 CartesianIndex 或其数组的索引表达式中使用 end。"
 },
 
 {
-    "location": "manual/arrays/#Logical-indexing-1",
+    "location": "manual/arrays/#逻辑索引-1",
     "page": "多维数组",
-    "title": "Logical indexing",
+    "title": "逻辑索引",
     "category": "section",
-    "text": "Often referred to as logical indexing or indexing with a logical mask, indexing by a boolean array selects elements at the indices where its values are true. Indexing by a boolean vector B is effectively the same as indexing by the vector of integers that is returned by findall(B). Similarly, indexing by a N-dimensional boolean array is effectively the same as indexing by the vector of CartesianIndex{N}s where its values are true. A logical index must be a vector of the same length as the dimension it indexes into, or it must be the only index provided and match the size and dimensionality of the array it indexes into. It is generally more efficient to use boolean arrays as indices directly instead of first calling findall.julia> x = reshape(1:16, 4, 4)\n4×4 reshape(::UnitRange{Int64}, 4, 4) with eltype Int64:\n 1  5   9  13\n 2  6  10  14\n 3  7  11  15\n 4  8  12  16\n\njulia> x[[false, true, true, false], :]\n2×4 Array{Int64,2}:\n 2  6  10  14\n 3  7  11  15\n\njulia> mask = map(ispow2, x)\n4×4 Array{Bool,2}:\n  true  false  false  false\n  true  false  false  false\n false  false  false  false\n  true   true  false   true\n\njulia> x[mask]\n5-element Array{Int64,1}:\n  1\n  2\n  4\n  8\n 16"
+    "text": "通常称为逻辑索引或使用逻辑掩码索引，通过布尔数组进行索引选择索引处其值为 true 的元素。 通过布尔向量 B 进行索引实际上与通过findall(B)返回的整数向量进行索引相同。 类似地，通过 N 维布尔数组进行索引实际上与通过 CartesianIndex{N} 向量在值为 true 处进行索引相同。 逻辑索引必须是与其索引的维度长度相同的向量，或者它必须是提供的唯一索引，并且与索引的数组的大小和维度相匹配。 将布尔数组直接用作索引，通常比首先调用findall更有效。julia> x = reshape(1:16, 4, 4)\n4×4 reshape(::UnitRange{Int64}, 4, 4) with eltype Int64:\n 1  5   9  13\n 2  6  10  14\n 3  7  11  15\n 4  8  12  16\n\njulia> x[[false, true, true, false], :]\n2×4 Array{Int64,2}:\n 2  6  10  14\n 3  7  11  15\n\njulia> mask = map(ispow2, x)\n4×4 Array{Bool,2}:\n  true  false  false  false\n  true  false  false  false\n false  false  false  false\n  true   true  false   true\n\njulia> x[mask]\n5-element Array{Int64,1}:\n  1\n  2\n  4\n  8\n 16"
 },
 
 {
@@ -2117,7 +2117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "迭代",
     "category": "section",
-    "text": "迭代整个数组的推荐方法是for a in A\n    # Do something with the element a\nend\n\nfor i in eachindex(A)\n    # Do something with i and/or A[i]\nendThe first construct is used when you need the value, but not index, of each element. In the second construct, i will be an Int if A is an array type with fast linear indexing; otherwise, it will be a CartesianIndex:julia> A = rand(4,3);\n\njulia> B = view(A, 1:3, 2:3);\n\njulia> for i in eachindex(B)\n           @show i\n       end\ni = CartesianIndex(1, 1)\ni = CartesianIndex(2, 1)\ni = CartesianIndex(3, 1)\ni = CartesianIndex(1, 2)\ni = CartesianIndex(2, 2)\ni = CartesianIndex(3, 2)In contrast with for i = 1:length(A), iterating with eachindex provides an efficient way to iterate over any array type."
+    "text": "迭代整个数组的推荐方法是for a in A\n    # Do something with the element a\nend\n\nfor i in eachindex(A)\n    # Do something with i and/or A[i]\nend当你需要每个元素的值而不是索引时，使用第一个构造。 在第二个构造中，如果 A 是具有快速线性索引的数组类型，i 将是 Int; 否则，它将是一个 CartesianIndex：julia> A = rand(4,3);\n\njulia> B = view(A, 1:3, 2:3);\n\njulia> for i in eachindex(B)\n           @show i\n       end\ni = CartesianIndex(1, 1)\ni = CartesianIndex(2, 1)\ni = CartesianIndex(3, 1)\ni = CartesianIndex(1, 2)\ni = CartesianIndex(2, 2)\ni = CartesianIndex(3, 2)与 for i = 1:length(A) 相比，使用eachindex迭代提供了一种迭代任何数组类型的有效方法。"
 },
 
 {
@@ -2125,15 +2125,15 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "数组特点",
     "category": "section",
-    "text": "If you write a custom AbstractArray type, you can specify that it has fast linear indexing usingBase.IndexStyle(::Type{<:MyArray}) = IndexLinear()This setting will cause eachindex iteration over a MyArray to use integers. If you don\'t specify this trait, the default value IndexCartesian() is used."
+    "text": "如果你编写一个自定义的AbstractArray类型，你可以指定它使用快速线性索引Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()此设置将导致 myArray 上的 eachindex 迭代使用整数。 如果未指定此特征，则使用默认值 IndexCartesian()。"
 },
 
 {
-    "location": "manual/arrays/#数组、矢量化操作符及函数-1",
+    "location": "manual/arrays/#数组、向量化操作符及函数-1",
     "page": "多维数组",
-    "title": "数组、矢量化操作符及函数",
+    "title": "数组、向量化操作符及函数",
     "category": "section",
-    "text": "以下操作符支持数组整体操作一元运算符 – -, +\n二元运算符 – -, +, *, /, \\, ^\n比较操作符– ==, !=, ≈ (isapprox), ≉Most of the binary arithmetic operators listed above also operate elementwise when one argument is scalar: -, +, and * when either argument is scalar, and / and \\ when the denominator is scalar. For example, [1, 2] + 3 == [4, 5] and [6, 4] / 2 == [3, 2].Additionally, to enable convenient vectorization of mathematical and other operations, Julia provides the dot syntax f.(args...), e.g. sin.(x) or min.(x,y), for elementwise operations over arrays or mixtures of arrays and scalars (a Broadcasting operation); these have the additional advantage of \"fusing\" into a single loop when combined with other dot calls, e.g. sin.(cos.(x)).Also, every binary operator supports a dot version that can be applied to arrays (and combinations of arrays and scalars) in such fused broadcasting operations, e.g. z .== sin.(x .* y).Note that comparisons such as == operate on whole arrays, giving a single boolean answer. Use dot operators like .== for elementwise comparisons. (For comparison operations like <, only the elementwise .< version is applicable to arrays.)Also notice the difference between max.(a,b), which broadcasts max elementwise over a and b, and maximum(a), which finds the largest value within a. The same relationship holds for min.(a,b) and minimum(a)."
+    "text": "以下运算符支持对数组操作一元运算符 – -, +\n二元运算符 – -, +, *, /, \\, ^\n比较操作符– ==, !=, ≈ (isapprox), ≉当一个参数是标量时，上面列出的大多数二元算术运算符也可以按元素运行：当任一参数是标量时，-，+和*；当分母是标量时，/和\\。 例如，[1, 2] + 3 == [4, 5] 和 [6, 4] / 2 == [3, 2]。另外，为了便于数学上和其他运算的向量化，Julia 提供了点语法（dot syntax） f.(args...)，例如， sin.(x) 或 min.(x,y)，用于数组或数组和标量的混合上的按元素运算（Broadcasting运算）; 当与其他点调用（dot call）结合使用时，它们的额外优点是能“融合”到单个循环中，例如，sin.(cos.(x))。此外，每个二元运算符支持相应的点操作版本，可以应用于此类融合broadcasting操作的数组（以及数组和标量的组合） ，例如 z .== sin.(x .* y)。请注意，类似 == 的比较运算在作用于整个数组时，得到一个布尔结果。 使用像 .== 这样的点运算符进行按元素的比较。（对于像 < 这样的比较操作，只有按元素运算的版本 .< 适用于数组。）还要注意 max.(a,b) 和 maximum(a)之间的区别，max.(a,b) 对 a 和 b 的每个元素 broadcasts max， maximum(a)寻找在 a 中的最大值。min.(a,b) 和 minimum(a) 也有同样的关系。"
 },
 
 {
@@ -3653,7 +3653,7 @@ var documenterSearchIndex = {"docs": [
     "page": "代码风格指南",
     "title": "代码风格指南",
     "category": "section",
-    "text": "接下来的部分将介绍如何写出具有Julia风格的代码。当然，这些规则并不是绝对的，它们只是一些建议，以便更好地帮助你熟悉这门语言，以及在不同的代码设计中做出选择。"
+    "text": "接下来的部分将介绍如何写出具有 Julia 风格的代码。当然，这些规则并不是绝对的，它们只是一些建议，以便更好地帮助你熟悉这门语言，以及在不同的代码设计中做出选择。"
 },
 
 {
@@ -3661,15 +3661,15 @@ var documenterSearchIndex = {"docs": [
     "page": "代码风格指南",
     "title": "写函数，而不是仅仅写脚本",
     "category": "section",
-    "text": "一开始解决问题的时候，直接从最外层一步步写代码的确很便捷，但你应该尽早地将代码组织成函数。函数有更强的复用性和可测试性，并且能更清楚地让人知道哪些步骤做完了，以及每一步骤的输入输出分别是什么。此外，由于Julia编译器特殊的工作方式，写在函数中的代码往往要比最外层的代码运行地快得多。此外值得一提的是，函数应当接受参数，而不是直接使用全局变量进行操作（pi 等常数除外）"
+    "text": "一开始解决问题的时候，直接从最外层一步步写代码的确很便捷，但你应该尽早地将代码组织成函数。函数有更强的复用性和可测试性，并且能更清楚地让人知道哪些步骤做完了，以及每一步骤的输入输出分别是什么。此外，由于 Julia 编译器特殊的工作方式，写在函数中的代码往往要比最外层的代码运行地快得多。此外值得一提的是，函数应当接受参数，而不是直接使用全局变量进行操作（pi 等常数除外）。"
 },
 
 {
-    "location": "manual/style-guide/#类型不要写的过于具体-1",
+    "location": "manual/style-guide/#类型不要写得过于具体-1",
     "page": "代码风格指南",
-    "title": "类型不要写的过于具体",
+    "title": "类型不要写得过于具体",
     "category": "section",
-    "text": "代码应该写得尽可能通用。例如，下面这段代码:Complex{Float64}(x)更好的写法是写成下面的通用函数：complex(float(x))上面的版本会把 x 转换成一个合适的类型，而非总是同一类型。这种代码风格与函数的参数尤其相关。例如，当一个参数可以是任何整型时，不要将它的类型声明为 Int 或 Int32，而要使用抽象类型（abstract type）Integer 来表示。事实上，除非确实需要将其与其它的方法定义区分开，很多情况下你可以干脆完全省略掉参数的类型，因为如果你的操作中有不支持某种参数类型的操作的话，反正都会抛出 MethodError 的。这也称作 鸭子类型）。例如，考虑这样的一个叫做 addone 的函数，其返回值为它的参数加 1 ：addone(x::Int) = x + 1                 # works only for Int\naddone(x::Integer) = x + oneunit(x)    # any integer type\naddone(x::Number) = x + oneunit(x)     # any numeric type\naddone(x) = x + oneunit(x)             # any type supporting + and oneunit最后一种定义可以处理所有支持 oneunit （返回和 x 相同类型的 1，以避免不需要的类型提升（type promotion））以及 + 函数的类型。这里的关键点在于，只定义通用的 addone(x) = x + oneunit(x) 并不会带来性能上的损失，因为 Julia 会在需要的时候自动编译特定的版本。比如说，当第一次调用 addone(12) 时，Julia 会自动编译一个特定的 addone 函数，它接受一个 x::Int 的参数，并把调用的 oneunit 替换为内连的值 1。因此，上述的前三种 addone 的定义对于第四种来说是完全多余的。"
+    "text": "代码应该写得尽可能通用。例如，下面这段代码:Complex{Float64}(x)更好的写法是写成下面的通用函数：complex(float(x))第二个版本会把 x 转换成合适的类型，而不是某个写死的类型。这种代码风格与函数的参数尤其相关。例如，当一个参数可以是任何整型时，不要将它的类型声明为 Int 或 Int32，而要使用抽象类型（abstract type）Integer 来表示。事实上，除非确实需要将其与其它的方法定义区分开，很多情况下你可以干脆完全省略掉参数的类型，因为如果你的操作中有不支持某种参数类型的操作的话，反正都会抛出 MethodError 的。这也称作 鸭子类型）。例如，考虑这样的一个叫做 addone 的函数，其返回值为它的参数加 1 ：addone(x::Int) = x + 1                 # works only for Int\naddone(x::Integer) = x + oneunit(x)    # any integer type\naddone(x::Number) = x + oneunit(x)     # any numeric type\naddone(x) = x + oneunit(x)             # any type supporting + and oneunit最后一种定义可以处理所有支持 oneunit （返回和 x 相同类型的 1，以避免不需要的类型提升（type promotion））以及 + 函数的类型。这里的关键点在于，只定义通用的 addone(x) = x + oneunit(x) 并不会带来性能上的损失，因为 Julia 会在需要的时候自动编译特定的版本。比如说，当第一次调用 addone(12) 时，Julia 会自动编译一个特定的 addone 函数，它接受一个 x::Int 的参数，并把调用的 oneunit 替换为内连的值 1。因此，上述的前三种 addone 的定义对于第四种来说是完全多余的。"
 },
 
 {
@@ -3681,9 +3681,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/style-guide/#在会修改自身参数的函数名字后加-!-1",
+    "location": "manual/style-guide/#在会更改自身输入参数内容的函数名字后加-!-1",
     "page": "代码风格指南",
-    "title": "在会修改自身参数的函数名字后加 !",
+    "title": "在会更改自身输入参数内容的函数名字后加 !",
     "category": "section",
     "text": "如下的代码：function double(a::AbstractArray{<:Number})\n    for i = firstindex(a):lastindex(a)\n        a[i] *= 2\n    end\n    return a\nend请写成这样：function double!(a::AbstractArray{<:Number})\n    for i = firstindex(a):lastindex(a)\n        a[i] *= 2\n    end\n    return a\nendJulia 的 Base 模块中的函数都遵循了这种规范，且包含很多例子：有的函数同时有拷贝和修改的形式（比如 sort 和 sort!），还有一些只有修改（比如 push!，pop! 和 splice!）。为了方便起见，这类函数通常也会把修改后的数组作为返回值。"
 },
@@ -3701,23 +3701,23 @@ var documenterSearchIndex = {"docs": [
     "page": "代码风格指南",
     "title": "避免复杂的容器类型",
     "category": "section",
-    "text": "像下面这样构造数组通常并没有什么好处：a = Vector{Union{Int,AbstractString,Tuple,Array}}(undef, n)这种情况下，Vector{Any}(undef, n)更合适些。此外，相比将所有可能的类型都打包在一起，直接在使用时标注具体的数据类型（比如：a[i]::Int）对编译器来说更有用。"
+    "text": "像下面这样构造数组通常没有什么好处：a = Vector{Union{Int,AbstractString,Tuple,Array}}(undef, n)这种情况下，Vector{Any}(undef, n)更合适些。此外，相比将所有可能的类型都打包在一起，直接在使用时标注具体的数据类型（比如：a[i]::Int）对编译器来说更有用。"
 },
 
 {
-    "location": "manual/style-guide/#使用和-Julia-的-base/-一致的命名习惯-1",
+    "location": "manual/style-guide/#使用和-Julia-base/-文件夹中的代码一致的命名习惯-1",
     "page": "代码风格指南",
-    "title": "使用和 Julia 的 base/ 一致的命名习惯",
+    "title": "使用和 Julia base/ 文件夹中的代码一致的命名习惯",
     "category": "section",
-    "text": "模块和类型名使用大写开头的驼峰命名法：module SparseArrays，struct UnitRange。\n函数名使用小写字母，且当可读时可以将多个单词拼在一起。必要的时候，可以使用下划线作为单词分隔符。下划线也被用于指明概念的组合（比如 remotecall_fetch 作为 fetch(remotecall(...)) 的一个更高效的实现）或者变化。\n虽然简洁性很重要，但避免使用缩写（用 indexin 而不是 indxin），因为这会让记住单词有没有被缩写或如何被缩写变得十分困难。如果一个函数名需要多个单词，请考虑这个函数是否代表了超过一个概念，是不是分成几个更小的部分更好。"
+    "text": "module 和 type 的名字使用大写开头的驼峰命名法：module SparseArrays，struct UnitRange。\n函数名使用小写字母，且当可读时可以将多个单词拼在一起。必要的时候，可以使用下划线作为单词分隔符。下划线也被用于指明概念的组合（比如 remotecall_fetch 作为 fetch(remotecall(...)) 的一个更高效的实现）或者变化。\n虽然简洁性很重要，但避免使用缩写（用 indexin 而不是 indxin），因为这会让记住单词有没有被缩写或如何被缩写变得十分困难。如果一个函数名需要多个单词，请考虑这个函数是否代表了超过一个概念，是不是分成几个更小的部分更好。"
 },
 
 {
-    "location": "manual/style-guide/#使用与-Julia-的-Base-模块类似的参数顺序-1",
+    "location": "manual/style-guide/#使用与-Julia-Base-中的函数类似的参数顺序-1",
     "page": "代码风格指南",
-    "title": "使用与 Julia 的 Base 模块类似的参数顺序",
+    "title": "使用与 Julia Base 中的函数类似的参数顺序",
     "category": "section",
-    "text": "一般来说，Base 库使用以下的函数参数顺序（如适用）：Function argument. 把作为参数的函数放在第一位可以方便使用 do，以传递多行匿名函数。\nI/O stream. 把 IO 对象放在第一位，可以方便将函数传递给 sprint 之类的函数，例如 sprint(show, x)。\nInput being mutated. 比如，在 fill!(x, v) 中，x 是要被修改的对象，所以放在要被插入 x 中的值前面。\nType. 把类型传入通常意味着要输出的值有着那种类型。 在 parse(Int, \"1\") 中，类型在需要解析的字符串之前。 还有很多类似的把类型放在第一位的例子，但是同时也需要注意到例如 read(io, String) 这样的函数中，会把 IO 参数放在类型的更前面，这样还是保持着这里描述的顺序。\nInput not being mutated. 比如在 fill!(x, v) 中的不被修改的 v，会放在 x 之后传入。\nKey. 对于关联集合来说，指的是键值对的键。 对于其它有索引的集合来说，指的是索引。\nValue. 对于关联集合来说，指的是键值对的值。 在类似于 fill!(x, v) 的情况中，指的是 v。\nEverything else. 任何的其它参数。\nVarargs. 指的是在函数调用时可以被无限列在后面的参数。 比如在 Matrix{T}(uninitialized, dims) 中，维数（dims）可以作为 Tuple 被传入（如 Matrix{T}(uninitialized, (1,2))），也可以作为可变参数（Vararg，如 Matrix{T}(uninitialized, 1, 2)。\nKeyword arguments. 在 Julia 中，关键字参数本来就不得不定义在函数定义的最后，列在这里仅仅是为了完整性。大多数函数并不会接受上述所有种类的参数，这些数字仅仅是表示当适用时的优先权。当然，在一些情况下有例外。例如，convert 函数总是把类型作为第一个参数。setindex! 函数的值参数在索引参数之前，这样可以让索引作为可变参数传入。设计 API 时，尽可能秉承着这种一般顺序会让函数的使用者有一种更一致的体验。"
+    "text": "一般来说，Base 库使用以下的函数参数顺序（如适用）：函数参数. 函数的第一个参数可以接受 Function 类型，以便使用 do blocks 来传递多行匿名函数。\nI/O stream. 函数的第一个参数可以接受 IO 对象，以便将函数传递给 sprint 之类的函数，例如 sprint(show, x)。\n在输入参数的内容会被更改的情况下. 比如，在 fill!(x, v) 中，x 是要被修改的对象，所以放在要被插入 x 中的值前面。\nType. 把类型作为参数传入函数通常意味着返回值也会是同样的类型。 在 parse(Int, \"1\") 中，类型在需要解析的字符串之前。 还有很多类似的将类型作为函数第一个参数的例子，但是同时也需要注意到例如 read(io, String) 这样的函数中，会把 IO 参数放在类型的更前面，这样还是保持着这里描述的顺序。\n在输入参数的内容不会被更改的情况下. 比如在 fill!(x, v) 中的不被修改的 v，会放在 x 之后传入。\nKey. 对于关联集合来说，指的是键值对的键。 对于其它有索引的集合来说，指的是索引。\nValue. 对于关联集合来说，指的是键值对的值。 在类似于 fill!(x, v) 的情况中，指的是 v。\nEverything else. 任何的其它参数。\nVarargs. 指的是在函数调用时可以被无限列在后面的参数。 比如在 Matrix{T}(uninitialized, dims) 中，维数（dims）可以作为 Tuple 被传入（如 Matrix{T}(uninitialized, (1,2))），也可以作为可变参数（Vararg，如 Matrix{T}(uninitialized, 1, 2)。\nKeyword arguments. 在 Julia 中，关键字参数本来就不得不定义在函数定义的最后，列在这里仅仅是为了完整性。大多数函数并不会接受上述所有种类的参数，这些数字仅仅是表示当适用时的优先权。当然，在一些情况下有例外。例如，convert 函数总是把类型作为第一个参数。setindex! 函数的值参数在索引参数之前，这样可以让索引作为可变参数传入。设计 API 时，尽可能秉承着这种一般顺序会让函数的使用者有一种更一致的体验。"
 },
 
 {
@@ -4089,51 +4089,51 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/noteworthy-differences/#与MATLAB的显著区别-1",
+    "location": "manual/noteworthy-differences/#与-MATLAB-的显著差异-1",
     "page": "与其他语言的显著差异",
-    "title": "与MATLAB的显著区别",
+    "title": "与 MATLAB 的显著差异",
     "category": "section",
-    "text": "Although MATLAB users may find Julia\'s syntax familiar, Julia is not a MATLAB clone. There are major syntactic and functional differences. The following are some noteworthy differences that may trip up Julia users accustomed to MATLAB:Julia数组使用方括号A[i,j]进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。 as well.\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。 will be visible in the caller.\nJulia does not automatically grow arrays in an assignment statement. Whereas in MATLAB a(4) = 3.2 can create the array a = [0 0 0 3.2] and a(5) = 7 can grow it into a = [0 0 0 3.2 7], the corresponding Julia statement a[5] = 7 throws an error if the length of a is less than 5 or if this statement is the first use of the identifier a. Julia has push! and append!, which grow Vectors much more efficiently than MATLAB\'s a(end+1) = val.\nThe imaginary unit sqrt(-1) is represented in Julia as im, not i or j as in MATLAB.\nIn Julia, literal numbers without a decimal point (such as 42) create integers instead of floating point numbers. Arbitrarily large integer literals are supported. As a result, some operations such as 2^-1 will throw a domain error as the result is not an integer (see the FAQ entry on domain errors for details).\nIn Julia, multiple values are returned and assigned as tuples, e.g. (a, b) = (1, 2) or a, b = 1, 2. MATLAB\'s nargout, which is often used in MATLAB to do optional work based on the number of returned values, does not exist in Julia. Instead, users can use optional and keyword arguments to achieve similar capabilities.\nJulia has true one-dimensional arrays. Column vectors are of size N, not Nx1. For example, rand(N) makes a 1-dimensional array.\nIn Julia, [x,y,z] will always construct a 3-element array containing x, y and z.\nTo concatenate in the first (\"vertical\") dimension use either vcat(x,y,z) or separate with semicolons ([x; y; z]).\nTo concatenate in the second (\"horizontal\") dimension use either hcat(x,y,z) or separate with spaces ([x y z]).\nTo construct block matrices (concatenating in the first two dimensions), use either hvcat or combine spaces and semicolons ([a b; c d]).\nIn Julia, a:b and a:b:c construct AbstractRange objects. To construct a full vector like in MATLAB, use collect(a:b). Generally, there is no need to call collect though. An AbstractRange object will act like a normal array in most cases but is more efficient because it lazily computes its values. This pattern of creating specialized objects instead of full arrays is used frequently, and is also seen in functions such as range, or with iterators such as enumerate, and zip. The special objects can mostly be used as if they were normal arrays.\nFunctions in Julia return values from their last expression or the return keyword instead of listing the names of variables to return in the function definition (see The return Keyword for details).\nA Julia script may contain any number of functions, and all definitions will be externally visible when the file is loaded. Function definitions can be loaded from files outside the current working directory.\nIn Julia, reductions such as sum, prod, and max are performed over every element of an array when called with a single argument, as in sum(A), even if A has more than one dimension.\nIn Julia, parentheses must be used to call a function with zero arguments, like in rand().\nJulia discourages the used of semicolons to end statements. The results of statements are not automatically printed (except at the interactive prompt), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output.\nIn Julia, if A and B are arrays, logical comparison operations like A == B do not return an array of booleans. Instead, use A .== B, and similarly for the other boolean operators like <, > and =.\nIn Julia, the operators &, |, and ⊻ (xor) perform the bitwise operations equivalent to and, or, and xor respectively in MATLAB, and have precedence similar to Python\'s bitwise operators (unlike C). They can operate on scalars or element-wise across arrays and can be used to combine logical arrays, but note the difference in order of operations: parentheses may be required (e.g., to select elements of A equal to 1 or 2 use (A .== 1) .| (A .== 2)).\nIn Julia, the elements of a collection can be passed as arguments to a function using the splat operator ..., as in xs=[1,2]; f(xs...).\nJulia\'s svd returns singular values as a vector instead of as a dense diagonal matrix.\nIn Julia, ... is not used to continue lines of code. Instead, incomplete expressions automatically continue onto the next line.\nIn both Julia and MATLAB, the variable ans is set to the value of the last expression issued in an interactive session. In Julia, unlike MATLAB, ans is not set when Julia code is run in non-interactive mode.\nJulia\'s structs do not support dynamically adding fields at runtime, unlike MATLAB\'s classes. Instead, use a Dict.\nIn Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.\nIn MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x(x>3) or in the statement x(x>3) = [] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays.\nThe analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in vertcat(A{:}) in MATLAB, is written using the splat operator in Julia, e.g. as vcat(A...)."
+    "text": "Although MATLAB users may find Julia\'s syntax familiar, Julia is not a MATLAB clone. There are major syntactic and functional differences. The following are some noteworthy differences that may trip up Julia users accustomed to MATLAB:Julia 数组使用方括号 A[i,j] 进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。 as well.\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。 will be visible in the caller.\nJulia does not automatically grow arrays in an assignment statement. Whereas in MATLAB a(4) = 3.2 can create the array a = [0 0 0 3.2] and a(5) = 7 can grow it into a = [0 0 0 3.2 7], the corresponding Julia statement a[5] = 7 throws an error if the length of a is less than 5 or if this statement is the first use of the identifier a. Julia has push! and append!, which grow Vectors much more efficiently than MATLAB\'s a(end+1) = val.\nThe imaginary unit sqrt(-1) is represented in Julia as im, not i or j as in MATLAB.\nIn Julia, literal numbers without a decimal point (such as 42) create integers instead of floating point numbers. Arbitrarily large integer literals are supported. As a result, some operations such as 2^-1 will throw a domain error as the result is not an integer (see the FAQ entry on domain errors for details).\nIn Julia, multiple values are returned and assigned as tuples, e.g. (a, b) = (1, 2) or a, b = 1, 2. MATLAB\'s nargout, which is often used in MATLAB to do optional work based on the number of returned values, does not exist in Julia. Instead, users can use optional and keyword arguments to achieve similar capabilities.\nJulia has true one-dimensional arrays. Column vectors are of size N, not Nx1. For example, rand(N) makes a 1-dimensional array.\nIn Julia, [x,y,z] will always construct a 3-element array containing x, y and z.\nTo concatenate in the first (\"vertical\") dimension use either vcat(x,y,z) or separate with semicolons ([x; y; z]).\nTo concatenate in the second (\"horizontal\") dimension use either hcat(x,y,z) or separate with spaces ([x y z]).\nTo construct block matrices (concatenating in the first two dimensions), use either hvcat or combine spaces and semicolons ([a b; c d]).\nIn Julia, a:b and a:b:c construct AbstractRange objects. To construct a full vector like in MATLAB, use collect(a:b). Generally, there is no need to call collect though. An AbstractRange object will act like a normal array in most cases but is more efficient because it lazily computes its values. This pattern of creating specialized objects instead of full arrays is used frequently, and is also seen in functions such as range, or with iterators such as enumerate, and zip. The special objects can mostly be used as if they were normal arrays.\nFunctions in Julia return values from their last expression or the return keyword instead of listing the names of variables to return in the function definition (see The return Keyword for details).\nA Julia script may contain any number of functions, and all definitions will be externally visible when the file is loaded. Function definitions can be loaded from files outside the current working directory.\nIn Julia, reductions such as sum, prod, and max are performed over every element of an array when called with a single argument, as in sum(A), even if A has more than one dimension.\nIn Julia, parentheses must be used to call a function with zero arguments, like in rand().\nJulia discourages the used of semicolons to end statements. The results of statements are not automatically printed (except at the interactive prompt), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output.\nIn Julia, if A and B are arrays, logical comparison operations like A == B do not return an array of booleans. Instead, use A .== B, and similarly for the other boolean operators like <, > and =.\nIn Julia, the operators &, |, and ⊻ (xor) perform the bitwise operations equivalent to and, or, and xor respectively in MATLAB, and have precedence similar to Python\'s bitwise operators (unlike C). They can operate on scalars or element-wise across arrays and can be used to combine logical arrays, but note the difference in order of operations: parentheses may be required (e.g., to select elements of A equal to 1 or 2 use (A .== 1) .| (A .== 2)).\nIn Julia, the elements of a collection can be passed as arguments to a function using the splat operator ..., as in xs=[1,2]; f(xs...).\nJulia\'s svd returns singular values as a vector instead of as a dense diagonal matrix.\nIn Julia, ... is not used to continue lines of code. Instead, incomplete expressions automatically continue onto the next line.\nIn both Julia and MATLAB, the variable ans is set to the value of the last expression issued in an interactive session. In Julia, unlike MATLAB, ans is not set when Julia code is run in non-interactive mode.\nJulia\'s structs do not support dynamically adding fields at runtime, unlike MATLAB\'s classes. Instead, use a Dict.\nIn Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.\nIn MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x(x>3) or in the statement x(x>3) = [] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays.\nThe analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in vertcat(A{:}) in MATLAB, is written using the splat operator in Julia, e.g. as vcat(A...)."
 },
 
 {
-    "location": "manual/noteworthy-differences/#Noteworthy-differences-from-R-1",
+    "location": "manual/noteworthy-differences/#与-R-的显著差异-1",
     "page": "与其他语言的显著差异",
-    "title": "Noteworthy differences from R",
+    "title": "与 R 的显著差异",
     "category": "section",
-    "text": "One of Julia\'s goals is to provide an effective language for data analysis and statistical programming. For users coming to Julia from R, these are some noteworthy differences:Julia\'s single quotes enclose characters, not strings.\nJulia can create substrings by indexing into strings. In R, strings must be converted into character vectors before creating substrings.\nIn Julia, like Python but unlike R, strings can be created with triple quotes \"\"\" ... \"\"\". This syntax is convenient for constructing strings that contain line breaks.\nIn Julia, varargs are specified using the splat operator ..., which always follows the name of a specific variable, unlike R, for which ... can occur in isolation.\nIn Julia, modulus is mod(a, b), not a %% b. % in Julia is the remainder operator.\nIn Julia, not all data structures support logical indexing. Furthermore, logical indexing in Julia is supported only with vectors of length equal to the object being indexed. For example:\nIn R, c(1, 2, 3, 4)[c(TRUE, FALSE)] is equivalent to c(1, 3).\nIn R, c(1, 2, 3, 4)[c(TRUE, FALSE, TRUE, FALSE)] is equivalent to c(1, 3).\nIn Julia, [1, 2, 3, 4][[true, false]] throws a BoundsError.\nIn Julia, [1, 2, 3, 4][[true, false, true, false]] produces [1, 3].\nLike many languages, Julia does not always allow operations on vectors of different lengths, unlike R where the vectors only need to share a common index range.  For example, c(1, 2, 3, 4) + c(1, 2) is valid R but the equivalent [1, 2, 3, 4] + [1, 2] will throw an error in Julia.\nJulia allows an optional trailing comma when that comma does not change the meaning of code. This can cause confusion among R users when indexing into arrays. For example, x[1,] in R would return the first row of a matrix; in Julia, however, the comma is ignored, so x[1,] == x[1], and will return the first element. To extract a row, be sure to use :, as in x[1,:].\nJulia\'s map takes the function first, then its arguments, unlike lapply(<structure>, function, ...) in R. Similarly Julia\'s equivalent of apply(X, MARGIN, FUN, ...) in R is mapslices where the function is the first argument.\nMultivariate apply in R, e.g. mapply(choose, 11:13, 1:3), can be written as broadcast(binomial, 11:13, 1:3) in Julia. Equivalently Julia offers a shorter dot syntax for vectorizing functions binomial.(11:13, 1:3).\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value).\nIn Julia, <-, <<- and -> are not assignment operators.\nJulia\'s -> creates an anonymous function.\nJulia constructs vectors using brackets. Julia\'s [1, 2, 3] is the equivalent of R\'s c(1, 2, 3).\nJulia\'s * operator can perform matrix multiplication, unlike in R. If A and B are matrices, then A * B denotes a matrix multiplication in Julia, equivalent to R\'s A %*% B. In R, this same notation would perform an element-wise (Hadamard) product. To get the element-wise multiplication operation, you need to write A .* B in Julia.\nJulia performs matrix transposition using the transpose function and conjugated transposition using the \' operator or the adjoint function. Julia\'s transpose(A) is therefore equivalent to R\'s t(A). Additionally a non-recursive transpose in Julia is provided by the permutedims function.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (i in c(1, 2, 3)) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia does not provide nrow and ncol. Instead, use size(M, 1) for nrow(M) and size(M, 2) for ncol(M).\nJulia is careful to distinguish scalars, vectors and matrices.  In R, 1 and c(1) are the same. In Julia, they cannot be used interchangeably.\nJulia\'s diag and diagm are not like R\'s.\nJulia cannot assign to the results of function calls on the left hand side of an assignment operation: you cannot write diag(M) = fill(1, n).\nJulia discourages populating the main namespace with functions. Most statistical functionality for Julia is found in packages under the JuliaStats organization. 例如：  * Functions pertaining to probability distributions are provided by the [Distributions package](https://github.com/JuliaStats/Distributions.jl).\n  * The [DataFrames package](https://github.com/JuliaStats/DataFrames.jl) provides data frames.\n  * Generalized linear models are provided by the [GLM package](https://github.com/JuliaStats/GLM.jl).Julia provides tuples and real hash tables, but not R-style lists. When returning multiple items, you should typically use a tuple or a named tuple: instead of list(a = 1, b = 2), use (1, 2) or (a=1, b=2).\nJulia encourages users to write their own types, which are easier to use than S3 or S4 objects in R. Julia\'s multiple dispatch system means that table(x::TypeA) and table(x::TypeB) act like R\'s table.TypeA(x) and table.TypeB(x).\nIn Julia, values are not copied when assigned or passed to a function. If a function modifies an array, the changes will be visible in the caller. This is very different from R and allows new functions to operate on large data structures much more efficiently.\nIn Julia, vectors and matrices are concatenated using hcat, vcat and hvcat, not c, rbind and cbind like in R.\nIn Julia, a range like a:b is not shorthand for a vector like in R, but is a specialized AbstractRange object that is used for iteration without high memory overhead. To convert a range into a vector, use collect(a:b).\nJulia\'s max and min are the equivalent of pmax and pmin respectively in R, but both arguments need to have the same dimensions.  While maximum and minimum replace max and min in R, there are important differences.\nJulia\'s sum, prod, maximum, and minimum are different from their counterparts in R. They all accept one or two arguments. The first argument is an iterable collection such as an array.  If there is a second argument, then this argument indicates the dimensions, over which the operation is carried out.  For instance, let A = [1 2; 3 4] in Julia and B <- rbind(c(1,2),c(3,4)) be the same matrix in R.  Then sum(A) gives the same result as sum(B), but sum(A, dims=1) is a row vector containing the sum over each column and sum(A, dims=2) is a column vector containing the sum over each row. This contrasts to the behavior of R, where separate colSums(B) and rowSums(B) functions provide these functionalities. If the dims keyword argument is a vector, then it specifies all the dimensions over which the sum is performed, while retaining the dimensions of the summed array, e.g. sum(A, dims=(1,2)) == hcat(10). It should be noted that there is no error checking regarding the second argument.\nJulia has several functions that can mutate their arguments. For example, it has both sort and sort!.\nIn R, performance requires vectorization. In Julia, almost the opposite is true: the best performing code is often achieved by using devectorized loops.\nJulia is eagerly evaluated and does not support R-style lazy evaluation. For most users, this means that there are very few unquoted expressions or column names.\nJulia does not support the NULL type. The closest equivalent is nothing, but it behaves like a scalar value rather than like a list. Use x == nothing instead of is.null(x).\nIn Julia, missing values are represented by the missing object rather than by NA. Use ismissing(x) instead of isna(x). The skipmissing function is generally used instead of na.rm=TRUE (though in some particular cases functions take a skipmissing argument).\nJulia lacks the equivalent of R\'s assign or get.\nIn Julia, return does not require parentheses.\nIn R, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x[x>3] or in the statement x = x[x>3] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays."
+    "text": "One of Julia\'s goals is to provide an effective language for data analysis and statistical programming. For users coming to Julia from R, these are some noteworthy differences:Julia\'s single quotes enclose characters, not strings.\nJulia can create substrings by indexing into strings. In R, strings must be converted into character vectors before creating substrings.\nIn Julia, like Python but unlike R, strings can be created with triple quotes \"\"\" ... \"\"\". This syntax is convenient for constructing strings that contain line breaks.\nIn Julia, varargs are specified using the splat operator ..., which always follows the name of a specific variable, unlike R, for which ... can occur in isolation.\nIn Julia, modulus is mod(a, b), not a %% b. % in Julia is the remainder operator.\nIn Julia, not all data structures support logical indexing. Furthermore, logical indexing in Julia is supported only with vectors of length equal to the object being indexed. For example:\nIn R, c(1, 2, 3, 4)[c(TRUE, FALSE)] is equivalent to c(1, 3).\nIn R, c(1, 2, 3, 4)[c(TRUE, FALSE, TRUE, FALSE)] is equivalent to c(1, 3).\nIn Julia, [1, 2, 3, 4][[true, false]] throws a BoundsError.\nIn Julia, [1, 2, 3, 4][[true, false, true, false]] produces [1, 3].\nLike many languages, Julia does not always allow operations on vectors of different lengths, unlike R where the vectors only need to share a common index range.  For example, c(1, 2, 3, 4) + c(1, 2) is valid R but the equivalent [1, 2, 3, 4] + [1, 2] will throw an error in Julia.\nJulia allows an optional trailing comma when that comma does not change the meaning of code. This can cause confusion among R users when indexing into arrays. For example, x[1,] in R would return the first row of a matrix; in Julia, however, the comma is ignored, so x[1,] == x[1], and will return the first element. To extract a row, be sure to use :, as in x[1,:].\nJulia\'s map takes the function first, then its arguments, unlike lapply(<structure>, function, ...) in R. Similarly Julia\'s equivalent of apply(X, MARGIN, FUN, ...) in R is mapslices where the function is the first argument.\nMultivariate apply in R, e.g. mapply(choose, 11:13, 1:3), can be written as broadcast(binomial, 11:13, 1:3) in Julia. Equivalently Julia offers a shorter dot syntax for vectorizing functions binomial.(11:13, 1:3).\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value).\nIn Julia, <-, <<- and -> are not assignment operators.\nJulia\'s -> creates an anonymous function.\nJulia constructs vectors using brackets. Julia\'s [1, 2, 3] is the equivalent of R\'s c(1, 2, 3).\nJulia\'s * operator can perform matrix multiplication, unlike in R. If A and B are matrices, then A * B denotes a matrix multiplication in Julia, equivalent to R\'s A %*% B. In R, this same notation would perform an element-wise (Hadamard) product. To get the element-wise multiplication operation, you need to write A .* B in Julia.\nJulia performs matrix transposition using the transpose function and conjugated transposition using the \' operator or the adjoint function. Julia\'s transpose(A) is therefore equivalent to R\'s t(A). Additionally a non-recursive transpose in Julia is provided by the permutedims function.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (i in c(1, 2, 3)) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia does not provide nrow and ncol. Instead, use size(M, 1) for nrow(M) and size(M, 2) for ncol(M).\nJulia is careful to distinguish scalars, vectors and matrices.  In R, 1 and c(1) are the same. In Julia, they cannot be used interchangeably.\nJulia\'s diag and diagm are not like R\'s.\nJulia cannot assign to the results of function calls on the left hand side of an assignment operation: you cannot write diag(M) = fill(1, n).\nJulia discourages populating the main namespace with functions. Most statistical functionality for Julia is found in packages under the JuliaStats organization. 例如：\nFunctions pertaining to probability distributions are provided by the Distributions package.\nThe DataFrames package provides data frames.\nGeneralized linear models are provided by the GLM package.\nJulia provides tuples and real hash tables, but not R-style lists. When returning multiple items, you should typically use a tuple or a named tuple: instead of list(a = 1, b = 2), use (1, 2) or (a=1, b=2).\nJulia encourages users to write their own types, which are easier to use than S3 or S4 objects in R. Julia\'s multiple dispatch system means that table(x::TypeA) and table(x::TypeB) act like R\'s table.TypeA(x) and table.TypeB(x).\nIn Julia, values are not copied when assigned or passed to a function. If a function modifies an array, the changes will be visible in the caller. This is very different from R and allows new functions to operate on large data structures much more efficiently.\nIn Julia, vectors and matrices are concatenated using hcat, vcat and hvcat, not c, rbind and cbind like in R.\nIn Julia, a range like a:b is not shorthand for a vector like in R, but is a specialized AbstractRange object that is used for iteration without high memory overhead. To convert a range into a vector, use collect(a:b).\nJulia\'s max and min are the equivalent of pmax and pmin respectively in R, but both arguments need to have the same dimensions.  While maximum and minimum replace max and min in R, there are important differences.\nJulia\'s sum, prod, maximum, and minimum are different from their counterparts in R. They all accept one or two arguments. The first argument is an iterable collection such as an array.  If there is a second argument, then this argument indicates the dimensions, over which the operation is carried out.  For instance, let A = [1 2; 3 4] in Julia and B <- rbind(c(1,2),c(3,4)) be the same matrix in R.  Then sum(A) gives the same result as sum(B), but sum(A, dims=1) is a row vector containing the sum over each column and sum(A, dims=2) is a column vector containing the sum over each row. This contrasts to the behavior of R, where separate colSums(B) and rowSums(B) functions provide these functionalities. If the dims keyword argument is a vector, then it specifies all the dimensions over which the sum is performed, while retaining the dimensions of the summed array, e.g. sum(A, dims=(1,2)) == hcat(10). It should be noted that there is no error checking regarding the second argument.\nJulia has several functions that can mutate their arguments. For example, it has both sort and sort!.\nIn R, performance requires vectorization. In Julia, almost the opposite is true: the best performing code is often achieved by using devectorized loops.\nJulia is eagerly evaluated and does not support R-style lazy evaluation. For most users, this means that there are very few unquoted expressions or column names.\nJulia does not support the NULL type. The closest equivalent is nothing, but it behaves like a scalar value rather than like a list. Use x == nothing instead of is.null(x).\nIn Julia, missing values are represented by the missing object rather than by NA. Use ismissing(x) instead of isna(x). The skipmissing function is generally used instead of na.rm=TRUE (though in some particular cases functions take a skipmissing argument).\nJulia lacks the equivalent of R\'s assign or get.\nIn Julia, return does not require parentheses.\nIn R, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x[x>3] or in the statement x = x[x>3] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays."
 },
 
 {
-    "location": "manual/noteworthy-differences/#Noteworthy-differences-from-Python-1",
+    "location": "manual/noteworthy-differences/#与-Python-的显著差异-1",
     "page": "与其他语言的显著差异",
-    "title": "Noteworthy differences from Python",
+    "title": "与 Python 的显著差异",
     "category": "section",
-    "text": "Julia requires end to end a block. Unlike Python, Julia has no pass keyword.\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia\'s slice indexing includes the last element, unlike in Python. a[2:3] in Julia is a[1:3] in Python.\nJulia does not support negative indices. In particular, the last element of a list or array is indexed with end in Julia, not -1 as in Python.\nJulia\'s for, if, while, etc. blocks are terminated by the end keyword. Indentation level is not significant as it is in Python.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia arrays are column major (Fortran ordered) whereas NumPy arrays are row major (C-ordered) by default. To get optimal performance when looping over arrays, the order of the loops should be reversed in Julia relative to NumPy (see relevant section of Performance Tips).\nJulia\'s updating operators (e.g. +=, -=, ...) are not in-place whereas NumPy\'s are. This means A = [1, 1]; B = A; B += [3, 3] doesn\'t change values in A, it rather rebinds the name B to the result of the right-hand side B = B + 3, which is a new array. For in-place operation, use B .+= 3 (see also dot operators), explicit loops, or InplaceOps.jl.\nJulia evaluates default values of function arguments every time the method is invoked, unlike in Python where the default values are evaluated only once when the function is defined. For example, the function f(x=rand()) = x returns a new random number every time it is invoked without argument. On the other hand, the function g(x=[1,2]) = push!(x,3) returns [1,2,3] every time it is called as g().\nIn Julia % is the remainder operator, whereas in Python it is the modulus."
+    "text": "Julia requires end to end a block. Unlike Python, Julia has no pass keyword.\nIn Julia, indexing of arrays, strings, etc. is 1-based not 0-based.\nJulia\'s slice indexing includes the last element, unlike in Python. a[2:3] in Julia is a[1:3] in Python.\nJulia does not support negative indices. In particular, the last element of a list or array is indexed with end in Julia, not -1 as in Python.\nJulia\'s for, if, while, etc. blocks are terminated by the end keyword. Indentation level is not significant as it is in Python.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia arrays are column major (Fortran ordered) whereas NumPy arrays are row major (C-ordered) by default. To get optimal performance when looping over arrays, the order of the loops should be reversed in Julia relative to NumPy (see relevant section of Performance Tips).\nJulia\'s updating operators (e.g. +=, -=, ...) are not in-place whereas NumPy\'s are. This means A = [1, 1]; B = A; B += [3, 3] doesn\'t change values in A, it rather rebinds the name B to the result of the right-hand side B = B + 3, which is a new array. For in-place operation, use B .+= 3 (see also dot operators), explicit loops, or InplaceOps.jl.\nJulia evaluates default values of function arguments every time the method is invoked, unlike in Python where the default values are evaluated only once when the function is defined. For example, the function f(x=rand()) = x returns a new random number every time it is invoked without argument. On the other hand, the function g(x=[1,2]) = push!(x,3) returns [1,2,3] every time it is called as g().\n与 C/C++ 的显著差异"
 },
 
 {
-    "location": "manual/noteworthy-differences/#Noteworthy-differences-from-C/C-1",
+    "location": "manual/noteworthy-differences/#Julia-的数组由方括号索引，方括号中可以包含不止一个维度-A[i,j]。这样的语法不仅仅是像-C/C-中那样对指针或者地址引用的语法糖，参见-Julia-文档数组构造的语法（依版本不同有所变动）。-1",
     "page": "与其他语言的显著差异",
-    "title": "Noteworthy differences from C/C++",
+    "title": "Julia 的数组由方括号索引，方括号中可以包含不止一个维度 A[i,j]。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。",
     "category": "section",
-    "text": "Julia 的数组由方括号索引，方括号中可以包含不止一个维度 A[i,j]。 这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。 the Julia documentation for the syntax for array construction (it has changed between versions).\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。像 += 这样的更新运算符不会以 in-place 的方式执行，而是相当于 A = A + B，将左侧绑定到右侧表达式的计算结果上。 as well. Updating operators like += do not operate in-place, they are equivalent to A = A + B which rebinds the left-hand side to the result of the right-hand side expression.\nJulia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 性能建议）。 default. To get optimal performance when looping over arrays, the order of the loops should be reversed in Julia relative to C/C++ (see relevant section of Performance Tips).\nJulia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。 will be visible in the caller.\n在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。 whitespace from a Julia program.\n在 Julia 中，没有小数点的数值字面量（如 42）生成有符号整数，类型为 Int，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 Int64（如果 Int 是 Int32）、Int128，或者任意精度的 BigInt 类型。不存在诸如 L, LL, U, UL, ULL 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 0x 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同， Int, but literals too large to fit in the machine word size will automatically be promoted to a larger size type, such as Int64 (if Int is Int32), Int128, or the arbitrarily large BigInt type. There are no numeric literal suffixes, such as L, LL, U, UL, ULL to indicate unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals (which start with 0x like C/C++), are unsigned. Hexadecimal literals also, unlike C/C++/Java 也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的长度，包括开头的 0。例如，0x0 和 0x00 的类型是 UInt8，0x000 和 0x0000 的类型是 UInt16。同理，字面量的长度在 5-8 之间，类型为 UInt32；在 9-16 之间，类型为 UInt64；在 17-32 之间，类型为 UInt128。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 ~0xf == 0xf0 与 ~0x000f == 0xfff0 完全不同。 leading 0s. For example, 0x0 and 0x00 have type UInt8, 0x000 and 0x0000 have type UInt16, then literals with 5 to 8 hex digits have type UInt32, 9 to 16 hex digits type UInt64 and 17 to 32 hex digits type UInt128. This needs to be taken into account when defining 64 位的 Float64 and 32 bit Float32 bit literals are expressed as 1.0 and 1.0f0 respectively. Floating point literals are rounded (and not promoted to the BigFloat type) if they can not be exactly represented.  Floating point literals are closer in behavior to C/C++. Octal (prefixed with 0o) and binary (prefixed with 0b) literals are also treated as unsigned.\nString literals can be delimited with either \"  or \"\"\", \"\"\" delimited literals can contain \" characters without quoting it like \"\\\"\" String literals can have values of other variables or expressions interpolated into them, indicated by $variablename or $(expression), which evaluates the variable name or the expression in the context of the function.\n// indicates a Rational number, and not a single-line comment (which is # in Julia)\n#= indicates the start of a multiline comment, and =# ends it.\nFunctions in Julia return values from their last expression(s) or the return keyword.  Multiple values can be returned from functions and assigned as tuples, e.g. (a, b) = myfunction() or a, b = myfunction(), instead of having to pass pointers to values as one would have to do in C/C++ (i.e. a = myfunction(&b).\nJulia does not require the use of semicolons to end statements. The results of expressions are not automatically printed (except at the interactive prompt, i.e. the REPL), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output. In the REPL, ; can be used to suppress output. ; also has a different meaning within [ ], something to watch out for. ; can be used to separate expressions on a single line, but are not strictly necessary in many cases, and are more an aid to readability.\nIn Julia, the operator ⊻ (xor) performs the bitwise XOR operation, i.e. ^ in C/C++.  Also, the bitwise operators do not have the same precedence as C/++, so parenthesis may be required.\nJulia\'s ^ is exponentiation (pow), not bitwise XOR as in C/C++ (use ⊻, or xor, in Julia)\nJulia has two right-shift operators, >> and >>>.  >>> performs an arithmetic shift, >> always performs a logical shift, unlike C/C++, where the meaning of >> depends on the type of the value being shifted.\nJulia\'s -> creates an anonymous function, it does not access a member via a pointer.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (int i=1; i <= 3; i++) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value), because of the operator precedence.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia macros operate on parsed expressions, rather than the text of the program, which allows them to perform sophisticated transformations of Julia code. Macro names start with the @ character, and have both a function-like syntax, @mymacro(arg1, arg2, arg3), and a statement-like syntax, @mymacro arg1 arg2 arg3. The forms are interchangeable; the function-like form is particularly useful if the macro appears within another expression, and is often clearest. The statement-like form is often used to annotate blocks, as in the distributed for construct: @distributed for i in 1:n; #= body =#; end. Where the end of the macro construct may be unclear, use the function-like form.\nJulia now has an enumeration type, expressed using the macro @enum(name, value1, value2, ...) For example: @enum(Fruit, banana=1, apple, pear)\nBy convention, functions that modify their arguments have a ! at the end of the name, for example push!.\nIn C++, by default, you have static dispatch, i.e. you need to annotate a function as virtual, in order to have dynamic dispatch. On the other hand, in Julia every method is \"virtual\" (although it\'s more general than that since methods are dispatched on every argument type, not only this, using the most-specific-declaration rule)."
+    "text": "the Julia documentation for the syntax for array construction (it has changed between versions). 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。 Julia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。像 += 这样的更新运算符不会以 in-place 的方式执行，而是相当于 A = A + B，将左侧绑定到右侧表达式的计算结果上。\nas well. Updating operators like += do not operate in-place, they are equivalent to A = A + B\nwhich rebinds the left-hand side to the result of the right-hand side expression. Julia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 性能建议）。 default. To get optimal performance when looping over arrays, the order of the loops should be\nreversed in Julia relative to C/C++ (see relevant section of Performance Tips). Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。 will be visible in the caller.\n在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。 whitespace from a Julia program.\n在 Julia 中，没有小数点的数值字面量（如 42）生成有符号整数，类型为 Int，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 Int64（如果 Int 是 Int32）、Int128，或者任意精度的 BigInt 类型。不存在诸如 L, LL, U, UL, ULL 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 0x 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同， Int, but literals too large to fit in the machine word size will automatically be promoted to\na larger size type, such as Int64 (if Int is Int32), Int128, or the arbitrarily large BigInt type. There are no numeric literal suffixes, such as L, LL, U, UL, ULL to indicate unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals (which start with 0x like C/C++), are unsigned. Hexadecimal literals also, unlike C/C++/Java 也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的长度，包括开头的 0。例如，0x0 和 0x00 的类型是 UInt8，0x000 和 0x0000 的类型是 UInt16。同理，字面量的长度在 5-8 之间，类型为 UInt32；在 9-16 之间，类型为 UInt64；在 17-32 之间，类型为 UInt128。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 ~0xf == 0xf0 与 ~0x000f == 0xfff0 完全不同。 leading 0s. For example, 0x0 and 0x00 have type UInt8, 0x000 and 0x0000 have type UInt16, then literals with 5 to 8 hex digits have type UInt32, 9 to 16 hex digits type UInt64 and 17 to 32 hex digits type UInt128. This needs to be taken into account when defining 64 位的 Float64 UInt64 and 17 to 32 hex digits type UInt128. This needs to be taken into account when defining hexadecimal masks, for example ~0xf == 0xf0 is very different from ~0x000f == 0xfff0. 64 bit Float64 and 32 bit Float32 bit literals are expressed as 1.0 and 1.0f0 respectively. Floating point literals are rounded (and not promoted to the BigFloat type) if they can not be exactly represented.  Floating point literals are closer in behavior to C/C++. Octal (prefixed with 0o) and binary (prefixed with 0b) literals are also treated as unsigned.\nString literals can be delimited with either \"  or \"\"\", \"\"\" delimited literals can contain \" characters without quoting it like \"\\\"\" String literals can have values of other variables or expressions interpolated into them, indicated by $variablename or $(expression), which evaluates the variable name or the expression in the context of the function.\n// indicates a Rational number, and not a single-line comment (which is # in Julia)\n#= indicates the start of a multiline comment, and =# ends it.\nFunctions in Julia return values from their last expression(s) or the return keyword.  Multiple values can be returned from functions and assigned as tuples, e.g. (a, b) = myfunction() or a, b = myfunction(), instead of having to pass pointers to values as one would have to do in C/C++ (i.e. a = myfunction(&b).\nJulia does not require the use of semicolons to end statements. The results of expressions are not automatically printed (except at the interactive prompt, i.e. the REPL), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output. In the REPL, ; can be used to suppress output. ; also has a different meaning within [ ], something to watch out for. ; can be used to separate expressions on a single line, but are not strictly necessary in many cases, and are more an aid to readability.\nIn Julia, the operator ⊻ (xor) performs the bitwise XOR operation, i.e. ^ in C/C++.  Also, the bitwise operators do not have the same precedence as C/++, so parenthesis may be required.\nJulia\'s ^ is exponentiation (pow), not bitwise XOR as in C/C++ (use ⊻, or xor, in Julia)\nJulia has two right-shift operators, >> and >>>.  >>> performs an arithmetic shift, >> always performs a logical shift, unlike C/C++, where the meaning of >> depends on the type of the value being shifted.\nJulia\'s -> creates an anonymous function, it does not access a member via a pointer.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (int i=1; i <= 3; i++) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value), because of the operator precedence.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia macros operate on parsed expressions, rather than the text of the program, which allows them to perform sophisticated transformations of Julia code. Macro names start with the @ character, and have both a function-like syntax, @mymacro(arg1, arg2, arg3), and a statement-like syntax, @mymacro arg1 arg2 arg3. The forms are interchangeable; the function-like form is particularly useful if the macro appears within another expression, and is often clearest. The statement-like form is often used to annotate blocks, as in the distributed for construct: @distributed for i in 1:n; #= body =#; end. Where the end of the macro construct may be unclear, use the function-like form.\nJulia now has an enumeration type, expressed using the macro @enum(name, value1, value2, ...) For example: @enum(Fruit, banana=1, apple, pear)\nBy convention, functions that modify their arguments have a ! at the end of the name, for example push!.\nIn C++, by default, you have static dispatch, i.e. you need to annotate a function as virtual, in order to have dynamic dispatch. On the other hand, in Julia every method is \"virtual\" (although it\'s more general than that since methods are dispatched on every argument type, not only this, using the most-specific-declaration rule)."
 },
 
 {
     "location": "manual/unicode-input/#",
-    "page": "Unicode输入表",
-    "title": "Unicode输入表",
+    "page": "Unicode 输入表",
+    "title": "Unicode 输入表",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "manual/unicode-input/#Unicode输入表-1",
-    "page": "Unicode输入表",
-    "title": "Unicode输入表",
+    "location": "manual/unicode-input/#Unicode-输入表-1",
+    "page": "Unicode 输入表",
+    "title": "Unicode 输入表",
     "category": "section",
-    "text": "在 Julia REPL 或其它编辑器中，可以像输入 LaTeX 符号一样，用 tab补全下表列出的 Unicode 字符。在 REPL 中，可以先按 ? 进入帮助模式，然后将 Unicode 字符复制粘贴进去，文档开头就有输入方式。warning: Warning\n此表第二列可能会缺失一些字符，对某些字符的显示效果也可能会与在 Julia REPL 中不一致。如果发生了这种状况，强烈建议用户检查一下浏览器或 REPL 的字体设置，目前已知很多字体都有显示问题。#\n# Generate a table containing all LaTeX and Emoji tab completions available in the REPL.\n#\nimport REPL, Markdown\nconst NBSP = \'\\u00A0\'\n\nfunction tab_completions(symbols...)\n    completions = Dict{String, Vector{String}}()\n    for each in symbols, (k, v) in each\n        completions[v] = push!(get!(completions, v, String[]), k)\n    end\n    return completions\nend\n\nfunction unicode_data()\n    file = normpath(Sys.BINDIR, \"..\", \"UnicodeData.txt\")\n    names = Dict{UInt32, String}()\n    open(file) do unidata\n        for line in readlines(unidata)\n            id, name, desc = split(line, \";\")[[1, 2, 11]]\n            codepoint = parse(UInt32, \"0x$id\")\n            names[codepoint] = titlecase(lowercase(\n                name == \"\" ? desc : desc == \"\" ? name : \"$name / $desc\"))\n        end\n    end\n    return names\nend\n\n# Surround combining characters with no-break spaces (i.e \'\\u00A0\'). Follows the same format\n# for how unicode is displayed on the unicode.org website:\n# http://unicode.org/cldr/utility/character.jsp?a=0300\nfunction fix_combining_chars(char)\n    cat = Base.Unicode.category_code(char)\n    return cat == 6 || cat == 8 ? \"$NBSP$char$NBSP\" : \"$char\"\nend\n\n\nfunction table_entries(completions, unicode_dict)\n    entries = [[\n        \"Code point(s)\", \"Character(s)\",\n        \"Tab completion sequence(s)\", \"Unicode name(s)\"\n    ]]\n    for (chars, inputs) in sort!(collect(completions), by = first)\n        code_points, unicode_names, characters = String[], String[], String[]\n        for char in chars\n            push!(code_points, \"U+$(uppercase(string(UInt32(char), base = 16, pad = 5)))\")\n            push!(unicode_names, get(unicode_dict, UInt32(char), \"(No Unicode name)\"))\n            push!(characters, isempty(characters) ? fix_combining_chars(char) : \"$char\")\n        end\n        push!(entries, [\n            join(code_points, \" + \"), join(characters),\n            join(inputs, \", \"), join(unicode_names, \" + \")\n        ])\n    end\n    return Markdown.Table(entries, [:l, :l, :l, :l])\nend\n\ntable_entries(\n    tab_completions(\n        REPL.REPLCompletions.latex_symbols,\n        REPL.REPLCompletions.emoji_symbols\n    ),\n    unicode_data()\n)"
+    "text": "在 Julia REPL 或其它编辑器中，可以像输入 LaTeX 符号一样，用 tab补全下表列出的 Unicode 字符。在 REPL 中，可以先按 ? 进入帮助模式，然后将 Unicode 字符复制粘贴进去，一般在文档开头就会写输入方式。warning: Warning\n此表第二列可能会缺失一些字符，对某些字符的显示效果也可能会与在 Julia REPL 中不一致。如果发生了这种状况，强烈建议用户检查一下浏览器或 REPL 的字体设置，目前已知很多字体都有显示问题。#\n# Generate a table containing all LaTeX and Emoji tab completions available in the REPL.\n#\nimport REPL, Markdown\nconst NBSP = \'\\u00A0\'\n\nfunction tab_completions(symbols...)\n    completions = Dict{String, Vector{String}}()\n    for each in symbols, (k, v) in each\n        completions[v] = push!(get!(completions, v, String[]), k)\n    end\n    return completions\nend\n\nfunction unicode_data()\n    file = normpath(Sys.BINDIR, \"..\", \"UnicodeData.txt\")\n    names = Dict{UInt32, String}()\n    open(file) do unidata\n        for line in readlines(unidata)\n            id, name, desc = split(line, \";\")[[1, 2, 11]]\n            codepoint = parse(UInt32, \"0x$id\")\n            names[codepoint] = titlecase(lowercase(\n                name == \"\" ? desc : desc == \"\" ? name : \"$name / $desc\"))\n        end\n    end\n    return names\nend\n\n# Surround combining characters with no-break spaces (i.e \'\\u00A0\'). Follows the same format\n# for how unicode is displayed on the unicode.org website:\n# http://unicode.org/cldr/utility/character.jsp?a=0300\nfunction fix_combining_chars(char)\n    cat = Base.Unicode.category_code(char)\n    return cat == 6 || cat == 8 ? \"$NBSP$char$NBSP\" : \"$char\"\nend\n\n\nfunction table_entries(completions, unicode_dict)\n    entries = [[\n        \"Code point(s)\", \"Character(s)\",\n        \"Tab completion sequence(s)\", \"Unicode name(s)\"\n    ]]\n    for (chars, inputs) in sort!(collect(completions), by = first)\n        code_points, unicode_names, characters = String[], String[], String[]\n        for char in chars\n            push!(code_points, \"U+$(uppercase(string(UInt32(char), base = 16, pad = 5)))\")\n            push!(unicode_names, get(unicode_dict, UInt32(char), \"(No Unicode name)\"))\n            push!(characters, isempty(characters) ? fix_combining_chars(char) : \"$char\")\n        end\n        push!(entries, [\n            join(code_points, \" + \"), join(characters),\n            join(inputs, \", \"), join(unicode_names, \" + \")\n        ])\n    end\n    return Markdown.Table(entries, [:l, :l, :l, :l])\nend\n\ntable_entries(\n    tab_completions(\n        REPL.REPLCompletions.latex_symbols,\n        REPL.REPLCompletions.emoji_symbols\n    ),\n    unicode_data()\n)"
 },
 
 {
@@ -7362,23 +7362,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#",
-    "page": "Mathematics",
-    "title": "Mathematics",
+    "page": "数学",
+    "title": "数学",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/math/#Mathematics-1",
-    "page": "Mathematics",
-    "title": "Mathematics",
+    "location": "base/math/#数学-1",
+    "page": "数学",
+    "title": "数学",
     "category": "section",
     "text": ""
 },
 
 {
     "location": "base/math/#Base.:--Tuple{Any}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:-",
     "category": "method",
     "text": "-(x)\n\nUnary minus operator.\n\nExamples\n\njulia> -1\n-1\n\njulia> -(2)\n-2\n\njulia> -[1 2; 3 4]\n2×2 Array{Int64,2}:\n -1  -2\n -3  -4\n\n\n\n\n\n"
@@ -7386,15 +7386,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:+",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:+",
     "category": "function",
-    "text": "dt::Date + t::Time -> DateTime\n\nThe addition of a Date with a Time produces a DateTime. The hour, minute, second, and millisecond parts of the Time are used along with the year, month, and day of the Date to create the new DateTime. Non-zero microseconds or nanoseconds in the Time type will result in an InexactError being thrown.\n\n\n\n\n\n+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\n"
+    "text": "+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\ndt::Date + t::Time -> DateTime\n\nThe addition of a Date with a Time produces a DateTime. The hour, minute, second, and millisecond parts of the Time are used along with the year, month, and day of the Date to create the new DateTime. Non-zero microseconds or nanoseconds in the Time type will result in an InexactError being thrown.\n\n\n\n\n\n"
 },
 
 {
     "location": "base/math/#Base.:--Tuple{Any,Any}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:-",
     "category": "method",
     "text": "-(x, y)\n\nSubtraction operator.\n\nExamples\n\njulia> 2 - 3\n-1\n\njulia> -(2, 4.5)\n-2.5\n\n\n\n\n\n"
@@ -7402,7 +7402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:*-Tuple{Any,Vararg{Any,N} where N}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:*",
     "category": "method",
     "text": "*(x, y...)\n\nMultiplication operator. x*y*z*... calls this function with all arguments, i.e. *(x, y, z, ...).\n\nExamples\n\njulia> 2 * 7 * 8\n112\n\njulia> *(2, 7, 8)\n112\n\n\n\n\n\n"
@@ -7410,7 +7410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:/",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:/",
     "category": "function",
     "text": "/(x, y)\n\nRight division operator: multiplication of x by the inverse of y on the right. Gives floating-point results for integer arguments.\n\nExamples\n\njulia> 1/2\n0.5\n\njulia> 4/2\n2.0\n\njulia> 4.5/2\n2.25\n\n\n\n\n\n"
@@ -7418,7 +7418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:\\-Tuple{Any,Any}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:\\",
     "category": "method",
     "text": "\\(x, y)\n\nLeft division operator: multiplication of y by the inverse of x on the left. Gives floating-point results for integer arguments.\n\nExamples\n\njulia> 3 \\ 6\n2.0\n\njulia> inv(3) * 6\n2.0\n\njulia> A = [1 2; 3 4]; x = [5, 6];\n\njulia> A \\ x\n2-element Array{Float64,1}:\n -4.0\n  4.5\n\njulia> inv(A) * x\n2-element Array{Float64,1}:\n -4.0\n  4.5\n\n\n\n\n\n"
@@ -7426,7 +7426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:^-Tuple{Number,Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:^",
     "category": "method",
     "text": "^(x, y)\n\nExponentiation operator. If x is a matrix, computes matrix exponentiation.\n\nIf y is an Int literal (e.g. 2 in x^2 or -3 in x^-3), the Julia code x^y is transformed by the compiler to Base.literal_pow(^, x, Val(y)), to enable compile-time specialization on the value of the exponent. (As a default fallback we have Base.literal_pow(^, x, Val(y)) = ^(x,y), where usually ^ == Base.^ unless ^ has been defined in the calling namespace.)\n\njulia> 3^5\n243\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> A^3\n2×2 Array{Int64,2}:\n 37   54\n 81  118\n\n\n\n\n\n"
@@ -7434,7 +7434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fma",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.fma",
     "category": "function",
     "text": "fma(x, y, z)\n\nComputes x*y+z without rounding the intermediate result x*y. On some systems this is significantly more expensive than x*y+z. fma is used to improve accuracy in certain algorithms. See muladd.\n\n\n\n\n\n"
@@ -7442,7 +7442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.muladd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.muladd",
     "category": "function",
     "text": "muladd(x, y, z)\n\nCombined multiply-add: computes x*y+z, but allowing the add and multiply to be merged with each other or with surrounding operations for performance. For example, this may be implemented as an fma if the hardware supports it efficiently. The result can be different on different machines and can also be different on the same machine due to constant propagation or other optimizations. See fma.\n\nExamples\n\njulia> muladd(3, 2, 1)\n7\n\njulia> 3 * 2 + 1\n7\n\n\n\n\n\n"
@@ -7450,7 +7450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.inv-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.inv",
     "category": "method",
     "text": "inv(x)\n\nReturn the multiplicative inverse of x, such that x*inv(x) or inv(x)*x yields one(x) (the multiplicative identity) up to roundoff errors.\n\nIf x is a number, this is essentially the same as one(x)/x, but for some types inv(x) may be slightly more efficient.\n\nExamples\n\njulia> inv(2)\n0.5\n\njulia> inv(1 + 2im)\n0.2 - 0.4im\n\njulia> inv(1 + 2im) * (1 + 2im)\n1.0 + 0.0im\n\njulia> inv(2//3)\n3//2\n\n\n\n\n\n"
@@ -7458,7 +7458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.div",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.div",
     "category": "function",
     "text": "div(x, y)\n÷(x, y)\n\nThe quotient from Euclidean division. Computes x/y, truncated to an integer.\n\nExamples\n\njulia> 9 ÷ 4\n2\n\njulia> -5 ÷ 3\n-1\n\n\n\n\n\n"
@@ -7466,7 +7466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fld",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.fld",
     "category": "function",
     "text": "fld(x, y)\n\nLargest integer less than or equal to x/y.\n\nExamples\n\njulia> fld(7.3,5.5)\n1.0\n\n\n\n\n\n"
@@ -7474,7 +7474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cld",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.cld",
     "category": "function",
     "text": "cld(x, y)\n\nSmallest integer larger than or equal to x/y.\n\nExamples\n\njulia> cld(5.5,2.2)\n3.0\n\n\n\n\n\n"
@@ -7482,7 +7482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.mod",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.mod",
     "category": "function",
     "text": "mod(x, y)\nrem(x, y, RoundDown)\n\nThe reduction of x modulo y, or equivalently, the remainder of x after floored division by y, i.e.\n\nx - y*fld(x,y)\n\nif computed without intermediate rounding.\n\nThe result will have the same sign as y, and magnitude less than abs(y) (with some exceptions, see note below).\n\nnote: Note\nWhen used with floating point values, the exact result may not be representable by the type, and so rounding error may occur. In particular, if the exact result is very close to y, then it may be rounded to y.\n\njulia> mod(8, 3)\n2\n\njulia> mod(9, 3)\n0\n\njulia> mod(8.9, 3)\n2.9000000000000004\n\njulia> mod(eps(), 3)\n2.220446049250313e-16\n\njulia> mod(-eps(), 3)\n3.0\n\n\n\n\n\nrem(x::Integer, T::Type{<:Integer}) -> T\nmod(x::Integer, T::Type{<:Integer}) -> T\n%(x::Integer, T::Type{<:Integer}) -> T\n\nFind y::T such that x ≡ y (mod n), where n is the number of integers representable in T, and y is an integer in [typemin(T),typemax(T)]. If T can represent any integer (e.g. T == BigInt), then this operation corresponds to a conversion to T.\n\nExamples\n\njulia> 129 % Int8\n-127\n\n\n\n\n\n"
@@ -7490,7 +7490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.rem",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.rem",
     "category": "function",
     "text": "rem(x, y)\n%(x, y)\n\nRemainder from Euclidean division, returning a value of the same sign as x, and smaller in magnitude than y. This value is always exact.\n\nExamples\n\njulia> x = 15; y = 4;\n\njulia> x % y\n3\n\njulia> x == div(x, y) * y + rem(x, y)\ntrue\n\n\n\n\n\n"
@@ -7498,7 +7498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.rem2pi",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.rem2pi",
     "category": "function",
     "text": "rem2pi(x, r::RoundingMode)\n\nCompute the remainder of x after integer division by 2π, with the quotient rounded according to the rounding mode r. In other words, the quantity\n\nx - 2π*round(x/(2π),r)\n\nwithout any intermediate rounding. This internally uses a high precision approximation of 2π, and so will give a more accurate result than rem(x,2π,r)\n\nif r == RoundNearest, then the result is in the interval -π π. This will generally be the most accurate result.\nif r == RoundToZero, then the result is in the interval 0 2π if x is positive,. or -2π 0 otherwise.\nif r == RoundDown, then the result is in the interval 0 2π.\nif r == RoundUp, then the result is in the interval -2π 0.\n\nExamples\n\njulia> rem2pi(7pi/4, RoundNearest)\n-0.7853981633974485\n\njulia> rem2pi(7pi/4, RoundDown)\n5.497787143782138\n\n\n\n\n\n"
@@ -7506,7 +7506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.mod2pi",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.mod2pi",
     "category": "function",
     "text": "mod2pi(x)\n\nModulus after division by 2π, returning in the range 02π).\n\nThis function computes a floating point representation of the modulus after division by numerically exact 2π, and is therefore not exactly the same as mod(x,2π), which would compute the modulus of x relative to division by the floating-point number 2π.\n\nExamples\n\njulia> mod2pi(9*pi/4)\n0.7853981633974481\n\n\n\n\n\n"
@@ -7514,7 +7514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.divrem",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.divrem",
     "category": "function",
     "text": "divrem(x, y)\n\nThe quotient and remainder from Euclidean division. Equivalent to (div(x,y), rem(x,y)) or (x÷y, x%y).\n\nExamples\n\njulia> divrem(3,7)\n(0, 3)\n\njulia> divrem(7,3)\n(2, 1)\n\n\n\n\n\n"
@@ -7522,7 +7522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fldmod",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.fldmod",
     "category": "function",
     "text": "fldmod(x, y)\n\nThe floored quotient and modulus after division. Equivalent to (fld(x,y), mod(x,y)).\n\n\n\n\n\n"
@@ -7530,7 +7530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fld1",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.fld1",
     "category": "function",
     "text": "fld1(x, y)\n\nFlooring division, returning a value consistent with mod1(x,y)\n\nSee also: mod1, fldmod1.\n\nExamples\n\njulia> x = 15; y = 4;\n\njulia> fld1(x, y)\n4\n\njulia> x == fld(x, y) * y + mod(x, y)\ntrue\n\njulia> x == (fld1(x, y) - 1) * y + mod1(x, y)\ntrue\n\n\n\n\n\n"
@@ -7538,7 +7538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.mod1",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.mod1",
     "category": "function",
     "text": "mod1(x, y)\n\nModulus after flooring division, returning a value r such that mod(r, y) == mod(x, y) in the range (0 y for positive y and in the range y0) for negative y.\n\nSee also: fld1, fldmod1.\n\nExamples\n\njulia> mod1(4, 2)\n2\n\njulia> mod1(4, 3)\n1\n\n\n\n\n\n"
@@ -7546,7 +7546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fldmod1",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.fldmod1",
     "category": "function",
     "text": "fldmod1(x, y)\n\nReturn (fld1(x,y), mod1(x,y)).\n\nSee also: fld1, mod1.\n\n\n\n\n\n"
@@ -7554,7 +7554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.://",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.://",
     "category": "function",
     "text": "//(num, den)\n\nDivide two integers or rational numbers, giving a Rational result.\n\nExamples\n\njulia> 3 // 5\n3//5\n\njulia> (3 // 5) // (2 // 1)\n3//10\n\n\n\n\n\n"
@@ -7562,7 +7562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.rationalize",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.rationalize",
     "category": "function",
     "text": "rationalize([T<:Integer=Int,] x; tol::Real=eps(x))\n\nApproximate floating point number x as a Rational number with components of the given integer type. The result will differ from x by no more than tol.\n\nExamples\n\njulia> rationalize(5.6)\n28//5\n\njulia> a = rationalize(BigInt, 10.3)\n103//10\n\njulia> typeof(numerator(a))\nBigInt\n\n\n\n\n\n"
@@ -7570,7 +7570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.numerator",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.numerator",
     "category": "function",
     "text": "numerator(x)\n\nNumerator of the rational representation of x.\n\nExamples\n\njulia> numerator(2//3)\n2\n\njulia> numerator(4)\n4\n\n\n\n\n\n"
@@ -7578,7 +7578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.denominator",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.denominator",
     "category": "function",
     "text": "denominator(x)\n\nDenominator of the rational representation of x.\n\nExamples\n\njulia> denominator(2//3)\n3\n\njulia> denominator(4)\n1\n\n\n\n\n\n"
@@ -7586,7 +7586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:<<",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:<<",
     "category": "function",
     "text": "<<(x, n)\n\nLeft bit shift operator, x << n. For n >= 0, the result is x shifted left by n bits, filling with 0s. This is equivalent to x * 2^n. For n < 0, this is equivalent to x >> -n.\n\nExamples\n\njulia> Int8(3) << 2\n12\n\njulia> bitstring(Int8(3))\n\"00000011\"\n\njulia> bitstring(Int8(12))\n\"00001100\"\n\nSee also >>, >>>.\n\n\n\n\n\n<<(B::BitVector, n) -> BitVector\n\nLeft bit shift operator, B << n. For n >= 0, the result is B with elements shifted n positions backwards, filling with false values. If n < 0, elements are shifted forwards. Equivalent to B >> -n.\n\nExamples\n\njulia> B = BitVector([true, false, true, false, false])\n5-element BitArray{1}:\n  true\n false\n  true\n false\n false\n\njulia> B << 1\n5-element BitArray{1}:\n false\n  true\n false\n false\n false\n\njulia> B << -1\n5-element BitArray{1}:\n false\n  true\n false\n  true\n false\n\n\n\n\n\n"
@@ -7594,7 +7594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>>",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:>>",
     "category": "function",
     "text": ">>(x, n)\n\nRight bit shift operator, x >> n. For n >= 0, the result is x shifted right by n bits, where n >= 0, filling with 0s if x >= 0, 1s if x < 0, preserving the sign of x. This is equivalent to fld(x, 2^n). For n < 0, this is equivalent to x << -n.\n\nExamples\n\njulia> Int8(13) >> 2\n3\n\njulia> bitstring(Int8(13))\n\"00001101\"\n\njulia> bitstring(Int8(3))\n\"00000011\"\n\njulia> Int8(-14) >> 2\n-4\n\njulia> bitstring(Int8(-14))\n\"11110010\"\n\njulia> bitstring(Int8(-4))\n\"11111100\"\n\nSee also >>>, <<.\n\n\n\n\n\n>>(B::BitVector, n) -> BitVector\n\nRight bit shift operator, B >> n. For n >= 0, the result is B with elements shifted n positions forward, filling with false values. If n < 0, elements are shifted backwards. Equivalent to B << -n.\n\nExamples\n\njulia> B = BitVector([true, false, true, false, false])\n5-element BitArray{1}:\n  true\n false\n  true\n false\n false\n\njulia> B >> 1\n5-element BitArray{1}:\n false\n  true\n false\n  true\n false\n\njulia> B >> -1\n5-element BitArray{1}:\n false\n  true\n false\n false\n false\n\n\n\n\n\n"
@@ -7602,7 +7602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>>>",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:>>>",
     "category": "function",
     "text": ">>>(x, n)\n\nUnsigned right bit shift operator, x >>> n. For n >= 0, the result is x shifted right by n bits, where n >= 0, filling with 0s. For n < 0, this is equivalent to x << -n.\n\nFor Unsigned integer types, this is equivalent to >>. For Signed integer types, this is equivalent to signed(unsigned(x) >> n).\n\nExamples\n\njulia> Int8(-14) >>> 2\n60\n\njulia> bitstring(Int8(-14))\n\"11110010\"\n\njulia> bitstring(Int8(60))\n\"00111100\"\n\nBigInts are treated as if having infinite size, so no filling is required and this is equivalent to >>.\n\nSee also >>, <<.\n\n\n\n\n\n>>>(B::BitVector, n) -> BitVector\n\nUnsigned right bitshift operator, B >>> n. Equivalent to B >> n. See >> for details and examples.\n\n\n\n\n\n"
@@ -7610,7 +7610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.::",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.::",
     "category": "function",
     "text": "(:)(start, [step], stop)\n\nRange operator. a:b constructs a range from a to b with a step size of 1 (a UnitRange) , and a:s:b is similar but uses a step size of s (a StepRange).\n\n: is also used in indexing to select whole dimensions.\n\n\n\n\n\n"
@@ -7618,7 +7618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.range",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.range",
     "category": "function",
     "text": "range(start; length, stop, step=1)\n\nGiven a starting value, construct a range either by length or from start to stop, optionally with a given step (defaults to 1, a UnitRange). One of length or stop is required.  If length, stop, and step are all specified, they must agree.\n\nIf length and stop are provided and step is not, the step size will be computed automatically such that there are length linearly spaced elements in the range (a LinRange).\n\nIf step and stop are provided and length is not, the overall range length will be computed automatically such that the elements are step spaced (a StepRange).\n\nExamples\n\njulia> range(1, length=100)\n1:100\n\njulia> range(1, stop=100)\n1:100\n\njulia> range(1, step=5, length=100)\n1:5:496\n\njulia> range(1, step=5, stop=100)\n1:5:96\n\n\n\n\n\n"
@@ -7626,7 +7626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.OneTo",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.OneTo",
     "category": "type",
     "text": "Base.OneTo(n)\n\nDefine an AbstractUnitRange that behaves like 1:n, with the added distinction that the lower limit is guaranteed (by the type system) to be 1.\n\n\n\n\n\n"
@@ -7634,7 +7634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.StepRangeLen",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.StepRangeLen",
     "category": "type",
     "text": "StepRangeLen{T,R,S}(ref::R, step::S, len, [offset=1]) where {T,R,S}\nStepRangeLen(       ref::R, step::S, len, [offset=1]) where {  R,S}\n\nA range r where r[i] produces values of type T (in the second form, T is deduced automatically), parameterized by a reference value, a step, and the length. By default ref is the starting value r[1], but alternatively you can supply it as the value of r[offset] for some other index 1 <= offset <= len. In conjunction with TwicePrecision this can be used to implement ranges that are free of roundoff error.\n\n\n\n\n\n"
@@ -7642,7 +7642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:==",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:==",
     "category": "function",
     "text": "==(x, y)\n\nGeneric equality operator. Falls back to ===. Should be implemented for all types with a notion of equality, based on the abstract value that an instance represents. For example, all numeric types are compared by numeric value, ignoring type. Strings are compared as sequences of characters, ignoring encoding. For collections, == is generally called recursively on all contents, though other properties (like the shape for arrays) may also be taken into account.\n\nThis operator follows IEEE semantics for floating-point numbers: 0.0 == -0.0 and NaN != NaN.\n\nThe result is of type Bool, except when one of the operands is missing, in which case missing is returned (three-valued logic). For collections, missing is returned if at least one of the operands contains a missing value and all non-missing values are equal. Use isequal or === to always get a Bool result.\n\nImplementation\n\nNew numeric types should implement this function for two arguments of the new type, and handle comparison to other types via promotion rules where possible.\n\nisequal falls back to ==, so new methods of == will be used by the Dict type to compare keys. If your type will be used as a dictionary key, it should therefore also implement hash.\n\n\n\n\n\n==(x)\n\nCreate a function that compares its argument to x using ==, i.e. a function equivalent to y -> y == x.\n\nThe returned function is of type Base.Fix2{typeof(==)}, which can be used to implement specialized methods.\n\n\n\n\n\n==(a::AbstractString, b::AbstractString) -> Bool\n\nTest whether two strings are equal character by character (technically, Unicode code point by code point).\n\nExamples\n\njulia> \"abc\" == \"abc\"\ntrue\n\njulia> \"abc\" == \"αβγ\"\nfalse\n\n\n\n\n\n"
@@ -7650,7 +7650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:!=",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:!=",
     "category": "function",
     "text": "!=(x, y)\n≠(x,y)\n\nNot-equals comparison operator. Always gives the opposite answer as ==.\n\nImplementation\n\nNew types should generally not implement this, and rely on the fallback definition !=(x,y) = !(x==y) instead.\n\nExamples\n\njulia> 3 != 2\ntrue\n\njulia> \"foo\" ≠ \"foo\"\nfalse\n\n\n\n\n\n"
@@ -7658,7 +7658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:!==",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:!==",
     "category": "function",
     "text": "!==(x, y)\n≢(x,y)\n\nAlways gives the opposite answer as ===.\n\nExamples\n\njulia> a = [1, 2]; b = [1, 2];\n\njulia> a ≢ b\ntrue\n\njulia> a ≢ a\nfalse\n\n\n\n\n\n"
@@ -7666,7 +7666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:<",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:<",
     "category": "function",
     "text": "<(x, y)\n\nLess-than comparison operator. Falls back to isless. Because of the behavior of floating-point NaN values, this operator implements a partial order.\n\nImplementation\n\nNew numeric types with a canonical partial order should implement this function for two arguments of the new type. Types with a canonical total order should implement isless instead. (x < y) | (x == y)\n\nExamples\n\njulia> \'a\' < \'b\'\ntrue\n\njulia> \"abc\" < \"abd\"\ntrue\n\njulia> 5 < 3\nfalse\n\n\n\n\n\n"
@@ -7674,7 +7674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:<=",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:<=",
     "category": "function",
     "text": "<=(x, y)\n≤(x,y)\n\nLess-than-or-equals comparison operator. Falls back to (x < y) | (x == y).\n\nExamples\n\njulia> \'a\' <= \'b\'\ntrue\n\njulia> 7 ≤ 7 ≤ 9\ntrue\n\njulia> \"abc\" ≤ \"abc\"\ntrue\n\njulia> 5 <= 3\nfalse\n\n\n\n\n\n"
@@ -7682,7 +7682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:>",
     "category": "function",
     "text": ">(x, y)\n\nGreater-than comparison operator. Falls back to y < x.\n\nImplementation\n\nGenerally, new types should implement < instead of this function, and rely on the fallback definition >(x, y) = y < x.\n\nExamples\n\njulia> \'a\' > \'b\'\nfalse\n\njulia> 7 > 3 > 1\ntrue\n\njulia> \"abc\" > \"abd\"\nfalse\n\njulia> 5 > 3\ntrue\n\n\n\n\n\n"
@@ -7690,7 +7690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>=",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:>=",
     "category": "function",
     "text": ">=(x, y)\n≥(x,y)\n\nGreater-than-or-equals comparison operator. Falls back to y <= x.\n\nExamples\n\njulia> \'a\' >= \'b\'\nfalse\n\njulia> 7 ≥ 7 ≥ 3\ntrue\n\njulia> \"abc\" ≥ \"abc\"\ntrue\n\njulia> 5 >= 3\ntrue\n\n\n\n\n\n"
@@ -7698,7 +7698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cmp",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.cmp",
     "category": "function",
     "text": "cmp(x,y)\n\nReturn -1, 0, or 1 depending on whether x is less than, equal to, or greater than y, respectively. Uses the total order implemented by isless.\n\nExamples\n\njulia> cmp(1, 2)\n-1\n\njulia> cmp(2, 1)\n1\n\njulia> cmp(2+im, 3-im)\nERROR: MethodError: no method matching isless(::Complex{Int64}, ::Complex{Int64})\n[...]\n\n\n\n\n\ncmp(<, x, y)\n\nReturn -1, 0, or 1 depending on whether x is less than, equal to, or greater than y, respectively. The first argument specifies a less-than comparison function to use.\n\n\n\n\n\ncmp(a::AbstractString, b::AbstractString) -> Int\n\nCompare two strings. Return 0 if both strings have the same length and the character at each index is the same in both strings. Return -1 if a is a prefix of b, or if a comes before b in alphabetical order. Return 1 if b is a prefix of a, or if b comes before a in alphabetical order (technically, lexicographical order by Unicode code points).\n\nExamples\n\njulia> cmp(\"abc\", \"abc\")\n0\n\njulia> cmp(\"ab\", \"abc\")\n-1\n\njulia> cmp(\"abc\", \"ab\")\n1\n\njulia> cmp(\"ab\", \"ac\")\n-1\n\njulia> cmp(\"ac\", \"ab\")\n1\n\njulia> cmp(\"α\", \"a\")\n1\n\njulia> cmp(\"b\", \"β\")\n-1\n\n\n\n\n\n"
@@ -7706,7 +7706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:~",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:~",
     "category": "function",
     "text": "~(x)\n\nBitwise not.\n\nExamples\n\njulia> ~4\n-5\n\njulia> ~10\n-11\n\njulia> ~true\nfalse\n\n\n\n\n\n"
@@ -7714,7 +7714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:&",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:&",
     "category": "function",
     "text": "&(x, y)\n\nBitwise and. Implements three-valued logic, returning missing if one operand is missing and the other is true.\n\nExamples\n\njulia> 4 & 10\n0\n\njulia> 4 & 12\n4\n\njulia> true & missing\nmissing\n\njulia> false & missing\nfalse\n\n\n\n\n\n"
@@ -7722,7 +7722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:|",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:|",
     "category": "function",
     "text": "|(x, y)\n\nBitwise or. Implements three-valued logic, returning missing if one operand is missing and the other is false.\n\nExamples\n\njulia> 4 | 10\n14\n\njulia> 4 | 1\n5\n\njulia> true | missing\ntrue\n\njulia> false | missing\nmissing\n\n\n\n\n\n"
@@ -7730,7 +7730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.xor",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.xor",
     "category": "function",
     "text": "xor(x, y)\n⊻(x, y)\n\nBitwise exclusive or of x and y. Implements three-valued logic, returning missing if one of the arguments is missing.\n\nThe infix operation a ⊻ b is a synonym for xor(a,b), and ⊻ can be typed by tab-completing \\xor or \\veebar in the Julia REPL.\n\nExamples\n\njulia> xor(true, false)\ntrue\n\njulia> xor(true, true)\nfalse\n\njulia> xor(true, missing)\nmissing\n\njulia> false ⊻ false\nfalse\n\njulia> [true; true; false] .⊻ [true; false; false]\n3-element BitArray{1}:\n false\n  true\n false\n\n\n\n\n\n"
@@ -7738,7 +7738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:!",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.:!",
     "category": "function",
     "text": "!(x)\n\nBoolean not. Implements three-valued logic, returning missing if x is missing.\n\nExamples\n\njulia> !true\nfalse\n\njulia> !false\ntrue\n\njulia> !missing\nmissing\n\njulia> .![true false true]\n1×3 BitArray{2}:\n false  true  false\n\n\n\n\n\n!f::Function\n\nPredicate function negation: when the argument of ! is a function, it returns a function which computes the boolean negation of f.\n\nExamples\n\njulia> str = \"∀ ε > 0, ∃ δ > 0: |x-y| < δ ⇒ |f(x)-f(y)| < ε\"\n\"∀ ε > 0, ∃ δ > 0: |x-y| < δ ⇒ |f(x)-f(y)| < ε\"\n\njulia> filter(isletter, str)\n\"εδxyδfxfyε\"\n\njulia> filter(!isletter, str)\n\"∀  > 0, ∃  > 0: |-| <  ⇒ |()-()| < \"\n\n\n\n\n\n"
@@ -7746,7 +7746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#&&",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "&&",
     "category": "keyword",
     "text": "x && y\n\nShort-circuiting boolean AND.\n\n\n\n\n\n"
@@ -7754,7 +7754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#||",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "||",
     "category": "keyword",
     "text": "x || y\n\nShort-circuiting boolean OR.\n\n\n\n\n\n"
@@ -7762,15 +7762,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#math-ops-1",
-    "page": "Mathematics",
-    "title": "Mathematical Operators",
+    "page": "数学",
+    "title": "数学运算符",
     "category": "section",
     "text": "Base.:-(::Any)\nBase.:(+)\nBase.:-(::Any, ::Any)\nBase.:*(::Any, ::Any...)\nBase.:(/)\nBase.:\\(::Any, ::Any)\nBase.:^(::Number, ::Number)\nBase.fma\nBase.muladd\nBase.inv(::Number)\nBase.div\nBase.fld\nBase.cld\nBase.mod\nBase.rem\nBase.rem2pi\nBase.Math.mod2pi\nBase.divrem\nBase.fldmod\nBase.fld1\nBase.mod1\nBase.fldmod1\nBase.:(//)\nBase.rationalize\nBase.numerator\nBase.denominator\nBase.:(<<)\nBase.:(>>)\nBase.:(>>>)\nBase.:(:)\nBase.range\nBase.OneTo\nBase.StepRangeLen\nBase.:(==)\nBase.:(!=)\nBase.:(!==)\nBase.:(<)\nBase.:(<=)\nBase.:(>)\nBase.:(>=)\nBase.cmp\nBase.:(~)\nBase.:(&)\nBase.:(|)\nBase.xor\nBase.:(!)\n&&\n||"
 },
 
 {
     "location": "base/math/#Base.isapprox",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.isapprox",
     "category": "function",
     "text": "isapprox(x, y; rtol::Real=atol>0 ? 0 : √eps, atol::Real=0, nans::Bool=false, norm::Function)\n\nInexact equality comparison: true if norm(x-y) <= max(atol, rtol*max(norm(x), norm(y))). The default atol is zero and the default rtol depends on the types of x and y. The keyword argument nans determines whether or not NaN values are considered equal (defaults to false).\n\nFor real or complex floating-point values, if an atol > 0 is not specified, rtol defaults to the square root of eps of the type of x or y, whichever is bigger (least precise). This corresponds to requiring equality of about half of the significand digits. Otherwise, e.g. for integer arguments or if an atol > 0 is supplied, rtol defaults to zero.\n\nx and y may also be arrays of numbers, in which case norm defaults to vecnorm but may be changed by passing a norm::Function keyword argument. (For numbers, norm is the same thing as abs.) When x and y are arrays, if norm(x-y) is not finite (i.e. ±Inf or NaN), the comparison falls back to checking whether all elements of x and y are approximately equal component-wise.\n\nThe binary operator ≈ is equivalent to isapprox with the default arguments, and x ≉ y is equivalent to !isapprox(x,y).\n\nNote that x ≈ 0 (i.e., comparing to zero with the default tolerances) is equivalent to x == 0 since the default atol is 0.  In such cases, you should either supply an appropriate atol (or use norm(x) ≤ atol) or rearrange your code (e.g. use x ≈ y rather than x - y ≈ 0).   It is not possible to pick a nonzero atol automatically because it depends on the overall scaling (the \"units\") of your problem: for example, in x - y ≈ 0, atol=1e-9 is an absurdly small tolerance if x is the radius of the Earth in meters, but an absurdly large tolerance if x is the radius of a Hydrogen atom in meters.\n\nExamples\n\njulia> 0.1 ≈ (0.1 - 1e-10)\ntrue\n\njulia> isapprox(10, 11; atol = 2)\ntrue\n\njulia> isapprox([10.0^9, 1.0], [10.0^9, 2.0])\ntrue\n\njulia> 1e-10 ≈ 0\nfalse\n\njulia> isapprox(1e-10, 0, atol=1e-8)\ntrue\n\n\n\n\n\n"
@@ -7778,7 +7778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sin-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.sin",
     "category": "method",
     "text": "sin(x)\n\nCompute sine of x, where x is in radians.\n\n\n\n\n\n"
@@ -7786,7 +7786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cos-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.cos",
     "category": "method",
     "text": "cos(x)\n\nCompute cosine of x, where x is in radians.\n\n\n\n\n\n"
@@ -7794,7 +7794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sincos-Tuple{Float64}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.sincos",
     "category": "method",
     "text": "sincos(x)\n\nSimultaneously compute the sine and cosine of x, where the x is in radians.\n\n\n\n\n\n"
@@ -7802,7 +7802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.tan-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.tan",
     "category": "method",
     "text": "tan(x)\n\nCompute tangent of x, where x is in radians.\n\n\n\n\n\n"
@@ -7810,7 +7810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sind",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.sind",
     "category": "function",
     "text": "sind(x)\n\nCompute sine of x, where x is in degrees. \n\n\n\n\n\n"
@@ -7818,7 +7818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cosd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.cosd",
     "category": "function",
     "text": "cosd(x)\n\nCompute cosine of x, where x is in degrees. \n\n\n\n\n\n"
@@ -7826,7 +7826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.tand",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.tand",
     "category": "function",
     "text": "tand(x)\n\nCompute tangent of x, where x is in degrees. \n\n\n\n\n\n"
@@ -7834,7 +7834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sinpi",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.sinpi",
     "category": "function",
     "text": "sinpi(x)\n\nCompute sin(pi x) more accurately than sin(pi*x), especially for large x.\n\n\n\n\n\n"
@@ -7842,7 +7842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cospi",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.cospi",
     "category": "function",
     "text": "cospi(x)\n\nCompute cos(pi x) more accurately than cos(pi*x), especially for large x.\n\n\n\n\n\n"
@@ -7850,7 +7850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sinh-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.sinh",
     "category": "method",
     "text": "sinh(x)\n\nCompute hyperbolic sine of x.\n\n\n\n\n\n"
@@ -7858,7 +7858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cosh-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.cosh",
     "category": "method",
     "text": "cosh(x)\n\nCompute hyperbolic cosine of x.\n\n\n\n\n\n"
@@ -7866,7 +7866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.tanh-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.tanh",
     "category": "method",
     "text": "tanh(x)\n\nCompute hyperbolic tangent of x.\n\n\n\n\n\n"
@@ -7874,7 +7874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.asin-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.asin",
     "category": "method",
     "text": "asin(x)\n\nCompute the inverse sine of x, where the output is in radians.\n\n\n\n\n\n"
@@ -7882,7 +7882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.acos-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.acos",
     "category": "method",
     "text": "acos(x)\n\nCompute the inverse cosine of x, where the output is in radians\n\n\n\n\n\n"
@@ -7890,7 +7890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.atan-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.atan",
     "category": "method",
     "text": "atan(y)\natan(y, x)\n\nCompute the inverse tangent of y or y/x, respectively.\n\nFor one argument, this is the angle in radians between the positive x-axis and the point (1, y), returning a value in the interval -pi2 pi2.\n\nFor two arguments, this is the angle in radians between the positive x-axis and the point (x, y), returning a value in the interval -pi pi. This corresponds to a standard atan2 function.\n\n\n\n\n\n"
@@ -7898,7 +7898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asind",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.asind",
     "category": "function",
     "text": "asind(x)\n\nCompute the inverse sine of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -7906,7 +7906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acosd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.acosd",
     "category": "function",
     "text": "acosd(x)\n\nCompute the inverse cosine of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -7914,7 +7914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.atand",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.atand",
     "category": "function",
     "text": "atand(y)\natand(y,x)\n\nCompute the inverse tangent of y or y/x, respectively, where the output is in degrees.\n\n\n\n\n\n"
@@ -7922,7 +7922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sec-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.sec",
     "category": "method",
     "text": "sec(x)\n\nCompute the secant of x, where x is in radians.\n\n\n\n\n\n"
@@ -7930,7 +7930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.csc-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.csc",
     "category": "method",
     "text": "csc(x)\n\nCompute the cosecant of x, where x is in radians.\n\n\n\n\n\n"
@@ -7938,7 +7938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cot-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.cot",
     "category": "method",
     "text": "cot(x)\n\nCompute the cotangent of x, where x is in radians.\n\n\n\n\n\n"
@@ -7946,7 +7946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.secd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.secd",
     "category": "function",
     "text": "secd(x)\n\nCompute the secant of x, where x is in degrees.\n\n\n\n\n\n"
@@ -7954,7 +7954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cscd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.cscd",
     "category": "function",
     "text": "cscd(x)\n\nCompute the cosecant of x, where x is in degrees.\n\n\n\n\n\n"
@@ -7962,7 +7962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cotd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.cotd",
     "category": "function",
     "text": "cotd(x)\n\nCompute the cotangent of x, where x is in degrees.\n\n\n\n\n\n"
@@ -7970,7 +7970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asec-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.asec",
     "category": "method",
     "text": "asec(x)\n\nCompute the inverse secant of x, where the output is in radians. \n\n\n\n\n\n"
@@ -7978,7 +7978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acsc-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.acsc",
     "category": "method",
     "text": "acsc(x)\n\nCompute the inverse cosecant of x, where the output is in radians. \n\n\n\n\n\n"
@@ -7986,7 +7986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acot-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.acot",
     "category": "method",
     "text": "acot(x)\n\nCompute the inverse cotangent of x, where the output is in radians. \n\n\n\n\n\n"
@@ -7994,7 +7994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asecd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.asecd",
     "category": "function",
     "text": "asecd(x)\n\nCompute the inverse secant of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -8002,7 +8002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acscd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.acscd",
     "category": "function",
     "text": "acscd(x)\n\nCompute the inverse cosecant of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -8010,7 +8010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acotd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.acotd",
     "category": "function",
     "text": "acotd(x)\n\nCompute the inverse cotangent of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -8018,7 +8018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sech-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.sech",
     "category": "method",
     "text": "sech(x)\n\nCompute the hyperbolic secant of x.\n\n\n\n\n\n"
@@ -8026,7 +8026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.csch-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.csch",
     "category": "method",
     "text": "csch(x)\n\nCompute the hyperbolic cosecant of x.\n\n\n\n\n\n"
@@ -8034,7 +8034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.coth-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.coth",
     "category": "method",
     "text": "coth(x)\n\nCompute the hyperbolic cotangent of x.\n\n\n\n\n\n"
@@ -8042,7 +8042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.asinh-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.asinh",
     "category": "method",
     "text": "asinh(x)\n\nCompute the inverse hyperbolic sine of x.\n\n\n\n\n\n"
@@ -8050,7 +8050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.acosh-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.acosh",
     "category": "method",
     "text": "acosh(x)\n\nCompute the inverse hyperbolic cosine of x.\n\n\n\n\n\n"
@@ -8058,7 +8058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.atanh-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.atanh",
     "category": "method",
     "text": "atanh(x)\n\nCompute the inverse hyperbolic tangent of x.\n\n\n\n\n\n"
@@ -8066,7 +8066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asech-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.asech",
     "category": "method",
     "text": "asech(x)\n\nCompute the inverse hyperbolic secant of x. \n\n\n\n\n\n"
@@ -8074,7 +8074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acsch-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.acsch",
     "category": "method",
     "text": "acsch(x)\n\nCompute the inverse hyperbolic cosecant of x. \n\n\n\n\n\n"
@@ -8082,7 +8082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acoth-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.acoth",
     "category": "method",
     "text": "acoth(x)\n\nCompute the inverse hyperbolic cotangent of x. \n\n\n\n\n\n"
@@ -8090,7 +8090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sinc",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.sinc",
     "category": "function",
     "text": "sinc(x)\n\nCompute sin(pi x)  (pi x) if x neq 0, and 1 if x = 0.\n\n\n\n\n\n"
@@ -8098,7 +8098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cosc",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.cosc",
     "category": "function",
     "text": "cosc(x)\n\nCompute cos(pi x)  x - sin(pi x)  (pi x^2) if x neq 0, and 0 if x = 0. This is the derivative of sinc(x).\n\n\n\n\n\n"
@@ -8106,7 +8106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.deg2rad",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.deg2rad",
     "category": "function",
     "text": "deg2rad(x)\n\nConvert x from degrees to radians.\n\nExamples\n\njulia> deg2rad(90)\n1.5707963267948966\n\n\n\n\n\n"
@@ -8114,7 +8114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.rad2deg",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.rad2deg",
     "category": "function",
     "text": "rad2deg(x)\n\nConvert x from radians to degrees.\n\nExamples\n\njulia> rad2deg(pi)\n180.0\n\n\n\n\n\n"
@@ -8122,7 +8122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.hypot",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.hypot",
     "category": "function",
     "text": "hypot(x, y)\n\nCompute the hypotenuse sqrtx^2+y^2 avoiding overflow and underflow.\n\nExamples\n\njulia> a = 10^10;\n\njulia> hypot(a, a)\n1.4142135623730951e10\n\njulia> √(a^2 + a^2) # a^2 overflows\nERROR: DomainError with -2.914184810805068e18:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]\n\n\n\n\n\nhypot(x...)\n\nCompute the hypotenuse sqrtsum x_i^2 avoiding overflow and underflow.\n\n\n\n\n\n"
@@ -8130,7 +8130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log-Tuple{Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.log",
     "category": "method",
     "text": "log(x)\n\nCompute the natural logarithm of x. Throws DomainError for negative Real arguments. Use complex negative arguments to obtain complex results.\n\n\n\n\n\n"
@@ -8138,7 +8138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log-Tuple{Number,Number}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.log",
     "category": "method",
     "text": "log(b,x)\n\nCompute the base b logarithm of x. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log(4,8)\n1.5\n\njulia> log(4,2)\n0.5\n\njulia> log(-2, 3)\nERROR: DomainError with log:\n-2.0 will only return a complex result if called with a complex argument. Try -2.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\njulia> log(2, -3)\nERROR: DomainError with log:\n-3.0 will only return a complex result if called with a complex argument. Try -3.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\nnote: Note\nIf b is a power of 2 or 10, log2 or log10 should be used, as these will typically be faster and more accurate. For example,julia> log(100,1000000)\n2.9999999999999996\n\njulia> log10(1000000)/2\n3.0\n\n\n\n\n\n"
@@ -8146,7 +8146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log2",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.log2",
     "category": "function",
     "text": "log2(x)\n\nCompute the logarithm of x to base 2. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log2(4)\n2.0\n\njulia> log2(10)\n3.321928094887362\n\njulia> log2(-2)\nERROR: DomainError with -2.0:\nNaN result for non-NaN input.\nStacktrace:\n [1] nan_dom_err at ./math.jl:325 [inlined]\n[...]\n\n\n\n\n\n"
@@ -8154,7 +8154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log10",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.log10",
     "category": "function",
     "text": "log10(x)\n\nCompute the logarithm of x to base 10. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log10(100)\n2.0\n\njulia> log10(2)\n0.3010299956639812\n\njulia> log10(-2)\nERROR: DomainError with -2.0:\nNaN result for non-NaN input.\nStacktrace:\n [1] nan_dom_err at ./math.jl:325 [inlined]\n[...]\n\n\n\n\n\n"
@@ -8162,7 +8162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log1p",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.log1p",
     "category": "function",
     "text": "log1p(x)\n\nAccurate natural logarithm of 1+x. Throws DomainError for Real arguments less than -1.\n\nExamples\n\njulia> log1p(-0.5)\n-0.6931471805599453\n\njulia> log1p(0)\n0.0\n\njulia> log1p(-2)\nERROR: DomainError with log1p:\n-2.0 will only return a complex result if called with a complex argument. Try -2.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\n\n\n\n\n"
@@ -8170,7 +8170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.frexp",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.frexp",
     "category": "function",
     "text": "frexp(val)\n\nReturn (x,exp) such that x has a magnitude in the interval 12 1) or 0, and val is equal to x times 2^exp.\n\n\n\n\n\n"
@@ -8178,7 +8178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.exp-Tuple{Float64}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.exp",
     "category": "method",
     "text": "exp(x)\n\nCompute the natural base exponential of x, in other words e^x.\n\nExamples\n\njulia> exp(1.0)\n2.718281828459045\n\n\n\n\n\n"
@@ -8186,7 +8186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.exp2",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.exp2",
     "category": "function",
     "text": "exp2(x)\n\nCompute the base 2 exponential of x, in other words 2^x.\n\nExamples\n\njulia> exp2(5)\n32.0\n\n\n\n\n\n"
@@ -8194,7 +8194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.exp10",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.exp10",
     "category": "function",
     "text": "exp10(x)\n\nCompute the base 10 exponential of x, in other words 10^x.\n\nExamples\n\njulia> exp10(2)\n100.0\n\n\n\n\n\nexp10(x)\n\nCompute 10^x.\n\nExamples\n\njulia> exp10(2)\n100.0\n\njulia> exp10(0.2)\n1.5848931924611136\n\n\n\n\n\n"
@@ -8202,7 +8202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.ldexp",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.ldexp",
     "category": "function",
     "text": "ldexp(x, n)\n\nCompute x times 2^n.\n\nExamples\n\njulia> ldexp(5., 2)\n20.0\n\n\n\n\n\n"
@@ -8210,7 +8210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.modf",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.modf",
     "category": "function",
     "text": "modf(x)\n\nReturn a tuple (fpart, ipart) of the fractional and integral parts of a number. Both parts have the same sign as the argument.\n\nExamples\n\njulia> modf(3.5)\n(0.5, 3.0)\n\njulia> modf(-3.5)\n(-0.5, -3.0)\n\n\n\n\n\n"
@@ -8218,7 +8218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.expm1",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.expm1",
     "category": "function",
     "text": "expm1(x)\n\nAccurately compute e^x-1.\n\n\n\n\n\n"
@@ -8226,7 +8226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.round-Tuple{Type,Any}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.round",
     "category": "method",
     "text": "round([T,] x, [r::RoundingMode])\nround(x, [r::RoundingMode]; digits::Integer=0, base = 10)\nround(x, [r::RoundingMode]; sigdigits::Integer, base = 10)\n\nRounds the number x.\n\nWithout keyword arguments, x is rounded to an integer value, returning a value of type T, or of the same type of x if no T is provided. An InexactError will be thrown if the value is not representable by T, similar to convert.\n\nIf the digits keyword argument is provided, it rounds to the specified number of digits after the decimal place (or before if negative), in base base.\n\nIf the sigdigits keyword argument is provided, it rounds to the specified number of significant digits, in base base.\n\nThe RoundingMode r controls the direction of the rounding; the default is RoundNearest, which rounds to the nearest integer, with ties (fractional values of 0.5) being rounded to the nearest even integer. Note that round may give incorrect results if the global rounding mode is changed (see rounding).\n\nExamples\n\njulia> round(1.7)\n2.0\n\njulia> round(Int, 1.7)\n2\n\njulia> round(1.5)\n2.0\n\njulia> round(2.5)\n2.0\n\njulia> round(pi; digits=2)\n3.14\n\njulia> round(pi; digits=3, base=2)\n3.125\n\njulia> round(123.456; sigdigits=2)\n120.0\n\njulia> round(357.913; sigdigits=4, base=2)\n352.0\n\nnote: Note\nRounding to specified digits in bases other than 2 can be inexact when operating on binary floating point numbers. For example, the Float64 value represented by 1.15 is actually less than 1.15, yet will be rounded to 1.2.Examplesjulia> x = 1.15\n1.15\n\njulia> @sprintf \"%.20f\" x\n\"1.14999999999999991118\"\n\njulia> x < 115//100\ntrue\n\njulia> round(x, digits=1)\n1.2\n\nExtensions\n\nTo extend round to new numeric types, it is typically sufficient to define Base.round(x::NewType, r::RoundingMode).\n\n\n\n\n\n"
@@ -8234,7 +8234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundingMode",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundingMode",
     "category": "type",
     "text": "RoundingMode\n\nA type used for controlling the rounding mode of floating point operations (via rounding/setrounding functions), or as optional arguments for rounding to the nearest integer (via the round function).\n\nCurrently supported rounding modes are:\n\nRoundNearest (default)\nRoundNearestTiesAway\nRoundNearestTiesUp\nRoundToZero\nRoundFromZero (BigFloat only)\nRoundUp\nRoundDown\n\n\n\n\n\n"
@@ -8242,7 +8242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundNearest",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundNearest",
     "category": "constant",
     "text": "RoundNearest\n\nThe default rounding mode. Rounds to the nearest integer, with ties (fractional values of 0.5) being rounded to the nearest even integer.\n\n\n\n\n\n"
@@ -8250,7 +8250,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundNearestTiesAway",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundNearestTiesAway",
     "category": "constant",
     "text": "RoundNearestTiesAway\n\nRounds to nearest integer, with ties rounded away from zero (C/C++ round behaviour).\n\n\n\n\n\n"
@@ -8258,7 +8258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundNearestTiesUp",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundNearestTiesUp",
     "category": "constant",
     "text": "RoundNearestTiesUp\n\nRounds to nearest integer, with ties rounded toward positive infinity (Java/JavaScript round behaviour).\n\n\n\n\n\n"
@@ -8266,7 +8266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundToZero",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundToZero",
     "category": "constant",
     "text": "RoundToZero\n\nround using this rounding mode is an alias for trunc.\n\n\n\n\n\n"
@@ -8274,7 +8274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundFromZero",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundFromZero",
     "category": "constant",
     "text": "RoundFromZero\n\nRounds away from zero. This rounding mode may only be used with T == BigFloat inputs to round.\n\nExamples\n\njulia> BigFloat(\"1.0000000000000001\", 5, RoundFromZero)\n1.06\n\n\n\n\n\n"
@@ -8282,7 +8282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundUp",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundUp",
     "category": "constant",
     "text": "RoundUp\n\nround using this rounding mode is an alias for ceil.\n\n\n\n\n\n"
@@ -8290,7 +8290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundDown",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Rounding.RoundDown",
     "category": "constant",
     "text": "RoundDown\n\nround using this rounding mode is an alias for floor.\n\n\n\n\n\n"
@@ -8298,7 +8298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.round-Tuple{Complex{#s148} where #s148<:AbstractFloat,RoundingMode,RoundingMode}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.round",
     "category": "method",
     "text": "round(z::Complex[, RoundingModeReal, [RoundingModeImaginary]])\nround(z::Complex[, RoundingModeReal, [RoundingModeImaginary]]; digits=, base=10)\nround(z::Complex[, RoundingModeReal, [RoundingModeImaginary]]; sigdigits=, base=10)\n\nReturn the nearest integral value of the same type as the complex-valued z to z, breaking ties using the specified RoundingModes. The first RoundingMode is used for rounding the real components while the second is used for rounding the imaginary components.\n\nExample\n\njulia> round(3.14 + 4.5im)\n3.0 + 4.0im\n\n\n\n\n\n"
@@ -8306,7 +8306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.ceil",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.ceil",
     "category": "function",
     "text": "ceil([T,] x)\nceil(x; digits::Integer= [, base = 10])\nceil(x; sigdigits::Integer= [, base = 10])\n\nceil(x) returns the nearest integral value of the same type as x that is greater than or equal to x.\n\nceil(T, x) converts the result to type T, throwing an InexactError if the value is not representable.\n\ndigits, sigdigits and base work as for round.\n\n\n\n\n\n"
@@ -8314,7 +8314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.floor",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.floor",
     "category": "function",
     "text": "floor([T,] x)\nfloor(x; digits::Integer= [, base = 10])\nfloor(x; sigdigits::Integer= [, base = 10])\n\nfloor(x) returns the nearest integral value of the same type as x that is less than or equal to x.\n\nfloor(T, x) converts the result to type T, throwing an InexactError if the value is not representable.\n\ndigits, sigdigits and base work as for round.\n\n\n\n\n\n"
@@ -8322,7 +8322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.trunc",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.trunc",
     "category": "function",
     "text": "trunc([T,] x)\ntrunc(x; digits::Integer= [, base = 10])\ntrunc(x; sigdigits::Integer= [, base = 10])\n\ntrunc(x) returns the nearest integral value of the same type as x whose absolute value is less than or equal to x.\n\ntrunc(T, x) converts the result to type T, throwing an InexactError if the value is not representable.\n\ndigits, sigdigits and base work as for round.\n\n\n\n\n\n"
@@ -8330,7 +8330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.unsafe_trunc",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.unsafe_trunc",
     "category": "function",
     "text": "unsafe_trunc(T, x)\n\nReturn the nearest integral value of type T whose absolute value is less than or equal to x. If the value is not representable by T, an arbitrary value will be returned.\n\n\n\n\n\n"
@@ -8338,7 +8338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.min",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.min",
     "category": "function",
     "text": "min(x, y, ...)\n\nReturn the minimum of the arguments. See also the minimum function to take the minimum element from a collection.\n\nExamples\n\njulia> min(2, 5, 1)\n1\n\n\n\n\n\n"
@@ -8346,7 +8346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.max",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.max",
     "category": "function",
     "text": "max(x, y, ...)\n\nReturn the maximum of the arguments. See also the maximum function to take the maximum element from a collection.\n\nExamples\n\njulia> max(2, 5, 1)\n5\n\n\n\n\n\n"
@@ -8354,7 +8354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.minmax",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.minmax",
     "category": "function",
     "text": "minmax(x, y)\n\nReturn (min(x,y), max(x,y)). See also: extrema that returns (minimum(x), maximum(x)).\n\nExamples\n\njulia> minmax(\'c\',\'b\')\n(\'b\', \'c\')\n\n\n\n\n\n"
@@ -8362,7 +8362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.clamp",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.clamp",
     "category": "function",
     "text": "clamp(x, lo, hi)\n\nReturn x if lo <= x <= hi. If x > hi, return hi. If x < lo, return lo. Arguments are promoted to a common type.\n\nExamples\n\njulia> clamp.([pi, 1.0, big(10.)], 2., 9.)\n3-element Array{BigFloat,1}:\n 3.141592653589793238462643383279502884197169399375105820974944592307816406286198\n 2.0\n 9.0\n\njulia> clamp.([11,8,5],10,6) # an example where lo > hi\n3-element Array{Int64,1}:\n  6\n  6\n 10\n\n\n\n\n\n"
@@ -8370,7 +8370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.clamp!",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.clamp!",
     "category": "function",
     "text": "clamp!(array::AbstractArray, lo, hi)\n\nRestrict values in array to the specified range, in-place. See also clamp.\n\n\n\n\n\n"
@@ -8378,7 +8378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.abs",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.abs",
     "category": "function",
     "text": "abs(x)\n\nThe absolute value of x.\n\nWhen abs is applied to signed integers, overflow may occur, resulting in the return of a negative value. This overflow occurs only when abs is applied to the minimum representable value of a signed integer. That is, when x == typemin(typeof(x)), abs(x) == x < 0, not -x as might be expected.\n\nExamples\n\njulia> abs(-3)\n3\n\njulia> abs(1 + im)\n1.4142135623730951\n\njulia> abs(typemin(Int64))\n-9223372036854775808\n\n\n\n\n\n"
@@ -8386,7 +8386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_abs",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_abs",
     "category": "function",
     "text": "Base.checked_abs(x)\n\nCalculates abs(x), checking for overflow errors where applicable. For example, standard two\'s complement signed integers (e.g. Int) cannot represent abs(typemin(Int)), thus leading to an overflow.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8394,7 +8394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_neg",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_neg",
     "category": "function",
     "text": "Base.checked_neg(x)\n\nCalculates -x, checking for overflow errors where applicable. For example, standard two\'s complement signed integers (e.g. Int) cannot represent -typemin(Int), thus leading to an overflow.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8402,7 +8402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_add",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_add",
     "category": "function",
     "text": "Base.checked_add(x, y)\n\nCalculates x+y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8410,7 +8410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_sub",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_sub",
     "category": "function",
     "text": "Base.checked_sub(x, y)\n\nCalculates x-y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8418,7 +8418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_mul",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_mul",
     "category": "function",
     "text": "Base.checked_mul(x, y)\n\nCalculates x*y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8426,7 +8426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_div",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_div",
     "category": "function",
     "text": "Base.checked_div(x, y)\n\nCalculates div(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8434,7 +8434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_rem",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_rem",
     "category": "function",
     "text": "Base.checked_rem(x, y)\n\nCalculates x%y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8442,7 +8442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_fld",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_fld",
     "category": "function",
     "text": "Base.checked_fld(x, y)\n\nCalculates fld(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8450,7 +8450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_mod",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_mod",
     "category": "function",
     "text": "Base.checked_mod(x, y)\n\nCalculates mod(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8458,7 +8458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_cld",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.checked_cld",
     "category": "function",
     "text": "Base.checked_cld(x, y)\n\nCalculates cld(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8466,7 +8466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.add_with_overflow",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.add_with_overflow",
     "category": "function",
     "text": "Base.add_with_overflow(x, y) -> (r, f)\n\nCalculates r = x+y, with the flag f indicating whether overflow has occurred.\n\n\n\n\n\n"
@@ -8474,7 +8474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.sub_with_overflow",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.sub_with_overflow",
     "category": "function",
     "text": "Base.sub_with_overflow(x, y) -> (r, f)\n\nCalculates r = x-y, with the flag f indicating whether overflow has occurred.\n\n\n\n\n\n"
@@ -8482,7 +8482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.mul_with_overflow",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Checked.mul_with_overflow",
     "category": "function",
     "text": "Base.mul_with_overflow(x, y) -> (r, f)\n\nCalculates r = x*y, with the flag f indicating whether overflow has occurred.\n\n\n\n\n\n"
@@ -8490,7 +8490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.abs2",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.abs2",
     "category": "function",
     "text": "abs2(x)\n\nSquared absolute value of x.\n\nExamples\n\njulia> abs2(-3)\n9\n\n\n\n\n\n"
@@ -8498,7 +8498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.copysign",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.copysign",
     "category": "function",
     "text": "copysign(x, y) -> z\n\nReturn z which has the magnitude of x and the same sign as y.\n\nExamples\n\njulia> copysign(1, -2)\n-1\n\njulia> copysign(-1, 2)\n1\n\n\n\n\n\n"
@@ -8506,7 +8506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sign",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.sign",
     "category": "function",
     "text": "sign(x)\n\nReturn zero if x==0 and xx otherwise (i.e., ±1 for real x).\n\n\n\n\n\n"
@@ -8514,7 +8514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.signbit",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.signbit",
     "category": "function",
     "text": "signbit(x)\n\nReturns true if the value of the sign of x is negative, otherwise false.\n\nExamples\n\njulia> signbit(-4)\ntrue\n\njulia> signbit(5)\nfalse\n\njulia> signbit(5.5)\nfalse\n\njulia> signbit(-4.1)\ntrue\n\n\n\n\n\n"
@@ -8522,7 +8522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.flipsign",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.flipsign",
     "category": "function",
     "text": "flipsign(x, y)\n\nReturn x with its sign flipped if y is negative. For example abs(x) = flipsign(x,x).\n\nExamples\n\njulia> flipsign(5, 3)\n5\n\njulia> flipsign(5, -3)\n-5\n\n\n\n\n\n"
@@ -8530,7 +8530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sqrt-Tuple{Real}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.sqrt",
     "category": "method",
     "text": "sqrt(x)\n\nReturn sqrtx. Throws DomainError for negative Real arguments. Use complex negative arguments instead. The prefix operator √ is equivalent to sqrt.\n\nExamples\n\njulia> sqrt(big(81))\n9.0\n\njulia> sqrt(big(-81))\nERROR: DomainError with -8.1e+01:\nNaN result for non-NaN input.\nStacktrace:\n [1] sqrt(::BigFloat) at ./mpfr.jl:501\n[...]\n\njulia> sqrt(big(complex(-81)))\n0.0 + 9.0im\n\n\n\n\n\n"
@@ -8538,7 +8538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.isqrt",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.isqrt",
     "category": "function",
     "text": "isqrt(n::Integer)\n\nInteger square root: the largest integer m such that m*m <= n.\n\njulia> isqrt(5)\n2\n\n\n\n\n\n"
@@ -8546,7 +8546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cbrt",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.cbrt",
     "category": "function",
     "text": "cbrt(x::Real)\n\nReturn the cube root of x, i.e. x^13. Negative values are accepted (returning the negative real root when x  0).\n\nThe prefix operator ∛ is equivalent to cbrt.\n\nExamples\n\njulia> cbrt(big(27))\n3.0\n\njulia> cbrt(big(-27))\n-3.0\n\n\n\n\n\n"
@@ -8554,7 +8554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.real-Tuple{Complex}",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.real",
     "category": "method",
     "text": "real(z)\n\nReturn the real part of the complex number z.\n\nExamples\n\njulia> real(1 + 3im)\n1\n\n\n\n\n\n"
@@ -8562,7 +8562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.imag",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.imag",
     "category": "function",
     "text": "imag(z)\n\nReturn the imaginary part of the complex number z.\n\nExamples\n\njulia> imag(1 + 3im)\n3\n\n\n\n\n\n"
@@ -8570,7 +8570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.reim",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.reim",
     "category": "function",
     "text": "reim(z)\n\nReturn both the real and imaginary parts of the complex number z.\n\nExamples\n\njulia> reim(1 + 3im)\n(1, 3)\n\n\n\n\n\n"
@@ -8578,7 +8578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.conj",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.conj",
     "category": "function",
     "text": "conj(z)\n\nCompute the complex conjugate of a complex number z.\n\nExamples\n\njulia> conj(1 + 3im)\n1 - 3im\n\n\n\n\n\n"
@@ -8586,7 +8586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.angle",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.angle",
     "category": "function",
     "text": "angle(z)\n\nCompute the phase angle in radians of a complex number z.\n\nExamples\n\njulia> rad2deg(angle(1 + im))\n45.0\n\njulia> rad2deg(angle(1 - im))\n-45.0\n\njulia> rad2deg(angle(-1 - im))\n-135.0\n\n\n\n\n\n"
@@ -8594,7 +8594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cis",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.cis",
     "category": "function",
     "text": "cis(z)\n\nReturn exp(iz).\n\nExamples\n\njulia> cis(π) ≈ -1\ntrue\n\n\n\n\n\n"
@@ -8602,7 +8602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.binomial",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.binomial",
     "category": "function",
     "text": "binomial(n::Integer, k::Integer)\n\nThe binomial coefficient inomnk, being the coefficient of the kth term in the polynomial expansion of (1+x)^n.\n\nIf n is non-negative, then it is the number of ways to choose k out of n items:\n\ninomnk = racnk (n-k)\n\nwhere n is the factorial function.\n\nIf n is negative, then it is defined in terms of the identity\n\ninomnk = (-1)^k inomk-n-1k\n\nExamples\n\njulia> binomial(5, 3)\n10\n\njulia> factorial(5) ÷ (factorial(5-3) * factorial(3))\n10\n\njulia> binomial(-5, 3)\n-35\n\nSee also\n\nfactorial\n\nExternal links\n\nBinomial coeffient on Wikipedia.\n\n\n\n\n\n"
@@ -8610,7 +8610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.factorial",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.factorial",
     "category": "function",
     "text": "factorial(n::Integer)\n\nFactorial of n. If n is an Integer, the factorial is computed as an integer (promoted to at least 64 bits). Note that this may overflow if n is not small, but you can use factorial(big(n)) to compute the result exactly in arbitrary precision.\n\nExamples\n\njulia> factorial(6)\n720\n\njulia> factorial(21)\nERROR: OverflowError: 21 is too large to look up in the table\nStacktrace:\n[...]\n\njulia> factorial(big(21))\n51090942171709440000\n\nSee also\n\nbinomial\n\nExternal links\n\nFactorial on Wikipedia.\n\n\n\n\n\n"
@@ -8618,7 +8618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.gcd",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.gcd",
     "category": "function",
     "text": "gcd(x,y)\n\nGreatest common (positive) divisor (or zero if x and y are both zero).\n\nExamples\n\njulia> gcd(6,9)\n3\n\njulia> gcd(6,-9)\n3\n\n\n\n\n\n"
@@ -8626,7 +8626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.lcm",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.lcm",
     "category": "function",
     "text": "lcm(x,y)\n\nLeast common (non-negative) multiple.\n\nExamples\n\njulia> lcm(2,3)\n6\n\njulia> lcm(-2,3)\n6\n\n\n\n\n\n"
@@ -8634,7 +8634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.gcdx",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.gcdx",
     "category": "function",
     "text": "gcdx(x,y)\n\nComputes the greatest common (positive) divisor of x and y and their Bézout coefficients, i.e. the integer coefficients u and v that satisfy ux+vy = d = gcd(xy). gcdx(xy) returns (duv).\n\nExamples\n\njulia> gcdx(12, 42)\n(6, -3, 1)\n\njulia> gcdx(240, 46)\n(2, -9, 47)\n\nnote: Note\nBézout coefficients are not uniquely defined. gcdx returns the minimal Bézout coefficients that are computed by the extended Euclidean algorithm. (Ref: D. Knuth, TAoCP, 2/e, p. 325, Algorithm X.) For signed integers, these coefficients u and v are minimal in the sense that u  yd and v  xd. Furthermore, the signs of u and v are chosen so that d is positive. For unsigned integers, the coefficients u and v might be near their typemax, and the identity then holds only via the unsigned integers\' modulo arithmetic.\n\n\n\n\n\n"
@@ -8642,7 +8642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.ispow2",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.ispow2",
     "category": "function",
     "text": "ispow2(n::Integer) -> Bool\n\nTest whether n is a power of two.\n\nExamples\n\njulia> ispow2(4)\ntrue\n\njulia> ispow2(5)\nfalse\n\n\n\n\n\n"
@@ -8650,7 +8650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.nextpow",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.nextpow",
     "category": "function",
     "text": "nextpow(a, x)\n\nThe smallest a^n not less than x, where n is a non-negative integer. a must be greater than 1, and x must be greater than 0.\n\nExamples\n\njulia> nextpow(2, 7)\n8\n\njulia> nextpow(2, 9)\n16\n\njulia> nextpow(5, 20)\n25\n\njulia> nextpow(4, 16)\n16\n\nSee also prevpow.\n\n\n\n\n\n"
@@ -8658,7 +8658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.prevpow",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.prevpow",
     "category": "function",
     "text": "prevpow(a, x)\n\nThe largest a^n not greater than x, where n is a non-negative integer. a must be greater than 1, and x must not be less than 1.\n\nExamples\n\njulia> prevpow(2, 7)\n4\n\njulia> prevpow(2, 9)\n8\n\njulia> prevpow(5, 20)\n5\n\njulia> prevpow(4, 16)\n16\n\nSee also nextpow.\n\n\n\n\n\n"
@@ -8666,7 +8666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.nextprod",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.nextprod",
     "category": "function",
     "text": "nextprod([k_1, k_2,...], n)\n\nNext integer greater than or equal to n that can be written as prod k_i^p_i for integers p_1, p_2, etc.\n\nExamples\n\njulia> nextprod([2, 3], 105)\n108\n\njulia> 2^2 * 3^3\n108\n\n\n\n\n\n"
@@ -8674,7 +8674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.invmod",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.invmod",
     "category": "function",
     "text": "invmod(x,m)\n\nTake the inverse of x modulo m: y such that x y = 1 pmod m, with div(xy) = 0. This is undefined for m = 0, or if gcd(xm) neq 1.\n\nExamples\n\njulia> invmod(2,5)\n3\n\njulia> invmod(2,3)\n2\n\njulia> invmod(5,6)\n5\n\n\n\n\n\n"
@@ -8682,7 +8682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.powermod",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.powermod",
     "category": "function",
     "text": "powermod(x::Integer, p::Integer, m)\n\nCompute x^p pmod m.\n\nExamples\n\njulia> powermod(2, 6, 5)\n4\n\njulia> mod(2^6, 5)\n4\n\njulia> powermod(5, 2, 20)\n5\n\njulia> powermod(5, 2, 19)\n6\n\njulia> powermod(5, 3, 19)\n11\n\n\n\n\n\n"
@@ -8690,7 +8690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.ndigits",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.ndigits",
     "category": "function",
     "text": "ndigits(n::Integer; base::Integer=10, pad::Integer=1)\n\nCompute the number of digits in integer n written in base base (base must not be in [-1, 0, 1]), optionally padded with zeros to a specified size (the result will never be less than pad).\n\nExamples\n\njulia> ndigits(12345)\n5\n\njulia> ndigits(1022, base=16)\n3\n\njulia> string(1022, base=16)\n\"3fe\"\n\njulia> ndigits(123, pad=5)\n5\n\n\n\n\n\n"
@@ -8698,7 +8698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.widemul",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.widemul",
     "category": "function",
     "text": "widemul(x, y)\n\nMultiply x and y, giving the result as a larger type.\n\nExamples\n\njulia> widemul(Float32(3.), 4.)\n1.2e+01\n\n\n\n\n\n"
@@ -8706,7 +8706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.@evalpoly",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.Math.@evalpoly",
     "category": "macro",
     "text": "@evalpoly(z, c...)\n\nEvaluate the polynomial sum_k ck z^k-1 for the coefficients c[1], c[2], ...; that is, the coefficients are given in ascending order by power of z.  This macro expands to efficient inline code that uses either Horner\'s method or, for complex z, a more efficient Goertzel-like algorithm.\n\nExamples\n\njulia> @evalpoly(3, 1, 0, 1)\n10\n\njulia> @evalpoly(2, 1, 0, 1)\n5\n\njulia> @evalpoly(2, 1, 1, 1)\n7\n\n\n\n\n\n"
@@ -8714,16 +8714,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.FastMath.@fastmath",
-    "page": "Mathematics",
+    "page": "数学",
     "title": "Base.FastMath.@fastmath",
     "category": "macro",
     "text": "@fastmath expr\n\nExecute a transformed version of the expression, which calls functions that may violate strict IEEE semantics. This allows the fastest possible operation, but results are undefined – be careful when doing this, as it may change numerical results.\n\nThis sets the LLVM Fast-Math flags, and corresponds to the -ffast-math option in clang. See the notes on performance annotations for more details.\n\nExamples\n\njulia> @fastmath 1+2\n3\n\njulia> @fastmath(sin(3))\n0.1411200080598672\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/math/#Mathematical-Functions-1",
-    "page": "Mathematics",
-    "title": "Mathematical Functions",
+    "location": "base/math/#数学函数-1",
+    "page": "数学",
+    "title": "数学函数",
     "category": "section",
     "text": "Base.isapprox\nBase.sin(::Number)\nBase.cos(::Number)\nBase.sincos(::Float64)\nBase.tan(::Number)\nBase.Math.sind\nBase.Math.cosd\nBase.Math.tand\nBase.Math.sinpi\nBase.Math.cospi\nBase.sinh(::Number)\nBase.cosh(::Number)\nBase.tanh(::Number)\nBase.asin(::Number)\nBase.acos(::Number)\nBase.atan(::Number)\nBase.Math.asind\nBase.Math.acosd\nBase.Math.atand\nBase.Math.sec(::Number)\nBase.Math.csc(::Number)\nBase.Math.cot(::Number)\nBase.Math.secd\nBase.Math.cscd\nBase.Math.cotd\nBase.Math.asec(::Number)\nBase.Math.acsc(::Number)\nBase.Math.acot(::Number)\nBase.Math.asecd\nBase.Math.acscd\nBase.Math.acotd\nBase.Math.sech(::Number)\nBase.Math.csch(::Number)\nBase.Math.coth(::Number)\nBase.asinh(::Number)\nBase.acosh(::Number)\nBase.atanh(::Number)\nBase.Math.asech(::Number)\nBase.Math.acsch(::Number)\nBase.Math.acoth(::Number)\nBase.Math.sinc\nBase.Math.cosc\nBase.Math.deg2rad\nBase.Math.rad2deg\nBase.Math.hypot\nBase.log(::Number)\nBase.log(::Number, ::Number)\nBase.log2\nBase.log10\nBase.log1p\nBase.Math.frexp\nBase.exp(::Float64)\nBase.exp2\nBase.exp10\nBase.Math.ldexp\nBase.Math.modf\nBase.expm1\nBase.round(::Type, ::Any)\nBase.Rounding.RoundingMode\nBase.Rounding.RoundNearest\nBase.Rounding.RoundNearestTiesAway\nBase.Rounding.RoundNearestTiesUp\nBase.Rounding.RoundToZero\nBase.Rounding.RoundFromZero\nBase.Rounding.RoundUp\nBase.Rounding.RoundDown\nBase.round(::Complex{<: AbstractFloat}, ::RoundingMode, ::RoundingMode)\nBase.ceil\nBase.floor\nBase.trunc\nBase.unsafe_trunc\nBase.min\nBase.max\nBase.minmax\nBase.Math.clamp\nBase.Math.clamp!\nBase.abs\nBase.Checked.checked_abs\nBase.Checked.checked_neg\nBase.Checked.checked_add\nBase.Checked.checked_sub\nBase.Checked.checked_mul\nBase.Checked.checked_div\nBase.Checked.checked_rem\nBase.Checked.checked_fld\nBase.Checked.checked_mod\nBase.Checked.checked_cld\nBase.Checked.add_with_overflow\nBase.Checked.sub_with_overflow\nBase.Checked.mul_with_overflow\nBase.abs2\nBase.copysign\nBase.sign\nBase.signbit\nBase.flipsign\nBase.sqrt(::Real)\nBase.isqrt\nBase.Math.cbrt\nBase.real(::Complex)\nBase.imag\nBase.reim\nBase.conj\nBase.angle\nBase.cis\nBase.binomial\nBase.factorial\nBase.gcd\nBase.lcm\nBase.gcdx\nBase.ispow2\nBase.nextpow\nBase.prevpow\nBase.nextprod\nBase.invmod\nBase.powermod\nBase.ndigits\nBase.widemul\nBase.Math.@evalpoly\nBase.FastMath.@fastmath"
 },
@@ -9554,15 +9554,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#",
-    "page": "【字符串】（@id lib-strings）",
-    "title": "【字符串】（@id lib-strings）",
+    "page": "字符串",
+    "title": "字符串",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "base/strings/#Core.AbstractChar",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Core.AbstractChar",
     "category": "type",
     "text": "The AbstractChar type is the supertype of all character implementations in Julia.   A character represents a Unicode code point, and can be converted to an integer via the codepoint function in order to obtain the numerical value of the code point, or constructed from the same integer. These numerical values determine how characters are compared with < and ==, for example.  New T <: AbstractChar types should define a codepoint(::T) method and a T(::UInt32) constructor, at minimum.\n\nA given AbstractChar subtype may be capable of representing only a subset of Unicode, in which case conversion from an unsupported UInt32 value may throw an error.  Conversely, the built-in Char type represents a superset of Unicode (in order to losslessly encode invalid byte streams), in which case conversion of a non-Unicode value to UInt32 throws an error. The isvalid function can be used to check which codepoints are representable in a given AbstractChar type.\n\nInternally, an AbstractChar type may use a variety of encodings.  Conversion via codepoint(char) will not reveal this encoding because it always returns the Unicode value of the character. print(io, c) of any c::AbstractChar produces an encoding determined by io (UTF-8 for all built-in IO types), via conversion to Char if necessary.\n\nwrite(io, c), in contrast, may emit an encoding depending on typeof(c), and read(io, typeof(c)) should read the same encoding as write. New AbstractChar types must provide their own implementations of write and read.\n\n\n\n\n\n"
@@ -9570,7 +9570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Core.Char",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Core.Char",
     "category": "type",
     "text": "Char(c::Union{Number,AbstractChar})\n\nChar is a 32-bit AbstractChar type that is the default representation of characters in Julia.  Char is the type used for character literals like \'x\' and it is also the element type of String.\n\nIn order to losslessly represent arbitrary byte streams stored in a String, a Char value may store information that cannot be converted to a Unicode codepoint — converting such a Char to UInt32 will throw an error. The isvalid(c::Char) function can be used to query whether c represents a valid Unicode character.\n\n\n\n\n\n"
@@ -9578,7 +9578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.codepoint",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.codepoint",
     "category": "function",
     "text": "codepoint(c::AbstractChar)\n\nReturn the Unicode codepoint (an unsigned integer) corresponding to the character c (or throw an exception if c does not represent a valid character).   For Char, this is a UInt32 value, but AbstractChar types that represent only a subset of Unicode may return a different-sized integer (e.g. UInt8).\n\n\n\n\n\n"
@@ -9586,7 +9586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.length-Tuple{AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.length",
     "category": "method",
     "text": "length(s::AbstractString) -> Int\nlength(s::AbstractString, i::Integer, j::Integer) -> Int\n\nThe number of characters in string s from indices i through j. This is computed as the number of code unit indices from i to j which are valid character indices. Without only a single string argument, this computes the number of characters in the entire string. With i and j arguments it computes the number of indices between i and j inclusive that are valid indices in the string s. In addition to in-bounds values, i may take the out-of-bounds value ncodeunits(s) + 1 and j may take the out-of-bounds value 0.\n\nSee also: isvalid, ncodeunits, lastindex, thisind, nextind, prevind\n\nExamples\n\njulia> length(\"jμΛIα\")\n5\n\n\n\n\n\n"
@@ -9594,7 +9594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.sizeof-Tuple{AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.sizeof",
     "category": "method",
     "text": "sizeof(str::AbstractString)\n\nSize, in bytes, of the string s. Equal to the number of code units in s multiplied by the size, in bytes, of one code unit in s.\n\nExamples\n\njulia> sizeof(\"\")\n0\n\njulia> sizeof(\"∀\")\n3\n\n\n\n\n\n"
@@ -9602,7 +9602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.:*-Tuple{Union{AbstractChar, AbstractString},Vararg{Union{AbstractChar, AbstractString},N} where N}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.:*",
     "category": "method",
     "text": "*(s::Union{AbstractString, AbstractChar}, t::Union{AbstractString, AbstractChar}...) -> AbstractString\n\nConcatenate strings and/or characters, producing a String. This is equivalent to calling the string function on the arguments. Concatenation of built-in string types always produces a value of type String but other string types may choose to return a string of a different type as appropriate.\n\nExamples\n\njulia> \"Hello \" * \"world\"\n\"Hello world\"\n\njulia> \'j\' * \"ulia\"\n\"julia\"\n\n\n\n\n\n"
@@ -9610,7 +9610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.:^-Tuple{AbstractString,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.:^",
     "category": "method",
     "text": "^(s::Union{AbstractString,AbstractChar}, n::Integer)\n\nRepeat a string or character n times. This can also be written as repeat(s, n).\n\nSee also: repeat\n\nExamples\n\njulia> \"Test \"^3\n\"Test Test Test \"\n\n\n\n\n\n"
@@ -9618,7 +9618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.string",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.string",
     "category": "function",
     "text": "string(n::Integer; base::Integer = 10, pad::Integer = 1)\n\nConvert an integer n to a string in the given base, optionally specifying a number of digits to pad to.\n\njulia> string(5, base = 13, pad = 4)\n\"0005\"\n\njulia> string(13, base = 5, pad = 4)\n\"0023\"\n\n\n\n\n\nstring(xs...)\n\nCreate a string from any values using the print function.\n\nExamples\n\njulia> string(\"a\", 1, true)\n\"a1true\"\n\n\n\n\n\n"
@@ -9626,7 +9626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.repeat-Tuple{AbstractString,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.repeat",
     "category": "method",
     "text": "repeat(s::AbstractString, r::Integer)\n\nRepeat a string r times. This can be written as s^r.\n\nSee also: ^\n\nExamples\n\njulia> repeat(\"ha\", 3)\n\"hahaha\"\n\n\n\n\n\n"
@@ -9634,7 +9634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.repeat-Tuple{AbstractChar,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.repeat",
     "category": "method",
     "text": "repeat(c::AbstractChar, r::Integer) -> String\n\nRepeat a character r times. This can equivalently be accomplished by calling c^r.\n\nExamples\n\njulia> repeat(\'A\', 3)\n\"AAA\"\n\n\n\n\n\n"
@@ -9642,7 +9642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.repr-Tuple{Any}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.repr",
     "category": "method",
     "text": "repr(x; context=nothing)\n\nCreate a string from any value using the show function.\n\nThe optional keyword argument context can be set to an IO or IOContext object whose attributes are used for the I/O stream passed to show.\n\nNote that repr(x) is usually similar to how the value of x would be entered in Julia.  See also repr(MIME(\"text/plain\"), x) to instead return a \"pretty-printed\" version of x designed more for human consumption, equivalent to the REPL display of x.\n\nExamples\n\njulia> repr(1)\n\"1\"\n\njulia> repr(zeros(3))\n\"[0.0, 0.0, 0.0]\"\n\njulia> repr(big(1/3))\n\"3.33333333333333314829616256247390992939472198486328125e-01\"\n\njulia> repr(big(1/3), context=:compact => true)\n\"3.33333e-01\"\n\n\n\n\n\n\n"
@@ -9650,7 +9650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Core.String-Tuple{AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Core.String",
     "category": "method",
     "text": "String(s::AbstractString)\n\nConvert a string to a contiguous byte array representation encoded as UTF-8 bytes. This representation is often appropriate for passing strings to C.\n\n\n\n\n\n"
@@ -9658,7 +9658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.SubString",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.SubString",
     "category": "type",
     "text": "SubString(s::AbstractString, i::Integer, j::Integer=lastindex(s))\nSubString(s::AbstractString, r::UnitRange{<:Integer})\n\nLike getindex, but returns a view into the parent string s within range i:j or r respectively instead of making a copy.\n\nExamples\n\njulia> SubString(\"abc\", 1, 2)\n\"ab\"\n\njulia> SubString(\"abc\", 1:2)\n\"ab\"\n\njulia> SubString(\"abc\", 2)\n\"bc\"\n\n\n\n\n\n"
@@ -9666,7 +9666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.transcode",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.transcode",
     "category": "function",
     "text": "transcode(T, src)\n\nConvert string data between Unicode encodings. src is either a String or a Vector{UIntXX} of UTF-XX code units, where XX is 8, 16, or 32. T indicates the encoding of the return value: String to return a (UTF-8 encoded) String or UIntXX to return a Vector{UIntXX} of UTF-XX data. (The alias Cwchar_t can also be used as the integer type, for converting wchar_t* strings used by external C libraries.)\n\nThe transcode function succeeds as long as the input data can be reasonably represented in the target encoding; it always succeeds for conversions between UTF-XX encodings, even for invalid Unicode data.\n\nOnly conversion to/from UTF-8 is currently supported.\n\n\n\n\n\n"
@@ -9674,7 +9674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.unsafe_string",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.unsafe_string",
     "category": "function",
     "text": "unsafe_string(p::Ptr{UInt8}, [length::Integer])\n\nCopy a string from the address of a C-style (NUL-terminated) string encoded as UTF-8. (The pointer can be safely freed afterwards.) If length is specified (the length of the data in bytes), the string does not have to be NUL-terminated.\n\nThis function is labeled \"unsafe\" because it will crash if p is not a valid memory address to data of the requested length.\n\n\n\n\n\n"
@@ -9682,7 +9682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.ncodeunits-Tuple{AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.ncodeunits",
     "category": "method",
     "text": "ncodeunits(s::AbstractString) -> Int\n\nReturn the number of code units in a string. Indices that are in bounds to access this string must satisfy 1 ≤ i ≤ ncodeunits(s). Not all such indices are valid – they may not be the start of a character, but they will return a code unit value when calling codeunit(s,i).\n\nSee also: codeunit, checkbounds, sizeof, length, lastindex\n\n\n\n\n\n"
@@ -9690,7 +9690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.codeunit",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.codeunit",
     "category": "function",
     "text": "codeunit(s::AbstractString) -> Type{<:Union{UInt8, UInt16, UInt32}}\n\nReturn the code unit type of the given string object. For ASCII, Latin-1, or UTF-8 encoded strings, this would be UInt8; for UCS-2 and UTF-16 it would be UInt16; for UTF-32 it would be UInt32. The unit code type need not be limited to these three types, but it\'s hard to think of widely used string encodings that don\'t use one of these units. codeunit(s) is the same as typeof(codeunit(s,1)) when s is a non-empty string.\n\nSee also: ncodeunits\n\n\n\n\n\ncodeunit(s::AbstractString, i::Integer) -> Union{UInt8, UInt16, UInt32}\n\nReturn the code unit value in the string s at index i. Note that\n\ncodeunit(s, i) :: codeunit(s)\n\nI.e. the value returned by codeunit(s, i) is of the type returned by codeunit(s).\n\nSee also: ncodeunits, checkbounds\n\n\n\n\n\n"
@@ -9698,7 +9698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.codeunits",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.codeunits",
     "category": "function",
     "text": "codeunits(s::AbstractString)\n\nObtain a vector-like object containing the code units of a string. Returns a CodeUnits wrapper by default, but codeunits may optionally be defined for new string types if necessary.\n\n\n\n\n\n"
@@ -9706,7 +9706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.ascii",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.ascii",
     "category": "function",
     "text": "ascii(s::AbstractString)\n\nConvert a string to String type and check that it contains only ASCII data, otherwise throwing an ArgumentError indicating the position of the first non-ASCII byte.\n\nExamples\n\njulia> ascii(\"abcdeγfgh\")\nERROR: ArgumentError: invalid ASCII at index 6 in \"abcdeγfgh\"\nStacktrace:\n[...]\n\njulia> ascii(\"abcdefgh\")\n\"abcdefgh\"\n\n\n\n\n\n"
@@ -9714,7 +9714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.@r_str",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.@r_str",
     "category": "macro",
     "text": "@r_str -> Regex\n\nConstruct a regex, such as r\"^[a-z]*$\", without interpolation and unescaping (except for quotation mark \" which still has to be escaped). The regex also accepts one or more flags, listed after the ending quote, to change its behaviour:\n\ni enables case-insensitive matching\nm treats the ^ and $ tokens as matching the start and end of individual lines, as opposed to the whole string.\ns allows the . modifier to match newlines.\nx enables \"comment mode\": whitespace is enabled except when escaped with \\, and # is treated as starting a comment.\na disables UCP mode (enables ASCII mode). By default \\B, \\b, \\D, \\d, \\S, \\s, \\W, \\w, etc. match based on Unicode character properties. With this option, these sequences only match ASCII characters.\n\nExamples\n\njulia> match(r\"a+.*b+.*?d$\"ism, \"Goodbye,\\nOh, angry,\\nBad world\\n\")\nRegexMatch(\"angry,\\nBad world\")\n\nThis regex has the first three flags enabled.\n\n\n\n\n\n"
@@ -9722,7 +9722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.SubstitutionString",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.SubstitutionString",
     "category": "type",
     "text": "SubstitutionString(substr)\n\nStores the given string substr as a SubstitutionString, for use in regular expression substitutions. Most commonly constructed using the @s_str macro.\n\njulia> SubstitutionString(\"Hello \\\\g<name>, it\'s \\\\1\")\ns\"Hello \\\\g<name>, it\'s \\\\1\"\n\njulia> subst = s\"Hello \\g<name>, it\'s \\1\"\ns\"Hello \\\\g<name>, it\'s \\\\1\"\n\njulia> typeof(subst)\nSubstitutionString{String}\n\n\n\n\n\n\n"
@@ -9730,7 +9730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.@s_str",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.@s_str",
     "category": "macro",
     "text": "@s_str -> SubstitutionString\n\nConstruct a substitution string, used for regular expression substitutions.  Within the string, sequences of the form \\N refer to the Nth capture group in the regex, and \\g<groupname> refers to a named capture group with name groupname.\n\njulia> msg = \"#Hello# from Julia\";\n\njulia> replace(msg, r\"#(.+)# from (?<from>\\w+)\" => s\"FROM: \\g<from>; MESSAGE: \\1\")\n\"FROM: Julia; MESSAGE: Hello\"\n\n\n\n\n\n"
@@ -9738,7 +9738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.@raw_str",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.@raw_str",
     "category": "macro",
     "text": "@raw_str -> String\n\nCreate a raw string without interpolation and unescaping. The exception is that quotation marks still must be escaped. Backslashes escape both quotation marks and other backslashes, but only when a sequence of backslashes precedes a quote character. Thus, 2n backslashes followed by a quote encodes n backslashes and the end of the literal while 2n+1 backslashes followed by a quote encodes n backslashes followed by a quote character.\n\nExamples\n\njulia> println(raw\"\\ $x\")\n\\ $x\n\njulia> println(raw\"\\\"\")\n\"\n\njulia> println(raw\"\\\\\\\"\")\n\\\"\n\njulia> println(raw\"\\\\x \\\\\\\"\")\n\\\\x \\\"\n\n\n\n\n\n"
@@ -9746,7 +9746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Docs.@html_str",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Docs.@html_str",
     "category": "macro",
     "text": "@html_str -> Docs.HTML\n\nCreate an HTML object from a literal string.\n\n\n\n\n\n"
@@ -9754,7 +9754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Docs.@text_str",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Docs.@text_str",
     "category": "macro",
     "text": "@text_str -> Docs.Text\n\nCreate a Text object from a literal string.\n\n\n\n\n\n"
@@ -9762,7 +9762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.isvalid-Tuple{Any}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.isvalid",
     "category": "method",
     "text": "isvalid(value) -> Bool\n\nReturns true if the given value is valid for its type, which currently can be either AbstractChar or String.\n\nExamples\n\njulia> isvalid(Char(0xd800))\nfalse\n\njulia> isvalid(Char(0xd799))\ntrue\n\n\n\n\n\n"
@@ -9770,7 +9770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.isvalid-Tuple{Any,Any}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.isvalid",
     "category": "method",
     "text": "isvalid(T, value) -> Bool\n\nReturns true if the given value is valid for that type. Types currently can be either AbstractChar or String. Values for AbstractChar can be of type AbstractChar or UInt32. Values for String can be of that type, or Vector{UInt8}.\n\nExamples\n\njulia> isvalid(Char, 0xd800)\nfalse\n\njulia> isvalid(Char, 0xd799)\ntrue\n\n\n\n\n\n"
@@ -9778,7 +9778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.isvalid-Tuple{AbstractString,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.isvalid",
     "category": "method",
     "text": "isvalid(s::AbstractString, i::Integer) -> Bool\n\nPredicate indicating whether the given index is the start of the encoding of a character in s or not. If isvalid(s, i) is true then s[i] will return the character whose encoding starts at that index, if it\'s false, then s[i] will raise an invalid index error or a bounds error depending on if i is in bounds. In order for isvalid(s, i) to be an O(1) function, the encoding of s must be self-synchronizing this is a basic assumption of Julia\'s generic string support.\n\nSee also: getindex, iterate, thisind, nextind, prevind, length\n\nExamples\n\njulia> str = \"αβγdef\";\n\njulia> isvalid(str, 1)\ntrue\n\njulia> str[1]\n\'α\': Unicode U+03b1 (category Ll: Letter, lowercase)\n\njulia> isvalid(str, 2)\nfalse\n\njulia> str[2]\nERROR: StringIndexError(\"αβγdef\", 2)\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -9786,7 +9786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.match",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.match",
     "category": "function",
     "text": "match(r::Regex, s::AbstractString[, idx::Integer[, addopts]])\n\nSearch for the first match of the regular expression r in s and return a RegexMatch object containing the match, or nothing if the match failed. The matching substring can be retrieved by accessing m.match and the captured sequences can be retrieved by accessing m.captures The optional idx argument specifies an index at which to start the search.\n\nExamples\n\njulia> rx = r\"a(.)a\"\nr\"a(.)a\"\n\njulia> m = match(rx, \"cabac\")\nRegexMatch(\"aba\", 1=\"b\")\n\njulia> m.captures\n1-element Array{Union{Nothing, SubString{String}},1}:\n \"b\"\n\njulia> m.match\n\"aba\"\n\njulia> match(rx, \"cabac\", 3) === nothing\ntrue\n\n\n\n\n\n"
@@ -9794,7 +9794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.eachmatch",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.eachmatch",
     "category": "function",
     "text": "eachmatch(r::Regex, s::AbstractString; overlap::Bool=false])\n\nSearch for all matches of a the regular expression r in s and return a iterator over the matches. If overlap is true, the matching sequences are allowed to overlap indices in the original string, otherwise they must be from distinct character ranges.\n\nExamples\n\njulia> rx = r\"a.a\"\nr\"a.a\"\n\njulia> m = eachmatch(rx, \"a1a2a3a\")\nBase.RegexMatchIterator(r\"a.a\", \"a1a2a3a\", false)\n\njulia> collect(m)\n2-element Array{RegexMatch,1}:\n RegexMatch(\"a1a\")\n RegexMatch(\"a3a\")\n\njulia> collect(eachmatch(rx, \"a1a2a3a\", overlap = true))\n3-element Array{RegexMatch,1}:\n RegexMatch(\"a1a\")\n RegexMatch(\"a2a\")\n RegexMatch(\"a3a\")\n\n\n\n\n\n"
@@ -9802,7 +9802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.isless-Tuple{AbstractString,AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.isless",
     "category": "method",
     "text": "isless(a::AbstractString, b::AbstractString) -> Bool\n\nTest whether string a comes before string b in alphabetical order (technically, in lexicographical order by Unicode code points).\n\nExamples\n\njulia> isless(\"a\", \"b\")\ntrue\n\njulia> isless(\"β\", \"α\")\nfalse\n\njulia> isless(\"a\", \"a\")\nfalse\n\n\n\n\n\n"
@@ -9810,7 +9810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.:==-Tuple{AbstractString,AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.:==",
     "category": "method",
     "text": "==(a::AbstractString, b::AbstractString) -> Bool\n\nTest whether two strings are equal character by character (technically, Unicode code point by code point).\n\nExamples\n\njulia> \"abc\" == \"abc\"\ntrue\n\njulia> \"abc\" == \"αβγ\"\nfalse\n\n\n\n\n\n"
@@ -9818,7 +9818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.cmp-Tuple{AbstractString,AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.cmp",
     "category": "method",
     "text": "cmp(a::AbstractString, b::AbstractString) -> Int\n\nCompare two strings. Return 0 if both strings have the same length and the character at each index is the same in both strings. Return -1 if a is a prefix of b, or if a comes before b in alphabetical order. Return 1 if b is a prefix of a, or if b comes before a in alphabetical order (technically, lexicographical order by Unicode code points).\n\nExamples\n\njulia> cmp(\"abc\", \"abc\")\n0\n\njulia> cmp(\"ab\", \"abc\")\n-1\n\njulia> cmp(\"abc\", \"ab\")\n1\n\njulia> cmp(\"ab\", \"ac\")\n-1\n\njulia> cmp(\"ac\", \"ab\")\n1\n\njulia> cmp(\"α\", \"a\")\n1\n\njulia> cmp(\"b\", \"β\")\n-1\n\n\n\n\n\n"
@@ -9826,7 +9826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.lpad",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.lpad",
     "category": "function",
     "text": "lpad(s, n::Integer, p::Union{AbstractChar,AbstractString}=\' \') -> String\n\nStringify s and pad the resulting string on the left with p to make it n characters (code points) long. If s is already n characters long, an equal string is returned. Pad with spaces by default.\n\nExamples\n\njulia> lpad(\"March\", 10)\n\"     March\"\n\n\n\n\n\n"
@@ -9834,7 +9834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.rpad",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.rpad",
     "category": "function",
     "text": "rpad(s, n::Integer, p::Union{AbstractChar,AbstractString}=\' \') -> String\n\nStringify s and pad the resulting string on the right with p to make it n characters (code points) long. If s is already n characters long, an equal string is returned. Pad with spaces by default.\n\nExamples\n\njulia> rpad(\"March\", 20)\n\"March               \"\n\n\n\n\n\n"
@@ -9842,7 +9842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.findfirst-Tuple{AbstractString,AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.findfirst",
     "category": "method",
     "text": "findfirst(pattern::AbstractString, string::AbstractString)\nfindfirst(pattern::Regex, string::String)\n\nFind the first occurrence of pattern in string. Equivalent to findnext(pattern, string, firstindex(s)).\n\nExamples\n\njulia> findfirst(\"z\", \"Hello to the world\") # returns nothing, but not printed in the REPL\n\njulia> findfirst(\"Julia\", \"JuliaLang\")\n1:5\n\n\n\n\n\n"
@@ -9850,7 +9850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.findnext-Tuple{AbstractString,AbstractString,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.findnext",
     "category": "method",
     "text": "findnext(pattern::AbstractString, string::AbstractString, start::Integer)\nfindnext(pattern::Regex, string::String, start::Integer)\n\nFind the next occurrence of pattern in string starting at position start. pattern can be either a string, or a regular expression, in which case string must be of type String.\n\nThe return value is a range of indices where the matching sequence is found, such that s[findnext(x, s, i)] == x:\n\nfindnext(\"substring\", string, i) = start:end such that string[start:end] == \"substring\", or nothing if unmatched.\n\nExamples\n\njulia> findnext(\"z\", \"Hello to the world\", 1) === nothing\ntrue\n\njulia> findnext(\"o\", \"Hello to the world\", 6)\n8:8\n\njulia> findnext(\"Lang\", \"JuliaLang\", 2)\n6:9\n\n\n\n\n\n"
@@ -9858,7 +9858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.findlast-Tuple{AbstractString,AbstractString}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.findlast",
     "category": "method",
     "text": "findlast(pattern::AbstractString, string::AbstractString)\nfindlast(pattern::Regex, string::String)\n\nFind the last occurrence of pattern in string. Equivalent to findlast(pattern, string, lastindex(s)).\n\nExamples\n\njulia> findlast(\"o\", \"Hello to the world\")\n15:15\n\njulia> findfirst(\"Julia\", \"JuliaLang\")\n1:5\n\n\n\n\n\n"
@@ -9866,7 +9866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.findprev-Tuple{AbstractString,AbstractString,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.findprev",
     "category": "method",
     "text": "findprev(pattern::AbstractString, string::AbstractString, start::Integer)\nfindprev(pattern::Regex, string::String, start::Integer)\n\nFind the previous occurrence of pattern in string starting at position start. pattern can be either a string, or a regular expression, in which case string must be of type String.\n\nThe return value is a range of indices where the matching sequence is found, such that s[findprev(x, s, i)] == x:\n\nfindprev(\"substring\", string, i) = start:end such that string[start:end] == \"substring\", or nothing if unmatched.\n\nExamples\n\njulia> findprev(\"z\", \"Hello to the world\", 18) === nothing\ntrue\n\njulia> findprev(\"o\", \"Hello to the world\", 18)\n15:15\n\njulia> findprev(\"Julia\", \"JuliaLang\", 6)\n1:5\n\n\n\n\n\n"
@@ -9874,7 +9874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.occursin",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.occursin",
     "category": "function",
     "text": "occursin(needle::Union{AbstractString,Regex,AbstractChar}, haystack::AbstractString)\n\nDetermine whether the first argument is a substring of the second. If needle is a regular expression, checks whether haystack contains a match.\n\nExamples\n\njulia> occursin(\"Julia\", \"JuliaLang is pretty cool!\")\ntrue\n\njulia> occursin(\'a\', \"JuliaLang is pretty cool!\")\ntrue\n\njulia> occursin(r\"a.a\", \"aba\")\ntrue\n\njulia> occursin(r\"a.a\", \"abba\")\nfalse\n\n\n\n\n\n"
@@ -9882,7 +9882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.reverse-Tuple{Union{SubString{String}, String}}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.reverse",
     "category": "method",
     "text": "reverse(s::AbstractString) -> AbstractString\n\nReverses a string. Technically, this function reverses the codepoints in a string and its main utility is for reversed-order string processing, especially for reversed regular-expression searches. See also reverseind to convert indices in s to indices in reverse(s) and vice-versa, and graphemes from module Unicode to operate on user-visible \"characters\" (graphemes) rather than codepoints. See also Iterators.reverse for reverse-order iteration without making a copy. Custom string types must implement the reverse function themselves and should typically return a string with the same type and encoding. If they return a string with a different encoding, they must also override reverseind for that string type to satisfy s[reverseind(s,i)] == reverse(s)[i].\n\nExamples\n\njulia> reverse(\"JuliaLang\")\n\"gnaLailuJ\"\n\njulia> reverse(\"ax̂e\") # combining characters can lead to surprising results\n\"êxa\"\n\njulia> using Unicode\n\njulia> join(reverse(collect(graphemes(\"ax̂e\")))) # reverses graphemes\n\"ex̂a\"\n\n\n\n\n\n"
@@ -9890,7 +9890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.replace-Tuple{AbstractString,Pair}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.replace",
     "category": "method",
     "text": "replace(s::AbstractString, pat=>r; [count::Integer])\n\nSearch for the given pattern pat in s, and replace each occurrence with r. If count is provided, replace at most count occurrences. pat may be a single character, a vector or a set of characters, a string, or a regular expression. If r is a function, each occurrence is replaced with r(s) where s is the matched substring (when patis a Regex or AbstractString) or character (when pat is an AbstractChar or a collection of AbstractChar). If pat is a regular expression and r is a SubstitutionString, then capture group references in r are replaced with the corresponding matched text. To remove instances of pat from string, set r to the empty String (\"\").\n\nExamples\n\njulia> replace(\"Python is a programming language.\", \"Python\" => \"Julia\")\n\"Julia is a programming language.\"\n\njulia> replace(\"The quick foxes run quickly.\", \"quick\" => \"slow\", count=1)\n\"The slow foxes run quickly.\"\n\njulia> replace(\"The quick foxes run quickly.\", \"quick\" => \"\", count=1)\n\"The  foxes run quickly.\"\n\njulia> replace(\"The quick foxes run quickly.\", r\"fox(es)?\" => s\"bus\\1\")\n\"The quick buses run quickly.\"\n\n\n\n\n\n"
@@ -9898,7 +9898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.split",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.split",
     "category": "function",
     "text": "split(str::AbstractString, dlm; limit::Integer=0, keepempty::Bool=true)\nsplit(str::AbstractString; limit::Integer=0, keepempty::Bool=false)\n\nSplit str into an array of substrings on occurrences of the delimiter(s) dlm.  dlm can be any of the formats allowed by findnext\'s first argument (i.e. as a string, regular expression or a function), or as a single character or collection of characters.\n\nIf dlm is omitted, it defaults to isspace.\n\nThe optional keyword arguments are:\n\nlimit: the maximum size of the result. limit=0 implies no maximum (default)\nkeepempty: whether empty fields should be kept in the result. Default is false without a dlm argument, true with a dlm argument.\n\nSee also rsplit.\n\nExamples\n\njulia> a = \"Ma.rch\"\n\"Ma.rch\"\n\njulia> split(a,\".\")\n2-element Array{SubString{String},1}:\n \"Ma\"\n \"rch\"\n\n\n\n\n\n"
@@ -9906,7 +9906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.rsplit",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.rsplit",
     "category": "function",
     "text": "rsplit(s::AbstractString; limit::Integer=0, keepempty::Bool=false)\nrsplit(s::AbstractString, chars; limit::Integer=0, keepempty::Bool=true)\n\nSimilar to split, but starting from the end of the string.\n\nExamples\n\njulia> a = \"M.a.r.c.h\"\n\"M.a.r.c.h\"\n\njulia> rsplit(a,\".\")\n5-element Array{SubString{String},1}:\n \"M\"\n \"a\"\n \"r\"\n \"c\"\n \"h\"\n\njulia> rsplit(a,\".\";limit=1)\n1-element Array{SubString{String},1}:\n \"M.a.r.c.h\"\n\njulia> rsplit(a,\".\";limit=2)\n2-element Array{SubString{String},1}:\n \"M.a.r.c\"\n \"h\"\n\n\n\n\n\n"
@@ -9914,7 +9914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.strip",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.strip",
     "category": "function",
     "text": "strip(str::AbstractString, [chars])\n\nRemove leading and trailing characters from str.\n\nThe default behaviour is to remove leading whitespace and delimiters: see isspace for precise details.\n\nThe optional chars argument specifies which characters to remove: it can be a single character, vector or set of characters, or a predicate function.\n\nExamples\n\njulia> strip(\"{3, 5}\\n\", [\'{\', \'}\', \'\\n\'])\n\"3, 5\"\n\n\n\n\n\n"
@@ -9922,7 +9922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.lstrip",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.lstrip",
     "category": "function",
     "text": "lstrip([pred=isspace,] str::AbstractString)\nlstrip(str::AbstractString, chars)\n\nRemove leading characters from str, either those specified by chars or those for which the function pred returns true.\n\nThe default behaviour is to remove leading whitespace and delimiters: see isspace for precise details.\n\nThe optional chars argument specifies which characters to remove: it can be a single character, or a vector or set of characters.\n\nExamples\n\njulia> a = lpad(\"March\", 20)\n\"               March\"\n\njulia> lstrip(a)\n\"March\"\n\n\n\n\n\n"
@@ -9930,7 +9930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.rstrip",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.rstrip",
     "category": "function",
     "text": "rstrip([pred=isspace,] str::AbstractString)\nrstrip(str::AbstractString, chars)\n\nRemove trailing characters from str, either those specified by chars or those for which the function pred returns true.\n\nThe default behaviour is to remove leading whitespace and delimiters: see isspace for precise details.\n\nThe optional chars argument specifies which characters to remove: it can be a single character, or a vector or set of characters.\n\nExamples\n\njulia> a = rpad(\"March\", 20)\n\"March               \"\n\njulia> rstrip(a)\n\"March\"\n\n\n\n\n\n"
@@ -9938,7 +9938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.startswith",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.startswith",
     "category": "function",
     "text": "startswith(s::AbstractString, prefix::AbstractString)\n\nReturn true if s starts with prefix. If prefix is a vector or set of characters, test whether the first character of s belongs to that set.\n\nSee also endswith.\n\nExamples\n\njulia> startswith(\"JuliaLang\", \"Julia\")\ntrue\n\n\n\n\n\n"
@@ -9946,7 +9946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.endswith",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.endswith",
     "category": "function",
     "text": "endswith(s::AbstractString, suffix::AbstractString)\n\nReturn true if s ends with suffix. If suffix is a vector or set of characters, test whether the last character of s belongs to that set.\n\nSee also startswith.\n\nExamples\n\njulia> endswith(\"Sunday\", \"day\")\ntrue\n\n\n\n\n\n"
@@ -9954,7 +9954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.first-Tuple{AbstractString,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.first",
     "category": "method",
     "text": "first(s::AbstractString, n::Integer)\n\nGet a string consisting of the first n characters of s.\n\njulia> first(\"∀ϵ≠0: ϵ²>0\", 0)\n\"\"\n\njulia> first(\"∀ϵ≠0: ϵ²>0\", 1)\n\"∀\"\n\njulia> first(\"∀ϵ≠0: ϵ²>0\", 3)\n\"∀ϵ≠\"\n\n\n\n\n\n"
@@ -9962,7 +9962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.last-Tuple{AbstractString,Integer}",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.last",
     "category": "method",
     "text": "last(s::AbstractString, n::Integer)\n\nGet a string consisting of the last n characters of s.\n\njulia> last(\"∀ϵ≠0: ϵ²>0\", 0)\n\"\"\n\njulia> last(\"∀ϵ≠0: ϵ²>0\", 1)\n\"0\"\n\njulia> last(\"∀ϵ≠0: ϵ²>0\", 3)\n\"²>0\"\n\n\n\n\n\n"
@@ -9970,7 +9970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.uppercase",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.uppercase",
     "category": "function",
     "text": "uppercase(s::AbstractString)\n\nReturn s with all characters converted to uppercase.\n\nExamples\n\njulia> uppercase(\"Julia\")\n\"JULIA\"\n\n\n\n\n\n"
@@ -9978,7 +9978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.lowercase",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.lowercase",
     "category": "function",
     "text": "lowercase(s::AbstractString)\n\nReturn s with all characters converted to lowercase.\n\nExamples\n\njulia> lowercase(\"STRINGS AND THINGS\")\n\"strings and things\"\n\n\n\n\n\n"
@@ -9986,7 +9986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.titlecase",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.titlecase",
     "category": "function",
     "text": "titlecase(s::AbstractString; [wordsep::Function], strict::Bool=true) -> String\n\nCapitalize the first character of each word in s; if strict is true, every other character is converted to lowercase, otherwise they are left unchanged. By default, all non-letters are considered as word separators; a predicate can be passed as the wordsep keyword to determine which characters should be considered as word separators. See also uppercasefirst to capitalize only the first character in s.\n\nExamples\n\njulia> titlecase(\"the JULIA programming language\")\n\"The Julia Programming Language\"\n\njulia> titlecase(\"ISS - international space station\", strict=false)\n\"ISS - International Space Station\"\n\njulia> titlecase(\"a-a b-b\", wordsep = c->c==\' \')\n\"A-a B-b\"\n\n\n\n\n\n"
@@ -9994,7 +9994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.uppercasefirst",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.uppercasefirst",
     "category": "function",
     "text": "uppercasefirst(s::AbstractString) -> String\n\nReturn s with the first character converted to uppercase (technically \"title case\" for Unicode). See also titlecase to capitalize the first character of every word in s.\n\nSee also: lowercasefirst, uppercase, lowercase, titlecase\n\nExamples\n\njulia> uppercasefirst(\"python\")\n\"Python\"\n\n\n\n\n\n"
@@ -10002,7 +10002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.lowercasefirst",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.lowercasefirst",
     "category": "function",
     "text": "lowercasefirst(s::AbstractString)\n\nReturn s with the first character converted to lowercase.\n\nSee also: uppercasefirst, uppercase, lowercase, titlecase\n\nExamples\n\njulia> lowercasefirst(\"Julia\")\n\"julia\"\n\n\n\n\n\n"
@@ -10010,7 +10010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.join",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.join",
     "category": "function",
     "text": "join([io::IO,] strings, delim, [last])\n\nJoin an array of strings into a single string, inserting the given delimiter between adjacent strings. If last is given, it will be used instead of delim between the last two strings. If io is given, the result is written to io rather than returned as as a String.  For example,\n\nExamples\n\njulia> join([\"apples\", \"bananas\", \"pineapples\"], \", \", \" and \")\n\"apples, bananas and pineapples\"\n\nstrings can be any iterable over elements x which are convertible to strings via print(io::IOBuffer, x). strings will be printed to io.\n\n\n\n\n\n"
@@ -10018,7 +10018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.chop",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.chop",
     "category": "function",
     "text": "chop(s::AbstractString; head::Integer = 0, tail::Integer = 1)\n\nRemove the first head and the last tail characters from s. The call chop(s) removes the last character from s. If it is requested to remove more characters than length(s) then an empty string is returned.\n\nExamples\n\njulia> a = \"March\"\n\"March\"\n\njulia> chop(a)\n\"Marc\"\n\njulia> chop(a, head = 1, tail = 2)\n\"ar\"\n\njulia> chop(a, head = 5, tail = 5)\n\"\"\n\n\n\n\n\n"
@@ -10026,7 +10026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.chomp",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.chomp",
     "category": "function",
     "text": "chomp(s::AbstractString)\n\nRemove a single trailing newline from a string.\n\nExamples\n\njulia> chomp(\"Hello\\n\")\n\"Hello\"\n\n\n\n\n\n"
@@ -10034,7 +10034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.thisind",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.thisind",
     "category": "function",
     "text": "thisind(s::AbstractString, i::Integer) -> Int\n\nIf i is in bounds in s return the index of the start of the character whose encoding code unit i is part of. In other words, if i is the start of a character, return i; if i is not the start of a character, rewind until the start of a character and return that index. If i is equal to 0 or ncodeunits(s)+1 return i. In all other cases throw BoundsError.\n\nExamples\n\njulia> thisind(\"α\", 0)\n0\n\njulia> thisind(\"α\", 1)\n1\n\njulia> thisind(\"α\", 2)\n1\n\njulia> thisind(\"α\", 3)\n3\n\njulia> thisind(\"α\", 4)\nERROR: BoundsError: attempt to access \"α\"\n  at index [4]\n[...]\n\njulia> thisind(\"α\", -1)\nERROR: BoundsError: attempt to access \"α\"\n  at index [-1]\n[...]\n\n\n\n\n\n"
@@ -10042,7 +10042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.nextind",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.nextind",
     "category": "function",
     "text": "nextind(str::AbstractString, i::Integer, n::Integer=1) -> Int\n\nCase n == 1\nIf i is in bounds in s return the index of the start of the character whose encoding starts after index i. In other words, if i is the start of a character, return the start of the next character; if i is not the start of a character, move forward until the start of a character and return that index. If i is equal to 0 return 1. If i is in bounds but greater or equal to lastindex(str) return ncodeunits(str)+1. Otherwise throw BoundsError.\nCase n > 1\nBehaves like applying n times nextind for n==1. The only difference is that if n is so large that applying nextind would reach ncodeunits(str)+1 then each remaining iteration increases the returned value by 1. This means that in this case nextind can return a value greater than ncodeunits(str)+1.\nCase n == 0\nReturn i only if i is a valid index in s or is equal to 0. Otherwise StringIndexError or BoundsError is thrown.\n\nExamples\n\njulia> nextind(\"α\", 0)\n1\n\njulia> nextind(\"α\", 1)\n3\n\njulia> nextind(\"α\", 3)\nERROR: BoundsError: attempt to access \"α\"\n  at index [3]\n[...]\n\njulia> nextind(\"α\", 0, 2)\n3\n\njulia> nextind(\"α\", 1, 2)\n4\n\n\n\n\n\n"
@@ -10050,7 +10050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.prevind",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.prevind",
     "category": "function",
     "text": "prevind(str::AbstractString, i::Integer, n::Integer=1) -> Int\n\nCase n == 1\nIf i is in bounds in s return the index of the start of the character whose encoding starts before index i. In other words, if i is the start of a character, return the start of the previous character; if i is not the start of a character, rewind until the start of a character and return that index. If i is equal to 1 return 0. If i is equal to ncodeunits(str)+1 return lastindex(str). Otherwise throw BoundsError.\nCase n > 1\nBehaves like applying n times prevind for n==1. The only difference is that if n is so large that applying prevind would reach 0 then each remaining iteration decreases the returned value by 1. This means that in this case prevind can return a negative value.\nCase n == 0\nReturn i only if i is a valid index in str or is equal to ncodeunits(str)+1. Otherwise StringIndexError or BoundsError is thrown.\n\nExamples\n\njulia> prevind(\"α\", 3)\n1\n\njulia> prevind(\"α\", 1)\n0\n\njulia> prevind(\"α\", 0)\nERROR: BoundsError: attempt to access \"α\"\n  at index [0]\n[...]\n\njulia> prevind(\"α\", 2, 2)\n0\n\njulia> prevind(\"α\", 2, 3)\n-1\n\n\n\n\n\n"
@@ -10058,7 +10058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.textwidth",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.textwidth",
     "category": "function",
     "text": "textwidth(c)\n\nGive the number of columns needed to print a character.\n\nExamples\n\njulia> textwidth(\'α\')\n1\n\njulia> textwidth(\'❤\')\n2\n\n\n\n\n\ntextwidth(s::AbstractString)\n\nGive the number of columns needed to print a string.\n\nExamples\n\njulia> textwidth(\"March\")\n5\n\n\n\n\n\n"
@@ -10066,7 +10066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.isascii",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.isascii",
     "category": "function",
     "text": "isascii(c::Union{AbstractChar,AbstractString}) -> Bool\n\nTest whether a character belongs to the ASCII character set, or whether this is true for all elements of a string.\n\nExamples\n\njulia> isascii(\'a\')\ntrue\n\njulia> isascii(\'α\')\nfalse\n\njulia> isascii(\"abc\")\ntrue\n\njulia> isascii(\"αβγ\")\nfalse\n\n\n\n\n\n"
@@ -10074,7 +10074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.iscntrl",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.iscntrl",
     "category": "function",
     "text": "iscntrl(c::AbstractChar) -> Bool\n\nTests whether a character is a control character. Control characters are the non-printing characters of the Latin-1 subset of Unicode.\n\nExamples\n\njulia> iscntrl(\'\\x01\')\ntrue\n\njulia> iscntrl(\'a\')\nfalse\n\n\n\n\n\n"
@@ -10082,7 +10082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.isdigit",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.isdigit",
     "category": "function",
     "text": "isdigit(c::AbstractChar) -> Bool\n\nTests whether a character is a decimal digit (0-9).\n\nExamples\n\njulia> isdigit(\'❤\')\nfalse\n\njulia> isdigit(\'9\')\ntrue\n\njulia> isdigit(\'α\')\nfalse\n\n\n\n\n\n"
@@ -10090,7 +10090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.isletter",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.isletter",
     "category": "function",
     "text": "isletter(c::AbstractChar) -> Bool\n\nTest whether a character is a letter. A character is classified as a letter if it belongs to the Unicode general category Letter, i.e. a character whose category code begins with \'L\'.\n\nExamples\n\njulia> isletter(\'❤\')\nfalse\n\njulia> isletter(\'α\')\ntrue\n\njulia> isletter(\'9\')\nfalse\n\n\n\n\n\n"
@@ -10098,7 +10098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.islowercase",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.islowercase",
     "category": "function",
     "text": "islowercase(c::AbstractChar) -> Bool\n\nTests whether a character is a lowercase letter. A character is classified as lowercase if it belongs to Unicode category Ll, Letter: Lowercase.\n\nExamples\n\njulia> islowercase(\'α\')\ntrue\n\njulia> islowercase(\'Γ\')\nfalse\n\njulia> islowercase(\'❤\')\nfalse\n\n\n\n\n\n"
@@ -10106,7 +10106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.isnumeric",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.isnumeric",
     "category": "function",
     "text": "isnumeric(c::AbstractChar) -> Bool\n\nTests whether a character is numeric. A character is classified as numeric if it belongs to the Unicode general category Number, i.e. a character whose category code begins with \'N\'.\n\nNote that this broad category includes characters such as ¾ and ௰. Use isdigit to check whether a character a decimal digit between 0 and 9.\n\nExamples\n\njulia> isnumeric(\'௰\')\ntrue\n\njulia> isnumeric(\'9\')\ntrue\n\njulia> isnumeric(\'α\')\nfalse\n\njulia> isnumeric(\'❤\')\nfalse\n\n\n\n\n\n"
@@ -10114,7 +10114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.isprint",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.isprint",
     "category": "function",
     "text": "isprint(c::AbstractChar) -> Bool\n\nTests whether a character is printable, including spaces, but not a control character.\n\nExamples\n\njulia> isprint(\'\\x01\')\nfalse\n\njulia> isprint(\'A\')\ntrue\n\n\n\n\n\n"
@@ -10122,7 +10122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.ispunct",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.ispunct",
     "category": "function",
     "text": "ispunct(c::AbstractChar) -> Bool\n\nTests whether a character belongs to the Unicode general category Punctuation, i.e. a character whose category code begins with \'P\'.\n\nExamples\n\njulia> ispunct(\'α\')\nfalse\n\njulia> ispunct(\'/\')\ntrue\n\njulia> ispunct(\';\')\ntrue\n\n\n\n\n\n"
@@ -10130,7 +10130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.isspace",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.isspace",
     "category": "function",
     "text": "isspace(c::AbstractChar) -> Bool\n\nTests whether a character is any whitespace character. Includes ASCII characters \'\\t\', \'\\n\', \'\\v\', \'\\f\', \'\\r\', and \' \', Latin-1 character U+0085, and characters in Unicode category Zs.\n\nExamples\n\njulia> isspace(\'\\n\')\ntrue\n\njulia> isspace(\'\\r\')\ntrue\n\njulia> isspace(\' \')\ntrue\n\njulia> isspace(\'\\x20\')\ntrue\n\n\n\n\n\n"
@@ -10138,7 +10138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.isuppercase",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.isuppercase",
     "category": "function",
     "text": "isuppercase(c::AbstractChar) -> Bool\n\nTests whether a character is an uppercase letter. A character is classified as uppercase if it belongs to Unicode category Lu, Letter: Uppercase, or Lt, Letter: Titlecase.\n\nExamples\n\njulia> isuppercase(\'γ\')\nfalse\n\njulia> isuppercase(\'Γ\')\ntrue\n\njulia> isuppercase(\'❤\')\nfalse\n\n\n\n\n\n"
@@ -10146,7 +10146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.Unicode.isxdigit",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.Unicode.isxdigit",
     "category": "function",
     "text": "isxdigit(c::AbstractChar) -> Bool\n\nTest whether a character is a valid hexadecimal digit. Note that this does not include x (as in the standard 0x prefix).\n\nExamples\n\njulia> isxdigit(\'a\')\ntrue\n\njulia> isxdigit(\'x\')\nfalse\n\n\n\n\n\n"
@@ -10154,7 +10154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Core.Symbol",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Core.Symbol",
     "category": "type",
     "text": "Symbol(x...) -> Symbol\n\nCreate a Symbol by concatenating the string representations of the arguments together.\n\nExamples\n\njulia> Symbol(\"my\", \"name\")\n:myname\n\njulia> Symbol(\"day\", 4)\n:day4\n\n\n\n\n\n"
@@ -10162,7 +10162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.escape_string",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.escape_string",
     "category": "function",
     "text": "escape_string(str::AbstractString[, esc])::AbstractString\nescape_string(io, str::AbstractString[, esc::])::Nothing\n\nGeneral escaping of traditional C and Unicode escape sequences. The first form returns the escaped string, the second prints the result to io.\n\nBackslashes (\\) are escaped with a double-backslash (\"\\\\\"). Non-printable characters are escaped either with their standard C escape codes, \"\\0\" for NUL (if unambiguous), unicode code point (\"\\u\" prefix) or hex (\"\\x\" prefix).\n\nThe optional esc argument specifies any additional characters that should also be escaped by a prepending backslash (\" is also escaped by default in the first form).\n\nExamples\n\njulia> escape_string(\"aaa\\nbbb\")\n\"aaa\\\\nbbb\"\n\njulia> escape_string(\"\\xfe\\xff\") # invalid utf-8\n\"\\\\xfe\\\\xff\"\n\njulia> escape_string(string(\'\\u2135\',\'\\0\')) # unambiguous\n\"ℵ\\\\0\"\n\njulia> escape_string(string(\'\\u2135\',\'\\0\',\'0\')) # \\0 would be ambiguous\n\"ℵ\\\\x000\"\n\nSee also\n\nunescape_string for the reverse operation.\n\n\n\n\n\n"
@@ -10170,16 +10170,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/strings/#Base.unescape_string",
-    "page": "【字符串】（@id lib-strings）",
+    "page": "字符串",
     "title": "Base.unescape_string",
     "category": "function",
     "text": "unescape_string(str::AbstractString)::AbstractString\nunescape_string(io, str::AbstractString)::Nothing\n\nGeneral unescaping of traditional C and Unicode escape sequences. The first form returns the escaped string, the second prints the result to io.\n\nThe following escape sequences are recognised:\n\nEscaped backslash (\\\\)\nEscaped double-quote (\\\")\nStandard C escape sequences (\\a, \\b, \\t, \\n, \\v, \\f, \\r, \\e)\nUnicode code points (\\u or \\U prefixes with 1-4 trailing hex digits)\nHex bytes (\\x with 1-2 trailing hex digits)\nOctal bytes (\\ with 1-3 trailing octal digits)\n\nExamples\n\njulia> unescape_string(\"aaa\\\\nbbb\") # C escape sequence\n\"aaa\\nbbb\"\n\njulia> unescape_string(\"\\\\u03c0\") # unicode\n\"π\"\n\njulia> unescape_string(\"\\\\101\") # octal\n\"A\"\n\nSee also\n\nescape_string.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/strings/#【字符串】（@id-lib-strings）-1",
-    "page": "【字符串】（@id lib-strings）",
-    "title": "【字符串】（@id lib-strings）",
+    "location": "base/strings/#lib-strings-1",
+    "page": "字符串",
+    "title": "字符串",
     "category": "section",
     "text": "Core.AbstractChar\nCore.Char\nBase.codepoint\nBase.length(::AbstractString)\nBase.sizeof(::AbstractString)\nBase.:*(::Union{AbstractChar, AbstractString}, ::Union{AbstractChar, AbstractString}...)\nBase.:^(::AbstractString, ::Integer)\nBase.string\nBase.repeat(::AbstractString, ::Integer)\nBase.repeat(::AbstractChar, ::Integer)\nBase.repr(::Any)\nCore.String(::AbstractString)\nBase.SubString\nBase.transcode\nBase.unsafe_string\nBase.ncodeunits(::AbstractString)\nBase.codeunit\nBase.codeunits\nBase.ascii\nBase.@r_str\nBase.SubstitutionString\nBase.@s_str\nBase.@raw_str\nBase.Docs.@html_str\nBase.Docs.@text_str\nBase.isvalid(::Any)\nBase.isvalid(::Any, ::Any)\nBase.isvalid(::AbstractString, ::Integer)\nBase.match\nBase.eachmatch\nBase.isless(::AbstractString, ::AbstractString)\nBase.:(==)(::AbstractString, ::AbstractString)\nBase.cmp(::AbstractString, ::AbstractString)\nBase.lpad\nBase.rpad\nBase.findfirst(::AbstractString, ::AbstractString)\nBase.findnext(::AbstractString, ::AbstractString, ::Integer)\nBase.findlast(::AbstractString, ::AbstractString)\nBase.findprev(::AbstractString, ::AbstractString, ::Integer)\nBase.occursin\nBase.reverse(::Union{String,SubString{String}})\nBase.replace(s::AbstractString, ::Pair)\nBase.split\nBase.rsplit\nBase.strip\nBase.lstrip\nBase.rstrip\nBase.startswith\nBase.endswith\nBase.first(::AbstractString, ::Integer)\nBase.last(::AbstractString, ::Integer)\nBase.uppercase\nBase.lowercase\nBase.titlecase\nBase.uppercasefirst\nBase.lowercasefirst\nBase.join\nBase.chop\nBase.chomp\nBase.thisind\nBase.nextind\nBase.prevind\nBase.textwidth\nBase.isascii\nBase.iscntrl\nBase.isdigit\nBase.isletter\nBase.islowercase\nBase.isnumeric\nBase.isprint\nBase.ispunct\nBase.isspace\nBase.isuppercase\nBase.isxdigit\nCore.Symbol\nBase.escape_string\nBase.unescape_string"
 },
@@ -11682,15 +11682,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#",
-    "page": "Constants",
-    "title": "Constants",
+    "page": "常量",
+    "title": "常量",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "base/constants/#Core.nothing",
-    "page": "Constants",
+    "page": "常量",
     "title": "Core.nothing",
     "category": "constant",
     "text": "nothing\n\nThe singleton instance of type Nothing, used by convention when there is no value to return (as in a C void function) or when a variable or field holds no value.\n\n\n\n\n\n"
@@ -11698,7 +11698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.PROGRAM_FILE",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.PROGRAM_FILE",
     "category": "constant",
     "text": "PROGRAM_FILE\n\nA string containing the script name passed to Julia from the command line. Note that the script name remains unchanged from within included files. Alternatively see @__FILE__.\n\n\n\n\n\n"
@@ -11706,7 +11706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.ARGS",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.ARGS",
     "category": "constant",
     "text": "ARGS\n\nAn array of the command line arguments passed to Julia, as strings.\n\n\n\n\n\n"
@@ -11714,7 +11714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.C_NULL",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.C_NULL",
     "category": "constant",
     "text": "C_NULL\n\nThe C null pointer constant, sometimes used when calling external code.\n\n\n\n\n\n"
@@ -11722,7 +11722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.VERSION",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.VERSION",
     "category": "constant",
     "text": "VERSION\n\nA VersionNumber object describing which version of Julia is in use. For details see Version Number Literals.\n\n\n\n\n\n"
@@ -11730,7 +11730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.LOAD_PATH",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.LOAD_PATH",
     "category": "constant",
     "text": "LOAD_PATH\n\nAn array of paths for using and import statements to consdier as project environments or package directories when loading code. See Code Loading.\n\n\n\n\n\n"
@@ -11738,7 +11738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.Sys.BINDIR",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.Sys.BINDIR",
     "category": "constant",
     "text": "Sys.BINDIR\n\nA string containing the full path to the directory containing the julia executable.\n\n\n\n\n\n"
@@ -11746,7 +11746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.Sys.CPU_THREADS",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.Sys.CPU_THREADS",
     "category": "constant",
     "text": "Sys.CPU_THREADS\n\nThe number of logical CPU cores available in the system, i.e. the number of threads that the CPU can run concurrently. Note that this is not necessarily the number of CPU cores, for example, in the presence of hyper-threading.\n\nSee Hwloc.jl or CpuId.jl for extended information, including number of physical cores.\n\n\n\n\n\n"
@@ -11754,7 +11754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.Sys.WORD_SIZE",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.Sys.WORD_SIZE",
     "category": "constant",
     "text": "Sys.WORD_SIZE\n\nStandard word size on the current machine, in bits.\n\n\n\n\n\n"
@@ -11762,7 +11762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.Sys.KERNEL",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.Sys.KERNEL",
     "category": "constant",
     "text": "Sys.KERNEL\n\nA symbol representing the name of the operating system, as returned by uname of the build configuration.\n\n\n\n\n\n"
@@ -11770,7 +11770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.Sys.ARCH",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.Sys.ARCH",
     "category": "constant",
     "text": "Sys.ARCH\n\nA symbol representing the architecture of the build configuration.\n\n\n\n\n\n"
@@ -11778,7 +11778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#Base.Sys.MACHINE",
-    "page": "Constants",
+    "page": "常量",
     "title": "Base.Sys.MACHINE",
     "category": "constant",
     "text": "Sys.MACHINE\n\nA string containing the build triple.\n\n\n\n\n\n"
@@ -11786,10 +11786,10 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/constants/#lib-constants-1",
-    "page": "Constants",
-    "title": "Constants",
+    "page": "常量",
+    "title": "常量",
     "category": "section",
-    "text": "Core.nothing\nBase.PROGRAM_FILE\nBase.ARGS\nBase.C_NULL\nBase.VERSION\nBase.LOAD_PATH\nBase.Sys.BINDIR\nBase.Sys.CPU_THREADS\nBase.Sys.WORD_SIZE\nBase.Sys.KERNEL\nBase.Sys.ARCH\nBase.Sys.MACHINESee also:stdin\nstdout\nstderr\nENV\nENDIAN_BOM\nLibc.MS_ASYNC\nLibc.MS_INVALIDATE\nLibc.MS_SYNC"
+    "text": "Core.nothing\nBase.PROGRAM_FILE\nBase.ARGS\nBase.C_NULL\nBase.VERSION\nBase.LOAD_PATH\nBase.Sys.BINDIR\nBase.Sys.CPU_THREADS\nBase.Sys.WORD_SIZE\nBase.Sys.KERNEL\nBase.Sys.ARCH\nBase.Sys.MACHINE参见：stdin\nstdout\nstderr\nENV\nENDIAN_BOM\nLibc.MS_ASYNC\nLibc.MS_INVALIDATE\nLibc.MS_SYNC"
 },
 
 {
@@ -15053,7 +15053,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Base.wait",
     "category": "function",
-    "text": "wait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\nwait(r::Future)\n\nWait for a value to become available for the specified future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified remote channel.\n\n\n\n\n\n"
+    "text": "wait(r::Future)\n\nWait for a value to become available for the specified future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified remote channel.\n\n\n\n\n\nwait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\n"
 },
 
 {
@@ -20485,7 +20485,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Sockets",
     "title": "Base.bind",
     "category": "function",
-    "text": "bind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\nbind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\n"
+    "text": "bind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\nbind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\n"
 },
 
 {
@@ -22774,22 +22774,6 @@ var documenterSearchIndex = {"docs": [
     "title": "Memory Sanitizer (MSAN)",
     "category": "section",
     "text": "For detecting use of uninitialized memory, you can use Clang\'s memory sanitizer (MSAN) by compiling with SANITIZE_MEMORY=1."
-},
-
-{
-    "location": "juliacn/style-guide/#",
-    "page": "翻译指南",
-    "title": "翻译指南",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "juliacn/style-guide/#翻译指南-1",
-    "page": "翻译指南",
-    "title": "翻译指南",
-    "category": "section",
-    "text": "翻译工作正在进行，有任何疑问或建议请到 http://discourse.juliacn.com/c/community/document 反馈。翻译指南请参考: http://discourse.juliacn.com/t/topic/277"
 },
 
 ]}
