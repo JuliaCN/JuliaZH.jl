@@ -1,6 +1,6 @@
-# Mathematics
+# 数学
 
-## [Mathematical Operators](@id math-ops)
+## [数学运算符](@id math-ops)
 
 ```@docs
 Base.:-(::Any)
@@ -53,7 +53,7 @@ Base.:(!)
 ||
 ```
 
-## Mathematical Functions
+## 数学函数
 
 ```@docs
 Base.isapprox

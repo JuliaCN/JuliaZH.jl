@@ -94,7 +94,7 @@ julia [switches] -- [programfile] [args...]
 |`--color={yes\|no\|auto}`              |开启或关闭文字颜色|
 |`--history-file={yes\|no}`             |载入或导出历史记录|
 |`--depwarn={yes\|no\|error}`           |开启或关闭语法弃用警告，`error` 表示将弃用警告转换为错误。|
-|`--warn-overwrite={yes\|no}`           |开启或关闭方法重写警告|
+|`--warn-overwrite={yes\|no}`           |开启或关闭“method overwrite”警告|
 |`-C`, `--cpu-target <target>`          |Limit usage of cpu features up to <target>; set to `help` to see the available options|
 |`-O`, `--optimize={0,1,2,3}`           |设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。|
 |`-g`, `-g <level>`                     |开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。|
@@ -104,7 +104,7 @@ julia [switches] -- [programfile] [args...]
 |`--code-coverage={none\|user\|all}`    |对源文件中每行代码执行的次数计数|
 |`--code-coverage`                      |等价于 `--code-coverage=user`|
 |`--track-allocation={none\|user\|all}` |对源文件中每行代码的内存分配计数，单位 byte|
-|`--track-allocation`                   |equivalent to `--track-allocation=user`|
+|`--track-allocation`                   |等价于 `--track-allocation=user`|
 
 ## 资源
 

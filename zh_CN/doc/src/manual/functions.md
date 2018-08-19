@@ -161,11 +161,7 @@ julia> f(1,2,3)
 
 ## [匿名函数](@id man-anonymous-functions)
 
-Functions in Julia are [first-class objects](https://en.wikipedia.org/wiki/First-class_citizen):
-they can be assigned to variables, and called using the standard function call syntax from the
-variable they have been assigned to. They can be used as arguments, and they can be returned as
-values. They can also be created anonymously, without being given a name, using either of these
-syntaxes:
+函数在Julia里是[一等公民](https://en.wikipedia.org/wiki/First-class_citizen)：可以指定给变量，和使用标准函数调用语法通过被指定的变量被调用。函数可以用作参数，也可以当作返回值。函数也可以不带函数名地匿名创建，使用如下语法：
 
 ```jldoctest
 julia> x -> x^2 + 2x - 1
@@ -177,13 +173,9 @@ julia> function (x)
 #3 (generic function with 1 method)
 ```
 
-This creates a function taking one argument `x` and returning the value of the polynomial `x^2 +
-2x - 1` at that value. Notice that the result is a generic function, but with a compiler-generated
-name based on consecutive numbering.
+这样就创建了一个接受一个参数`x`和返回当前值下多项式`x^2+2x-1`的函数。注意到结果是个泛型函数，但是带了编译器生成的连续编号的名字。
 
-The primary use for anonymous functions is passing them to functions which take other functions
-as arguments. A classic example is [`map`](@ref), which applies a function to each value of
-an array and returns a new array containing the resulting values:
+匿名函数最主要的作用是传递给接收其他函数作为参数的函数。一个经典的例子是[`map`](@ref), 为数组的每个值应用一个函数，然后返回一个包含结果的值的新数组：
 
 ```jldoctest
 julia> map(round, [1.2,3.5,1.7])

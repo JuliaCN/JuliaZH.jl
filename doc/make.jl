@@ -5,6 +5,7 @@ push!(LOAD_PATH, @__DIR__, "@stdlib")
 empty!(DEPOT_PATH)
 pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
 using Pkg
+Pkg.activate(@__DIR__)
 Pkg.instantiate()
 
 using Documenter
@@ -135,9 +136,6 @@ const PAGES = [
             "devdocs/valgrind.md",
             "devdocs/sanitizers.md",
         ],
-    ],
-    "中文文档开发" => [
-        "juliacn/style-guide.md",
     ],
 ]
 
