@@ -136,9 +136,6 @@ const PAGES = [
             "devdocs/sanitizers.md",
         ],
     ],
-    "中文文档开发" => [
-        "juliacn/style-guide.md",
-    ],
 ]
 
 for stdlib in STDLIB_DOCS
