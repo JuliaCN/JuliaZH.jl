@@ -5113,7 +5113,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/base/#Base.eps-Tuple{Type{#s1} where #s1<:AbstractFloat}",
+    "location": "base/base/#Base.eps-Tuple{Type{#s148} where #s148<:AbstractFloat}",
     "page": "Essentials",
     "title": "Base.eps",
     "category": "method",
@@ -7389,7 +7389,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Mathematics",
     "title": "Base.:+",
     "category": "function",
-    "text": "+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\n"
+    "text": "+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\ndt::Date + t::Time -> DateTime\n\nThe addition of a Date with a Time produces a DateTime. The hour, minute, second, and millisecond parts of the Time are used along with the year, month, and day of the Date to create the new DateTime. Non-zero microseconds or nanoseconds in the Time type will result in an InexactError being thrown.\n\n\n\n\n\n"
 },
 
 {
@@ -8297,7 +8297,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/math/#Base.round-Tuple{Complex{#s5} where #s5<:AbstractFloat,RoundingMode,RoundingMode}",
+    "location": "base/math/#Base.round-Tuple{Complex{#s148} where #s148<:AbstractFloat,RoundingMode,RoundingMode}",
     "page": "Mathematics",
     "title": "Base.round",
     "category": "method",
@@ -13785,6 +13785,7350 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "stdlib/Base64/#",
+    "page": "Base64",
+    "title": "Base64",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Base64/#Base64.Base64EncodePipe",
+    "page": "Base64",
+    "title": "Base64.Base64EncodePipe",
+    "category": "type",
+    "text": "Base64EncodePipe(ostream)\n\nReturn a new write-only I/O stream, which converts any bytes written to it into base64-encoded ASCII bytes written to ostream.  Calling close on the Base64EncodePipe stream is necessary to complete the encoding (but does not close ostream).\n\nExamples\n\njulia> io = IOBuffer();\n\njulia> iob64_encode = Base64EncodePipe(io);\n\njulia> write(iob64_encode, \"Hello!\")\n6\n\njulia> close(iob64_encode);\n\njulia> str = String(take!(io))\n\"SGVsbG8h\"\n\njulia> String(base64decode(str))\n\"Hello!\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Base64/#Base64.base64encode",
+    "page": "Base64",
+    "title": "Base64.base64encode",
+    "category": "function",
+    "text": "base64encode(writefunc, args...; context=nothing)\nbase64encode(args...; context=nothing)\n\nGiven a write-like function writefunc, which takes an I/O stream as its first argument, base64encode(writefunc, args...) calls writefunc to write args... to a base64-encoded string, and returns the string. base64encode(args...) is equivalent to base64encode(write, args...): it converts its arguments into bytes using the standard write functions and returns the base64-encoded string.\n\nThe optional keyword argument context can be set to :key=>value pair or an IO or IOContext object whose attributes are used for the I/O stream passed to writefunc or write.\n\nSee also base64decode.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Base64/#Base64.Base64DecodePipe",
+    "page": "Base64",
+    "title": "Base64.Base64DecodePipe",
+    "category": "type",
+    "text": "Base64DecodePipe(istream)\n\nReturn a new read-only I/O stream, which decodes base64-encoded data read from istream.\n\nExamples\n\njulia> io = IOBuffer();\n\njulia> iob64_decode = Base64DecodePipe(io);\n\njulia> write(io, \"SGVsbG8h\")\n8\n\njulia> seekstart(io);\n\njulia> String(read(iob64_decode))\n\"Hello!\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Base64/#Base64.base64decode",
+    "page": "Base64",
+    "title": "Base64.base64decode",
+    "category": "function",
+    "text": "base64decode(string)\n\nDecode the base64-encoded string and returns a Vector{UInt8} of the decoded bytes.\n\nSee also base64encode.\n\nExamples\n\njulia> b = base64decode(\"SGVsbG8h\")\n6-element Array{UInt8,1}:\n 0x48\n 0x65\n 0x6c\n 0x6c\n 0x6f\n 0x21\n\njulia> String(b)\n\"Hello!\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Base64/#Base64.stringmime",
+    "page": "Base64",
+    "title": "Base64.stringmime",
+    "category": "function",
+    "text": "stringmime(mime, x; context=nothing)\n\nReturns an AbstractString containing the representation of x in the requested mime type. This is similar to repr(mime, x) except that binary data is base64-encoded as an ASCII string.\n\nThe optional keyword argument context can be set to :key=>value pair or an IO or IOContext object whose attributes are used for the I/O stream passed to show.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Base64/#Base64-1",
+    "page": "Base64",
+    "title": "Base64",
+    "category": "section",
+    "text": "DocTestSetup = :(using Base64)Base64.Base64EncodePipe\nBase64.base64encode\nBase64.Base64DecodePipe\nBase64.base64decode\nBase64.stringmimeDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/CRC32c/#",
+    "page": "CRC32c",
+    "title": "CRC32c",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/CRC32c/#CRC32c.crc32c",
+    "page": "CRC32c",
+    "title": "CRC32c.crc32c",
+    "category": "function",
+    "text": "crc32c(data, crc::UInt32=0x00000000)\n\nCompute the CRC-32c checksum of the given data, which can be an Array{UInt8}, a contiguous subarray thereof, or a String.  Optionally, you can pass a starting crc integer to be mixed in with the checksum.  The crc parameter can be used to compute a checksum on data divided into chunks: performing crc32c(data2, crc32c(data1)) is equivalent to the checksum of [data1; data2]. (Technically, a little-endian checksum is computed.)\n\nThere is also a method crc32c(io, nb, crc) to checksum nb bytes from a stream io, or crc32c(io, crc) to checksum all the remaining bytes. Hence you can do open(crc32c, filename) to checksum an entire file, or crc32c(seekstart(buf)) to checksum an IOBuffer without calling take!.\n\nFor a String, note that the result is specific to the UTF-8 encoding (a different checksum would be obtained from a different Unicode encoding). To checksum an a::Array of some other bitstype, you can do crc32c(reinterpret(UInt8,a)), but note that the result may be endian-dependent.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/CRC32c/#CRC32c.crc32c-Tuple{IO,Integer,UInt32}",
+    "page": "CRC32c",
+    "title": "CRC32c.crc32c",
+    "category": "method",
+    "text": "crc32c(io::IO, [nb::Integer,] crc::UInt32=0x00000000)\n\nRead up to nb bytes from io and return the CRC-32c checksum, optionally mixed with a starting crc integer.  If nb is not supplied, then io will be read until the end of the stream.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/CRC32c/#CRC32c-1",
+    "page": "CRC32c",
+    "title": "CRC32c",
+    "category": "section",
+    "text": "CRC32c.crc32c\nCRC32c.crc32c(::IO, ::Integer, ::UInt32)"
+},
+
+{
+    "location": "stdlib/Dates/#",
+    "page": "Dates",
+    "title": "Dates",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Dates/#Dates-1",
+    "page": "Dates",
+    "title": "Dates",
+    "category": "section",
+    "text": "DocTestSetup = :(using Dates)The Dates module provides two types for working with dates: Date and DateTime, representing day and millisecond precision, respectively; both are subtypes of the abstract TimeType. The motivation for distinct types is simple: some operations are much simpler, both in terms of code and mental reasoning, when the complexities of greater precision don\'t have to be dealt with. For example, since the Date type only resolves to the precision of a single date (i.e. no hours, minutes, or seconds), normal considerations for time zones, daylight savings/summer time, and leap seconds are unnecessary and avoided.Both Date and DateTime are basically immutable Int64 wrappers. The single instant field of either type is actually a UTInstant{P} type, which represents a continuously increasing machine timeline based on the UT second [1]. The DateTime type is not aware of time zones (naive, in Python parlance), analogous to a LocalDateTime in Java 8. Additional time zone functionality can be added through the TimeZones.jl package, which compiles the IANA time zone database. Both Date and DateTime are based on the ISO 8601 standard, which follows the proleptic Gregorian calendar. One note is that the ISO 8601 standard is particular about BC/BCE dates. In general, the last day of the BC/BCE era, 1-12-31 BC/BCE, was followed by 1-1-1 AD/CE, thus no year zero exists. The ISO standard, however, states that 1 BC/BCE is year zero, so 0000-12-31 is the day before 0001-01-01, and year -0001 (yes, negative one for the year) is 2 BC/BCE, year -0002 is 3 BC/BCE, etc.[1]: The notion of the UT second is actually quite fundamental. There are basically two different notions of time generally accepted, one based on the physical rotation of the earth (one full rotation = 1 day), the other based on the SI second (a fixed, constant value). These are radically different! Think about it, a \"UT second\", as defined relative to the rotation of the earth, may have a different absolute length depending on the day! Anyway, the fact that Date and DateTime are based on UT seconds is a simplifying, yet honest assumption so that things like leap seconds and all their complexity can be avoided. This basis of time is formally called UT or UT1. Basing types on the UT second basically means that every minute has 60 seconds and every day has 24 hours and leads to more natural calculations when working with calendar dates."
+},
+
+{
+    "location": "stdlib/Dates/#Constructors-1",
+    "page": "Dates",
+    "title": "Constructors",
+    "category": "section",
+    "text": "Date and DateTime types can be constructed by integer or Period types, by parsing, or through adjusters (more on those later):julia> DateTime(2013)\n2013-01-01T00:00:00\n\njulia> DateTime(2013,7)\n2013-07-01T00:00:00\n\njulia> DateTime(2013,7,1)\n2013-07-01T00:00:00\n\njulia> DateTime(2013,7,1,12)\n2013-07-01T12:00:00\n\njulia> DateTime(2013,7,1,12,30)\n2013-07-01T12:30:00\n\njulia> DateTime(2013,7,1,12,30,59)\n2013-07-01T12:30:59\n\njulia> DateTime(2013,7,1,12,30,59,1)\n2013-07-01T12:30:59.001\n\njulia> Date(2013)\n2013-01-01\n\njulia> Date(2013,7)\n2013-07-01\n\njulia> Date(2013,7,1)\n2013-07-01\n\njulia> Date(Dates.Year(2013),Dates.Month(7),Dates.Day(1))\n2013-07-01\n\njulia> Date(Dates.Month(7),Dates.Year(2013))\n2013-07-01Date or DateTime parsing is accomplished by the use of format strings. Format strings work by the notion of defining delimited or fixed-width \"slots\" that contain a period to parse and passing the text to parse and format string to a Date or DateTime constructor, of the form Date(\"2015-01-01\",\"y-m-d\") or DateTime(\"20150101\",\"yyyymmdd\").Delimited slots are marked by specifying the delimiter the parser should expect between two subsequent periods; so \"y-m-d\" lets the parser know that between the first and second slots in a date string like \"2014-07-16\", it should find the - character. The y, m, and d characters let the parser know which periods to parse in each slot.Fixed-width slots are specified by repeating the period character the number of times corresponding to the width with no delimiter between characters. So \"yyyymmdd\" would correspond to a date string like \"20140716\". The parser distinguishes a fixed-width slot by the absence of a delimiter, noting the transition \"yyyymm\" from one period character to the next.Support for text-form month parsing is also supported through the u and U characters, for abbreviated and full-length month names, respectively. By default, only English month names are supported, so u corresponds to \"Jan\", \"Feb\", \"Mar\", etc. And U corresponds to \"January\", \"February\", \"March\", etc. Similar to other name=>value mapping functions dayname and monthname, custom locales can be loaded by passing in the locale=>Dict{String,Int} mapping to the MONTHTOVALUEABBR and MONTHTOVALUE dicts for abbreviated and full-name month names, respectively.One note on parsing performance: using the Date(date_string,format_string) function is fine if only called a few times. If there are many similarly formatted date strings to parse however, it is much more efficient to first create a Dates.DateFormat, and pass it instead of a raw format string.julia> df = DateFormat(\"y-m-d\");\n\njulia> dt = Date(\"2015-01-01\",df)\n2015-01-01\n\njulia> dt2 = Date(\"2015-01-02\",df)\n2015-01-02You can also use the dateformat\"\" string macro. This macro creates the DateFormat object once when the macro is expanded and uses the same DateFormat object even if a code snippet is run multiple times.julia> for i = 1:10^5\n           Date(\"2015-01-01\", dateformat\"y-m-d\")\n       endA full suite of parsing and formatting tests and examples is available in stdlib/Dates/test/io.jl."
+},
+
+{
+    "location": "stdlib/Dates/#Durations/Comparisons-1",
+    "page": "Dates",
+    "title": "Durations/Comparisons",
+    "category": "section",
+    "text": "Finding the length of time between two Date or DateTime is straightforward given their underlying representation as UTInstant{Day} and UTInstant{Millisecond}, respectively. The difference between Date is returned in the number of Day, and DateTime in the number of Millisecond. Similarly, comparing TimeType is a simple matter of comparing the underlying machine instants (which in turn compares the internal Int64 values).julia> dt = Date(2012,2,29)\n2012-02-29\n\njulia> dt2 = Date(2000,2,1)\n2000-02-01\n\njulia> dump(dt)\nDate\n  instant: Dates.UTInstant{Day}\n    periods: Day\n      value: Int64 734562\n\njulia> dump(dt2)\nDate\n  instant: Dates.UTInstant{Day}\n    periods: Day\n      value: Int64 730151\n\njulia> dt > dt2\ntrue\n\njulia> dt != dt2\ntrue\n\njulia> dt + dt2\nERROR: MethodError: no method matching +(::Date, ::Date)\n[...]\n\njulia> dt * dt2\nERROR: MethodError: no method matching *(::Date, ::Date)\n[...]\n\njulia> dt / dt2\nERROR: MethodError: no method matching /(::Date, ::Date)\n\njulia> dt - dt2\n4411 days\n\njulia> dt2 - dt\n-4411 days\n\njulia> dt = DateTime(2012,2,29)\n2012-02-29T00:00:00\n\njulia> dt2 = DateTime(2000,2,1)\n2000-02-01T00:00:00\n\njulia> dt - dt2\n381110400000 milliseconds"
+},
+
+{
+    "location": "stdlib/Dates/#Accessor-Functions-1",
+    "page": "Dates",
+    "title": "Accessor Functions",
+    "category": "section",
+    "text": "Because the Date and DateTime types are stored as single Int64 values, date parts or fields can be retrieved through accessor functions. The lowercase accessors return the field as an integer:julia> t = Date(2014, 1, 31)\n2014-01-31\n\njulia> Dates.year(t)\n2014\n\njulia> Dates.month(t)\n1\n\njulia> Dates.week(t)\n5\n\njulia> Dates.day(t)\n31While propercase return the same value in the corresponding Period type:julia> Dates.Year(t)\n2014 years\n\njulia> Dates.Day(t)\n31 daysCompound methods are provided, as they provide a measure of efficiency if multiple fields are needed at the same time:julia> Dates.yearmonth(t)\n(2014, 1)\n\njulia> Dates.monthday(t)\n(1, 31)\n\njulia> Dates.yearmonthday(t)\n(2014, 1, 31)One may also access the underlying UTInstant or integer value:julia> dump(t)\nDate\n  instant: Dates.UTInstant{Day}\n    periods: Day\n      value: Int64 735264\n\njulia> t.instant\nDates.UTInstant{Day}(735264 days)\n\njulia> Dates.value(t)\n735264"
+},
+
+{
+    "location": "stdlib/Dates/#Query-Functions-1",
+    "page": "Dates",
+    "title": "Query Functions",
+    "category": "section",
+    "text": "Query functions provide calendrical information about a TimeType. They include information about the day of the week:julia> t = Date(2014, 1, 31)\n2014-01-31\n\njulia> Dates.dayofweek(t)\n5\n\njulia> Dates.dayname(t)\n\"Friday\"\n\njulia> Dates.dayofweekofmonth(t) # 5th Friday of January\n5Month of the year:julia> Dates.monthname(t)\n\"January\"\n\njulia> Dates.daysinmonth(t)\n31As well as information about the TimeType\'s year and quarter:julia> Dates.isleapyear(t)\nfalse\n\njulia> Dates.dayofyear(t)\n31\n\njulia> Dates.quarterofyear(t)\n1\n\njulia> Dates.dayofquarter(t)\n31The dayname and monthname methods can also take an optional locale keyword that can be used to return the name of the day or month of the year for other languages/locales. There are also versions of these functions returning the abbreviated names, namely dayabbr and monthabbr. First the mapping is loaded into the LOCALES variable:julia> french_months = [\"janvier\", \"février\", \"mars\", \"avril\", \"mai\", \"juin\",\n                        \"juillet\", \"août\", \"septembre\", \"octobre\", \"novembre\", \"décembre\"];\n\njulia> french_monts_abbrev = [\"janv\",\"févr\",\"mars\",\"avril\",\"mai\",\"juin\",\n                              \"juil\",\"août\",\"sept\",\"oct\",\"nov\",\"déc\"];\n\njulia> french_days = [\"lundi\",\"mardi\",\"mercredi\",\"jeudi\",\"vendredi\",\"samedi\",\"dimanche\"];\n\njulia> Dates.LOCALES[\"french\"] = Dates.DateLocale(french_months, french_monts_abbrev, french_days, [\"\"]);The above mentioned functions can then be used to perform the queries:julia> Dates.dayname(t;locale=\"french\")\n\"vendredi\"\n\njulia> Dates.monthname(t;locale=\"french\")\n\"janvier\"\n\njulia> Dates.monthabbr(t;locale=\"french\")\n\"janv\"Since the abbreviated versions of the days are not loaded, trying to use the function dayabbr will error.julia> Dates.dayabbr(t;locale=\"french\")\nERROR: BoundsError: attempt to access 1-element Array{String,1} at index [5]\nStacktrace:\n[...]"
+},
+
+{
+    "location": "stdlib/Dates/#TimeType-Period-Arithmetic-1",
+    "page": "Dates",
+    "title": "TimeType-Period Arithmetic",
+    "category": "section",
+    "text": "It\'s good practice when using any language/date framework to be familiar with how date-period arithmetic is handled as there are some tricky issues to deal with (though much less so for day-precision types).The Dates module approach tries to follow the simple principle of trying to change as little as possible when doing Period arithmetic. This approach is also often known as calendrical arithmetic or what you would probably guess if someone were to ask you the same calculation in a conversation. Why all the fuss about this? Let\'s take a classic example: add 1 month to January 31st, 2014. What\'s the answer? Javascript will say March 3 (assumes 31 days). PHP says March 2 (assumes 30 days). The fact is, there is no right answer. In the Dates module, it gives the result of February 28th. How does it figure that out? I like to think of the classic 7-7-7 gambling game in casinos.Now just imagine that instead of 7-7-7, the slots are Year-Month-Day, or in our example, 2014-01-31. When you ask to add 1 month to this date, the month slot is incremented, so now we have 2014-02-31. Then the day number is checked if it is greater than the last valid day of the new month; if it is (as in the case above), the day number is adjusted down to the last valid day (28). What are the ramifications with this approach? Go ahead and add another month to our date, 2014-02-28 + Month(1) == 2014-03-28. What? Were you expecting the last day of March? Nope, sorry, remember the 7-7-7 slots. As few slots as possible are going to change, so we first increment the month slot by 1, 2014-03-28, and boom, we\'re done because that\'s a valid date. On the other hand, if we were to add 2 months to our original date, 2014-01-31, then we end up with 2014-03-31, as expected. The other ramification of this approach is a loss in associativity when a specific ordering is forced (i.e. adding things in different orders results in different outcomes). For example:julia> (Date(2014,1,29)+Dates.Day(1)) + Dates.Month(1)\n2014-02-28\n\njulia> (Date(2014,1,29)+Dates.Month(1)) + Dates.Day(1)\n2014-03-01What\'s going on there? In the first line, we\'re adding 1 day to January 29th, which results in 2014-01-30; then we add 1 month, so we get 2014-02-30, which then adjusts down to 2014-02-28. In the second example, we add 1 month first, where we get 2014-02-29, which adjusts down to 2014-02-28, and then add 1 day, which results in 2014-03-01. One design principle that helps in this case is that, in the presence of multiple Periods, the operations will be ordered by the Periods\' types, not their value or positional order; this means Year will always be added first, then Month, then Week, etc. Hence the following does result in associativity and Just Works:julia> Date(2014,1,29) + Dates.Day(1) + Dates.Month(1)\n2014-03-01\n\njulia> Date(2014,1,29) + Dates.Month(1) + Dates.Day(1)\n2014-03-01Tricky? Perhaps. What is an innocent Dates user to do? The bottom line is to be aware that explicitly forcing a certain associativity, when dealing with months, may lead to some unexpected results, but otherwise, everything should work as expected. Thankfully, that\'s pretty much the extent of the odd cases in date-period arithmetic when dealing with time in UT (avoiding the \"joys\" of dealing with daylight savings, leap seconds, etc.).As a bonus, all period arithmetic objects work directly with ranges:julia> dr = Date(2014,1,29):Day(1):Date(2014,2,3)\n2014-01-29:1 day:2014-02-03\n\njulia> collect(dr)\n6-element Array{Date,1}:\n 2014-01-29\n 2014-01-30\n 2014-01-31\n 2014-02-01\n 2014-02-02\n 2014-02-03\n\njulia> dr = Date(2014,1,29):Dates.Month(1):Date(2014,07,29)\n2014-01-29:1 month:2014-07-29\n\njulia> collect(dr)\n7-element Array{Date,1}:\n 2014-01-29\n 2014-02-28\n 2014-03-29\n 2014-04-29\n 2014-05-29\n 2014-06-29\n 2014-07-29"
+},
+
+{
+    "location": "stdlib/Dates/#Adjuster-Functions-1",
+    "page": "Dates",
+    "title": "Adjuster Functions",
+    "category": "section",
+    "text": "As convenient as date-period arithmetic is, often the kinds of calculations needed on dates take on a calendrical or temporal nature rather than a fixed number of periods. Holidays are a perfect example; most follow rules such as \"Memorial Day = Last Monday of May\", or \"Thanksgiving = 4th Thursday of November\". These kinds of temporal expressions deal with rules relative to the calendar, like first or last of the month, next Tuesday, or the first and third Wednesdays, etc.The Dates module provides the adjuster API through several convenient methods that aid in simply and succinctly expressing temporal rules. The first group of adjuster methods deal with the first and last of weeks, months, quarters, and years. They each take a single TimeType as input and return or adjust to the first or last of the desired period relative to the input.julia> Dates.firstdayofweek(Date(2014,7,16)) # Adjusts the input to the Monday of the input\'s week\n2014-07-14\n\njulia> Dates.lastdayofmonth(Date(2014,7,16)) # Adjusts to the last day of the input\'s month\n2014-07-31\n\njulia> Dates.lastdayofquarter(Date(2014,7,16)) # Adjusts to the last day of the input\'s quarter\n2014-09-30The next two higher-order methods, tonext, and toprev, generalize working with temporal expressions by taking a DateFunction as first argument, along with a starting TimeType. A DateFunction is just a function, usually anonymous, that takes a single TimeType as input and returns a Bool, true indicating a satisfied adjustment criterion. For example:julia> istuesday = x->Dates.dayofweek(x) == Dates.Tuesday; # Returns true if the day of the week of x is Tuesday\n\njulia> Dates.tonext(istuesday, Date(2014,7,13)) # 2014-07-13 is a Sunday\n2014-07-15\n\njulia> Dates.tonext(Date(2014,7,13), Dates.Tuesday) # Convenience method provided for day of the week adjustments\n2014-07-15This is useful with the do-block syntax for more complex temporal expressions:julia> Dates.tonext(Date(2014,7,13)) do x\n           # Return true on the 4th Thursday of November (Thanksgiving)\n           Dates.dayofweek(x) == Dates.Thursday &&\n           Dates.dayofweekofmonth(x) == 4 &&\n           Dates.month(x) == Dates.November\n       end\n2014-11-27The Base.filter method can be used to obtain all valid dates/moments in a specified range:# Pittsburgh street cleaning; Every 2nd Tuesday from April to November\n# Date range from January 1st, 2014 to January 1st, 2015\njulia> dr = Dates.Date(2014):Day(1):Dates.Date(2015);\n\njulia> filter(dr) do x\n           Dates.dayofweek(x) == Dates.Tue &&\n           Dates.April <= Dates.month(x) <= Dates.Nov &&\n           Dates.dayofweekofmonth(x) == 2\n       end\n8-element Array{Date,1}:\n 2014-04-08\n 2014-05-13\n 2014-06-10\n 2014-07-08\n 2014-08-12\n 2014-09-09\n 2014-10-14\n 2014-11-11Additional examples and tests are available in stdlib/Dates/test/adjusters.jl."
+},
+
+{
+    "location": "stdlib/Dates/#Period-Types-1",
+    "page": "Dates",
+    "title": "Period Types",
+    "category": "section",
+    "text": "Periods are a human view of discrete, sometimes irregular durations of time. Consider 1 month; it could represent, in days, a value of 28, 29, 30, or 31 depending on the year and month context. Or a year could represent 365 or 366 days in the case of a leap year. Period types are simple Int64 wrappers and are constructed by wrapping any Int64 convertible type, i.e. Year(1) or Month(3.0). Arithmetic between Period of the same type behave like integers, and limited Period-Real arithmetic is available.julia> y1 = Dates.Year(1)\n1 year\n\njulia> y2 = Dates.Year(2)\n2 years\n\njulia> y3 = Dates.Year(10)\n10 years\n\njulia> y1 + y2\n3 years\n\njulia> div(y3,y2)\n5\n\njulia> y3 - y2\n8 years\n\njulia> y3 % y2\n0 years\n\njulia> div(y3,3) # mirrors integer division\n3 years"
+},
+
+{
+    "location": "stdlib/Dates/#Rounding-1",
+    "page": "Dates",
+    "title": "Rounding",
+    "category": "section",
+    "text": "Date and DateTime values can be rounded to a specified resolution (e.g., 1 month or 15 minutes) with floor, ceil, or round:julia> floor(Date(1985, 8, 16), Dates.Month)\n1985-08-01\n\njulia> ceil(DateTime(2013, 2, 13, 0, 31, 20), Dates.Minute(15))\n2013-02-13T00:45:00\n\njulia> round(DateTime(2016, 8, 6, 20, 15), Dates.Day)\n2016-08-07T00:00:00Unlike the numeric round method, which breaks ties toward the even number by default, the TimeTyperound method uses the RoundNearestTiesUp rounding mode. (It\'s difficult to guess what breaking ties to nearest \"even\" TimeType would entail.) Further details on the available RoundingMode s can be found in the API reference.Rounding should generally behave as expected, but there are a few cases in which the expected behaviour is not obvious."
+},
+
+{
+    "location": "stdlib/Dates/#Rounding-Epoch-1",
+    "page": "Dates",
+    "title": "Rounding Epoch",
+    "category": "section",
+    "text": "In many cases, the resolution specified for rounding (e.g., Dates.Second(30)) divides evenly into the next largest period (in this case, Dates.Minute(1)). But rounding behaviour in cases in which this is not true may lead to confusion. What is the expected result of rounding a DateTime to the nearest 10 hours?julia> round(DateTime(2016, 7, 17, 11, 55), Dates.Hour(10))\n2016-07-17T12:00:00That may seem confusing, given that the hour (12) is not divisible by 10. The reason that 2016-07-17T12:00:00 was chosen is that it is 17,676,660 hours after 0000-01-01T00:00:00, and 17,676,660 is divisible by 10.As Julia Date and DateTime values are represented according to the ISO 8601 standard, 0000-01-01T00:00:00 was chosen as base (or \"rounding epoch\") from which to begin the count of days (and milliseconds) used in rounding calculations. (Note that this differs slightly from Julia\'s internal representation of Date s using Rata Die notation; but since the ISO 8601 standard is most visible to the end user, 0000-01-01T00:00:00 was chosen as the rounding epoch instead of the 0000-12-31T00:00:00 used internally to minimize confusion.)The only exception to the use of 0000-01-01T00:00:00 as the rounding epoch is when rounding to weeks. Rounding to the nearest week will always return a Monday (the first day of the week as specified by ISO 8601). For this reason, we use 0000-01-03T00:00:00 (the first day of the first week of year 0000, as defined by ISO 8601) as the base when rounding to a number of weeks.Here is a related case in which the expected behaviour is not necessarily obvious: What happens when we round to the nearest P(2), where P is a Period type? In some cases (specifically, when P <: Dates.TimePeriod) the answer is clear:julia> round(DateTime(2016, 7, 17, 8, 55, 30), Dates.Hour(2))\n2016-07-17T08:00:00\n\njulia> round(DateTime(2016, 7, 17, 8, 55, 30), Dates.Minute(2))\n2016-07-17T08:56:00This seems obvious, because two of each of these periods still divides evenly into the next larger order period. But in the case of two months (which still divides evenly into one year), the answer may be surprising:julia> round(DateTime(2016, 7, 17, 8, 55, 30), Dates.Month(2))\n2016-07-01T00:00:00Why round to the first day in July, even though it is month 7 (an odd number)? The key is that months are 1-indexed (the first month is assigned 1), unlike hours, minutes, seconds, and milliseconds (the first of which are assigned 0).This means that rounding a DateTime to an even multiple of seconds, minutes, hours, or years (because the ISO 8601 specification includes a year zero) will result in a DateTime with an even value in that field, while rounding a DateTime to an even multiple of months will result in the months field having an odd value. Because both months and years may contain an irregular number of days, whether rounding to an even number of days will result in an even value in the days field is uncertain.See the API reference for additional information on methods exported from the Dates module."
+},
+
+{
+    "location": "stdlib/Dates/#stdlib-dates-api-1",
+    "page": "Dates",
+    "title": "API reference",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Period",
+    "page": "Dates",
+    "title": "Dates.Period",
+    "category": "type",
+    "text": "Period\nYear\nMonth\nWeek\nDay\nHour\nMinute\nSecond\nMillisecond\nMicrosecond\nNanosecond\n\nPeriod types represent discrete, human representations of time.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.CompoundPeriod",
+    "page": "Dates",
+    "title": "Dates.CompoundPeriod",
+    "category": "type",
+    "text": "CompoundPeriod\n\nA CompoundPeriod is useful for expressing time periods that are not a fixed multiple of smaller periods. For example, \"a year and a  day\" is not a fixed number of days, but can be expressed using a CompoundPeriod. In fact, a CompoundPeriod is automatically generated by addition of different period types, e.g. Year(1) + Day(1) produces a CompoundPeriod result.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Instant",
+    "page": "Dates",
+    "title": "Dates.Instant",
+    "category": "type",
+    "text": "Instant\n\nInstant types represent integer-based, machine representations of time as continuous timelines starting from an epoch.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.UTInstant",
+    "page": "Dates",
+    "title": "Dates.UTInstant",
+    "category": "type",
+    "text": "UTInstant{T}\n\nThe UTInstant represents a machine timeline based on UT time (1 day = one revolution of the earth). The T is a Period parameter that indicates the resolution or precision of the instant.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.TimeType",
+    "page": "Dates",
+    "title": "Dates.TimeType",
+    "category": "type",
+    "text": "TimeType\n\nTimeType types wrap Instant machine instances to provide human representations of the machine instant. Time, DateTime and Date are subtypes of TimeType.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateTime",
+    "page": "Dates",
+    "title": "Dates.DateTime",
+    "category": "type",
+    "text": "DateTime\n\nDateTime wraps a UTInstant{Millisecond} and interprets it according to the proleptic Gregorian calendar.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Date",
+    "page": "Dates",
+    "title": "Dates.Date",
+    "category": "type",
+    "text": "Date\n\nDate wraps a UTInstant{Day} and interprets it according to the proleptic Gregorian calendar.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Time",
+    "page": "Dates",
+    "title": "Dates.Time",
+    "category": "type",
+    "text": "Time\n\nTime wraps a Nanosecond and represents a specific moment in a 24-hour day.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates-and-Time-Types-1",
+    "page": "Dates",
+    "title": "Dates and Time Types",
+    "category": "section",
+    "text": "Dates.Period\nDates.CompoundPeriod\nDates.Instant\nDates.UTInstant\nDates.TimeType\nDates.DateTime\nDates.Date\nDates.Time"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateTime-NTuple{7,Int64}",
+    "page": "Dates",
+    "title": "Dates.DateTime",
+    "category": "method",
+    "text": "DateTime(y, [m, d, h, mi, s, ms]) -> DateTime\n\nConstruct a DateTime type by parts. Arguments must be convertible to Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateTime-Tuple{Period}",
+    "page": "Dates",
+    "title": "Dates.DateTime",
+    "category": "method",
+    "text": "DateTime(periods::Period...) -> DateTime\n\nConstruct a DateTime type by Period type parts. Arguments may be in any order. DateTime parts not provided will default to the value of Dates.default(period).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateTime-Tuple{Function,Vararg{Any,N} where N}",
+    "page": "Dates",
+    "title": "Dates.DateTime",
+    "category": "method",
+    "text": "DateTime(f::Function, y[, m, d, h, mi, s]; step=Day(1), limit=10000) -> DateTime\n\nCreate a DateTime through the adjuster API. The starting point will be constructed from the provided y, m, d... arguments, and will be adjusted until f::Function returns true. The step size in adjusting can be provided manually through the step keyword. limit provides a limit to the max number of iterations the adjustment API will pursue before throwing an error (in the case that f::Function is never satisfied).\n\nExamples\n\njulia> DateTime(dt -> Dates.second(dt) == 40, 2010, 10, 20, 10; step = Dates.Second(1))\n2010-10-20T10:00:40\n\njulia> DateTime(dt -> Dates.hour(dt) == 20, 2010, 10, 20, 10; step = Dates.Hour(1), limit = 5)\nERROR: ArgumentError: Adjustment limit reached: 5 iterations\nStacktrace:\n[...]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateTime-Tuple{TimeType}",
+    "page": "Dates",
+    "title": "Dates.DateTime",
+    "category": "method",
+    "text": "DateTime(dt::Date) -> DateTime\n\nConvert a Date to a DateTime. The hour, minute, second, and millisecond parts of the new DateTime are assumed to be zero.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateTime-Tuple{AbstractString,AbstractString}",
+    "page": "Dates",
+    "title": "Dates.DateTime",
+    "category": "method",
+    "text": "DateTime(dt::AbstractString, format::AbstractString; locale=\"english\") -> DateTime\n\nConstruct a DateTime by parsing the dt date time string following the pattern given in the format string.\n\nThis method creates a DateFormat object each time it is called. If you are parsing many date time strings of the same format, consider creating a DateFormat object once and using that as the second argument instead.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.format",
+    "page": "Dates",
+    "title": "Dates.format",
+    "category": "function",
+    "text": "format(io::IO, tok::AbstractDateToken, dt::TimeType, locale)\n\nFormat the tok token from dt and write it to io. The formatting can be based on locale.\n\nAll subtypes of AbstractDateToken must define this method in order to be able to print a Date / DateTime object according to a DateFormat containing that token.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateFormat",
+    "page": "Dates",
+    "title": "Dates.DateFormat",
+    "category": "type",
+    "text": "DateFormat(format::AbstractString, locale=\"english\") -> DateFormat\n\nConstruct a date formatting object that can be used for parsing date strings or formatting a date object as a string. The following character codes can be used to construct the format string:\n\nCode Matches Comment\ny 1996, 96 Returns year of 1996, 0096\nY 1996, 96 Returns year of 1996, 0096. Equivalent to y\nm 1, 01 Matches 1 or 2-digit months\nu Jan Matches abbreviated months according to the locale keyword\nU January Matches full month names according to the locale keyword\nd 1, 01 Matches 1 or 2-digit days\nH 00 Matches hours\nM 00 Matches minutes\nS 00 Matches seconds\ns .500 Matches milliseconds\ne Mon, Tues Matches abbreviated days of the week\nE Monday Matches full name days of the week\nyyyymmdd 19960101 Matches fixed-width year, month, and day\n\nCharacters not listed above are normally treated as delimiters between date and time slots. For example a dt string of \"1996-01-15T00:00:00.0\" would have a format string like \"y-m-dTH:M:S.s\". If you need to use a code character as a delimiter you can escape it using backslash. The date \"1995y01m\" would have the format \"y\\ym\\m\".\n\nCreating a DateFormat object is expensive. Whenever possible, create it once and use it many times or try the dateformat\"\" string macro. Using this macro creates the DateFormat object once at macro expansion time and reuses it later. see @dateformat_str.\n\nSee DateTime and format for how to use a DateFormat object to parse and write Date strings respectively.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.@dateformat_str",
+    "page": "Dates",
+    "title": "Dates.@dateformat_str",
+    "category": "macro",
+    "text": "dateformat\"Y-m-d H:M:S\"\n\nCreate a DateFormat object. Similar to DateFormat(\"Y-m-d H:M:S\") but creates the DateFormat object once during macro expansion.\n\nSee DateFormat for details about format specifiers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.DateTime-Tuple{AbstractString,DateFormat}",
+    "page": "Dates",
+    "title": "Dates.DateTime",
+    "category": "method",
+    "text": "DateTime(dt::AbstractString, df::DateFormat) -> DateTime\n\nConstruct a DateTime by parsing the dt date time string following the pattern given in the DateFormat object. Similar to DateTime(::AbstractString, ::AbstractString) but more efficient when repeatedly parsing similarly formatted date time strings with a pre-created DateFormat object.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Date-Tuple{Int64,Int64,Int64}",
+    "page": "Dates",
+    "title": "Dates.Date",
+    "category": "method",
+    "text": "Date(y, [m, d]) -> Date\n\nConstruct a Date type by parts. Arguments must be convertible to Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Date-Tuple{Period}",
+    "page": "Dates",
+    "title": "Dates.Date",
+    "category": "method",
+    "text": "Date(period::Period...) -> Date\n\nConstruct a Date type by Period type parts. Arguments may be in any order. Date parts not provided will default to the value of Dates.default(period).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Date-Tuple{Function,Any,Any,Any}",
+    "page": "Dates",
+    "title": "Dates.Date",
+    "category": "method",
+    "text": "Date(f::Function, y[, m, d]; step=Day(1), limit=10000) -> Date\n\nCreate a Date through the adjuster API. The starting point will be constructed from the provided y, m, d arguments, and will be adjusted until f::Function returns true. The step size in adjusting can be provided manually through the step keyword. limit provides a limit to the max number of iterations the adjustment API will pursue before throwing an error (given that f::Function is never satisfied).\n\nExamples\n\njulia> Date(date -> Dates.week(date) == 20, 2010, 01, 01)\n2010-05-17\n\njulia> Date(date -> Dates.year(date) == 2010, 2000, 01, 01)\n2010-01-01\n\njulia> Date(date -> Dates.month(date) == 10, 2000, 01, 01; limit = 5)\nERROR: ArgumentError: Adjustment limit reached: 5 iterations\nStacktrace:\n[...]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Date-Tuple{TimeType}",
+    "page": "Dates",
+    "title": "Dates.Date",
+    "category": "method",
+    "text": "Date(dt::DateTime) -> Date\n\nConvert a DateTime to a Date. The hour, minute, second, and millisecond parts of the DateTime are truncated, so only the year, month and day parts are used in construction.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Date-Tuple{AbstractString,AbstractString}",
+    "page": "Dates",
+    "title": "Dates.Date",
+    "category": "method",
+    "text": "Date(d::AbstractString, format::AbstractString; locale=\"english\") -> Date\n\nConstruct a Date by parsing the d date string following the pattern given in the format string.\n\nThis method creates a DateFormat object each time it is called. If you are parsing many date strings of the same format, consider creating a DateFormat object once and using that as the second argument instead.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Date-Tuple{AbstractString,DateFormat}",
+    "page": "Dates",
+    "title": "Dates.Date",
+    "category": "method",
+    "text": "Date(d::AbstractString, df::DateFormat) -> Date\n\nParse a date from a date string d using a DateFormat object df.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Time-NTuple{5,Int64}",
+    "page": "Dates",
+    "title": "Dates.Time",
+    "category": "method",
+    "text": "Time(h, [mi, s, ms, us, ns]) -> Time\n\nConstruct a Time type by parts. Arguments must be convertible to Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Time-Tuple{TimePeriod}",
+    "page": "Dates",
+    "title": "Dates.Time",
+    "category": "method",
+    "text": "Time(period::TimePeriod...) -> Time\n\nConstruct a Time type by Period type parts. Arguments may be in any order. Time parts not provided will default to the value of Dates.default(period).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Time-Tuple{Function,Vararg{Any,N} where N}",
+    "page": "Dates",
+    "title": "Dates.Time",
+    "category": "method",
+    "text": "Time(f::Function, h, mi=0; step::Period=Second(1), limit::Int=10000)\nTime(f::Function, h, mi, s; step::Period=Millisecond(1), limit::Int=10000)\nTime(f::Function, h, mi, s, ms; step::Period=Microsecond(1), limit::Int=10000)\nTime(f::Function, h, mi, s, ms, us; step::Period=Nanosecond(1), limit::Int=10000)\n\nCreate a Time through the adjuster API. The starting point will be constructed from the provided h, mi, s, ms, us arguments, and will be adjusted until f::Function returns true. The step size in adjusting can be provided manually through the step keyword. limit provides a limit to the max number of iterations the adjustment API will pursue before throwing an error (in the case that f::Function is never satisfied). Note that the default step will adjust to allow for greater precision for the given arguments; i.e. if hour, minute, and second arguments are provided, the default step will be Millisecond(1) instead of Second(1).\n\nExamples\n\njulia> Dates.Time(t -> Dates.minute(t) == 30, 20)\n20:30:00\n\njulia> Dates.Time(t -> Dates.minute(t) == 0, 20)\n20:00:00\n\njulia> Dates.Time(t -> Dates.hour(t) == 10, 3; limit = 5)\nERROR: ArgumentError: Adjustment limit reached: 5 iterations\nStacktrace:\n[...]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Time-Tuple{DateTime}",
+    "page": "Dates",
+    "title": "Dates.Time",
+    "category": "method",
+    "text": "Time(dt::DateTime) -> Time\n\nConvert a DateTime to a Time. The hour, minute, second, and millisecond parts of the DateTime are used to create the new Time. Microsecond and nanoseconds are zero by default.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.now-Tuple{}",
+    "page": "Dates",
+    "title": "Dates.now",
+    "category": "method",
+    "text": "now() -> DateTime\n\nReturn a DateTime corresponding to the user\'s system time including the system timezone locale.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.now-Tuple{Type{UTC}}",
+    "page": "Dates",
+    "title": "Dates.now",
+    "category": "method",
+    "text": "now(::Type{UTC}) -> DateTime\n\nReturn a DateTime corresponding to the user\'s system time as UTC/GMT.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Base.eps",
+    "page": "Dates",
+    "title": "Base.eps",
+    "category": "function",
+    "text": "eps(::DateTime) -> Millisecond\neps(::Date) -> Day\neps(::Time) -> Nanosecond\n\nReturns Millisecond(1) for DateTime values, Day(1) for Date values, and Nanosecond(1) for Time values.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates-Functions-1",
+    "page": "Dates",
+    "title": "Dates Functions",
+    "category": "section",
+    "text": "Dates.DateTime(::Int64, ::Int64, ::Int64, ::Int64, ::Int64, ::Int64, ::Int64)\nDates.DateTime(::Dates.Period)\nDates.DateTime(::Function, ::Any...)\nDates.DateTime(::Dates.TimeType)\nDates.DateTime(::AbstractString, ::AbstractString)\nDates.format\nDates.DateFormat\nDates.@dateformat_str\nDates.DateTime(::AbstractString, ::Dates.DateFormat)\nDates.Date(::Int64, ::Int64, ::Int64)\nDates.Date(::Dates.Period)\nDates.Date(::Function, ::Any, ::Any, ::Any)\nDates.Date(::Dates.TimeType)\nDates.Date(::AbstractString, ::AbstractString)\nDates.Date(::AbstractString, ::Dates.DateFormat)\nDates.Time(::Int64::Int64, ::Int64, ::Int64, ::Int64, ::Int64)\nDates.Time(::Dates.TimePeriod)\nDates.Time(::Function, ::Any...)\nDates.Time(::Dates.DateTime)\nDates.now()\nDates.now(::Type{Dates.UTC})\nBase.eps"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.year",
+    "page": "Dates",
+    "title": "Dates.year",
+    "category": "function",
+    "text": "year(dt::TimeType) -> Int64\n\nThe year of a Date or DateTime as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.month",
+    "page": "Dates",
+    "title": "Dates.month",
+    "category": "function",
+    "text": "month(dt::TimeType) -> Int64\n\nThe month of a Date or DateTime as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.week",
+    "page": "Dates",
+    "title": "Dates.week",
+    "category": "function",
+    "text": "week(dt::TimeType) -> Int64\n\nReturn the ISO week date of a Date or DateTime as an Int64. Note that the first week of a year is the week that contains the first Thursday of the year, which can result in dates prior to January 4th being in the last week of the previous year. For example, week(Date(2005, 1, 1)) is the 53rd week of 2004.\n\nExamples\n\njulia> Dates.week(Date(1989, 6, 22))\n25\n\njulia> Dates.week(Date(2005, 1, 1))\n53\n\njulia> Dates.week(Date(2004, 12, 31))\n53\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.day",
+    "page": "Dates",
+    "title": "Dates.day",
+    "category": "function",
+    "text": "day(dt::TimeType) -> Int64\n\nThe day of month of a Date or DateTime as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.hour",
+    "page": "Dates",
+    "title": "Dates.hour",
+    "category": "function",
+    "text": "hour(dt::DateTime) -> Int64\n\nThe hour of day of a DateTime as an Int64.\n\n\n\n\n\nhour(t::Time) -> Int64\n\nThe hour of a Time as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.minute",
+    "page": "Dates",
+    "title": "Dates.minute",
+    "category": "function",
+    "text": "minute(dt::DateTime) -> Int64\n\nThe minute of a DateTime as an Int64.\n\n\n\n\n\nminute(t::Time) -> Int64\n\nThe minute of a Time as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.second",
+    "page": "Dates",
+    "title": "Dates.second",
+    "category": "function",
+    "text": "second(dt::DateTime) -> Int64\n\nThe second of a DateTime as an Int64.\n\n\n\n\n\nsecond(t::Time) -> Int64\n\nThe second of a Time as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.millisecond",
+    "page": "Dates",
+    "title": "Dates.millisecond",
+    "category": "function",
+    "text": "millisecond(dt::DateTime) -> Int64\n\nThe millisecond of a DateTime as an Int64.\n\n\n\n\n\nmillisecond(t::Time) -> Int64\n\nThe millisecond of a Time as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.microsecond",
+    "page": "Dates",
+    "title": "Dates.microsecond",
+    "category": "function",
+    "text": "microsecond(t::Time) -> Int64\n\nThe microsecond of a Time as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.nanosecond",
+    "page": "Dates",
+    "title": "Dates.nanosecond",
+    "category": "function",
+    "text": "nanosecond(t::Time) -> Int64\n\nThe nanosecond of a Time as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Year-Tuple{TimeType}",
+    "page": "Dates",
+    "title": "Dates.Year",
+    "category": "method",
+    "text": "Year(v)\n\nConstruct a Year object with the given v value. Input must be losslessly convertible to an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Month-Tuple{TimeType}",
+    "page": "Dates",
+    "title": "Dates.Month",
+    "category": "method",
+    "text": "Month(v)\n\nConstruct a Month object with the given v value. Input must be losslessly convertible to an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Week-Tuple{TimeType}",
+    "page": "Dates",
+    "title": "Dates.Week",
+    "category": "method",
+    "text": "Week(v)\n\nConstruct a Week object with the given v value. Input must be losslessly convertible to an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Day-Tuple{TimeType}",
+    "page": "Dates",
+    "title": "Dates.Day",
+    "category": "method",
+    "text": "Day(v)\n\nConstruct a Day object with the given v value. Input must be losslessly convertible to an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Hour-Tuple{DateTime}",
+    "page": "Dates",
+    "title": "Dates.Hour",
+    "category": "method",
+    "text": "Hour(dt::DateTime) -> Hour\n\nThe hour part of a DateTime as a Hour.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Minute-Tuple{DateTime}",
+    "page": "Dates",
+    "title": "Dates.Minute",
+    "category": "method",
+    "text": "Minute(dt::DateTime) -> Minute\n\nThe minute part of a DateTime as a Minute.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Second-Tuple{DateTime}",
+    "page": "Dates",
+    "title": "Dates.Second",
+    "category": "method",
+    "text": "Second(dt::DateTime) -> Second\n\nThe second part of a DateTime as a Second.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Millisecond-Tuple{DateTime}",
+    "page": "Dates",
+    "title": "Dates.Millisecond",
+    "category": "method",
+    "text": "Millisecond(dt::DateTime) -> Millisecond\n\nThe millisecond part of a DateTime as a Millisecond.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Microsecond-Tuple{Time}",
+    "page": "Dates",
+    "title": "Dates.Microsecond",
+    "category": "method",
+    "text": "Microsecond(dt::Time) -> Microsecond\n\nThe microsecond part of a Time as a Microsecond.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Nanosecond-Tuple{Time}",
+    "page": "Dates",
+    "title": "Dates.Nanosecond",
+    "category": "method",
+    "text": "Nanosecond(dt::Time) -> Nanosecond\n\nThe nanosecond part of a Time as a Nanosecond.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.yearmonth",
+    "page": "Dates",
+    "title": "Dates.yearmonth",
+    "category": "function",
+    "text": "yearmonth(dt::TimeType) -> (Int64, Int64)\n\nSimultaneously return the year and month parts of a Date or DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.monthday",
+    "page": "Dates",
+    "title": "Dates.monthday",
+    "category": "function",
+    "text": "monthday(dt::TimeType) -> (Int64, Int64)\n\nSimultaneously return the month and day parts of a Date or DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.yearmonthday",
+    "page": "Dates",
+    "title": "Dates.yearmonthday",
+    "category": "function",
+    "text": "yearmonthday(dt::TimeType) -> (Int64, Int64, Int64)\n\nSimultaneously return the year, month and day parts of a Date or DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Accessor-Functions-2",
+    "page": "Dates",
+    "title": "Accessor Functions",
+    "category": "section",
+    "text": "Dates.year\nDates.month\nDates.week\nDates.day\nDates.hour\nDates.minute\nDates.second\nDates.millisecond\nDates.microsecond\nDates.nanosecond\nDates.Year(::Dates.TimeType)\nDates.Month(::Dates.TimeType)\nDates.Week(::Dates.TimeType)\nDates.Day(::Dates.TimeType)\nDates.Hour(::DateTime)\nDates.Minute(::DateTime)\nDates.Second(::DateTime)\nDates.Millisecond(::DateTime)\nDates.Microsecond(::Dates.Time)\nDates.Nanosecond(::Dates.Time)\nDates.yearmonth\nDates.monthday\nDates.yearmonthday"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.dayname",
+    "page": "Dates",
+    "title": "Dates.dayname",
+    "category": "function",
+    "text": "dayname(dt::TimeType; locale=\"english\") -> String\n\nReturn the full day name corresponding to the day of the week of the Date or DateTime in the given locale.\n\nExamples\n\njulia> Dates.dayname(Date(\"2000-01-01\"))\n\"Saturday\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.dayabbr",
+    "page": "Dates",
+    "title": "Dates.dayabbr",
+    "category": "function",
+    "text": "dayabbr(dt::TimeType; locale=\"english\") -> String\n\nReturn the abbreviated name corresponding to the day of the week of the Date or DateTime in the given locale.\n\nExamples\n\njulia> Dates.dayabbr(Date(\"2000-01-01\"))\n\"Sat\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.dayofweek",
+    "page": "Dates",
+    "title": "Dates.dayofweek",
+    "category": "function",
+    "text": "dayofweek(dt::TimeType) -> Int64\n\nReturn the day of the week as an Int64 with 1 = Monday, 2 = Tuesday, etc..\n\nExamples\n\njulia> Dates.dayofweek(Date(\"2000-01-01\"))\n6\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.dayofmonth",
+    "page": "Dates",
+    "title": "Dates.dayofmonth",
+    "category": "function",
+    "text": "dayofmonth(dt::TimeType) -> Int64\n\nThe day of month of a Date or DateTime as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.dayofweekofmonth",
+    "page": "Dates",
+    "title": "Dates.dayofweekofmonth",
+    "category": "function",
+    "text": "dayofweekofmonth(dt::TimeType) -> Int\n\nFor the day of week of dt, return which number it is in dt\'s month. So if the day of the week of dt is Monday, then 1 = First Monday of the month, 2 = Second Monday of the month, etc. In the range 1:5.\n\nExamples\n\n```jldoctest julia> Dates.dayofweekofmonth(Date(\"2000-02-01\")) 1\n\njulia> Dates.dayofweekofmonth(Date(\"2000-02-08\")) 2\n\njulia> Dates.dayofweekofmonth(Date(\"2000-02-15\")) 3 ````\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.daysofweekinmonth",
+    "page": "Dates",
+    "title": "Dates.daysofweekinmonth",
+    "category": "function",
+    "text": "daysofweekinmonth(dt::TimeType) -> Int\n\nFor the day of week of dt, return the total number of that day of the week in dt\'s month. Returns 4 or 5. Useful in temporal expressions for specifying the last day of a week in a month by including dayofweekofmonth(dt) == daysofweekinmonth(dt) in the adjuster function.\n\nExamples\n\njulia> Dates.daysofweekinmonth(Date(\"2005-01-01\"))\n5\n\njulia> Dates.daysofweekinmonth(Date(\"2005-01-04\"))\n4\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.monthname",
+    "page": "Dates",
+    "title": "Dates.monthname",
+    "category": "function",
+    "text": "monthname(dt::TimeType; locale=\"english\") -> String\n\nReturn the full name of the month of the Date or DateTime in the given locale.\n\nExamples\n\njulia> Dates.monthname(Date(\"2005-01-04\"))\n\"January\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.monthabbr",
+    "page": "Dates",
+    "title": "Dates.monthabbr",
+    "category": "function",
+    "text": "monthabbr(dt::TimeType; locale=\"english\") -> String\n\nReturn the abbreviated month name of the Date or DateTime in the given locale.\n\nExamples\n\njulia> Dates.monthabbr(Date(\"2005-01-04\"))\n\"Jan\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.daysinmonth",
+    "page": "Dates",
+    "title": "Dates.daysinmonth",
+    "category": "function",
+    "text": "daysinmonth(dt::TimeType) -> Int\n\nReturn the number of days in the month of dt. Value will be 28, 29, 30, or 31.\n\nExamples\n\njulia> Dates.daysinmonth(Date(\"2000-01\"))\n31\n\njulia> Dates.daysinmonth(Date(\"2001-02\"))\n28\n\njulia> Dates.daysinmonth(Date(\"2000-02\"))\n29\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.isleapyear",
+    "page": "Dates",
+    "title": "Dates.isleapyear",
+    "category": "function",
+    "text": "isleapyear(dt::TimeType) -> Bool\n\nReturn true if the year of dt is a leap year.\n\nExamples\n\njulia> Dates.isleapyear(Date(\"2004\"))\ntrue\n\njulia> Dates.isleapyear(Date(\"2005\"))\nfalse\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.dayofyear",
+    "page": "Dates",
+    "title": "Dates.dayofyear",
+    "category": "function",
+    "text": "dayofyear(dt::TimeType) -> Int\n\nReturn the day of the year for dt with January 1st being day 1.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.daysinyear",
+    "page": "Dates",
+    "title": "Dates.daysinyear",
+    "category": "function",
+    "text": "daysinyear(dt::TimeType) -> Int\n\nReturn 366 if the year of dt is a leap year, otherwise return 365.\n\nExamples\n\njulia> Dates.daysinyear(1999)\n365\n\njulia> Dates.daysinyear(2000)\n366\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.quarterofyear",
+    "page": "Dates",
+    "title": "Dates.quarterofyear",
+    "category": "function",
+    "text": "quarterofyear(dt::TimeType) -> Int\n\nReturn the quarter that dt resides in. Range of value is 1:4.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.dayofquarter",
+    "page": "Dates",
+    "title": "Dates.dayofquarter",
+    "category": "function",
+    "text": "dayofquarter(dt::TimeType) -> Int\n\nReturn the day of the current quarter of dt. Range of value is 1:92.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Query-Functions-2",
+    "page": "Dates",
+    "title": "Query Functions",
+    "category": "section",
+    "text": "Dates.dayname\nDates.dayabbr\nDates.dayofweek\nDates.dayofmonth\nDates.dayofweekofmonth\nDates.daysofweekinmonth\nDates.monthname\nDates.monthabbr\nDates.daysinmonth\nDates.isleapyear\nDates.dayofyear\nDates.daysinyear\nDates.quarterofyear\nDates.dayofquarter"
+},
+
+{
+    "location": "stdlib/Dates/#Base.trunc-Tuple{TimeType,Type{Period}}",
+    "page": "Dates",
+    "title": "Base.trunc",
+    "category": "method",
+    "text": "trunc(dt::TimeType, ::Type{Period}) -> TimeType\n\nTruncates the value of dt according to the provided Period type.\n\nExamples\n\njulia> trunc(Dates.DateTime(\"1996-01-01T12:30:00\"), Dates.Day)\n1996-01-01T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.firstdayofweek",
+    "page": "Dates",
+    "title": "Dates.firstdayofweek",
+    "category": "function",
+    "text": "firstdayofweek(dt::TimeType) -> TimeType\n\nAdjusts dt to the Monday of its week.\n\nExamples\n\njulia> Dates.firstdayofweek(DateTime(\"1996-01-05T12:30:00\"))\n1996-01-01T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.lastdayofweek",
+    "page": "Dates",
+    "title": "Dates.lastdayofweek",
+    "category": "function",
+    "text": "lastdayofweek(dt::TimeType) -> TimeType\n\nAdjusts dt to the Sunday of its week.\n\nExamples\n\njulia> Dates.lastdayofweek(DateTime(\"1996-01-05T12:30:00\"))\n1996-01-07T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.firstdayofmonth",
+    "page": "Dates",
+    "title": "Dates.firstdayofmonth",
+    "category": "function",
+    "text": "firstdayofmonth(dt::TimeType) -> TimeType\n\nAdjusts dt to the first day of its month.\n\nExamples\n\njulia> Dates.firstdayofmonth(DateTime(\"1996-05-20\"))\n1996-05-01T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.lastdayofmonth",
+    "page": "Dates",
+    "title": "Dates.lastdayofmonth",
+    "category": "function",
+    "text": "lastdayofmonth(dt::TimeType) -> TimeType\n\nAdjusts dt to the last day of its month.\n\nExamples\n\njulia> Dates.lastdayofmonth(DateTime(\"1996-05-20\"))\n1996-05-31T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.firstdayofyear",
+    "page": "Dates",
+    "title": "Dates.firstdayofyear",
+    "category": "function",
+    "text": "firstdayofyear(dt::TimeType) -> TimeType\n\nAdjusts dt to the first day of its year.\n\nExamples\n\njulia> Dates.firstdayofyear(DateTime(\"1996-05-20\"))\n1996-01-01T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.lastdayofyear",
+    "page": "Dates",
+    "title": "Dates.lastdayofyear",
+    "category": "function",
+    "text": "lastdayofyear(dt::TimeType) -> TimeType\n\nAdjusts dt to the last day of its year.\n\nExamples\n\njulia> Dates.lastdayofyear(DateTime(\"1996-05-20\"))\n1996-12-31T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.firstdayofquarter",
+    "page": "Dates",
+    "title": "Dates.firstdayofquarter",
+    "category": "function",
+    "text": "firstdayofquarter(dt::TimeType) -> TimeType\n\nAdjusts dt to the first day of its quarter.\n\nExamples\n\njulia> Dates.firstdayofquarter(DateTime(\"1996-05-20\"))\n1996-04-01T00:00:00\n\njulia> Dates.firstdayofquarter(DateTime(\"1996-08-20\"))\n1996-07-01T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.lastdayofquarter",
+    "page": "Dates",
+    "title": "Dates.lastdayofquarter",
+    "category": "function",
+    "text": "lastdayofquarter(dt::TimeType) -> TimeType\n\nAdjusts dt to the last day of its quarter.\n\nExamples\n\njulia> Dates.lastdayofquarter(DateTime(\"1996-05-20\"))\n1996-06-30T00:00:00\n\njulia> Dates.lastdayofquarter(DateTime(\"1996-08-20\"))\n1996-09-30T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.tonext-Tuple{TimeType,Int64}",
+    "page": "Dates",
+    "title": "Dates.tonext",
+    "category": "method",
+    "text": "tonext(dt::TimeType, dow::Int; same::Bool=false) -> TimeType\n\nAdjusts dt to the next day of week corresponding to dow with 1 = Monday, 2 = Tuesday, etc. Setting same=true allows the current dt to be considered as the next dow, allowing for no adjustment to occur.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.toprev-Tuple{TimeType,Int64}",
+    "page": "Dates",
+    "title": "Dates.toprev",
+    "category": "method",
+    "text": "toprev(dt::TimeType, dow::Int; same::Bool=false) -> TimeType\n\nAdjusts dt to the previous day of week corresponding to dow with 1 = Monday, 2 = Tuesday, etc. Setting same=true allows the current dt to be considered as the previous dow, allowing for no adjustment to occur.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.tofirst",
+    "page": "Dates",
+    "title": "Dates.tofirst",
+    "category": "function",
+    "text": "tofirst(dt::TimeType, dow::Int; of=Month) -> TimeType\n\nAdjusts dt to the first dow of its month. Alternatively, of=Year will adjust to the first dow of the year.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.tolast",
+    "page": "Dates",
+    "title": "Dates.tolast",
+    "category": "function",
+    "text": "tolast(dt::TimeType, dow::Int; of=Month) -> TimeType\n\nAdjusts dt to the last dow of its month. Alternatively, of=Year will adjust to the last dow of the year.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.tonext-Tuple{Function,TimeType}",
+    "page": "Dates",
+    "title": "Dates.tonext",
+    "category": "method",
+    "text": "tonext(func::Function, dt::TimeType; step=Day(1), limit=10000, same=false) -> TimeType\n\nAdjusts dt by iterating at most limit iterations by step increments until func returns true. func must take a single TimeType argument and return a Bool. same allows dt to be considered in satisfying func.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.toprev-Tuple{Function,TimeType}",
+    "page": "Dates",
+    "title": "Dates.toprev",
+    "category": "method",
+    "text": "toprev(func::Function, dt::TimeType; step=Day(-1), limit=10000, same=false) -> TimeType\n\nAdjusts dt by iterating at most limit iterations by step increments until func returns true. func must take a single TimeType argument and return a Bool. same allows dt to be considered in satisfying func.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Adjuster-Functions-2",
+    "page": "Dates",
+    "title": "Adjuster Functions",
+    "category": "section",
+    "text": "Base.trunc(::Dates.TimeType, ::Type{Dates.Period})\nDates.firstdayofweek\nDates.lastdayofweek\nDates.firstdayofmonth\nDates.lastdayofmonth\nDates.firstdayofyear\nDates.lastdayofyear\nDates.firstdayofquarter\nDates.lastdayofquarter\nDates.tonext(::Dates.TimeType, ::Int)\nDates.toprev(::Dates.TimeType, ::Int)\nDates.tofirst\nDates.tolast\nDates.tonext(::Function, ::Dates.TimeType)\nDates.toprev(::Function, ::Dates.TimeType)"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.Period-Tuple{Any}",
+    "page": "Dates",
+    "title": "Dates.Period",
+    "category": "method",
+    "text": "Year(v)\nMonth(v)\nWeek(v)\nDay(v)\nHour(v)\nMinute(v)\nSecond(v)\nMillisecond(v)\nMicrosecond(v)\nNanosecond(v)\n\nConstruct a Period type with the given v value. Input must be losslessly convertible to an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.CompoundPeriod-Tuple{Array{#s148,1} where #s148<:Period}",
+    "page": "Dates",
+    "title": "Dates.CompoundPeriod",
+    "category": "method",
+    "text": "CompoundPeriod(periods) -> CompoundPeriod\n\nConstruct a CompoundPeriod from a Vector of Periods. All Periods of the same type will be added together.\n\nExamples\n\njulia> Dates.CompoundPeriod(Dates.Hour(12), Dates.Hour(13))\n25 hours\n\njulia> Dates.CompoundPeriod(Dates.Hour(-1), Dates.Minute(1))\n-1 hour, 1 minute\n\njulia> Dates.CompoundPeriod(Dates.Month(1), Dates.Week(-2))\n1 month, -2 weeks\n\njulia> Dates.CompoundPeriod(Dates.Minute(50000))\n50000 minutes\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.default",
+    "page": "Dates",
+    "title": "Dates.default",
+    "category": "function",
+    "text": "default(p::Period) -> Period\n\nReturns a sensible \"default\" value for the input Period by returning T(1) for Year, Month, and Day, and T(0) for Hour, Minute, Second, and Millisecond.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Periods-1",
+    "page": "Dates",
+    "title": "Periods",
+    "category": "section",
+    "text": "Dates.Period(::Any)\nDates.CompoundPeriod(::Vector{<:Dates.Period})\nDates.default"
+},
+
+{
+    "location": "stdlib/Dates/#Base.floor-Tuple{TimeType,Period}",
+    "page": "Dates",
+    "title": "Base.floor",
+    "category": "method",
+    "text": "floor(dt::TimeType, p::Period) -> TimeType\n\nReturn the nearest Date or DateTime less than or equal to dt at resolution p.\n\nFor convenience, p may be a type instead of a value: floor(dt, Dates.Hour) is a shortcut for floor(dt, Dates.Hour(1)).\n\njulia> floor(Date(1985, 8, 16), Dates.Month)\n1985-08-01\n\njulia> floor(DateTime(2013, 2, 13, 0, 31, 20), Dates.Minute(15))\n2013-02-13T00:30:00\n\njulia> floor(DateTime(2016, 8, 6, 12, 0, 0), Dates.Day)\n2016-08-06T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Base.ceil-Tuple{TimeType,Period}",
+    "page": "Dates",
+    "title": "Base.ceil",
+    "category": "method",
+    "text": "ceil(dt::TimeType, p::Period) -> TimeType\n\nReturn the nearest Date or DateTime greater than or equal to dt at resolution p.\n\nFor convenience, p may be a type instead of a value: ceil(dt, Dates.Hour) is a shortcut for ceil(dt, Dates.Hour(1)).\n\njulia> ceil(Date(1985, 8, 16), Dates.Month)\n1985-09-01\n\njulia> ceil(DateTime(2013, 2, 13, 0, 31, 20), Dates.Minute(15))\n2013-02-13T00:45:00\n\njulia> ceil(DateTime(2016, 8, 6, 12, 0, 0), Dates.Day)\n2016-08-07T00:00:00\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Base.round-Tuple{TimeType,Period,RoundingMode{:NearestTiesUp}}",
+    "page": "Dates",
+    "title": "Base.round",
+    "category": "method",
+    "text": "round(dt::TimeType, p::Period, [r::RoundingMode]) -> TimeType\n\nReturn the Date or DateTime nearest to dt at resolution p. By default (RoundNearestTiesUp), ties (e.g., rounding 9:30 to the nearest hour) will be rounded up.\n\nFor convenience, p may be a type instead of a value: round(dt, Dates.Hour) is a shortcut for round(dt, Dates.Hour(1)).\n\njulia> round(Date(1985, 8, 16), Dates.Month)\n1985-08-01\n\njulia> round(DateTime(2013, 2, 13, 0, 31, 20), Dates.Minute(15))\n2013-02-13T00:30:00\n\njulia> round(DateTime(2016, 8, 6, 12, 0, 0), Dates.Day)\n2016-08-07T00:00:00\n\nValid rounding modes for round(::TimeType, ::Period, ::RoundingMode) are RoundNearestTiesUp (default), RoundDown (floor), and RoundUp (ceil).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Base.floor-Union{Tuple{T}, Tuple{Union{Day, Week, TimePeriod},T}} where T<:Union{Day, Week, TimePeriod}",
+    "page": "Dates",
+    "title": "Base.floor",
+    "category": "method",
+    "text": "floor(x::Period, precision::T) where T <: Union{TimePeriod, Week, Day} -> T\n\nRound x down to the nearest multiple of precision. If x and precision are different subtypes of Period, the return value will have the same type as precision.\n\nFor convenience, precision may be a type instead of a value: floor(x, Dates.Hour) is a shortcut for floor(x, Dates.Hour(1)).\n\njulia> floor(Dates.Day(16), Dates.Week)\n2 weeks\n\njulia> floor(Dates.Minute(44), Dates.Minute(15))\n30 minutes\n\njulia> floor(Dates.Hour(36), Dates.Day)\n1 day\n\nRounding to a precision of Months or Years is not supported, as these Periods are of inconsistent length.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Base.ceil-Tuple{Union{Day, Week, TimePeriod},Union{Day, Week, TimePeriod}}",
+    "page": "Dates",
+    "title": "Base.ceil",
+    "category": "method",
+    "text": "ceil(x::Period, precision::T) where T <: Union{TimePeriod, Week, Day} -> T\n\nRound x up to the nearest multiple of precision. If x and precision are different subtypes of Period, the return value will have the same type as precision.\n\nFor convenience, precision may be a type instead of a value: ceil(x, Dates.Hour) is a shortcut for ceil(x, Dates.Hour(1)).\n\njulia> ceil(Dates.Day(16), Dates.Week)\n3 weeks\n\njulia> ceil(Dates.Minute(44), Dates.Minute(15))\n45 minutes\n\njulia> ceil(Dates.Hour(36), Dates.Day)\n2 days\n\nRounding to a precision of Months or Years is not supported, as these Periods are of inconsistent length.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Base.round-Tuple{Union{Day, Week, TimePeriod},Union{Day, Week, TimePeriod},RoundingMode{:NearestTiesUp}}",
+    "page": "Dates",
+    "title": "Base.round",
+    "category": "method",
+    "text": "round(x::Period, precision::T, [r::RoundingMode]) where T <: Union{TimePeriod, Week, Day} -> T\n\nRound x to the nearest multiple of precision. If x and precision are different subtypes of Period, the return value will have the same type as precision. By default (RoundNearestTiesUp), ties (e.g., rounding 90 minutes to the nearest hour) will be rounded up.\n\nFor convenience, precision may be a type instead of a value: round(x, Dates.Hour) is a shortcut for round(x, Dates.Hour(1)).\n\njulia> round(Dates.Day(16), Dates.Week)\n2 weeks\n\njulia> round(Dates.Minute(44), Dates.Minute(15))\n45 minutes\n\njulia> round(Dates.Hour(36), Dates.Day)\n2 days\n\nValid rounding modes for round(::Period, ::T, ::RoundingMode) are RoundNearestTiesUp (default), RoundDown (floor), and RoundUp (ceil).\n\nRounding to a precision of Months or Years is not supported, as these Periods are of inconsistent length.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.floorceil",
+    "page": "Dates",
+    "title": "Dates.floorceil",
+    "category": "function",
+    "text": "floorceil(dt::TimeType, p::Period) -> (TimeType, TimeType)\n\nSimultaneously return the floor and ceil of a Date or DateTime at resolution p. More efficient than calling both floor and ceil individually.\n\n\n\n\n\nfloorceil(x::Period, precision::T) where T <: Union{TimePeriod, Week, Day} -> (T, T)\n\nSimultaneously return the floor and ceil of Period at resolution p.  More efficient than calling both floor and ceil individually.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.epochdays2date",
+    "page": "Dates",
+    "title": "Dates.epochdays2date",
+    "category": "function",
+    "text": "epochdays2date(days) -> Date\n\nTake the number of days since the rounding epoch (0000-01-01T00:00:00) and return the corresponding Date.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.epochms2datetime",
+    "page": "Dates",
+    "title": "Dates.epochms2datetime",
+    "category": "function",
+    "text": "epochms2datetime(milliseconds) -> DateTime\n\nTake the number of milliseconds since the rounding epoch (0000-01-01T00:00:00) and return the corresponding DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.date2epochdays",
+    "page": "Dates",
+    "title": "Dates.date2epochdays",
+    "category": "function",
+    "text": "date2epochdays(dt::Date) -> Int64\n\nTake the given Date and return the number of days since the rounding epoch (0000-01-01T00:00:00) as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.datetime2epochms",
+    "page": "Dates",
+    "title": "Dates.datetime2epochms",
+    "category": "function",
+    "text": "datetime2epochms(dt::DateTime) -> Int64\n\nTake the given DateTime and return the number of milliseconds since the rounding epoch (0000-01-01T00:00:00) as an Int64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Rounding-Functions-1",
+    "page": "Dates",
+    "title": "Rounding Functions",
+    "category": "section",
+    "text": "Date and DateTime values can be rounded to a specified resolution (e.g., 1 month or 15 minutes) with floor, ceil, or round.Base.floor(::Dates.TimeType, ::Dates.Period)\nBase.ceil(::Dates.TimeType, ::Dates.Period)\nBase.round(::Dates.TimeType, ::Dates.Period, ::RoundingMode{:NearestTiesUp})Most Period values can also be rounded to a specified resolution:Base.floor(::Dates.ConvertiblePeriod, ::T) where T <: Dates.ConvertiblePeriod\nBase.ceil(::Dates.ConvertiblePeriod, ::Dates.ConvertiblePeriod)\nBase.round(::Dates.ConvertiblePeriod, ::Dates.ConvertiblePeriod, ::RoundingMode{:NearestTiesUp})The following functions are not exported:Dates.floorceil\nDates.epochdays2date\nDates.epochms2datetime\nDates.date2epochdays\nDates.datetime2epochms"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.today",
+    "page": "Dates",
+    "title": "Dates.today",
+    "category": "function",
+    "text": "today() -> Date\n\nReturn the date portion of now().\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.unix2datetime",
+    "page": "Dates",
+    "title": "Dates.unix2datetime",
+    "category": "function",
+    "text": "unix2datetime(x) -> DateTime\n\nTake the number of seconds since unix epoch 1970-01-01T00:00:00 and convert to the corresponding DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.datetime2unix",
+    "page": "Dates",
+    "title": "Dates.datetime2unix",
+    "category": "function",
+    "text": "datetime2unix(dt::DateTime) -> Float64\n\nTake the given DateTime and return the number of seconds since the unix epoch 1970-01-01T00:00:00 as a Float64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.julian2datetime",
+    "page": "Dates",
+    "title": "Dates.julian2datetime",
+    "category": "function",
+    "text": "julian2datetime(julian_days) -> DateTime\n\nTake the number of Julian calendar days since epoch -4713-11-24T12:00:00 and return the corresponding DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.datetime2julian",
+    "page": "Dates",
+    "title": "Dates.datetime2julian",
+    "category": "function",
+    "text": "datetime2julian(dt::DateTime) -> Float64\n\nTake the given DateTime and return the number of Julian calendar days since the julian epoch -4713-11-24T12:00:00 as a Float64.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.rata2datetime",
+    "page": "Dates",
+    "title": "Dates.rata2datetime",
+    "category": "function",
+    "text": "rata2datetime(days) -> DateTime\n\nTake the number of Rata Die days since epoch 0000-12-31T00:00:00 and return the corresponding DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Dates.datetime2rata",
+    "page": "Dates",
+    "title": "Dates.datetime2rata",
+    "category": "function",
+    "text": "datetime2rata(dt::TimeType) -> Int64\n\nReturn the number of Rata Die days since epoch from the given Date or DateTime.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Dates/#Conversion-Functions-1",
+    "page": "Dates",
+    "title": "Conversion Functions",
+    "category": "section",
+    "text": "Dates.today\nDates.unix2datetime\nDates.datetime2unix\nDates.julian2datetime\nDates.datetime2julian\nDates.rata2datetime\nDates.datetime2rata"
+},
+
+{
+    "location": "stdlib/Dates/#Constants-1",
+    "page": "Dates",
+    "title": "Constants",
+    "category": "section",
+    "text": "Days of the Week:Variable Abbr. Value (Int)\nMonday Mon 1\nTuesday Tue 2\nWednesday Wed 3\nThursday Thu 4\nFriday Fri 5\nSaturday Sat 6\nSunday Sun 7Months of the Year:Variable Abbr. Value (Int)\nJanuary Jan 1\nFebruary Feb 2\nMarch Mar 3\nApril Apr 4\nMay May 5\nJune Jun 6\nJuly Jul 7\nAugust Aug 8\nSeptember Sep 9\nOctober Oct 10\nNovember Nov 11\nDecember Dec 12DocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#",
+    "page": "Delimited Files",
+    "title": "Delimited Files",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar,Type,AbstractChar}",
+    "page": "Delimited Files",
+    "title": "DelimitedFiles.readdlm",
+    "category": "method",
+    "text": "readdlm(source, delim::AbstractChar, T::Type, eol::AbstractChar; header=false, skipstart=0, skipblanks=true, use_mmap, quotes=true, dims, comments=false, comment_char=\'#\')\n\nRead a matrix from the source where each line (separated by eol) gives one row, with elements separated by the given delimiter. The source can be a text file, stream or byte array. Memory mapped files can be used by passing the byte array representation of the mapped segment as source.\n\nIf T is a numeric type, the result is an array of that type, with any non-numeric elements as NaN for floating-point types, or zero. Other useful values of T include String, AbstractString, and Any.\n\nIf header is true, the first row of data will be read as header and the tuple (data_cells, header_cells) is returned instead of only data_cells.\n\nSpecifying skipstart will ignore the corresponding number of initial lines from the input.\n\nIf skipblanks is true, blank lines in the input will be ignored.\n\nIf use_mmap is true, the file specified by source is memory mapped for potential speedups. Default is true except on Windows. On Windows, you may want to specify true if the file is large, and is only read once and not written to.\n\nIf quotes is true, columns enclosed within double-quote (\") characters are allowed to contain new lines and column delimiters. Double-quote characters within a quoted field must be escaped with another double-quote.  Specifying dims as a tuple of the expected rows and columns (including header, if any) may speed up reading of large files.  If comments is true, lines beginning with comment_char and text following comment_char in any line are ignored.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [5; 6; 7; 8];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end\n\njulia> readdlm(\"delim_file.txt\", \'\\t\', Int, \'\\n\')\n4×2 Array{Int64,2}:\n 1  5\n 2  6\n 3  7\n 4  8\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar,AbstractChar}",
+    "page": "Delimited Files",
+    "title": "DelimitedFiles.readdlm",
+    "category": "method",
+    "text": "readdlm(source, delim::AbstractChar, eol::AbstractChar; options...)\n\nIf all data is numeric, the result will be a numeric array. If some elements cannot be parsed as numbers, a heterogeneous array of numbers and strings is returned.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar,Type}",
+    "page": "Delimited Files",
+    "title": "DelimitedFiles.readdlm",
+    "category": "method",
+    "text": "readdlm(source, delim::AbstractChar, T::Type; options...)\n\nThe end of line delimiter is taken as \\n.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [1.1; 2.2; 3.3; 4.4];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y], \',\')\n       end;\n\njulia> readdlm(\"delim_file.txt\", \',\', Float64)\n4×2 Array{Float64,2}:\n 1.0  1.1\n 2.0  2.2\n 3.0  3.3\n 4.0  4.4\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar}",
+    "page": "Delimited Files",
+    "title": "DelimitedFiles.readdlm",
+    "category": "method",
+    "text": "readdlm(source, delim::AbstractChar; options...)\n\nThe end of line delimiter is taken as \\n. If all data is numeric, the result will be a numeric array. If some elements cannot be parsed as numbers, a heterogeneous array of numbers and strings is returned.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [1.1; 2.2; 3.3; 4.4];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y], \',\')\n       end;\n\njulia> readdlm(\"delim_file.txt\", \',\')\n4×2 Array{Float64,2}:\n 1.0  1.1\n 2.0  2.2\n 3.0  3.3\n 4.0  4.4\n\njulia> rm(\"delim_file.txt\")\n\njulia> z = [\"a\"; \"b\"; \"c\"; \"d\"];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x z], \',\')\n       end;\n\njulia> readdlm(\"delim_file.txt\", \',\')\n4×2 Array{Any,2}:\n 1  \"a\"\n 2  \"b\"\n 3  \"c\"\n 4  \"d\"\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,Type}",
+    "page": "Delimited Files",
+    "title": "DelimitedFiles.readdlm",
+    "category": "method",
+    "text": "readdlm(source, T::Type; options...)\n\nThe columns are assumed to be separated by one or more whitespaces. The end of line delimiter is taken as \\n.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [5; 6; 7; 8];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end;\n\njulia> readdlm(\"delim_file.txt\", Int64)\n4×2 Array{Int64,2}:\n 1  5\n 2  6\n 3  7\n 4  8\n\njulia> readdlm(\"delim_file.txt\", Float64)\n4×2 Array{Float64,2}:\n 1.0  5.0\n 2.0  6.0\n 3.0  7.0\n 4.0  8.0\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any}",
+    "page": "Delimited Files",
+    "title": "DelimitedFiles.readdlm",
+    "category": "method",
+    "text": "readdlm(source; options...)\n\nThe columns are assumed to be separated by one or more whitespaces. The end of line delimiter is taken as \\n. If all data is numeric, the result will be a numeric array. If some elements cannot be parsed as numbers, a heterogeneous array of numbers and strings is returned.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [\"a\"; \"b\"; \"c\"; \"d\"];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end;\n\njulia> readdlm(\"delim_file.txt\")\n4×2 Array{Any,2}:\n 1  \"a\"\n 2  \"b\"\n 3  \"c\"\n 4  \"d\"\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#DelimitedFiles.writedlm",
+    "page": "Delimited Files",
+    "title": "DelimitedFiles.writedlm",
+    "category": "function",
+    "text": "writedlm(f, A, delim=\'\\t\'; opts)\n\nWrite A (a vector, matrix, or an iterable collection of iterable rows) as text to f (either a filename string or an IO stream) using the given delimiter delim (which defaults to tab, but can be any printable Julia object, typically a Char or AbstractString).\n\nFor example, two vectors x and y of the same length can be written as two columns of tab-delimited text to f by either writedlm(f, [x y]) or by writedlm(f, zip(x, y)).\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [5; 6; 7; 8];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end\n\njulia> readdlm(\"delim_file.txt\", \'\\t\', Int, \'\\n\')\n4×2 Array{Int64,2}:\n 1  5\n 2  6\n 3  7\n 4  8\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/DelimitedFiles/#Delimited-Files-1",
+    "page": "Delimited Files",
+    "title": "Delimited Files",
+    "category": "section",
+    "text": "DocTestSetup = :(using DelimitedFiles)DelimitedFiles.readdlm(::Any, ::AbstractChar, ::Type, ::AbstractChar)\nDelimitedFiles.readdlm(::Any, ::AbstractChar, ::AbstractChar)\nDelimitedFiles.readdlm(::Any, ::AbstractChar, ::Type)\nDelimitedFiles.readdlm(::Any, ::AbstractChar)\nDelimitedFiles.readdlm(::Any, ::Type)\nDelimitedFiles.readdlm(::Any)\nDelimitedFiles.writedlmDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Distributed/#",
+    "page": "Distributed Computing",
+    "title": "Distributed Computing",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.addprocs",
+    "page": "Distributed Computing",
+    "title": "Distributed.addprocs",
+    "category": "function",
+    "text": "addprocs(manager::ClusterManager; kwargs...) -> List of process identifiers\n\nLaunches worker processes via the specified cluster manager.\n\nFor example, Beowulf clusters are supported via a custom cluster manager implemented in the package ClusterManagers.jl.\n\nThe number of seconds a newly launched worker waits for connection establishment from the master can be specified via variable JULIA_WORKER_TIMEOUT in the worker process\'s environment. Relevant only when using TCP/IP as transport.\n\n\n\n\n\naddprocs(machines; tunnel=false, sshflags=``, max_parallel=10, kwargs...) -> List of process identifiers\n\nAdd processes on remote machines via SSH. Requires julia to be installed in the same location on each node, or to be available via a shared file system.\n\nmachines is a vector of machine specifications. Workers are started for each specification.\n\nA machine specification is either a string machine_spec or a tuple - (machine_spec, count).\n\nmachine_spec is a string of the form [user@]host[:port] [bind_addr[:port]]. user defaults to current user, port to the standard ssh port. If [bind_addr[:port]] is specified, other workers will connect to this worker at the specified bind_addr and port.\n\ncount is the number of workers to be launched on the specified host. If specified as :auto it will launch as many workers as the number of CPU threads on the specific host.\n\nKeyword arguments:\n\ntunnel: if true then SSH tunneling will be used to connect to the worker from the master process. Default is false.\nsshflags: specifies additional ssh options, e.g. sshflags=`-i /home/foo/bar.pem`\nmax_parallel: specifies the maximum number of workers connected to in parallel at a host. Defaults to 10.\ndir: specifies the working directory on the workers. Defaults to the host\'s current directory (as found by pwd())\nenable_threaded_blas: if true then  BLAS will run on multiple threads in added processes. Default is false.\nexename: name of the julia executable. Defaults to \"$(Sys.BINDIR)/julia\" or \"$(Sys.BINDIR)/julia-debug\" as the case may be.\nexeflags: additional flags passed to the worker processes.\ntopology: Specifies how the workers connect to each other. Sending a message between unconnected workers results in an error.\ntopology=:all_to_all: All processes are connected to each other. The default.\ntopology=:master_worker: Only the driver process, i.e. pid 1 connects to the workers. The workers do not connect to each other.\ntopology=:custom: The launch method of the cluster manager specifies the connection topology via fields ident and connect_idents in WorkerConfig. A worker with a cluster manager identity ident will connect to all workers specified in connect_idents.\nlazy: Applicable only with topology=:all_to_all. If true, worker-worker connections are setup lazily, i.e. they are setup at the first instance of a remote call between workers. Default is true.\n\nEnvironment variables :\n\nIf the master process fails to establish a connection with a newly launched worker within 60.0 seconds, the worker treats it as a fatal situation and terminates. This timeout can be controlled via environment variable JULIA_WORKER_TIMEOUT. The value of JULIA_WORKER_TIMEOUT on the master process specifies the number of seconds a newly launched worker waits for connection establishment.\n\n\n\n\n\naddprocs(; kwargs...) -> List of process identifiers\n\nEquivalent to addprocs(Sys.CPU_THREADS; kwargs...)\n\nNote that workers do not run a .julia/config/startup.jl startup script, nor do they synchronize their global state (such as global variables, new method definitions, and loaded modules) with any of the other running processes.\n\n\n\n\n\naddprocs(np::Integer; restrict=true, kwargs...) -> List of process identifiers\n\nLaunches workers using the in-built LocalManager which only launches workers on the local host. This can be used to take advantage of multiple cores. addprocs(4) will add 4 processes on the local machine. If restrict is true, binding is restricted to 127.0.0.1. Keyword args dir, exename, exeflags, topology, lazy and enable_threaded_blas have the same effect as documented for addprocs(machines).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.nprocs",
+    "page": "Distributed Computing",
+    "title": "Distributed.nprocs",
+    "category": "function",
+    "text": "nprocs()\n\nGet the number of available processes.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.nworkers",
+    "page": "Distributed Computing",
+    "title": "Distributed.nworkers",
+    "category": "function",
+    "text": "nworkers()\n\nGet the number of available worker processes. This is one less than nprocs(). Equal to nprocs() if nprocs() == 1.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.procs-Tuple{}",
+    "page": "Distributed Computing",
+    "title": "Distributed.procs",
+    "category": "method",
+    "text": "procs()\n\nReturn a list of all process identifiers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.procs-Tuple{Integer}",
+    "page": "Distributed Computing",
+    "title": "Distributed.procs",
+    "category": "method",
+    "text": "procs(pid::Integer)\n\nReturn a list of all process identifiers on the same physical node. Specifically all workers bound to the same ip-address as pid are returned.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.workers",
+    "page": "Distributed Computing",
+    "title": "Distributed.workers",
+    "category": "function",
+    "text": "workers()\n\nReturn a list of all worker process identifiers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.rmprocs",
+    "page": "Distributed Computing",
+    "title": "Distributed.rmprocs",
+    "category": "function",
+    "text": "rmprocs(pids...; waitfor=typemax(Int))\n\nRemove the specified workers. Note that only process 1 can add or remove workers.\n\nArgument waitfor specifies how long to wait for the workers to shut down:     - If unspecified, rmprocs will wait until all requested pids are removed.     - An ErrorException is raised if all workers cannot be terminated before       the requested waitfor seconds.     - With a waitfor value of 0, the call returns immediately with the workers       scheduled for removal in a different task. The scheduled Task object is       returned. The user should call wait on the task before invoking any other       parallel calls.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.interrupt",
+    "page": "Distributed Computing",
+    "title": "Distributed.interrupt",
+    "category": "function",
+    "text": "interrupt(pids::Integer...)\n\nInterrupt the current executing task on the specified workers. This is equivalent to pressing Ctrl-C on the local machine. If no arguments are given, all workers are interrupted.\n\n\n\n\n\ninterrupt(pids::AbstractVector=workers())\n\nInterrupt the current executing task on the specified workers. This is equivalent to pressing Ctrl-C on the local machine. If no arguments are given, all workers are interrupted.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.myid",
+    "page": "Distributed Computing",
+    "title": "Distributed.myid",
+    "category": "function",
+    "text": "myid()\n\nGet the id of the current process.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.pmap",
+    "page": "Distributed Computing",
+    "title": "Distributed.pmap",
+    "category": "function",
+    "text": "pmap(f, [::AbstractWorkerPool], c...; distributed=true, batch_size=1, on_error=nothing, retry_delays=[], retry_check=nothing) -> collection\n\nTransform collection c by applying f to each element using available workers and tasks.\n\nFor multiple collection arguments, apply f elementwise.\n\nNote that f must be made available to all worker processes; see Code Availability and Loading Packages for details.\n\nIf a worker pool is not specified, all available workers, i.e., the default worker pool is used.\n\nBy default, pmap distributes the computation over all specified workers. To use only the local process and distribute over tasks, specify distributed=false. This is equivalent to using asyncmap. For example, pmap(f, c; distributed=false) is equivalent to asyncmap(f,c; ntasks=()->nworkers())\n\npmap can also use a mix of processes and tasks via the batch_size argument. For batch sizes greater than 1, the collection is processed in multiple batches, each of length batch_size or less. A batch is sent as a single request to a free worker, where a local asyncmap processes elements from the batch using multiple concurrent tasks.\n\nAny error stops pmap from processing the remainder of the collection. To override this behavior you can specify an error handling function via argument on_error which takes in a single argument, i.e., the exception. The function can stop the processing by rethrowing the error, or, to continue, return any value which is then returned inline with the results to the caller.\n\nConsider the following two examples. The first one returns the exception object inline, the second a 0 in place of any exception:\n\njulia> pmap(x->iseven(x) ? error(\"foo\") : x, 1:4; on_error=identity)\n4-element Array{Any,1}:\n 1\n  ErrorException(\"foo\")\n 3\n  ErrorException(\"foo\")\n\njulia> pmap(x->iseven(x) ? error(\"foo\") : x, 1:4; on_error=ex->0)\n4-element Array{Int64,1}:\n 1\n 0\n 3\n 0\n\nErrors can also be handled by retrying failed computations. Keyword arguments retry_delays and retry_check are passed through to retry as keyword arguments delays and check respectively. If batching is specified, and an entire batch fails, all items in the batch are retried.\n\nNote that if both on_error and retry_delays are specified, the on_error hook is called before retrying. If on_error does not throw (or rethrow) an exception, the element will not be retried.\n\nExample: On errors, retry f on an element a maximum of 3 times without any delay between retries.\n\npmap(f, c; retry_delays = zeros(3))\n\nExample: Retry f only if the exception is not of type InexactError, with exponentially increasing delays up to 3 times. Return a NaN in place for all InexactError occurrences.\n\npmap(f, c; on_error = e->(isa(e, InexactError) ? NaN : rethrow(e)), retry_delays = ExponentialBackOff(n = 3))\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.RemoteException",
+    "page": "Distributed Computing",
+    "title": "Distributed.RemoteException",
+    "category": "type",
+    "text": "RemoteException(captured)\n\nExceptions on remote computations are captured and rethrown locally.  A RemoteException wraps the pid of the worker and a captured exception. A CapturedException captures the remote exception and a serializable form of the call stack when the exception was raised.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.Future",
+    "page": "Distributed Computing",
+    "title": "Distributed.Future",
+    "category": "type",
+    "text": "Future(pid::Integer=myid())\n\nCreate a Future on process pid. The default pid is the current process.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.RemoteChannel",
+    "page": "Distributed Computing",
+    "title": "Distributed.RemoteChannel",
+    "category": "type",
+    "text": "RemoteChannel(pid::Integer=myid())\n\nMake a reference to a Channel{Any}(1) on process pid. The default pid is the current process.\n\nRemoteChannel(f::Function, pid::Integer=myid())\n\nCreate references to remote channels of a specific size and type. f is a function that when executed on pid must return an implementation of an AbstractChannel.\n\nFor example, RemoteChannel(()->Channel{Int}(10), pid), will return a reference to a channel of type Int and size 10 on pid.\n\nThe default pid is the current process.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.wait",
+    "page": "Distributed Computing",
+    "title": "Base.wait",
+    "category": "function",
+    "text": "wait(r::Future)\n\nWait for a value to become available for the specified future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified remote channel.\n\n\n\n\n\nwait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.fetch-Tuple{Any}",
+    "page": "Distributed Computing",
+    "title": "Base.fetch",
+    "category": "method",
+    "text": "fetch(x)\n\nWaits and fetches a value from x depending on the type of x:\n\nFuture: Wait for and get the value of a Future. The fetched value is cached locally. Further calls to fetch on the same reference return the cached value. If the remote value is an exception, throws a RemoteException which captures the remote exception and backtrace.\nRemoteChannel: Wait for and get the value of a remote reference. Exceptions raised are same as for a Future .\n\nDoes not remove the item fetched.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remotecall-Tuple{Any,Integer,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remotecall",
+    "category": "method",
+    "text": "remotecall(f, id::Integer, args...; kwargs...) -> Future\n\nCall a function f asynchronously on the given arguments on the specified process. Return a Future. Keyword arguments, if any, are passed through to f.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remotecall_wait-Tuple{Any,Integer,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remotecall_wait",
+    "category": "method",
+    "text": "remotecall_wait(f, id::Integer, args...; kwargs...)\n\nPerform a faster wait(remotecall(...)) in one message on the Worker specified by worker id id. Keyword arguments, if any, are passed through to f.\n\nSee also wait and remotecall.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remotecall_fetch-Tuple{Any,Integer,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remotecall_fetch",
+    "category": "method",
+    "text": "remotecall_fetch(f, id::Integer, args...; kwargs...)\n\nPerform fetch(remotecall(...)) in one message. Keyword arguments, if any, are passed through to f. Any remote exceptions are captured in a RemoteException and thrown.\n\nSee also fetch and remotecall.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remote_do-Tuple{Any,Integer,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remote_do",
+    "category": "method",
+    "text": "remote_do(f, id::Integer, args...; kwargs...) -> nothing\n\nExecutes f on worker id asynchronously. Unlike remotecall, it does not store the result of computation, nor is there a way to wait for its completion.\n\nA successful invocation indicates that the request has been accepted for execution on the remote node.\n\nWhile consecutive remotecalls to the same worker are serialized in the order they are invoked, the order of executions on the remote worker is undetermined. For example, remote_do(f1, 2); remotecall(f2, 2); remote_do(f3, 2) will serialize the call to f1, followed by f2 and f3 in that order. However, it is not guaranteed that f1 is executed before f3 on worker 2.\n\nAny exceptions thrown by f are printed to stderr on the remote worker.\n\nKeyword arguments, if any, are passed through to f.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.put!-Tuple{RemoteChannel,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Base.put!",
+    "category": "method",
+    "text": "put!(rr::RemoteChannel, args...)\n\nStore a set of values to the RemoteChannel. If the channel is full, blocks until space is available. Return the first argument.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.put!-Tuple{Future,Any}",
+    "page": "Distributed Computing",
+    "title": "Base.put!",
+    "category": "method",
+    "text": "put!(rr::Future, v)\n\nStore a value to a Future rr. Futures are write-once remote references. A put! on an already set Future throws an Exception. All asynchronous remote calls return Futures and set the value to the return value of the call upon completion.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.take!-Tuple{RemoteChannel,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Base.take!",
+    "category": "method",
+    "text": "take!(rr::RemoteChannel, args...)\n\nFetch value(s) from a RemoteChannel rr, removing the value(s) in the process.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.isready-Tuple{RemoteChannel,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Base.isready",
+    "category": "method",
+    "text": "isready(rr::RemoteChannel, args...)\n\nDetermine whether a RemoteChannel has a value stored to it. Note that this function can cause race conditions, since by the time you receive its result it may no longer be true. However, it can be safely used on a Future since they are assigned only once.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.isready-Tuple{Future}",
+    "page": "Distributed Computing",
+    "title": "Base.isready",
+    "category": "method",
+    "text": "isready(rr::Future)\n\nDetermine whether a Future has a value stored to it.\n\nIf the argument Future is owned by a different node, this call will block to wait for the answer. It is recommended to wait for rr in a separate task instead or to use a local Channel as a proxy:\n\nc = Channel(1)\n@async put!(c, remotecall_fetch(long_computation, p))\nisready(c)  # will not block\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.WorkerPool",
+    "page": "Distributed Computing",
+    "title": "Distributed.WorkerPool",
+    "category": "type",
+    "text": "WorkerPool(workers::Vector{Int})\n\nCreate a WorkerPool from a vector of worker ids.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.CachingPool",
+    "page": "Distributed Computing",
+    "title": "Distributed.CachingPool",
+    "category": "type",
+    "text": "CachingPool(workers::Vector{Int})\n\nAn implementation of an AbstractWorkerPool. remote, remotecall_fetch, pmap (and other remote calls which execute functions remotely) benefit from caching the serialized/deserialized functions on the worker nodes, especially closures (which may capture large amounts of data).\n\nThe remote cache is maintained for the lifetime of the returned CachingPool object. To clear the cache earlier, use clear!(pool).\n\nFor global variables, only the bindings are captured in a closure, not the data. let blocks can be used to capture global data.\n\nExamples\n\nconst foo = rand(10^8);\nwp = CachingPool(workers())\nlet foo = foo\n    pmap(wp, i -> sum(foo) + i, 1:100);\nend\n\nThe above would transfer foo only once to each worker.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.default_worker_pool",
+    "page": "Distributed Computing",
+    "title": "Distributed.default_worker_pool",
+    "category": "function",
+    "text": "default_worker_pool()\n\nWorkerPool containing idle workers - used by remote(f) and pmap (by default).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.clear!-Tuple{CachingPool}",
+    "page": "Distributed Computing",
+    "title": "Distributed.clear!",
+    "category": "method",
+    "text": "clear!(pool::CachingPool) -> pool\n\nRemoves all cached functions from all participating workers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remote",
+    "page": "Distributed Computing",
+    "title": "Distributed.remote",
+    "category": "function",
+    "text": "remote([::AbstractWorkerPool], f) -> Function\n\nReturn an anonymous function that executes function f on an available worker using remotecall_fetch.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remotecall-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remotecall",
+    "category": "method",
+    "text": "remotecall(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall on it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remotecall_wait-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remotecall_wait",
+    "category": "method",
+    "text": "remotecall_wait(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall_wait(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall_wait on it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remotecall_fetch-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remotecall_fetch",
+    "category": "method",
+    "text": "remotecall_fetch(f, pool::AbstractWorkerPool, args...; kwargs...) -> result\n\nWorkerPool variant of remotecall_fetch(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall_fetch on it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remote_do-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
+    "page": "Distributed Computing",
+    "title": "Distributed.remote_do",
+    "category": "method",
+    "text": "remote_do(f, pool::AbstractWorkerPool, args...; kwargs...) -> nothing\n\nWorkerPool variant of remote_do(f, pid, ....). Waits for and takes a free worker from pool and performs a remote_do on it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.timedwait",
+    "page": "Distributed Computing",
+    "title": "Base.timedwait",
+    "category": "function",
+    "text": "timedwait(testcb::Function, secs::Float64; pollint::Float64=0.1)\n\nWaits until testcb returns true or for secs seconds, whichever is earlier. testcb is polled every pollint seconds.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.@spawn",
+    "page": "Distributed Computing",
+    "title": "Distributed.@spawn",
+    "category": "macro",
+    "text": "@spawn\n\nCreate a closure around an expression and run it on an automatically-chosen process, returning a Future to the result.\n\nExamples\n\njulia> addprocs(3);\n\njulia> f = @spawn myid()\nFuture(2, 1, 5, nothing)\n\njulia> fetch(f)\n2\n\njulia> f = @spawn myid()\nFuture(3, 1, 7, nothing)\n\njulia> fetch(f)\n3\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.@spawnat",
+    "page": "Distributed Computing",
+    "title": "Distributed.@spawnat",
+    "category": "macro",
+    "text": "@spawnat\n\nCreate a closure around an expression and run the closure asynchronously on process p. Return a Future to the result. Accepts two arguments, p and an expression.\n\nExamples\n\njulia> addprocs(1);\n\njulia> f = @spawnat 2 myid()\nFuture(2, 1, 3, nothing)\n\njulia> fetch(f)\n2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.@fetch",
+    "page": "Distributed Computing",
+    "title": "Distributed.@fetch",
+    "category": "macro",
+    "text": "@fetch\n\nEquivalent to fetch(@spawn expr). See fetch and @spawn.\n\nExamples\n\njulia> addprocs(3);\n\njulia> @fetch myid()\n2\n\njulia> @fetch myid()\n3\n\njulia> @fetch myid()\n4\n\njulia> @fetch myid()\n2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.@fetchfrom",
+    "page": "Distributed Computing",
+    "title": "Distributed.@fetchfrom",
+    "category": "macro",
+    "text": "@fetchfrom\n\nEquivalent to fetch(@spawnat p expr). See fetch and @spawnat.\n\nExamples\n\njulia> addprocs(3);\n\njulia> @fetchfrom 2 myid()\n2\n\njulia> @fetchfrom 4 myid()\n4\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.@async",
+    "page": "Distributed Computing",
+    "title": "Base.@async",
+    "category": "macro",
+    "text": "@async\n\nWrap an expression in a Task and add it to the local machine\'s scheduler queue.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.@sync",
+    "page": "Distributed Computing",
+    "title": "Base.@sync",
+    "category": "macro",
+    "text": "@sync\n\nWait until all lexically-enclosed uses of @async, @spawn, @spawnat and @distributed are complete. All exceptions thrown by enclosed async operations are collected and thrown as a CompositeException.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.@distributed",
+    "page": "Distributed Computing",
+    "title": "Distributed.@distributed",
+    "category": "macro",
+    "text": "@distributed\n\nA distributed memory, parallel for loop of the form :\n\n@distributed [reducer] for var = range\n    body\nend\n\nThe specified range is partitioned and locally executed across all workers. In case an optional reducer function is specified, @distributed performs local reductions on each worker with a final reduction on the calling process.\n\nNote that without a reducer function, @distributed executes asynchronously, i.e. it spawns independent tasks on all available workers and returns immediately without waiting for completion. To wait for completion, prefix the call with @sync, like :\n\n@sync @distributed for var = range\n    body\nend\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.@everywhere",
+    "page": "Distributed Computing",
+    "title": "Distributed.@everywhere",
+    "category": "macro",
+    "text": "@everywhere [procs()] expr\n\nExecute an expression under Main on all procs. Errors on any of the processes are collected into a CompositeException and thrown. For example:\n\n@everywhere bar = 1\n\nwill define Main.bar on all processes.\n\nUnlike @spawn and @spawnat, @everywhere does not capture any local variables. Instead, local variables can be broadcast using interpolation:\n\nfoo = 1\n@everywhere bar = $foo\n\nThe optional argument procs allows specifying a subset of all processes to have execute the expression.\n\nEquivalent to calling remotecall_eval(Main, procs, expr).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.clear!-Tuple{Any,Any}",
+    "page": "Distributed Computing",
+    "title": "Distributed.clear!",
+    "category": "method",
+    "text": "clear!(syms, pids=workers(); mod=Main)\n\nClears global bindings in modules by initializing them to nothing. syms should be of type Symbol or a collection of Symbols . pids and mod identify the processes and the module in which global variables are to be reinitialized. Only those names found to be defined under mod are cleared.\n\nAn exception is raised if a global constant is requested to be cleared.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.remoteref_id",
+    "page": "Distributed Computing",
+    "title": "Distributed.remoteref_id",
+    "category": "function",
+    "text": "remoteref_id(r::AbstractRemoteRef) -> RRID\n\nFutures and RemoteChannels are identified by fields:\n\nwhere - refers to the node where the underlying object/storage referred to by the reference actually exists.\nwhence - refers to the node the remote reference was created from. Note that this is different from the node where the underlying object referred to actually exists. For example calling RemoteChannel(2) from the master process would result in a where value of 2 and a whence value of 1.\nid is unique across all references created from the worker specified by whence.\n\nTaken together,  whence and id uniquely identify a reference across all workers.\n\nremoteref_id is a low-level API which returns a RRID object that wraps whence and id values of a remote reference.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.channel_from_id",
+    "page": "Distributed Computing",
+    "title": "Distributed.channel_from_id",
+    "category": "function",
+    "text": "channel_from_id(id) -> c\n\nA low-level API which returns the backing AbstractChannel for an id returned by remoteref_id. The call is valid only on the node where the backing channel exists.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.worker_id_from_socket",
+    "page": "Distributed Computing",
+    "title": "Distributed.worker_id_from_socket",
+    "category": "function",
+    "text": "worker_id_from_socket(s) -> pid\n\nA low-level API which, given a IO connection or a Worker, returns the pid of the worker it is connected to. This is useful when writing custom serialize methods for a type, which optimizes the data written out depending on the receiving process id.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.cluster_cookie-Tuple{}",
+    "page": "Distributed Computing",
+    "title": "Distributed.cluster_cookie",
+    "category": "method",
+    "text": "cluster_cookie() -> cookie\n\nReturn the cluster cookie.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.cluster_cookie-Tuple{Any}",
+    "page": "Distributed Computing",
+    "title": "Distributed.cluster_cookie",
+    "category": "method",
+    "text": "cluster_cookie(cookie) -> cookie\n\nSet the passed cookie as the cluster cookie, then returns it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed-Computing-1",
+    "page": "Distributed Computing",
+    "title": "Distributed Computing",
+    "category": "section",
+    "text": "DocTestSetup = :(using Distributed)Distributed.addprocs\nDistributed.nprocs\nDistributed.nworkers\nDistributed.procs()\nDistributed.procs(::Integer)\nDistributed.workers\nDistributed.rmprocs\nDistributed.interrupt\nDistributed.myid\nDistributed.pmap\nDistributed.RemoteException\nDistributed.Future\nDistributed.RemoteChannel\nDistributed.wait\nDistributed.fetch(::Any)\nDistributed.remotecall(::Any, ::Integer, ::Any...)\nDistributed.remotecall_wait(::Any, ::Integer, ::Any...)\nDistributed.remotecall_fetch(::Any, ::Integer, ::Any...)\nDistributed.remote_do(::Any, ::Integer, ::Any...)\nDistributed.put!(::RemoteChannel, ::Any...)\nDistributed.put!(::Future, ::Any)\nDistributed.take!(::RemoteChannel, ::Any...)\nDistributed.isready(::RemoteChannel, ::Any...)\nDistributed.isready(::Future)\nDistributed.WorkerPool\nDistributed.CachingPool\nDistributed.default_worker_pool\nDistributed.clear!(::CachingPool)\nDistributed.remote\nDistributed.remotecall(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.remotecall_wait(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.remotecall_fetch(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.remote_do(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.timedwait\nDistributed.@spawn\nDistributed.@spawnat\nDistributed.@fetch\nDistributed.@fetchfrom\nDistributed.@async\nDistributed.@sync\nDistributed.@distributed\nDistributed.@everywhere\nDistributed.clear!(::Any, ::Any; ::Any)\nDistributed.remoteref_id\nDistributed.channel_from_id\nDistributed.worker_id_from_socket\nDistributed.cluster_cookie()\nDistributed.cluster_cookie(::Any)"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.launch",
+    "page": "Distributed Computing",
+    "title": "Distributed.launch",
+    "category": "function",
+    "text": "launch(manager::ClusterManager, params::Dict, launched::Array, launch_ntfy::Condition)\n\nImplemented by cluster managers. For every Julia worker launched by this function, it should append a WorkerConfig entry to launched and notify launch_ntfy. The function MUST exit once all workers, requested by manager have been launched. params is a dictionary of all keyword arguments addprocs was called with.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.manage",
+    "page": "Distributed Computing",
+    "title": "Distributed.manage",
+    "category": "function",
+    "text": "manage(manager::ClusterManager, id::Integer, config::WorkerConfig. op::Symbol)\n\nImplemented by cluster managers. It is called on the master process, during a worker\'s lifetime, with appropriate op values:\n\nwith :register/:deregister when a worker is added / removed from the Julia worker pool.\nwith :interrupt when interrupt(workers) is called. The ClusterManager should signal the appropriate worker with an interrupt signal.\nwith :finalize for cleanup purposes.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Base.kill-Tuple{ClusterManager,Int64,WorkerConfig}",
+    "page": "Distributed Computing",
+    "title": "Base.kill",
+    "category": "method",
+    "text": "kill(manager::ClusterManager, pid::Int, config::WorkerConfig)\n\nImplemented by cluster managers. It is called on the master process, by rmprocs. It should cause the remote worker specified by pid to exit. kill(manager::ClusterManager.....) executes a remote exit() on pid.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Sockets.connect-Tuple{ClusterManager,Int64,WorkerConfig}",
+    "page": "Distributed Computing",
+    "title": "Sockets.connect",
+    "category": "method",
+    "text": "connect(manager::ClusterManager, pid::Int, config::WorkerConfig) -> (instrm::IO, outstrm::IO)\n\nImplemented by cluster managers using custom transports. It should establish a logical connection to worker with id pid, specified by config and return a pair of IO objects. Messages from pid to current process will be read off instrm, while messages to be sent to pid will be written to outstrm. The custom transport implementation must ensure that messages are delivered and received completely and in order. connect(manager::ClusterManager.....) sets up TCP/IP socket connections in-between workers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.init_worker",
+    "page": "Distributed Computing",
+    "title": "Distributed.init_worker",
+    "category": "function",
+    "text": "init_worker(cookie::AbstractString, manager::ClusterManager=DefaultClusterManager())\n\nCalled by cluster managers implementing custom transports. It initializes a newly launched process as a worker. Command line argument --worker[=<cookie>] has the effect of initializing a process as a worker using TCP/IP sockets for transport. cookie is a cluster_cookie.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.start_worker",
+    "page": "Distributed Computing",
+    "title": "Distributed.start_worker",
+    "category": "function",
+    "text": "start_worker([out::IO=stdout], cookie::AbstractString=readline(stdin))\n\nstart_worker is an internal function which is the default entry point for worker processes connecting via TCP/IP. It sets up the process as a Julia cluster worker.\n\nhost:port information is written to stream out (defaults to stdout).\n\nThe function closes stdin (after reading the cookie if required), redirects stderr to stdout, listens on a free port (or if specified, the port in the --bind-to command line option) and schedules tasks to process incoming TCP connections and requests.\n\nIt does not return.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Distributed.process_messages",
+    "page": "Distributed Computing",
+    "title": "Distributed.process_messages",
+    "category": "function",
+    "text": "process_messages(r_stream::IO, w_stream::IO, incoming::Bool=true)\n\nCalled by cluster managers using custom transports. It should be called when the custom transport implementation receives the first message from a remote worker. The custom transport must manage a logical connection to the remote worker and provide two IO objects, one for incoming messages and the other for messages addressed to the remote worker. If incoming is true, the remote peer initiated the connection. Whichever of the pair initiates the connection sends the cluster cookie and its Julia version number to perform the authentication handshake.\n\nSee also cluster_cookie.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Distributed/#Cluster-Manager-Interface-1",
+    "page": "Distributed Computing",
+    "title": "Cluster Manager Interface",
+    "category": "section",
+    "text": "This interface provides a mechanism to launch and manage Julia workers on different cluster environments. There are two types of managers present in Base: LocalManager, for launching additional workers on the same host, and SSHManager, for launching on remote hosts via ssh. TCP/IP sockets are used to connect and transport messages between processes. It is possible for Cluster Managers to provide a different transport.Distributed.launch\nDistributed.manage\nDistributed.kill(::ClusterManager, ::Int, ::WorkerConfig)\nDistributed.connect(::ClusterManager, ::Int, ::WorkerConfig)\nDistributed.init_worker\nDistributed.start_worker\nDistributed.process_messagesDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/FileWatching/#",
+    "page": "File Events",
+    "title": "File Events",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/FileWatching/#FileWatching.poll_fd",
+    "page": "File Events",
+    "title": "FileWatching.poll_fd",
+    "category": "function",
+    "text": "poll_fd(fd, timeout_s::Real=-1; readable=false, writable=false)\n\nMonitor a file descriptor fd for changes in the read or write availability, and with a timeout given by timeout_s seconds.\n\nThe keyword arguments determine which of read and/or write status should be monitored; at least one of them must be set to true.\n\nThe returned value is an object with boolean fields readable, writable, and timedout, giving the result of the polling.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/FileWatching/#FileWatching.poll_file",
+    "page": "File Events",
+    "title": "FileWatching.poll_file",
+    "category": "function",
+    "text": "poll_file(path::AbstractString, interval_s::Real=5.007, timeout_s::Real=-1) -> (previous::StatStruct, current)\n\nMonitor a file for changes by polling every interval_s seconds until a change occurs or timeout_s seconds have elapsed. The interval_s should be a long period; the default is 5.007 seconds.\n\nReturns a pair of status objects (previous, current) when a change is detected. The previous status is always a StatStruct, but it may have all of the fields zeroed (indicating the file didn\'t previously exist, or wasn\'t previously accessible).\n\nThe current status object may be a StatStruct, an EOFError (indicating the timeout elapsed), or some other Exception subtype (if the stat operation failed - for example, if the path does not exist).\n\nTo determine when a file was modified, compare current isa StatStruct && mtime(prev) != mtime(current) to detect notification of changes. However, using watch_file for this operation is preferred, since it is more reliable and efficient, although in some situations it may not be available.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/FileWatching/#FileWatching.watch_file",
+    "page": "File Events",
+    "title": "FileWatching.watch_file",
+    "category": "function",
+    "text": "watch_file(path::AbstractString, timeout_s::Real=-1)\n\nWatch file or directory path for changes until a change occurs or timeout_s seconds have elapsed.\n\nThe returned value is an object with boolean fields changed, renamed, and timedout, giving the result of watching the file.\n\nThis behavior of this function varies slightly across platforms. See https://nodejs.org/api/fs.html#fs_caveats for more detailed information.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/FileWatching/#FileWatching.watch_folder",
+    "page": "File Events",
+    "title": "FileWatching.watch_folder",
+    "category": "function",
+    "text": "watch_folder(path::AbstractString, timeout_s::Real=-1)\n\nWatches a file or directory path for changes until a change has occurred or timeout_s seconds have elapsed.\n\nThis will continuing tracking changes for path in the background until unwatch_folder is called on the same path.\n\nThe returned value is an pair where the first field is the name of the changed file (if available) and the second field is an object with boolean fields changed, renamed, and timedout, giving the event.\n\nThis behavior of this function varies slightly across platforms. See https://nodejs.org/api/fs.html#fs_caveats for more detailed information.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/FileWatching/#FileWatching.unwatch_folder",
+    "page": "File Events",
+    "title": "FileWatching.unwatch_folder",
+    "category": "function",
+    "text": "unwatch_folder(path::AbstractString)\n\nStop background tracking of changes for path. It is not recommended to do this while another task is waiting for watch_folder to return on the same path, as the result may be unpredictable.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/FileWatching/#lib-filewatching-1",
+    "page": "File Events",
+    "title": "File Events",
+    "category": "section",
+    "text": "FileWatching.poll_fd\nFileWatching.poll_file\nFileWatching.watch_file\nFileWatching.watch_folder\nFileWatching.unwatch_folder"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#",
+    "page": "Interactive Utilities",
+    "title": "Interactive Utilities",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#Base.Docs.apropos",
+    "page": "Interactive Utilities",
+    "title": "Base.Docs.apropos",
+    "category": "function",
+    "text": "apropos(string)\n\nSearch through all documentation for a string, ignoring case.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.varinfo",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.varinfo",
+    "category": "function",
+    "text": "varinfo(m::Module=Main, pattern::Regex=r\"\")\n\nReturn a markdown table giving information about exported global variables in a module, optionally restricted to those matching pattern.\n\nThe memory consumption estimate is an approximate lower bound on the size of the internal structure of the object.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.versioninfo",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.versioninfo",
+    "category": "function",
+    "text": "versioninfo(io::IO=stdout; verbose::Bool=false)\n\nPrint information about the version of Julia in use. The output is controlled with boolean keyword arguments:\n\nverbose: print all additional information\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.methodswith",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.methodswith",
+    "category": "function",
+    "text": "methodswith(typ[, module or function]; supertypes::Bool=false])\n\nReturn an array of methods with an argument of type typ.\n\nThe optional second argument restricts the search to a particular module or function (the default is all top-level modules).\n\nIf keyword supertypes is true, also return arguments with a parent type of typ, excluding type Any.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.subtypes",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.subtypes",
+    "category": "function",
+    "text": "subtypes(T::DataType)\n\nReturn a list of immediate subtypes of DataType T. Note that all currently loaded subtypes are included, including those not visible in the current module.\n\nExamples\n\njulia> subtypes(Integer)\n3-element Array{Any,1}:\n Bool\n Signed\n Unsigned\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.edit-Tuple{AbstractString,Integer}",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.edit",
+    "category": "method",
+    "text": "edit(path::AbstractString, line::Integer=0)\n\nEdit a file or directory optionally providing a line number to edit the file at. Return to the julia prompt when you quit the editor. The editor can be changed by setting JULIA_EDITOR, VISUAL or EDITOR as an environment variable.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.edit-Tuple{Any}",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.edit",
+    "category": "method",
+    "text": "edit(function, [types])\n\nEdit the definition of a function, optionally specifying a tuple of types to indicate which method to edit. The editor can be changed by setting JULIA_EDITOR, VISUAL or EDITOR as an environment variable.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@edit",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@edit",
+    "category": "macro",
+    "text": "@edit\n\nEvaluates the arguments to the function or macro call, determines their types, and calls the edit function on the resulting expression.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.less-Tuple{AbstractString}",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.less",
+    "category": "method",
+    "text": "less(file::AbstractString, [line::Integer])\n\nShow a file using the default pager, optionally providing a starting line number. Returns to the julia prompt when you quit the pager.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.less-Tuple{Any}",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.less",
+    "category": "method",
+    "text": "less(function, [types])\n\nShow the definition of a function using the default pager, optionally specifying a tuple of types to indicate which method to see.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@less",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@less",
+    "category": "macro",
+    "text": "@less\n\nEvaluates the arguments to the function or macro call, determines their types, and calls the less function on the resulting expression.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@which",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@which",
+    "category": "macro",
+    "text": "@which\n\nApplied to a function or macro call, it evaluates the arguments to the specified call, and returns the Method object for the method that would be called for those arguments. Applied to a variable, it returns the module in which the variable was bound. It calls out to the which function.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@functionloc",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@functionloc",
+    "category": "macro",
+    "text": "@functionloc\n\nApplied to a function or macro call, it evaluates the arguments to the specified call, and returns a tuple (filename,line) giving the location for the method that would be called for those arguments. It calls out to the functionloc function.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_lowered",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@code_lowered",
+    "category": "macro",
+    "text": "@code_lowered\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_lowered on the resulting expression.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_typed",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@code_typed",
+    "category": "macro",
+    "text": "@code_typed\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_typed on the resulting expression. Use the optional argument optimize with\n\n@code_typed optimize=true foo(x)\n\nto control whether additional optimizations, such as inlining, are also applied.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.code_warntype",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.code_warntype",
+    "category": "function",
+    "text": "code_warntype([io::IO], f, types; verbose_linetable=false)\n\nPrints lowered and type-inferred ASTs for the methods matching the given generic function and type signature to io which defaults to stdout. The ASTs are annotated in such a way as to cause \"non-leaf\" types to be emphasized (if color is available, displayed in red). This serves as a warning of potential type instability. Not all non-leaf types are particularly problematic for performance, so the results need to be used judiciously. In particular, unions containing either missing or nothing are displayed in yellow, since these are often intentional. If the verbose_linetable keyword is set, the linetable will be printed in verbose mode, showing all available information (rather than applying the usual heuristics). See @code_warntype for more information.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_warntype",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@code_warntype",
+    "category": "macro",
+    "text": "@code_warntype\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_warntype on the resulting expression.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.code_llvm",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.code_llvm",
+    "category": "function",
+    "text": "code_llvm([io=stdout,], f, types)\n\nPrints the LLVM bitcodes generated for running the method matching the given generic function and type signature to io.\n\nIf the optimize keyword is unset, the code will be shown before LLVM optimizations. All metadata and dbg.* calls are removed from the printed bitcode. Set the raw keyword for the full IR. To dump the entire module that encapsulates the function, with debug info and metadata, set the dump_module keyword.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_llvm",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@code_llvm",
+    "category": "macro",
+    "text": "@code_llvm\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_llvm on the resulting expression. Set the optional keyword arguments raw, dump_module and optimize by putting them and their value before the function call, like this:\n\n@code_llvm raw=true dump_module=true f(x)\n@code_llvm optimize=false f(x)\n\noptimize controls whether additional optimizations, such as inlining, are also applied. raw makes all metadata and dbg.* calls visible. dump_module prints the entire module that encapsulates the function, with debug info and metadata.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.code_native",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.code_native",
+    "category": "function",
+    "text": "code_native([io=stdout,], f, types; syntax = :att)\n\nPrints the native assembly instructions generated for running the method matching the given generic function and type signature to io. Switch assembly syntax using syntax symbol parameter set to :att for AT&T syntax or :intel for Intel syntax.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_native",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.@code_native",
+    "category": "macro",
+    "text": "@code_native\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_native on the resulting expression.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#InteractiveUtils.clipboard",
+    "page": "Interactive Utilities",
+    "title": "InteractiveUtils.clipboard",
+    "category": "function",
+    "text": "clipboard(x)\n\nSend a printed form of x to the operating system clipboard (\"copy\").\n\n\n\n\n\nclipboard() -> AbstractString\n\nReturn a string with the contents of the operating system clipboard (\"paste\").\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/InteractiveUtils/#Interactive-Utilities-1",
+    "page": "Interactive Utilities",
+    "title": "Interactive Utilities",
+    "category": "section",
+    "text": "DocTestSetup = :(using InteractiveUtils)InteractiveUtils.apropos\nInteractiveUtils.varinfo\nInteractiveUtils.versioninfo\nInteractiveUtils.methodswith\nInteractiveUtils.subtypes\nInteractiveUtils.edit(::AbstractString, ::Integer)\nInteractiveUtils.edit(::Any)\nInteractiveUtils.@edit\nInteractiveUtils.less(::AbstractString)\nInteractiveUtils.less(::Any)\nInteractiveUtils.@less\nInteractiveUtils.@which\nInteractiveUtils.@functionloc\nInteractiveUtils.@code_lowered\nInteractiveUtils.@code_typed\nInteractiveUtils.code_warntype\nInteractiveUtils.@code_warntype\nInteractiveUtils.code_llvm\nInteractiveUtils.@code_llvm\nInteractiveUtils.code_native\nInteractiveUtils.@code_native\nInteractiveUtils.clipboardDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/LibGit2/#",
+    "page": "LibGit2",
+    "title": "LibGit2",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2-1",
+    "page": "LibGit2",
+    "title": "LibGit2",
+    "category": "section",
+    "text": "DocTestSetup = :(using LibGit2)The LibGit2 module provides bindings to libgit2, a portable C library that implements core functionality for the Git version control system. These bindings are currently used to power Julia\'s package manager. It is expected that this module will eventually be moved into a separate package."
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.Buffer",
+    "page": "LibGit2",
+    "title": "LibGit2.Buffer",
+    "category": "type",
+    "text": "LibGit2.Buffer\n\nA data buffer for exporting data from libgit2. Matches the git_buf struct.\n\nWhen fetching data from LibGit2, a typical usage would look like:\n\nbuf_ref = Ref(Buffer())\n@check ccall(..., (Ptr{Buffer},), buf_ref)\n# operation on buf_ref\nfree(buf_ref)\n\nIn particular, note that LibGit2.free should be called afterward on the Ref object.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.CheckoutOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.CheckoutOptions",
+    "category": "type",
+    "text": "LibGit2.CheckoutOptions\n\nMatches the git_checkout_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\ncheckout_strategy: determine how to handle conflicts and whether to force the  checkout/recreate missing files.\ndisable_filters: if nonzero, do not apply filters like CLRF (to convert file newlines between UNIX and DOS).\ndir_mode: read/write/access mode for any directories involved in the checkout. Default is 0755.\nfile_mode: read/write/access mode for any files involved in the checkout.  Default is 0755 or 0644, depending on the blob.\nfile_open_flags: bitflags used to open any files during the checkout.\nnotify_flags: Flags for what sort of conflicts the user should be notified about.\nnotify_cb: An optional callback function to notify the user if a checkout conflict occurs.  If this function returns a non-zero value, the checkout will be cancelled.\nnotify_payload: Payload for the notify callback function.\nprogress_cb: An optional callback function to display checkout progress.\nprogress_payload: Payload for the progress callback.\npaths: If not empty, describes which paths to search during the checkout.  If empty, the checkout will occur over all files in the repository.\nbaseline: Expected content of the workdir, captured in a (pointer to a)  GitTree. Defaults to the state of the tree at HEAD.\nbaseline_index: Expected content of the workdir, captured in a (pointer to a)  GitIndex. Defaults to the state of the index at HEAD.\ntarget_directory: If not empty, checkout to this directory instead of the workdir.\nancestor_label: In case of conflicts, the name of the common ancestor side.\nour_label: In case of conflicts, the name of \"our\" side.\ntheir_label: In case of conflicts, the name of \"their\" side.\nperfdata_cb: An optional callback function to display performance data.\nperfdata_payload: Payload for the performance callback.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.CloneOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.CloneOptions",
+    "category": "type",
+    "text": "LibGit2.CloneOptions\n\nMatches the git_clone_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\ncheckout_opts: The options for performing the checkout of the remote as part of the clone.\nfetch_opts: The options for performing the pre-checkout fetch of the remote as part of the clone.\nbare: If 0, clone the full remote repository. If non-zero, perform a bare clone, in which  there is no local copy of the source files in the repository and the gitdir and workdir  are the same.\nlocalclone: Flag whether to clone a local object database or do a fetch. The default is to let git decide.  It will not use the git-aware transport for a local clone, but will use it for URLs which begin with file://.\ncheckout_branch: The name of the branch to checkout. If an empty string, the default branch of the  remote will be checked out.\nrepository_cb: An optional callback which will be used to create the new repository into which  the clone is made.\nrepository_cb_payload: The payload for the repository callback.\nremote_cb: An optional callback used to create the GitRemote before making the clone from it.\nremote_cb_payload: The payload for the remote callback.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.DescribeOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.DescribeOptions",
+    "category": "type",
+    "text": "LibGit2.DescribeOptions\n\nMatches the git_describe_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nmax_candidates_tags: consider this many most recent tags in refs/tags to describe a commit.  Defaults to 10 (so that the 10 most recent tags would be examined to see if they describe a commit).\ndescribe_strategy: whether to consider all entries in refs/tags (equivalent to git-describe --tags)  or all entries in refs/ (equivalent to git-describe --all). The default is to only show annotated tags.  If Consts.DESCRIBE_TAGS is passed, all tags, annotated or not, will be considered.  If Consts.DESCRIBE_ALL is passed, any ref in refs/ will be considered.\npattern: only consider tags which match pattern. Supports glob expansion.\nonly_follow_first_parent: when finding the distance from a matching reference to the described  object, only consider the distance from the first parent.\nshow_commit_oid_as_fallback: if no matching reference can be found which describes a commit, show the  commit\'s GitHash instead of throwing an error (the default behavior).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.DescribeFormatOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.DescribeFormatOptions",
+    "category": "type",
+    "text": "LibGit2.DescribeFormatOptions\n\nMatches the git_describe_format_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nabbreviated_size: lower bound on the size of the abbreviated GitHash to use, defaulting to 7.\nalways_use_long_format: set to 1 to use the long format for strings even if a short format can be used.\ndirty_suffix: if set, this will be appended to the end of the description string if the workdir is dirty.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.DiffDelta",
+    "page": "LibGit2",
+    "title": "LibGit2.DiffDelta",
+    "category": "type",
+    "text": "LibGit2.DiffDelta\n\nDescription of changes to one entry. Matches the git_diff_delta struct.\n\nThe fields represent:\n\nstatus: One of Consts.DELTA_STATUS, indicating whether the file has been added/modified/deleted.\nflags: Flags for the delta and the objects on each side. Determines whether to treat the file(s)  as binary/text, whether they exist on each side of the diff, and whether the object ids are known  to be correct.\nsimilarity: Used to indicate if a file has been renamed or copied.\nnfiles: The number of files in the delta (for instance, if the delta  was run on a submodule commit id, it may contain more than one file).\nold_file: A DiffFile containing information about the file(s) before the changes.\nnew_file: A DiffFile containing information about the file(s) after the changes.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.DiffFile",
+    "page": "LibGit2",
+    "title": "LibGit2.DiffFile",
+    "category": "type",
+    "text": "LibGit2.DiffFile\n\nDescription of one side of a delta. Matches the git_diff_file struct.\n\nThe fields represent:\n\nid: the GitHash of the item in the diff. If the item is empty on this  side of the diff (for instance, if the diff is of the removal of a file), this will  be GitHash(0).\npath: a NULL terminated path to the item relative to the working directory of the repository.\nsize: the size of the item in bytes.\nflags: a combination of the git_diff_flag_t  flags. The ith bit of this integer sets the ith flag.\nmode: the stat mode for the item.\nid_abbrev: only present in LibGit2 versions newer than or equal to 0.25.0.  The length of the id field when converted using string. Usually equal to OID_HEXSZ (40).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.DiffOptionsStruct",
+    "page": "LibGit2",
+    "title": "LibGit2.DiffOptionsStruct",
+    "category": "type",
+    "text": "LibGit2.DiffOptionsStruct\n\nMatches the git_diff_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nflags: flags controlling which files will appear in the diff. Defaults to DIFF_NORMAL.\nignore_submodules: whether to look at files in submodules or not. Defaults to SUBMODULE_IGNORE_UNSPECIFIED, which means the submodule\'s configuration will control  whether it appears in the diff or not.\npathspec: path to files to include in the diff. Default is to use all files in the repository.\nnotify_cb: optional callback which will notify the user of changes to the diff as file deltas are  added to it.\nprogress_cb: optional callback which will display diff progress. Only relevant on libgit2 versions  at least as new as 0.24.0.\npayload: the payload to pass to notify_cb and progress_cb.\ncontext_lines: the number of unchanged lines used to define the edges of a hunk.  This is also the number of lines which will be shown before/after a hunk to provide  context. Default is 3.\ninterhunk_lines: the maximum number of unchanged lines between two separate  hunks allowed before the hunks will be combined. Default is 0.\nid_abbrev: sets the length of the abbreviated GitHash to print.  Default is 7.\nmax_size: the maximum file size of a blob. Above this size, it will be treated  as a binary blob. The default is 512 MB.\nold_prefix: the virtual file directory in which to place old files on one side  of the diff. Default is \"a\".\nnew_prefix: the virtual file directory in which to place new files on one side  of the diff. Default is \"b\".\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.FetchHead",
+    "page": "LibGit2",
+    "title": "LibGit2.FetchHead",
+    "category": "type",
+    "text": "LibGit2.FetchHead\n\nContains the information about HEAD during a fetch, including the name and URL of the branch fetched from, the oid of the HEAD, and whether the fetched HEAD has been merged locally.\n\nThe fields represent:\n\nname: The name in the local reference database of the fetch head, for example,  \"refs/heads/master\".\nurl: The URL of the fetch head.\noid: The GitHash of the tip of the fetch head.\nismerge: Boolean flag indicating whether the changes at the  remote have been merged into the local copy yet or not. If true, the local  copy is up to date with the remote fetch head.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.FetchOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.FetchOptions",
+    "category": "type",
+    "text": "LibGit2.FetchOptions\n\nMatches the git_fetch_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\ncallbacks: remote callbacks to use during the fetch.\nprune: whether to perform a prune after the fetch or not. The default is to  use the setting from the GitConfig.\nupdate_fetchhead: whether to update the FetchHead after the fetch.  The default is to perform the update, which is the normal git behavior.\ndownload_tags: whether to download tags present at the remote or not. The default  is to request the tags for objects which are being downloaded anyway from the server.\nproxy_opts: options for connecting to the remote through a proxy. See ProxyOptions.  Only present on libgit2 versions newer than or equal to 0.25.0.\ncustom_headers: any extra headers needed for the fetch. Only present on libgit2 versions  newer than or equal to 0.24.0.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitAnnotated",
+    "page": "LibGit2",
+    "title": "LibGit2.GitAnnotated",
+    "category": "type",
+    "text": "GitAnnotated(repo::GitRepo, commit_id::GitHash)\nGitAnnotated(repo::GitRepo, ref::GitReference)\nGitAnnotated(repo::GitRepo, fh::FetchHead)\nGitAnnotated(repo::GitRepo, comittish::AbstractString)\n\nAn annotated git commit carries with it information about how it was looked up and why, so that rebase or merge operations have more information about the context of the commit. Conflict files contain information about the source/target branches in the merge which are conflicting, for instance. An annotated commit can refer to the tip of a remote branch, for instance when a FetchHead is passed, or to a branch head described using GitReference.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitBlame",
+    "page": "LibGit2",
+    "title": "LibGit2.GitBlame",
+    "category": "type",
+    "text": "GitBlame(repo::GitRepo, path::AbstractString; options::BlameOptions=BlameOptions())\n\nConstruct a GitBlame object for the file at path, using change information gleaned from the history of repo. The GitBlame object records who changed which chunks of the file when, and how. options controls how to separate the contents of the file and which commits to probe - see BlameOptions for more information.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitBlob",
+    "page": "LibGit2",
+    "title": "LibGit2.GitBlob",
+    "category": "type",
+    "text": "GitBlob(repo::GitRepo, hash::AbstractGitHash)\nGitBlob(repo::GitRepo, spec::AbstractString)\n\nReturn a GitBlob object from repo specified by hash/spec.\n\nhash is a full (GitHash) or partial (GitShortHash) hash.\nspec is a textual specification: see the git docs for a full list.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitCommit",
+    "page": "LibGit2",
+    "title": "LibGit2.GitCommit",
+    "category": "type",
+    "text": "GitCommit(repo::GitRepo, hash::AbstractGitHash)\nGitCommit(repo::GitRepo, spec::AbstractString)\n\nReturn a GitCommit object from repo specified by hash/spec.\n\nhash is a full (GitHash) or partial (GitShortHash) hash.\nspec is a textual specification: see the git docs for a full list.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitHash",
+    "page": "LibGit2",
+    "title": "LibGit2.GitHash",
+    "category": "type",
+    "text": "GitHash\n\nA git object identifier, based on the sha-1 hash. It is a 20 byte string (40 hex digits) used to identify a GitObject in a repository.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitObject",
+    "page": "LibGit2",
+    "title": "LibGit2.GitObject",
+    "category": "type",
+    "text": "GitObject(repo::GitRepo, hash::AbstractGitHash)\nGitObject(repo::GitRepo, spec::AbstractString)\n\nReturn the specified object (GitCommit, GitBlob, GitTree or GitTag) from repo specified by hash/spec.\n\nhash is a full (GitHash) or partial (GitShortHash) hash.\nspec is a textual specification: see the git docs for a full list.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitRemote",
+    "page": "LibGit2",
+    "title": "LibGit2.GitRemote",
+    "category": "type",
+    "text": "GitRemote(repo::GitRepo, rmt_name::AbstractString, rmt_url::AbstractString) -> GitRemote\n\nLook up a remote git repository using its name and URL. Uses the default fetch refspec.\n\nExamples\n\nrepo = LibGit2.init(repo_path)\nremote = LibGit2.GitRemote(repo, \"upstream\", repo_url)\n\n\n\n\n\nGitRemote(repo::GitRepo, rmt_name::AbstractString, rmt_url::AbstractString, fetch_spec::AbstractString) -> GitRemote\n\nLook up a remote git repository using the repository\'s name and URL, as well as specifications for how to fetch from the remote (e.g. which remote branch to fetch from).\n\nExamples\n\nrepo = LibGit2.init(repo_path)\nrefspec = \"+refs/heads/mybranch:refs/remotes/origin/mybranch\"\nremote = LibGit2.GitRemote(repo, \"upstream\", repo_url, refspec)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitRemoteAnon",
+    "page": "LibGit2",
+    "title": "LibGit2.GitRemoteAnon",
+    "category": "function",
+    "text": "GitRemoteAnon(repo::GitRepo, url::AbstractString) -> GitRemote\n\nLook up a remote git repository using only its URL, not its name.\n\nExamples\n\nrepo = LibGit2.init(repo_path)\nremote = LibGit2.GitRemoteAnon(repo, repo_url)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitRepo",
+    "page": "LibGit2",
+    "title": "LibGit2.GitRepo",
+    "category": "type",
+    "text": "LibGit2.GitRepo(path::AbstractString)\n\nOpen a git repository at path.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitRepoExt",
+    "page": "LibGit2",
+    "title": "LibGit2.GitRepoExt",
+    "category": "function",
+    "text": "LibGit2.GitRepoExt(path::AbstractString, flags::Cuint = Cuint(Consts.REPOSITORY_OPEN_DEFAULT))\n\nOpen a git repository at path with extended controls (for instance, if the current user must be a member of a special access group to read path).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitRevWalker",
+    "page": "LibGit2",
+    "title": "LibGit2.GitRevWalker",
+    "category": "type",
+    "text": "GitRevWalker(repo::GitRepo)\n\nA GitRevWalker walks through the revisions (i.e. commits) of a git repository repo. It is a collection of the commits in the repository, and supports iteration and calls to map and count (for instance, count could be used to determine what percentage of commits in a repository were made by a certain author).\n\ncnt = LibGit2.with(LibGit2.GitRevWalker(repo)) do walker\n    count((oid,repo)->(oid == commit_oid1), walker, oid=commit_oid1, by=LibGit2.Consts.SORT_TIME)\nend\n\nHere, count finds the number of commits along the walk with a certain GitHash. Since the GitHash is unique to a commit, cnt will be 1.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitShortHash",
+    "page": "LibGit2",
+    "title": "LibGit2.GitShortHash",
+    "category": "type",
+    "text": "GitShortHash(hash::GitHash, len::Integer)\n\nA shortened git object identifier, which can be used to identify a git object when it is unique, consisting of the initial len hexadecimal digits of hash (the remaining digits are ignored).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitSignature",
+    "page": "LibGit2",
+    "title": "LibGit2.GitSignature",
+    "category": "type",
+    "text": "LibGit2.GitSignature\n\nThis is a Julia wrapper around a pointer to a git_signature object.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitStatus",
+    "page": "LibGit2",
+    "title": "LibGit2.GitStatus",
+    "category": "type",
+    "text": "LibGit2.GitStatus(repo::GitRepo; status_opts=StatusOptions())\n\nCollect information about the status of each file in the git repository repo (e.g. is the file modified, staged, etc.). status_opts can be used to set various options, for instance whether or not to look at untracked files or whether to include submodules or not. See StatusOptions for more information.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitTag",
+    "page": "LibGit2",
+    "title": "LibGit2.GitTag",
+    "category": "type",
+    "text": "GitTag(repo::GitRepo, hash::AbstractGitHash)\nGitTag(repo::GitRepo, spec::AbstractString)\n\nReturn a GitTag object from repo specified by hash/spec.\n\nhash is a full (GitHash) or partial (GitShortHash) hash.\nspec is a textual specification: see the git docs for a full list.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitTree",
+    "page": "LibGit2",
+    "title": "LibGit2.GitTree",
+    "category": "type",
+    "text": "GitTree(repo::GitRepo, hash::AbstractGitHash)\nGitTree(repo::GitRepo, spec::AbstractString)\n\nReturn a GitTree object from repo specified by hash/spec.\n\nhash is a full (GitHash) or partial (GitShortHash) hash.\nspec is a textual specification: see the git docs for a full list.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.IndexEntry",
+    "page": "LibGit2",
+    "title": "LibGit2.IndexEntry",
+    "category": "type",
+    "text": "LibGit2.IndexEntry\n\nIn-memory representation of a file entry in the index. Matches the git_index_entry struct.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.IndexTime",
+    "page": "LibGit2",
+    "title": "LibGit2.IndexTime",
+    "category": "type",
+    "text": "LibGit2.IndexTime\n\nMatches the git_index_time struct.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.BlameOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.BlameOptions",
+    "category": "type",
+    "text": "LibGit2.BlameOptions\n\nMatches the git_blame_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nflags: one of Consts.BLAME_NORMAL or Consts.BLAME_FIRST_PARENT (the other blame flags  are not yet implemented by libgit2).\nmin_match_characters: the minimum number of alphanumeric characters which much change in a commit in order for the change to be associated with that commit. The default is 20. Only takes effect if one of the Consts.BLAME_*_COPIES flags are used, which libgit2 does not implement yet.\nnewest_commit: the GitHash of the newest commit from which to look at changes.\noldest_commit: the GitHash of the oldest commit from which to look at changes.\nmin_line: the first line of the file from which to starting blaming. The default is 1.\nmax_line: the last line of the file to which to blame. The default is 0, meaning the last line of the file.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.MergeOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.MergeOptions",
+    "category": "type",
+    "text": "LibGit2.MergeOptions\n\nMatches the git_merge_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nflags: an enum for flags describing merge behavior.  Defined in git_merge_flag_t.  The corresponding Julia enum is GIT_MERGE and has values:\nMERGE_FIND_RENAMES: detect if a file has been renamed between the common ancestor and the \"ours\" or \"theirs\" side of the merge. Allows merges where a file has been renamed.\nMERGE_FAIL_ON_CONFLICT: exit immediately if a conflict is found rather than trying to resolve it.\nMERGE_SKIP_REUC: do not write the REUC extension on the index resulting from the merge.\nMERGE_NO_RECURSIVE: if the commits being merged have multiple merge bases, use the first one, rather than trying to recursively merge the bases.\nrename_threshold: how similar two files must to consider one a rename of the other. This is an integer that sets the percentage similarity. The default is 50.\ntarget_limit: the maximum number of files to compare with to look for renames. The default is 200.\nmetric: optional custom function to use to determine the similarity between two files for rename detection.\nrecursion_limit: the upper limit on the number of merges of common ancestors to perform to try to build a new virtual merge base for the merge. The default is no limit. This field is only present on libgit2 versions newer than 0.24.0.\ndefault_driver: the merge driver to use if both sides have changed. This field is only present on libgit2 versions newer than 0.25.0.\nfile_favor: how to handle conflicting file contents for the text driver.\nMERGE_FILE_FAVOR_NORMAL: if both sides of the merge have changes to a section,  make a note of the conflict in the index which git checkout will use to create  a merge file, which the user can then reference to resolve the conflicts. This is  the default.\nMERGE_FILE_FAVOR_OURS: if both sides of the merge have changes to a section,  use the version in the \"ours\" side of the merge in the index.\nMERGE_FILE_FAVOR_THEIRS: if both sides of the merge have changes to a section,  use the version in the \"theirs\" side of the merge in the index.\nMERGE_FILE_FAVOR_UNION: if both sides of the merge have changes to a section,  include each unique line from both sides in the file which is put into the index.\nfile_flags: guidelines for merging files.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.ProxyOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.ProxyOptions",
+    "category": "type",
+    "text": "LibGit2.ProxyOptions\n\nOptions for connecting through a proxy.\n\nMatches the git_proxy_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nproxytype: an enum for the type of proxy to use.  Defined in git_proxy_t.  The corresponding Julia enum is GIT_PROXY and has values:\nPROXY_NONE: do not attempt the connection through a proxy.\nPROXY_AUTO: attempt to figure out the proxy configuration from the git configuration.\nPROXY_SPECIFIED: connect using the URL given in the url field of this struct.\nDefault is to auto-detect the proxy type.\nurl: the URL of the proxy.\ncredential_cb: a pointer to a callback function which will be called if the remote requires authentication to connect.\ncertificate_cb: a pointer to a callback function which will be called if certificate verification fails. This lets the user decide whether or not to keep connecting. If the function returns 1, connecting will be allowed. If it returns 0, the connection will not be allowed. A negative value can be used to return errors.\npayload: the payload to be provided to the two callback functions.\n\nExamples\n\njulia> fo = LibGit2.FetchOptions(\n           proxy_opts = LibGit2.ProxyOptions(url = Cstring(\"https://my_proxy_url.com\")))\n\njulia> fetch(remote, \"master\", options=fo)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.PushOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.PushOptions",
+    "category": "type",
+    "text": "LibGit2.PushOptions\n\nMatches the git_push_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nparallelism: if a pack file must be created, this variable sets the number of worker  threads which will be spawned by the packbuilder. If 0, the packbuilder will auto-set  the number of threads to use. The default is 1.\ncallbacks: the callbacks (e.g. for authentication with the remote) to use for the push.\nproxy_opts: only relevant if the LibGit2 version is greater than or equal to 0.25.0.  Sets options for using a proxy to communicate with a remote. See ProxyOptions  for more information.\ncustom_headers: only relevant if the LibGit2 version is greater than or equal to 0.24.0.  Extra headers needed for the push operation.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.RebaseOperation",
+    "page": "LibGit2",
+    "title": "LibGit2.RebaseOperation",
+    "category": "type",
+    "text": "LibGit2.RebaseOperation\n\nDescribes a single instruction/operation to be performed during the rebase. Matches the git_rebase_operation struct.\n\nThe fields represent:\n\noptype: the type of rebase operation currently being performed. The options are:\nREBASE_OPERATION_PICK: cherry-pick the commit in question.\nREBASE_OPERATION_REWORD: cherry-pick the commit in question, but rewrite its message using the prompt.\nREBASE_OPERATION_EDIT: cherry-pick the commit in question, but allow the user to edit the commit\'s contents and its message.\nREBASE_OPERATION_SQUASH: squash the commit in question into the previous commit. The commit messages of the two commits will be merged.\nREBASE_OPERATION_FIXUP: squash the commit in question into the previous commit. Only the commit message of the previous commit will be used.\nREBASE_OPERATION_EXEC: do not cherry-pick a commit. Run a command and continue if the command exits successfully.\nid: the GitHash of the commit being worked on during this rebase step.\nexec: in case REBASE_OPERATION_EXEC is used, the command to run during this step (for instance, running the test suite after each commit).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.RebaseOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.RebaseOptions",
+    "category": "type",
+    "text": "LibGit2.RebaseOptions\n\nMatches the git_rebase_options struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nquiet: inform other git clients helping with/working on the rebase that the rebase should be done \"quietly\". Used for interoperability. The default is 1.\ninmemory: start an in-memory rebase. Callers working on the rebase can go through its steps and commit any changes, but cannot rewind HEAD or update the repository. The workdir will not be modified. Only present on libgit2 versions newer than or equal to 0.24.0.\nrewrite_notes_ref: name of the reference to notes to use to rewrite the commit notes as the rebase is finished.\nmerge_opts: merge options controlling how the trees will be merged at each rebase step.  Only present on libgit2 versions newer than or equal to 0.24.0.\ncheckout_opts: checkout options for writing files when initializing the rebase, stepping through it, and aborting it. See CheckoutOptions for more information.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.RemoteCallbacks",
+    "page": "LibGit2",
+    "title": "LibGit2.RemoteCallbacks",
+    "category": "type",
+    "text": "LibGit2.RemoteCallbacks\n\nCallback settings. Matches the git_remote_callbacks struct.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.SignatureStruct",
+    "page": "LibGit2",
+    "title": "LibGit2.SignatureStruct",
+    "category": "type",
+    "text": "LibGit2.SignatureStruct\n\nAn action signature (e.g. for committers, taggers, etc). Matches the git_signature struct.\n\nThe fields represent:\n\nname: The full name of the committer or author of the commit.\nemail: The email at which the committer/author can be contacted.\nwhen: a TimeStruct indicating when the commit was  authored/committed into the repository.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.StatusEntry",
+    "page": "LibGit2",
+    "title": "LibGit2.StatusEntry",
+    "category": "type",
+    "text": "LibGit2.StatusEntry\n\nProviding the differences between the file as it exists in HEAD and the index, and providing the differences between the index and the working directory. Matches the git_status_entry struct.\n\nThe fields represent:\n\nstatus: contains the status flags for the file, indicating if it is current, or has been changed in some way in the index or work tree.\nhead_to_index: a pointer to a DiffDelta which encapsulates the difference(s) between the file as it exists in HEAD and in the index.\nindex_to_workdir: a pointer to a DiffDelta which encapsulates the difference(s) between the file as it exists in the index and in the workdir.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.StatusOptions",
+    "page": "LibGit2",
+    "title": "LibGit2.StatusOptions",
+    "category": "type",
+    "text": "LibGit2.StatusOptions\n\nOptions to control how git_status_foreach_ext() will issue callbacks. Matches the git_status_opt_t struct.\n\nThe fields represent:\n\nversion: version of the struct in use, in case this changes later. For now, always 1.\nshow: a flag for which files to examine and in which order. The default is Consts.STATUS_SHOW_INDEX_AND_WORKDIR.\nflags: flags for controlling any callbacks used in a status call.\npathspec: an array of paths to use for path-matching. The behavior of the path-matching will vary depending on the values of show and flags.\nThe baseline is the tree to be used for comparison to the working directory and index; defaults to HEAD.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.StrArrayStruct",
+    "page": "LibGit2",
+    "title": "LibGit2.StrArrayStruct",
+    "category": "type",
+    "text": "LibGit2.StrArrayStruct\n\nA LibGit2 representation of an array of strings. Matches the git_strarray struct.\n\nWhen fetching data from LibGit2, a typical usage would look like:\n\nsa_ref = Ref(StrArrayStruct())\n@check ccall(..., (Ptr{StrArrayStruct},), sa_ref)\nres = convert(Vector{String}, sa_ref[])\nfree(sa_ref)\n\nIn particular, note that LibGit2.free should be called afterward on the Ref object.\n\nConversely, when passing a vector of strings to LibGit2, it is generally simplest to rely on implicit conversion:\n\nstrs = String[...]\n@check ccall(..., (Ptr{StrArrayStruct},), strs)\n\nNote that no call to free is required as the data is allocated by Julia.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.TimeStruct",
+    "page": "LibGit2",
+    "title": "LibGit2.TimeStruct",
+    "category": "type",
+    "text": "LibGit2.TimeStruct\n\nTime in a signature. Matches the git_time struct.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.add!",
+    "page": "LibGit2",
+    "title": "LibGit2.add!",
+    "category": "function",
+    "text": "add!(repo::GitRepo, files::AbstractString...; flags::Cuint = Consts.INDEX_ADD_DEFAULT)\nadd!(idx::GitIndex, files::AbstractString...; flags::Cuint = Consts.INDEX_ADD_DEFAULT)\n\nAdd all the files with paths specified by files to the index idx (or the index of the repo). If the file already exists, the index entry will be updated. If the file does not exist already, it will be newly added into the index. files may contain glob patterns which will be expanded and any matching files will be added (unless INDEX_ADD_DISABLE_PATHSPEC_MATCH is set, see below). If a file has been ignored (in .gitignore or in the config), it will not be added, unless it is already being tracked in the index, in which case it will be updated. The keyword argument flags is a set of bit-flags which control the behavior with respect to ignored files:\n\nConsts.INDEX_ADD_DEFAULT - default, described above.\nConsts.INDEX_ADD_FORCE - disregard the existing ignore rules and force addition of the file to the index even if it is already ignored.\nConsts.INDEX_ADD_CHECK_PATHSPEC - cannot be used at the same time as INDEX_ADD_FORCE. Check that each file in files which exists on disk is not in the ignore list. If one of the files is ignored, the function will return EINVALIDSPEC.\nConsts.INDEX_ADD_DISABLE_PATHSPEC_MATCH - turn off glob matching, and only add files to the index which exactly match the paths specified in files.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.add_fetch!",
+    "page": "LibGit2",
+    "title": "LibGit2.add_fetch!",
+    "category": "function",
+    "text": "add_fetch!(repo::GitRepo, rmt::GitRemote, fetch_spec::String)\n\nAdd a fetch refspec for the specified rmt. This refspec will contain information about which branch(es) to fetch from.\n\nExamples\n\njulia> LibGit2.add_fetch!(repo, remote, \"upstream\");\n\njulia> LibGit2.fetch_refspecs(remote)\nString[\"+refs/heads/*:refs/remotes/upstream/*\"]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.add_push!",
+    "page": "LibGit2",
+    "title": "LibGit2.add_push!",
+    "category": "function",
+    "text": "add_push!(repo::GitRepo, rmt::GitRemote, push_spec::String)\n\nAdd a push refspec for the specified rmt. This refspec will contain information about which branch(es) to push to.\n\nExamples\n\njulia> LibGit2.add_push!(repo, remote, \"refs/heads/master\");\n\njulia> remote = LibGit2.get(LibGit2.GitRemote, repo, branch);\n\njulia> LibGit2.push_refspecs(remote)\nString[\"refs/heads/master\"]\n\nnote: Note\nYou may need to close and reopen the GitRemote in question after updating its push refspecs in order for the change to take effect and for calls to push to work.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.addblob!",
+    "page": "LibGit2",
+    "title": "LibGit2.addblob!",
+    "category": "function",
+    "text": "LibGit2.addblob!(repo::GitRepo, path::AbstractString)\n\nRead the file at path and adds it to the object database of repo as a loose blob. Return the GitHash of the resulting blob.\n\nExamples\n\nhash_str = string(commit_oid)\nblob_file = joinpath(repo_path, \".git\", \"objects\", hash_str[1:2], hash_str[3:end])\nid = LibGit2.addblob!(repo, blob_file)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.author",
+    "page": "LibGit2",
+    "title": "LibGit2.author",
+    "category": "function",
+    "text": "author(c::GitCommit)\n\nReturn the Signature of the author of the commit c. The author is the person who made changes to the relevant file(s). See also committer.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.authors",
+    "page": "LibGit2",
+    "title": "LibGit2.authors",
+    "category": "function",
+    "text": "authors(repo::GitRepo) -> Vector{Signature}\n\nReturn all authors of commits to the repo repository.\n\nExamples\n\nrepo = LibGit2.GitRepo(repo_path)\nrepo_file = open(joinpath(repo_path, test_file), \"a\")\n\nprintln(repo_file, commit_msg)\nflush(repo_file)\nLibGit2.add!(repo, test_file)\nsig = LibGit2.Signature(\"TEST\", \"TEST@TEST.COM\", round(time(), 0), 0)\ncommit_oid1 = LibGit2.commit(repo, \"commit1\"; author=sig, committer=sig)\nprintln(repo_file, randstring(10))\nflush(repo_file)\nLibGit2.add!(repo, test_file)\ncommit_oid2 = LibGit2.commit(repo, \"commit2\"; author=sig, committer=sig)\n\n# will be a Vector of [sig, sig]\nauths = LibGit2.authors(repo)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.branch",
+    "page": "LibGit2",
+    "title": "LibGit2.branch",
+    "category": "function",
+    "text": "branch(repo::GitRepo)\n\nEquivalent to git branch. Create a new branch from the current HEAD.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.branch!",
+    "page": "LibGit2",
+    "title": "LibGit2.branch!",
+    "category": "function",
+    "text": "branch!(repo::GitRepo, branch_name::AbstractString, commit::AbstractString=\"\"; kwargs...)\n\nCheckout a new git branch in the repo repository. commit is the GitHash, in string form, which will be the start of the new branch. If commit is an empty string, the current HEAD will be used.\n\nThe keyword arguments are:\n\ntrack::AbstractString=\"\": the name of the remote branch this new branch should track, if any. If empty (the default), no remote branch will be tracked.\nforce::Bool=false: if true, branch creation will be forced.\nset_head::Bool=true: if true, after the branch creation finishes the branch head will be set as the HEAD of repo.\n\nEquivalent to git checkout [-b|-B] <branch_name> [<commit>] [--track <track>].\n\nExamples\n\nrepo = LibGit2.GitRepo(repo_path)\nLibGit2.branch!(repo, \"new_branch\", set_head=false)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.checkout!",
+    "page": "LibGit2",
+    "title": "LibGit2.checkout!",
+    "category": "function",
+    "text": "checkout!(repo::GitRepo, commit::AbstractString=\"\"; force::Bool=true)\n\nEquivalent to git checkout [-f] --detach <commit>. Checkout the git commit commit (a GitHash in string form) in repo. If force is true, force the checkout and discard any current changes. Note that this detaches the current HEAD.\n\nExamples\n\nrepo = LibGit2.init(repo_path)\nopen(joinpath(LibGit2.path(repo), \"file1\"), \"w\") do f\n    write(f, \"111\n\")\nend\nLibGit2.add!(repo, \"file1\")\ncommit_oid = LibGit2.commit(repo, \"add file1\")\nopen(joinpath(LibGit2.path(repo), \"file1\"), \"w\") do f\n    write(f, \"112\n\")\nend\n# would fail without the force=true\n# since there are modifications to the file\nLibGit2.checkout!(repo, string(commit_oid), force=true)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.clone",
+    "page": "LibGit2",
+    "title": "LibGit2.clone",
+    "category": "function",
+    "text": "clone(repo_url::AbstractString, repo_path::AbstractString, clone_opts::CloneOptions)\n\nClone the remote repository at repo_url (which can be a remote URL or a path on the local filesystem) to repo_path (which must be a path on the local filesystem). Options for the clone, such as whether to perform a bare clone or not, are set by CloneOptions.\n\nExamples\n\nrepo_url = \"https://github.com/JuliaLang/Example.jl\"\nrepo = LibGit2.clone(repo_url, \"/home/me/projects/Example\")\n\n\n\n\n\nclone(repo_url::AbstractString, repo_path::AbstractString; kwargs...)\n\nClone a remote repository located at repo_url to the local filesystem location repo_path.\n\nThe keyword arguments are:\n\nbranch::AbstractString=\"\": which branch of the remote to clone, if not the default repository branch (usually master).\nisbare::Bool=false: if true, clone the remote as a bare repository, which will make repo_path itself the git directory instead of repo_path/.git. This means that a working tree cannot be checked out. Plays the role of the git CLI argument --bare.\nremote_cb::Ptr{Cvoid}=C_NULL: a callback which will be used to create the remote before it is cloned. If C_NULL (the default), no attempt will be made to create the remote - it will be assumed to already exist.\ncredentials::Creds=nothing: provides credentials and/or settings when authenticating against a private repository.\ncallbacks::Callbacks=Callbacks(): user provided callbacks and payloads.\n\nEquivalent to git clone [-b <branch>] [--bare] <repo_url> <repo_path>.\n\nExamples\n\nrepo_url = \"https://github.com/JuliaLang/Example.jl\"\nrepo1 = LibGit2.clone(repo_url, \"test_path\")\nrepo2 = LibGit2.clone(repo_url, \"test_path\", isbare=true)\njulia_url = \"https://github.com/JuliaLang/julia\"\njulia_repo = LibGit2.clone(julia_url, \"julia_path\", branch=\"release-0.6\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.commit",
+    "page": "LibGit2",
+    "title": "LibGit2.commit",
+    "category": "function",
+    "text": "commit(repo::GitRepo, msg::AbstractString; kwargs...) -> GitHash\n\nWrapper around git_commit_create. Create a commit in the repository repo. msg is the commit message. Return the OID of the new commit.\n\nThe keyword arguments are:\n\nrefname::AbstractString=Consts.HEAD_FILE: if not NULL, the name of the reference to update to point to the new commit. For example, \"HEAD\" will update the HEAD of the current branch. If the reference does not yet exist, it will be created.\nauthor::Signature = Signature(repo) is a Signature containing information about the person who authored the commit.\ncommitter::Signature = Signature(repo) is a Signature containing information about the person who committed the commit to the repository. Not necessarily the same as author, for instance if author emailed a patch to committer who committed it.\ntree_id::GitHash = GitHash() is a git tree to use to create the commit, showing its ancestry and relationship with any other history. tree must belong to repo.\nparent_ids::Vector{GitHash}=GitHash[] is a list of commits by GitHash to use as parent commits for the new one, and may be empty. A commit might have multiple parents if it is a merge commit, for example.\n\n\n\n\n\nLibGit2.commit(rb::GitRebase, sig::GitSignature)\n\nCommit the current patch to the rebase rb, using sig as the committer. Is silent if the commit has already been applied.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.committer",
+    "page": "LibGit2",
+    "title": "LibGit2.committer",
+    "category": "function",
+    "text": "committer(c::GitCommit)\n\nReturn the Signature of the committer of the commit c. The committer is the person who committed the changes originally authored by the author, but need not be the same as the author, for example, if the author emailed a patch to a committer who committed it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.count",
+    "page": "LibGit2",
+    "title": "LibGit2.count",
+    "category": "function",
+    "text": "LibGit2.count(f::Function, walker::GitRevWalker; oid::GitHash=GitHash(), by::Cint=Consts.SORT_NONE, rev::Bool=false)\n\nUsing the GitRevWalker walker to \"walk\" over every commit in the repository\'s history, find the number of commits which return true when f is applied to them. The keyword arguments are:     * oid: The GitHash of the commit to begin the walk from. The default is to use       push_head! and therefore the HEAD commit and all its ancestors.     * by: The sorting method. The default is not to sort. Other options are to sort by       topology (LibGit2.Consts.SORT_TOPOLOGICAL), to sort forwards in time       (LibGit2.Consts.SORT_TIME, most ancient first) or to sort backwards in time       (LibGit2.Consts.SORT_REVERSE, most recent first).     * rev: Whether to reverse the sorted order (for instance, if topological sorting is used).\n\nExamples\n\ncnt = LibGit2.with(LibGit2.GitRevWalker(repo)) do walker\n    count((oid, repo)->(oid == commit_oid1), walker, oid=commit_oid1, by=LibGit2.Consts.SORT_TIME)\nend\n\ncount finds the number of commits along the walk with a certain GitHash commit_oid1, starting the walk from that commit and moving forwards in time from it. Since the GitHash is unique to a commit, cnt will be 1.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.counthunks",
+    "page": "LibGit2",
+    "title": "LibGit2.counthunks",
+    "category": "function",
+    "text": "counthunks(blame::GitBlame)\n\nReturn the number of distinct \"hunks\" with a file. A hunk may contain multiple lines. A hunk is usually a piece of a file that was added/changed/removed together, for example, a function added to a source file or an inner loop that was optimized out of that function later.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.create_branch",
+    "page": "LibGit2",
+    "title": "LibGit2.create_branch",
+    "category": "function",
+    "text": "LibGit2.create_branch(repo::GitRepo, bname::AbstractString, commit_obj::GitCommit; force::Bool=false)\n\nCreate a new branch in the repository repo with name bname, which points to commit commit_obj (which has to be part of repo). If force is true, overwrite an existing branch named bname if it exists. If force is false and a branch already exists named bname, this function will throw an error.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.credentials_callback",
+    "page": "LibGit2",
+    "title": "LibGit2.credentials_callback",
+    "category": "function",
+    "text": "credential_callback(...) -> Cint\n\nA LibGit2 credential callback function which provides different credential acquisition functionality w.r.t. a connection protocol. The payload_ptr is required to contain a LibGit2.CredentialPayload object which will keep track of state and settings.\n\nThe allowed_types contains a bitmask of LibGit2.Consts.GIT_CREDTYPE values specifying which authentication methods should be attempted.\n\nCredential authentication is done in the following order (if supported):\n\nSSH agent\nSSH private/public key pair\nUsername/password plain text\n\nIf a user is presented with a credential prompt they can abort the prompt by typing ^D (pressing the control key together with the d key).\n\nNote: Due to the specifics of the libgit2 authentication procedure, when authentication fails, this function is called again without any indication whether authentication was successful or not. To avoid an infinite loop from repeatedly using the same faulty credentials, we will keep track of state using the payload.\n\nFor addition details see the LibGit2 guide on authenticating against a server.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.credentials_cb",
+    "page": "LibGit2",
+    "title": "LibGit2.credentials_cb",
+    "category": "function",
+    "text": "C function pointer for credentials_callback\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.default_signature",
+    "page": "LibGit2",
+    "title": "LibGit2.default_signature",
+    "category": "function",
+    "text": "Return signature object. Free it after use.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.delete_branch",
+    "page": "LibGit2",
+    "title": "LibGit2.delete_branch",
+    "category": "function",
+    "text": "LibGit2.delete_branch(branch::GitReference)\n\nDelete the branch pointed to by branch.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.diff_files",
+    "page": "LibGit2",
+    "title": "LibGit2.diff_files",
+    "category": "function",
+    "text": "diff_files(repo::GitRepo, branch1::AbstractString, branch2::AbstractString; kwarg...) -> Vector{AbstractString}\n\nShow which files have changed in the git repository repo between branches branch1 and branch2.\n\nThe keyword argument is:\n\nfilter::Set{Consts.DELTA_STATUS}=Set([Consts.DELTA_ADDED, Consts.DELTA_MODIFIED, Consts.DELTA_DELETED])), and it sets options for the diff. The default is to show files added, modified, or deleted.\n\nReturn only the names of the files which have changed, not their contents.\n\nExamples\n\nLibGit2.branch!(repo, \"branch/a\")\nLibGit2.branch!(repo, \"branch/b\")\n# add a file to repo\nopen(joinpath(LibGit2.path(repo),\"file\"),\"w\") do f\n    write(f, \"hello repo\n\")\nend\nLibGit2.add!(repo, \"file\")\nLibGit2.commit(repo, \"add file\")\n# returns [\"file\"]\nfilt = Set([LibGit2.Consts.DELTA_ADDED])\nfiles = LibGit2.diff_files(repo, \"branch/a\", \"branch/b\", filter=filt)\n# returns [] because existing files weren\'t modified\nfilt = Set([LibGit2.Consts.DELTA_MODIFIED])\nfiles = LibGit2.diff_files(repo, \"branch/a\", \"branch/b\", filter=filt)\n\nEquivalent to git diff --name-only --diff-filter=<filter> <branch1> <branch2>.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.entryid",
+    "page": "LibGit2",
+    "title": "LibGit2.entryid",
+    "category": "function",
+    "text": "entryid(te::GitTreeEntry)\n\nReturn the GitHash of the object to which te refers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.entrytype",
+    "page": "LibGit2",
+    "title": "LibGit2.entrytype",
+    "category": "function",
+    "text": "entrytype(te::GitTreeEntry)\n\nReturn the type of the object to which te refers. The result will be one of the types which objtype returns, e.g. a GitTree or GitBlob.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.fetch",
+    "page": "LibGit2",
+    "title": "LibGit2.fetch",
+    "category": "function",
+    "text": "fetch(rmt::GitRemote, refspecs; options::FetchOptions=FetchOptions(), msg=\"\")\n\nFetch from the specified rmt remote git repository, using refspecs to determine which remote branch(es) to fetch. The keyword arguments are:\n\noptions: determines the options for the fetch, e.g. whether to prune afterwards. See FetchOptions for more information.\nmsg: a message to insert into the reflogs.\n\n\n\n\n\nfetch(repo::GitRepo; kwargs...)\n\nFetches updates from an upstream of the repository repo.\n\nThe keyword arguments are:\n\nremote::AbstractString=\"origin\": which remote, specified by name, of repo to fetch from. If this is empty, the URL will be used to construct an anonymous remote.\nremoteurl::AbstractString=\"\": the URL of remote. If not specified, will be assumed based on the given name of remote.\nrefspecs=AbstractString[]: determines properties of the fetch.\ncredentials=nothing: provides credentials and/or settings when authenticating against a private remote.\ncallbacks=Callbacks(): user provided callbacks and payloads.\n\nEquivalent to git fetch [<remoteurl>|<repo>] [<refspecs>].\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.fetchheads",
+    "page": "LibGit2",
+    "title": "LibGit2.fetchheads",
+    "category": "function",
+    "text": "fetchheads(repo::GitRepo) -> Vector{FetchHead}\n\nReturn the list of all the fetch heads for repo, each represented as a FetchHead, including their names, URLs, and merge statuses.\n\nExamples\n\njulia> fetch_heads = LibGit2.fetchheads(repo);\n\njulia> fetch_heads[1].name\n\"refs/heads/master\"\n\njulia> fetch_heads[1].ismerge\ntrue\n\njulia> fetch_heads[2].name\n\"refs/heads/test_branch\"\n\njulia> fetch_heads[2].ismerge\nfalse\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.fetch_refspecs",
+    "page": "LibGit2",
+    "title": "LibGit2.fetch_refspecs",
+    "category": "function",
+    "text": "fetch_refspecs(rmt::GitRemote) -> Vector{String}\n\nGet the fetch refspecs for the specified rmt. These refspecs contain information about which branch(es) to fetch from.\n\nExamples\n\njulia> remote = LibGit2.get(LibGit2.GitRemote, repo, \"upstream\");\n\njulia> LibGit2.add_fetch!(repo, remote, \"upstream\");\n\njulia> LibGit2.fetch_refspecs(remote)\nString[\"+refs/heads/*:refs/remotes/upstream/*\"]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.fetchhead_foreach_cb",
+    "page": "LibGit2",
+    "title": "LibGit2.fetchhead_foreach_cb",
+    "category": "function",
+    "text": "C function pointer for fetchhead_foreach_callback\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.merge_base",
+    "page": "LibGit2",
+    "title": "LibGit2.merge_base",
+    "category": "function",
+    "text": "merge_base(repo::GitRepo, one::AbstractString, two::AbstractString) -> GitHash\n\nFind a merge base (a common ancestor) between the commits one and two. one and two may both be in string form. Return the GitHash of the merge base.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.merge!-Tuple{GitRepo}",
+    "page": "LibGit2",
+    "title": "LibGit2.merge!",
+    "category": "method",
+    "text": "merge!(repo::GitRepo; kwargs...) -> Bool\n\nPerform a git merge on the repository repo, merging commits with diverging history into the current branch. Return true if the merge succeeded, false if not.\n\nThe keyword arguments are:\n\ncommittish::AbstractString=\"\": Merge the named commit(s) in committish.\nbranch::AbstractString=\"\": Merge the branch branch and all its commits since it diverged from the current branch.\nfastforward::Bool=false: If fastforward is true, only merge if the merge is a fast-forward (the current branch head is an ancestor of the commits to be merged), otherwise refuse to merge and return false. This is equivalent to the git CLI option --ff-only.\nmerge_opts::MergeOptions=MergeOptions(): merge_opts specifies options for the merge, such as merge strategy in case of conflicts.\ncheckout_opts::CheckoutOptions=CheckoutOptions(): checkout_opts specifies options for the checkout step.\n\nEquivalent to git merge [--ff-only] [<committish> | <branch>].\n\nnote: Note\nIf you specify a branch, this must be done in reference format, since the string will be turned into a GitReference. For example, if you wanted to merge branch branch_a, you would call merge!(repo, branch=\"refs/heads/branch_a\").\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.merge!-Tuple{GitRepo,Array{LibGit2.GitAnnotated,1}}",
+    "page": "LibGit2",
+    "title": "LibGit2.merge!",
+    "category": "method",
+    "text": "merge!(repo::GitRepo, anns::Vector{GitAnnotated}; kwargs...) -> Bool\n\nMerge changes from the annotated commits (captured as GitAnnotated objects) anns into the HEAD of the repository repo. The keyword arguments are:\n\nmerge_opts::MergeOptions = MergeOptions(): options for how to perform the merge, including whether fastforwarding is allowed. See MergeOptions for more information.\ncheckout_opts::CheckoutOptions = CheckoutOptions(): options for how to perform the checkout. See CheckoutOptions for more information.\n\nanns may refer to remote or local branch heads. Return true if the merge is successful, otherwise return false (for instance, if no merge is possible because the branches have no common ancestor).\n\nExamples\n\nupst_ann = LibGit2.GitAnnotated(repo, \"branch/a\")\n\n# merge the branch in\nLibGit2.merge!(repo, [upst_ann])\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.merge!-Tuple{GitRepo,Array{LibGit2.GitAnnotated,1},Bool}",
+    "page": "LibGit2",
+    "title": "LibGit2.merge!",
+    "category": "method",
+    "text": "merge!(repo::GitRepo, anns::Vector{GitAnnotated}, fastforward::Bool; kwargs...) -> Bool\n\nMerge changes from the annotated commits (captured as GitAnnotated objects) anns into the HEAD of the repository repo. If fastforward is true, only a fastforward merge is allowed. In this case, if conflicts occur, the merge will fail. Otherwise, if fastforward is false, the merge may produce a conflict file which the user will need to resolve.\n\nThe keyword arguments are:\n\nmerge_opts::MergeOptions = MergeOptions(): options for how to perform the merge, including whether fastforwarding is allowed. See MergeOptions for more information.\ncheckout_opts::CheckoutOptions = CheckoutOptions(): options for how to perform the checkout. See CheckoutOptions for more information.\n\nanns may refer to remote or local branch heads. Return true if the merge is successful, otherwise return false (for instance, if no merge is possible because the branches have no common ancestor).\n\nExamples\n\nupst_ann_1 = LibGit2.GitAnnotated(repo, \"branch/a\")\n\n# merge the branch in, fastforward\nLibGit2.merge!(repo, [upst_ann_1], true)\n\n# merge conflicts!\nupst_ann_2 = LibGit2.GitAnnotated(repo, \"branch/b\")\n# merge the branch in, try to fastforward\nLibGit2.merge!(repo, [upst_ann_2], true) # will return false\nLibGit2.merge!(repo, [upst_ann_2], false) # will return true\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.ffmerge!",
+    "page": "LibGit2",
+    "title": "LibGit2.ffmerge!",
+    "category": "function",
+    "text": "ffmerge!(repo::GitRepo, ann::GitAnnotated)\n\nFastforward merge changes into current HEAD. This is only possible if the commit referred to by ann is descended from the current HEAD (e.g. if pulling changes from a remote branch which is simply ahead of the local branch tip).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.fullname",
+    "page": "LibGit2",
+    "title": "LibGit2.fullname",
+    "category": "function",
+    "text": "LibGit2.fullname(ref::GitReference)\n\nReturn the name of the reference pointed to by the symbolic reference ref. If ref is not a symbolic reference, return an empty string.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.features",
+    "page": "LibGit2",
+    "title": "LibGit2.features",
+    "category": "function",
+    "text": "features()\n\nReturn a list of git features the current version of libgit2 supports, such as threading or using HTTPS or SSH.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.filename",
+    "page": "LibGit2",
+    "title": "LibGit2.filename",
+    "category": "function",
+    "text": "filename(te::GitTreeEntry)\n\nReturn the filename of the object on disk to which te refers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.filemode",
+    "page": "LibGit2",
+    "title": "LibGit2.filemode",
+    "category": "function",
+    "text": "filemode(te::GitTreeEntry) -> Cint\n\nReturn the UNIX filemode of the object on disk to which te refers as an integer.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.gitdir",
+    "page": "LibGit2",
+    "title": "LibGit2.gitdir",
+    "category": "function",
+    "text": "LibGit2.gitdir(repo::GitRepo)\n\nReturn the location of the \"git\" files of repo:\n\nfor normal repositories, this is the location of the .git folder.\nfor bare repositories, this is the location of the repository itself.\n\nSee also workdir, path.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.git_url",
+    "page": "LibGit2",
+    "title": "LibGit2.git_url",
+    "category": "function",
+    "text": "LibGit2.git_url(; kwargs...) -> String\n\nCreate a string based upon the URL components provided. When the scheme keyword is not provided the URL produced will use the alternative scp-like syntax.\n\nKeywords\n\nscheme::AbstractString=\"\": the URL scheme which identifies the protocol to be used. For HTTP use \"http\", SSH use \"ssh\", etc. When scheme is not provided the output format will be \"ssh\" but using the scp-like syntax.\nusername::AbstractString=\"\": the username to use in the output if provided.\npassword::AbstractString=\"\": the password to use in the output if provided.\nhost::AbstractString=\"\": the hostname to use in the output. A hostname is required to be specified.\nport::Union{AbstractString,Integer}=\"\": the port number to use in the output if provided. Cannot be specified when using the scp-like syntax.\npath::AbstractString=\"\": the path to use in the output if provided.\n\nwarning: Warning\nAvoid using passwords in URLs. Unlike the credential objects, Julia is not able to securely zero or destroy the sensitive data after use and the password may remain in memory; possibly to be exposed by an uninitialized memory.\n\nExamples\n\njulia> LibGit2.git_url(username=\"git\", host=\"github.com\", path=\"JuliaLang/julia.git\")\n\"git@github.com:JuliaLang/julia.git\"\n\njulia> LibGit2.git_url(scheme=\"https\", host=\"github.com\", path=\"/JuliaLang/julia.git\")\n\"https://github.com/JuliaLang/julia.git\"\n\njulia> LibGit2.git_url(scheme=\"ssh\", username=\"git\", host=\"github.com\", port=2222, path=\"JuliaLang/julia.git\")\n\"ssh://git@github.com:2222/JuliaLang/julia.git\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.@githash_str",
+    "page": "LibGit2",
+    "title": "LibGit2.@githash_str",
+    "category": "macro",
+    "text": "@githash_str -> AbstractGitHash\n\nConstruct a git hash object from the given string, returning a GitShortHash if the string is shorter than 40 hexadecimal digits, otherwise a GitHash.\n\nExamples\n\njulia> LibGit2.githash\"d114feb74ce633\"\nGitShortHash(\"d114feb74ce633\")\n\njulia> LibGit2.githash\"d114feb74ce63307afe878a5228ad014e0289a85\"\nGitHash(\"d114feb74ce63307afe878a5228ad014e0289a85\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.head",
+    "page": "LibGit2",
+    "title": "LibGit2.head",
+    "category": "function",
+    "text": "LibGit2.head(repo::GitRepo) -> GitReference\n\nReturn a GitReference to the current HEAD of repo.\n\n\n\n\n\nhead(pkg::AbstractString) -> String\n\nReturn current HEAD GitHash of the pkg repo as a string.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.head!",
+    "page": "LibGit2",
+    "title": "LibGit2.head!",
+    "category": "function",
+    "text": "LibGit2.head!(repo::GitRepo, ref::GitReference) -> GitReference\n\nSet the HEAD of repo to the object pointed to by ref.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.head_oid",
+    "page": "LibGit2",
+    "title": "LibGit2.head_oid",
+    "category": "function",
+    "text": "LibGit2.head_oid(repo::GitRepo) -> GitHash\n\nLookup the object id of the current HEAD of git repository repo.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.headname",
+    "page": "LibGit2",
+    "title": "LibGit2.headname",
+    "category": "function",
+    "text": "LibGit2.headname(repo::GitRepo)\n\nLookup the name of the current HEAD of git repository repo. If repo is currently detached, return the name of the HEAD it\'s detached from.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.init",
+    "page": "LibGit2",
+    "title": "LibGit2.init",
+    "category": "function",
+    "text": "LibGit2.init(path::AbstractString, bare::Bool=false) -> GitRepo\n\nOpen a new git repository at path. If bare is false, the working tree will be created in path/.git. If bare is true, no working directory will be created.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.is_ancestor_of",
+    "page": "LibGit2",
+    "title": "LibGit2.is_ancestor_of",
+    "category": "function",
+    "text": "is_ancestor_of(a::AbstractString, b::AbstractString, repo::GitRepo) -> Bool\n\nReturn true if a, a GitHash in string form, is an ancestor of b, a GitHash in string form.\n\nExamples\n\njulia> repo = LibGit2.GitRepo(repo_path);\n\njulia> LibGit2.add!(repo, test_file1);\n\njulia> commit_oid1 = LibGit2.commit(repo, \"commit1\");\n\njulia> LibGit2.add!(repo, test_file2);\n\njulia> commit_oid2 = LibGit2.commit(repo, \"commit2\");\n\njulia> LibGit2.is_ancestor_of(string(commit_oid1), string(commit_oid2), repo)\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.isbinary",
+    "page": "LibGit2",
+    "title": "LibGit2.isbinary",
+    "category": "function",
+    "text": "isbinary(blob::GitBlob) -> Bool\n\nUse a heuristic to guess if a file is binary: searching for NULL bytes and looking for a reasonable ratio of printable to non-printable characters among the first 8000 bytes.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.iscommit",
+    "page": "LibGit2",
+    "title": "LibGit2.iscommit",
+    "category": "function",
+    "text": "iscommit(id::AbstractString, repo::GitRepo) -> Bool\n\nCheck if commit id (which is a GitHash in string form) is in the repository.\n\nExamples\n\njulia> repo = LibGit2.GitRepo(repo_path);\n\njulia> LibGit2.add!(repo, test_file);\n\njulia> commit_oid = LibGit2.commit(repo, \"add test_file\");\n\njulia> LibGit2.iscommit(string(commit_oid), repo)\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.isdiff",
+    "page": "LibGit2",
+    "title": "LibGit2.isdiff",
+    "category": "function",
+    "text": "LibGit2.isdiff(repo::GitRepo, treeish::AbstractString, pathspecs::AbstractString=\"\"; cached::Bool=false)\n\nChecks if there are any differences between the tree specified by treeish and the tracked files in the working tree (if cached=false) or the index (if cached=true). pathspecs are the specifications for options for the diff.\n\nExamples\n\nrepo = LibGit2.GitRepo(repo_path)\nLibGit2.isdiff(repo, \"HEAD\") # should be false\nopen(joinpath(repo_path, new_file), \"a\") do f\n    println(f, \"here\'s my cool new file\")\nend\nLibGit2.isdiff(repo, \"HEAD\") # now true\n\nEquivalent to git diff-index <treeish> [-- <pathspecs>].\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.isdirty",
+    "page": "LibGit2",
+    "title": "LibGit2.isdirty",
+    "category": "function",
+    "text": "LibGit2.isdirty(repo::GitRepo, pathspecs::AbstractString=\"\"; cached::Bool=false) -> Bool\n\nCheck if there have been any changes to tracked files in the working tree (if cached=false) or the index (if cached=true). pathspecs are the specifications for options for the diff.\n\nExamples\n\nrepo = LibGit2.GitRepo(repo_path)\nLibGit2.isdirty(repo) # should be false\nopen(joinpath(repo_path, new_file), \"a\") do f\n    println(f, \"here\'s my cool new file\")\nend\nLibGit2.isdirty(repo) # now true\nLibGit2.isdirty(repo, new_file) # now true\n\nEquivalent to git diff-index HEAD [-- <pathspecs>].\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.isorphan",
+    "page": "LibGit2",
+    "title": "LibGit2.isorphan",
+    "category": "function",
+    "text": "LibGit2.isorphan(repo::GitRepo)\n\nCheck if the current branch is an \"orphan\" branch, i.e. has no commits. The first commit to this branch will have no parents.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.isset",
+    "page": "LibGit2",
+    "title": "LibGit2.isset",
+    "category": "function",
+    "text": "isset(val::Integer, flag::Integer)\n\nTest whether the bits of val indexed by flag are set (1) or unset (0).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.iszero",
+    "page": "LibGit2",
+    "title": "LibGit2.iszero",
+    "category": "function",
+    "text": "iszero(id::GitHash) -> Bool\n\nDetermine whether all hexadecimal digits of the given GitHash are zero.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.lookup_branch",
+    "page": "LibGit2",
+    "title": "LibGit2.lookup_branch",
+    "category": "function",
+    "text": "lookup_branch(repo::GitRepo, branch_name::AbstractString, remote::Bool=false) -> Union{GitReference, Nothing}\n\nDetermine if the branch specified by branch_name exists in the repository repo. If remote is true, repo is assumed to be a remote git repository. Otherwise, it is part of the local filesystem.\n\nReturn either a GitReference to the requested branch if it exists, or nothing if not.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.map",
+    "page": "LibGit2",
+    "title": "LibGit2.map",
+    "category": "function",
+    "text": "LibGit2.map(f::Function, walker::GitRevWalker; oid::GitHash=GitHash(), range::AbstractString=\"\", by::Cint=Consts.SORT_NONE, rev::Bool=false)\n\nUsing the GitRevWalker walker to \"walk\" over every commit in the repository\'s history, apply f to each commit in the walk. The keyword arguments are:     * oid: The GitHash of the commit to begin the walk from. The default is to use       push_head! and therefore the HEAD commit and all its ancestors.     * range: A range of GitHashs in the format oid1..oid2. f will be       applied to all commits between the two.     * by: The sorting method. The default is not to sort. Other options are to sort by       topology (LibGit2.Consts.SORT_TOPOLOGICAL), to sort forwards in time       (LibGit2.Consts.SORT_TIME, most ancient first) or to sort backwards in time       (LibGit2.Consts.SORT_REVERSE, most recent first).     * rev: Whether to reverse the sorted order (for instance, if topological sorting is used).\n\nExamples\n\noids = LibGit2.with(LibGit2.GitRevWalker(repo)) do walker\n    LibGit2.map((oid, repo)->string(oid), walker, by=LibGit2.Consts.SORT_TIME)\nend\n\nHere, map visits each commit using the GitRevWalker and finds its GitHash.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.mirror_callback",
+    "page": "LibGit2",
+    "title": "LibGit2.mirror_callback",
+    "category": "function",
+    "text": "Mirror callback function\n\nFunction sets +refs/*:refs/* refspecs and mirror flag for remote reference.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.mirror_cb",
+    "page": "LibGit2",
+    "title": "LibGit2.mirror_cb",
+    "category": "function",
+    "text": "C function pointer for mirror_callback\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.message",
+    "page": "LibGit2",
+    "title": "LibGit2.message",
+    "category": "function",
+    "text": "message(c::GitCommit, raw::Bool=false)\n\nReturn the commit message describing the changes made in commit c. If raw is false, return a slightly \"cleaned up\" message (which has any leading newlines removed). If raw is true, the message is not stripped of any such newlines.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.merge_analysis",
+    "page": "LibGit2",
+    "title": "LibGit2.merge_analysis",
+    "category": "function",
+    "text": "merge_analysis(repo::GitRepo, anns::Vector{GitAnnotated}) -> analysis, preference\n\nRun analysis on the branches pointed to by the annotated branch tips anns and determine under what circumstances they can be merged. For instance, if anns[1] is simply an ancestor of ann[2], then merge_analysis will report that a fast-forward merge is possible.\n\nReturn two outputs, analysis and preference. analysis has several possible values:     * MERGE_ANALYSIS_NONE: it is not possible to merge the elements of anns.     * MERGE_ANALYSIS_NORMAL: a regular merge, when HEAD and the commits that the       user wishes to merge have all diverged from a common ancestor. In this case the       changes have to be resolved and conflicts may occur.     * MERGE_ANALYSIS_UP_TO_DATE: all the input commits the user wishes to merge can       be reached from HEAD, so no merge needs to be performed.     * MERGE_ANALYSIS_FASTFORWARD: the input commit is a descendant of HEAD and so no       merge needs to be performed - instead, the user can simply checkout the       input commit(s).     * MERGE_ANALYSIS_UNBORN: the HEAD of the repository refers to a commit which does not       exist. It is not possible to merge, but it may be possible to checkout the input       commits. preference also has several possible values:     * MERGE_PREFERENCE_NONE: the user has no preference.     * MERGE_PREFERENCE_NO_FASTFORWARD: do not allow any fast-forward merges.     * MERGE_PREFERENCE_FASTFORWARD_ONLY: allow only fast-forward merges and no       other type (which may introduce conflicts). preference can be controlled through the repository or global git configuration.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.name",
+    "page": "LibGit2",
+    "title": "LibGit2.name",
+    "category": "function",
+    "text": "LibGit2.name(ref::GitReference)\n\nReturn the full name of ref.\n\n\n\n\n\nname(rmt::GitRemote)\n\nGet the name of a remote repository, for instance \"origin\". If the remote is anonymous (see GitRemoteAnon) the name will be an empty string \"\".\n\nExamples\n\njulia> repo_url = \"https://github.com/JuliaLang/Example.jl\";\n\njulia> repo = LibGit2.clone(cache_repo, \"test_directory\");\n\njulia> remote = LibGit2.GitRemote(repo, \"origin\", repo_url);\n\njulia> name(remote)\n\"origin\"\n\n\n\n\n\nLibGit2.name(tag::GitTag)\n\nThe name of tag (e.g. \"v0.5\").\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.need_update",
+    "page": "LibGit2",
+    "title": "LibGit2.need_update",
+    "category": "function",
+    "text": "need_update(repo::GitRepo)\n\nEquivalent to git update-index. Return true if repo needs updating.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.objtype",
+    "page": "LibGit2",
+    "title": "LibGit2.objtype",
+    "category": "function",
+    "text": "objtype(obj_type::Consts.OBJECT)\n\nReturn the type corresponding to the enum value.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.path",
+    "page": "LibGit2",
+    "title": "LibGit2.path",
+    "category": "function",
+    "text": "LibGit2.path(repo::GitRepo)\n\nReturn the base file path of the repository repo.\n\nfor normal repositories, this will typically be the parent directory of the \".git\" directory (note: this may be different than the working directory, see workdir for more details).\nfor bare repositories, this is the location of the \"git\" files.\n\nSee also gitdir, workdir.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.peel",
+    "page": "LibGit2",
+    "title": "LibGit2.peel",
+    "category": "function",
+    "text": "peel([T,] ref::GitReference)\n\nRecursively peel ref until an object of type T is obtained. If no T is provided, then ref will be peeled until an object other than a GitTag is obtained.\n\nA GitTag will be peeled to the object it references.\nA GitCommit will be peeled to a GitTree.\n\nnote: Note\nOnly annotated tags can be peeled to GitTag objects. Lightweight tags (the default) are references under refs/tags/ which point directly to GitCommit objects.\n\n\n\n\n\npeel([T,] obj::GitObject)\n\nRecursively peel obj until an object of type T is obtained. If no T is provided, then obj will be peeled until the type changes.\n\nA GitTag will be peeled to the object it references.\nA GitCommit will be peeled to a GitTree.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.posixpath",
+    "page": "LibGit2",
+    "title": "LibGit2.posixpath",
+    "category": "function",
+    "text": "LibGit2.posixpath(path)\n\nStandardise the path string path to use POSIX separators.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.push",
+    "page": "LibGit2",
+    "title": "LibGit2.push",
+    "category": "function",
+    "text": "push(rmt::GitRemote, refspecs; force::Bool=false, options::PushOptions=PushOptions())\n\nPush to the specified rmt remote git repository, using refspecs to determine which remote branch(es) to push to. The keyword arguments are:\n\nforce: if true, a force-push will occur, disregarding conflicts.\noptions: determines the options for the push, e.g. which proxy headers to use. See PushOptions for more information.\n\nnote: Note\nYou can add information about the push refspecs in two other ways: by setting an option in the repository\'s GitConfig (with push.default as the key) or by calling add_push!. Otherwise you will need to explicitly specify a push refspec in the call to push for it to have any effect, like so: LibGit2.push(repo, refspecs=[\"refs/heads/master\"]).\n\n\n\n\n\npush(repo::GitRepo; kwargs...)\n\nPushes updates to an upstream of repo.\n\nThe keyword arguments are:\n\nremote::AbstractString=\"origin\": the name of the upstream remote to push to.\nremoteurl::AbstractString=\"\": the URL of remote.\nrefspecs=AbstractString[]: determines properties of the push.\nforce::Bool=false: determines if the push will be a force push,  overwriting the remote branch.\ncredentials=nothing: provides credentials and/or settings when authenticating against  a private remote.\ncallbacks=Callbacks(): user provided callbacks and payloads.\n\nEquivalent to git push [<remoteurl>|<repo>] [<refspecs>].\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.push!-Tuple{LibGit2.GitRevWalker,LibGit2.GitHash}",
+    "page": "LibGit2",
+    "title": "LibGit2.push!",
+    "category": "method",
+    "text": "LibGit2.push!(w::GitRevWalker, cid::GitHash)\n\nStart the GitRevWalker walker at commit cid. This function can be used to apply a function to all commits since a certain year, by passing the first commit of that year as cid and then passing the resulting w to map.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.push_head!",
+    "page": "LibGit2",
+    "title": "LibGit2.push_head!",
+    "category": "function",
+    "text": "LibGit2.push_head!(w::GitRevWalker)\n\nPush the HEAD commit and its ancestors onto the GitRevWalker w. This ensures that HEAD and all its ancestor commits will be encountered during the walk.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.push_refspecs",
+    "page": "LibGit2",
+    "title": "LibGit2.push_refspecs",
+    "category": "function",
+    "text": "push_refspecs(rmt::GitRemote) -> Vector{String}\n\nGet the push refspecs for the specified rmt. These refspecs contain information about which branch(es) to push to.\n\nExamples\n\njulia> remote = LibGit2.get(LibGit2.GitRemote, repo, \"upstream\");\n\njulia> LibGit2.add_push!(repo, remote, \"refs/heads/master\");\n\njulia> close(remote);\n\njulia> remote = LibGit2.get(LibGit2.GitRemote, repo, \"upstream\");\n\njulia> LibGit2.push_refspecs(remote)\nString[\"refs/heads/master\"]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.raw",
+    "page": "LibGit2",
+    "title": "LibGit2.raw",
+    "category": "function",
+    "text": "raw(id::GitHash) -> Vector{UInt8}\n\nObtain the raw bytes of the GitHash as a vector of length 20.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.read_tree!",
+    "page": "LibGit2",
+    "title": "LibGit2.read_tree!",
+    "category": "function",
+    "text": "LibGit2.read_tree!(idx::GitIndex, tree::GitTree)\nLibGit2.read_tree!(idx::GitIndex, treehash::AbstractGitHash)\n\nRead the tree tree (or the tree pointed to by treehash in the repository owned by idx) into the index idx. The current index contents will be replaced.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.rebase!",
+    "page": "LibGit2",
+    "title": "LibGit2.rebase!",
+    "category": "function",
+    "text": "LibGit2.rebase!(repo::GitRepo, upstream::AbstractString=\"\", newbase::AbstractString=\"\")\n\nAttempt an automatic merge rebase of the current branch, from upstream if provided, or otherwise from the upstream tracking branch. newbase is the branch to rebase onto. By default this is upstream.\n\nIf any conflicts arise which cannot be automatically resolved, the rebase will abort, leaving the repository and working tree in its original state, and the function will throw a GitError. This is roughly equivalent to the following command line statement:\n\ngit rebase --merge [<upstream>]\nif [ -d \".git/rebase-merge\" ]; then\n    git rebase --abort\nfi\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.ref_list",
+    "page": "LibGit2",
+    "title": "LibGit2.ref_list",
+    "category": "function",
+    "text": "LibGit2.ref_list(repo::GitRepo) -> Vector{String}\n\nGet a list of all reference names in the repo repository.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.reftype",
+    "page": "LibGit2",
+    "title": "LibGit2.reftype",
+    "category": "function",
+    "text": "LibGit2.reftype(ref::GitReference) -> Cint\n\nReturn a Cint corresponding to the type of ref:\n\n0 if the reference is invalid\n1 if the reference is an object id\n2 if the reference is symbolic\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.remotes",
+    "page": "LibGit2",
+    "title": "LibGit2.remotes",
+    "category": "function",
+    "text": "LibGit2.remotes(repo::GitRepo)\n\nReturn a vector of the names of the remotes of repo.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.remove!",
+    "page": "LibGit2",
+    "title": "LibGit2.remove!",
+    "category": "function",
+    "text": "remove!(repo::GitRepo, files::AbstractString...)\nremove!(idx::GitIndex, files::AbstractString...)\n\nRemove all the files with paths specified by files in the index idx (or the index of the repo).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.reset",
+    "page": "LibGit2",
+    "title": "LibGit2.reset",
+    "category": "function",
+    "text": "reset(val::Integer, flag::Integer)\n\nUnset the bits of val indexed by flag, returning them to 0.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.reset!",
+    "page": "LibGit2",
+    "title": "LibGit2.reset!",
+    "category": "function",
+    "text": "reset!(payload, [config]) -> CredentialPayload\n\nReset the payload state back to the initial values so that it can be used again within the credential callback. If a config is provided the configuration will also be updated.\n\n\n\n\n\nUpdates some entries, determined by the pathspecs, in the index from the target commit tree.\n\n\n\n\n\nSets the current head to the specified commit oid and optionally resets the index and working tree to match.\n\n\n\n\n\ngit reset [<committish>] [–] <pathspecs>... \n\n\n\n\n\nreset!(repo::GitRepo, id::GitHash, mode::Cint=Consts.RESET_MIXED)\n\nReset the repository repo to its state at id, using one of three modes set by mode:\n\nConsts.RESET_SOFT - move HEAD to id.\nConsts.RESET_MIXED - default, move HEAD to id and reset the index to id.\nConsts.RESET_HARD - move HEAD to id, reset the index to id, and discard all working changes.\n\nExamples\n\n# fetch changes\nLibGit2.fetch(repo)\nisfile(joinpath(repo_path, our_file)) # will be false\n\n# fastforward merge the changes\nLibGit2.merge!(repo, fastforward=true)\n\n# because there was not any file locally, but there is\n# a file remotely, we need to reset the branch\nhead_oid = LibGit2.head_oid(repo)\nnew_head = LibGit2.reset!(repo, head_oid, LibGit2.Consts.RESET_HARD)\n\nIn this example, the remote which is being fetched from does have a file called our_file in its index, which is why we must reset.\n\nEquivalent to git reset [--soft | --mixed | --hard] <id>.\n\nExamples\n\nrepo = LibGit2.GitRepo(repo_path)\nhead_oid = LibGit2.head_oid(repo)\nopen(joinpath(repo_path, \"file1\"), \"w\") do f\n    write(f, \"111\n\")\nend\nLibGit2.add!(repo, \"file1\")\nmode = LibGit2.Consts.RESET_HARD\n# will discard the changes to file1\n# and unstage it\nnew_head = LibGit2.reset!(repo, head_oid, mode)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.restore",
+    "page": "LibGit2",
+    "title": "LibGit2.restore",
+    "category": "function",
+    "text": "restore(s::State, repo::GitRepo)\n\nReturn a repository repo to a previous State s, for example the HEAD of a branch before a merge attempt. s can be generated using the snapshot function.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.revcount",
+    "page": "LibGit2",
+    "title": "LibGit2.revcount",
+    "category": "function",
+    "text": "LibGit2.revcount(repo::GitRepo, commit1::AbstractString, commit2::AbstractString)\n\nList the number of revisions between commit1 and commit2 (committish OIDs in string form). Since commit1 and commit2 may be on different branches, revcount performs a \"left-right\" revision list (and count), returning a tuple of Ints - the number of left and right commits, respectively. A left (or right) commit refers to which side of a symmetric difference in a tree the commit is reachable from.\n\nEquivalent to git rev-list --left-right --count <commit1> <commit2>.\n\nExamples\n\nrepo = LibGit2.GitRepo(repo_path)\nrepo_file = open(joinpath(repo_path, test_file), \"a\")\nprintln(repo_file, \"hello world\")\nflush(repo_file)\nLibGit2.add!(repo, test_file)\ncommit_oid1 = LibGit2.commit(repo, \"commit 1\")\nprintln(repo_file, \"hello world again\")\nflush(repo_file)\nLibGit2.add!(repo, test_file)\ncommit_oid2 = LibGit2.commit(repo, \"commit 2\")\nLibGit2.revcount(repo, string(commit_oid1), string(commit_oid2))\n\nThis will return (-1, 0).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.set_remote_url",
+    "page": "LibGit2",
+    "title": "LibGit2.set_remote_url",
+    "category": "function",
+    "text": "set_remote_url(repo::GitRepo, remote_name, url)\nset_remote_url(repo::String, remote_name, url)\n\nSet both the fetch and push url for remote_name for the GitRepo or the git repository located at path. Typically git repos use \"origin\" as the remote name.\n\nExamples\n\nrepo_path = joinpath(tempdir(), \"Example\")\nrepo = LibGit2.init(repo_path)\nLibGit2.set_remote_url(repo, \"upstream\", \"https://github.com/JuliaLang/Example.jl\")\nLibGit2.set_remote_url(repo_path, \"upstream2\", \"https://github.com/JuliaLang/Example2.jl\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.shortname",
+    "page": "LibGit2",
+    "title": "LibGit2.shortname",
+    "category": "function",
+    "text": "LibGit2.shortname(ref::GitReference)\n\nReturn a shortened version of the name of ref that\'s \"human-readable\".\n\njulia> repo = LibGit2.GitRepo(path_to_repo);\n\njulia> branch_ref = LibGit2.head(repo);\n\njulia> LibGit2.name(branch_ref)\n\"refs/heads/master\"\n\njulia> LibGit2.shortname(branch_ref)\n\"master\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.snapshot",
+    "page": "LibGit2",
+    "title": "LibGit2.snapshot",
+    "category": "function",
+    "text": "snapshot(repo::GitRepo) -> State\n\nTake a snapshot of the current state of the repository repo, storing the current HEAD, index, and any uncommitted work. The output State can be used later during a call to restore to return the repository to the snapshotted state.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.split_cfg_entry",
+    "page": "LibGit2",
+    "title": "LibGit2.split_cfg_entry",
+    "category": "function",
+    "text": "LibGit2.split_cfg_entry(ce::LibGit2.ConfigEntry) -> Tuple{String,String,String,String}\n\nBreak the ConfigEntry up to the following pieces: section, subsection, name, and value.\n\nExamples\n\nGiven the git configuration file containing:\n\n[credential \"https://example.com\"]\n    username = me\n\nThe ConfigEntry would look like the following:\n\njulia> entry\nConfigEntry(\"credential.https://example.com.username\", \"me\")\n\njulia> LibGit2.split_cfg_entry(entry)\n(\"credential\", \"https://example.com\", \"username\", \"me\")\n\nRefer to the git config syntax documentation for more details.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.status",
+    "page": "LibGit2",
+    "title": "LibGit2.status",
+    "category": "function",
+    "text": "LibGit2.status(repo::GitRepo, path::String) -> Union{Cuint, Cvoid}\n\nLookup the status of the file at path in the git repository repo. For instance, this can be used to check if the file at path has been modified and needs to be staged and committed.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.stage",
+    "page": "LibGit2",
+    "title": "LibGit2.stage",
+    "category": "function",
+    "text": "stage(ie::IndexEntry) -> Cint\n\nGet the stage number of ie. The stage number 0 represents the current state of the working tree, but other numbers can be used in the case of a merge conflict. In such a case, the various stage numbers on an IndexEntry describe which side(s) of the conflict the current state of the file belongs to. Stage 0 is the state before the attempted merge, stage 1 is the changes which have been made locally, stages 2 and larger are for changes from other branches (for instance, in the case of a multi-branch \"octopus\" merge, stages 2, 3, and 4 might be used).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.tag_create",
+    "page": "LibGit2",
+    "title": "LibGit2.tag_create",
+    "category": "function",
+    "text": "LibGit2.tag_create(repo::GitRepo, tag::AbstractString, commit; kwargs...)\n\nCreate a new git tag tag (e.g. \"v0.5\") in the repository repo, at the commit commit.\n\nThe keyword arguments are:\n\nmsg::AbstractString=\"\": the message for the tag.\nforce::Bool=false: if true, existing references will be overwritten.\nsig::Signature=Signature(repo): the tagger\'s signature.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.tag_delete",
+    "page": "LibGit2",
+    "title": "LibGit2.tag_delete",
+    "category": "function",
+    "text": "LibGit2.tag_delete(repo::GitRepo, tag::AbstractString)\n\nRemove the git tag tag from the repository repo.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.tag_list",
+    "page": "LibGit2",
+    "title": "LibGit2.tag_list",
+    "category": "function",
+    "text": "LibGit2.tag_list(repo::GitRepo) -> Vector{String}\n\nGet a list of all tags in the git repository repo.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.target",
+    "page": "LibGit2",
+    "title": "LibGit2.target",
+    "category": "function",
+    "text": "LibGit2.target(tag::GitTag)\n\nThe GitHash of the target object of tag.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.toggle",
+    "page": "LibGit2",
+    "title": "LibGit2.toggle",
+    "category": "function",
+    "text": "toggle(val::Integer, flag::Integer)\n\nFlip the bits of val indexed by flag, so that if a bit is 0 it will be 1 after the toggle, and vice-versa.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.transact",
+    "page": "LibGit2",
+    "title": "LibGit2.transact",
+    "category": "function",
+    "text": "transact(f::Function, repo::GitRepo)\n\nApply function f to the git repository repo, taking a snapshot before applying f. If an error occurs within f, repo will be returned to its snapshot state using restore. The error which occurred will be rethrown, but the state of repo will not be corrupted.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.treewalk",
+    "page": "LibGit2",
+    "title": "LibGit2.treewalk",
+    "category": "function",
+    "text": "treewalk(f, tree::GitTree, post::Bool=false)\n\nTraverse the entries in tree and its subtrees in post or pre order. Preorder means beginning at the root and then traversing the leftmost subtree (and recursively on down through that subtree\'s leftmost subtrees) and moving right through the subtrees. Postorder means beginning at the bottom of the leftmost subtree, traversing upwards through it, then traversing the next right subtree (again beginning at the bottom) and finally visiting the tree root last of all.\n\nThe function parameter f should have following signature:\n\n(String, GitTreeEntry) -> Cint\n\nA negative value returned from f stops the tree walk. A positive value means that the entry will be skipped if post is false.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.upstream",
+    "page": "LibGit2",
+    "title": "LibGit2.upstream",
+    "category": "function",
+    "text": "upstream(ref::GitReference) -> Union{GitReference, Nothing}\n\nDetermine if the branch containing ref has a specified upstream branch.\n\nReturn either a GitReference to the upstream branch if it exists, or nothing if the requested branch does not have an upstream counterpart.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.update!",
+    "page": "LibGit2",
+    "title": "LibGit2.update!",
+    "category": "function",
+    "text": "update!(repo::GitRepo, files::AbstractString...)\nupdate!(idx::GitIndex, files::AbstractString...)\n\nUpdate all the files with paths specified by files in the index idx (or the index of the repo). Match the state of each file in the index with the current state on disk, removing it if it has been removed on disk, or updating its entry in the object database.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.url",
+    "page": "LibGit2",
+    "title": "LibGit2.url",
+    "category": "function",
+    "text": "url(rmt::GitRemote)\n\nGet the fetch URL of a remote git repository.\n\nExamples\n\njulia> repo_url = \"https://github.com/JuliaLang/Example.jl\";\n\njulia> repo = LibGit2.init(mktempdir());\n\njulia> remote = LibGit2.GitRemote(repo, \"origin\", repo_url);\n\njulia> LibGit2.url(remote)\n\"https://github.com/JuliaLang/Example.jl\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.version",
+    "page": "LibGit2",
+    "title": "LibGit2.version",
+    "category": "function",
+    "text": "version() -> VersionNumber\n\nReturn the version of libgit2 in use, as a VersionNumber.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.with",
+    "page": "LibGit2",
+    "title": "LibGit2.with",
+    "category": "function",
+    "text": "with(f::Function, obj)\n\nResource management helper function. Applies f to obj, making sure to call close on obj after f successfully returns or throws an error. Ensures that allocated git resources are finalized as soon as they are no longer needed.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.with_warn",
+    "page": "LibGit2",
+    "title": "LibGit2.with_warn",
+    "category": "function",
+    "text": "with_warn(f::Function, ::Type{T}, args...)\n\nResource management helper function. Apply f to args, first constructing an instance of type T from args. Makes sure to call close on the resulting object after f successfully returns or throws an error. Ensures that allocated git resources are finalized as soon as they are no longer needed. If an error is thrown by f, a warning is shown containing the error.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.workdir",
+    "page": "LibGit2",
+    "title": "LibGit2.workdir",
+    "category": "function",
+    "text": "LibGit2.workdir(repo::GitRepo)\n\nReturn the location of the working directory of repo. This will throw an error for bare repositories.\n\nnote: Note\nThis will typically be the parent directory of gitdir(repo), but can be different in some cases: e.g. if either the core.worktree configuration variable or the GIT_WORK_TREE environment variable is set.\n\nSee also gitdir, path.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.GitObject-Tuple{LibGit2.GitTreeEntry}",
+    "page": "LibGit2",
+    "title": "LibGit2.GitObject",
+    "category": "method",
+    "text": "(::Type{T})(te::GitTreeEntry) where T<:GitObject\n\nGet the git object to which te refers and return it as its actual type (the type entrytype would show), for instance a GitBlob or GitTag.\n\nExamples\n\ntree = LibGit2.GitTree(repo, \"HEAD^{tree}\")\ntree_entry = tree[1]\nblob = LibGit2.GitBlob(tree_entry)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.UserPasswordCredential",
+    "page": "LibGit2",
+    "title": "LibGit2.UserPasswordCredential",
+    "category": "type",
+    "text": "Credential that support only user and password parameters\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.SSHCredential",
+    "page": "LibGit2",
+    "title": "LibGit2.SSHCredential",
+    "category": "type",
+    "text": "SSH credential type\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.isfilled",
+    "page": "LibGit2",
+    "title": "LibGit2.isfilled",
+    "category": "function",
+    "text": "isfilled(cred::AbstractCredential) -> Bool\n\nVerifies that a credential is ready for use in authentication.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.CachedCredentials",
+    "page": "LibGit2",
+    "title": "LibGit2.CachedCredentials",
+    "category": "type",
+    "text": "Caches credential information for re-use\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.CredentialPayload",
+    "page": "LibGit2",
+    "title": "LibGit2.CredentialPayload",
+    "category": "type",
+    "text": "LibGit2.CredentialPayload\n\nRetains the state between multiple calls to the credential callback for the same URL. A CredentialPayload instance is expected to be reset! whenever it will be used with a different URL.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.approve",
+    "page": "LibGit2",
+    "title": "LibGit2.approve",
+    "category": "function",
+    "text": "approve(payload::CredentialPayload; shred::Bool=true) -> Nothing\n\nStore the payload credential for re-use in a future authentication. Should only be called when authentication was successful.\n\nThe shred keyword controls whether sensitive information in the payload credential field should be destroyed. Should only be set to false during testing.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#LibGit2.reject",
+    "page": "LibGit2",
+    "title": "LibGit2.reject",
+    "category": "function",
+    "text": "reject(payload::CredentialPayload; shred::Bool=true) -> Nothing\n\nDiscard the payload credential from begin re-used in future authentication. Should only be called when authentication was unsuccessful.\n\nThe shred keyword controls whether sensitive information in the payload credential field should be destroyed. Should only be set to false during testing.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LibGit2/#Functionality-1",
+    "page": "LibGit2",
+    "title": "Functionality",
+    "category": "section",
+    "text": "Some of this documentation assumes some prior knowledge of the libgit2 API. For more information on some of the objects and methods referenced here, consult the upstream libgit2 API reference.LibGit2.Buffer\nLibGit2.CheckoutOptions\nLibGit2.CloneOptions\nLibGit2.DescribeOptions\nLibGit2.DescribeFormatOptions\nLibGit2.DiffDelta\nLibGit2.DiffFile\nLibGit2.DiffOptionsStruct\nLibGit2.FetchHead\nLibGit2.FetchOptions\nLibGit2.GitAnnotated\nLibGit2.GitBlame\nLibGit2.GitBlob\nLibGit2.GitCommit\nLibGit2.GitHash\nLibGit2.GitObject\nLibGit2.GitRemote\nLibGit2.GitRemoteAnon\nLibGit2.GitRepo\nLibGit2.GitRepoExt\nLibGit2.GitRevWalker\nLibGit2.GitShortHash\nLibGit2.GitSignature\nLibGit2.GitStatus\nLibGit2.GitTag\nLibGit2.GitTree\nLibGit2.IndexEntry\nLibGit2.IndexTime\nLibGit2.BlameOptions\nLibGit2.MergeOptions\nLibGit2.ProxyOptions\nLibGit2.PushOptions\nLibGit2.RebaseOperation\nLibGit2.RebaseOptions\nLibGit2.RemoteCallbacks\nLibGit2.SignatureStruct\nLibGit2.StatusEntry\nLibGit2.StatusOptions\nLibGit2.StrArrayStruct\nLibGit2.TimeStruct\nLibGit2.add!\nLibGit2.add_fetch!\nLibGit2.add_push!\nLibGit2.addblob!\nLibGit2.author\nLibGit2.authors\nLibGit2.branch\nLibGit2.branch!\nLibGit2.checkout!\nLibGit2.clone\nLibGit2.commit\nLibGit2.committer\nLibGit2.count\nLibGit2.counthunks\nLibGit2.create_branch\nLibGit2.credentials_callback\nLibGit2.credentials_cb\nLibGit2.default_signature\nLibGit2.delete_branch\nLibGit2.diff_files\nLibGit2.entryid\nLibGit2.entrytype\nLibGit2.fetch\nLibGit2.fetchheads\nLibGit2.fetch_refspecs\nLibGit2.fetchhead_foreach_cb\nLibGit2.merge_base\nLibGit2.merge!(::LibGit2.GitRepo; ::Any...)\nLibGit2.merge!(::LibGit2.GitRepo, ::Vector{LibGit2.GitAnnotated}; ::LibGit2.MergeOptions, ::LibGit2.CheckoutOptions)\nLibGit2.merge!(::LibGit2.GitRepo, ::Vector{LibGit2.GitAnnotated}, ::Bool; ::LibGit2.MergeOptions, ::LibGit2.CheckoutOptions)\nLibGit2.ffmerge!\nLibGit2.fullname\nLibGit2.features\nLibGit2.filename\nLibGit2.filemode\nLibGit2.gitdir\nLibGit2.git_url\nLibGit2.@githash_str\nLibGit2.head\nLibGit2.head!\nLibGit2.head_oid\nLibGit2.headname\nLibGit2.init\nLibGit2.is_ancestor_of\nLibGit2.isbinary\nLibGit2.iscommit\nLibGit2.isdiff\nLibGit2.isdirty\nLibGit2.isorphan\nLibGit2.isset\nLibGit2.iszero\nLibGit2.lookup_branch\nLibGit2.map\nLibGit2.mirror_callback\nLibGit2.mirror_cb\nLibGit2.message\nLibGit2.merge_analysis\nLibGit2.name\nLibGit2.need_update\nLibGit2.objtype\nLibGit2.path\nLibGit2.peel\nLibGit2.posixpath\nLibGit2.push\nLibGit2.push!(::LibGit2.GitRevWalker, ::LibGit2.GitHash)\nLibGit2.push_head!\nLibGit2.push_refspecs\nLibGit2.raw\nLibGit2.read_tree!\nLibGit2.rebase!\nLibGit2.ref_list\nLibGit2.reftype\nLibGit2.remotes\nLibGit2.remove!\nLibGit2.reset\nLibGit2.reset!\nLibGit2.restore\nLibGit2.revcount\nLibGit2.set_remote_url\nLibGit2.shortname\nLibGit2.snapshot\nLibGit2.split_cfg_entry\nLibGit2.status\nLibGit2.stage\nLibGit2.tag_create\nLibGit2.tag_delete\nLibGit2.tag_list\nLibGit2.target\nLibGit2.toggle\nLibGit2.transact\nLibGit2.treewalk\nLibGit2.upstream\nLibGit2.update!\nLibGit2.url\nLibGit2.version\nLibGit2.with\nLibGit2.with_warn\nLibGit2.workdir\nLibGit2.GitObject(::LibGit2.GitTreeEntry)\nLibGit2.UserPasswordCredential\nLibGit2.SSHCredential\nLibGit2.isfilled\nLibGit2.CachedCredentials\nLibGit2.CredentialPayload\nLibGit2.approve\nLibGit2.rejectDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Libdl/#",
+    "page": "Dynamic Linker",
+    "title": "Dynamic Linker",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.dlopen",
+    "page": "Dynamic Linker",
+    "title": "Libdl.dlopen",
+    "category": "function",
+    "text": "dlopen(libfile::AbstractString [, flags::Integer])\n\nLoad a shared library, returning an opaque handle.\n\nThe extension given by the constant dlext (.so, .dll, or .dylib) can be omitted from the libfile string, as it is automatically appended if needed.   If libfile is not an absolute path name, then the paths in the array DL_LOAD_PATH are searched for libfile, followed by the system load path.\n\nThe optional flags argument is a bitwise-or of zero or more of RTLD_LOCAL, RTLD_GLOBAL, RTLD_LAZY, RTLD_NOW, RTLD_NODELETE, RTLD_NOLOAD, RTLD_DEEPBIND, and RTLD_FIRST. These are converted to the corresponding flags of the POSIX (and/or GNU libc and/or MacOS) dlopen command, if possible, or are ignored if the specified functionality is not available on the current platform. The default flags are platform specific. On MacOS the default dlopen flags are RTLD_LAZY|RTLD_DEEPBIND|RTLD_GLOBAL while on other platforms the defaults are RTLD_LAZY|RTLD_DEEPBIND|RTLD_LOCAL. An important usage of these flags is to specify non default behavior for when the dynamic library loader binds library references to exported symbols and if the bound references are put into process local or global scope. For instance RTLD_LAZY|RTLD_DEEPBIND|RTLD_GLOBAL allows the library\'s symbols to be available for usage in other shared libraries, addressing situations where there are dependencies between shared libraries.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.dlopen_e",
+    "page": "Dynamic Linker",
+    "title": "Libdl.dlopen_e",
+    "category": "function",
+    "text": "dlopen_e(libfile::AbstractString [, flags::Integer])\n\nSimilar to dlopen, except returns a NULL pointer instead of raising errors.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.RTLD_NOW",
+    "page": "Dynamic Linker",
+    "title": "Libdl.RTLD_NOW",
+    "category": "constant",
+    "text": "RTLD_DEEPBIND\nRTLD_FIRST\nRTLD_GLOBAL\nRTLD_LAZY\nRTLD_LOCAL\nRTLD_NODELETE\nRTLD_NOLOAD\nRTLD_NOW\n\nEnum constant for dlopen. See your platform man page for details, if applicable.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.dlsym",
+    "page": "Dynamic Linker",
+    "title": "Libdl.dlsym",
+    "category": "function",
+    "text": "dlsym(handle, sym)\n\nLook up a symbol from a shared library handle, return callable function pointer on success.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.dlsym_e",
+    "page": "Dynamic Linker",
+    "title": "Libdl.dlsym_e",
+    "category": "function",
+    "text": "dlsym_e(handle, sym)\n\nLook up a symbol from a shared library handle, silently return NULL pointer on lookup failure.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.dlclose",
+    "page": "Dynamic Linker",
+    "title": "Libdl.dlclose",
+    "category": "function",
+    "text": "dlclose(handle)\n\nClose shared library referenced by handle.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.dlext",
+    "page": "Dynamic Linker",
+    "title": "Libdl.dlext",
+    "category": "constant",
+    "text": "dlext\n\nFile extension for dynamic libraries (e.g. dll, dylib, so) on the current platform.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Libdl.find_library",
+    "page": "Dynamic Linker",
+    "title": "Libdl.find_library",
+    "category": "function",
+    "text": "find_library(names, locations)\n\nSearches for the first library in names in the paths in the locations list, DL_LOAD_PATH, or system library paths (in that order) which can successfully be dlopen\'d. On success, the return value will be one of the names (potentially prefixed by one of the paths in locations). This string can be assigned to a global const and used as the library name in future ccall\'s. On failure, it returns the empty string.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Base.DL_LOAD_PATH",
+    "page": "Dynamic Linker",
+    "title": "Base.DL_LOAD_PATH",
+    "category": "constant",
+    "text": "DL_LOAD_PATH\n\nWhen calling dlopen, the paths in this list will be searched first, in order, before searching the system locations for a valid library handle.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Libdl/#Dynamic-Linker-1",
+    "page": "Dynamic Linker",
+    "title": "Dynamic Linker",
+    "category": "section",
+    "text": "Libdl.dlopen\nLibdl.dlopen_e\nLibdl.RTLD_NOW\nLibdl.dlsym\nLibdl.dlsym_e\nLibdl.dlclose\nLibdl.dlext\nLibdl.find_library\nLibdl.DL_LOAD_PATH"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#",
+    "page": "Linear Algebra",
+    "title": "Linear Algebra",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Linear-Algebra-1",
+    "page": "Linear Algebra",
+    "title": "Linear Algebra",
+    "category": "section",
+    "text": "DocTestSetup = :(using LinearAlgebra)In addition to (and as part of) its support for multi-dimensional arrays, Julia provides native implementations of many common and useful linear algebra operations. Basic operations, such as tr, det, and inv are all supported:julia> A = [1 2 3; 4 1 6; 7 8 1]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  1  6\n 7  8  1\n\njulia> tr(A)\n3\n\njulia> det(A)\n104.0\n\njulia> inv(A)\n3×3 Array{Float64,2}:\n -0.451923   0.211538    0.0865385\n  0.365385  -0.192308    0.0576923\n  0.240385   0.0576923  -0.0673077As well as other useful operations, such as finding eigenvalues or eigenvectors:julia> A = [-4. -17.; 2. 2.]\n2×2 Array{Float64,2}:\n -4.0  -17.0\n  2.0    2.0\n\njulia> eigvals(A)\n2-element Array{Complex{Float64},1}:\n -1.0 + 5.0im\n -1.0 - 5.0im\n\njulia> eigvecs(A)\n2×2 Array{Complex{Float64},2}:\n  0.945905+0.0im        0.945905-0.0im\n -0.166924-0.278207im  -0.166924+0.278207imIn addition, Julia provides many factorizations which can be used to speed up problems such as linear solve or matrix exponentiation by pre-factorizing a matrix into a form more amenable (for performance or memory reasons) to the problem. See the documentation on factorize for more information. As an example:julia> A = [1.5 2 -4; 3 -1 -6; -10 2.3 4]\n3×3 Array{Float64,2}:\n   1.5   2.0  -4.0\n   3.0  -1.0  -6.0\n -10.0   2.3   4.0\n\njulia> factorize(A)\nLU{Float64,Array{Float64,2}}\nL factor:\n3×3 Array{Float64,2}:\n  1.0    0.0       0.0\n -0.15   1.0       0.0\n -0.3   -0.132196  1.0\nU factor:\n3×3 Array{Float64,2}:\n -10.0  2.3     4.0\n   0.0  2.345  -3.4\n   0.0  0.0    -5.24947Since A is not Hermitian, symmetric, triangular, tridiagonal, or bidiagonal, an LU factorization may be the best we can do. Compare with:julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]\n3×3 Array{Float64,2}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> factorize(B)\nBunchKaufman{Float64,Array{Float64,2}}\nD factor:\n3×3 Tridiagonal{Float64,Array{Float64,1}}:\n -1.64286   0.0   ⋅\n  0.0      -2.8  0.0\n   ⋅        0.0  5.0\nU factor:\n3×3 UnitUpperTriangular{Float64,Array{Float64,2}}:\n 1.0  0.142857  -0.8\n  ⋅   1.0       -0.6\n  ⋅    ⋅         1.0\npermutation:\n3-element Array{Int64,1}:\n 1\n 2\n 3Here, Julia was able to detect that B is in fact symmetric, and used a more appropriate factorization. Often it\'s possible to write more efficient code for a matrix that is known to have certain properties e.g. it is symmetric, or tridiagonal. Julia provides some special types so that you can \"tag\" matrices as having these properties. For instance:julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]\n3×3 Array{Float64,2}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> sB = Symmetric(B)\n3×3 Symmetric{Float64,Array{Float64,2}}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0sB has been tagged as a matrix that\'s (real) symmetric, so for later operations we might perform on it, such as eigenfactorization or computing matrix-vector products, efficiencies can be found by only referencing half of it. For example:julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]\n3×3 Array{Float64,2}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> sB = Symmetric(B)\n3×3 Symmetric{Float64,Array{Float64,2}}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> x = [1; 2; 3]\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> sB\\x\n3-element Array{Float64,1}:\n -1.7391304347826084\n -1.1086956521739126\n -1.4565217391304346The \\ operation here performs the linear solution. The left-division operator is pretty powerful and it\'s easy to write compact, readable code that is flexible enough to solve all sorts of systems of linear equations."
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Special-matrices-1",
+    "page": "Linear Algebra",
+    "title": "Special matrices",
+    "category": "section",
+    "text": "Matrices with special symmetries and structures arise often in linear algebra and are frequently associated with various matrix factorizations. Julia features a rich collection of special matrix types, which allow for fast computation with specialized routines that are specially developed for particular matrix types.The following tables summarize the types of special matrices that have been implemented in Julia, as well as whether hooks to various optimized methods for them in LAPACK are available.Type Description\nSymmetric Symmetric matrix\nHermitian Hermitian matrix\nUpperTriangular Upper triangular matrix\nLowerTriangular Lower triangular matrix\nTridiagonal Tridiagonal matrix\nSymTridiagonal Symmetric tridiagonal matrix\nBidiagonal Upper/lower bidiagonal matrix\nDiagonal Diagonal matrix\nUniformScaling Uniform scaling operator"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Elementary-operations-1",
+    "page": "Linear Algebra",
+    "title": "Elementary operations",
+    "category": "section",
+    "text": "Matrix type + - * \\ Other functions with optimized methods\nSymmetric    MV inv, sqrt, exp\nHermitian    MV inv, sqrt, exp\nUpperTriangular   MV MV inv, det\nLowerTriangular   MV MV inv, det\nSymTridiagonal M M MS MV eigmax, eigmin\nTridiagonal M M MS MV \nBidiagonal M M MS MV \nDiagonal M M MV MV inv, det, logdet, /\nUniformScaling M M MVS MVS /Legend:Key Description\nM (matrix) An optimized method for matrix-matrix operations is available\nV (vector) An optimized method for matrix-vector operations is available\nS (scalar) An optimized method for matrix-scalar operations is available"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Matrix-factorizations-1",
+    "page": "Linear Algebra",
+    "title": "Matrix factorizations",
+    "category": "section",
+    "text": "Matrix type LAPACK eigen eigvals eigvecs svd svdvals\nSymmetric SY  ARI   \nHermitian HE  ARI   \nUpperTriangular TR A A A  \nLowerTriangular TR A A A  \nSymTridiagonal ST A ARI AV  \nTridiagonal GT     \nBidiagonal BD    A A\nDiagonal DI  A   Legend:Key Description Example\nA (all) An optimized method to find all the characteristic values and/or vectors is available e.g. eigvals(M)\nR (range) An optimized method to find the ilth through the ihth characteristic values are available eigvals(M, il, ih)\nI (interval) An optimized method to find the characteristic values in the interval [vl, vh] is available eigvals(M, vl, vh)\nV (vectors) An optimized method to find the characteristic vectors corresponding to the characteristic values x=[x1, x2,...] is available eigvecs(M, x)"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#The-uniform-scaling-operator-1",
+    "page": "Linear Algebra",
+    "title": "The uniform scaling operator",
+    "category": "section",
+    "text": "A UniformScaling operator represents a scalar times the identity operator, λ*I. The identity operator I is defined as a constant and is an instance of UniformScaling. The size of these operators are generic and match the other matrix in the binary operations +, -, * and \\. For A+I and A-I this means that A must be square. Multiplication with the identity operator I is a noop (except for checking that the scaling factor is one) and therefore almost without overhead.To see the UniformScaling operator in action:julia> U = UniformScaling(2);\n\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> a + U\n2×2 Array{Int64,2}:\n 3  2\n 3  6\n\njulia> a * U\n2×2 Array{Int64,2}:\n 2  4\n 6  8\n\njulia> [a U]\n2×4 Array{Int64,2}:\n 1  2  2  0\n 3  4  0  2\n\njulia> b = [1 2 3; 4 5 6]\n2×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n\njulia> b - U\nERROR: DimensionMismatch(\"matrix is not square: dimensions are (2, 3)\")\nStacktrace:\n[...]"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#man-linalg-factorizations-1",
+    "page": "Linear Algebra",
+    "title": "Matrix factorizations",
+    "category": "section",
+    "text": "Matrix factorizations (a.k.a. matrix decompositions) compute the factorization of a matrix into a product of matrices, and are one of the central concepts in linear algebra.The following table summarizes the types of matrix factorizations that have been implemented in Julia. Details of their associated methods can be found in the Standard Functions section of the Linear Algebra documentation.Type Description\nCholesky Cholesky factorization\nCholeskyPivoted Pivoted Cholesky factorization\nLU LU factorization\nLUTridiagonal LU factorization for Tridiagonal matrices\nQR QR factorization\nQRCompactWY Compact WY form of the QR factorization\nQRPivoted Pivoted QR factorization\nHessenberg Hessenberg decomposition\nEigen Spectral decomposition\nSVD Singular value decomposition\nGeneralizedSVD Generalized SVD"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.:*-Tuple{AbstractArray{T,2} where T,AbstractArray{T,2} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.:*",
+    "category": "method",
+    "text": "*(A::AbstractMatrix, B::AbstractMatrix)\n\nMatrix multiplication.\n\nExamples\n\njulia> [1 1; 0 1] * [1 0; 1 1]\n2×2 Array{Int64,2}:\n 2  1\n 1  1\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.:\\-Tuple{AbstractArray{T,2} where T,Union{AbstractArray{T,1}, AbstractArray{T,2}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.:\\",
+    "category": "method",
+    "text": "\\(A, B)\n\nMatrix division using a polyalgorithm. For input matrices A and B, the result X is such that A*X == B when A is square. The solver that is used depends upon the structure of A.  If A is upper or lower triangular (or diagonal), no factorization of A is required and the system is solved with either forward or backward substitution. For non-triangular square matrices, an LU factorization is used.\n\nFor rectangular A the result is the minimum-norm least squares solution computed by a pivoted QR factorization of A and a rank estimate of A based on the R factor.\n\nWhen A is sparse, a similar polyalgorithm is used. For indefinite matrices, the LDLt factorization does not use pivoting during the numerical factorization and therefore the procedure can fail even for invertible matrices.\n\nExamples\n\njulia> A = [1 0; 1 -2]; B = [32; -4];\n\njulia> X = A \\ B\n2-element Array{Float64,1}:\n 32.0\n 18.0\n\njulia> A * X == B\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.dot",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.dot",
+    "category": "function",
+    "text": "dot(x, y)\nx ⋅ y\n\nFor any iterable containers x and y (including arrays of any dimension) of numbers (or any element type for which dot is defined), compute the dot product (or inner product or scalar product), i.e. the sum of dot(x[i],y[i]), as if they were vectors.\n\nx ⋅ y (where ⋅ can be typed by tab-completing \\cdot in the REPL) is a synonym for dot(x, y).\n\nExamples\n\njulia> dot(1:5, 2:6)\n70\n\njulia> x = fill(2., (5,5));\n\njulia> y = fill(3., (5,5));\n\njulia> dot(x, y)\n150.0\n\n\n\n\n\ndot(x, y)\nx ⋅ y\n\nCompute the dot product between two vectors. For complex vectors, the first vector is conjugated. When the vectors have equal lengths, calling dot is semantically equivalent to sum(dot(vx,vy) for (vx,vy) in zip(x, y)).\n\nExamples\n\njulia> dot([1; 1], [2; 3])\n5\n\njulia> dot([im; im], [1; 1])\n0 - 2im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.cross",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.cross",
+    "category": "function",
+    "text": "cross(x, y)\n×(x,y)\n\nCompute the cross product of two 3-vectors.\n\nExamples\n\njulia> a = [0;1;0]\n3-element Array{Int64,1}:\n 0\n 1\n 0\n\njulia> b = [0;0;1]\n3-element Array{Int64,1}:\n 0\n 0\n 1\n\njulia> cross(a,b)\n3-element Array{Int64,1}:\n 1\n 0\n 0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.factorize",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.factorize",
+    "category": "function",
+    "text": "factorize(A)\n\nCompute a convenient factorization of A, based upon the type of the input matrix. factorize checks A to see if it is symmetric/triangular/etc. if A is passed as a generic matrix. factorize checks every element of A to verify/rule out each property. It will short-circuit as soon as it can rule out symmetry/triangular structure. The return value can be reused for efficient solving of multiple systems. For example: A=factorize(A); x=A\\b; y=A\\C.\n\nProperties of A type of factorization\nPositive-definite Cholesky (see cholesky)\nDense Symmetric/Hermitian Bunch-Kaufman (see bunchkaufman)\nSparse Symmetric/Hermitian LDLt (see ldlt)\nTriangular Triangular\nDiagonal Diagonal\nBidiagonal Bidiagonal\nTridiagonal LU (see lu)\nSymmetric real tridiagonal LDLt (see ldlt)\nGeneral square LU (see lu)\nGeneral non-square QR (see qr)\n\nIf factorize is called on a Hermitian positive-definite matrix, for instance, then factorize will return a Cholesky factorization.\n\nExamples\n\njulia> A = Array(Bidiagonal(fill(1.0, (5, 5)), :U))\n5×5 Array{Float64,2}:\n 1.0  1.0  0.0  0.0  0.0\n 0.0  1.0  1.0  0.0  0.0\n 0.0  0.0  1.0  1.0  0.0\n 0.0  0.0  0.0  1.0  1.0\n 0.0  0.0  0.0  0.0  1.0\n\njulia> factorize(A) # factorize will check to see that A is already factorized\n5×5 Bidiagonal{Float64,Array{Float64,1}}:\n 1.0  1.0   ⋅    ⋅    ⋅\n  ⋅   1.0  1.0   ⋅    ⋅\n  ⋅    ⋅   1.0  1.0   ⋅\n  ⋅    ⋅    ⋅   1.0  1.0\n  ⋅    ⋅    ⋅    ⋅   1.0\n\nThis returns a 5×5 Bidiagonal{Float64}, which can now be passed to other linear algebra functions (e.g. eigensolvers) which will use specialized methods for Bidiagonal types.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.Diagonal",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.Diagonal",
+    "category": "type",
+    "text": "Diagonal(A::AbstractMatrix)\n\nConstruct a matrix from the diagonal of A.\n\nExamples\n\njulia> A = [1 2 3; 4 5 6; 7 8 9]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n 7  8  9\n\njulia> Diagonal(A)\n3×3 Diagonal{Int64,Array{Int64,1}}:\n 1  ⋅  ⋅\n ⋅  5  ⋅\n ⋅  ⋅  9\n\n\n\n\n\nDiagonal(V::AbstractVector)\n\nConstruct a matrix with V as its diagonal.\n\nExamples\n\njulia> V = [1, 2]\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> Diagonal(V)\n2×2 Diagonal{Int64,Array{Int64,1}}:\n 1  ⋅\n ⋅  2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.Bidiagonal",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.Bidiagonal",
+    "category": "type",
+    "text": "Bidiagonal(dv::V, ev::V, uplo::Symbol) where V <: AbstractVector\n\nConstructs an upper (uplo=:U) or lower (uplo=:L) bidiagonal matrix using the given diagonal (dv) and off-diagonal (ev) vectors. The result is of type Bidiagonal and provides efficient specialized linear solvers, but may be converted into a regular matrix with convert(Array, _) (or Array(_) for short). The length of ev must be one less than the length of dv.\n\nExamples\n\njulia> dv = [1, 2, 3, 4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> ev = [7, 8, 9]\n3-element Array{Int64,1}:\n 7\n 8\n 9\n\njulia> Bu = Bidiagonal(dv, ev, :U) # ev is on the first superdiagonal\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  7  ⋅  ⋅\n ⋅  2  8  ⋅\n ⋅  ⋅  3  9\n ⋅  ⋅  ⋅  4\n\njulia> Bl = Bidiagonal(dv, ev, :L) # ev is on the first subdiagonal\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  ⋅  ⋅  ⋅\n 7  2  ⋅  ⋅\n ⋅  8  3  ⋅\n ⋅  ⋅  9  4\n\n\n\n\n\nBidiagonal(A, uplo::Symbol)\n\nConstruct a Bidiagonal matrix from the main diagonal of A and its first super- (if uplo=:U) or sub-diagonal (if uplo=:L).\n\nExamples\n\njulia> A = [1 1 1 1; 2 2 2 2; 3 3 3 3; 4 4 4 4]\n4×4 Array{Int64,2}:\n 1  1  1  1\n 2  2  2  2\n 3  3  3  3\n 4  4  4  4\n\njulia> Bidiagonal(A, :U) # contains the main diagonal and first superdiagonal of A\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  1  ⋅  ⋅\n ⋅  2  2  ⋅\n ⋅  ⋅  3  3\n ⋅  ⋅  ⋅  4\n\njulia> Bidiagonal(A, :L) # contains the main diagonal and first subdiagonal of A\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  ⋅  ⋅  ⋅\n 2  2  ⋅  ⋅\n ⋅  3  3  ⋅\n ⋅  ⋅  4  4\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.SymTridiagonal",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.SymTridiagonal",
+    "category": "type",
+    "text": "SymTridiagonal(dv::V, ev::V) where V <: AbstractVector\n\nConstruct a symmetric tridiagonal matrix from the diagonal (dv) and first sub/super-diagonal (ev), respectively. The result is of type SymTridiagonal and provides efficient specialized eigensolvers, but may be converted into a regular matrix with convert(Array, _) (or Array(_) for short).\n\nExamples\n\njulia> dv = [1, 2, 3, 4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> ev = [7, 8, 9]\n3-element Array{Int64,1}:\n 7\n 8\n 9\n\njulia> SymTridiagonal(dv, ev)\n4×4 SymTridiagonal{Int64,Array{Int64,1}}:\n 1  7  ⋅  ⋅\n 7  2  8  ⋅\n ⋅  8  3  9\n ⋅  ⋅  9  4\n\n\n\n\n\nSymTridiagonal(A::AbstractMatrix)\n\nConstruct a symmetric tridiagonal matrix from the diagonal and first sub/super-diagonal, of the symmetric matrix A.\n\nExamples\n\njulia> A = [1 2 3; 2 4 5; 3 5 6]\n3×3 Array{Int64,2}:\n 1  2  3\n 2  4  5\n 3  5  6\n\njulia> SymTridiagonal(A)\n3×3 SymTridiagonal{Int64,Array{Int64,1}}:\n 1  2  ⋅\n 2  4  5\n ⋅  5  6\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.Tridiagonal",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.Tridiagonal",
+    "category": "type",
+    "text": "Tridiagonal(dl::V, d::V, du::V) where V <: AbstractVector\n\nConstruct a tridiagonal matrix from the first subdiagonal, diagonal, and first superdiagonal, respectively. The result is of type Tridiagonal and provides efficient specialized linear solvers, but may be converted into a regular matrix with convert(Array, _) (or Array(_) for short). The lengths of dl and du must be one less than the length of d.\n\nExamples\n\njulia> dl = [1, 2, 3];\n\njulia> du = [4, 5, 6];\n\njulia> d = [7, 8, 9, 0];\n\njulia> Tridiagonal(dl, d, du)\n4×4 Tridiagonal{Int64,Array{Int64,1}}:\n 7  4  ⋅  ⋅\n 1  8  5  ⋅\n ⋅  2  9  6\n ⋅  ⋅  3  0\n\n\n\n\n\nTridiagonal(A)\n\nConstruct a tridiagonal matrix from the first sub-diagonal, diagonal and first super-diagonal of the matrix A.\n\nExamples\n\njulia> A = [1 2 3 4; 1 2 3 4; 1 2 3 4; 1 2 3 4]\n4×4 Array{Int64,2}:\n 1  2  3  4\n 1  2  3  4\n 1  2  3  4\n 1  2  3  4\n\njulia> Tridiagonal(A)\n4×4 Tridiagonal{Int64,Array{Int64,1}}:\n 1  2  ⋅  ⋅\n 1  2  3  ⋅\n ⋅  2  3  4\n ⋅  ⋅  3  4\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.Symmetric",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.Symmetric",
+    "category": "type",
+    "text": "Symmetric(A, uplo=:U)\n\nConstruct a Symmetric view of the upper (if uplo = :U) or lower (if uplo = :L) triangle of the matrix A.\n\nExamples\n\njulia> A = [1 0 2 0 3; 0 4 0 5 0; 6 0 7 0 8; 0 9 0 1 0; 2 0 3 0 4]\n5×5 Array{Int64,2}:\n 1  0  2  0  3\n 0  4  0  5  0\n 6  0  7  0  8\n 0  9  0  1  0\n 2  0  3  0  4\n\njulia> Supper = Symmetric(A)\n5×5 Symmetric{Int64,Array{Int64,2}}:\n 1  0  2  0  3\n 0  4  0  5  0\n 2  0  7  0  8\n 0  5  0  1  0\n 3  0  8  0  4\n\njulia> Slower = Symmetric(A, :L)\n5×5 Symmetric{Int64,Array{Int64,2}}:\n 1  0  6  0  2\n 0  4  0  9  0\n 6  0  7  0  3\n 0  9  0  1  0\n 2  0  3  0  4\n\nNote that Supper will not be equal to Slower unless A is itself symmetric (e.g. if A == transpose(A)).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.Hermitian",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.Hermitian",
+    "category": "type",
+    "text": "Hermitian(A, uplo=:U)\n\nConstruct a Hermitian view of the upper (if uplo = :U) or lower (if uplo = :L) triangle of the matrix A.\n\nExamples\n\njulia> A = [1 0 2+2im 0 3-3im; 0 4 0 5 0; 6-6im 0 7 0 8+8im; 0 9 0 1 0; 2+2im 0 3-3im 0 4];\n\njulia> Hupper = Hermitian(A)\n5×5 Hermitian{Complex{Int64},Array{Complex{Int64},2}}:\n 1+0im  0+0im  2+2im  0+0im  3-3im\n 0+0im  4+0im  0+0im  5+0im  0+0im\n 2-2im  0+0im  7+0im  0+0im  8+8im\n 0+0im  5+0im  0+0im  1+0im  0+0im\n 3+3im  0+0im  8-8im  0+0im  4+0im\n\njulia> Hlower = Hermitian(A, :L)\n5×5 Hermitian{Complex{Int64},Array{Complex{Int64},2}}:\n 1+0im  0+0im  6+6im  0+0im  2-2im\n 0+0im  4+0im  0+0im  9+0im  0+0im\n 6-6im  0+0im  7+0im  0+0im  3+3im\n 0+0im  9+0im  0+0im  1+0im  0+0im\n 2+2im  0+0im  3-3im  0+0im  4+0im\n\nNote that Hupper will not be equal to Hlower unless A is itself Hermitian (e.g. if A == adjoint(A)).\n\nAll non-real parts of the diagonal will be ignored.\n\nHermitian(fill(complex(1,1), 1, 1)) == fill(1, 1, 1)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LowerTriangular",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LowerTriangular",
+    "category": "type",
+    "text": "LowerTriangular(A::AbstractMatrix)\n\nConstruct a LowerTriangular view of the the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> LowerTriangular(A)\n3×3 LowerTriangular{Float64,Array{Float64,2}}:\n 1.0   ⋅    ⋅\n 4.0  5.0   ⋅\n 7.0  8.0  9.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.UpperTriangular",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.UpperTriangular",
+    "category": "type",
+    "text": "UpperTriangular(A::AbstractMatrix)\n\nConstruct an UpperTriangular view of the the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> UpperTriangular(A)\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 1.0  2.0  3.0\n  ⋅   5.0  6.0\n  ⋅    ⋅   9.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.UniformScaling",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.UniformScaling",
+    "category": "type",
+    "text": "UniformScaling{T<:Number}\n\nGenerically sized uniform scaling operator defined as a scalar times the identity operator, λ*I. See also I.\n\nExamples\n\njulia> J = UniformScaling(2.)\nUniformScaling{Float64}\n2.0*I\n\njulia> A = [1. 2.; 3. 4.]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> J*A\n2×2 Array{Float64,2}:\n 2.0  4.0\n 6.0  8.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lu",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lu",
+    "category": "function",
+    "text": "lu(A, pivot=Val(true); check = true) -> F::LU\n\nCompute the LU factorization of A.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\nIn most cases, if A is a subtype S of AbstractMatrix{T} with an element type T supporting +, -, * and /, the return type is LU{T,S{T}}. If pivoting is chosen (default) the element type should also support abs and <.\n\nThe individual components of the factorization F can be accessed via getproperty:\n\nComponent Description\nF.L L (lower triangular) part of LU\nF.U U (upper triangular) part of LU\nF.p (right) permutation Vector\nF.P (right) permutation Matrix\n\nIterating the factorization produces the components F.L, F.U, and F.p.\n\nThe relationship between F and A is\n\nF.L*F.U == A[F.p, :]\n\nF further supports the following functions:\n\nSupported function LU LU{T,Tridiagonal{T}}\n/ ✓ \n\\ ✓ ✓\ninv ✓ ✓\ndet ✓ ✓\nlogdet ✓ ✓\nlogabsdet ✓ ✓\nsize ✓ ✓\n\nExamples\n\njulia> A = [4 3; 6 3]\n2×2 Array{Int64,2}:\n 4  3\n 6  3\n\njulia> F = lu(A)\nLU{Float64,Array{Float64,2}}\nL factor:\n2×2 Array{Float64,2}:\n 1.0  0.0\n 1.5  1.0\nU factor:\n2×2 Array{Float64,2}:\n 4.0   3.0\n 0.0  -1.5\n\njulia> F.L * F.U == A[F.p, :]\ntrue\n\njulia> l, u, p = lu(A); # destructuring via iteration\n\njulia> l == F.L && u == F.U && p == F.p\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lu!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lu!",
+    "category": "function",
+    "text": "lu!(A, pivot=Val(true); check = true) -> LU\n\nlu! is the same as lu, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\nExamples\n\njulia> A = [4. 3.; 6. 3.]\n2×2 Array{Float64,2}:\n 4.0  3.0\n 6.0  3.0\n\njulia> F = lu!(A)\nLU{Float64,Array{Float64,2}}\nL factor:\n2×2 Array{Float64,2}:\n 1.0       0.0\n 0.666667  1.0\nU factor:\n2×2 Array{Float64,2}:\n 6.0  3.0\n 0.0  1.0\n\njulia> iA = [4 3; 6 3]\n2×2 Array{Int64,2}:\n 4  3\n 6  3\n\njulia> lu!(iA)\nERROR: InexactError: Int64(Int64, 0.6666666666666666)\nStacktrace:\n[...]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.cholesky",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.cholesky",
+    "category": "function",
+    "text": "cholesky(A, Val(false); check = true) -> Cholesky\n\nCompute the Cholesky factorization of a dense symmetric positive definite matrix A and return a Cholesky factorization. The matrix A can either be a Symmetric or Hermitian StridedMatrix or a perfectly symmetric or Hermitian StridedMatrix. The triangular Cholesky factor can be obtained from the factorization F with: F.L and F.U. The following functions are available for Cholesky objects: size, \\, inv, det, logdet and isposdef.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\nExamples\n\njulia> A = [4. 12. -16.; 12. 37. -43.; -16. -43. 98.]\n3×3 Array{Float64,2}:\n   4.0   12.0  -16.0\n  12.0   37.0  -43.0\n -16.0  -43.0   98.0\n\njulia> C = cholesky(A)\nCholesky{Float64,Array{Float64,2}}\nU factor:\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 2.0  6.0  -8.0\n  ⋅   1.0   5.0\n  ⋅    ⋅    3.0\n\njulia> C.U\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 2.0  6.0  -8.0\n  ⋅   1.0   5.0\n  ⋅    ⋅    3.0\n\njulia> C.L\n3×3 LowerTriangular{Float64,Array{Float64,2}}:\n  2.0   ⋅    ⋅\n  6.0  1.0   ⋅\n -8.0  5.0  3.0\n\njulia> C.L * C.U == A\ntrue\n\n\n\n\n\ncholesky(A, Val(true); tol = 0.0, check = true) -> CholeskyPivoted\n\nCompute the pivoted Cholesky factorization of a dense symmetric positive semi-definite matrix A and return a CholeskyPivoted factorization. The matrix A can either be a Symmetric or Hermitian StridedMatrix or a perfectly symmetric or Hermitian StridedMatrix. The triangular Cholesky factor can be obtained from the factorization F with: F.L and F.U. The following functions are available for PivotedCholesky objects: size, \\, inv, det, and rank. The argument tol determines the tolerance for determining the rank. For negative values, the tolerance is the machine precision.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.cholesky!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.cholesky!",
+    "category": "function",
+    "text": "cholesky!(A, Val(false); check = true) -> Cholesky\n\nThe same as cholesky, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\nExamples\n\njulia> A = [1 2; 2 50]\n2×2 Array{Int64,2}:\n 1   2\n 2  50\n\njulia> cholesky!(A)\nERROR: InexactError: Int64(Int64, 6.782329983125268)\nStacktrace:\n[...]\n\n\n\n\n\ncholesky!(A, Val(true); tol = 0.0, check = true) -> CholeskyPivoted\n\nThe same as cholesky, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankupdate",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lowrankupdate",
+    "category": "function",
+    "text": "lowrankupdate(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nUpdate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U + v*v\') but the computation of CC only uses O(n^2) operations.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankdowndate",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lowrankdowndate",
+    "category": "function",
+    "text": "lowrankdowndate(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nDowndate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U - v*v\') but the computation of CC only uses O(n^2) operations.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankupdate!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lowrankupdate!",
+    "category": "function",
+    "text": "lowrankupdate!(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nUpdate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U + v*v\') but the computation of CC only uses O(n^2) operations. The input factorization C is updated in place such that on exit C == CC. The vector v is destroyed during the computation.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankdowndate!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lowrankdowndate!",
+    "category": "function",
+    "text": "lowrankdowndate!(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nDowndate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U - v*v\') but the computation of CC only uses O(n^2) operations. The input factorization C is updated in place such that on exit C == CC. The vector v is destroyed during the computation.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.ldlt",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.ldlt",
+    "category": "function",
+    "text": "ldlt(S::SymTridiagonal) -> LDLt\n\nCompute an LDLt factorization of the real symmetric tridiagonal matrix S such that S = L*Diagonal(d)*L\' where L is a unit lower triangular matrix and d is a vector. The main use of an LDLt factorization F = ldlt(S) is to solve the linear system of equations Sx = b with F\\b.\n\nExamples\n\njulia> S = SymTridiagonal([3., 4., 5.], [1., 2.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 3.0  1.0   ⋅\n 1.0  4.0  2.0\n  ⋅   2.0  5.0\n\njulia> ldltS = ldlt(S);\n\njulia> b = [6., 7., 8.];\n\njulia> ldltS \\ b\n3-element Array{Float64,1}:\n 1.7906976744186047\n 0.627906976744186\n 1.3488372093023255\n\njulia> S \\ b\n3-element Array{Float64,1}:\n 1.7906976744186047\n 0.627906976744186\n 1.3488372093023255\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.ldlt!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.ldlt!",
+    "category": "function",
+    "text": "ldlt!(S::SymTridiagonal) -> LDLt\n\nSame as ldlt, but saves space by overwriting the input S, instead of creating a copy.\n\nExamples\n\njulia> S = SymTridiagonal([3., 4., 5.], [1., 2.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 3.0  1.0   ⋅\n 1.0  4.0  2.0\n  ⋅   2.0  5.0\n\njulia> ldltS = ldlt!(S);\n\njulia> ldltS === S\nfalse\n\njulia> S\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 3.0       0.333333   ⋅\n 0.333333  3.66667   0.545455\n  ⋅        0.545455  3.90909\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.qr",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.qr",
+    "category": "function",
+    "text": "qr(A, pivot=Val(false)) -> F\n\nCompute the QR factorization of the matrix A: an orthogonal (or unitary if A is complex-valued) matrix Q, and an upper triangular matrix R such that\n\nA = Q R\n\nThe returned object F stores the factorization in a packed format:\n\nif pivot == Val(true) then F is a QRPivoted object,\notherwise if the element type of A is a BLAS type (Float32, Float64, ComplexF32 or ComplexF64), then F is a QRCompactWY object,\notherwise F is a QR object.\n\nThe individual components of the decomposition F can be retrieved via property accessors:\n\nF.Q: the orthogonal/unitary matrix Q\nF.R: the upper triangular matrix R\nF.p: the permutation vector of the pivot (QRPivoted only)\nF.P: the permutation matrix of the pivot (QRPivoted only)\n\nIterating the decomposition produces the components Q, R, and if extant p.\n\nThe following functions are available for the QR objects: inv, size, and \\. When A is rectangular, \\ will return a least squares solution and if the solution is not unique, the one with smallest norm is returned.\n\nMultiplication with respect to either full/square or non-full/square Q is allowed, i.e. both F.Q*F.R and F.Q*A are supported. A Q matrix can be converted into a regular matrix with Matrix.  This operation returns the \"thin\" Q factor, i.e., if A is m×n with m>=n, then Matrix(F.Q) yields an m×n matrix with orthonormal columns.  To retrieve the \"full\" Q factor, an m×m orthogonal matrix, use F.Q*Matrix(I,m,m).  If m<=n, then Matrix(F.Q) yields an m×m orthogonal matrix.\n\nExamples\n\njulia> A = [3.0 -6.0; 4.0 -8.0; 0.0 1.0]\n3×2 Array{Float64,2}:\n 3.0  -6.0\n 4.0  -8.0\n 0.0   1.0\n\njulia> F = qr(A)\nLinearAlgebra.QRCompactWY{Float64,Array{Float64,2}}\nQ factor:\n3×3 LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}:\n -0.6   0.0   0.8\n -0.8   0.0  -0.6\n  0.0  -1.0   0.0\nR factor:\n2×2 Array{Float64,2}:\n -5.0  10.0\n  0.0  -1.0\n\njulia> F.Q * F.R == A\ntrue\n\nnote: Note\nqr returns multiple types because LAPACK uses several representations that minimize the memory storage requirements of products of Householder elementary reflectors, so that the Q and R matrices can be stored compactly rather as two separate dense matrices.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.qr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.qr!",
+    "category": "function",
+    "text": "qr!(A, pivot=Val(false))\n\nqr! is the same as qr when A is a subtype of StridedMatrix, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\nExamples\n\njulia> a = [1. 2.; 3. 4.]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> qr!(a)\nLinearAlgebra.QRCompactWY{Float64,Array{Float64,2}}\nQ factor:\n2×2 LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}:\n -0.316228  -0.948683\n -0.948683   0.316228\nR factor:\n2×2 Array{Float64,2}:\n -3.16228  -4.42719\n  0.0      -0.632456\n\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> qr!(a)\nERROR: InexactError: Int64(Int64, -3.1622776601683795)\nStacktrace:\n[...]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.QR",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.QR",
+    "category": "type",
+    "text": "QR <: Factorization\n\nA QR matrix factorization stored in a packed format, typically obtained from qr. If A is an m×n matrix, then\n\nA = Q R\n\nwhere Q is an orthogonal/unitary matrix and R is upper triangular. The matrix Q is stored as a sequence of Householder reflectors v_i and coefficients tau_i where:\n\nQ = prod_i=1^min(mn) (I - tau_i v_i v_i^T)\n\nIterating the decomposition produces the components Q and R.\n\nThe object has two fields:\n\nfactors is an m×n matrix.\nThe upper triangular part contains the elements of R, that is R = triu(F.factors) for a QR object F.\nThe subdiagonal part contains the reflectors v_i stored in a packed format where v_i is the ith column of the matrix V = I + tril(F.factors, -1).\nτ is a vector  of length min(m,n) containing the coefficients au_i.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.QRCompactWY",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.QRCompactWY",
+    "category": "type",
+    "text": "QRCompactWY <: Factorization\n\nA QR matrix factorization stored in a compact blocked format, typically obtained from qr. If A is an m×n matrix, then\n\nA = Q R\n\nwhere Q is an orthogonal/unitary matrix and R is upper triangular. It is similar to the QR format except that the orthogonal/unitary matrix Q is stored in Compact WY format [Schreiber1989], as a lower trapezoidal matrix V and an upper triangular matrix T where\n\nQ = prod_i=1^min(mn) (I - tau_i v_i v_i^T) = I - V T V^T\n\nsuch that v_i is the ith column of V, and au_i is the ith diagonal element of T.\n\nIterating the decomposition produces the components Q and R.\n\nThe object has two fields:\n\nfactors, as in the QR type, is an m×n matrix.\nThe upper triangular part contains the elements of R, that is R = triu(F.factors) for a QR object F.\nThe subdiagonal part contains the reflectors v_i stored in a packed format such that V = I + tril(F.factors, -1).\nT is a square matrix with min(m,n) columns, whose upper triangular part gives the matrix T above (the subdiagonal elements are ignored).\n\nnote: Note\nThis format should not to be confused with the older WY representation [Bischof1987].\n\n[Bischof1987]: C Bischof and C Van Loan, \"The WY representation for products of Householder matrices\", SIAM J Sci Stat Comput 8 (1987), s2-s13. doi:10.1137/0908009\n\n[Schreiber1989]: R Schreiber and C Van Loan, \"A storage-efficient WY representation for products of Householder transformations\", SIAM J Sci Stat Comput 10 (1989), 53-57. doi:10.1137/0910005\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.QRPivoted",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.QRPivoted",
+    "category": "type",
+    "text": "QRPivoted <: Factorization\n\nA QR matrix factorization with column pivoting in a packed format, typically obtained from qr. If A is an m×n matrix, then\n\nA P = Q R\n\nwhere P is a permutation matrix, Q is an orthogonal/unitary matrix and R is upper triangular. The matrix Q is stored as a sequence of Householder reflectors:\n\nQ = prod_i=1^min(mn) (I - tau_i v_i v_i^T)\n\nIterating the decomposition produces the components Q, R, and p.\n\nThe object has three fields:\n\nfactors is an m×n matrix.\nThe upper triangular part contains the elements of R, that is R = triu(F.factors) for a QR object F.\nThe subdiagonal part contains the reflectors v_i stored in a packed format where v_i is the ith column of the matrix V = I + tril(F.factors, -1).\nτ is a vector of length min(m,n) containing the coefficients au_i.\njpvt is an integer vector of length n corresponding to the permutation P.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lq!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lq!",
+    "category": "function",
+    "text": "lq!(A) -> LQ\n\nCompute the LQ factorization of A, using the input matrix as a workspace. See also lq.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lq",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lq",
+    "category": "function",
+    "text": "lq(A) -> S::LQ\n\nCompute the LQ decomposition of A. The decomposition\'s lower triangular component can be obtained from the LQ object S via S.L, and the orthogonal/unitary component via S.Q, such that A ≈ S.L*S.Q.\n\nIterating the decomposition produces the components S.L and S.Q.\n\nThe LQ decomposition is the QR decomposition of transpose(A).\n\nExamples\n\njulia> A = [5. 7.; -2. -4.]\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> S = lq(A)\nLQ{Float64,Array{Float64,2}} with factors L and Q:\n[-8.60233 0.0; 4.41741 -0.697486]\n[-0.581238 -0.813733; -0.813733 0.581238]\n\njulia> S.L * S.Q\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> l, q = S; # destructuring via iteration\n\njulia> l == S.L &&  q == S.Q\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.bunchkaufman",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.bunchkaufman",
+    "category": "function",
+    "text": "bunchkaufman(A, rook::Bool=false; check = true) -> S::BunchKaufman\n\nCompute the Bunch-Kaufman [Bunch1977] factorization of a Symmetric or Hermitian matrix A as P*U*D*U*P or P*L*D*L*P, depending on which triangle is stored in A, and return a BunchKaufman object. Note that if A is complex symmetric then U\' and L\' denote the unconjugated transposes, i.e. transpose(U) and transpose(L).\n\nIterating the decomposition produces the components S.D, S.U or S.L as appropriate given S.uplo, and S.p.\n\nIf rook is true, rook pivoting is used. If rook is false, rook pivoting is not used.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\nThe following functions are available for BunchKaufman objects: size, \\, inv, issymmetric, ishermitian, getindex.\n\n[Bunch1977]: J R Bunch and L Kaufman, Some stable methods for calculating inertia\n\nand solving symmetric linear systems, Mathematics of Computation 31:137 (1977), 163-179. url.\n\nExamples\n\njulia> A = [1 2; 2 3]\n2×2 Array{Int64,2}:\n 1  2\n 2  3\n\njulia> S = bunchkaufman(A)\nBunchKaufman{Float64,Array{Float64,2}}\nD factor:\n2×2 Tridiagonal{Float64,Array{Float64,1}}:\n -0.333333  0.0\n  0.0       3.0\nU factor:\n2×2 UnitUpperTriangular{Float64,Array{Float64,2}}:\n 1.0  0.666667\n  ⋅   1.0\npermutation:\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> d, u, p = S; # destructuring via iteration\n\njulia> d == S.D && u == S.U && p == S.p\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.bunchkaufman!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.bunchkaufman!",
+    "category": "function",
+    "text": "bunchkaufman!(A, rook::Bool=false; check = true) -> BunchKaufman\n\nbunchkaufman! is the same as bunchkaufman, but saves space by overwriting the input A, instead of creating a copy.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigvals",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.eigvals",
+    "category": "function",
+    "text": "eigvals(A; permute::Bool=true, scale::Bool=true) -> values\n\nReturn the eigenvalues of A.\n\nFor general non-symmetric matrices it is possible to specify how the matrix is balanced before the eigenvalue calculation. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. The default is true for both options.\n\nExamples\n\njulia> diag_matrix = [1 0; 0 4]\n2×2 Array{Int64,2}:\n 1  0\n 0  4\n\njulia> eigvals(diag_matrix)\n2-element Array{Float64,1}:\n 1.0\n 4.0\n\n\n\n\n\nFor a scalar input, eigvals will return a scalar.\n\nExample\n\njulia> eigvals(-2)\n-2\n\n\n\n\n\neigvals(A, B) -> values\n\nComputes the generalized eigenvalues of A and B.\n\nExamples\n\njulia> A = [1 0; 0 -1]\n2×2 Array{Int64,2}:\n 1   0\n 0  -1\n\njulia> B = [0 1; 1 0]\n2×2 Array{Int64,2}:\n 0  1\n 1  0\n\njulia> eigvals(A,B)\n2-element Array{Complex{Float64},1}:\n 0.0 + 1.0im\n 0.0 - 1.0im\n\n\n\n\n\neigvals(A::Union{SymTridiagonal, Hermitian, Symmetric}, irange::UnitRange) -> values\n\nReturns the eigenvalues of A. It is possible to calculate only a subset of the eigenvalues by specifying a UnitRange irange covering indices of the sorted eigenvalues, e.g. the 2nd to 8th eigenvalues.\n\njulia> A = SymTridiagonal([1.; 2.; 1.], [2.; 3.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 1.0  2.0   ⋅\n 2.0  2.0  3.0\n  ⋅   3.0  1.0\n\njulia> eigvals(A, 2:2)\n1-element Array{Float64,1}:\n 0.9999999999999996\n\njulia> eigvals(A)\n3-element Array{Float64,1}:\n -2.1400549446402604\n  1.0000000000000002\n  5.140054944640259\n\n\n\n\n\neigvals(A::Union{SymTridiagonal, Hermitian, Symmetric}, vl::Real, vu::Real) -> values\n\nReturns the eigenvalues of A. It is possible to calculate only a subset of the eigenvalues by specifying a pair vl and vu for the lower and upper boundaries of the eigenvalues.\n\njulia> A = SymTridiagonal([1.; 2.; 1.], [2.; 3.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 1.0  2.0   ⋅\n 2.0  2.0  3.0\n  ⋅   3.0  1.0\n\njulia> eigvals(A, -1, 2)\n1-element Array{Float64,1}:\n 1.0000000000000009\n\njulia> eigvals(A)\n3-element Array{Float64,1}:\n -2.1400549446402604\n  1.0000000000000002\n  5.140054944640259\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigvals!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.eigvals!",
+    "category": "function",
+    "text": "eigvals!(A; permute::Bool=true, scale::Bool=true) -> values\n\nSame as eigvals, but saves space by overwriting the input A, instead of creating a copy. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm.\n\nnote: Note\nThe input matrix A will not contain its eigenvalues after eigvals! is called on it - A is used as a workspace.\n\nExamples\n\njulia> A = [1. 2.; 3. 4.]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> eigvals!(A)\n2-element Array{Float64,1}:\n -0.3722813232690143\n  5.372281323269014\n\njulia> A\n2×2 Array{Float64,2}:\n -0.372281  -1.0\n  0.0        5.37228\n\n\n\n\n\neigvals!(A, B) -> values\n\nSame as eigvals, but saves space by overwriting the input A (and B), instead of creating copies.\n\nnote: Note\nThe input matrices A and B will not contain their eigenvalues after eigvals! is called. They are used as workspaces.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> eigvals!(A, B)\n2-element Array{Complex{Float64},1}:\n 0.0 + 1.0im\n 0.0 - 1.0im\n\njulia> A\n2×2 Array{Float64,2}:\n -0.0  -1.0\n  1.0  -0.0\n\njulia> B\n2×2 Array{Float64,2}:\n 1.0  0.0\n 0.0  1.0\n\n\n\n\n\neigvals!(A::Union{SymTridiagonal, Hermitian, Symmetric}, irange::UnitRange) -> values\n\nSame as eigvals, but saves space by overwriting the input A, instead of creating a copy. irange is a range of eigenvalue indices to search for - for instance, the 2nd to 8th eigenvalues.\n\n\n\n\n\neigvals!(A::Union{SymTridiagonal, Hermitian, Symmetric}, vl::Real, vu::Real) -> values\n\nSame as eigvals, but saves space by overwriting the input A, instead of creating a copy. vl is the lower bound of the interval to search for eigenvalues, and vu is the upper bound.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigmax",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.eigmax",
+    "category": "function",
+    "text": "eigmax(A; permute::Bool=true, scale::Bool=true)\n\nReturn the largest eigenvalue of A. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. Note that if the eigenvalues of A are complex, this method will fail, since complex numbers cannot be sorted.\n\nExamples\n\njulia> A = [0 im; -im 0]\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+1im\n 0-1im  0+0im\n\njulia> eigmax(A)\n1.0\n\njulia> A = [0 im; -1 0]\n2×2 Array{Complex{Int64},2}:\n  0+0im  0+1im\n -1+0im  0+0im\n\njulia> eigmax(A)\nERROR: DomainError with Complex{Int64}[0+0im 0+1im; -1+0im 0+0im]:\n`A` cannot have complex eigenvalues.\nStacktrace:\n[...]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigmin",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.eigmin",
+    "category": "function",
+    "text": "eigmin(A; permute::Bool=true, scale::Bool=true)\n\nReturn the smallest eigenvalue of A. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. Note that if the eigenvalues of A are complex, this method will fail, since complex numbers cannot be sorted.\n\nExamples\n\njulia> A = [0 im; -im 0]\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+1im\n 0-1im  0+0im\n\njulia> eigmin(A)\n-1.0\n\njulia> A = [0 im; -1 0]\n2×2 Array{Complex{Int64},2}:\n  0+0im  0+1im\n -1+0im  0+0im\n\njulia> eigmin(A)\nERROR: DomainError with Complex{Int64}[0+0im 0+1im; -1+0im 0+0im]:\n`A` cannot have complex eigenvalues.\nStacktrace:\n[...]\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigvecs",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.eigvecs",
+    "category": "function",
+    "text": "eigvecs(A::SymTridiagonal[, eigvals]) -> Matrix\n\nReturn a matrix M whose columns are the eigenvectors of A. (The kth eigenvector can be obtained from the slice M[:, k].)\n\nIf the optional vector of eigenvalues eigvals is specified, eigvecs returns the specific corresponding eigenvectors.\n\nExamples\n\njulia> A = SymTridiagonal([1.; 2.; 1.], [2.; 3.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 1.0  2.0   ⋅\n 2.0  2.0  3.0\n  ⋅   3.0  1.0\n\njulia> eigvals(A)\n3-element Array{Float64,1}:\n -2.1400549446402604\n  1.0000000000000002\n  5.140054944640259\n\njulia> eigvecs(A)\n3×3 Array{Float64,2}:\n  0.418304  -0.83205      0.364299\n -0.656749  -7.39009e-16  0.754109\n  0.627457   0.5547       0.546448\n\njulia> eigvecs(A, [1.])\n3×1 Array{Float64,2}:\n  0.8320502943378438\n  4.263514128092366e-17\n -0.5547001962252291\n\n\n\n\n\neigvecs(A; permute::Bool=true, scale::Bool=true) -> Matrix\n\nReturn a matrix M whose columns are the eigenvectors of A. (The kth eigenvector can be obtained from the slice M[:, k].) The permute and scale keywords are the same as for eigen.\n\nExamples\n\njulia> eigvecs([1.0 0.0 0.0; 0.0 3.0 0.0; 0.0 0.0 18.0])\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\n\n\n\n\neigvecs(A, B) -> Matrix\n\nReturn a matrix M whose columns are the generalized eigenvectors of A and B. (The kth eigenvector can be obtained from the slice M[:, k].)\n\nExamples\n\njulia> A = [1 0; 0 -1]\n2×2 Array{Int64,2}:\n 1   0\n 0  -1\n\njulia> B = [0 1; 1 0]\n2×2 Array{Int64,2}:\n 0  1\n 1  0\n\njulia> eigvecs(A, B)\n2×2 Array{Complex{Float64},2}:\n  0.0-1.0im   0.0+1.0im\n -1.0-0.0im  -1.0+0.0im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigen",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.eigen",
+    "category": "function",
+    "text": "eigen(A; permute::Bool=true, scale::Bool=true) -> Eigen\n\nComputes the eigenvalue decomposition of A, returning an Eigen factorization object F which contains the eigenvalues in F.values and the eigenvectors in the columns of the matrix F.vectors. (The kth eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nThe following functions are available for Eigen objects: inv, det, and isposdef.\n\nFor general nonsymmetric matrices it is possible to specify how the matrix is balanced before the eigenvector calculation. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. The default is true for both options.\n\nExamples\n\njulia> F = eigen([1.0 0.0 0.0; 0.0 3.0 0.0; 0.0 0.0 18.0])\nEigen{Float64,Float64,Array{Float64,2},Array{Float64,1}}\neigenvalues:\n3-element Array{Float64,1}:\n  1.0\n  3.0\n 18.0\neigenvectors:\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\njulia> F.values\n3-element Array{Float64,1}:\n  1.0\n  3.0\n 18.0\n\njulia> F.vectors\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\njulia> vals, vecs = F; # destructuring via iteration\n\njulia> vals == F.values && vecs == F.vectors\ntrue\n\n\n\n\n\neigen(A, B) -> GeneralizedEigen\n\nComputes the generalized eigenvalue decomposition of A and B, returning a GeneralizedEigen factorization object F which contains the generalized eigenvalues in F.values and the generalized eigenvectors in the columns of the matrix F.vectors. (The kth generalized eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nExamples\n\njulia> A = [1 0; 0 -1]\n2×2 Array{Int64,2}:\n 1   0\n 0  -1\n\njulia> B = [0 1; 1 0]\n2×2 Array{Int64,2}:\n 0  1\n 1  0\n\njulia> F = eigen(A, B);\n\njulia> F.values\n2-element Array{Complex{Float64},1}:\n 0.0 + 1.0im\n 0.0 - 1.0im\n\njulia> F.vectors\n2×2 Array{Complex{Float64},2}:\n  0.0-1.0im   0.0+1.0im\n -1.0-0.0im  -1.0+0.0im\n\njulia> vals, vecs = F; # destructuring via iteration\n\njulia> vals == F.values && vecs == F.vectors\ntrue\n\n\n\n\n\neigen(A::Union{SymTridiagonal, Hermitian, Symmetric}, irange::UnitRange) -> Eigen\n\nComputes the eigenvalue decomposition of A, returning an Eigen factorization object F which contains the eigenvalues in F.values and the eigenvectors in the columns of the matrix F.vectors. (The kth eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nThe following functions are available for Eigen objects: inv, det, and isposdef.\n\nThe UnitRange irange specifies indices of the sorted eigenvalues to search for.\n\nnote: Note\nIf irange is not 1:n, where n is the dimension of A, then the returned factorization will be a truncated factorization.\n\n\n\n\n\neigen(A::Union{SymTridiagonal, Hermitian, Symmetric}, vl::Real, vu::Real) -> Eigen\n\nComputes the eigenvalue decomposition of A, returning an Eigen factorization object F which contains the eigenvalues in F.values and the eigenvectors in the columns of the matrix F.vectors. (The kth eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nThe following functions are available for Eigen objects: inv, det, and isposdef.\n\nvl is the lower bound of the window of eigenvalues to search for, and vu is the upper bound.\n\nnote: Note\nIf [vl, vu] does not contain all eigenvalues of A, then the returned factorization will be a truncated factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigen!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.eigen!",
+    "category": "function",
+    "text": "eigen!(A, [B])\n\nSame as eigen, but saves space by overwriting the input A (and B), instead of creating a copy.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.hessenberg",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.hessenberg",
+    "category": "function",
+    "text": "hessenberg(A) -> Hessenberg\n\nCompute the Hessenberg decomposition of A and return a Hessenberg object. If F is the factorization object, the unitary matrix can be accessed with F.Q and the Hessenberg matrix with F.H. When Q is extracted, the resulting type is the HessenbergQ object, and may be converted to a regular matrix with convert(Array, _)  (or Array(_) for short).\n\nIterating the decomposition produces the factors F.Q and F.H.\n\nExamples\n\njulia> A = [4. 9. 7.; 4. 4. 1.; 4. 3. 2.]\n3×3 Array{Float64,2}:\n 4.0  9.0  7.0\n 4.0  4.0  1.0\n 4.0  3.0  2.0\n\njulia> F = hessenberg(A);\n\njulia> F.Q * F.H * F.Q\'\n3×3 Array{Float64,2}:\n 4.0  9.0  7.0\n 4.0  4.0  1.0\n 4.0  3.0  2.0\n\njulia> q, h = F; # destructuring via iteration\n\njulia> q == F.Q && h == F.H\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.hessenberg!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.hessenberg!",
+    "category": "function",
+    "text": "hessenberg!(A) -> Hessenberg\n\nhessenberg! is the same as hessenberg, but saves space by overwriting the input A, instead of creating a copy.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.schur!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.schur!",
+    "category": "function",
+    "text": "schur!(A::StridedMatrix) -> F::Schur\n\nSame as schur but uses the input argument A as workspace.\n\nExamples\n\njulia> A = [5. 7.; -2. -4.]\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> F = schur!(A)\nSchur{Float64,Array{Float64,2}}\nT factor:\n2×2 Array{Float64,2}:\n 3.0   9.0\n 0.0  -2.0\nZ factor:\n2×2 Array{Float64,2}:\n  0.961524  0.274721\n -0.274721  0.961524\neigenvalues:\n2-element Array{Float64,1}:\n  3.0\n -2.0\n\njulia> A\n2×2 Array{Float64,2}:\n 3.0   9.0\n 0.0  -2.0\n\n\n\n\n\nschur!(A::StridedMatrix, B::StridedMatrix) -> F::GeneralizedSchur\n\nSame as schur but uses the input matrices A and B as workspace.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.schur",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.schur",
+    "category": "function",
+    "text": "schur(A::StridedMatrix) -> F::Schur\n\nComputes the Schur factorization of the matrix A. The (quasi) triangular Schur factor can be obtained from the Schur object F with either F.Schur or F.T and the orthogonal/unitary Schur vectors can be obtained with F.vectors or F.Z such that A = F.vectors * F.Schur * F.vectors\'. The eigenvalues of A can be obtained with F.values.\n\nIterating the decomposition produces the components F.T, F.Z, and F.values.\n\nExamples\n\njulia> A = [5. 7.; -2. -4.]\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> F = schur(A)\nSchur{Float64,Array{Float64,2}}\nT factor:\n2×2 Array{Float64,2}:\n 3.0   9.0\n 0.0  -2.0\nZ factor:\n2×2 Array{Float64,2}:\n  0.961524  0.274721\n -0.274721  0.961524\neigenvalues:\n2-element Array{Float64,1}:\n  3.0\n -2.0\n\njulia> F.vectors * F.Schur * F.vectors\'\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> t, z, vals = F; # destructuring via iteration\n\njulia> t == F.T && z == F.Z && vals == F.values\ntrue\n\n\n\n\n\nschur(A::StridedMatrix, B::StridedMatrix) -> F::GeneralizedSchur\n\nComputes the Generalized Schur (or QZ) factorization of the matrices A and B. The (quasi) triangular Schur factors can be obtained from the Schur object F with F.S and F.T, the left unitary/orthogonal Schur vectors can be obtained with F.left or F.Q and the right unitary/orthogonal Schur vectors can be obtained with F.right or F.Z such that A=F.left*F.S*F.right\' and B=F.left*F.T*F.right\'. The generalized eigenvalues of A and B can be obtained with F.α./F.β.\n\nIterating the decomposition produces the components F.S, F.T, F.Q, F.Z, F.α, and F.β.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.ordschur",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.ordschur",
+    "category": "function",
+    "text": "ordschur(F::Schur, select::Union{Vector{Bool},BitVector}) -> F::Schur\n\nReorders the Schur factorization F of a matrix A = Z*T*Z\' according to the logical array select returning the reordered factorization F object. The selected eigenvalues appear in the leading diagonal of F.Schur and the corresponding leading columns of F.vectors form an orthogonal/unitary basis of the corresponding right invariant subspace. In the real case, a complex conjugate pair of eigenvalues must be either both included or both excluded via select.\n\n\n\n\n\nordschur(F::GeneralizedSchur, select::Union{Vector{Bool},BitVector}) -> F::GeneralizedSchur\n\nReorders the Generalized Schur factorization F of a matrix pair (A, B) = (Q*S*Z\', Q*T*Z\') according to the logical array select and returns a GeneralizedSchur object F. The selected eigenvalues appear in the leading diagonal of both F.S and F.T, and the left and right orthogonal/unitary Schur vectors are also reordered such that (A, B) = F.Q*(F.S, F.T)*F.Z\' still holds and the generalized eigenvalues of A and B can still be obtained with F.α./F.β.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.ordschur!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.ordschur!",
+    "category": "function",
+    "text": "ordschur!(F::Schur, select::Union{Vector{Bool},BitVector}) -> F::Schur\n\nSame as ordschur but overwrites the factorization F.\n\n\n\n\n\nordschur!(F::GeneralizedSchur, select::Union{Vector{Bool},BitVector}) -> F::GeneralizedSchur\n\nSame as ordschur but overwrites the factorization F.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.svd",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.svd",
+    "category": "function",
+    "text": "svd(A; full::Bool = false) -> SVD\n\nCompute the singular value decomposition (SVD) of A and return an SVD object.\n\nU, S, V and Vt can be obtained from the factorization F with F.U, F.S, F.V and F.Vt, such that A = U * Diagonal(S) * Vt. The algorithm produces Vt and hence Vt is more efficient to extract than V. The singular values in S are sorted in descending order.\n\nIterating the decomposition produces the components U, S, and V.\n\nIf full = false (default), a \"thin\" SVD is returned. For a M times N matrix A, in the full factorization U is M \\times M and V is N \\times N, while in the thin factorization U is M \\times K and V is N \\times K, where K = \\min(M,N) is the number of singular values.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> F = svd(A);\n\njulia> F.U * Diagonal(F.S) * F.Vt\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\n\n\n\n\nsvd(A, B) -> GeneralizedSVD\n\nCompute the generalized SVD of A and B, returning a GeneralizedSVD factorization object F, such that A = F.U*F.D1*F.R0*F.Q\' and B = F.V*F.D2*F.R0*F.Q\'.\n\nFor an M-by-N matrix A and P-by-N matrix B,\n\nU is a M-by-M orthogonal matrix,\nV is a P-by-P orthogonal matrix,\nQ is a N-by-N orthogonal matrix,\nD1 is a M-by-(K+L) diagonal matrix with 1s in the first K entries,\nD2 is a P-by-(K+L) matrix whose top right L-by-L block is diagonal,\nR0 is a (K+L)-by-N matrix whose rightmost (K+L)-by-(K+L) block is          nonsingular upper block triangular,\n\nK+L is the effective numerical rank of the matrix [A; B].\n\nIterating the decomposition produces the components U, V, Q, D1, D2, and R0.\n\nThe entries of F.D1 and F.D2 are related, as explained in the LAPACK documentation for the generalized SVD and the xGGSVD3 routine which is called underneath (in LAPACK 3.6.0 and newer).\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> F = svd(A, B);\n\njulia> F.U*F.D1*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> F.V*F.D2*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.svd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.svd!",
+    "category": "function",
+    "text": "svd!(A; full::Bool = false) -> SVD\n\nsvd! is the same as svd, but saves space by overwriting the input A, instead of creating a copy.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> F = svd!(A);\n\njulia> F.U * Diagonal(F.S) * F.Vt\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> A\n4×5 Array{Float64,2}:\n -2.23607   0.0   0.0  0.0  0.618034\n  0.0      -3.0   1.0  0.0  0.0\n  0.0       0.0   0.0  0.0  0.0\n  0.0       0.0  -2.0  0.0  0.0\n\n\n\n\n\nsvd!(A, B) -> GeneralizedSVD\n\nsvd! is the same as svd, but modifies the arguments A and B in-place, instead of making copies.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> F = svd!(A, B);\n\njulia> F.U*F.D1*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> F.V*F.D2*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> A\n2×2 Array{Float64,2}:\n 1.41421   0.0\n 0.0      -1.41421\n\njulia> B\n2×2 Array{Float64,2}:\n 1.0  -0.0\n 0.0  -1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.svdvals",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.svdvals",
+    "category": "function",
+    "text": "svdvals(A)\n\nReturn the singular values of A in descending order.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> svdvals(A)\n4-element Array{Float64,1}:\n 3.0\n 2.23606797749979\n 2.0\n 0.0\n\n\n\n\n\nsvdvals(A, B)\n\nReturn the generalized singular values from the generalized singular value decomposition of A and B. See also svd.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> svdvals(A, B)\n2-element Array{Float64,1}:\n 1.0\n 1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.svdvals!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.svdvals!",
+    "category": "function",
+    "text": "svdvals!(A)\n\nReturn the singular values of A, saving space by overwriting the input. See also svdvals and svd.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> svdvals!(A)\n4-element Array{Float64,1}:\n 3.0\n 2.23606797749979\n 2.0\n 0.0\n\njulia> A\n4×5 Array{Float64,2}:\n -2.23607   0.0   0.0  0.0  0.618034\n  0.0      -3.0   1.0  0.0  0.0\n  0.0       0.0   0.0  0.0  0.0\n  0.0       0.0  -2.0  0.0  0.0\n\n\n\n\n\nsvdvals!(A, B)\n\nReturn the generalized singular values from the generalized singular value decomposition of A and B, saving space by overwriting A and B. See also svd and svdvals.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> svdvals!(A, B)\n2-element Array{Float64,1}:\n 1.0\n 1.0\n\njulia> A\n2×2 Array{Float64,2}:\n 1.41421   0.0\n 0.0      -1.41421\n\njulia> B\n2×2 Array{Float64,2}:\n 1.0  -0.0\n 0.0  -1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.Givens",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.Givens",
+    "category": "type",
+    "text": "LinearAlgebra.Givens(i1,i2,c,s) -> G\n\nA Givens rotation linear operator. The fields c and s represent the cosine and sine of the rotation angle, respectively. The Givens type supports left multiplication G*A and conjugated transpose right multiplication A*G\'. The type doesn\'t have a size and can therefore be multiplied with matrices of arbitrary size as long as i2<=size(A,2) for G*A or i2<=size(A,1) for A*G\'.\n\nSee also: givens\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.givens",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.givens",
+    "category": "function",
+    "text": "givens(f::T, g::T, i1::Integer, i2::Integer) where {T} -> (G::Givens, r::T)\n\nComputes the Givens rotation G and scalar r such that for any vector x where\n\nx[i1] = f\nx[i2] = g\n\nthe result of the multiplication\n\ny = G*x\n\nhas the property that\n\ny[i1] = r\ny[i2] = 0\n\nSee also: LinearAlgebra.Givens\n\n\n\n\n\ngivens(A::AbstractArray, i1::Integer, i2::Integer, j::Integer) -> (G::Givens, r)\n\nComputes the Givens rotation G and scalar r such that the result of the multiplication\n\nB = G*A\n\nhas the property that\n\nB[i1,j] = r\nB[i2,j] = 0\n\nSee also: LinearAlgebra.Givens\n\n\n\n\n\ngivens(x::AbstractVector, i1::Integer, i2::Integer) -> (G::Givens, r)\n\nComputes the Givens rotation G and scalar r such that the result of the multiplication\n\nB = G*x\n\nhas the property that\n\nB[i1] = r\nB[i2] = 0\n\nSee also: LinearAlgebra.Givens\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.triu",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.triu",
+    "category": "function",
+    "text": "triu(M)\n\nUpper triangle of a matrix.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> triu(a)\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 0.0  1.0  1.0  1.0\n 0.0  0.0  1.0  1.0\n 0.0  0.0  0.0  1.0\n\n\n\n\n\ntriu(M, k::Integer)\n\nReturns the upper triangle of M starting from the kth superdiagonal.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> triu(a,3)\n4×4 Array{Float64,2}:\n 0.0  0.0  0.0  1.0\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n\njulia> triu(a,-3)\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.triu!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.triu!",
+    "category": "function",
+    "text": "triu!(M)\n\nUpper triangle of a matrix, overwriting M in the process. See also triu.\n\n\n\n\n\ntriu!(M, k::Integer)\n\nReturn the upper triangle of M starting from the kth superdiagonal, overwriting M in the process.\n\nExamples\n\njulia> M = [1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5]\n5×5 Array{Int64,2}:\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n\njulia> triu!(M, 1)\n5×5 Array{Int64,2}:\n 0  2  3  4  5\n 0  0  3  4  5\n 0  0  0  4  5\n 0  0  0  0  5\n 0  0  0  0  0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.tril",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.tril",
+    "category": "function",
+    "text": "tril(M)\n\nLower triangle of a matrix.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> tril(a)\n4×4 Array{Float64,2}:\n 1.0  0.0  0.0  0.0\n 1.0  1.0  0.0  0.0\n 1.0  1.0  1.0  0.0\n 1.0  1.0  1.0  1.0\n\n\n\n\n\ntril(M, k::Integer)\n\nReturns the lower triangle of M starting from the kth superdiagonal.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> tril(a,3)\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> tril(a,-3)\n4×4 Array{Float64,2}:\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n 1.0  0.0  0.0  0.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.tril!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.tril!",
+    "category": "function",
+    "text": "tril!(M)\n\nLower triangle of a matrix, overwriting M in the process. See also tril.\n\n\n\n\n\ntril!(M, k::Integer)\n\nReturn the lower triangle of M starting from the kth superdiagonal, overwriting M in the process.\n\nExamples\n\njulia> M = [1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5]\n5×5 Array{Int64,2}:\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n\njulia> tril!(M, 2)\n5×5 Array{Int64,2}:\n 1  2  3  0  0\n 1  2  3  4  0\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.diagind",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.diagind",
+    "category": "function",
+    "text": "diagind(M, k::Integer=0)\n\nAn AbstractRange giving the indices of the kth diagonal of the matrix M.\n\nExamples\n\njulia> A = [1 2 3; 4 5 6; 7 8 9]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n 7  8  9\n\njulia> diagind(A,-1)\n2:4:6\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.diag",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.diag",
+    "category": "function",
+    "text": "diag(M, k::Integer=0)\n\nThe kth diagonal of a matrix, as a vector.\n\nSee also: diagm\n\nExamples\n\njulia> A = [1 2 3; 4 5 6; 7 8 9]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n 7  8  9\n\njulia> diag(A,1)\n2-element Array{Int64,1}:\n 2\n 6\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.diagm",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.diagm",
+    "category": "function",
+    "text": "diagm(kv::Pair{<:Integer,<:AbstractVector}...)\n\nConstruct a square matrix from Pairs of diagonals and vectors. Vector kv.second will be placed on the kv.first diagonal. diagm constructs a full matrix; if you want storage-efficient versions with fast arithmetic, see Diagonal, Bidiagonal Tridiagonal and SymTridiagonal.\n\nExamples\n\njulia> diagm(1 => [1,2,3])\n4×4 Array{Int64,2}:\n 0  1  0  0\n 0  0  2  0\n 0  0  0  3\n 0  0  0  0\n\njulia> diagm(1 => [1,2,3], -1 => [4,5])\n4×4 Array{Int64,2}:\n 0  1  0  0\n 4  0  2  0\n 0  5  0  3\n 0  0  0  0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.rank",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.rank",
+    "category": "function",
+    "text": "rank(A[, tol::Real])\n\nCompute the rank of a matrix by counting how many singular values of A have magnitude greater than tol*σ₁ where σ₁ is A\'s largest singular values. By default, the value of tol is the smallest dimension of A multiplied by the eps of the eltype of A.\n\nExamples\n\njulia> rank(Matrix(I, 3, 3))\n3\n\njulia> rank(diagm(0 => [1, 0, 2]))\n2\n\njulia> rank(diagm(0 => [1, 0.001, 2]), 0.1)\n2\n\njulia> rank(diagm(0 => [1, 0.001, 2]), 0.00001)\n3\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.norm",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.norm",
+    "category": "function",
+    "text": "norm(A, p::Real=2)\n\nFor any iterable container A (including arrays of any dimension) of numbers (or any element type for which norm is defined), compute the p-norm (defaulting to p=2) as if A were a vector of the corresponding length.\n\nThe p-norm is defined as\n\nA_p = left( sum_i=1^n  a_i  ^p right)^1p\n\nwith a_i the entries of A,  a_i  the norm of a_i, and n the length of A. Since the p-norm is computed using the norms of the entries of A, the p-norm of a vector of vectors is not compatible with the interpretation of it as a block vector in general if p != 2.\n\np can assume any numeric value (even though not all values produce a mathematically valid vector norm). In particular, norm(A, Inf) returns the largest value in abs.(A), whereas norm(A, -Inf) returns the smallest. If A is a matrix and p=2, then this is equivalent to the Frobenius norm.\n\nThe second argument p is not necessarily a part of the interface for norm, i.e. a custom type may only implement norm(A) without second argument.\n\nUse opnorm to compute the operator norm of a matrix.\n\nExamples\n\njulia> v = [3, -2, 6]\n3-element Array{Int64,1}:\n  3\n -2\n  6\n\njulia> norm(v)\n7.0\n\njulia> norm(v, 1)\n11.0\n\njulia> norm(v, Inf)\n6.0\n\njulia> norm([1 2 3; 4 5 6; 7 8 9])\n16.881943016134134\n\njulia> norm([1 2 3 4 5 6 7 8 9])\n16.881943016134134\n\njulia> norm(1:9)\n16.881943016134134\n\njulia> norm(hcat(v,v), 1) == norm(vcat(v,v), 1) != norm([v,v], 1)\ntrue\n\njulia> norm(hcat(v,v), 2) == norm(vcat(v,v), 2) == norm([v,v], 2)\ntrue\n\njulia> norm(hcat(v,v), Inf) == norm(vcat(v,v), Inf) != norm([v,v], Inf)\ntrue\n\n\n\n\n\nnorm(x::Number, p::Real=2)\n\nFor numbers, return left( x^p right)^1p.\n\nExamples\n\njulia> norm(2, 1)\n2\n\njulia> norm(-2, 1)\n2\n\njulia> norm(2, 2)\n2\n\njulia> norm(-2, 2)\n2\n\njulia> norm(2, Inf)\n2\n\njulia> norm(-2, Inf)\n2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.opnorm",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.opnorm",
+    "category": "function",
+    "text": "opnorm(A::AbstractMatrix, p::Real=2)\n\nCompute the operator norm (or matrix norm) induced by the vector p-norm, where valid values of p are 1, 2, or Inf. (Note that for sparse matrices, p=2 is currently not implemented.) Use norm to compute the Frobenius norm.\n\nWhen p=1, the operator norm is the maximum absolute column sum of A:\n\nA_1 = max_1  j  n sum_i=1^m  a_ij \n\nwith a_ij the entries of A, and m and n its dimensions.\n\nWhen p=2, the operator norm is the spectral norm, equal to the largest singular value of A.\n\nWhen p=Inf, the operator norm is the maximum absolute row sum of A:\n\nA_infty = max_1  i  m sum _j=1^n  a_ij \n\nExamples\n\njulia> A = [1 -2 -3; 2 3 -1]\n2×3 Array{Int64,2}:\n 1  -2  -3\n 2   3  -1\n\njulia> opnorm(A, Inf)\n6.0\n\njulia> opnorm(A, 1)\n5.0\n\n\n\n\n\nopnorm(x::Number, p::Real=2)\n\nFor numbers, return left( x^p right)^1p. This is equivalent to norm.\n\n\n\n\n\nopnorm(A::Adjoint{<:Any,<:AbstracVector}, q::Real=2)\nopnorm(A::Transpose{<:Any,<:AbstracVector}, q::Real=2)\n\nFor Adjoint/Transpose-wrapped vectors, return the operator q-norm of A, which is equivalent to the p-norm with value p = q/(q-1). They coincide at p = q = 2. Use norm to compute the p norm of A as a vector.\n\nThe difference in norm between a vector space and its dual arises to preserve the relationship between duality and the dot product, and the result is consistent with the operator p-norm of a 1 × n matrix.\n\nExamples\n\njulia> v = [1; im];\n\njulia> vc = v\';\n\njulia> opnorm(vc, 1)\n1.0\n\njulia> norm(vc, 1)\n2.0\n\njulia> norm(v, 1)\n2.0\n\njulia> opnorm(vc, 2)\n1.4142135623730951\n\njulia> norm(vc, 2)\n1.4142135623730951\n\njulia> norm(v, 2)\n1.4142135623730951\n\njulia> opnorm(vc, Inf)\n2.0\n\njulia> norm(vc, Inf)\n1.0\n\njulia> norm(v, Inf)\n1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.normalize!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.normalize!",
+    "category": "function",
+    "text": "normalize!(v::AbstractVector, p::Real=2)\n\nNormalize the vector v in-place so that its p-norm equals unity, i.e. norm(v, p) == 1. See also normalize and norm.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.normalize",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.normalize",
+    "category": "function",
+    "text": "normalize(v::AbstractVector, p::Real=2)\n\nNormalize the vector v so that its p-norm equals unity, i.e. norm(v, p) == vecnorm(v, p) == 1. See also normalize! and norm.\n\nExamples\n\njulia> a = [1,2,4];\n\njulia> b = normalize(a)\n3-element Array{Float64,1}:\n 0.2182178902359924\n 0.4364357804719848\n 0.8728715609439696\n\njulia> norm(b)\n1.0\n\njulia> c = normalize(a, 1)\n3-element Array{Float64,1}:\n 0.14285714285714285\n 0.2857142857142857\n 0.5714285714285714\n\njulia> norm(c, 1)\n1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.cond",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.cond",
+    "category": "function",
+    "text": "cond(M, p::Real=2)\n\nCondition number of the matrix M, computed using the operator p-norm. Valid values for p are 1, 2 (default), or Inf.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.condskeel",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.condskeel",
+    "category": "function",
+    "text": "condskeel(M, [x, p::Real=Inf])\n\nkappa_S(M p) = leftVert leftvert M rightvert leftvert M^-1 rightvert rightVert_p \nkappa_S(M x p) = leftVert leftvert M rightvert leftvert M^-1 rightvert leftvert x rightvert rightVert_p\n\nSkeel condition number kappa_S of the matrix M, optionally with respect to the vector x, as computed using the operator p-norm. leftvert M rightvert denotes the matrix of (entry wise) absolute values of M; leftvert M rightvert_ij = leftvert M_ij rightvert. Valid values for p are 1, 2 and Inf (default).\n\nThis quantity is also known in the literature as the Bauer condition number, relative condition number, or componentwise relative condition number.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.tr",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.tr",
+    "category": "function",
+    "text": "tr(M)\n\nMatrix trace. Sums the diagonal elements of M.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> tr(A)\n5\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.det",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.det",
+    "category": "function",
+    "text": "det(M)\n\nMatrix determinant.\n\nExamples\n\njulia> M = [1 0; 2 2]\n2×2 Array{Int64,2}:\n 1  0\n 2  2\n\njulia> det(M)\n2.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.logdet",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.logdet",
+    "category": "function",
+    "text": "logdet(M)\n\nLog of matrix determinant. Equivalent to log(det(M)), but may provide increased accuracy and/or speed.\n\nExamples\n\njulia> M = [1 0; 2 2]\n2×2 Array{Int64,2}:\n 1  0\n 2  2\n\njulia> logdet(M)\n0.6931471805599453\n\njulia> logdet(Matrix(I, 3, 3))\n0.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.logabsdet",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.logabsdet",
+    "category": "function",
+    "text": "logabsdet(M)\n\nLog of absolute value of matrix determinant. Equivalent to (log(abs(det(M))), sign(det(M))), but may provide increased accuracy and/or speed.\n\nExamples\n\njulia> A = [-1. 0.; 0. 1.]\n2×2 Array{Float64,2}:\n -1.0  0.0\n  0.0  1.0\n\njulia> det(A)\n-1.0\n\njulia> logabsdet(A)\n(0.0, -1.0)\n\njulia> B = [2. 0.; 0. 1.]\n2×2 Array{Float64,2}:\n 2.0  0.0\n 0.0  1.0\n\njulia> det(B)\n2.0\n\njulia> logabsdet(B)\n(0.6931471805599453, 1.0)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.inv-Tuple{AbstractArray{T,2} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.inv",
+    "category": "method",
+    "text": "inv(M)\n\nMatrix inverse. Computes matrix N such that M * N = I, where I is the identity matrix. Computed by solving the left-division N = M \\ I.\n\nExamples\n\njulia> M = [2 5; 1 3]\n2×2 Array{Int64,2}:\n 2  5\n 1  3\n\njulia> N = inv(M)\n2×2 Array{Float64,2}:\n  3.0  -5.0\n -1.0   2.0\n\njulia> M*N == N*M == Matrix(I, 2, 2)\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.pinv",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.pinv",
+    "category": "function",
+    "text": "pinv(M[, tol::Real])\n\nComputes the Moore-Penrose pseudoinverse.\n\nFor matrices M with floating point elements, it is convenient to compute the pseudoinverse by inverting only singular values above a given threshold, tol.\n\nThe optimal choice of tol varies both with the value of M and the intended application of the pseudoinverse. The default value of tol is eps(real(float(one(eltype(M)))))*minimum(size(M)), which is essentially machine epsilon for the real part of a matrix element multiplied by the larger matrix dimension. For inverting dense ill-conditioned matrices in a least-squares sense, tol = sqrt(eps(real(float(one(eltype(M)))))) is recommended.\n\nFor more information, see [issue8859], [B96], [S84], [KY88].\n\nExamples\n\njulia> M = [1.5 1.3; 1.2 1.9]\n2×2 Array{Float64,2}:\n 1.5  1.3\n 1.2  1.9\n\njulia> N = pinv(M)\n2×2 Array{Float64,2}:\n  1.47287   -1.00775\n -0.930233   1.16279\n\njulia> M * N\n2×2 Array{Float64,2}:\n 1.0          -2.22045e-16\n 4.44089e-16   1.0\n\n[issue8859]: Issue 8859, \"Fix least squares\", https://github.com/JuliaLang/julia/pull/8859\n\n[B96]: Åke Björck, \"Numerical Methods for Least Squares Problems\",  SIAM Press, Philadelphia, 1996, \"Other Titles in Applied Mathematics\", Vol. 51. doi:10.1137/1.9781611971484\n\n[S84]: G. W. Stewart, \"Rank Degeneracy\", SIAM Journal on Scientific and Statistical Computing, 5(2), 1984, 403-413. doi:10.1137/0905030\n\n[KY88]: Konstantinos Konstantinides and Kung Yao, \"Statistical analysis of effective singular values in matrix rank determination\", IEEE Transactions on Acoustics, Speech and Signal Processing, 36(5), 1988, 757-763. doi:10.1109/29.1585\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.nullspace",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.nullspace",
+    "category": "function",
+    "text": "nullspace(M[, tol::Real])\n\nComputes a basis for the nullspace of M by including the singular vectors of A whose singular have magnitude are greater than tol*σ₁, where σ₁ is A\'s largest singular values. By default, the value of tol is the smallest dimension of A multiplied by the eps of the eltype of A.\n\nExamples\n\njulia> M = [1 0 0; 0 1 0; 0 0 0]\n3×3 Array{Int64,2}:\n 1  0  0\n 0  1  0\n 0  0  0\n\njulia> nullspace(M)\n3×1 Array{Float64,2}:\n 0.0\n 0.0\n 1.0\n\njulia> nullspace(M, 2)\n3×3 Array{Float64,2}:\n 0.0  1.0  0.0\n 1.0  0.0  0.0\n 0.0  0.0  1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.kron",
+    "page": "Linear Algebra",
+    "title": "Base.kron",
+    "category": "function",
+    "text": "kron(A, B)\n\nKronecker tensor product of two vectors or two matrices.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> B = [im 1; 1 -im]\n2×2 Array{Complex{Int64},2}:\n 0+1im  1+0im\n 1+0im  0-1im\n\njulia> kron(A, B)\n4×4 Array{Complex{Int64},2}:\n 0+1im  1+0im  0+2im  2+0im\n 1+0im  0-1im  2+0im  0-2im\n 0+3im  3+0im  0+4im  4+0im\n 3+0im  0-3im  4+0im  0-4im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.exp-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Union{Complex{Float32}, Complex{Float64}, Float32, Float64}}",
+    "page": "Linear Algebra",
+    "title": "Base.exp",
+    "category": "method",
+    "text": "exp(A::AbstractMatrix)\n\nCompute the matrix exponential of A, defined by\n\ne^A = sum_n=0^infty fracA^nn\n\nFor symmetric or Hermitian A, an eigendecomposition (eigen) is used, otherwise the scaling and squaring algorithm (see [H05]) is chosen.\n\n[H05]: Nicholas J. Higham, \"The squaring and scaling method for the matrix exponential revisited\", SIAM Journal on Matrix Analysis and Applications, 26(4), 2005, 1179-1193. doi:10.1137/090768539\n\nExamples\n\njulia> A = Matrix(1.0I, 2, 2)\n2×2 Array{Float64,2}:\n 1.0  0.0\n 0.0  1.0\n\njulia> exp(A)\n2×2 Array{Float64,2}:\n 2.71828  0.0\n 0.0      2.71828\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.log-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.log",
+    "category": "method",
+    "text": "log(A{T}::StridedMatrix{T})\n\nIf A has no negative real eigenvalue, compute the principal matrix logarithm of A, i.e. the unique matrix X such that e^X = A and -pi  Im(lambda)  pi for all the eigenvalues lambda of X. If A has nonpositive eigenvalues, a nonprincipal matrix function is returned whenever possible.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used, if A is triangular an improved version of the inverse scaling and squaring method is employed (see [AH12] and [AHR13]). For general matrices, the complex Schur form (schur) is computed and the triangular algorithm is used on the triangular factor.\n\n[AH12]: Awad H. Al-Mohy and Nicholas J. Higham, \"Improved inverse  scaling and squaring algorithms for the matrix logarithm\", SIAM Journal on Scientific Computing, 34(4), 2012, C153-C169. doi:10.1137/110852553\n\n[AHR13]: Awad H. Al-Mohy, Nicholas J. Higham and Samuel D. Relton, \"Computing the Fréchet derivative of the matrix logarithm and estimating the condition number\", SIAM Journal on Scientific Computing, 35(4), 2013, C394-C410. doi:10.1137/120885991\n\nExamples\n\njulia> A = Matrix(2.7182818*I, 2, 2)\n2×2 Array{Float64,2}:\n 2.71828  0.0\n 0.0      2.71828\n\njulia> log(A)\n2×2 Array{Float64,2}:\n 1.0  0.0\n 0.0  1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.sqrt-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "page": "Linear Algebra",
+    "title": "Base.sqrt",
+    "category": "method",
+    "text": "sqrt(A::AbstractMatrix)\n\nIf A has no negative real eigenvalues, compute the principal matrix square root of A, that is the unique matrix X with eigenvalues having positive real part such that X^2 = A. Otherwise, a nonprincipal square root is returned.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the square root. Otherwise, the square root is determined by means of the Björck-Hammarling method [BH83], which computes the complex Schur form (schur) and then the complex square root of the triangular factor.\n\n[BH83]: Åke Björck and Sven Hammarling, \"A Schur method for the square root of a matrix\", Linear Algebra and its Applications, 52-53, 1983, 127-140. doi:10.1016/0024-3795(83)80010-X\n\nExamples\n\njulia> A = [4 0; 0 4]\n2×2 Array{Int64,2}:\n 4  0\n 0  4\n\njulia> sqrt(A)\n2×2 Array{Float64,2}:\n 2.0  0.0\n 0.0  2.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.cos-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "page": "Linear Algebra",
+    "title": "Base.cos",
+    "category": "method",
+    "text": "cos(A::AbstractMatrix)\n\nCompute the matrix cosine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the cosine. Otherwise, the cosine is determined by calling exp.\n\nExamples\n\njulia> cos(fill(1.0, (2,2)))\n2×2 Array{Float64,2}:\n  0.291927  -0.708073\n -0.708073   0.291927\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.sin-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "page": "Linear Algebra",
+    "title": "Base.sin",
+    "category": "method",
+    "text": "sin(A::AbstractMatrix)\n\nCompute the matrix sine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the sine. Otherwise, the sine is determined by calling exp.\n\nExamples\n\njulia> sin(fill(1.0, (2,2)))\n2×2 Array{Float64,2}:\n 0.454649  0.454649\n 0.454649  0.454649\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.sincos-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.sincos",
+    "category": "method",
+    "text": "sincos(A::AbstractMatrix)\n\nCompute the matrix sine and cosine of a square matrix A.\n\nExamples\n\njulia> S, C = sincos(fill(1.0, (2,2)));\n\njulia> S\n2×2 Array{Float64,2}:\n 0.454649  0.454649\n 0.454649  0.454649\n\njulia> C\n2×2 Array{Float64,2}:\n  0.291927  -0.708073\n -0.708073   0.291927\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.tan-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "page": "Linear Algebra",
+    "title": "Base.tan",
+    "category": "method",
+    "text": "tan(A::AbstractMatrix)\n\nCompute the matrix tangent of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the tangent. Otherwise, the tangent is determined by calling exp.\n\nExamples\n\njulia> tan(fill(1.0, (2,2)))\n2×2 Array{Float64,2}:\n -1.09252  -1.09252\n -1.09252  -1.09252\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.sec-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.sec",
+    "category": "method",
+    "text": "sec(A::AbstractMatrix)\n\nCompute the matrix secant of a square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.csc-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.csc",
+    "category": "method",
+    "text": "csc(A::AbstractMatrix)\n\nCompute the matrix cosecant of a square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.cot-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.cot",
+    "category": "method",
+    "text": "cot(A::AbstractMatrix)\n\nCompute the matrix cotangent of a square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.cosh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.cosh",
+    "category": "method",
+    "text": "cosh(A::AbstractMatrix)\n\nCompute the matrix hyperbolic cosine of a square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.sinh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.sinh",
+    "category": "method",
+    "text": "sinh(A::AbstractMatrix)\n\nCompute the matrix hyperbolic sine of a square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.tanh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.tanh",
+    "category": "method",
+    "text": "tanh(A::AbstractMatrix)\n\nCompute the matrix hyperbolic tangent of a square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.sech-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.sech",
+    "category": "method",
+    "text": "sech(A::AbstractMatrix)\n\nCompute the matrix hyperbolic secant of square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.csch-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.csch",
+    "category": "method",
+    "text": "csch(A::AbstractMatrix)\n\nCompute the matrix hyperbolic cosecant of square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.coth-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.coth",
+    "category": "method",
+    "text": "coth(A::AbstractMatrix)\n\nCompute the matrix hyperbolic cotangent of square matrix A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.acos-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.acos",
+    "category": "method",
+    "text": "acos(A::AbstractMatrix)\n\nCompute the inverse matrix cosine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the inverse cosine. Otherwise, the inverse cosine is determined by using log and sqrt.  For the theory and logarithmic formulas used to compute this function, see [AH16_1].\n\n[AH16_1]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\nExamples\n\njulia> acos(cos([0.5 0.1; -0.2 0.3]))\n2×2 Array{Complex{Float64},2}:\n  0.5-5.55112e-17im  0.1-2.77556e-17im\n -0.2+2.498e-16im    0.3-3.46945e-16im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.asin-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.asin",
+    "category": "method",
+    "text": "asin(A::AbstractMatrix)\n\nCompute the inverse matrix sine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the inverse sine. Otherwise, the inverse sine is determined by using log and sqrt.  For the theory and logarithmic formulas used to compute this function, see [AH16_2].\n\n[AH16_2]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\nExamples\n\njulia> asin(sin([0.5 0.1; -0.2 0.3]))\n2×2 Array{Complex{Float64},2}:\n  0.5-4.16334e-17im  0.1-5.55112e-17im\n -0.2+9.71445e-17im  0.3-1.249e-16im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.atan-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.atan",
+    "category": "method",
+    "text": "atan(A::AbstractMatrix)\n\nCompute the inverse matrix tangent of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the inverse tangent. Otherwise, the inverse tangent is determined by using log.  For the theory and logarithmic formulas used to compute this function, see [AH16_3].\n\n[AH16_3]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\nExamples\n\njulia> atan(tan([0.5 0.1; -0.2 0.3]))\n2×2 Array{Complex{Float64},2}:\n  0.5+1.38778e-17im  0.1-2.77556e-17im\n -0.2+6.93889e-17im  0.3-4.16334e-17im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.asec-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.asec",
+    "category": "method",
+    "text": "asec(A::AbstractMatrix)\n\nCompute the inverse matrix secant of A. \n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.acsc-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.acsc",
+    "category": "method",
+    "text": "acsc(A::AbstractMatrix)\n\nCompute the inverse matrix cosecant of A. \n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.acot-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.acot",
+    "category": "method",
+    "text": "acot(A::AbstractMatrix)\n\nCompute the inverse matrix cotangent of A. \n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.acosh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.acosh",
+    "category": "method",
+    "text": "acosh(A::AbstractMatrix)\n\nCompute the inverse hyperbolic matrix cosine of a square matrix A.  For the theory and logarithmic formulas used to compute this function, see [AH16_4].\n\n[AH16_4]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.asinh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.asinh",
+    "category": "method",
+    "text": "asinh(A::AbstractMatrix)\n\nCompute the inverse hyperbolic matrix sine of a square matrix A.  For the theory and logarithmic formulas used to compute this function, see [AH16_5].\n\n[AH16_5]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.atanh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.atanh",
+    "category": "method",
+    "text": "atanh(A::AbstractMatrix)\n\nCompute the inverse hyperbolic matrix tangent of a square matrix A.  For the theory and logarithmic formulas used to compute this function, see [AH16_6].\n\n[AH16_6]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.asech-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.asech",
+    "category": "method",
+    "text": "asech(A::AbstractMatrix)\n\nCompute the inverse matrix hyperbolic secant of A. \n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.acsch-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.acsch",
+    "category": "method",
+    "text": "acsch(A::AbstractMatrix)\n\nCompute the inverse matrix hyperbolic cosecant of A. \n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.Math.acoth-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
+    "page": "Linear Algebra",
+    "title": "Base.Math.acoth",
+    "category": "method",
+    "text": "acoth(A::AbstractMatrix)\n\nCompute the inverse matrix hyperbolic cotangent of A. \n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lyap",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lyap",
+    "category": "function",
+    "text": "lyap(A, C)\n\nComputes the solution X to the continuous Lyapunov equation AX + XA\' + C = 0, where no eigenvalue of A has a zero real part and no two eigenvalues are negative complex conjugates of each other.\n\nExamples\n\njulia> A = [3. 4.; 5. 6]\n2×2 Array{Float64,2}:\n 3.0  4.0\n 5.0  6.0\n\njulia> B = [1. 1.; 1. 2.]\n2×2 Array{Float64,2}:\n 1.0  1.0\n 1.0  2.0\n\njulia> X = lyap(A, B)\n2×2 Array{Float64,2}:\n  0.5  -0.5\n -0.5   0.25\n\njulia> A*X + X*A\' + B\n2×2 Array{Float64,2}:\n 0.0          6.66134e-16\n 6.66134e-16  8.88178e-16\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.sylvester",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.sylvester",
+    "category": "function",
+    "text": "sylvester(A, B, C)\n\nComputes the solution X to the Sylvester equation AX + XB + C = 0, where A, B and C have compatible dimensions and A and -B have no eigenvalues with equal real part.\n\nExamples\n\njulia> A = [3. 4.; 5. 6]\n2×2 Array{Float64,2}:\n 3.0  4.0\n 5.0  6.0\n\njulia> B = [1. 1.; 1. 2.]\n2×2 Array{Float64,2}:\n 1.0  1.0\n 1.0  2.0\n\njulia> C = [1. 2.; -2. 1]\n2×2 Array{Float64,2}:\n  1.0  2.0\n -2.0  1.0\n\njulia> X = sylvester(A, B, C)\n2×2 Array{Float64,2}:\n -4.46667   1.93333\n  3.73333  -1.8\n\njulia> A*X + X*B + C\n2×2 Array{Float64,2}:\n  2.66454e-15  1.77636e-15\n -3.77476e-15  4.44089e-16\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.issuccess",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.issuccess",
+    "category": "function",
+    "text": "issuccess(F::Factorization)\n\nTest that a factorization of a matrix succeeded.\n\njulia> F = cholesky([1 0; 0 1]);\n\njulia> LinearAlgebra.issuccess(F)\ntrue\n\njulia> F = lu([1 0; 0 0]; check = false);\n\njulia> LinearAlgebra.issuccess(F)\nfalse\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.issymmetric",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.issymmetric",
+    "category": "function",
+    "text": "issymmetric(A) -> Bool\n\nTest whether a matrix is symmetric.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> issymmetric(a)\ntrue\n\njulia> b = [1 im; -im 1]\n2×2 Array{Complex{Int64},2}:\n 1+0im  0+1im\n 0-1im  1+0im\n\njulia> issymmetric(b)\nfalse\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.isposdef",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.isposdef",
+    "category": "function",
+    "text": "isposdef(A) -> Bool\n\nTest whether a matrix is positive definite (and Hermitian) by trying to perform a Cholesky factorization of A. See also isposdef!\n\nExamples\n\njulia> A = [1 2; 2 50]\n2×2 Array{Int64,2}:\n 1   2\n 2  50\n\njulia> isposdef(A)\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.isposdef!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.isposdef!",
+    "category": "function",
+    "text": "isposdef!(A) -> Bool\n\nTest whether a matrix is positive definite (and Hermitian) by trying to perform a Cholesky factorization of A, overwriting A in the process. See also isposdef.\n\nExamples\n\njulia> A = [1. 2.; 2. 50.];\n\njulia> isposdef!(A)\ntrue\n\njulia> A\n2×2 Array{Float64,2}:\n 1.0  2.0\n 2.0  6.78233\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.istril",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.istril",
+    "category": "function",
+    "text": "istril(A::AbstractMatrix, k::Integer = 0) -> Bool\n\nTest whether A is lower triangular starting from the kth superdiagonal.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> istril(a)\nfalse\n\njulia> istril(a, 1)\ntrue\n\njulia> b = [1 0; -im -1]\n2×2 Array{Complex{Int64},2}:\n 1+0im   0+0im\n 0-1im  -1+0im\n\njulia> istril(b)\ntrue\n\njulia> istril(b, -1)\nfalse\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.istriu",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.istriu",
+    "category": "function",
+    "text": "istriu(A::AbstractMatrix, k::Integer = 0) -> Bool\n\nTest whether A is upper triangular starting from the kth superdiagonal.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> istriu(a)\nfalse\n\njulia> istriu(a, -1)\ntrue\n\njulia> b = [1 im; 0 -1]\n2×2 Array{Complex{Int64},2}:\n 1+0im   0+1im\n 0+0im  -1+0im\n\njulia> istriu(b)\ntrue\n\njulia> istriu(b, 1)\nfalse\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.isdiag",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.isdiag",
+    "category": "function",
+    "text": "isdiag(A) -> Bool\n\nTest whether a matrix is diagonal.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> isdiag(a)\nfalse\n\njulia> b = [im 0; 0 -im]\n2×2 Array{Complex{Int64},2}:\n 0+1im  0+0im\n 0+0im  0-1im\n\njulia> isdiag(b)\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.ishermitian",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.ishermitian",
+    "category": "function",
+    "text": "ishermitian(A) -> Bool\n\nTest whether a matrix is Hermitian.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> ishermitian(a)\ntrue\n\njulia> b = [1 im; -im 1]\n2×2 Array{Complex{Int64},2}:\n 1+0im  0+1im\n 0-1im  1+0im\n\njulia> ishermitian(b)\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.transpose",
+    "page": "Linear Algebra",
+    "title": "Base.transpose",
+    "category": "function",
+    "text": "transpose(A)\n\nLazy transpose. Mutating the returned object should appropriately mutate A. Often, but not always, yields Transpose(A), where Transpose is a lazy transpose wrapper. Note that this operation is recursive.\n\nThis operation is intended for linear algebra usage - for general data manipulation see permutedims, which is non-recursive.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> transpose(A)\n2×2 Transpose{Complex{Int64},Array{Complex{Int64},2}}:\n 3+2im  8+7im\n 9+2im  4+6im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.transpose!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.transpose!",
+    "category": "function",
+    "text": "transpose!(dest,src)\n\nTranspose array src and store the result in the preallocated array dest, which should have a size corresponding to (size(src,2),size(src,1)). No in-place transposition is supported and unexpected results will happen if src and dest have overlapping memory regions.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> B = zeros(Complex{Int64}, 2, 2)\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+0im\n 0+0im  0+0im\n\njulia> transpose!(B, A);\n\njulia> B\n2×2 Array{Complex{Int64},2}:\n 3+2im  8+7im\n 9+2im  4+6im\n\njulia> A\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.adjoint",
+    "page": "Linear Algebra",
+    "title": "Base.adjoint",
+    "category": "function",
+    "text": "adjoint(A)\n\nLazy adjoint (conjugate transposition) (also postfix \'). Note that adjoint is applied recursively to elements.\n\nThis operation is intended for linear algebra usage - for general data manipulation see permutedims.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> adjoint(A)\n2×2 Adjoint{Complex{Int64},Array{Complex{Int64},2}}:\n 3-2im  8-7im\n 9-2im  4-6im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.adjoint!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.adjoint!",
+    "category": "function",
+    "text": "adjoint!(dest,src)\n\nConjugate transpose array src and store the result in the preallocated array dest, which should have a size corresponding to (size(src,2),size(src,1)). No in-place transposition is supported and unexpected results will happen if src and dest have overlapping memory regions.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> B = zeros(Complex{Int64}, 2, 2)\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+0im\n 0+0im  0+0im\n\njulia> adjoint!(B, A);\n\njulia> B\n2×2 Array{Complex{Int64},2}:\n 3-2im  8-7im\n 9-2im  4-6im\n\njulia> A\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Base.copy-Tuple{Union{Adjoint, Transpose}}",
+    "page": "Linear Algebra",
+    "title": "Base.copy",
+    "category": "method",
+    "text": "copy(A::Transpose)\ncopy(A::Adjoint)\n\nEagerly evaluate the lazy matrix transpose/adjoint. Note that the transposition is applied recursively to elements.\n\nThis operation is intended for linear algebra usage - for general data manipulation see permutedims, which is non-recursive.\n\nExamples\n\njulia> A = [1 2im; -3im 4]\n2×2 Array{Complex{Int64},2}:\n 1+0im  0+2im\n 0-3im  4+0im\n\njulia> T = transpose(A)\n2×2 Transpose{Complex{Int64},Array{Complex{Int64},2}}:\n 1+0im  0-3im\n 0+2im  4+0im\n\njulia> copy(T)\n2×2 Array{Complex{Int64},2}:\n 1+0im  0-3im\n 0+2im  4+0im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.stride1",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.stride1",
+    "category": "function",
+    "text": "stride1(A) -> Int\n\nReturn the distance between successive array elements in dimension 1 in units of element size.\n\nExamples\n\njulia> A = [1,2,3,4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> LinearAlgebra.stride1(A)\n1\n\njulia> B = view(A, 2:2:4)\n2-element view(::Array{Int64,1}, 2:2:4) with eltype Int64:\n 2\n 4\n\njulia> LinearAlgebra.stride1(B)\n2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.checksquare",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.checksquare",
+    "category": "function",
+    "text": "LinearAlgebra.checksquare(A)\n\nCheck that a matrix is square, then return its common dimension. For multiple arguments, return a vector.\n\nExamples\n\njulia> A = fill(1, (4,4)); B = fill(1, (5,5));\n\njulia> LinearAlgebra.checksquare(A, B)\n2-element Array{Int64,1}:\n 4\n 5\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Standard-Functions-1",
+    "page": "Linear Algebra",
+    "title": "Standard Functions",
+    "category": "section",
+    "text": "Linear algebra functions in Julia are largely implemented by calling functions from LAPACK.  Sparse factorizations call functions from SuiteSparse.Base.:*(::AbstractMatrix, ::AbstractMatrix)\nBase.:\\(::AbstractMatrix, ::AbstractVecOrMat)\nLinearAlgebra.dot\nLinearAlgebra.cross\nLinearAlgebra.factorize\nLinearAlgebra.Diagonal\nLinearAlgebra.Bidiagonal\nLinearAlgebra.SymTridiagonal\nLinearAlgebra.Tridiagonal\nLinearAlgebra.Symmetric\nLinearAlgebra.Hermitian\nLinearAlgebra.LowerTriangular\nLinearAlgebra.UpperTriangular\nLinearAlgebra.UniformScaling\nLinearAlgebra.lu\nLinearAlgebra.lu!\nLinearAlgebra.cholesky\nLinearAlgebra.cholesky!\nLinearAlgebra.lowrankupdate\nLinearAlgebra.lowrankdowndate\nLinearAlgebra.lowrankupdate!\nLinearAlgebra.lowrankdowndate!\nLinearAlgebra.ldlt\nLinearAlgebra.ldlt!\nLinearAlgebra.qr\nLinearAlgebra.qr!\nLinearAlgebra.QR\nLinearAlgebra.QRCompactWY\nLinearAlgebra.QRPivoted\nLinearAlgebra.lq!\nLinearAlgebra.lq\nLinearAlgebra.bunchkaufman\nLinearAlgebra.bunchkaufman!\nLinearAlgebra.eigvals\nLinearAlgebra.eigvals!\nLinearAlgebra.eigmax\nLinearAlgebra.eigmin\nLinearAlgebra.eigvecs\nLinearAlgebra.eigen\nLinearAlgebra.eigen!\nLinearAlgebra.hessenberg\nLinearAlgebra.hessenberg!\nLinearAlgebra.schur!\nLinearAlgebra.schur\nLinearAlgebra.ordschur\nLinearAlgebra.ordschur!\nLinearAlgebra.svd\nLinearAlgebra.svd!\nLinearAlgebra.svdvals\nLinearAlgebra.svdvals!\nLinearAlgebra.Givens\nLinearAlgebra.givens\nLinearAlgebra.triu\nLinearAlgebra.triu!\nLinearAlgebra.tril\nLinearAlgebra.tril!\nLinearAlgebra.diagind\nLinearAlgebra.diag\nLinearAlgebra.diagm\nLinearAlgebra.rank\nLinearAlgebra.norm\nLinearAlgebra.opnorm\nLinearAlgebra.normalize!\nLinearAlgebra.normalize\nLinearAlgebra.cond\nLinearAlgebra.condskeel\nLinearAlgebra.tr\nLinearAlgebra.det\nLinearAlgebra.logdet\nLinearAlgebra.logabsdet\nBase.inv(::AbstractMatrix)\nLinearAlgebra.pinv\nLinearAlgebra.nullspace\nBase.kron\nLinearAlgebra.exp(::StridedMatrix{<:LinearAlgebra.BlasFloat})\nLinearAlgebra.log(::StridedMatrix)\nLinearAlgebra.sqrt(::StridedMatrix{<:Real})\nLinearAlgebra.cos(::StridedMatrix{<:Real})\nLinearAlgebra.sin(::StridedMatrix{<:Real})\nLinearAlgebra.sincos(::StridedMatrix{<:Real})\nLinearAlgebra.tan(::StridedMatrix{<:Real})\nLinearAlgebra.sec(::StridedMatrix)\nLinearAlgebra.csc(::StridedMatrix)\nLinearAlgebra.cot(::StridedMatrix)\nLinearAlgebra.cosh(::StridedMatrix)\nLinearAlgebra.sinh(::StridedMatrix)\nLinearAlgebra.tanh(::StridedMatrix)\nLinearAlgebra.sech(::StridedMatrix)\nLinearAlgebra.csch(::StridedMatrix)\nLinearAlgebra.coth(::StridedMatrix)\nLinearAlgebra.acos(::StridedMatrix)\nLinearAlgebra.asin(::StridedMatrix)\nLinearAlgebra.atan(::StridedMatrix)\nLinearAlgebra.asec(::StridedMatrix)\nLinearAlgebra.acsc(::StridedMatrix)\nLinearAlgebra.acot(::StridedMatrix)\nLinearAlgebra.acosh(::StridedMatrix)\nLinearAlgebra.asinh(::StridedMatrix)\nLinearAlgebra.atanh(::StridedMatrix)\nLinearAlgebra.asech(::StridedMatrix)\nLinearAlgebra.acsch(::StridedMatrix)\nLinearAlgebra.acoth(::StridedMatrix)\nLinearAlgebra.lyap\nLinearAlgebra.sylvester\nLinearAlgebra.issuccess\nLinearAlgebra.issymmetric\nLinearAlgebra.isposdef\nLinearAlgebra.isposdef!\nLinearAlgebra.istril\nLinearAlgebra.istriu\nLinearAlgebra.isdiag\nLinearAlgebra.ishermitian\nBase.transpose\nLinearAlgebra.transpose!\nBase.adjoint\nLinearAlgebra.adjoint!\nBase.copy(::Union{Transpose,Adjoint})\nLinearAlgebra.stride1\nLinearAlgebra.checksquare"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.mul!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.mul!",
+    "category": "function",
+    "text": "mul!(Y, A, B) -> Y\n\nCalculates the matrix-matrix or matrix-vector product AB and stores the result in Y, overwriting the existing value of Y. Note that Y must not be aliased with either A or B.\n\nExamples\n\njulia> A=[1.0 2.0; 3.0 4.0]; B=[1.0 1.0; 1.0 1.0]; Y = similar(B); mul!(Y, A, B);\n\njulia> Y\n2×2 Array{Float64,2}:\n 3.0  3.0\n 7.0  7.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.lmul!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.lmul!",
+    "category": "function",
+    "text": "lmul!(a::Number, B::AbstractArray)\n\nScale an array B by a scalar a overwriting B in-place.\n\nExamples\n\njulia> B = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> lmul!(2, B)\n2×2 Array{Int64,2}:\n 2  4\n 6  8\n\n\n\n\n\nlmul!(A, B)\n\nCalculate the matrix-matrix product AB, overwriting B, and return the result.\n\nExamples\n\njulia> B = [0 1; 1 0];\n\njulia> A = LinearAlgebra.UpperTriangular([1 2; 0 3]);\n\njulia> LinearAlgebra.lmul!(A, B);\n\njulia> B\n2×2 Array{Int64,2}:\n 2  1\n 3  0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.rmul!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.rmul!",
+    "category": "function",
+    "text": "rmul!(A::AbstractArray, b::Number)\n\nScale an array A by a scalar b overwriting A in-place.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> rmul!(A, 2)\n2×2 Array{Int64,2}:\n 2  4\n 6  8\n\n\n\n\n\nrmul!(A, B)\n\nCalculate the matrix-matrix product AB, overwriting A, and return the result.\n\nExamples\n\njulia> A = [0 1; 1 0];\n\njulia> B = LinearAlgebra.UpperTriangular([1 2; 0 3]);\n\njulia> LinearAlgebra.rmul!(A, B);\n\njulia> A\n2×2 Array{Int64,2}:\n 0  3\n 1  2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.ldiv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.ldiv!",
+    "category": "function",
+    "text": "ldiv!(Y, A, B) -> Y\n\nCompute A \\ B in-place and store the result in Y, returning the result.\n\nThe argument A should not be a matrix.  Rather, instead of matrices it should be a factorization object (e.g. produced by factorize or cholesky). The reason for this is that factorization itself is both expensive and typically allocates memory (although it can also be done in-place via, e.g., lu!), and performance-critical situations requiring ldiv! usually also require fine-grained control over the factorization of A.\n\nExamples\n\njulia> A = [1 2.2 4; 3.1 0.2 3; 4 1 2];\n\njulia> X = [1; 2.5; 3];\n\njulia> Y = zero(X);\n\njulia> ldiv!(Y, qr(A), X);\n\njulia> Y\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.051652892561983674\n  0.10020661157024757\n\njulia> A\\X\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.05165289256198333\n  0.10020661157024785\n\n\n\n\n\nldiv!(A, B)\n\nCompute A \\ B in-place and overwriting B to store the result.\n\nThe argument A should not be a matrix.  Rather, instead of matrices it should be a factorization object (e.g. produced by factorize or cholesky). The reason for this is that factorization itself is both expensive and typically allocates memory (although it can also be done in-place via, e.g., lu!), and performance-critical situations requiring ldiv! usually also require fine-grained control over the factorization of A.\n\nExamples\n\njulia> A = [1 2.2 4; 3.1 0.2 3; 4 1 2];\n\njulia> X = [1; 2.5; 3];\n\njulia> Y = copy(X);\n\njulia> ldiv!(qr(A), X);\n\njulia> X\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.051652892561983674\n  0.10020661157024757\n\njulia> A\\Y\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.05165289256198333\n  0.10020661157024785\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.rdiv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.rdiv!",
+    "category": "function",
+    "text": "rdiv!(A, B)\n\nCompute A / B in-place and overwriting A to store the result.\n\nThe argument B should not be a matrix.  Rather, instead of matrices it should be a factorization object (e.g. produced by factorize or cholesky). The reason for this is that factorization itself is both expensive and typically allocates memory (although it can also be done in-place via, e.g., lu!), and performance-critical situations requiring rdiv! usually also require fine-grained control over the factorization of B.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#Low-level-matrix-operations-1",
+    "page": "Linear Algebra",
+    "title": "Low-level matrix operations",
+    "category": "section",
+    "text": "In many cases there are in-place versions of matrix operations that allow you to supply a pre-allocated output vector or matrix.  This is useful when optimizing critical code in order to avoid the overhead of repeated allocations. These in-place operations are suffixed with ! below (e.g. mul!) according to the usual Julia convention.LinearAlgebra.mul!\nLinearAlgebra.lmul!\nLinearAlgebra.rmul!\nLinearAlgebra.ldiv!\nLinearAlgebra.rdiv!"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#BLAS-Functions-1",
+    "page": "Linear Algebra",
+    "title": "BLAS Functions",
+    "category": "section",
+    "text": "In Julia (as in much of scientific computation), dense linear-algebra operations are based on the LAPACK library, which in turn is built on top of basic linear-algebra building-blocks known as the BLAS. There are highly optimized implementations of BLAS available for every computer architecture, and sometimes in high-performance linear algebra routines it is useful to call the BLAS functions directly.LinearAlgebra.BLAS provides wrappers for some of the BLAS functions. Those BLAS functions that overwrite one of the input arrays have names ending in \'!\'.  Usually, a BLAS function has four methods defined, for Float64, Float32, ComplexF64, and ComplexF32 arrays."
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#stdlib-blas-chars-1",
+    "page": "Linear Algebra",
+    "title": "BLAS Character Arguments",
+    "category": "section",
+    "text": "Many BLAS functions accept arguments that determine whether to transpose an argument (trans), which triangle of a matrix to reference (uplo or ul), whether the diagonal of a triangular matrix can be assumed to be all ones (dA) or which side of a matrix multiplication the input argument belongs on (side). The possibilities are:"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#stdlib-blas-side-1",
+    "page": "Linear Algebra",
+    "title": "Multplication Order",
+    "category": "section",
+    "text": "side Meaning\n\'L\' The argument goes on the left side of a matrix-matrix operation.\n\'R\' The argument goes on the right side of a matrix-matrix operation."
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#stdlib-blas-uplo-1",
+    "page": "Linear Algebra",
+    "title": "Triangle Referencing",
+    "category": "section",
+    "text": "uplo/ul Meaning\n\'U\' Only the upper triangle of the matrix will be used.\n\'L\' Only the lower triangle of the matrix will be used."
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#stdlib-blas-trans-1",
+    "page": "Linear Algebra",
+    "title": "Transposition Operation",
+    "category": "section",
+    "text": "trans/tX Meaning\n\'N\' The input matrix X is not transposed or conjugated.\n\'T\' The input matrix X will be transposed.\n\'C\' The input matrix X will be conjugated and transposed."
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS",
+    "category": "module",
+    "text": "Interface to BLAS subroutines.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.dotu",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.dotu",
+    "category": "function",
+    "text": "dotu(n, X, incx, Y, incy)\n\nDot function for two complex vectors consisting of n elements of array X with stride incx and n elements of array Y with stride incy.\n\nExamples\n\njulia> BLAS.dotu(10, fill(1.0im, 10), 1, fill(1.0+im, 20), 2)\n-10.0 + 10.0im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.dotc",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.dotc",
+    "category": "function",
+    "text": "dotc(n, X, incx, U, incy)\n\nDot function for two complex vectors, consisting of n elements of array X with stride incx and n elements of array U with stride incy, conjugating the first vector.\n\nExamples\n\njulia> BLAS.dotc(10, fill(1.0im, 10), 1, fill(1.0+im, 20), 2)\n10.0 - 10.0im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.blascopy!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.blascopy!",
+    "category": "function",
+    "text": "blascopy!(n, X, incx, Y, incy)\n\nCopy n elements of array X with stride incx to array Y with stride incy. Returns Y.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.nrm2",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.nrm2",
+    "category": "function",
+    "text": "nrm2(n, X, incx)\n\n2-norm of a vector consisting of n elements of array X with stride incx.\n\nExamples\n\njulia> BLAS.nrm2(4, fill(1.0, 8), 2)\n2.0\n\njulia> BLAS.nrm2(1, fill(1.0, 8), 2)\n1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.asum",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.asum",
+    "category": "function",
+    "text": "asum(n, X, incx)\n\nSum of the absolute values of the first n elements of array X with stride incx.\n\nExamples\n\njulia> BLAS.asum(5, fill(1.0im, 10), 2)\n5.0\n\njulia> BLAS.asum(2, fill(1.0im, 10), 5)\n2.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.axpy!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.axpy!",
+    "category": "function",
+    "text": "axpy!(a, X, Y)\n\nOverwrite Y with a*X + Y, where a is a scalar. Return Y.\n\nExamples\n\njulia> x = [1; 2; 3];\n\njulia> y = [4; 5; 6];\n\njulia> BLAS.axpy!(2, x, y)\n3-element Array{Int64,1}:\n  6\n  9\n 12\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.scal!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.scal!",
+    "category": "function",
+    "text": "scal!(n, a, X, incx)\n\nOverwrite X with a*X for the first n elements of array X with stride incx. Returns X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.scal",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.scal",
+    "category": "function",
+    "text": "scal(n, a, X, incx)\n\nReturn X scaled by a for the first n elements of array X with stride incx.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.ger!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.ger!",
+    "category": "function",
+    "text": "ger!(alpha, x, y, A)\n\nRank-1 update of the matrix A with vectors x and y as alpha*x*y\' + A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.syr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.syr!",
+    "category": "function",
+    "text": "syr!(uplo, alpha, x, A)\n\nRank-1 update of the symmetric matrix A with vector x as alpha*x*transpose(x) + A. uplo controls which triangle of A is updated. Returns A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.syrk!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.syrk!",
+    "category": "function",
+    "text": "syrk!(uplo, trans, alpha, A, beta, C)\n\nRank-k update of the symmetric matrix C as alpha*A*transpose(A) + beta*C or alpha*transpose(A)*A + beta*C according to trans. Only the uplo triangle of C is used. Returns C.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.syrk",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.syrk",
+    "category": "function",
+    "text": "syrk(uplo, trans, alpha, A)\n\nReturns either the upper triangle or the lower triangle of A, according to uplo, of alpha*A*transpose(A) or alpha*transpose(A)*A, according to trans.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.her!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.her!",
+    "category": "function",
+    "text": "her!(uplo, alpha, x, A)\n\nMethods for complex arrays only. Rank-1 update of the Hermitian matrix A with vector x as alpha*x*x\' + A. uplo controls which triangle of A is updated. Returns A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.herk!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.herk!",
+    "category": "function",
+    "text": "herk!(uplo, trans, alpha, A, beta, C)\n\nMethods for complex arrays only. Rank-k update of the Hermitian matrix C as alpha*A*A\' + beta*C or alpha*A\'*A + beta*C according to trans. Only the uplo triangle of C is updated. Returns C.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.herk",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.herk",
+    "category": "function",
+    "text": "herk(uplo, trans, alpha, A)\n\nMethods for complex arrays only. Returns the uplo triangle of alpha*A*A\' or alpha*A\'*A, according to trans.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gbmv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gbmv!",
+    "category": "function",
+    "text": "gbmv!(trans, m, kl, ku, alpha, A, x, beta, y)\n\nUpdate vector y as alpha*A*x + beta*y or alpha*A\'*x + beta*y according to trans. The matrix A is a general band matrix of dimension m by size(A,2) with kl sub-diagonals and ku super-diagonals. alpha and beta are scalars. Return the updated y.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gbmv",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gbmv",
+    "category": "function",
+    "text": "gbmv(trans, m, kl, ku, alpha, A, x)\n\nReturn alpha*A*x or alpha*A\'*x according to trans. The matrix A is a general band matrix of dimension m by size(A,2) with kl sub-diagonals and ku super-diagonals, and alpha is a scalar.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.sbmv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.sbmv!",
+    "category": "function",
+    "text": "sbmv!(uplo, k, alpha, A, x, beta, y)\n\nUpdate vector y as alpha*A*x + beta*y where A is a a symmetric band matrix of order size(A,2) with k super-diagonals stored in the argument A. The storage layout for A is described the reference BLAS module, level-2 BLAS at http://www.netlib.org/lapack/explore-html/. Only the uplo triangle of A is used.\n\nReturn the updated y.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.sbmv-NTuple{5,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.sbmv",
+    "category": "method",
+    "text": "sbmv(uplo, k, alpha, A, x)\n\nReturn alpha*A*x where A is a symmetric band matrix of order size(A,2) with k super-diagonals stored in the argument A. Only the uplo triangle of A is used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.sbmv-NTuple{4,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.sbmv",
+    "category": "method",
+    "text": "sbmv(uplo, k, A, x)\n\nReturn A*x where A is a symmetric band matrix of order size(A,2) with k super-diagonals stored in the argument A. Only the uplo triangle of A is used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemm!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gemm!",
+    "category": "function",
+    "text": "gemm!(tA, tB, alpha, A, B, beta, C)\n\nUpdate C as alpha*A*B + beta*C or the other three variants according to tA and tB. Return the updated C.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemm-NTuple{5,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gemm",
+    "category": "method",
+    "text": "gemm(tA, tB, alpha, A, B)\n\nReturn alpha*A*B or the other three variants according to tA and tB.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemm-NTuple{4,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gemm",
+    "category": "method",
+    "text": "gemm(tA, tB, A, B)\n\nReturn A*B or the other three variants according to tA and tB.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gemv!",
+    "category": "function",
+    "text": "gemv!(tA, alpha, A, x, beta, y)\n\nUpdate the vector y as alpha*A*x + beta*y or alpha*A\'x + beta*y according to tA. alpha and beta are scalars. Return the updated y.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemv-NTuple{4,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gemv",
+    "category": "method",
+    "text": "gemv(tA, alpha, A, x)\n\nReturn alpha*A*x or alpha*A\'x according to tA. alpha is a scalar.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemv-Tuple{Any,Any,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.gemv",
+    "category": "method",
+    "text": "gemv(tA, A, x)\n\nReturn A*x or A\'x according to tA.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symm!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.symm!",
+    "category": "function",
+    "text": "symm!(side, ul, alpha, A, B, beta, C)\n\nUpdate C as alpha*A*B + beta*C or alpha*B*A + beta*C according to side. A is assumed to be symmetric. Only the ul triangle of A is used. Return the updated C.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symm-NTuple{5,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.symm",
+    "category": "method",
+    "text": "symm(side, ul, alpha, A, B)\n\nReturn alpha*A*B or alpha*B*A according to side. A is assumed to be symmetric. Only the ul triangle of A is used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symm-NTuple{4,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.symm",
+    "category": "method",
+    "text": "symm(side, ul, A, B)\n\nReturn A*B or B*A according to side. A is assumed to be symmetric. Only the ul triangle of A is used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.symv!",
+    "category": "function",
+    "text": "symv!(ul, alpha, A, x, beta, y)\n\nUpdate the vector y as alpha*A*x + beta*y. A is assumed to be symmetric. Only the ul triangle of A is used. alpha and beta are scalars. Return the updated y.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symv-NTuple{4,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.symv",
+    "category": "method",
+    "text": "symv(ul, alpha, A, x)\n\nReturn alpha*A*x. A is assumed to be symmetric. Only the ul triangle of A is used. alpha is a scalar.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symv-Tuple{Any,Any,Any}",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.symv",
+    "category": "method",
+    "text": "symv(ul, A, x)\n\nReturn A*x. A is assumed to be symmetric. Only the ul triangle of A is used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmm!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trmm!",
+    "category": "function",
+    "text": "trmm!(side, ul, tA, dA, alpha, A, B)\n\nUpdate B as alpha*A*B or one of the other three variants determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones. Returns the updated B.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmm",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trmm",
+    "category": "function",
+    "text": "trmm(side, ul, tA, dA, alpha, A, B)\n\nReturns alpha*A*B or one of the other three variants determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsm!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trsm!",
+    "category": "function",
+    "text": "trsm!(side, ul, tA, dA, alpha, A, B)\n\nOverwrite B with the solution to A*X = alpha*B or one of the other three variants determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones. Returns the updated B.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsm",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trsm",
+    "category": "function",
+    "text": "trsm(side, ul, tA, dA, alpha, A, B)\n\nReturn the solution to A*X = alpha*B or one of the other three variants determined by determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trmv!",
+    "category": "function",
+    "text": "trmv!(ul, tA, dA, A, b)\n\nReturn op(A)*b, where op is determined by tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones. The multiplication occurs in-place on b.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmv",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trmv",
+    "category": "function",
+    "text": "trmv(ul, tA, dA, A, b)\n\nReturn op(A)*b, where op is determined by tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trsv!",
+    "category": "function",
+    "text": "trsv!(ul, tA, dA, A, b)\n\nOverwrite b with the solution to A*x = b or one of the other two variants determined by tA and ul. dA determines if the diagonal values are read or are assumed to be all ones. Return the updated b.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsv",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.trsv",
+    "category": "function",
+    "text": "trsv(ul, tA, dA, A, b)\n\nReturn the solution to A*x = b or one of the other two variants determined by tA and ul. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.set_num_threads",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.BLAS.set_num_threads",
+    "category": "function",
+    "text": "set_num_threads(n)\n\nSet the number of threads the BLAS library should use.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.I",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.I",
+    "category": "constant",
+    "text": "I\n\nAn object of type UniformScaling, representing an identity matrix of any size.\n\nExamples\n\njulia> fill(1, (5,6)) * I == fill(1, (5,6))\ntrue\n\njulia> [1 2im 3; 1im 2 3] * I\n2×3 Array{Complex{Int64},2}:\n 1+0im  0+2im  3+0im\n 0+1im  2+0im  3+0im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#stdlib-blas-diag-1",
+    "page": "Linear Algebra",
+    "title": "Unit Diagonal",
+    "category": "section",
+    "text": "diag/dX Meaning\n\'N\' The diagonal values of the matrix X will be read.\n\'U\' The diagonal of the matrix X is assumed to be all ones.LinearAlgebra.BLAS\nLinearAlgebra.BLAS.dotu\nLinearAlgebra.BLAS.dotc\nLinearAlgebra.BLAS.blascopy!\nLinearAlgebra.BLAS.nrm2\nLinearAlgebra.BLAS.asum\nLinearAlgebra.axpy!\nLinearAlgebra.BLAS.scal!\nLinearAlgebra.BLAS.scal\nLinearAlgebra.BLAS.ger!\nLinearAlgebra.BLAS.syr!\nLinearAlgebra.BLAS.syrk!\nLinearAlgebra.BLAS.syrk\nLinearAlgebra.BLAS.her!\nLinearAlgebra.BLAS.herk!\nLinearAlgebra.BLAS.herk\nLinearAlgebra.BLAS.gbmv!\nLinearAlgebra.BLAS.gbmv\nLinearAlgebra.BLAS.sbmv!\nLinearAlgebra.BLAS.sbmv(::Any, ::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.sbmv(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemm!\nLinearAlgebra.BLAS.gemm(::Any, ::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemm(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemv!\nLinearAlgebra.BLAS.gemv(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemv(::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symm!\nLinearAlgebra.BLAS.symm(::Any, ::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symm(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symv!\nLinearAlgebra.BLAS.symv(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symv(::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.trmm!\nLinearAlgebra.BLAS.trmm\nLinearAlgebra.BLAS.trsm!\nLinearAlgebra.BLAS.trsm\nLinearAlgebra.BLAS.trmv!\nLinearAlgebra.BLAS.trmv\nLinearAlgebra.BLAS.trsv!\nLinearAlgebra.BLAS.trsv\nLinearAlgebra.BLAS.set_num_threads\nLinearAlgebra.I"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK",
+    "category": "module",
+    "text": "Interfaces to LAPACK subroutines.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gbtrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gbtrf!",
+    "category": "function",
+    "text": "gbtrf!(kl, ku, m, AB) -> (AB, ipiv)\n\nCompute the LU factorization of a banded matrix AB. kl is the first subdiagonal containing a nonzero band, ku is the last superdiagonal containing one, and m is the first dimension of the matrix AB. Returns the LU factorization in-place and ipiv, the vector of pivots used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gbtrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gbtrs!",
+    "category": "function",
+    "text": "gbtrs!(trans, kl, ku, m, AB, ipiv, B)\n\nSolve the equation AB * X = B. trans determines the orientation of AB. It may be N (no transpose), T (transpose), or C (conjugate transpose). kl is the first subdiagonal containing a nonzero band, ku is the last superdiagonal containing one, and m is the first dimension of the matrix AB. ipiv is the vector of pivots returned from gbtrf!. Returns the vector or matrix X, overwriting B in-place.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gebal!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gebal!",
+    "category": "function",
+    "text": "gebal!(job, A) -> (ilo, ihi, scale)\n\nBalance the matrix A before computing its eigensystem or Schur factorization. job can be one of N (A will not be permuted or scaled), P (A will only be permuted), S (A will only be scaled), or B (A will be both permuted and scaled). Modifies A in-place and returns ilo, ihi, and scale. If permuting was turned on, A[i,j] = 0 if j > i and 1 < j < ilo or j > ihi. scale contains information about the scaling/permutations performed.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gebak!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gebak!",
+    "category": "function",
+    "text": "gebak!(job, side, ilo, ihi, scale, V)\n\nTransform the eigenvectors V of a matrix balanced using gebal! to the unscaled/unpermuted eigenvectors of the original matrix. Modifies V in-place. side can be L (left eigenvectors are transformed) or R (right eigenvectors are transformed).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gebrd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gebrd!",
+    "category": "function",
+    "text": "gebrd!(A) -> (A, d, e, tauq, taup)\n\nReduce A in-place to bidiagonal form A = QBP\'. Returns A, containing the bidiagonal matrix B; d, containing the diagonal elements of B; e, containing the off-diagonal elements of B; tauq, containing the elementary reflectors representing Q; and taup, containing the elementary reflectors representing P.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gelqf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gelqf!",
+    "category": "function",
+    "text": "gelqf!(A, tau)\n\nCompute the LQ factorization of A, A = LQ. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngelqf!(A) -> (A, tau)\n\nCompute the LQ factorization of A, A = LQ.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqlf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.geqlf!",
+    "category": "function",
+    "text": "geqlf!(A, tau)\n\nCompute the QL factorization of A, A = QL. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngeqlf!(A) -> (A, tau)\n\nCompute the QL factorization of A, A = QL.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.geqrf!",
+    "category": "function",
+    "text": "geqrf!(A, tau)\n\nCompute the QR factorization of A, A = QR. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngeqrf!(A) -> (A, tau)\n\nCompute the QR factorization of A, A = QR.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqp3!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.geqp3!",
+    "category": "function",
+    "text": "geqp3!(A, jpvt, tau)\n\nCompute the pivoted QR factorization of A, AP = QR using BLAS level 3. P is a pivoting matrix, represented by jpvt. tau stores the elementary reflectors. jpvt must have length length greater than or equal to n if A is an (m x n) matrix. tau must have length greater than or equal to the smallest dimension of A.\n\nA, jpvt, and tau are modified in-place.\n\n\n\n\n\ngeqp3!(A, jpvt) -> (A, jpvt, tau)\n\nCompute the pivoted QR factorization of A, AP = QR using BLAS level 3. P is a pivoting matrix, represented by jpvt. jpvt must have length greater than or equal to n if A is an (m x n) matrix.\n\nReturns A and jpvt, modified in-place, and tau, which stores the elementary reflectors.\n\n\n\n\n\ngeqp3!(A) -> (A, jpvt, tau)\n\nCompute the pivoted QR factorization of A, AP = QR using BLAS level 3.\n\nReturns A, modified in-place, jpvt, which represents the pivoting matrix P, and tau, which stores the elementary reflectors.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gerqf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gerqf!",
+    "category": "function",
+    "text": "gerqf!(A, tau)\n\nCompute the RQ factorization of A, A = RQ. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngerqf!(A) -> (A, tau)\n\nCompute the RQ factorization of A, A = RQ.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqrt!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.geqrt!",
+    "category": "function",
+    "text": "geqrt!(A, T)\n\nCompute the blocked QR factorization of A, A = QR. T contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization. The first dimension of T sets the block size and it must be between 1 and n. The second dimension of T must equal the smallest dimension of A.\n\nReturns A and T modified in-place.\n\n\n\n\n\ngeqrt!(A, nb) -> (A, T)\n\nCompute the blocked QR factorization of A, A = QR. nb sets the block size and it must be between 1 and n, the second dimension of A.\n\nReturns A, modified in-place, and T, which contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqrt3!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.geqrt3!",
+    "category": "function",
+    "text": "geqrt3!(A, T)\n\nRecursively computes the blocked QR factorization of A, A = QR. T contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization.  The first dimension of T sets the block size and it must be between 1 and n. The second dimension of T must equal the smallest dimension of A.\n\nReturns A and T modified in-place.\n\n\n\n\n\ngeqrt3!(A) -> (A, T)\n\nRecursively computes the blocked QR factorization of A, A = QR.\n\nReturns A, modified in-place, and T, which contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.getrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.getrf!",
+    "category": "function",
+    "text": "getrf!(A) -> (A, ipiv, info)\n\nCompute the pivoted LU factorization of A, A = LU.\n\nReturns A, modified in-place, ipiv, the pivoting information, and an info code which indicates success (info = 0), a singular value in U (info = i, in which case U[i,i] is singular), or an error code (info < 0).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.tzrzf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.tzrzf!",
+    "category": "function",
+    "text": "tzrzf!(A) -> (A, tau)\n\nTransforms the upper trapezoidal matrix A to upper triangular form in-place. Returns A and tau, the scalar parameters for the elementary reflectors of the transformation.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormrz!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ormrz!",
+    "category": "function",
+    "text": "ormrz!(side, trans, A, tau, C)\n\nMultiplies the matrix C by Q from the transformation supplied by tzrzf!. Depending on side or trans the multiplication can be left-sided (side = L, Q*C) or right-sided (side = R, C*Q) and Q can be unmodified (trans = N), transposed (trans = T), or conjugate transposed (trans = C). Returns matrix C which is modified in-place with the result of the multiplication.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gels!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gels!",
+    "category": "function",
+    "text": "gels!(trans, A, B) -> (F, B, ssr)\n\nSolves the linear equation A * X = B, transpose(A) * X = B, or adjoint(A) * X = B using a QR or LQ factorization. Modifies the matrix/vector B in place with the solution. A is overwritten with its QR or LQ factorization. trans may be one of N (no modification), T (transpose), or C (conjugate transpose). gels! searches for the minimum norm/least squares solution. A may be under or over determined. The solution is returned in B.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gesv!",
+    "category": "function",
+    "text": "gesv!(A, B) -> (B, A, ipiv)\n\nSolves the linear equation A * X = B where A is a square matrix using the LU factorization of A. A is overwritten with its LU factorization and B is overwritten with the solution X. ipiv contains the pivoting information for the LU factorization of A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.getrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.getrs!",
+    "category": "function",
+    "text": "getrs!(trans, A, ipiv, B)\n\nSolves the linear equation A * X = B, transpose(A) * X = B, or adjoint(A) * X = B for square A. Modifies the matrix/vector B in place with the solution. A is the LU factorization from getrf!, with ipiv the pivoting information. trans may be one of N (no modification), T (transpose), or C (conjugate transpose).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.getri!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.getri!",
+    "category": "function",
+    "text": "getri!(A, ipiv)\n\nComputes the inverse of A, using its LU factorization found by getrf!. ipiv is the pivot information output and A contains the LU factorization of getrf!. A is overwritten with its inverse.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesvx!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gesvx!",
+    "category": "function",
+    "text": "gesvx!(fact, trans, A, AF, ipiv, equed, R, C, B) -> (X, equed, R, C, B, rcond, ferr, berr, work)\n\nSolves the linear equation A * X = B (trans = N), transpose(A) * X = B (trans = T), or adjoint(A) * X = B (trans = C) using the LU factorization of A. fact may be E, in which case A will be equilibrated and copied to AF; F, in which case AF and ipiv from a previous LU factorization are inputs; or N, in which case A will be copied to AF and then factored. If fact = F, equed may be N, meaning A has not been equilibrated; R, meaning A was multiplied by Diagonal(R) from the left; C, meaning A was multiplied by Diagonal(C) from the right; or B, meaning A was multiplied by Diagonal(R) from the left and Diagonal(C) from the right. If fact = F and equed = R or B the elements of R must all be positive. If fact = F and equed = C or B the elements of C must all be positive.\n\nReturns the solution X; equed, which is an output if fact is not N, and describes the equilibration that was performed; R, the row equilibration diagonal; C, the column equilibration diagonal; B, which may be overwritten with its equilibrated form Diagonal(R)*B (if trans = N and equed = R,B) or Diagonal(C)*B (if trans = T,C and equed = C,B); rcond, the reciprocal condition number of A after equilbrating; ferr, the forward error bound for each solution vector in X; berr, the forward error bound for each solution vector in X; and work, the reciprocal pivot growth factor.\n\n\n\n\n\ngesvx!(A, B)\n\nThe no-equilibration, no-transpose simplification of gesvx!.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gelsd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gelsd!",
+    "category": "function",
+    "text": "gelsd!(A, B, rcond) -> (B, rnk)\n\nComputes the least norm solution of A * X = B by finding the SVD factorization of A, then dividing-and-conquering the problem. B is overwritten with the solution X. Singular values below rcond will be treated as zero. Returns the solution in B and the effective rank of A in rnk.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gelsy!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gelsy!",
+    "category": "function",
+    "text": "gelsy!(A, B, rcond) -> (B, rnk)\n\nComputes the least norm solution of A * X = B by finding the full QR factorization of A, then dividing-and-conquering the problem. B is overwritten with the solution X. Singular values below rcond will be treated as zero. Returns the solution in B and the effective rank of A in rnk.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gglse!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gglse!",
+    "category": "function",
+    "text": "gglse!(A, c, B, d) -> (X,res)\n\nSolves the equation A * x = c where x is subject to the equality constraint B * x = d. Uses the formula ||c - A*x||^2 = 0 to solve. Returns X and the residual sum-of-squares.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geev!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.geev!",
+    "category": "function",
+    "text": "geev!(jobvl, jobvr, A) -> (W, VL, VR)\n\nFinds the eigensystem of A. If jobvl = N, the left eigenvectors of A aren\'t computed. If jobvr = N, the right eigenvectors of A aren\'t computed. If jobvl = V or jobvr = V, the corresponding eigenvectors are computed. Returns the eigenvalues in W, the right eigenvectors in VR, and the left eigenvectors in VL.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesdd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gesdd!",
+    "category": "function",
+    "text": "gesdd!(job, A) -> (U, S, VT)\n\nFinds the singular value decomposition of A, A = U * S * V\', using a divide and conquer approach. If job = A, all the columns of U and the rows of V\' are computed. If job = N, no columns of U or rows of V\' are computed. If job = O, A is overwritten with the columns of (thin) U and the rows of (thin) V\'. If job = S, the columns of (thin) U and the rows of (thin) V\' are computed and returned separately.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesvd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gesvd!",
+    "category": "function",
+    "text": "gesvd!(jobu, jobvt, A) -> (U, S, VT)\n\nFinds the singular value decomposition of A, A = U * S * V\'. If jobu = A, all the columns of U are computed. If jobvt = A all the rows of V\' are computed. If jobu = N, no columns of U are computed. If jobvt = N no rows of V\' are computed. If jobu = O, A is overwritten with the columns of (thin) U. If jobvt = O, A is overwritten with the rows of (thin) V\'. If jobu = S, the columns of (thin) U are computed and returned separately. If jobvt = S the rows of (thin) V\' are computed and returned separately. jobu and jobvt can\'t both be O.\n\nReturns U, S, and Vt, where S are the singular values of A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ggsvd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ggsvd!",
+    "category": "function",
+    "text": "ggsvd!(jobu, jobv, jobq, A, B) -> (U, V, Q, alpha, beta, k, l, R)\n\nFinds the generalized singular value decomposition of A and B, U\'*A*Q = D1*R and V\'*B*Q = D2*R. D1 has alpha on its diagonal and D2 has beta on its diagonal. If jobu = U, the orthogonal/unitary matrix U is computed. If jobv = V the orthogonal/unitary matrix V is computed. If jobq = Q, the orthogonal/unitary matrix Q is computed. If jobu, jobv or jobq is N, that matrix is not computed. This function is only available in LAPACK versions prior to 3.6.0.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ggsvd3!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ggsvd3!",
+    "category": "function",
+    "text": "ggsvd3!(jobu, jobv, jobq, A, B) -> (U, V, Q, alpha, beta, k, l, R)\n\nFinds the generalized singular value decomposition of A and B, U\'*A*Q = D1*R and V\'*B*Q = D2*R. D1 has alpha on its diagonal and D2 has beta on its diagonal. If jobu = U, the orthogonal/unitary matrix U is computed. If jobv = V the orthogonal/unitary matrix V is computed. If jobq = Q, the orthogonal/unitary matrix Q is computed. If jobu, jobv, or jobq is N, that matrix is not computed. This function requires LAPACK 3.6.0.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geevx!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.geevx!",
+    "category": "function",
+    "text": "geevx!(balanc, jobvl, jobvr, sense, A) -> (A, w, VL, VR, ilo, ihi, scale, abnrm, rconde, rcondv)\n\nFinds the eigensystem of A with matrix balancing. If jobvl = N, the left eigenvectors of A aren\'t computed. If jobvr = N, the right eigenvectors of A aren\'t computed. If jobvl = V or jobvr = V, the corresponding eigenvectors are computed. If balanc = N, no balancing is performed. If balanc = P, A is permuted but not scaled. If balanc = S, A is scaled but not permuted. If balanc = B, A is permuted and scaled. If sense = N, no reciprocal condition numbers are computed. If sense = E, reciprocal condition numbers are computed for the eigenvalues only. If sense = V, reciprocal condition numbers are computed for the right eigenvectors only. If sense = B, reciprocal condition numbers are computed for the right eigenvectors and the eigenvectors. If sense = E,B, the right and left eigenvectors must be computed.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ggev!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ggev!",
+    "category": "function",
+    "text": "ggev!(jobvl, jobvr, A, B) -> (alpha, beta, vl, vr)\n\nFinds the generalized eigendecomposition of A and B. If jobvl = N, the left eigenvectors aren\'t computed. If jobvr = N, the right eigenvectors aren\'t computed. If jobvl = V or jobvr = V, the corresponding eigenvectors are computed.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gtsv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gtsv!",
+    "category": "function",
+    "text": "gtsv!(dl, d, du, B)\n\nSolves the equation A * X = B where A is a tridiagonal matrix with dl on the subdiagonal, d on the diagonal, and du on the superdiagonal.\n\nOverwrites B with the solution X and returns it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gttrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gttrf!",
+    "category": "function",
+    "text": "gttrf!(dl, d, du) -> (dl, d, du, du2, ipiv)\n\nFinds the LU factorization of a tridiagonal matrix with dl on the subdiagonal, d on the diagonal, and du on the superdiagonal.\n\nModifies dl, d, and du in-place and returns them and the second superdiagonal du2 and the pivoting vector ipiv.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gttrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gttrs!",
+    "category": "function",
+    "text": "gttrs!(trans, dl, d, du, du2, ipiv, B)\n\nSolves the equation A * X = B (trans = N), transpose(A) * X = B (trans = T), or adjoint(A) * X = B (trans = C) using the LU factorization computed by gttrf!. B is overwritten with the solution X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orglq!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.orglq!",
+    "category": "function",
+    "text": "orglq!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a LQ factorization after calling gelqf! on A. Uses the output of gelqf!. A is overwritten by Q.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orgqr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.orgqr!",
+    "category": "function",
+    "text": "orgqr!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a QR factorization after calling geqrf! on A. Uses the output of geqrf!. A is overwritten by Q.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orgql!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.orgql!",
+    "category": "function",
+    "text": "orgql!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a QL factorization after calling geqlf! on A. Uses the output of geqlf!. A is overwritten by Q.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orgrq!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.orgrq!",
+    "category": "function",
+    "text": "orgrq!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a RQ factorization after calling gerqf! on A. Uses the output of gerqf!. A is overwritten by Q.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormlq!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ormlq!",
+    "category": "function",
+    "text": "ormlq!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a LQ factorization of A computed using gelqf!. C is overwritten.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormqr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ormqr!",
+    "category": "function",
+    "text": "ormqr!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a QR factorization of A computed using geqrf!. C is overwritten.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormql!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ormql!",
+    "category": "function",
+    "text": "ormql!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a QL factorization of A computed using geqlf!. C is overwritten.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormrq!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ormrq!",
+    "category": "function",
+    "text": "ormrq!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a RQ factorization of A computed using gerqf!. C is overwritten.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gemqrt!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gemqrt!",
+    "category": "function",
+    "text": "gemqrt!(side, trans, V, T, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a QR factorization of A computed using geqrt!. C is overwritten.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.posv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.posv!",
+    "category": "function",
+    "text": "posv!(uplo, A, B) -> (A, B)\n\nFinds the solution to A * X = B where A is a symmetric or Hermitian positive definite matrix. If uplo = U the upper Cholesky decomposition of A is computed. If uplo = L the lower Cholesky decomposition of A is computed. A is overwritten by its Cholesky decomposition. B is overwritten with the solution X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.potrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.potrf!",
+    "category": "function",
+    "text": "potrf!(uplo, A)\n\nComputes the Cholesky (upper if uplo = U, lower if uplo = L) decomposition of positive-definite matrix A. A is overwritten and returned with an info code.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.potri!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.potri!",
+    "category": "function",
+    "text": "potri!(uplo, A)\n\nComputes the inverse of positive-definite matrix A after calling potrf! to find its (upper if uplo = U, lower if uplo = L) Cholesky decomposition.\n\nA is overwritten by its inverse and returned.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.potrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.potrs!",
+    "category": "function",
+    "text": "potrs!(uplo, A, B)\n\nFinds the solution to A * X = B where A is a symmetric or Hermitian positive definite matrix whose Cholesky decomposition was computed by potrf!. If uplo = U the upper Cholesky decomposition of A was computed. If uplo = L the lower Cholesky decomposition of A was computed. B is overwritten with the solution X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.pstrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.pstrf!",
+    "category": "function",
+    "text": "pstrf!(uplo, A, tol) -> (A, piv, rank, info)\n\nComputes the (upper if uplo = U, lower if uplo = L) pivoted Cholesky decomposition of positive-definite matrix A with a user-set tolerance tol. A is overwritten by its Cholesky decomposition.\n\nReturns A, the pivots piv, the rank of A, and an info code. If info = 0, the factorization succeeded. If info = i > 0, then A is indefinite or rank-deficient.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ptsv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.ptsv!",
+    "category": "function",
+    "text": "ptsv!(D, E, B)\n\nSolves A * X = B for positive-definite tridiagonal A. D is the diagonal of A and E is the off-diagonal. B is overwritten with the solution X and returned.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.pttrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.pttrf!",
+    "category": "function",
+    "text": "pttrf!(D, E)\n\nComputes the LDLt factorization of a positive-definite tridiagonal matrix with D as diagonal and E as off-diagonal. D and E are overwritten and returned.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.pttrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.pttrs!",
+    "category": "function",
+    "text": "pttrs!(D, E, B)\n\nSolves A * X = B for positive-definite tridiagonal A with diagonal D and off-diagonal E after computing A\'s LDLt factorization using pttrf!. B is overwritten with the solution X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trtri!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trtri!",
+    "category": "function",
+    "text": "trtri!(uplo, diag, A)\n\nFinds the inverse of (upper if uplo = U, lower if uplo = L) triangular matrix A. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. A is overwritten with its inverse.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trtrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trtrs!",
+    "category": "function",
+    "text": "trtrs!(uplo, trans, diag, A, B)\n\nSolves A * X = B (trans = N), transpose(A) * X = B (trans = T), or adjoint(A) * X = B (trans = C) for (upper if uplo = U, lower if uplo = L) triangular matrix A. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. B is overwritten with the solution X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trcon!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trcon!",
+    "category": "function",
+    "text": "trcon!(norm, uplo, diag, A)\n\nFinds the reciprocal condition number of (upper if uplo = U, lower if uplo = L) triangular matrix A. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. If norm = I, the condition number is found in the infinity norm. If norm = O or 1, the condition number is found in the one norm.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trevc!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trevc!",
+    "category": "function",
+    "text": "trevc!(side, howmny, select, T, VL = similar(T), VR = similar(T))\n\nFinds the eigensystem of an upper triangular matrix T. If side = R, the right eigenvectors are computed. If side = L, the left eigenvectors are computed. If side = B, both sets are computed. If howmny = A, all eigenvectors are found. If howmny = B, all eigenvectors are found and backtransformed using VL and VR. If howmny = S, only the eigenvectors corresponding to the values in select are computed.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trrfs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trrfs!",
+    "category": "function",
+    "text": "trrfs!(uplo, trans, diag, A, B, X, Ferr, Berr) -> (Ferr, Berr)\n\nEstimates the error in the solution to A * X = B (trans = N), transpose(A) * X = B (trans = T), adjoint(A) * X = B (trans = C) for side = L, or the equivalent equations a right-handed side = R X * A after computing X using trtrs!. If uplo = U, A is upper triangular. If uplo = L, A is lower triangular. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. Ferr and Berr are optional inputs. Ferr is the forward error and Berr is the backward error, each component-wise.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stev!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.stev!",
+    "category": "function",
+    "text": "stev!(job, dv, ev) -> (dv, Zmat)\n\nComputes the eigensystem for a symmetric tridiagonal matrix with dv as diagonal and ev as off-diagonal. If job = N only the eigenvalues are found and returned in dv. If job = V then the eigenvectors are also found and returned in Zmat.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stebz!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.stebz!",
+    "category": "function",
+    "text": "stebz!(range, order, vl, vu, il, iu, abstol, dv, ev) -> (dv, iblock, isplit)\n\nComputes the eigenvalues for a symmetric tridiagonal matrix with dv as diagonal and ev as off-diagonal. If range = A, all the eigenvalues are found. If range = V, the eigenvalues in the half-open interval (vl, vu] are found. If range = I, the eigenvalues with indices between il and iu are found. If order = B, eigvalues are ordered within a block. If order = E, they are ordered across all the blocks. abstol can be set as a tolerance for convergence.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stegr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.stegr!",
+    "category": "function",
+    "text": "stegr!(jobz, range, dv, ev, vl, vu, il, iu) -> (w, Z)\n\nComputes the eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) for a symmetric tridiagonal matrix with dv as diagonal and ev as off-diagonal. If range = A, all the eigenvalues are found. If range = V, the eigenvalues in the half-open interval (vl, vu] are found. If range = I, the eigenvalues with indices between il and iu are found. The eigenvalues are returned in w and the eigenvectors in Z.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stein!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.stein!",
+    "category": "function",
+    "text": "stein!(dv, ev_in, w_in, iblock_in, isplit_in)\n\nComputes the eigenvectors for a symmetric tridiagonal matrix with dv as diagonal and ev_in as off-diagonal. w_in specifies the input eigenvalues for which to find corresponding eigenvectors. iblock_in specifies the submatrices corresponding to the eigenvalues in w_in. isplit_in specifies the splitting points between the submatrix blocks.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.syconv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.syconv!",
+    "category": "function",
+    "text": "syconv!(uplo, A, ipiv) -> (A, work)\n\nConverts a symmetric matrix A (which has been factorized into a triangular matrix) into two matrices L and D. If uplo = U, A is upper triangular. If uplo = L, it is lower triangular. ipiv is the pivot vector from the triangular factorization. A is overwritten by L and D.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sysv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.sysv!",
+    "category": "function",
+    "text": "sysv!(uplo, A, B) -> (B, A, ipiv)\n\nFinds the solution to A * X = B for symmetric matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X. A is overwritten by its Bunch-Kaufman factorization. ipiv contains pivoting information about the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sytrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.sytrf!",
+    "category": "function",
+    "text": "sytrf!(uplo, A) -> (A, ipiv, info)\n\nComputes the Bunch-Kaufman factorization of a symmetric matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored.\n\nReturns A, overwritten by the factorization, a pivot vector ipiv, and the error code info which is a non-negative integer. If info is positive the matrix is singular and the diagonal part of the factorization is exactly zero at position info.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sytri!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.sytri!",
+    "category": "function",
+    "text": "sytri!(uplo, A, ipiv)\n\nComputes the inverse of a symmetric matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. A is overwritten by its inverse.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sytrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.sytrs!",
+    "category": "function",
+    "text": "sytrs!(uplo, A, ipiv, B)\n\nSolves the equation A * X = B for a symmetric matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hesv!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.hesv!",
+    "category": "function",
+    "text": "hesv!(uplo, A, B) -> (B, A, ipiv)\n\nFinds the solution to A * X = B for Hermitian matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X. A is overwritten by its Bunch-Kaufman factorization. ipiv contains pivoting information about the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hetrf!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.hetrf!",
+    "category": "function",
+    "text": "hetrf!(uplo, A) -> (A, ipiv, info)\n\nComputes the Bunch-Kaufman factorization of a Hermitian matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored.\n\nReturns A, overwritten by the factorization, a pivot vector ipiv, and the error code info which is a non-negative integer. If info is positive the matrix is singular and the diagonal part of the factorization is exactly zero at position info.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hetri!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.hetri!",
+    "category": "function",
+    "text": "hetri!(uplo, A, ipiv)\n\nComputes the inverse of a Hermitian matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. A is overwritten by its inverse.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hetrs!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.hetrs!",
+    "category": "function",
+    "text": "hetrs!(uplo, A, ipiv, B)\n\nSolves the equation A * X = B for a Hermitian matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.syev!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.syev!",
+    "category": "function",
+    "text": "syev!(jobz, uplo, A)\n\nFinds the eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) of a symmetric matrix A. If uplo = U, the upper triangle of A is used. If uplo = L, the lower triangle of A is used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.syevr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.syevr!",
+    "category": "function",
+    "text": "syevr!(jobz, range, uplo, A, vl, vu, il, iu, abstol) -> (W, Z)\n\nFinds the eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) of a symmetric matrix A. If uplo = U, the upper triangle of A is used. If uplo = L, the lower triangle of A is used. If range = A, all the eigenvalues are found. If range = V, the eigenvalues in the half-open interval (vl, vu] are found. If range = I, the eigenvalues with indices between il and iu are found. abstol can be set as a tolerance for convergence.\n\nThe eigenvalues are returned in W and the eigenvectors in Z.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sygvd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.sygvd!",
+    "category": "function",
+    "text": "sygvd!(itype, jobz, uplo, A, B) -> (w, A, B)\n\nFinds the generalized eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) of a symmetric matrix A and symmetric positive-definite matrix B. If uplo = U, the upper triangles of A and B are used. If uplo = L, the lower triangles of A and B are used. If itype = 1, the problem to solve is A * x = lambda * B * x. If itype = 2, the problem to solve is A * B * x = lambda * x. If itype = 3, the problem to solve is B * A * x = lambda * x.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.bdsqr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.bdsqr!",
+    "category": "function",
+    "text": "bdsqr!(uplo, d, e_, Vt, U, C) -> (d, Vt, U, C)\n\nComputes the singular value decomposition of a bidiagonal matrix with d on the diagonal and e_ on the off-diagonal. If uplo = U, e_ is the superdiagonal. If uplo = L, e_ is the subdiagonal. Can optionally also compute the product Q\' * C.\n\nReturns the singular values in d, and the matrix C overwritten with Q\' * C.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.bdsdc!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.bdsdc!",
+    "category": "function",
+    "text": "bdsdc!(uplo, compq, d, e_) -> (d, e, u, vt, q, iq)\n\nComputes the singular value decomposition of a bidiagonal matrix with d on the diagonal and e_ on the off-diagonal using a divide and conqueq method. If uplo = U, e_ is the superdiagonal. If uplo = L, e_ is the subdiagonal. If compq = N, only the singular values are found. If compq = I, the singular values and vectors are found. If compq = P, the singular values and vectors are found in compact form. Only works for real types.\n\nReturns the singular values in d, and if compq = P, the compact singular vectors in iq.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gecon!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gecon!",
+    "category": "function",
+    "text": "gecon!(normtype, A, anorm)\n\nFinds the reciprocal condition number of matrix A. If normtype = I, the condition number is found in the infinity norm. If normtype = O or 1, the condition number is found in the one norm. A must be the result of getrf! and anorm is the norm of A in the relevant norm.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gehrd!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gehrd!",
+    "category": "function",
+    "text": "gehrd!(ilo, ihi, A) -> (A, tau)\n\nConverts a matrix A to Hessenberg form. If A is balanced with gebal! then ilo and ihi are the outputs of gebal!. Otherwise they should be ilo = 1 and ihi = size(A,2). tau contains the elementary reflectors of the factorization.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orghr!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.orghr!",
+    "category": "function",
+    "text": "orghr!(ilo, ihi, A, tau)\n\nExplicitly finds Q, the orthogonal/unitary matrix from gehrd!. ilo, ihi, A, and tau must correspond to the input/output to gehrd!.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gees!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gees!",
+    "category": "function",
+    "text": "gees!(jobvs, A) -> (A, vs, w)\n\nComputes the eigenvalues (jobvs = N) or the eigenvalues and Schur vectors (jobvs = V) of matrix A. A is overwritten by its Schur form.\n\nReturns A, vs containing the Schur vectors, and w, containing the eigenvalues.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gges!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.gges!",
+    "category": "function",
+    "text": "gges!(jobvsl, jobvsr, A, B) -> (A, B, alpha, beta, vsl, vsr)\n\nComputes the generalized eigenvalues, generalized Schur form, left Schur vectors (jobsvl = V), or right Schur vectors (jobvsr = V) of A and B.\n\nThe generalized eigenvalues are returned in alpha and beta. The left Schur vectors are returned in vsl and the right Schur vectors are returned in vsr.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trexc!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trexc!",
+    "category": "function",
+    "text": "trexc!(compq, ifst, ilst, T, Q) -> (T, Q)\n\nReorder the Schur factorization of a matrix. If compq = V, the Schur vectors Q are reordered. If compq = N they are not modified. ifst and ilst specify the reordering of the vectors.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trsen!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trsen!",
+    "category": "function",
+    "text": "trsen!(compq, job, select, T, Q) -> (T, Q, w, s, sep)\n\nReorder the Schur factorization of a matrix and optionally finds reciprocal condition numbers. If job = N, no condition numbers are found. If job = E, only the condition number for this cluster of eigenvalues is found. If job = V, only the condition number for the invariant subspace is found. If job = B then the condition numbers for the cluster and subspace are found. If compq = V the Schur vectors Q are updated. If compq = N the Schur vectors are not modified. select determines which eigenvalues are in the cluster.\n\nReturns T, Q, reordered eigenvalues in w, the condition number of the cluster of eigenvalues s, and the condition number of the invariant subspace sep.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.tgsen!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.tgsen!",
+    "category": "function",
+    "text": "tgsen!(select, S, T, Q, Z) -> (S, T, alpha, beta, Q, Z)\n\nReorders the vectors of a generalized Schur decomposition. select specifies the eigenvalues in each cluster.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trsyl!",
+    "page": "Linear Algebra",
+    "title": "LinearAlgebra.LAPACK.trsyl!",
+    "category": "function",
+    "text": "trsyl!(transa, transb, A, B, C, isgn=1) -> (C, scale)\n\nSolves the Sylvester matrix equation A * X +/- X * B = scale*C where A and B are both quasi-upper triangular. If transa = N, A is not modified. If transa = T, A is transposed. If transa = C, A is conjugate transposed. Similarly for transb and B. If isgn = 1, the equation A * X + X * B = scale * C is solved. If isgn = -1, the equation A * X - X * B = scale * C is solved.\n\nReturns X (overwriting C) and scale.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/LinearAlgebra/#LAPACK-Functions-1",
+    "page": "Linear Algebra",
+    "title": "LAPACK Functions",
+    "category": "section",
+    "text": "LinearAlgebra.LAPACK provides wrappers for some of the LAPACK functions for linear algebra.  Those functions that overwrite one of the input arrays have names ending in \'!\'.Usually a function has 4 methods defined, one each for Float64, Float32, ComplexF64 and ComplexF32 arrays.Note that the LAPACK API provided by Julia can and will change in the future. Since this API is not user-facing, there is no commitment to support/deprecate this specific set of functions in future releases.LinearAlgebra.LAPACK\nLinearAlgebra.LAPACK.gbtrf!\nLinearAlgebra.LAPACK.gbtrs!\nLinearAlgebra.LAPACK.gebal!\nLinearAlgebra.LAPACK.gebak!\nLinearAlgebra.LAPACK.gebrd!\nLinearAlgebra.LAPACK.gelqf!\nLinearAlgebra.LAPACK.geqlf!\nLinearAlgebra.LAPACK.geqrf!\nLinearAlgebra.LAPACK.geqp3!\nLinearAlgebra.LAPACK.gerqf!\nLinearAlgebra.LAPACK.geqrt!\nLinearAlgebra.LAPACK.geqrt3!\nLinearAlgebra.LAPACK.getrf!\nLinearAlgebra.LAPACK.tzrzf!\nLinearAlgebra.LAPACK.ormrz!\nLinearAlgebra.LAPACK.gels!\nLinearAlgebra.LAPACK.gesv!\nLinearAlgebra.LAPACK.getrs!\nLinearAlgebra.LAPACK.getri!\nLinearAlgebra.LAPACK.gesvx!\nLinearAlgebra.LAPACK.gelsd!\nLinearAlgebra.LAPACK.gelsy!\nLinearAlgebra.LAPACK.gglse!\nLinearAlgebra.LAPACK.geev!\nLinearAlgebra.LAPACK.gesdd!\nLinearAlgebra.LAPACK.gesvd!\nLinearAlgebra.LAPACK.ggsvd!\nLinearAlgebra.LAPACK.ggsvd3!\nLinearAlgebra.LAPACK.geevx!\nLinearAlgebra.LAPACK.ggev!\nLinearAlgebra.LAPACK.gtsv!\nLinearAlgebra.LAPACK.gttrf!\nLinearAlgebra.LAPACK.gttrs!\nLinearAlgebra.LAPACK.orglq!\nLinearAlgebra.LAPACK.orgqr!\nLinearAlgebra.LAPACK.orgql!\nLinearAlgebra.LAPACK.orgrq!\nLinearAlgebra.LAPACK.ormlq!\nLinearAlgebra.LAPACK.ormqr!\nLinearAlgebra.LAPACK.ormql!\nLinearAlgebra.LAPACK.ormrq!\nLinearAlgebra.LAPACK.gemqrt!\nLinearAlgebra.LAPACK.posv!\nLinearAlgebra.LAPACK.potrf!\nLinearAlgebra.LAPACK.potri!\nLinearAlgebra.LAPACK.potrs!\nLinearAlgebra.LAPACK.pstrf!\nLinearAlgebra.LAPACK.ptsv!\nLinearAlgebra.LAPACK.pttrf!\nLinearAlgebra.LAPACK.pttrs!\nLinearAlgebra.LAPACK.trtri!\nLinearAlgebra.LAPACK.trtrs!\nLinearAlgebra.LAPACK.trcon!\nLinearAlgebra.LAPACK.trevc!\nLinearAlgebra.LAPACK.trrfs!\nLinearAlgebra.LAPACK.stev!\nLinearAlgebra.LAPACK.stebz!\nLinearAlgebra.LAPACK.stegr!\nLinearAlgebra.LAPACK.stein!\nLinearAlgebra.LAPACK.syconv!\nLinearAlgebra.LAPACK.sysv!\nLinearAlgebra.LAPACK.sytrf!\nLinearAlgebra.LAPACK.sytri!\nLinearAlgebra.LAPACK.sytrs!\nLinearAlgebra.LAPACK.hesv!\nLinearAlgebra.LAPACK.hetrf!\nLinearAlgebra.LAPACK.hetri!\nLinearAlgebra.LAPACK.hetrs!\nLinearAlgebra.LAPACK.syev!\nLinearAlgebra.LAPACK.syevr!\nLinearAlgebra.LAPACK.sygvd!\nLinearAlgebra.LAPACK.bdsqr!\nLinearAlgebra.LAPACK.bdsdc!\nLinearAlgebra.LAPACK.gecon!\nLinearAlgebra.LAPACK.gehrd!\nLinearAlgebra.LAPACK.orghr!\nLinearAlgebra.LAPACK.gees!\nLinearAlgebra.LAPACK.gges!\nLinearAlgebra.LAPACK.trexc!\nLinearAlgebra.LAPACK.trsen!\nLinearAlgebra.LAPACK.tgsen!\nLinearAlgebra.LAPACK.trsyl!DocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Logging/#",
+    "page": "Logging",
+    "title": "Logging",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Logging/#Logging-1",
+    "page": "Logging",
+    "title": "Logging",
+    "category": "section",
+    "text": "The Logging module provides a way to record the history and progress of a computation as a log of events.  Events are created by inserting a logging statement into the source code, for example:@warn \"Abandon printf debugging, all ye who enter here!\"\n┌ Warning: Abandon printf debugging, all ye who enter here!\n└ @ Main REPL[1]:1The system provides several advantages over peppering your source code with calls to println().  First, it allows you to control the visibility and presentation of messages without editing the source code.  For example, in contrast to the @warn above@debug \"The sum of some values $(sum(rand(100)))\"will produce no output by default.  Furthermore, it\'s very cheap to leave debug statements like this in the source code because the system avoids evaluating the message if it would later be ignored.  In this case sum(rand(100)) and the associated string processing will never be executed unless debug logging is enabled.Second, the logging tools allow you to attach arbitrary data to each event as a set of key–value pairs. This allows you to capture local variables and other program state for later analysis. For example, to attach the local array variable A and the sum of a vector v as the key s you can useA = ones(Int, 4, 4)\nv = ones(100)\n@info \"Some variables\"  A  s=sum(v)\n\n# output\n┌ Info: Some variables\n│   A =\n│    4×4 Array{Int64,2}:\n│     1  1  1  1\n│     1  1  1  1\n│     1  1  1  1\n│     1  1  1  1\n└   s = 100.0All of the logging macros @debug, @info, @warn and @error share common features that are described in detail in the documentation for the more general macro @logmsg."
+},
+
+{
+    "location": "stdlib/Logging/#Log-event-structure-1",
+    "page": "Logging",
+    "title": "Log event structure",
+    "category": "section",
+    "text": "Each event generates several pieces of data, some provided by the user and some automatically extracted. Let\'s examine the user-defined data first:The log level is a broad category for the message that is used for early filtering. There are several standard levels of type LogLevel; user-defined levels are also possible.\nUse Debug for verbose information that could be useful when debugging an application or module. These events are disabled by default.\nUse Info to inform the user about the normal operation of the program.\nUse Warn when a potential problem is detected.\nUse Error to report errors where the code has enough context to recover and continue.  (When the code doesn\'t have enough context, an exception or early return is more appropriate.)\nThe message  is an object describing the event. By convention AbstractStrings passed as messages are assumed to be in markdown format. Other types will be displayed using show(io,mime,obj) according to the display capabilities of the installed logger.\nOptional key–value pairs allow arbitrary data to be attached to each event. Some keys have conventional meaning that can affect the way an event is interpreted (see @logmsg).The system also generates some standard information for each event:The module in which the logging macro was expanded.\nThe file and line where the logging macro occurs in the source code.\nA message id that is unique for each logging macro invocation. This is very useful as a key for caching information or actions associated with an event. For instance, it can be used to limit the number of times a message is presented to the user.\nA group for the event, which is set to the base name of the file by default, without extension.  This can be used to group messages into categories more finely than the log level (for example, all deprecation warnings have group :depwarn), or into logical groupings across or within modules.Notice that some useful information such as the event time is not included by default. This is because such information can be expensive to extract and is also dynamically available to the current logger. It\'s simple to define a custom logger to augment event data with the time, backtrace, values of global variables and other useful information as required."
+},
+
+{
+    "location": "stdlib/Logging/#Processing-log-events-1",
+    "page": "Logging",
+    "title": "Processing log events",
+    "category": "section",
+    "text": "As you can see in the examples, logging statements make no mention of where log events go or how they are processed. This is a key design feature that makes the system composable and natural for concurrent use. It does this by separating two different concerns:Creating log events is the concern of the module author who needs to decide where events are triggered and which information to include.\nProcessing of log events — that is, display, filtering, aggregation and recording — is the concern of the application author who needs to bring multiple modules together into a cooperating application."
+},
+
+{
+    "location": "stdlib/Logging/#Loggers-1",
+    "page": "Logging",
+    "title": "Loggers",
+    "category": "section",
+    "text": "Processing of events is performed by a logger, which is the first piece of user configurable code to see the event. All loggers must be subtypes of AbstractLogger.When an event is triggered, the appropriate logger is found by looking for a task-local logger with the global logger as fallback.  The idea here is that the application code knows how log events should be processed and exists somewhere at the top of the call stack. So we should look up through the call stack to discover the logger — that is, the logger should be dynamically scoped. (This is a point of contrast with logging frameworks where the logger is lexically scoped; provided explicitly by the module author or as a simple global variable. In such a system it\'s awkward to control logging while composing functionality from multiple modules.)The global logger may be set with global_logger, and task-local loggers controlled using with_logger.  Newly spawned tasks inherit the logger of the parent task.There are three logger types provided by the library.  ConsoleLogger is the default logger you see when starting the REPL.  It displays events in a readable text format and tries to give simple but user friendly control over formatting and filtering.  NullLogger is a convenient way to drop all messages where necessary; it is the logging equivalent of the devnull stream.  SimpleLogger is a very simplistic text formatting logger, mainly useful for debugging the logging system itself.Custom loggers should come with overloads for the functions described in the reference section."
+},
+
+{
+    "location": "stdlib/Logging/#Early-filtering-and-message-handling-1",
+    "page": "Logging",
+    "title": "Early filtering and message handling",
+    "category": "section",
+    "text": "When an event occurs, a few steps of early filtering occur to avoid generating messages that will be discarded:The message log level is checked against a global minimum level (set via disable_logging).  This is a crude but extremely cheap global setting.\nThe current logger state is looked up and the message level checked against the logger\'s cached minimum level, as found by calling Logging.min_enabled_level. This behavior can be overridden via environment variables (more on this later).\nThe Logging.shouldlog function is called with the current logger, taking some minimal information (level, module, group, id) which can be computed statically.  Most usefully, shouldlog is passed an event id which can be used to discard events early based on a cached predicate.If all these checks pass, the message and key–value pairs are evaluated in full and passed to the current logger via the Logging.handle_message function. handle_message() may perform additional filtering as required and display the event to the screen, save it to a file, etc.Exceptions that occur while generating the log event are captured and logged by default.  This prevents individual broken events from crashing the application, which is helpful when enabling little-used debug events in a production system.  This behavior can be customized per logger type by extending Logging.catch_exceptions."
+},
+
+{
+    "location": "stdlib/Logging/#Testing-log-events-1",
+    "page": "Logging",
+    "title": "Testing log events",
+    "category": "section",
+    "text": "Log events are a side effect of running normal code, but you might find yourself wanting to test particular informational messages and warnings. The Test module provides a @test_logs macro that can be used to pattern match against the log event stream."
+},
+
+{
+    "location": "stdlib/Logging/#Environment-variables-1",
+    "page": "Logging",
+    "title": "Environment variables",
+    "category": "section",
+    "text": "Message filtering can be influenced through the JULIA_DEBUG environment variable, and serves as an easy way to enable debug logging for a file or module. For example, loading julia with JULIA_DEBUG=loading will activate @debug log messages in loading.jl:$ JULIA_DEBUG=loading julia -e \'using OhMyREPL\'\n┌ Debug: Rejecting cache file /home/user/.julia/compiled/v0.7/OhMyREPL.ji due to it containing an invalid cache header\n└ @ Base loading.jl:1328\n[ Info: Recompiling stale cache file /home/user/.julia/compiled/v0.7/OhMyREPL.ji for module OhMyREPL\n┌ Debug: Rejecting cache file /home/user/.julia/compiled/v0.7/Tokenize.ji due to it containing an invalid cache header\n└ @ Base loading.jl:1328\n...Similarly, the environment variable can be used to enable debug logging of modules, such as Pkg, or module roots (see Base.moduleroot). To enable all debug logging, use the special value all."
+},
+
+{
+    "location": "stdlib/Logging/#Reference-1",
+    "page": "Logging",
+    "title": "Reference",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.@logmsg",
+    "page": "Logging",
+    "title": "Base.CoreLogging.@logmsg",
+    "category": "macro",
+    "text": "@debug message  [key=value | value ...]\n@info  message  [key=value | value ...]\n@warn  message  [key=value | value ...]\n@error message  [key=value | value ...]\n\n@logmsg level message [key=value | value ...]\n\nCreate a log record with an informational message.  For convenience, four logging macros @debug, @info, @warn and @error are defined which log at the standard severity levels Debug, Info, Warn and Error.  @logmsg allows level to be set programmatically to any LogLevel or custom log level types.\n\nmessage should be an expression which evaluates to a string which is a human readable description of the log event.  By convention, this string will be formatted as markdown when presented.\n\nThe optional list of key=value pairs supports arbitrary user defined metadata which will be passed through to the logging backend as part of the log record.  If only a value expression is supplied, a key representing the expression will be generated using Symbol. For example, x becomes x=x, and foo(10) becomes Symbol(\"foo(10)\")=foo(10).  For splatting a list of key value pairs, use the normal splatting syntax, @info \"blah\" kws....\n\nThere are some keys which allow automatically generated log data to be overridden:\n\n_module=mod can be used to specify a different originating module from the source location of the message.\n_group=symbol can be used to override the message group (this is normally derived from the base name of the source file).\n_id=symbol can be used to override the automatically generated unique message identifier.  This is useful if you need to very closely associate messages generated on different source lines.\n_file=string and _line=integer can be used to override the apparent source location of a log message.\n\nThere\'s also some key value pairs which have conventional meaning:\n\nmaxlog=integer should be used as a hint to the backend that the message should be displayed no more than maxlog times.\nexception=ex should be used to transport an exception with a log message, often used with @error. An associated backtrace bt may be attached using the tuple exception=(ex,bt).\n\nExamples\n\n@debug \"Verbose debugging information.  Invisible by default\"\n@info  \"An informational message\"\n@warn  \"Something was odd.  You should pay attention\"\n@error \"A non fatal error occurred\"\n\nx = 10\n@info \"Some variables attached to the message\" x a=42.0\n\n@debug begin\n    sA = sum(A)\n    \"sum(A) = $sA is an expensive operation, evaluated only when `shouldlog` returns true\"\nend\n\nfor i=1:10000\n    @info \"With the default backend, you will only see (i = $i) ten times\"  maxlog=10\n    @debug \"Algorithm1\" i progress=i/10000\nend\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.LogLevel",
+    "page": "Logging",
+    "title": "Base.CoreLogging.LogLevel",
+    "category": "type",
+    "text": "LogLevel(level)\n\nSeverity/verbosity of a log record.\n\nThe log level provides a key against which potential log records may be filtered, before any other work is done to construct the log record data structure itself.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Creating-events-1",
+    "page": "Logging",
+    "title": "Creating events",
+    "category": "section",
+    "text": "Logging.@logmsg\nLogging.LogLevel"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.AbstractLogger",
+    "page": "Logging",
+    "title": "Base.CoreLogging.AbstractLogger",
+    "category": "type",
+    "text": "A logger controls how log records are filtered and dispatched.  When a log record is generated, the logger is the first piece of user configurable code which gets to inspect the record and decide what to do with it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.handle_message",
+    "page": "Logging",
+    "title": "Base.CoreLogging.handle_message",
+    "category": "function",
+    "text": "handle_message(logger, level, message, _module, group, id, file, line; key1=val1, ...)\n\nLog a message to logger at level.  The logical location at which the message was generated is given by module _module and group; the source location by file and line. id is an arbitrary unique Symbol to be used as a key to identify the log statement when filtering.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.shouldlog",
+    "page": "Logging",
+    "title": "Base.CoreLogging.shouldlog",
+    "category": "function",
+    "text": "shouldlog(logger, level, _module, group, id)\n\nReturn true when logger accepts a message at level, generated for _module, group and with unique log identifier id.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.min_enabled_level",
+    "page": "Logging",
+    "title": "Base.CoreLogging.min_enabled_level",
+    "category": "function",
+    "text": "min_enabled_level(logger)\n\nReturn the maximum disabled level for logger for early filtering.  That is, the log level below or equal to which all messages are filtered.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.catch_exceptions",
+    "page": "Logging",
+    "title": "Base.CoreLogging.catch_exceptions",
+    "category": "function",
+    "text": "catch_exceptions(logger)\n\nReturn true if the logger should catch exceptions which happen during log record construction.  By default, messages are caught\n\nBy default all exceptions are caught to prevent log message generation from crashing the program.  This lets users confidently toggle little-used functionality - such as debug logging - in a production system.\n\nIf you want to use logging as an audit trail you should disable this for your logger type.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.disable_logging",
+    "page": "Logging",
+    "title": "Base.CoreLogging.disable_logging",
+    "category": "function",
+    "text": "disable_logging(level)\n\nDisable all log messages at log levels equal to or less than level.  This is a global setting, intended to make debug logging extremely cheap when disabled.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#AbstractLogger-interface-1",
+    "page": "Logging",
+    "title": "Processing events with AbstractLogger",
+    "category": "section",
+    "text": "Event processing is controlled by overriding functions associated with AbstractLogger:Methods to implement  Brief description\nLogging.handle_message  Handle a log event\nLogging.shouldlog  Early filtering of events\nLogging.min_enabled_level  Lower bound for log level of accepted events\nOptional methods Default definition Brief description\nLogging.catch_exceptions true Catch exceptions during event evaluationLogging.AbstractLogger\nLogging.handle_message\nLogging.shouldlog\nLogging.min_enabled_level\nLogging.catch_exceptions\nLogging.disable_logging"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.global_logger",
+    "page": "Logging",
+    "title": "Base.CoreLogging.global_logger",
+    "category": "function",
+    "text": "global_logger()\n\nReturn the global logger, used to receive messages when no specific logger exists for the current task.\n\nglobal_logger(logger)\n\nSet the global logger to logger, and return the previous global logger.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.with_logger",
+    "page": "Logging",
+    "title": "Base.CoreLogging.with_logger",
+    "category": "function",
+    "text": "with_logger(function, logger)\n\nExecute function, directing all log messages to logger.\n\nExample\n\nfunction test(x)\n    @info \"x = $x\"\nend\n\nwith_logger(logger) do\n    test(1)\n    test([1,2])\nend\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.current_logger",
+    "page": "Logging",
+    "title": "Base.CoreLogging.current_logger",
+    "category": "function",
+    "text": "current_logger()\n\nReturn the logger for the current task, or the global logger if none is is attached to the task.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.NullLogger",
+    "page": "Logging",
+    "title": "Base.CoreLogging.NullLogger",
+    "category": "type",
+    "text": "NullLogger()\n\nLogger which disables all messages and produces no output - the logger equivalent of /dev/null.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Logging.ConsoleLogger",
+    "page": "Logging",
+    "title": "Logging.ConsoleLogger",
+    "category": "type",
+    "text": "ConsoleLogger(stream=stderr, min_level=Info; meta_formatter=default_metafmt,\n              show_limited=true, right_justify=0)\n\nLogger with formatting optimized for readability in a text console, for example interactive work with the Julia REPL.\n\nLog levels less than min_level are filtered out.\n\nMessage formatting can be controlled by setting keyword arguments:\n\nmeta_formatter is a function which takes the log event metadata (level, _module, group, id, file, line) and returns a color (as would be passed to printstyled), prefix and suffix for the log message.  The default is to prefix with the log level and a suffix containing the module, file and line location.\nshow_limited limits the printing of large data structures to something which can fit on the screen by setting the :limit IOContext key during formatting.\nright_justify is the integer column which log metadata is right justified at. The default is zero (metadata goes on its own line).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Base.CoreLogging.SimpleLogger",
+    "page": "Logging",
+    "title": "Base.CoreLogging.SimpleLogger",
+    "category": "type",
+    "text": "SimpleLogger(stream=stderr, min_level=Info)\n\nSimplistic logger for logging all messages with level greater than or equal to min_level to stream.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Logging/#Using-Loggers-1",
+    "page": "Logging",
+    "title": "Using Loggers",
+    "category": "section",
+    "text": "Logger installation and inspection:Logging.global_logger\nLogging.with_logger\nLogging.current_loggerLoggers that are supplied with the system:Logging.NullLogger\nLogging.ConsoleLogger\nLogging.SimpleLogger"
+},
+
+{
+    "location": "stdlib/Markdown/#",
+    "page": "Markdown",
+    "title": "Markdown",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Markdown/#Markdown-1",
+    "page": "Markdown",
+    "title": "Markdown",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Mmap/#",
+    "page": "Memory-mapped I/O",
+    "title": "Memory-mapped I/O",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Mmap/#Mmap.Anonymous",
+    "page": "Memory-mapped I/O",
+    "title": "Mmap.Anonymous",
+    "category": "type",
+    "text": "Mmap.Anonymous(name::AbstractString=\"\", readonly::Bool=false, create::Bool=true)\n\nCreate an IO-like object for creating zeroed-out mmapped-memory that is not tied to a file for use in Mmap.mmap. Used by SharedArray for creating shared memory arrays.\n\nExamples\n\njulia> anon = Mmap.Anonymous();\n\njulia> isreadable(anon)\ntrue\n\njulia> iswritable(anon)\ntrue\n\njulia> isopen(anon)\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Mmap/#Mmap.mmap",
+    "page": "Memory-mapped I/O",
+    "title": "Mmap.mmap",
+    "category": "function",
+    "text": "Mmap.mmap(io::Union{IOStream,AbstractString,Mmap.AnonymousMmap}[, type::Type{Array{T,N}}, dims, offset]; grow::Bool=true, shared::Bool=true)\n       Mmap.mmap(type::Type{Array{T,N}}, dims)\n\nCreate an Array whose values are linked to a file, using memory-mapping. This provides a convenient way of working with data too large to fit in the computer\'s memory.\n\nThe type is an Array{T,N} with a bits-type element of T and dimension N that determines how the bytes of the array are interpreted. Note that the file must be stored in binary format, and no format conversions are possible (this is a limitation of operating systems, not Julia).\n\ndims is a tuple or single Integer specifying the size or length of the array.\n\nThe file is passed via the stream argument, either as an open IOStream or filename string. When you initialize the stream, use \"r\" for a \"read-only\" array, and \"w+\" to create a new array used to write values to disk.\n\nIf no type argument is specified, the default is Vector{UInt8}.\n\nOptionally, you can specify an offset (in bytes) if, for example, you want to skip over a header in the file. The default value for the offset is the current stream position for an IOStream.\n\nThe grow keyword argument specifies whether the disk file should be grown to accommodate the requested size of array (if the total file size is < requested array size). Write privileges are required to grow the file.\n\nThe shared keyword argument specifies whether the resulting Array and changes made to it will be visible to other processes mapping the same file.\n\nFor example, the following code\n\n# Create a file for mmapping\n# (you could alternatively use mmap to do this step, too)\nA = rand(1:20, 5, 30)\ns = open(\"/tmp/mmap.bin\", \"w+\")\n# We\'ll write the dimensions of the array as the first two Ints in the file\nwrite(s, size(A,1))\nwrite(s, size(A,2))\n# Now write the data\nwrite(s, A)\nclose(s)\n\n# Test by reading it back in\ns = open(\"/tmp/mmap.bin\")   # default is read-only\nm = read(s, Int)\nn = read(s, Int)\nA2 = Mmap.mmap(s, Matrix{Int}, (m,n))\n\ncreates a m-by-n Matrix{Int}, linked to the file associated with stream s.\n\nA more portable file would need to encode the word size – 32 bit or 64 bit – and endianness information in the header. In practice, consider encoding binary data using standard formats like HDF5 (which can be used with memory-mapping).\n\n\n\n\n\nMmap.mmap(io, BitArray, [dims, offset])\n\nCreate a BitArray whose values are linked to a file, using memory-mapping; it has the same purpose, works in the same way, and has the same arguments, as mmap, but the byte representation is different.\n\nExamples\n\njulia> io = open(\"mmap.bin\", \"w+\");\n\njulia> B = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> B[3, 4000] = true;\n\njulia> Mmap.sync!(B);\n\njulia> close(io);\n\njulia> io = open(\"mmap.bin\", \"r+\");\n\njulia> C = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> C[3, 4000]\ntrue\n\njulia> C[2, 4000]\nfalse\n\njulia> close(io)\n\njulia> rm(\"mmap.bin\")\n\nThis creates a 25-by-30000 BitArray, linked to the file associated with stream io.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Mmap/#Mmap.sync!",
+    "page": "Memory-mapped I/O",
+    "title": "Mmap.sync!",
+    "category": "function",
+    "text": "Mmap.sync!(array)\n\nForces synchronization between the in-memory version of a memory-mapped Array or BitArray and the on-disk version.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Mmap/#Memory-mapped-I/O-1",
+    "page": "Memory-mapped I/O",
+    "title": "Memory-mapped I/O",
+    "category": "section",
+    "text": "DocTestSetup = :(using Mmap)Mmap.Anonymous\nMmap.mmap\nMmap.sync!DocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Pkg/#",
+    "page": "Pkg",
+    "title": "Pkg",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg-1",
+    "page": "Pkg",
+    "title": "Pkg",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Pkg/#Introduction-1",
+    "page": "Pkg",
+    "title": "Introduction",
+    "category": "section",
+    "text": "Pkg is the standard package manager for Julia 1.0 and newer. Unlike traditional package managers, which install and manage a single global set of packages, Pkg is designed around “environments”: independent sets of packages that can be local to an individual project or shared and selected by name. The exact set of packages and versions in an environment is captured in a manifest file which can be checked into a project repository and tracked in version control, significantly improving reproducibility of projects. If you’ve ever tried to run code you haven’t used in a while only to find that you can’t get anything to work because you’ve updated or uninstalled some of the packages your project was using, you’ll understand the motivation for this approach. In Pkg, since each project maintains its own independent set of package versions, you’ll never have this problem again. Moreover, if you check out a project on a new system, you can simply materialize the environment described by its manifest file and immediately be up and running with a known-good set of dependencies.Since environments are managed and updated independently from each other, “dependency hell” is significantly alleviated in Pkg. If you want to use the latest and greatest version of some package in a new project but you’re stuck on an older version in a different project, that’s no problem – since they have separate environments they can just use different versions, which are both installed at the same time in different locations on your system. The location of each package version is canonical, so when environments use the same versions of packages, they can share installations, avoiding unnecessary duplication of the package. Old package versions that are no longer used by any environments are periodically “garbage collected” by the package manager.Pkg’s approach to local environments may be familiar to people who have used Python’s virtualenv or Ruby’s bundler. In Julia, instead of hacking the language’s code loading mechanisms to support environments, we have the benefit that Julia natively understands them. In addition, Julia environments are “stackable”: you can overlay one environment with another and thereby have access to additional packages outside of the primary environment. This makes it easy to work on a project, which provides the primary environment, while still having access to all your usual dev tools like profilers, debuggers, and so on, just by having an environment including these dev tools later in the load path.Last but not least, Pkg is designed to support federated package registries. This means that it allows multiple registries managed by different parties to interact seamlessly. In particular, this includes private registries which can live behind corporate firewalls. You can install and update your own packages from a private registry with exactly the same tools and workflows that you use to install and manage official Julia packages. If you urgently need to apply a hotfix for a public package that’s critical to your company’s product, you can tag a private version of it in your company’s internal registry and get a fix to your developers and ops teams quickly and easily without having to wait for an upstream patch to be accepted and published. Once an official fix is published, however, you can just upgrade your dependencies and you\'ll be back on an official release again."
+},
+
+{
+    "location": "stdlib/Pkg/#Glossary-1",
+    "page": "Pkg",
+    "title": "Glossary",
+    "category": "section",
+    "text": "Project: a source tree with a standard layout, including a src directory for the main body of Julia code, a test directory for testing the project, docs for documentation files, and optionally a deps directory for a build script and its outputs. A project will typically also have a project file and may optionally have a manifest file:Project file: a file in the root directory of a project, named Project.toml (or JuliaProject.toml) describing metadata about the project, including its name, UUID (for packages), authors, license, and the names and UUIDs of packages and libraries that it depends on.\nManifest file: a file in the root directory of a project, named Manifest.toml (or JuliaManifest.toml) describing a complete dependency graph and exact versions of each package and library used by a project.Package: a project which provides reusable functionality that can be used by other Julia projects via import X or using X. A package should have a project file with a uuid entry giving its package UUID. This UUID is used to identify the package in projects that depend on it.note: Note\nFor legacy reasons it is possible to load a package without a project file or UUID from the REPL or the top-level of a script. It is not possible, however, to load a package without a project file or UUID from a project with them. Once you\'ve loaded from a project file, everything needs a project file and UUID.Application: a project which provides standalone functionality not intended to be reused by other Julia projects. For example a web application or a commmand-line utility, or simulation/analytics code accompanying a scientific paper. An application may have a UUID but does not need one. An application may also provide global configuration options for packages it depends on. Packages, on the other hand, may not provide global configuration since that could conflict with the configuration of the main application.note: Note\nProjects vs. Packages vs. Applications:Project is an umbrella term: packages and applications are kinds of projects.\nPackages should have UUIDs, applications can have a UUIDs but don\'t need them.\nApplications can provide global configuration, whereas packages cannot.Library (future work): a compiled binary dependency (not written in Julia) packaged to be used by a Julia project. These are currently typically built in- place by a deps/build.jl script in a project’s source tree, but in the future we plan to make libraries first-class entities directly installed and upgraded by the package manager.Environment: the combination of the top-level name map provided by a project file combined with the dependency graph and map from packages to their entry points provided by a manifest file. For more detail see the manual section on code loading.Explicit environment: an environment in the form of an explicit project file and an optional corresponding manifest file together in a directory. If the manifest file is absent then the implied dependency graph and location maps are empty.\nImplicit environment: an environment provided as a directory (without a project file or manifest file) containing packages with entry points of the form X.jl, X.jl/src/X.jl or X/src/X.jl. The top-level name map is implied by these entry points. The dependency graph is implied by the existence of project files inside of these package directories, e.g. X.jl/Project.toml or X/Project.toml. The dependencies of the X package are the dependencies in the corresponding project file if there is one. The location map is implied by the entry points themselves.Registry: a source tree with a standard layout recording metadata about a registered set of packages, the tagged versions of them which are available, and which versions of packages are compatible or incompatible with each other. A registry is indexed by package name and UUID, and has a directory for each registered package providing the following metadata about it:name – e.g. DataFrames\nUUID – e.g. a93c6f00-e57d-5684-b7b6-d8193f3e46c0\nauthors – e.g. Jane Q. Developer <jane@example.com>\nlicense – e.g. MIT, BSD3, or GPLv2\nrepository – e.g. https://github.com/JuliaData/DataFrames.jl.git\ndescription – a block of text summarizing the functionality of a package\nkeywords – e.g. data, tabular, analysis, statistics\nversions – a list of all registered version tagsFor each registered version of a package, the following information is provided:its semantic version number – e.g. v1.2.3\nits git tree SHA-1 hash – e.g. 7ffb18ea3245ef98e368b02b81e8a86543a11103\na map from names to UUIDs of dependencies\nwhich versions of other packages it is compatible/incompatible withDependencies and compatibility are stored in a compressed but human-readable format using ranges of package versions.Depot: a directory on a system where various package-related resources live, including:environments: shared named environments (e.g. v0.7, devtools)\nclones: bare clones of package repositories\ncompiled: cached compiled package images (.ji files)\nconfig: global configuration files (e.g. startup.jl)\ndev: default directory for package development\nlogs: log files (e.g. manifest_usage.toml, repl_history.jl)\npackages: installed package versions\nregistries: clones of registries (e.g. General)Load path: a stack of environments where package identities, their dependencies, and entry-points are searched for. The load path is controlled in Julia by the LOAD_PATH global variable which is populated at startup based on the value of the JULIA_LOAD_PATH environment variable. The first entry is your primary environment, often the current project, while later entries provide additional packages one may want to use from the REPL or top-level scripts.Depot path: a stack of depot locations where the package manager, as well as Julia\'s code loading mechanisms, look for registries, installed packages, named environments, repo clones, cached compiled package images, and configuration files. The depot path is controlled by the Julia DEPOT_PATH global variable which is populated at startup based on the value of the JULIA_DEPOT_PATH environment variable. The first entry is the “user depot” and should be writable by and owned by the current user. The user depot is where: registries are cloned, new package versions are installed, named environments are created and updated, package repos are cloned, newly compiled package image files are saved, log files are written, development packages are checked out by default, and global configuration data is saved. Later entries in the depot path are treated as read-only and are appropriate for registries, packages, etc. installed and managed by system administrators."
+},
+
+{
+    "location": "stdlib/Pkg/#Getting-Started-1",
+    "page": "Pkg",
+    "title": "Getting Started",
+    "category": "section",
+    "text": "The Pkg REPL-mode is entered from the Julia REPL using the key ].(v0.7) pkg>The part inside the parenthesis of the prompt shows the name of the current project. Since we haven\'t created our own project yet, we are in the default project, located at ~/.julia/environments/v0.7 (or whatever version of Julia you happen to run).To return to the julia> prompt, either press backspace when the input line is empty or press Ctrl+C. Help is available by calling pkg> help. If you are in an environment that does not have access to a REPL you can still use the REPL mode commands using the string macro pkg available after using Pkg. The command pkg\"cmd\" would be equivalent to executing cmd in the REPL mode.The documentation here describes using Pkg from the REPL mode. Documentation of using the Pkg API (by calling Pkg. functions) is in progress of being written."
+},
+
+{
+    "location": "stdlib/Pkg/#Adding-packages-1",
+    "page": "Pkg",
+    "title": "Adding packages",
+    "category": "section",
+    "text": "There are two ways of adding packages, either using the add command or the dev command. The most frequently used one is add and its usage is described first."
+},
+
+{
+    "location": "stdlib/Pkg/#Adding-registered-packages-1",
+    "page": "Pkg",
+    "title": "Adding registered packages",
+    "category": "section",
+    "text": "In the Pkg REPL packages can be added with the add command followed by the name of the package, for example:(v0.7) pkg> add Example\n   Cloning default registries into /Users/kristoffer/.julia/registries\n   Cloning registry General from \"https://github.com/JuliaRegistries/General.git\"\n  Updating registry at `~/.julia/registries/General`\n  Updating git-repo `https://github.com/JuliaRegistries/General.git`\n Resolving package versions...\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] + Example v0.5.1\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] + Example v0.5.1\n  [8dfed614] + TestHere we added the package Example to the current project. In this example, we are using a fresh Julia installation, and this is our first time adding a package using Pkg. By default, Pkg clones Julia\'s General registry, and uses this registry to look up packages requested for inclusion in the current environment. The status update shows a short form of the package UUID to the left, then the package name, and the version. Since standard libraries (e.g. Test) are shipped with Julia, they do not have a version. The project status contains the packages you have added yourself, in this case, Example:(v0.7) pkg> st\n    Status `Project.toml`\n  [7876af07] Example v0.5.1The manifest status, in addition, includes the dependencies of explicitly added packages.(v0.7) pkg> st --manifest\n    Status `Manifest.toml`\n  [7876af07] Example v0.5.1\n  [8dfed614] TestIt is possible to add multiple packages in one command as pkg> add A B C.After a package is added to the project, it can be loaded in Julia:julia> using Example\n\njulia> Example.hello(\"User\")\n\"Hello, User\"A specific version can be installed by appending a version after a @ symbol, e.g. @v0.4, to the package name:(v0.7) pkg> add Example@0.4\n Resolving package versions...\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] + Example v0.4.1\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] + Example v0.4.1If the master branch (or a certain commit SHA) of Example has a hotfix that has not yet included in a registered version, we can explicitly track a branch (or commit) by appending #branch (or #commit) to the package name:(v0.7) pkg> add Example#master\n  Updating git-repo `https://github.com/JuliaLang/Example.jl.git`\n Resolving package versions...\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] ~ Example v0.5.1 ⇒ v0.5.1+ #master (https://github.com/JuliaLang/Example.jl.git)\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] ~ Example v0.5.1 ⇒ v0.5.1+ #master (https://github.com/JuliaLang/Example.jl.git)The status output now shows that we are tracking the master branch of Example. When updating packages, we will pull updates from that branch.To go back to tracking the registry version of Example, the command free is used:(v0.7) pkg> free Example\n Resolving package versions...\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] ~ Example v0.5.1+ #master (https://github.com/JuliaLang/Example.jl.git) ⇒ v0.5.1\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] ~ Example v0.5.1+ #master )https://github.com/JuliaLang/Example.jl.git) ⇒ v0.5.1"
+},
+
+{
+    "location": "stdlib/Pkg/#Adding-unregistered-packages-1",
+    "page": "Pkg",
+    "title": "Adding unregistered packages",
+    "category": "section",
+    "text": "If a package is not in a registry, it can still be added by instead of the package name giving the URL to the repository to add.(v0.7) pkg> add https://github.com/fredrikekre/ImportMacros.jl\n  Updating git-repo `https://github.com/fredrikekre/ImportMacros.jl`\n Resolving package versions...\nDownloaded MacroTools ─ v0.4.1\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [e6797606] + ImportMacros v0.0.0 # (https://github.com/fredrikekre/ImportMacros.jl)\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [e6797606] + ImportMacros v0.0.0 # (https://github.com/fredrikekre/ImportMacros.jl)\n  [1914dd2f] + MacroTools v0.4.1The dependencies of the unregistered package (here MacroTools) got installed. For unregistered packages we could have given a branch (or commit SHA) to track using #, just like for registered packages."
+},
+
+{
+    "location": "stdlib/Pkg/#Adding-a-local-package-1",
+    "page": "Pkg",
+    "title": "Adding a local package",
+    "category": "section",
+    "text": "Instead of giving a URL of a git repo to add we could instead have given a local path to a git repo. This works similarly to adding a URL. The local repository will be tracked (at some branch) and updates from that local repo are pulled when packages are updated. Note that changes to files in the local package repository will not immediately be reflected when loading that package. The changes would have to be committed and the packages updated in order to pull in the changes."
+},
+
+{
+    "location": "stdlib/Pkg/#Developing-packages-1",
+    "page": "Pkg",
+    "title": "Developing packages",
+    "category": "section",
+    "text": "By only using add your Manifest will always have a \"reproducible state\", in other words, as long as the repositories and registries used are still accessible it is possible to retrieve the exact state of all the dependencies in the project. This has the advantage that you can send your project (Project.toml and Manifest.toml) to someone else and they can \"instantiate\" that project in the same state as you had it locally. However, when you are developing a package, it is more convenient to load packages at their current state at some path. For this reason, the dev command exists.Let\'s try to dev a registered package:(v0.7) pkg> dev Example\n  Updating git-repo `https://github.com/JuliaLang/Example.jl.git`\n Resolving package versions...\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] + Example v0.5.1+ [`~/.julia/dev/Example`]\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] + Example v0.5.1+ [`~/.julia/dev/Example`]The dev command fetches a full clone of the package to ~/.julia/dev/ (the path can be changed by setting the environment variable JULIA_PKG_DEVDIR). When importing Example julia will now import it from ~/.julia/dev/Example and whatever local changes have been made to the files in that path are consequently reflected in the code loaded. When we used add we said that we tracked the package repository, we here say that we track the path itself. Note that the package manager will never touch any of the files at a tracked path. It is therefore up to you to pull updates, change branches etc. If we try to dev a package at some branch that already exists at ~/.julia/dev/ the package manager we will simply use the existing path. For example:(v0.7) pkg> dev Example\n  Updating git-repo `https://github.com/JuliaLang/Example.jl.git`\n[ Info: Path `/Users/kristoffer/.julia/dev/Example` exists and looks like the correct package, using existing path instead of cloningNote the info message saying that it is using the existing path. As a general rule, the package manager will never touch files that are tracking a path.If dev is used on a local path, that path to that package is recorded and used when loading that package. The path will be recorded relative to the project file, unless it is given as an absolute path.To stop tracking a path and use the registered version again, use free(v0.7) pkg> free Example\n Resolving package versions...\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] ↓ Example v0.5.1+ [`~/.julia/dev/Example`] ⇒ v0.5.1\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] ↓ Example v0.5.1+ [`~/.julia/dev/Example`] ⇒ v0.5.1It should be pointed out that by using dev your project is now inherently stateful. Its state depends on the current content of the files at the path and the manifest cannot be \"instantiated\" by someone else without knowing the exact content of all the packages that are tracking a path.Note that if you add a dependency to a package that tracks a local path, the Manifest (which contains the whole dependency graph) will become out of sync with the actual dependency graph. This means that the package will not be able to load that dependency since it is not recorded in the Manifest. To update sync the Manifest, use the REPL command resolve."
+},
+
+{
+    "location": "stdlib/Pkg/#Removing-packages-1",
+    "page": "Pkg",
+    "title": "Removing packages",
+    "category": "section",
+    "text": "Packages can be removed from the current project by using pkg> rm Package. This will only remove packages that exist in the project, to remove a package that only exists as a dependency use pkg> rm --manifest DepPackage. Note that this will remove all packages that depends on DepPackage."
+},
+
+{
+    "location": "stdlib/Pkg/#Updating-packages-1",
+    "page": "Pkg",
+    "title": "Updating packages",
+    "category": "section",
+    "text": "When new versions of packages the project is using are released, it is a good idea to update. Simply calling up will try to update all the dependencies of the project to the latest compatible version. Sometimes this is not what you want. You can specify a subset of the dependencies to upgrade by giving them as arguments to up, e.g:(v0.7) pkg> up ExampleThe version of all other packages direct dependencies will stay the same. If you only want to update the minor version of packages, to reduce the risk that your project breaks, you can give the --minor flag, e.g:(v0.7) pkg> up --minor ExamplePackages that track a repository are not updated when a minor upgrade is done. Packages that track a path are never touched by the package manager."
+},
+
+{
+    "location": "stdlib/Pkg/#Pinning-a-package-1",
+    "page": "Pkg",
+    "title": "Pinning a package",
+    "category": "section",
+    "text": "A pinned package will never be updated. A package can be pinned using pin as for example(v0.7) pkg> pin Example\n Resolving package versions...\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] ~ Example v0.5.1 ⇒ v0.5.1 ⚲\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] ~ Example v0.5.1 ⇒ v0.5.1 ⚲Note the pin symbol ⚲ showing that the package is pinned. Removing the pin is done using free(v0.7) pkg> free Example\n  Updating `~/.julia/environments/v0.7/Project.toml`\n  [7876af07] ~ Example v0.5.1 ⚲ ⇒ v0.5.1\n  Updating `~/.julia/environments/v0.7/Manifest.toml`\n  [7876af07] ~ Example v0.5.1 ⚲ ⇒ v0.5.1"
+},
+
+{
+    "location": "stdlib/Pkg/#Testing-packages-1",
+    "page": "Pkg",
+    "title": "Testing packages",
+    "category": "section",
+    "text": "The tests for a package can be run using testcommand:(v0.7) pkg> test Example\n   Testing Example\n   Testing Example tests passed"
+},
+
+{
+    "location": "stdlib/Pkg/#Building-packages-1",
+    "page": "Pkg",
+    "title": "Building packages",
+    "category": "section",
+    "text": "The build step of a package is automatically run when a package is first installed. The output of the build process is directed to a file. To explicitly run the build step for a package the build command is used:(v0.7) pkg> build MbedTLS\n  Building MbedTLS → `~/.julia/packages/MbedTLS/h1Vu/deps/build.log`\n\nshell> cat ~/.julia/packages/MbedTLS/h1Vu/deps/build.log\n┌ Warning: `wait(t::Task)` is deprecated, use `fetch(t)` instead.\n│   caller = macro expansion at OutputCollector.jl:63 [inlined]\n└ @ Core OutputCollector.jl:63\n...\n[ Info: using prebuilt binaries"
+},
+
+{
+    "location": "stdlib/Pkg/#Creating-your-own-projects-1",
+    "page": "Pkg",
+    "title": "Creating your own projects",
+    "category": "section",
+    "text": "So far we have added packages to the default project at ~/.julia/environments/v0.7, it is, however, easy to create other, independent, projects. It should be pointed out if two projects uses the same package at the same version, the content of this package is not duplicated. In order to create a new project, create a directory for it and then activate that directory to make it the \"active project\" which package operations manipulate:shell> mkdir MyProject\n\nshell> cd MyProject\n/Users/kristoffer/MyProject\n\n(v0.7) pkg> activate .\n\n(MyProject) pkg> st\n    Status `Project.toml`Note that the REPL prompt changed when the new project is activated. Since this is a newly created project, the status command show it contains no packages, and in fact, it has no project or manifest file until we add a package to it:shell> ls -l\ntotal 0\n\n(MyProject) pkg> add Example\n  Updating registry at `~/.julia/registries/General`\n  Updating git-repo `https://github.com/JuliaRegistries/General.git`\n Resolving package versions...\n  Updating `Project.toml`\n  [7876af07] + Example v0.5.1\n  Updating `Manifest.toml`\n  [7876af07] + Example v0.5.1\n  [8dfed614] + Test\n\nshell> ls -l\ntotal 8\n-rw-r--r-- 1 stefan staff 207 Jul  3 16:35 Manifest.toml\n-rw-r--r-- 1 stefan staff  56 Jul  3 16:35 Project.toml\n\nshell> cat Project.toml\n[deps]\nExample = \"7876af07-990d-54b4-ab0e-23690620f79a\"\n\nshell> cat Manifest.toml\n[[Example]]\ndeps = [\"Test\"]\ngit-tree-sha1 = \"8eb7b4d4ca487caade9ba3e85932e28ce6d6e1f8\"\nuuid = \"7876af07-990d-54b4-ab0e-23690620f79a\"\nversion = \"0.5.1\"\n\n[[Test]]\nuuid = \"8dfed614-e22c-5e08-85e1-65c5234f0b40\"This new environment is completely separate from the one we used earlier."
+},
+
+{
+    "location": "stdlib/Pkg/#Garbage-collecting-old,-unused-packages-1",
+    "page": "Pkg",
+    "title": "Garbage collecting old, unused packages",
+    "category": "section",
+    "text": "As packages are updated and projects are deleted, installed packages that were once used will inevitably become old and not used from any existing project. Pkg keeps a log of all projects used so it can go through the log and see exactly which projects still exist and what packages those projects used. The rest can be deleted. This is done with the gc command:(v0.7) pkg> gc\n    Active manifests at:\n        `/Users/kristoffer/BinaryProvider/Manifest.toml`\n        ...\n        `/Users/kristoffer/Compat.jl/Manifest.toml`\n   Deleted /Users/kristoffer/.julia/packages/BenchmarkTools/1cAj: 146.302 KiB\n   Deleted /Users/kristoffer/.julia/packages/Cassette/BXVB: 795.557 KiB\n   ...\n   Deleted /Users/kristoffer/.julia/packages/WeakRefStrings/YrK6: 27.328 KiB\n   Deleted 36 package installations: 113.205 MiBNote that only packages in ~/.julia/packages are deleted."
+},
+
+{
+    "location": "stdlib/Pkg/#Creating-your-own-packages-1",
+    "page": "Pkg",
+    "title": "Creating your own packages",
+    "category": "section",
+    "text": "A package is a project with a name, uuid and version entry in the Project.toml file src/PackageName.jl file that defines the module PackageName. This file is executed when the package is loaded."
+},
+
+{
+    "location": "stdlib/Pkg/#Generating-files-for-a-package-1",
+    "page": "Pkg",
+    "title": "Generating files for a package",
+    "category": "section",
+    "text": "To generate files for a new package, use pkg> generate.(v0.7) pkg> generate HelloWorldThis creates a new project HelloWorld with the following files (visualized with the external tree command):shell> cd HelloWorld\n\nshell> tree .\n.\n├── Project.toml\n└── src\n    └── HelloWorld.jl\n\n1 directory, 2 filesThe Project.toml file contains the name of the package, its unique UUID, its version, the author and eventual dependencies:name = \"HelloWorld\"\nuuid = \"b4cd1eb8-1e24-11e8-3319-93036a3eb9f3\"\nversion = \"0.1.0\"\nauthor = [\"Some One <someone@email.com>\"]\n\n[deps]The content of src/HelloWorld.jl is:module HelloWorld\n\ngreet() = print(\"Hello World!\")\n\nend # moduleWe can now activate the project and load the package:pkg> activate .\n\njulia> import HelloWorld\n\njulia> HelloWorld.greet()\nHello World!"
+},
+
+{
+    "location": "stdlib/Pkg/#Adding-dependencies-to-the-project-1",
+    "page": "Pkg",
+    "title": "Adding dependencies to the project",
+    "category": "section",
+    "text": "Let’s say we want to use the standard library package Random and the registered package JSON in our project. We simply add these packages (note how the prompt now shows the name of the newly generated project, since we are inside the HelloWorld project directory):(HelloWorld) pkg> add Random JSON\n Resolving package versions...\n  Updating \"~/Documents/HelloWorld/Project.toml\"\n [682c06a0] + JSON v0.17.1\n [9a3f8284] + Random\n  Updating \"~/Documents/HelloWorld/Manifest.toml\"\n [34da2185] + Compat v0.57.0\n [682c06a0] + JSON v0.17.1\n [4d1e1d77] + Nullables v0.0.4\n ...Both Random and JSON got added to the project’s Project.toml file, and the resulting dependencies got added to the Manifest.toml file. The resolver has installed each package with the highest possible version, while still respecting the compatibility that each package enforce on its dependencies.We can now use both Random and JSON in our project. Changing src/HelloWorld.jl tomodule HelloWorld\n\nimport Random\nimport JSON\n\ngreet() = print(\"Hello World!\")\ngreet_alien() = print(\"Hello \", Random.randstring(8))\n\nend # moduleand reloading the package, the new greet_alien function that uses Random can be used:julia> HelloWorld.greet_alien()\nHello aT157rHV"
+},
+
+{
+    "location": "stdlib/Pkg/#Adding-a-build-step-to-the-package.-1",
+    "page": "Pkg",
+    "title": "Adding a build step to the package.",
+    "category": "section",
+    "text": "The build step is executed the first time a package is installed or when explicitly invoked with build. A package is built by executing the file deps/build.jl.shell> cat deps/build.log\nI am being built...\n\n(HelloWorld) pkg> build\n  Building HelloWorld → `deps/build.log`\n Resolving package versions...\n\nshell> cat deps/build.log\nI am being built...If the build step fails, the output of the build step is printed to the consoleshell> cat deps/build.jl\nerror(\"Ooops\")\n\n(HelloWorld) pkg> build\n  Building HelloWorld → `deps/build.log`\n Resolving package versions...\n┌ Error: Error building `HelloWorld`:\n│ ERROR: LoadError: Ooops\n│ Stacktrace:\n│  [1] error(::String) at ./error.jl:33\n│  [2] top-level scope at none:0\n│  [3] include at ./boot.jl:317 [inlined]\n│  [4] include_relative(::Module, ::String) at ./loading.jl:1071\n│  [5] include(::Module, ::String) at ./sysimg.jl:29\n│  [6] include(::String) at ./client.jl:393\n│  [7] top-level scope at none:0\n│ in expression starting at /Users/kristoffer/.julia/dev/Pkg/HelloWorld/deps/build.jl:1\n└ @ Pkg.Operations Operations.jl:938"
+},
+
+{
+    "location": "stdlib/Pkg/#Adding-tests-to-the-package-1",
+    "page": "Pkg",
+    "title": "Adding tests to the package",
+    "category": "section",
+    "text": "When a package is tested the file test/runtests.jl is executed.shell> cat test/runtests.jl\nprintln(\"Testing...\")\n(HelloWorld) pkg> test\n   Testing HelloWorld\n Resolving package versions...\nTesting...\n   Testing HelloWorld tests passed"
+},
+
+{
+    "location": "stdlib/Pkg/#Test-specific-dependencies-1",
+    "page": "Pkg",
+    "title": "Test-specific dependencies",
+    "category": "section",
+    "text": "Sometimes one might want to use some packages only at testing time but not enforce a dependency on them when the package is used. This is possible by adding dependencies to [extras] and a test target in [targets] to the Project file. Here we add the Test standard library as a test-only dependency by adding the following to the Project file:[extras]\nTest = \"8dfed614-e22c-5e08-85e1-65c5234f0b40\"\n\n[targets]\ntest = [\"Test\"]We can now use Test in the test script and we can see that it gets installed on testing:shell> cat test/runtests.jl\nusing Test\n@test 1 == 1\n\n(HelloWorld) pkg> test\n   Testing HelloWorld\n Resolving package versions...\n  Updating `/var/folders/64/76tk_g152sg6c6t0b4nkn1vw0000gn/T/tmpPzUPPw/Project.toml`\n  [d8327f2a] + HelloWorld v0.1.0 [`~/.julia/dev/Pkg/HelloWorld`]\n  [8dfed614] + Test\n  Updating `/var/folders/64/76tk_g152sg6c6t0b4nkn1vw0000gn/T/tmpPzUPPw/Manifest.toml`\n  [d8327f2a] + HelloWorld v0.1.0 [`~/.julia/dev/Pkg/HelloWorld`]\n   Testing HelloWorld tests passed```"
+},
+
+{
+    "location": "stdlib/Pkg/#Compatibility-1",
+    "page": "Pkg",
+    "title": "Compatibility",
+    "category": "section",
+    "text": "Compatibility refers to the ability to restrict what version of the dependencies that your project is compatible with. If the compatibility for a dependency is not given, the project is assumed to be compatible with all versions of that dependency.Compatibility for a dependency is entered in the Project.toml file as for example:[compat]\nExample = \"0.4.3\"After a compatibility entry is put into the project file, up can be used to apply it.The format of the version specifier is described in detail below.info: Info\nThere is currently no way to give compatibility from the Pkg REPL mode so for now, one has to manually edit the project file."
+},
+
+{
+    "location": "stdlib/Pkg/#Version-specifier-format-1",
+    "page": "Pkg",
+    "title": "Version specifier format",
+    "category": "section",
+    "text": "Similar to other package managers, the Julia package manager respects semantic versioning (semver). As an example, a version specifier is given as e.g. 1.2.3 is therefore assumed to be compatible with the versions [1.2.3 - 2.0.0) where ) is a non-inclusive upper bound. More specifically, a version specifier is either given as a caret specifier, e.g. ^1.2.3  or a tilde specifier ~1.2.3. Caret specifiers are the default and hence 1.2.3 == ^1.2.3. The difference between a caret and tilde is described in the next section. The intersection of multiple version specifiers can be formed by comma separating indiviual version specifiers."
+},
+
+{
+    "location": "stdlib/Pkg/#Caret-specifiers-1",
+    "page": "Pkg",
+    "title": "Caret specifiers",
+    "category": "section",
+    "text": "A caret specifier allows upgrade that would be compatible according to semver. An updated dependency is considered compatible if the new version does not modify the left-most non zero digit in the version specifier.Some examples are shown below.^1.2.3 = [1.2.3, 2.0.0)\n^1.2 = [1.2.0, 2.0.0)\n^1 =  [1.0.0, 2.0.0)\n^0.2.3 = [0.2.3, 0.3.0)\n^0.0.3 = [0.0.3, 0.0.4)\n^0.0 = [0.0.0, 0.1.0)\n^0 = [0.0.0, 1.0.0)While the semver specification says that all versions with a major version of 0 are incompatible with each other, we have made that choice that a version given as 0.a.b is considered compatible with 0.a.c if a != 0 and  c >= b."
+},
+
+{
+    "location": "stdlib/Pkg/#Tilde-specifiers-1",
+    "page": "Pkg",
+    "title": "Tilde specifiers",
+    "category": "section",
+    "text": "A tilde specifier provides more limited upgrade possibilities. With a tilde, only the last specified digit is allowed to increment by one. This gives the following example.~1.2.3 = [1.2.3, 1.2.4)\n~1.2 = [1.2.0, 1.3.0)\n~1 = [1.0.0, 2.0.0)"
+},
+
+{
+    "location": "stdlib/Pkg/#Inequality-specifiers-1",
+    "page": "Pkg",
+    "title": "Inequality specifiers",
+    "category": "section",
+    "text": "Inequalities can also be used to specify version ranges:>= 1.2.3 = [1.2.3,  ∞)\n≥ 1.2.3 = [1.2.3,  ∞)\n= 1.2.3 = [1.2.3, 1.2.3]\n< 1.2.3 = [0.0.0, 1.2.2]"
+},
+
+{
+    "location": "stdlib/Pkg/#Precompiling-a-project-1",
+    "page": "Pkg",
+    "title": "Precompiling a project",
+    "category": "section",
+    "text": "The REPL command precompile can be used to precompile all the dependencies in the project. You can for example do(HelloWorld) pkg> update; precompileto update the dependencies and then precompile them."
+},
+
+{
+    "location": "stdlib/Pkg/#Preview-mode-1",
+    "page": "Pkg",
+    "title": "Preview mode",
+    "category": "section",
+    "text": "If you just want to see the effects of running a command, but not change your state you can preview a command. For example:(HelloWorld) pkg> preview add Plotsor(HelloWorld) pkg> preview upwill show you the effects of adding Plots, or doing a full upgrade, respectively, would have on your project. However, nothing would be installed and your Project.toml and Manifest.toml are untouched."
+},
+
+{
+    "location": "stdlib/Pkg/#Using-someone-else\'s-project-1",
+    "page": "Pkg",
+    "title": "Using someone else\'s project",
+    "category": "section",
+    "text": "Simply clone their project using e.g. git clone, cd to the project directory and call(v0.7) pkg> activate .\n\n(SomeProject) pkg> instantiateIf the project contains a manifest, this will install the packages in the same state that is given by that manifest. Otherwise, it will resolve the latest versions of the dependencies compatible with the project."
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.PackageSpec",
+    "page": "Pkg",
+    "title": "Pkg.PackageSpec",
+    "category": "type",
+    "text": "PackageSpec(name::String, [uuid::UUID, version::VersionNumber])\nPackageSpec(; name, url, path, rev, version, mode, level)\n\nA PackageSpec is a representation of a package with various metadata. This includes:\n\nThe name of the package.\nThe package unique uuid.\nA version (for example when adding a package. When upgrading, can also be an instance of\n\nthe enum UpgradeLevel\n\nA url and an optional git revision. rev could be a branch name or a git commit SHA.\nA local path path. This is equivalent to using the url argument but can be more descriptive.\nA mode, which is an instance of the enum PackageMode which can be either PKGMODE_PROJECT or\n\nPKGMODE_MANIFEST, defaults to PKGMODE_PROJECT. Used in e.g. Pkg.rm.\n\nMost functions in Pkg take a Vector of PackageSpec and do the operation on all the packages in the vector.\n\nBelow is a comparison between the REPL version and the PackageSpec version:\n\nREPL API\nPackage PackageSpec(\"Package\")\nPackage@0.2 PackageSpec(name=\"Package\", version=\"0.2\")\nPackage=a67d... PackageSpec(name=\"Package\", uuid=\"a67d...\"\nPackage#master PackageSpec(name=\"Package\", rev=\"master\")\nlocal/path#feature PackageSpec(path=\"local/path\"; rev=\"feature)\nwww.mypkg.com PackageSpec(url=\"www.mypkg.com\")\n--manifest Package PackageSpec(name=\"Package\", mode=PKGSPEC_MANIFEST)\n--major Package PackageSpec(name=\"Package\", version=PKGLEVEL_MAJOR)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.PackageMode",
+    "page": "Pkg",
+    "title": "Pkg.PackageMode",
+    "category": "type",
+    "text": "PackageMode\n\nAn enum with the instances\n\nPKGMODE_MANIFEST\nPKGMODE_PROJECT\n\nDetermines if operations should be made on a project or manifest level. Used as an argument to  PackageSpec or as an argument to Pkg.rm.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.UpgradeLevel",
+    "page": "Pkg",
+    "title": "Pkg.UpgradeLevel",
+    "category": "type",
+    "text": "UpgradeLevel\n\nAn enum with the instances\n\nUPLEVEL_FIXED\nUPLEVEL_PATCH\nUPLEVEL_MINOR\nUPLEVEL_MAJOR\n\nDetermines how much a package is allowed to be updated. Used as an argument to  PackageSpec or as an argument to Pkg.update.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.add",
+    "page": "Pkg",
+    "title": "Pkg.add",
+    "category": "function",
+    "text": "Pkg.add(pkg::Union{String, Vector{String})\nPkg.add(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nAdd a package to the current project. This package will be available using the import and using keywords in the Julia REPL and if the current project is a package, also inside that package.\n\nExamples\n\nPkg.add(\"Example\") # Add a package from registry\nPkg.add(PackageSpec(name=\"Example\", version=\"0.3\")) # Specify version\nPkg.add(PackageSpec(url=\"https://github.com/JuliaLang/Example.jl\", rev=\"master\")) # From url\nPkg.add(PackageSpec(url=\"/remote/mycompany/juliapackages/OurPackage\"))` # From path (has to be a gitrepo)\n\nSee also PackageSpec.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.develop",
+    "page": "Pkg",
+    "title": "Pkg.develop",
+    "category": "function",
+    "text": "Pkg.develop(pkg::Union{String, Vector{String})\nPkg.develop(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nMake a package available for development by tracking it by path. If pkg is given with only a name or by a URL the packages will be downloaded to the location by the environment variable JULIA_PKG_DEVDIR with .julia/dev as the default.\n\nIf pkg is given as a local path, the package at that path will be tracked.\n\nExamples\n\n# By name\nPkg.develop(\"Example\")\n\n# By url\nPkg.develop(PackageSpec(url=\"https://github.com/JuliaLang/Compat.jl\", rev=\"master\"))\n\n# By path (also uses url keyword to PackageSpec)\nPkg.develop(PackageSpec(url=\"MyJuliaPackages/Package.jl\")\n\nSee also PackageSpec\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.activate",
+    "page": "Pkg",
+    "title": "Pkg.activate",
+    "category": "function",
+    "text": "Pkg.activate([s::String]; shared::Bool=false)\n\nActivate the environment at s. The active environment is the environment that is modified by executing package commands. The logic for what path is activated is as follows:\n\nIf shared is true, the first existing environment named s from the depots in the depot stack will be activated. If no such environment exists yet, activate it in the first depot.\nIf s is a path that exist, that environment will be activated.\nIf s is a package name in the current project activate that is tracking a path, activate the environment at that path.\nIf s is a non-existing path, activate that path.\n\nIf no argument is given to activate, activate the home project, which is the one specified by either --project command line when starting julia, or JULIA_PROJECT environment variable.\n\nExamples\n\nPkg.activate()\nPkg.activate(\"local/path\")\nPkg.activate(\"MyDependency\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.rm",
+    "page": "Pkg",
+    "title": "Pkg.rm",
+    "category": "function",
+    "text": "Pkg.rm(pkg::Union{String, Vector{String})\nPkg.rm(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nRemove a package from the current project. If the mode of pkg is PKGMODE_MANIFEST also remove it from the manifest including all recursive dependencies of pkg.\n\nSee also PackageSpec, PackageMode.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.update",
+    "page": "Pkg",
+    "title": "Pkg.update",
+    "category": "function",
+    "text": "Pkg.update(; level::UpgradeLevel=UPLEVEL_MAJOR, mode::PackageMode = PKGMODE_PROJECT)\nPkg.update(pkg::Union{String, Vector{String})\nPkg.update(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nUpdate a package pkg. If no posistional argument is given, update all packages in the manifest if mode is PKGMODE_MANIFEST and packages in both manifest and project if mode is PKGMODE_PROJECT. If no positional argument is given level can be used to control what how much packages are allowed to be upgraded (major, minor, patch, fixed).\n\nSee also PackageSpec, PackageMode, UpgradeLevel.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.test",
+    "page": "Pkg",
+    "title": "Pkg.test",
+    "category": "function",
+    "text": "Pkg.test(; coverage::Bool=true)\nPkg.test(pkg::Union{String, Vector{String}; coverage::Bool=true)\nPkg.test(pkgs::Union{PackageSpec, Vector{PackageSpec}}; coverage::Bool=true)\n\nRun the tests for package pkg or if no positional argument is given to test, the current project is tested (which thus needs to be a package). A package is tested by running its test/runtests.jl file.\n\nThe tests are run by generating a temporary environment with only pkg and its (recursive) dependencies (recursively) in it. If a manifest exist, the versions in that manifest is used, otherwise a feasible set of package are resolved and installed.\n\nDuring the test, test-specific dependencies are active, which are given in the project file as e.g.\n\n[extras]\nTest = \"8dfed614-e22c-5e08-85e1-65c5234f0b40\"\n\n[targets]\ntest = [Test]\n\nCoverage statistics for the packages may be generated by passing coverage=true. The default behavior is not to run coverage.\n\nThe tests are executed in a new process with check-bounds=yes and by default startup-file=no. If using the startup file (~/.julia/config/startup.jl) is desired, start julia with --startup-file=yes.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.build",
+    "page": "Pkg",
+    "title": "Pkg.build",
+    "category": "function",
+    "text": "Pkg.build()\nPkg.build(pkg::Union{String, Vector{String})\nPkg.build(pkgs::Union{PackageSpec, Vector{PackageSpec}})\n\nRun the build script in deps/build.jl for pkg and all of the dependencies in depth-first recursive order. If no argument is given to build, the current project is built, which thus needs to be a package. This function is called automatically one any package that gets installed for the first time.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.pin",
+    "page": "Pkg",
+    "title": "Pkg.pin",
+    "category": "function",
+    "text": "Pkg.pin(pkg::Union{String, Vector{String})\nPkg.pin(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nPin a package to the current version (or the one given in the packagespec or a certain git revision. A pinned package is never updated.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.free",
+    "page": "Pkg",
+    "title": "Pkg.free",
+    "category": "function",
+    "text": "Pkg.free(pkg::Union{String, Vector{String})\nPkg.free(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nFree a package which removes a pin if it exists, or if the package is tracking a path, e.g. after Pkg.develop, go back to tracking registered versions.\n\nExamples\n\nPkg.free(\"Package\")\nPkg.free(PackageSpec(\"Package\"))\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.instantiate",
+    "page": "Pkg",
+    "title": "Pkg.instantiate",
+    "category": "function",
+    "text": "Pkg.instantiate()\n\nIf a Manifest.toml file exist in the current project, download all the packages declared in that manifest. Else, resolve a set of feasible packages from the Project.toml files and install them.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.resolve",
+    "page": "Pkg",
+    "title": "Pkg.resolve",
+    "category": "function",
+    "text": "Pkg.resolve()\n\nUpdate the current manifest with eventual changes to the dependency graph from packages that are tracking a path.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#Pkg.setprotocol!",
+    "page": "Pkg",
+    "title": "Pkg.setprotocol!",
+    "category": "function",
+    "text": "Pkg.setprotocol!(proto::Union{Nothing, AbstractString}=nothing)\n\nSet the protocol used to access GitHub-hosted packages when adding a url or developing a package. Defaults to \'https\', with proto == nothing delegating the choice to the package developer.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Pkg/#References-1",
+    "page": "Pkg",
+    "title": "References",
+    "category": "section",
+    "text": "This section describes the \"API mode\" of interacting with Pkg.jl which is recommended for non-interactive usage, in i.e. scripts. In the REPL mode packages (with associated version, UUID, URL etc) are parsed from strings, for example, \"Package#master\",\"Package@v0.1\", \"www.mypkg.com/MyPkg#my/feature\". It is possible to use strings as arguments for simple commands in the API mode (like Pkg.add([\"PackageA\", \"PackageB\"]), more complicated commands, that e.g. specify URLs or version range, uses a more structured format over strings. This is done by creating an instance of a PackageSpec which are passed in to functions.PackageSpec\nPackageMode\nUpgradeLevel\nPkg.add\nPkg.develop\nPkg.activate\nPkg.rm\nPkg.update\nPkg.test\nPkg.build\nPkg.pin\nPkg.free\nPkg.instantiate\nPkg.resolve\nPkg.setprotocol!"
+},
+
+{
+    "location": "stdlib/Printf/#",
+    "page": "Printf",
+    "title": "Printf",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Printf/#Printf.@printf",
+    "page": "Printf",
+    "title": "Printf.@printf",
+    "category": "macro",
+    "text": "@printf([io::IOStream], \"%Fmt\", args...)\n\nPrint args using C printf style format specification string, with some caveats: Inf and NaN are printed consistently as Inf and NaN for flags %a, %A, %e, %E, %f, %F, %g, and %G. Furthermore, if a floating point number is equally close to the numeric values of two possible output strings, the output string further away from zero is chosen.\n\nOptionally, an IOStream may be passed as the first argument to redirect output.\n\nExamples\n\njulia> @printf(\"%f %F %f %F\\n\", Inf, Inf, NaN, NaN)\nInf Inf NaN NaN\n\n\njulia> @printf \"%.0f %.1f %f\\n\" 0.5 0.025 -0.0078125\n1 0.0 -0.007813\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Printf/#Printf.@sprintf",
+    "page": "Printf",
+    "title": "Printf.@sprintf",
+    "category": "macro",
+    "text": "@sprintf(\"%Fmt\", args...)\n\nReturn @printf formatted output as string.\n\nExamples\n\njulia> s = @sprintf \"this is a %s %15.1f\" \"test\" 34.567;\n\njulia> println(s)\nthis is a test            34.6\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Printf/#Printf-1",
+    "page": "Printf",
+    "title": "Printf",
+    "category": "section",
+    "text": "DocTestSetup = :(using Printf)Printf.@printf\nPrintf.@sprintfDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Profile/#",
+    "page": "Profiling",
+    "title": "Profiling",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Profile/#Profile.@profile",
+    "page": "Profiling",
+    "title": "Profile.@profile",
+    "category": "macro",
+    "text": "@profile\n\n@profile <expression> runs your expression while taking periodic backtraces. These are appended to an internal buffer of backtraces.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#Profile.clear",
+    "page": "Profiling",
+    "title": "Profile.clear",
+    "category": "function",
+    "text": "clear()\n\nClear any existing backtraces from the internal buffer.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#Profile.print",
+    "page": "Profiling",
+    "title": "Profile.print",
+    "category": "function",
+    "text": "print([io::IO = stdout,] [data::Vector]; kwargs...)\n\nPrints profiling results to io (by default, stdout). If you do not supply a data vector, the internal buffer of accumulated backtraces will be used.\n\nThe keyword arguments can be any combination of:\n\nformat – Determines whether backtraces are printed with (default, :tree) or without (:flat) indentation indicating tree structure.\nC – If true, backtraces from C and Fortran code are shown (normally they are excluded).\ncombine – If true (default), instruction pointers are merged that correspond to the same line of code.\nmaxdepth – Limits the depth higher than maxdepth in the :tree format.\nsortedby – Controls the order in :flat format. :filefuncline (default) sorts by the source  line, whereas :count sorts in order of number of collected samples.\nnoisefloor – Limits frames that exceed the heuristic noise floor of the sample (only applies to format :tree).  A suggested value to try for this is 2.0 (the default is 0). This parameter hides samples for which n <= noisefloor * √N,  where n is the number of samples on this line, and N is the number of samples for the callee.\nmincount – Limits the printout to only those lines with at least mincount occurrences.\n\n\n\n\n\nprint([io::IO = stdout,] data::Vector, lidict::LineInfoDict; kwargs...)\n\nPrints profiling results to io. This variant is used to examine results exported by a previous call to retrieve. Supply the vector data of backtraces and a dictionary lidict of line information.\n\nSee Profile.print([io], data) for an explanation of the valid keyword arguments.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#Profile.init",
+    "page": "Profiling",
+    "title": "Profile.init",
+    "category": "function",
+    "text": "init(; n::Integer, delay::Float64)\n\nConfigure the delay between backtraces (measured in seconds), and the number n of instruction pointers that may be stored. Each instruction pointer corresponds to a single line of code; backtraces generally consist of a long list of instruction pointers. Default settings can be obtained by calling this function with no arguments, and each can be set independently using keywords or in the order (n, delay).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#Profile.fetch",
+    "page": "Profiling",
+    "title": "Profile.fetch",
+    "category": "function",
+    "text": "fetch() -> data\n\nReturns a reference to the internal buffer of backtraces. Note that subsequent operations, like clear, can affect data unless you first make a copy. Note that the values in data have meaning only on this machine in the current session, because it depends on the exact memory addresses used in JIT-compiling. This function is primarily for internal use; retrieve may be a better choice for most users.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#Profile.retrieve",
+    "page": "Profiling",
+    "title": "Profile.retrieve",
+    "category": "function",
+    "text": "retrieve() -> data, lidict\n\n\"Exports\" profiling results in a portable format, returning the set of all backtraces (data) and a dictionary that maps the (session-specific) instruction pointers in data to LineInfo values that store the file name, function name, and line number. This function allows you to save profiling results for future analysis.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#Profile.callers",
+    "page": "Profiling",
+    "title": "Profile.callers",
+    "category": "function",
+    "text": "callers(funcname, [data, lidict], [filename=<filename>], [linerange=<start:stop>]) -> Vector{Tuple{count, lineinfo}}\n\nGiven a previous profiling run, determine who called a particular function. Supplying the filename (and optionally, range of line numbers over which the function is defined) allows you to disambiguate an overloaded method. The returned value is a vector containing a count of the number of calls and line information about the caller. One can optionally supply backtrace data obtained from retrieve; otherwise, the current internal profile buffer is used.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#Profile.clear_malloc_data",
+    "page": "Profiling",
+    "title": "Profile.clear_malloc_data",
+    "category": "function",
+    "text": "clear_malloc_data()\n\nClears any stored memory allocation data when running julia with --track-allocation. Execute the command(s) you want to test (to force JIT-compilation), then call clear_malloc_data. Then execute your command(s) again, quit Julia, and examine the resulting *.mem files.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Profile/#lib-profiling-1",
+    "page": "Profiling",
+    "title": "Profiling",
+    "category": "section",
+    "text": "Profile.@profileThe methods in Profile are not exported and need to be called e.g. as Profile.print().Profile.clear\nProfile.print\nProfile.init\nProfile.fetch\nProfile.retrieve\nProfile.callers\nProfile.clear_malloc_data"
+},
+
+{
+    "location": "stdlib/REPL/#",
+    "page": "The Julia REPL",
+    "title": "The Julia REPL",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/REPL/#The-Julia-REPL-1",
+    "page": "The Julia REPL",
+    "title": "The Julia REPL",
+    "category": "section",
+    "text": "Julia comes with a full-featured interactive command-line REPL (read-eval-print loop) built into the julia executable. In addition to allowing quick and easy evaluation of Julia statements, it has a searchable history, tab-completion, many helpful keybindings, and dedicated help and shell modes. The REPL can be started by simply calling julia with no arguments or double-clicking on the executable:$ julia\n               _\n   _       _ _(_)_     |  A fresh approach to technical computing\n  (_)     | (_) (_)    |  Documentation: https://docs.julialang.org\n   _ _   _| |_  __ _   |  Type \"?help\" for help.\n  | | | | | | |/ _` |  |\n  | | |_| | | | (_| |  |  Version 0.6.0-dev.2493 (2017-01-31 18:53 UTC)\n _/ |\\__\'_|_|_|\\__\'_|  |  Commit c99e12c* (0 days old master)\n|__/                   |  x86_64-linux-gnu\n\njulia>To exit the interactive session, type ^D – the control key together with the d key on a blank line – or type quit() followed by the return or enter key. The REPL greets you with a banner and a julia> prompt."
+},
+
+{
+    "location": "stdlib/REPL/#The-different-prompt-modes-1",
+    "page": "The Julia REPL",
+    "title": "The different prompt modes",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "stdlib/REPL/#The-Julian-mode-1",
+    "page": "The Julia REPL",
+    "title": "The Julian mode",
+    "category": "section",
+    "text": "The REPL has four main modes of operation. The first and most common is the Julian prompt. It is the default mode of operation; each new line initially starts with julia>. It is here that you can enter Julia expressions. Hitting return or enter after a complete expression has been entered will evaluate the entry and show the result of the last expression.julia> string(1 + 2)\n\"3\"There are a number useful features unique to interactive work. In addition to showing the result, the REPL also binds the result to the variable ans. A trailing semicolon on the line can be used as a flag to suppress showing the result.julia> string(3 * 4);\n\njulia> ans\n\"12\"In Julia mode, the REPL supports something called prompt pasting. This activates when pasting text that starts with julia> into the REPL. In that case, only expressions starting with julia> are parsed, others are removed. This makes it is possible to paste a chunk of code that has been copied from a REPL session without having to scrub away prompts and outputs. This feature is enabled by default but can be disabled or enabled at will with Base.REPL.enable_promptpaste(::Bool). If it is enabled, you can try it out by pasting the code block above this paragraph straight into the REPL. This feature does not work on the standard Windows command prompt due to its limitation at detecting when a paste occurs."
+},
+
+{
+    "location": "stdlib/REPL/#Help-mode-1",
+    "page": "The Julia REPL",
+    "title": "Help mode",
+    "category": "section",
+    "text": "When the cursor is at the beginning of the line, the prompt can be changed to a help mode by typing ?. Julia will attempt to print help or documentation for anything entered in help mode:julia> ? # upon typing ?, the prompt changes (in place) to: help?>\n\nhelp?> string\nsearch: string String Cstring Cwstring RevString randstring bytestring SubString\n\n  string(xs...)\n\n  Create a string from any values using the print function.Macros, types and variables can also be queried:help?> @time\n  @time\n\n  A macro to execute an expression, printing the time it took to execute, the number of allocations,\n  and the total number of bytes its execution caused to be allocated, before returning the value of the\n  expression.\n\n  See also @timev, @timed, @elapsed, and @allocated.\n\nhelp?> Int32\nsearch: Int32 UInt32\n\n  Int32 <: Signed\n\n  32-bit signed integer type.Help mode can be exited by pressing backspace at the beginning of the line."
+},
+
+{
+    "location": "stdlib/REPL/#man-shell-mode-1",
+    "page": "The Julia REPL",
+    "title": "Shell mode",
+    "category": "section",
+    "text": "Just as help mode is useful for quick access to documentation, another common task is to use the system shell to execute system commands. Just as ? entered help mode when at the beginning of the line, a semicolon (;) will enter the shell mode. And it can be exited by pressing backspace at the beginning of the line.julia> ; # upon typing ;, the prompt changes (in place) to: shell>\n\nshell> echo hello\nhello"
+},
+
+{
+    "location": "stdlib/REPL/#Search-modes-1",
+    "page": "The Julia REPL",
+    "title": "Search modes",
+    "category": "section",
+    "text": "In all of the above modes, the executed lines get saved to a history file, which can be searched.  To initiate an incremental search through the previous history, type ^R – the control key together with the r key. The prompt will change to (reverse-i-search)`\':, and as you type the search query will appear in the quotes. The most recent result that matches the query will dynamically update to the right of the colon as more is typed. To find an older result using the same query, simply type ^R again.Just as ^R is a reverse search, ^S is a forward search, with the prompt (i-search)`\':.  The two may be used in conjunction with each other to move through the previous or next matching results, respectively."
+},
+
+{
+    "location": "stdlib/REPL/#Key-bindings-1",
+    "page": "The Julia REPL",
+    "title": "Key bindings",
+    "category": "section",
+    "text": "The Julia REPL makes great use of key bindings. Several control-key bindings were already introduced above (^D to exit, ^R and ^S for searching), but there are many more. In addition to the control-key, there are also meta-key bindings. These vary more by platform, but most terminals default to using alt- or option- held down with a key to send the meta-key (or can be configured to do so).Keybinding Description\nProgram control \n^D Exit (when buffer is empty)\n^C Interrupt or cancel\n^L Clear console screen\nReturn/Enter, ^J New line, executing if it is complete\nmeta-Return/Enter Insert new line without executing it\n? or ; Enter help or shell mode (when at start of a line)\n^R, ^S Incremental history search, described above\nCursor movement \nRight arrow, ^F Move right one character\nLeft arrow, ^B Move left one character\nctrl-Right, meta-F Move right one word\nctrl-Left, meta-B Move left one word\nHome, ^A Move to beginning of line\nEnd, ^E Move to end of line\nUp arrow, ^P Move up one line (or change to the previous history entry that matches the text before the cursor)\nDown arrow, ^N Move down one line (or change to the next history entry that matches the text before the cursor)\nShift-Arrow Key Move cursor according to the direction of the Arrow key, while activating the region (\"shift selection\")\nPage-up, meta-P Change to the previous history entry\nPage-down, meta-N Change to the next history entry\nmeta-< Change to the first history entry (of the current session if it is before the current position in history)\nmeta-> Change to the last history entry\n^-Space Set the \"mark\" in the editing region (and de-activate the region if it\'s active)\n^-Space ^-Space Set the \"mark\" in the editing region and make the region \"active\", i.e. highlighted\n^G De-activate the region (i.e. make it not highlighted)\n^X^X Exchange the current position with the mark\nEditing \nBackspace, ^H Delete the previous character, or the whole region when it\'s active\nDelete, ^D Forward delete one character (when buffer has text)\nmeta-Backspace Delete the previous word\nmeta-d Forward delete the next word\n^W Delete previous text up to the nearest whitespace\nmeta-w Copy the current region in the kill ring\nmeta-W \"Kill\" the current region, placing the text in the kill ring\n^K \"Kill\" to end of line, placing the text in the kill ring\n^Y \"Yank\" insert the text from the kill ring\nmeta-y Replace a previously yanked text with an older entry from the kill ring\n^T Transpose the characters about the cursor\nmeta-Up arrow Transpose current line with line above\nmeta-Down arrow Transpose current line with line below\nmeta-u Change the next word to uppercase\nmeta-c Change the next word to titlecase\nmeta-l Change the next word to lowercase\n^/, ^_ Undo previous editing action\n^Q Write a number in REPL and press ^Q to open editor at corresponding stackframe or method\nmeta-Left Arrow indent the current line on the left\nmeta-Right Arrow indent the current line on the right"
+},
+
+{
+    "location": "stdlib/REPL/#Customizing-keybindings-1",
+    "page": "The Julia REPL",
+    "title": "Customizing keybindings",
+    "category": "section",
+    "text": "Julia\'s REPL keybindings may be fully customized to a user\'s preferences by passing a dictionary to REPL.setup_interface. The keys of this dictionary may be characters or strings. The key \'*\' refers to the default action. Control plus character x bindings are indicated with \"^x\". Meta plus x can be written \"\\\\Mx\". The values of the custom keymap must be nothing (indicating that the input should be ignored) or functions that accept the signature (PromptState, AbstractREPL, Char). The REPL.setup_interface function must be called before the REPL is initialized, by registering the operation with atreplinit . For example, to bind the up and down arrow keys to move through history without prefix search, one could put the following code in ~/.julia/config/startup.jl:import REPL\nimport REPL.LineEdit\n\nconst mykeys = Dict{Any,Any}(\n    # Up Arrow\n    \"\\e[A\" => (s,o...)->(LineEdit.edit_move_up(s) || LineEdit.history_prev(s, LineEdit.mode(s).hist)),\n    # Down Arrow\n    \"\\e[B\" => (s,o...)->(LineEdit.edit_move_up(s) || LineEdit.history_next(s, LineEdit.mode(s).hist))\n)\n\nfunction customize_keys(repl)\n    repl.interface = REPL.setup_interface(repl; extra_repl_keymap = mykeys)\nend\n\natreplinit(customize_keys)Users should refer to LineEdit.jl to discover the available actions on key input."
+},
+
+{
+    "location": "stdlib/REPL/#Tab-completion-1",
+    "page": "The Julia REPL",
+    "title": "Tab completion",
+    "category": "section",
+    "text": "In both the Julian and help modes of the REPL, one can enter the first few characters of a function or type and then press the tab key to get a list all matches:julia> stri[TAB]\nstride     strides     string      strip\n\njulia> Stri[TAB]\nStridedArray    StridedMatrix    StridedVecOrMat  StridedVector    StringThe tab key can also be used to substitute LaTeX math symbols with their Unicode equivalents, and get a list of LaTeX matches as well:julia> \\pi[TAB]\njulia> π\nπ = 3.1415926535897...\n\njulia> e\\_1[TAB] = [1,0]\njulia> e₁ = [1,0]\n2-element Array{Int64,1}:\n 1\n 0\n\njulia> e\\^1[TAB] = [1 0]\njulia> e¹ = [1 0]\n1×2 Array{Int64,2}:\n 1  0\n\njulia> \\sqrt[TAB]2     # √ is equivalent to the sqrt function\njulia> √2\n1.4142135623730951\n\njulia> \\hbar[TAB](h) = h / 2\\pi[TAB]\njulia> ħ(h) = h / 2π\nħ (generic function with 1 method)\n\njulia> \\h[TAB]\n\\hat              \\hermitconjmatrix  \\hkswarow          \\hrectangle\n\\hatapprox        \\hexagon           \\hookleftarrow     \\hrectangleblack\n\\hbar             \\hexagonblack      \\hookrightarrow    \\hslash\n\\heartsuit        \\hksearow          \\house             \\hspace\n\njulia> α=\"\\alpha[TAB]\"   # LaTeX completion also works in strings\njulia> α=\"α\"A full list of tab-completions can be found in the Unicode Input section of the manual.Completion of paths works for strings and julia\'s shell mode:julia> path=\"/[TAB]\"\n.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/\n.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/\nshell> /[TAB]\n.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/\n.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/Tab completion can help with investigation of the available methods matching the input arguments:julia> max([TAB] # All methods are displayed, not shown here due to size of the list\n\njulia> max([1, 2], [TAB] # All methods where `Vector{Int}` matches as first argument\nmax(x, y) in Base at operators.jl:215\nmax(a, b, c, xs...) in Base at operators.jl:281\n\njulia> max([1, 2], max(1, 2), [TAB] # All methods matching the arguments.\nmax(x, y) in Base at operators.jl:215\nmax(a, b, c, xs...) in Base at operators.jl:281Keywords are also displayed in the suggested methods after ;, see below line where limit and keepempty are keyword arguments:julia> split(\"1 1 1\", [TAB]\nsplit(str::AbstractString; limit, keepempty) in Base at strings/util.jl:302\nsplit(str::T, splitter; limit, keepempty) where T<:AbstractString in Base at strings/util.jl:277The completion of the methods uses type inference and can therefore see if the arguments match even if the arguments are output from functions. The function needs to be type stable for the completion to be able to remove non-matching methods.Tab completion can also help completing fields:julia> import UUIDs\n\njulia> UUIDs.uuid[TAB]\nuuid1        uuid4         uuid_versionFields for output from functions can also be completed:julia> split(\"\",\"\")[1].[TAB]\nlastindex  offset  stringThe completion of fields for output from functions uses type inference, and it can only suggest fields if the function is type stable."
+},
+
+{
+    "location": "stdlib/REPL/#Customizing-Colors-1",
+    "page": "The Julia REPL",
+    "title": "Customizing Colors",
+    "category": "section",
+    "text": "The colors used by Julia and the REPL can be customized, as well. To change the color of the Julia prompt you can add something like the following to your ~/.julia/config/startup.jl file, which is to be placed inside your home directory:function customize_colors(repl)\n    repl.prompt_color = Base.text_colors[:cyan]\nend\n\natreplinit(customize_colors)The available color keys can be seen by typing Base.text_colors in the help mode of the REPL. In addition, the integers 0 to 255 can be used as color keys for terminals with 256 color support.You can also change the colors for the help and shell prompts and input and answer text by setting the appropriate field of repl in the customize_colors function above (respectively, help_color, shell_color, input_color, and answer_color). For the latter two, be sure that the envcolors field is also set to false.It is also possible to apply boldface formatting by using Base.text_colors[:bold] as a color. For instance, to print answers in boldface font, one can use the following as a ~/.julia/config/startup.jl:function customize_colors(repl)\n    repl.envcolors = false\n    repl.answer_color = Base.text_colors[:bold]\nend\n\natreplinit(customize_colors)You can also customize the color used to render warning and informational messages by setting the appropriate environment variables. For instance, to render error, warning, and informational messages respectively in magenta, yellow, and cyan you can add the following to your ~/.julia/config/startup.jl file:ENV[\"JULIA_ERROR_COLOR\"] = :magenta\nENV[\"JULIA_WARN_COLOR\"] = :yellow\nENV[\"JULIA_INFO_COLOR\"] = :cyan"
+},
+
+{
+    "location": "stdlib/REPL/#TerminalMenus-1",
+    "page": "The Julia REPL",
+    "title": "TerminalMenus",
+    "category": "section",
+    "text": "TerminalMenus is a submodule of the Julia REPL and enables small, low-profile interactive menus in the terminal."
+},
+
+{
+    "location": "stdlib/REPL/#Examples-1",
+    "page": "The Julia REPL",
+    "title": "Examples",
+    "category": "section",
+    "text": "import REPL\nusing REPL.TerminalMenus\n\noptions = [\"apple\", \"orange\", \"grape\", \"strawberry\",\n            \"blueberry\", \"peach\", \"lemon\", \"lime\"]\n"
+},
+
+{
+    "location": "stdlib/REPL/#RadioMenu-1",
+    "page": "The Julia REPL",
+    "title": "RadioMenu",
+    "category": "section",
+    "text": "The RadioMenu allows the user to select one option from the list. The request function displays the interactive menu and returns the index of the selected choice. If a user presses \'q\' or ctrl-c, request will return a -1.# `pagesize` is the number of items to be displayed at a time.\n#  The UI will scroll if the number of options is greater\n#   than the `pagesize`\nmenu = RadioMenu(options, pagesize=4)\n\n# `request` displays the menu and returns the index after the\n#   user has selected a choice\nchoice = request(\"Choose your favorite fruit:\", menu)\n\nif choice != -1\n    println(\"Your favorite fruit is \", options[choice], \"!\")\nelse\n    println(\"Menu canceled.\")\nend\nOutput:Choose your favorite fruit:\n^  grape\n   strawberry\n > blueberry\nv  peach\nYour favorite fruit is blueberry!"
+},
+
+{
+    "location": "stdlib/REPL/#MultiSelectMenu-1",
+    "page": "The Julia REPL",
+    "title": "MultiSelectMenu",
+    "category": "section",
+    "text": "The MultiSelectMenu allows users to select many choices from a list.# here we use the default `pagesize` 10\nmenu = MultiSelectMenu(options)\n\n# `request` returns a `Set` of selected indices\n# if the menu us canceled (ctrl-c or q), return an empty set\nchoices = request(\"Select the fruits you like:\", menu)\n\nif length(choices) > 0\n    println(\"You like the following fruits:\")\n    for i in choices\n        println(\"  - \", options[i])\n    end\nelse\n    println(\"Menu canceled.\")\nendOutput:Select the fruits you like:\n[press: d=done, a=all, n=none]\n   [ ] apple\n > [X] orange\n   [X] grape\n   [ ] strawberry\n   [ ] blueberry\n   [X] peach\n   [ ] lemon\n   [ ] lime\nYou like the following fruits:\n  - orange\n  - grape\n  - peach"
+},
+
+{
+    "location": "stdlib/REPL/#Customization-/-Configuration-1",
+    "page": "The Julia REPL",
+    "title": "Customization / Configuration",
+    "category": "section",
+    "text": "All interface customization is done through the keyword only TerminalMenus.config() function."
+},
+
+{
+    "location": "stdlib/REPL/#Arguments-1",
+    "page": "The Julia REPL",
+    "title": "Arguments",
+    "category": "section",
+    "text": "charset::Symbol=:na: ui characters to use (:ascii or :unicode); overridden by other arguments\ncursor::Char=\'>\'|\'→\': character to use for cursor\nup_arrow::Char=\'^\'|\'↑\': character to use for up arrow\ndown_arrow::Char=\'v\'|\'↓\': character to use for down arrow\nchecked::String=\"[X]\"|\"✓\": string to use for checked\nunchecked::String=\"[ ]\"|\"⬚\"): string to use for unchecked\nscroll::Symbol=:na: If :wrap then wrap the cursor around top and bottom, if :nowrap do not wrap cursor\nsupress_output::Bool=false: For testing. If true, menu will not be printed to console.\nctrl_c_interrupt::Bool=true: If false, return empty on ^C, if true throw InterruptException() on ^C"
+},
+
+{
+    "location": "stdlib/REPL/#Examples-2",
+    "page": "The Julia REPL",
+    "title": "Examples",
+    "category": "section",
+    "text": "julia> menu = MultiSelectMenu(options, pagesize=5);\n\njulia> request(menu) # ASCII is used by default\n[press: d=done, a=all, n=none]\n   [ ] apple\n   [X] orange\n   [ ] grape\n > [X] strawberry\nv  [ ] blueberry\nSet([4, 2])\n\njulia> TerminalMenus.config(charset=:unicode)\n\njulia> request(menu)\n[press: d=done, a=all, n=none]\n   ⬚ apple\n   ✓ orange\n   ⬚ grape\n → ✓ strawberry\n↓  ⬚ blueberry\nSet([4, 2])\n\njulia> TerminalMenus.config(checked=\"YEP!\", unchecked=\"NOPE\", cursor=\'⧐\')\n\njulia> request(menu)\n[press: d=done, a=all, n=none]\n   NOPE apple\n   YEP! orange\n   NOPE grape\n ⧐ YEP! strawberry\n↓  NOPE blueberry\nSet([4, 2])\n"
+},
+
+{
+    "location": "stdlib/REPL/#Base.atreplinit",
+    "page": "The Julia REPL",
+    "title": "Base.atreplinit",
+    "category": "function",
+    "text": "atreplinit(f)\n\nRegister a one-argument function to be called before the REPL interface is initialized in interactive sessions; this is useful to customize the interface. The argument of f is the REPL object. This function should be called from within the .julia/config/startup.jl initialization file.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/REPL/#References-1",
+    "page": "The Julia REPL",
+    "title": "References",
+    "category": "section",
+    "text": "Base.atreplinit"
+},
+
+{
+    "location": "stdlib/Random/#",
+    "page": "Random Numbers",
+    "title": "Random Numbers",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Random/#Random-Numbers-1",
+    "page": "Random Numbers",
+    "title": "Random Numbers",
+    "category": "section",
+    "text": "DocTestSetup = :(using Random)Random number generation in Julia uses the Mersenne Twister library via MersenneTwister objects. Julia has a global RNG, which is used by default. Other RNG types can be plugged in by inheriting the AbstractRNG type; they can then be used to have multiple streams of random numbers. Besides MersenneTwister, Julia also provides the RandomDevice RNG type, which is a wrapper over the OS provided entropy.Most functions related to random generation accept an optional AbstractRNG object as first argument, which defaults to the global one if not provided. Moreover, some of them accept optionally dimension specifications dims... (which can be given as a tuple) to generate arrays of random values.A MersenneTwister or RandomDevice RNG can generate uniformly random numbers of the following types: Float16, Float32, Float64, BigFloat, Bool, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Int128, UInt128, BigInt (or complex numbers of those types). Random floating point numbers are generated uniformly in 0 1). As BigInt represents unbounded integers, the interval must be specified (e.g. rand(big.(1:6))).Additionally, normal and exponential distributions are implemented for some AbstractFloat and Complex types, see randn and randexp for details."
+},
+
+{
+    "location": "stdlib/Random/#Base.rand",
+    "page": "Random Numbers",
+    "title": "Base.rand",
+    "category": "function",
+    "text": "rand([rng=GLOBAL_RNG], [S], [dims...])\n\nPick a random element or array of random elements from the set of values specified by S; S can be\n\nan indexable collection (for example 1:n or [\'x\',\'y\',\'z\']),\nan AbstractDict or AbstractSet object,\na string (considered as a collection of characters), or\na type: the set of values to pick from is then equivalent to typemin(S):typemax(S) for integers (this is not applicable to BigInt), and to 0 1) for floating point numbers;\n\nS defaults to Float64 (except when dims is a tuple of integers, in which case S must be specified).\n\nExamples\n\njulia> rand(Int, 2)\n2-element Array{Int64,1}:\n 1339893410598768192\n 1575814717733606317\n\njulia> rand(MersenneTwister(0), Dict(1=>2, 3=>4))\n1=>2\n\nnote: Note\nThe complexity of rand(rng, s::Union{AbstractDict,AbstractSet}) is linear in the length of s, unless an optimized method with constant complexity is available, which is the case for Dict, Set and BitSet. For more than a few calls, use rand(rng, collect(s)) instead, or either rand(rng, Dict(s)) or rand(rng, Set(s)) as appropriate.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.rand!",
+    "page": "Random Numbers",
+    "title": "Random.rand!",
+    "category": "function",
+    "text": "rand!([rng=GLOBAL_RNG], A, [S=eltype(A)])\n\nPopulate the array A with random values. If S is specified (S can be a type or a collection, cf. rand for details), the values are picked randomly from S. This is equivalent to copyto!(A, rand(rng, S, size(A))) but without allocating a new array.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> rand!(rng, zeros(5))\n5-element Array{Float64,1}:\n 0.5908446386657102\n 0.7667970365022592\n 0.5662374165061859\n 0.4600853424625171\n 0.7940257103317943\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.bitrand",
+    "page": "Random Numbers",
+    "title": "Random.bitrand",
+    "category": "function",
+    "text": "bitrand([rng=GLOBAL_RNG], [dims...])\n\nGenerate a BitArray of random boolean values.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> bitrand(rng, 10)\n10-element BitArray{1}:\n false\n  true\n  true\n  true\n  true\n false\n  true\n false\n false\n  true\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Base.randn",
+    "page": "Random Numbers",
+    "title": "Base.randn",
+    "category": "function",
+    "text": "randn([rng=GLOBAL_RNG], [T=Float64], [dims...])\n\nGenerate a normally-distributed random number of type T with mean 0 and standard deviation 1. Optionally generate an array of normally-distributed random numbers. The Base module currently provides an implementation for the types Float16, Float32, and Float64 (the default), and their Complex counterparts. When the type argument is complex, the values are drawn from the circularly symmetric complex normal distribution.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randn(rng, ComplexF64)\n0.6133070881429037 - 0.6376291670853887im\n\njulia> randn(rng, ComplexF32, (2, 3))\n2×3 Array{Complex{Float32},2}:\n -0.349649-0.638457im  0.376756-0.192146im  -0.396334-0.0136413im\n  0.611224+1.56403im   0.355204-0.365563im  0.0905552+1.31012im\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randn!",
+    "page": "Random Numbers",
+    "title": "Random.randn!",
+    "category": "function",
+    "text": "randn!([rng=GLOBAL_RNG], A::AbstractArray) -> A\n\nFill the array A with normally-distributed (mean 0, standard deviation 1) random numbers. Also see the rand function.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randn!(rng, zeros(5))\n5-element Array{Float64,1}:\n  0.8673472019512456\n -0.9017438158568171\n -0.4944787535042339\n -0.9029142938652416\n  0.8644013132535154\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randexp",
+    "page": "Random Numbers",
+    "title": "Random.randexp",
+    "category": "function",
+    "text": "randexp([rng=GLOBAL_RNG], [T=Float64], [dims...])\n\nGenerate a random number of type T according to the exponential distribution with scale 1. Optionally generate an array of such random numbers. The Base module currently provides an implementation for the types Float16, Float32, and Float64 (the default).\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randexp(rng, Float32)\n2.4835055f0\n\njulia> randexp(rng, 3, 3)\n3×3 Array{Float64,2}:\n 1.5167    1.30652   0.344435\n 0.604436  2.78029   0.418516\n 0.695867  0.693292  0.643644\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randexp!",
+    "page": "Random Numbers",
+    "title": "Random.randexp!",
+    "category": "function",
+    "text": "randexp!([rng=GLOBAL_RNG], A::AbstractArray) -> A\n\nFill the array A with random numbers following the exponential distribution (with scale 1).\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randexp!(rng, zeros(5))\n5-element Array{Float64,1}:\n 2.4835053723904896\n 1.516703605376473\n 0.6044364871025417\n 0.6958665886385867\n 1.3065196315496677\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randstring",
+    "page": "Random Numbers",
+    "title": "Random.randstring",
+    "category": "function",
+    "text": "randstring([rng=GLOBAL_RNG], [chars], [len=8])\n\nCreate a random string of length len, consisting of characters from chars, which defaults to the set of upper- and lower-case letters and the digits 0-9. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> Random.seed!(0); randstring()\n\"0IPrGg0J\"\n\njulia> randstring(MersenneTwister(0), \'a\':\'z\', 6)\n\"aszvqk\"\n\njulia> randstring(\"ACGT\")\n\"TATCGGTC\"\n\nnote: Note\nchars can be any collection of characters, of type Char or UInt8 (more efficient), provided rand can randomly pick characters from it.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random-generation-functions-1",
+    "page": "Random Numbers",
+    "title": "Random generation functions",
+    "category": "section",
+    "text": "Random.rand\nRandom.rand!\nRandom.bitrand\nRandom.randn\nRandom.randn!\nRandom.randexp\nRandom.randexp!\nRandom.randstring"
+},
+
+{
+    "location": "stdlib/Random/#Random.randsubseq",
+    "page": "Random Numbers",
+    "title": "Random.randsubseq",
+    "category": "function",
+    "text": "randsubseq(A, p) -> Vector\n\nReturn a vector consisting of a random subsequence of the given array A, where each element of A is included (in order) with independent probability p. (Complexity is linear in p*length(A), so this function is efficient even if p is small and A is large.) Technically, this process is known as \"Bernoulli sampling\" of A.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randsubseq!",
+    "page": "Random Numbers",
+    "title": "Random.randsubseq!",
+    "category": "function",
+    "text": "randsubseq!(S, A, p)\n\nLike randsubseq, but the results are stored in S (which is resized as needed).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randperm",
+    "page": "Random Numbers",
+    "title": "Random.randperm",
+    "category": "function",
+    "text": "randperm([rng=GLOBAL_RNG,] n::Integer)\n\nConstruct a random permutation of length n. The optional rng argument specifies a random number generator (see Random Numbers). To randomly permute an arbitrary vector, see shuffle or shuffle!.\n\nExamples\n\njulia> randperm(MersenneTwister(1234), 4)\n4-element Array{Int64,1}:\n 2\n 1\n 4\n 3\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randperm!",
+    "page": "Random Numbers",
+    "title": "Random.randperm!",
+    "category": "function",
+    "text": "randperm!([rng=GLOBAL_RNG,] A::Array{<:Integer})\n\nConstruct in A a random permutation of length length(A). The optional rng argument specifies a random number generator (see Random Numbers). To randomly permute an arbitrary vector, see shuffle or shuffle!.\n\nExamples\n\njulia> randperm!(MersenneTwister(1234), Vector{Int}(undef, 4))\n4-element Array{Int64,1}:\n 2\n 1\n 4\n 3\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randcycle",
+    "page": "Random Numbers",
+    "title": "Random.randcycle",
+    "category": "function",
+    "text": "randcycle([rng=GLOBAL_RNG,] n::Integer)\n\nConstruct a random cyclic permutation of length n. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> randcycle(MersenneTwister(1234), 6)\n6-element Array{Int64,1}:\n 3\n 5\n 4\n 6\n 1\n 2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.randcycle!",
+    "page": "Random Numbers",
+    "title": "Random.randcycle!",
+    "category": "function",
+    "text": "randcycle!([rng=GLOBAL_RNG,] A::Array{<:Integer})\n\nConstruct in A a random cyclic permutation of length length(A). The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> randcycle!(MersenneTwister(1234), Vector{Int}(undef, 6))\n6-element Array{Int64,1}:\n 3\n 5\n 4\n 6\n 1\n 2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.shuffle",
+    "page": "Random Numbers",
+    "title": "Random.shuffle",
+    "category": "function",
+    "text": "shuffle([rng=GLOBAL_RNG,] v::AbstractArray)\n\nReturn a randomly permuted copy of v. The optional rng argument specifies a random number generator (see Random Numbers). To permute v in-place, see shuffle!. To obtain randomly permuted indices, see randperm.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> shuffle(rng, Vector(1:10))\n10-element Array{Int64,1}:\n  6\n  1\n 10\n  2\n  3\n  9\n  5\n  7\n  4\n  8\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.shuffle!",
+    "page": "Random Numbers",
+    "title": "Random.shuffle!",
+    "category": "function",
+    "text": "shuffle!([rng=GLOBAL_RNG,] v::AbstractArray)\n\nIn-place version of shuffle: randomly permute v in-place, optionally supplying the random-number generator rng.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> shuffle!(rng, Vector(1:16))\n16-element Array{Int64,1}:\n  2\n 15\n  5\n 14\n  1\n  9\n 10\n  6\n 11\n  3\n 16\n  7\n  4\n 12\n  8\n 13\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Subsequences,-permutations-and-shuffling-1",
+    "page": "Random Numbers",
+    "title": "Subsequences, permutations and shuffling",
+    "category": "section",
+    "text": "Random.randsubseq\nRandom.randsubseq!\nRandom.randperm\nRandom.randperm!\nRandom.randcycle\nRandom.randcycle!\nRandom.shuffle\nRandom.shuffle!"
+},
+
+{
+    "location": "stdlib/Random/#Random.seed!",
+    "page": "Random Numbers",
+    "title": "Random.seed!",
+    "category": "function",
+    "text": "seed!([rng=GLOBAL_RNG], seed) -> rng\nseed!([rng=GLOBAL_RNG]) -> rng\n\nReseed the random number generator: rng will give a reproducible sequence of numbers if and only if a seed is provided. Some RNGs don\'t accept a seed, like RandomDevice. After the call to seed!, rng is equivalent to a newly created object initialized with the same seed.\n\nExamples\n\njulia> Random.seed!(1234);\n\njulia> x1 = rand(2)\n2-element Array{Float64,1}:\n 0.590845\n 0.766797\n\njulia> Random.seed!(1234);\n\njulia> x2 = rand(2)\n2-element Array{Float64,1}:\n 0.590845\n 0.766797\n\njulia> x1 == x2\ntrue\n\njulia> rng = MersenneTwister(1234); rand(rng, 2) == x1\ntrue\n\njulia> MersenneTwister(1) == Random.seed!(rng, 1)\ntrue\n\njulia> rand(Random.seed!(rng), Bool) # not reproducible\ntrue\n\njulia> rand(Random.seed!(rng), Bool)\nfalse\n\njulia> rand(MersenneTwister(), Bool) # not reproducible either\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.MersenneTwister",
+    "page": "Random Numbers",
+    "title": "Random.MersenneTwister",
+    "category": "type",
+    "text": "MersenneTwister(seed)\nMersenneTwister()\n\nCreate a MersenneTwister RNG object. Different RNG objects can have their own seeds, which may be useful for generating different streams of random numbers. The seed may be a non-negative integer or a vector of UInt32 integers. If no seed is provided, a randomly generated one is created (using entropy from the system). See the seed! function for reseeding an already existing MersenneTwister object.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> x1 = rand(rng, 2)\n2-element Array{Float64,1}:\n 0.5908446386657102\n 0.7667970365022592\n\njulia> rng = MersenneTwister(1234);\n\njulia> x2 = rand(rng, 2)\n2-element Array{Float64,1}:\n 0.5908446386657102\n 0.7667970365022592\n\njulia> x1 == x2\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Random.RandomDevice",
+    "page": "Random Numbers",
+    "title": "Random.RandomDevice",
+    "category": "type",
+    "text": "RandomDevice()\n\nCreate a RandomDevice RNG object. Two such objects will always generate different streams of random numbers. The entropy is obtained from the operating system.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Random/#Generators-(creation-and-seeding)-1",
+    "page": "Random Numbers",
+    "title": "Generators (creation and seeding)",
+    "category": "section",
+    "text": "Random.seed!\nRandom.MersenneTwister\nRandom.RandomDevice"
+},
+
+{
+    "location": "stdlib/Random/#Hooking-into-the-Random-API-1",
+    "page": "Random Numbers",
+    "title": "Hooking into the Random API",
+    "category": "section",
+    "text": "There are two mostly orthogonal ways to extend Random functionalities:generating random values of custom types\ncreating new generatorsThe API for 1) is quite functional, but is relatively recent so it may still have to evolve in subsequent releases of the Random module. For example, it\'s typically sufficient to implement one rand method in order to have all other usual methods work automatically.The API for 2) is still rudimentary, and may require more work than strictly necessary from the implementor, in order to support usual types of generated values."
+},
+
+{
+    "location": "stdlib/Random/#Generating-random-values-of-custom-types-1",
+    "page": "Random Numbers",
+    "title": "Generating random values of custom types",
+    "category": "section",
+    "text": "There are two categories: generating values from a type (e.g. rand(Int)), or from a collection (e.g. rand(1:3)). The simple cases are explained first, and more advanced usage is presented later. We assume here that the choice of algorithm is independent of the RNG, so we use AbstractRNG in our signatures."
+},
+
+{
+    "location": "stdlib/Random/#Generating-values-from-a-type-1",
+    "page": "Random Numbers",
+    "title": "Generating values from a type",
+    "category": "section",
+    "text": "Given a type T, it\'s currently assumed that if rand(T) is defined, an object of type T will be produced. In order to define random generation of values of type T, the following method can be defined: rand(rng::AbstractRNG, ::Random.SamplerType{T}) (this should return what rand(rng, T) is expected to return).Let\'s take the following example: we implement a Die type, with a variable number n of sides, numbered from 1 to n. We want rand(Die) to produce a die with a random number of up to 20 sides (and at least 4):struct Die\n    nsides::Int # number of sides\nend\n\nRandom.rand(rng::AbstractRNG, ::Random.SamplerType{Die}) = Die(rand(rng, 4:20))\n\n# output\nScalar and array methods for Die now work as expected:julia> rand(Die)\nDie(18)\n\njulia> rand(MersenneTwister(0), Die)\nDie(4)\n\njulia> rand(Die, 3)\n3-element Array{Die,1}:\n Die(6)\n Die(11)\n Die(5)\n\njulia> a = Vector{Die}(undef, 3); rand!(a)\n3-element Array{Die,1}:\n Die(18)\n Die(6)\n Die(8)"
+},
+
+{
+    "location": "stdlib/Random/#Generating-values-from-a-collection-1",
+    "page": "Random Numbers",
+    "title": "Generating values from a collection",
+    "category": "section",
+    "text": "Given a collection type S, it\'s currently assumed that if rand(::S) is defined, an object of type eltype(S) will be produced. In order to define random generation out of objects of type S, the following method can be defined: rand(rng::AbstractRNG, sp::Random.SamplerTrivial{S}). Here, sp simply wraps an object of type S, which can be accessed via sp[]. Continuing the Die example, we want now to define rand(d::Die) to produce an Int corresponding to one of d\'s sides:julia> Random.rand(rng::AbstractRNG, d::Random.SamplerTrivial{Die}) = rand(rng, 1:d[].nsides);\n\njulia> rand(Die(4))\n3\n\njulia> rand(Die(4), 3)\n3-element Array{Any,1}:\n 3\n 4\n 2In the last example, a Vector{Any} is produced; the reason is that eltype(Die) == Any. The remedy is to define Base.eltype(::Type{Die}) = Int."
+},
+
+{
+    "location": "stdlib/Random/#Generating-values-for-an-AbstractFloat-type-1",
+    "page": "Random Numbers",
+    "title": "Generating values for an AbstractFloat type",
+    "category": "section",
+    "text": "AbstractFloat types are special-cased, because by default random values are not produced in the whole type domain, but rather in [0,1). The following method should be implemented for T <: AbstractFloat: Random.rand(::AbstractRNG, ::Random.SamplerTrivial{Random.CloseOpen01{T}})"
+},
+
+{
+    "location": "stdlib/Random/#Optimizing-generation-with-cached-computation-between-calls-1",
+    "page": "Random Numbers",
+    "title": "Optimizing generation with cached computation between calls",
+    "category": "section",
+    "text": "When repeatedly generating random values (with the same rand parameters), it happens for some types that the result of a computation is used for each call. In this case, the computation can be decoupled from actually generating the values. This is the case for example with the default implementation for AbstractArray. Assume that rand(rng, 1:20) has to be called repeatedly in a loop: the way to take advantage of this decoupling is as follows:rng = MersenneTwister()\nsp = Random.Sampler(rng, 1:20) # or Random.Sampler(MersenneTwister,1:20)\nfor x in X\n    n = rand(rng, sp) # similar to n = rand(rng, 1:20)\n    # use n\nendThis mechanism is of course used by the default implementation of random array generation (like in rand(1:20, 10)). In order to implement this decoupling for a custom type, a helper type can be used. Going back to our Die example: rand(::Die) uses random generation from a range, so there is an opportunity for this optimization:import Random: Sampler, rand\n\nstruct SamplerDie <: Sampler{Int} # generates values of type Int\n    die::Die\n    sp::Sampler{Int} # this is an abstract type, so this could be improved\nend\n\nSampler(RNG::Type{<:AbstractRNG}, die::Die, r::Random.Repetition) =\n    SamplerDie(die, Sampler(RNG, 1:die.nsides, r))\n# the `r` parameter will be explained later on\n\nrand(rng::AbstractRNG, sp::SamplerDie) = rand(rng, sp.sp)It\'s now possible to get a sampler with sp = Sampler(rng, die), and use sp instead of die in any rand call involving rng. In the simplistic example above, die doesn\'t need to be stored in SamplerDie but this is often the case in practice.This pattern is so frequent that a helper type named Random.SamplerSimple is available, saving us the definition of SamplerDie: we could have implemented our decoupling with:Sampler(RNG::Type{<:AbstractRNG}, die::Die, r::Random.Repetition) =\n    SamplerSimple(die, Sampler(RNG, 1:die.nsides, r))\n\nrand(rng::AbstractRNG, sp::SamplerSimple{Die}) = rand(rng, sp.data)Here, sp.data refers to the second parameter in the call to the SamplerSimple constructor (in this case equal to Sampler(rng, 1:die.nsides, r)), while the Die object can be accessed via sp[].Another helper type is currently available for other cases, Random.SamplerTag, but is considered as internal API, and can break at any time without proper deprecations."
+},
+
+{
+    "location": "stdlib/Random/#Using-distinct-algorithms-for-scalar-or-array-generation-1",
+    "page": "Random Numbers",
+    "title": "Using distinct algorithms for scalar or array generation",
+    "category": "section",
+    "text": "In some cases, whether one wants to generate only a handful of values or a large number of values will have an impact on the choice of algorithm. This is handled with the third parameter of the Sampler constructor. Let\'s assume we defined two helper types for Die, say SamplerDie1 which should be used to generate only few random values, and SamplerDieMany for many values. We can use those types as follows:Sampler(RNG::Type{<:AbstractRNG}, die::Die, ::Val{1}) = SamplerDie1(...)\nSampler(RNG::Type{<:AbstractRNG}, die::Die, ::Val{Inf}) = SamplerDieMany(...)Of course, rand must also be defined on those types (i.e. rand(::AbstractRNG, ::SamplerDie1) and rand(::AbstractRNG, ::SamplerDieMany)).Note: Sampler(rng, x) is simply a shorthand for Sampler(rng, x, Val(Inf)), and Random.Repetition is an alias for Union{Val{1}, Val{Inf}}."
+},
+
+{
+    "location": "stdlib/Random/#Creating-new-generators-1",
+    "page": "Random Numbers",
+    "title": "Creating new generators",
+    "category": "section",
+    "text": "The API is not clearly defined yet, but as a rule of thumb:any rand method producing \"basic\" types (isbitstype integer and floating types in Base) should be defined for this specific RNG, if they are needed;\nother documented rand methods accepting an AbstractRNG should work out of the box, (provided the methods from 1) what are relied on are implemented), but can of course be specialized for this RNG if there is room for optimization.Concerning 1), a rand method may happen to work automatically, but it\'s not officially supported and may break without warnings in a subsequent release.To define a new rand method for an hypothetical MyRNG generator, and a value specification s (e.g. s == Int, or s == 1:10) of type S==typeof(s) or S==Type{s} if s is a type, the same two methods as we saw before must be defined:Sampler(::Type{MyRNG}, ::S, ::Repetition), which returns an object of type say SamplerS\nrand(rng::MyRNG, sp::SamplerS)It can happen that Sampler(rng::AbstractRNG, ::S, ::Repetition) is already defined in the Random module. It would then be possible to skip step 1) in practice (if one wants to specialize generation for this particular RNG type), but the corresponding SamplerS type is considered as internal detail, and may be changed without warning."
+},
+
+{
+    "location": "stdlib/Random/#Specializing-array-generation-1",
+    "page": "Random Numbers",
+    "title": "Specializing array generation",
+    "category": "section",
+    "text": "In some cases, for a given RNG type, generating an array of random values can be more efficient with a specialized method than by merely using the decoupling technique explained before. This is for example the case for MersenneTwister, which natively writes random values in an array.To implement this specialization for MyRNG and for a specification s, producing elements of type S, the following method can be defined: rand!(rng::MyRNG, a::AbstractArray{S}, ::SamplerS), where SamplerS is the type of the sampler returned by Sampler(MyRNG, s, Val(Inf)). Instead of AbstractArray, it\'s possible to implement the functionality only for a subtype, e.g. Array{S}. The non-mutating array method of rand will automatically call this specialization internally.DocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/SHA/#",
+    "page": "SHA",
+    "title": "SHA",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/SHA/#SHA-1",
+    "page": "SHA",
+    "title": "SHA",
+    "category": "section",
+    "text": "Usage is very straightforward:julia> using SHA\n\njulia> bytes2hex(sha256(\"test\"))\n\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\"Each exported function (at the time of this writing, SHA-1, SHA-2 224, 256, 384 and 512, and SHA-3 224, 256, 384 and 512 functions are implemented) takes in either an Array{UInt8}, a ByteString or an IO object.  This makes it trivial to checksum a file:shell> cat /tmp/test.txt\ntest\njulia> using SHA\n\njulia> open(\"/tmp/test.txt\") do f\n           sha2_256(f)\n       end\n32-element Array{UInt8,1}:\n 0x9f\n 0x86\n 0xd0\n 0x81\n 0x88\n 0x4c\n 0x7d\n 0x65\n    ⋮\n 0x5d\n 0x6c\n 0x15\n 0xb0\n 0xf0\n 0x0a\n 0x08Note the lack of a newline at the end of /tmp/text.txt.  Julia automatically inserts a newline before the julia> prompt.Due to the colloquial usage of sha256 to refer to sha2_256, convenience functions are provided, mapping shaxxx() function calls to sha2_xxx().  For SHA-3, no such colloquialisms exist and the user must use the full sha3_xxx() names.shaxxx() takes AbstractString and array-like objects (NTuple and Array) with elements of type UInt8.Note that, at the time of this writing, the SHA3 code is not optimized, and as such is roughly an order of magnitude slower than SHA2."
+},
+
+{
+    "location": "stdlib/Serialization/#",
+    "page": "Serialization",
+    "title": "Serialization",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Serialization/#Serialization.serialize",
+    "page": "Serialization",
+    "title": "Serialization.serialize",
+    "category": "function",
+    "text": "serialize(stream::IO, value)\n\nWrite an arbitrary value to a stream in an opaque format, such that it can be read back by deserialize. The read-back value will be as identical as possible to the original. In general, this process will not work if the reading and writing are done by different versions of Julia, or an instance of Julia with a different system image. Ptr values are serialized as all-zero bit patterns (NULL).\n\nAn 8-byte identifying header is written to the stream first. To avoid writing the header, construct a Serializer and use it as the first argument to serialize instead. See also Serialization.writeheader.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Serialization/#Serialization.deserialize",
+    "page": "Serialization",
+    "title": "Serialization.deserialize",
+    "category": "function",
+    "text": "deserialize(stream)\n\nRead a value written by serialize. deserialize assumes the binary data read from stream is correct and has been serialized by a compatible implementation of serialize. It has been designed with simplicity and performance as a goal and does not validate the data read. Malformed data can result in process termination. The caller has to ensure the integrity and correctness of data read from stream.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Serialization/#Serialization.writeheader",
+    "page": "Serialization",
+    "title": "Serialization.writeheader",
+    "category": "function",
+    "text": "Serialization.writeheader(s::AbstractSerializer)\n\nWrite an identifying header to the specified serializer. The header consists of 8 bytes as follows:\n\nOffset Description\n0 tag byte (0x37)\n1-2 signature bytes \"JL\"\n3 protocol version\n4 bits 0-1: endianness: 0 = little, 1 = big\n4 bits 2-3: platform: 0 = 32-bit, 1 = 64-bit\n5-7 reserved\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Serialization/#Serialization-1",
+    "page": "Serialization",
+    "title": "Serialization",
+    "category": "section",
+    "text": "Serialization.serialize\nSerialization.deserialize\nSerialization.writeheader"
+},
+
+{
+    "location": "stdlib/SharedArrays/#",
+    "page": "Shared Arrays",
+    "title": "Shared Arrays",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/SharedArrays/#SharedArrays.SharedArray",
+    "page": "Shared Arrays",
+    "title": "SharedArrays.SharedArray",
+    "category": "type",
+    "text": "SharedArray{T}(dims::NTuple; init=false, pids=Int[])\nSharedArray{T,N}(...)\n\nConstruct a SharedArray of a bits type T and size dims across the processes specified by pids - all of which have to be on the same host.  If N is specified by calling SharedArray{T,N}(dims), then N must match the length of dims.\n\nIf pids is left unspecified, the shared array will be mapped across all processes on the current host, including the master. But, localindices and indexpids will only refer to worker processes. This facilitates work distribution code to use workers for actual computation with the master process acting as a driver.\n\nIf an init function of the type initfn(S::SharedArray) is specified, it is called on all the participating workers.\n\nThe shared array is valid as long as a reference to the SharedArray object exists on the node which created the mapping.\n\nSharedArray{T}(filename::AbstractString, dims::NTuple, [offset=0]; mode=nothing, init=false, pids=Int[])\nSharedArray{T,N}(...)\n\nConstruct a SharedArray backed by the file filename, with element type T (must be a bits type) and size dims, across the processes specified by pids - all of which have to be on the same host. This file is mmapped into the host memory, with the following consequences:\n\nThe array data must be represented in binary format (e.g., an ASCII format like CSV cannot be supported)\nAny changes you make to the array values (e.g., A[3] = 0) will also change the values on disk\n\nIf pids is left unspecified, the shared array will be mapped across all processes on the current host, including the master. But, localindices and indexpids will only refer to worker processes. This facilitates work distribution code to use workers for actual computation with the master process acting as a driver.\n\nmode must be one of \"r\", \"r+\", \"w+\", or \"a+\", and defaults to \"r+\" if the file specified by filename already exists, or \"w+\" if not. If an init function of the type initfn(S::SharedArray) is specified, it is called on all the participating workers. You cannot specify an init function if the file is not writable.\n\noffset allows you to skip the specified number of bytes at the beginning of the file.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SharedArrays/#Distributed.procs-Tuple{SharedArray}",
+    "page": "Shared Arrays",
+    "title": "Distributed.procs",
+    "category": "method",
+    "text": "procs(S::SharedArray)\n\nGet the vector of processes mapping the shared array.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SharedArrays/#SharedArrays.sdata",
+    "page": "Shared Arrays",
+    "title": "SharedArrays.sdata",
+    "category": "function",
+    "text": "sdata(S::SharedArray)\n\nReturns the actual Array object backing S.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SharedArrays/#SharedArrays.indexpids",
+    "page": "Shared Arrays",
+    "title": "SharedArrays.indexpids",
+    "category": "function",
+    "text": "indexpids(S::SharedArray)\n\nReturns the current worker\'s index in the list of workers mapping the SharedArray (i.e. in the same list returned by procs(S)), or 0 if the SharedArray is not mapped locally.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SharedArrays/#SharedArrays.localindices",
+    "page": "Shared Arrays",
+    "title": "SharedArrays.localindices",
+    "category": "function",
+    "text": "localindices(S::SharedArray)\n\nReturns a range describing the \"default\" indices to be handled by the current process.  This range should be interpreted in the sense of linear indexing, i.e., as a sub-range of 1:length(S).  In multi-process contexts, returns an empty range in the parent process (or any process for which indexpids returns 0).\n\nIt\'s worth emphasizing that localindices exists purely as a convenience, and you can partition work on the array among workers any way you wish. For a SharedArray, all indices should be equally fast for each worker process.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SharedArrays/#Shared-Arrays-1",
+    "page": "Shared Arrays",
+    "title": "Shared Arrays",
+    "category": "section",
+    "text": "SharedArrays.SharedArray\nSharedArrays.procs(::SharedArray)\nSharedArrays.sdata\nSharedArrays.indexpids\nSharedArrays.localindices"
+},
+
+{
+    "location": "stdlib/Sockets/#",
+    "page": "Sockets",
+    "title": "Sockets",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.connect-Tuple{TCPSocket,Integer}",
+    "page": "Sockets",
+    "title": "Sockets.connect",
+    "category": "method",
+    "text": "connect([host], port::Integer) -> TCPSocket\n\nConnect to the host host on port port.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.connect-Tuple{AbstractString}",
+    "page": "Sockets",
+    "title": "Sockets.connect",
+    "category": "method",
+    "text": "connect(path::AbstractString) -> PipeEndpoint\n\nConnect to the named pipe / UNIX domain socket at path.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.listen-Tuple{Any}",
+    "page": "Sockets",
+    "title": "Sockets.listen",
+    "category": "method",
+    "text": "listen([addr, ]port::Integer; backlog::Integer=BACKLOG_DEFAULT) -> TCPServer\n\nListen on port on the address specified by addr. By default this listens on localhost only. To listen on all interfaces pass IPv4(0) or IPv6(0) as appropriate. backlog determines how many connections can be pending (not having called accept) before the server will begin to reject them. The default value of backlog is 511.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.listen-Tuple{AbstractString}",
+    "page": "Sockets",
+    "title": "Sockets.listen",
+    "category": "method",
+    "text": "listen(path::AbstractString) -> PipeServer\n\nCreate and listen on a named pipe / UNIX domain socket.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.getaddrinfo",
+    "page": "Sockets",
+    "title": "Sockets.getaddrinfo",
+    "category": "function",
+    "text": "getalladdrinfo(host::AbstractString, IPAddr=IPv4) -> IPAddr\n\nGets the first IP address of the host of the specified IPAddr type. Uses the operating system\'s underlying getaddrinfo implementation, which may do a DNS lookup.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.getipaddr",
+    "page": "Sockets",
+    "title": "Sockets.getipaddr",
+    "category": "function",
+    "text": "getipaddr() -> IPAddr\n\nGet the IP address of the local machine.\n\nExamples\n\njulia> getipaddr()\nip\"192.168.1.28\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.getalladdrinfo",
+    "page": "Sockets",
+    "title": "Sockets.getalladdrinfo",
+    "category": "function",
+    "text": "getalladdrinfo(host::AbstractString) -> Vector{IPAddr}\n\nGets all of the IP addresses of the host. Uses the operating system\'s underlying getaddrinfo implementation, which may do a DNS lookup.\n\nExample\n\njulia> getalladdrinfo(\"google.com\")\n2-element Array{IPAddr,1}:\n ip\"172.217.6.174\"\n ip\"2607:f8b0:4000:804::200e\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.getnameinfo",
+    "page": "Sockets",
+    "title": "Sockets.getnameinfo",
+    "category": "function",
+    "text": "getnameinfo(host::IPAddr) -> String\n\nPerforms a reverse-lookup for IP address to return a hostname and service using the operating system\'s underlying getnameinfo implementation.\n\nExamples\n\njulia> getnameinfo(Sockets.IPv4(\"8.8.8.8\"))\n\"google-public-dns-a.google.com\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.getsockname",
+    "page": "Sockets",
+    "title": "Sockets.getsockname",
+    "category": "function",
+    "text": "getsockname(sock::Union{TCPServer, TCPSocket}) -> (IPAddr, UInt16)\n\nGet the IP address and port that the given socket is bound to.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.getpeername",
+    "page": "Sockets",
+    "title": "Sockets.getpeername",
+    "category": "function",
+    "text": "getpeername(sock::TCPSocket) -> (IPAddr, UInt16)\n\nGet the IP address and port of the remote endpoint that the given socket is connected to. Valid only for connected TCP sockets.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.IPv4",
+    "page": "Sockets",
+    "title": "Sockets.IPv4",
+    "category": "type",
+    "text": "IPv4(host::Integer) -> IPv4\n\nReturns an IPv4 object from ip address host formatted as an Integer.\n\njulia> IPv4(3223256218)\nip\"192.30.252.154\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.IPv6",
+    "page": "Sockets",
+    "title": "Sockets.IPv6",
+    "category": "type",
+    "text": "IPv6(host::Integer) -> IPv6\n\nReturns an IPv6 object from ip address host formatted as an Integer.\n\njulia> IPv6(3223256218)\nip\"::c01e:fc9a\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.TCPSocket",
+    "page": "Sockets",
+    "title": "Sockets.TCPSocket",
+    "category": "type",
+    "text": "TCPSocket(; delay=true)\n\nOpen a TCP socket using libuv. If delay is true, libuv delays creation of the socket\'s file descriptor till the first bind call. TCPSocket has various fields to denote the state of the socket as well as its send/receive buffers.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.UDPSocket",
+    "page": "Sockets",
+    "title": "Sockets.UDPSocket",
+    "category": "type",
+    "text": "UDPSocket()\n\nOpen a UDP socket using libuv. UDPSocket has various fields to denote the state of the socket.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.accept",
+    "page": "Sockets",
+    "title": "Sockets.accept",
+    "category": "function",
+    "text": "accept(server[,client])\n\nAccepts a connection on the given server and returns a connection to the client. An uninitialized client stream may be provided, in which case it will be used instead of creating a new stream.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.listenany",
+    "page": "Sockets",
+    "title": "Sockets.listenany",
+    "category": "function",
+    "text": "listenany([host::IPAddr,] port_hint) -> (UInt16, TCPServer)\n\nCreate a TCPServer on any port, using hint as a starting point. Returns a tuple of the actual port that the server was created on and the server itself.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Base.bind",
+    "page": "Sockets",
+    "title": "Base.bind",
+    "category": "function",
+    "text": "bind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\nbind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.send",
+    "page": "Sockets",
+    "title": "Sockets.send",
+    "category": "function",
+    "text": "send(socket::UDPSocket, host, port::Integer, msg)\n\nSend msg over socket to host:port.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.recv",
+    "page": "Sockets",
+    "title": "Sockets.recv",
+    "category": "function",
+    "text": "recv(socket::UDPSocket)\n\nRead a UDP packet from the specified socket, and return the bytes received. This call blocks.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.recvfrom",
+    "page": "Sockets",
+    "title": "Sockets.recvfrom",
+    "category": "function",
+    "text": "recvfrom(socket::UDPSocket) -> (address, data)\n\nRead a UDP packet from the specified socket, returning a tuple of (address, data), where address will be either IPv4 or IPv6 as appropriate.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets.setopt",
+    "page": "Sockets",
+    "title": "Sockets.setopt",
+    "category": "function",
+    "text": "setopt(sock::UDPSocket; multicast_loop = nothing, multicast_ttl=nothing, enable_broadcast=nothing, ttl=nothing)\n\nSet UDP socket options.\n\nmulticast_loop: loopback for multicast packets (default: true).\nmulticast_ttl: TTL for multicast packets (default: nothing).\nenable_broadcast: flag must be set to true if socket will be used for broadcast messages, or else the UDP system will return an access error (default: false).\nttl: Time-to-live of packets sent on the socket (default: nothing).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Sockets/#Sockets-1",
+    "page": "Sockets",
+    "title": "Sockets",
+    "category": "section",
+    "text": "DocTestSetup = :(using Sockets)Sockets.connect(::TCPSocket, ::Integer)\nSockets.connect(::AbstractString)\nSockets.listen(::Any)\nSockets.listen(::AbstractString)\nSockets.getaddrinfo\nSockets.getipaddr\nSockets.getalladdrinfo\nSockets.getnameinfo\nSockets.getsockname\nSockets.getpeername\nSockets.IPv4\nSockets.IPv6\nSockets.TCPSocket\nSockets.UDPSocket\nSockets.accept\nSockets.listenany\nSockets.bind\nSockets.send\nSockets.recv\nSockets.recvfrom\nSockets.setoptDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/SparseArrays/#",
+    "page": "Sparse Arrays",
+    "title": "Sparse Arrays",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/SparseArrays/#Sparse-Arrays-1",
+    "page": "Sparse Arrays",
+    "title": "Sparse Arrays",
+    "category": "section",
+    "text": "DocTestSetup = :(using SparseArrays, LinearAlgebra)Julia has support for sparse vectors and sparse matrices in the SparseArrays stdlib module. Sparse arrays are arrays that contain enough zeros that storing them in a special data structure leads to savings in space and execution time, compared to dense arrays."
+},
+
+{
+    "location": "stdlib/SparseArrays/#man-csc-1",
+    "page": "Sparse Arrays",
+    "title": "Compressed Sparse Column (CSC) Sparse Matrix Storage",
+    "category": "section",
+    "text": "In Julia, sparse matrices are stored in the Compressed Sparse Column (CSC) format. Julia sparse matrices have the type SparseMatrixCSC{Tv,Ti}, where Tv is the type of the stored values, and Ti is the integer type for storing column pointers and row indices. The internal representation of SparseMatrixCSC is as follows:struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}\n    m::Int                  # Number of rows\n    n::Int                  # Number of columns\n    colptr::Vector{Ti}      # Column i is in colptr[i]:(colptr[i+1]-1)\n    rowval::Vector{Ti}      # Row indices of stored values\n    nzval::Vector{Tv}       # Stored values, typically nonzeros\nendThe compressed sparse column storage makes it easy and quick to access the elements in the column of a sparse matrix, whereas accessing the sparse matrix by rows is considerably slower. Operations such as insertion of previously unstored entries one at a time in the CSC structure tend to be slow. This is because all elements of the sparse matrix that are beyond the point of insertion have to be moved one place over.All operations on sparse matrices are carefully implemented to exploit the CSC data structure for performance, and to avoid expensive operations.If you have data in CSC format from a different application or library, and wish to import it in Julia, make sure that you use 1-based indexing. The row indices in every column need to be sorted. If your SparseMatrixCSC object contains unsorted row indices, one quick way to sort them is by doing a double transpose.In some applications, it is convenient to store explicit zero values in a SparseMatrixCSC. These are accepted by functions in Base (but there is no guarantee that they will be preserved in mutating operations). Such explicitly stored zeros are treated as structural nonzeros by many routines. The nnz function returns the number of elements explicitly stored in the sparse data structure, including structural nonzeros. In order to count the exact number of numerical nonzeros, use count(!iszero, x), which inspects every stored element of a sparse matrix. dropzeros, and the in-place dropzeros!, can be used to remove stored zeros from the sparse matrix.julia> A = sparse([1, 2, 3], [1, 2, 3], [0, 2, 0])\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  0\n  [2, 2]  =  2\n  [3, 3]  =  0\n\njulia> dropzeros(A)\n3×3 SparseMatrixCSC{Int64,Int64} with 1 stored entry:\n  [2, 2]  =  2"
+},
+
+{
+    "location": "stdlib/SparseArrays/#Sparse-Vector-Storage-1",
+    "page": "Sparse Arrays",
+    "title": "Sparse Vector Storage",
+    "category": "section",
+    "text": "Sparse vectors are stored in a close analog to compressed sparse column format for sparse matrices. In Julia, sparse vectors have the type SparseVector{Tv,Ti} where Tv is the type of the stored values and Ti the integer type for the indices. The internal representation is as follows:struct SparseVector{Tv,Ti<:Integer} <: AbstractSparseVector{Tv,Ti}\n    n::Int              # Length of the sparse vector\n    nzind::Vector{Ti}   # Indices of stored values\n    nzval::Vector{Tv}   # Stored values, typically nonzeros\nendAs for SparseMatrixCSC, the SparseVector type can also contain explicitly stored zeros. (See Sparse Matrix Storage.)."
+},
+
+{
+    "location": "stdlib/SparseArrays/#Sparse-Vector-and-Matrix-Constructors-1",
+    "page": "Sparse Arrays",
+    "title": "Sparse Vector and Matrix Constructors",
+    "category": "section",
+    "text": "The simplest way to create a sparse array is to use a function equivalent to the zeros function that Julia provides for working with dense arrays. To produce a sparse array instead, you can use the same name with an sp prefix:julia> spzeros(3)\n3-element SparseVector{Float64,Int64} with 0 stored entriesThe sparse function is often a handy way to construct sparse arrays. For example, to construct a sparse matrix we can input a vector I of row indices, a vector J of column indices, and a vector V of stored values (this is also known as the COO (coordinate) format). sparse(I,J,V) then constructs a sparse matrix such that S[I[k], J[k]] = V[k]. The equivalent sparse vector constructor is sparsevec, which takes the (row) index vector I and the vector V with the stored values and constructs a sparse vector R such that R[I[k]] = V[k].julia> I = [1, 4, 3, 5]; J = [4, 7, 18, 9]; V = [1, 2, -5, 3];\n\njulia> S = sparse(I,J,V)\n5×18 SparseMatrixCSC{Int64,Int64} with 4 stored entries:\n  [1 ,  4]  =  1\n  [4 ,  7]  =  2\n  [5 ,  9]  =  3\n  [3 , 18]  =  -5\n\njulia> R = sparsevec(I,V)\n5-element SparseVector{Int64,Int64} with 4 stored entries:\n  [1]  =  1\n  [3]  =  -5\n  [4]  =  2\n  [5]  =  3The inverse of the sparse and sparsevec functions is findnz, which retrieves the inputs used to create the sparse array. findall(!iszero, x) returns the cartesian indices of non-zero entries in x (including stored entries equal to zero).julia> findnz(S)\n([1, 4, 5, 3], [4, 7, 9, 18], [1, 2, 3, -5])\n\njulia> findall(!iszero, S)\n4-element Array{CartesianIndex{2},1}:\n CartesianIndex(1, 4)\n CartesianIndex(4, 7)\n CartesianIndex(5, 9)\n CartesianIndex(3, 18)\n\njulia> findnz(R)\n([1, 3, 4, 5], [1, -5, 2, 3])\n\njulia> findall(!iszero, R)\n4-element Array{Int64,1}:\n 1\n 3\n 4\n 5Another way to create a sparse array is to convert a dense array into a sparse array using the sparse function:julia> sparse(Matrix(1.0I, 5, 5))\n5×5 SparseMatrixCSC{Float64,Int64} with 5 stored entries:\n  [1, 1]  =  1.0\n  [2, 2]  =  1.0\n  [3, 3]  =  1.0\n  [4, 4]  =  1.0\n  [5, 5]  =  1.0\n\njulia> sparse([1.0, 0.0, 1.0])\n3-element SparseVector{Float64,Int64} with 2 stored entries:\n  [1]  =  1.0\n  [3]  =  1.0You can go in the other direction using the Array constructor. The issparse function can be used to query if a matrix is sparse.julia> issparse(spzeros(5))\ntrue"
+},
+
+{
+    "location": "stdlib/SparseArrays/#Sparse-matrix-operations-1",
+    "page": "Sparse Arrays",
+    "title": "Sparse matrix operations",
+    "category": "section",
+    "text": "Arithmetic operations on sparse matrices also work as they do on dense matrices. Indexing of, assignment into, and concatenation of sparse matrices work in the same way as dense matrices. Indexing operations, especially assignment, are expensive, when carried out one element at a time. In many cases it may be better to convert the sparse matrix into (I,J,V) format using findnz, manipulate the values or the structure in the dense vectors (I,J,V), and then reconstruct the sparse matrix."
+},
+
+{
+    "location": "stdlib/SparseArrays/#Correspondence-of-dense-and-sparse-methods-1",
+    "page": "Sparse Arrays",
+    "title": "Correspondence of dense and sparse methods",
+    "category": "section",
+    "text": "The following table gives a correspondence between built-in methods on sparse matrices and their corresponding methods on dense matrix types. In general, methods that generate sparse matrices differ from their dense counterparts in that the resulting matrix follows the same sparsity pattern as a given sparse matrix S, or that the resulting sparse matrix has density d, i.e. each matrix element has a probability d of being non-zero.Details can be found in the Sparse Vectors and Matrices section of the standard library reference.Sparse Dense Description\nspzeros(m,n) zeros(m,n) Creates a m-by-n matrix of zeros. (spzeros(m,n) is empty.)\nsparse(I, n, n) Matrix(I,n,n) Creates a n-by-n identity matrix.\nArray(S) sparse(A) Interconverts between dense and sparse formats.\nsprand(m,n,d) rand(m,n) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed uniformly on the half-open interval 0 1).\nsprandn(m,n,d) randn(m,n) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed according to the standard normal (Gaussian) distribution.\nsprandn(m,n,d,X) randn(m,n,X) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed according to the X distribution. (Requires the Distributions package.)"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.SparseVector",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.SparseVector",
+    "category": "type",
+    "text": "SparseVector{Tv,Ti<:Integer} <: AbstractSparseVector{Tv,Ti}\n\nVector type for storing sparse vectors.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.SparseMatrixCSC",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.SparseMatrixCSC",
+    "category": "type",
+    "text": "SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}\n\nMatrix type for storing sparse matrices in the Compressed Sparse Column format.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.sparse",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.sparse",
+    "category": "function",
+    "text": "sparse(A)\n\nConvert an AbstractMatrix A into a sparse matrix.\n\nExamples\n\njulia> A = Matrix(1.0I, 3, 3)\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\njulia> sparse(A)\n3×3 SparseMatrixCSC{Float64,Int64} with 3 stored entries:\n  [1, 1]  =  1.0\n  [2, 2]  =  1.0\n  [3, 3]  =  1.0\n\n\n\n\n\nsparse(I, J, V,[ m, n, combine])\n\nCreate a sparse matrix S of dimensions m x n such that S[I[k], J[k]] = V[k]. The combine function is used to combine duplicates. If m and n are not specified, they are set to maximum(I) and maximum(J) respectively. If the combine function is not supplied, combine defaults to + unless the elements of V are Booleans in which case combine defaults to |. All elements of I must satisfy 1 <= I[k] <= m, and all elements of J must satisfy 1 <= J[k] <= n. Numerical zeros in (I, J, V) are retained as structural nonzeros; to drop numerical zeros, use dropzeros!.\n\nFor additional documentation and an expert driver, see Base.SparseArrays.sparse!.\n\nExamples\n\njulia> Is = [1; 2; 3];\n\njulia> Js = [1; 2; 3];\n\njulia> Vs = [1; 2; 3];\n\njulia> sparse(Is, Js, Vs)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  1\n  [2, 2]  =  2\n  [3, 3]  =  3\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.sparsevec",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.sparsevec",
+    "category": "function",
+    "text": "sparsevec(I, V, [m, combine])\n\nCreate a sparse vector S of length m such that S[I[k]] = V[k]. Duplicates are combined using the combine function, which defaults to + if no combine argument is provided, unless the elements of V are Booleans in which case combine defaults to |.\n\nExamples\n\njulia> II = [1, 3, 3, 5]; V = [0.1, 0.2, 0.3, 0.2];\n\njulia> sparsevec(II, V)\n5-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  0.1\n  [3]  =  0.5\n  [5]  =  0.2\n\njulia> sparsevec(II, V, 8, -)\n8-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  0.1\n  [3]  =  -0.1\n  [5]  =  0.2\n\njulia> sparsevec([1, 3, 1, 2, 2], [true, true, false, false, false])\n3-element SparseVector{Bool,Int64} with 3 stored entries:\n  [1]  =  true\n  [2]  =  false\n  [3]  =  true\n\n\n\n\n\nsparsevec(d::Dict, [m])\n\nCreate a sparse vector of length m where the nonzero indices are keys from the dictionary, and the nonzero values are the values from the dictionary.\n\nExamples\n\njulia> sparsevec(Dict(1 => 3, 2 => 2))\n2-element SparseVector{Int64,Int64} with 2 stored entries:\n  [1]  =  3\n  [2]  =  2\n\n\n\n\n\nsparsevec(A)\n\nConvert a vector A into a sparse vector of length m.\n\nExamples\n\njulia> sparsevec([1.0, 2.0, 0.0, 0.0, 3.0, 0.0])\n6-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  1.0\n  [2]  =  2.0\n  [5]  =  3.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.issparse",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.issparse",
+    "category": "function",
+    "text": "issparse(S)\n\nReturns true if S is sparse, and false otherwise.\n\nExamples\n\njulia> sv = sparsevec([1, 4], [2.3, 2.2], 10)\n10-element SparseVector{Float64,Int64} with 2 stored entries:\n  [1 ]  =  2.3\n  [4 ]  =  2.2\n\njulia> issparse(sv)\ntrue\n\njulia> issparse(Array(sv))\nfalse\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.nnz",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.nnz",
+    "category": "function",
+    "text": "nnz(A)\n\nReturns the number of stored (filled) elements in a sparse array.\n\nExamples\n\njulia> A = sparse(2I, 3, 3)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n\njulia> nnz(A)\n3\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.findnz",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.findnz",
+    "category": "function",
+    "text": "findnz(A)\n\nReturn a tuple (I, J, V) where I and J are the row and column indices of the stored (\"structurally non-zero\") values in sparse matrix A, and V is a vector of the values.\n\nExamples\n\njulia> A = sparse([1 2 0; 0 0 3; 0 4 0])\n3×3 SparseMatrixCSC{Int64,Int64} with 4 stored entries:\n  [1, 1]  =  1\n  [1, 2]  =  2\n  [3, 2]  =  4\n  [2, 3]  =  3\n\njulia> findnz(A)\n([1, 1, 3, 2], [1, 2, 2, 3], [1, 2, 4, 3])\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.spzeros",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.spzeros",
+    "category": "function",
+    "text": "spzeros([type,]m[,n])\n\nCreate a sparse vector of length m or sparse matrix of size m x n. This sparse array will not contain any nonzero values. No storage will be allocated for nonzero values during construction. The type defaults to Float64 if not specified.\n\nExamples\n\njulia> spzeros(3, 3)\n3×3 SparseMatrixCSC{Float64,Int64} with 0 stored entries\n\njulia> spzeros(Float32, 4)\n4-element SparseVector{Float32,Int64} with 0 stored entries\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.spdiagm",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.spdiagm",
+    "category": "function",
+    "text": "spdiagm(kv::Pair{<:Integer,<:AbstractVector}...)\n\nConstruct a square sparse diagonal matrix from Pairs of vectors and diagonals. Vector kv.second will be placed on the kv.first diagonal.\n\nExamples\n\njulia> spdiagm(-1 => [1,2,3,4], 1 => [4,3,2,1])\n5×5 SparseMatrixCSC{Int64,Int64} with 8 stored entries:\n  [2, 1]  =  1\n  [1, 2]  =  4\n  [3, 2]  =  2\n  [2, 3]  =  3\n  [4, 3]  =  3\n  [3, 4]  =  2\n  [5, 4]  =  4\n  [4, 5]  =  1\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.blockdiag",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.blockdiag",
+    "category": "function",
+    "text": "blockdiag(A...)\n\nConcatenate matrices block-diagonally. Currently only implemented for sparse matrices.\n\nExamples\n\njulia> blockdiag(sparse(2I, 3, 3), sparse(4I, 2, 2))\n5×5 SparseMatrixCSC{Int64,Int64} with 5 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n  [4, 4]  =  4\n  [5, 5]  =  4\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.sprand",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.sprand",
+    "category": "function",
+    "text": "sprand([rng],[type],m,[n],p::AbstractFloat,[rfn])\n\nCreate a random length m sparse vector or m by n sparse matrix, in which the probability of any element being nonzero is independently given by p (and hence the mean density of nonzeros is also exactly p). Nonzero values are sampled from the distribution specified by rfn and have the type type. The uniform distribution is used in case rfn is not specified. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> sprand(Bool, 2, 2, 0.5)\n2×2 SparseMatrixCSC{Bool,Int64} with 2 stored entries:\n  [1, 1]  =  true\n  [2, 1]  =  true\n\njulia> sprand(Float64, 3, 0.75)\n3-element SparseVector{Float64,Int64} with 1 stored entry:\n  [3]  =  0.298614\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.sprandn",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.sprandn",
+    "category": "function",
+    "text": "sprandn([rng], m[,n],p::AbstractFloat)\n\nCreate a random sparse vector of length m or sparse matrix of size m by n with the specified (independent) probability p of any entry being nonzero, where nonzero values are sampled from the normal distribution. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> sprandn(2, 2, 0.75)\n2×2 SparseMatrixCSC{Float64,Int64} with 2 stored entries:\n  [1, 1]  =  0.586617\n  [1, 2]  =  0.297336\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.nonzeros",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.nonzeros",
+    "category": "function",
+    "text": "nonzeros(A)\n\nReturn a vector of the structural nonzero values in sparse array A. This includes zeros that are explicitly stored in the sparse array. The returned vector points directly to the internal nonzero storage of A, and any modifications to the returned vector will mutate A as well. See rowvals and nzrange.\n\nExamples\n\njulia> A = sparse(2I, 3, 3)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n\njulia> nonzeros(A)\n3-element Array{Int64,1}:\n 2\n 2\n 2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.rowvals",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.rowvals",
+    "category": "function",
+    "text": "rowvals(A::SparseMatrixCSC)\n\nReturn a vector of the row indices of A. Any modifications to the returned vector will mutate A as well. Providing access to how the row indices are stored internally can be useful in conjunction with iterating over structural nonzero values. See also nonzeros and nzrange.\n\nExamples\n\njulia> A = sparse(2I, 3, 3)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n\njulia> rowvals(A)\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.nzrange",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.nzrange",
+    "category": "function",
+    "text": "nzrange(A::SparseMatrixCSC, col::Integer)\n\nReturn the range of indices to the structural nonzero values of a sparse matrix column. In conjunction with nonzeros and rowvals, this allows for convenient iterating over a sparse matrix :\n\nA = sparse(I,J,V)\nrows = rowvals(A)\nvals = nonzeros(A)\nm, n = size(A)\nfor i = 1:n\n   for j in nzrange(A, i)\n      row = rows[j]\n      val = vals[j]\n      # perform sparse wizardry...\n   end\nend\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.dropzeros!",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.dropzeros!",
+    "category": "function",
+    "text": "dropzeros!(A::SparseMatrixCSC; trim::Bool = true)\n\nRemoves stored numerical zeros from A, optionally trimming resulting excess space from A.rowval and A.nzval when trim is true.\n\nFor an out-of-place version, see dropzeros. For algorithmic information, see fkeep!.\n\n\n\n\n\ndropzeros!(x::SparseVector; trim::Bool = true)\n\nRemoves stored numerical zeros from x, optionally trimming resulting excess space from x.nzind and x.nzval when trim is true.\n\nFor an out-of-place version, see dropzeros. For algorithmic information, see fkeep!.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.dropzeros",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.dropzeros",
+    "category": "function",
+    "text": "dropzeros(A::SparseMatrixCSC; trim::Bool = true)\n\nGenerates a copy of A and removes stored numerical zeros from that copy, optionally trimming excess space from the result\'s rowval and nzval arrays when trim is true.\n\nFor an in-place version and algorithmic information, see dropzeros!.\n\nExamples\n\njulia> A = sparse([1, 2, 3], [1, 2, 3], [1.0, 0.0, 1.0])\n3×3 SparseMatrixCSC{Float64,Int64} with 3 stored entries:\n  [1, 1]  =  1.0\n  [2, 2]  =  0.0\n  [3, 3]  =  1.0\n\njulia> dropzeros(A)\n3×3 SparseMatrixCSC{Float64,Int64} with 2 stored entries:\n  [1, 1]  =  1.0\n  [3, 3]  =  1.0\n\n\n\n\n\ndropzeros(x::SparseVector; trim::Bool = true)\n\nGenerates a copy of x and removes numerical zeros from that copy, optionally trimming excess space from the result\'s nzind and nzval arrays when trim is true.\n\nFor an in-place version and algorithmic information, see dropzeros!.\n\nExamples\n\njulia> A = sparsevec([1, 2, 3], [1.0, 0.0, 1.0])\n3-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  1.0\n  [2]  =  0.0\n  [3]  =  1.0\n\njulia> dropzeros(A)\n3-element SparseVector{Float64,Int64} with 2 stored entries:\n  [1]  =  1.0\n  [3]  =  1.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#SparseArrays.permute",
+    "page": "Sparse Arrays",
+    "title": "SparseArrays.permute",
+    "category": "function",
+    "text": "permute(A::SparseMatrixCSC{Tv,Ti}, p::AbstractVector{<:Integer},\n        q::AbstractVector{<:Integer}) where {Tv,Ti}\n\nBilaterally permute A, returning PAQ (A[p,q]). Column-permutation q\'s length must match A\'s column count (length(q) == A.n). Row-permutation p\'s length must match A\'s row count (length(p) == A.m).\n\nFor expert drivers and additional information, see permute!.\n\nExamples\n\njulia> A = spdiagm(0 => [1, 2, 3, 4], 1 => [5, 6, 7])\n4×4 SparseMatrixCSC{Int64,Int64} with 7 stored entries:\n  [1, 1]  =  1\n  [1, 2]  =  5\n  [2, 2]  =  2\n  [2, 3]  =  6\n  [3, 3]  =  3\n  [3, 4]  =  7\n  [4, 4]  =  4\n\njulia> permute(A, [4, 3, 2, 1], [1, 2, 3, 4])\n4×4 SparseMatrixCSC{Int64,Int64} with 7 stored entries:\n  [4, 1]  =  1\n  [3, 2]  =  2\n  [4, 2]  =  5\n  [2, 3]  =  3\n  [3, 3]  =  6\n  [1, 4]  =  4\n  [2, 4]  =  7\n\njulia> permute(A, [1, 2, 3, 4], [4, 3, 2, 1])\n4×4 SparseMatrixCSC{Int64,Int64} with 7 stored entries:\n  [3, 1]  =  7\n  [4, 1]  =  4\n  [2, 2]  =  6\n  [3, 2]  =  3\n  [1, 3]  =  5\n  [2, 3]  =  2\n  [1, 4]  =  1\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#Base.permute!-Union{Tuple{Tq}, Tuple{Tp}, Tuple{Ti}, Tuple{Tv}, Tuple{SparseMatrixCSC{Tv,Ti},SparseMatrixCSC{Tv,Ti},AbstractArray{Tp,1},AbstractArray{Tq,1}}} where Tq<:Integer where Tp<:Integer where Ti where Tv",
+    "page": "Sparse Arrays",
+    "title": "Base.permute!",
+    "category": "method",
+    "text": "permute!(X::SparseMatrixCSC{Tv,Ti}, A::SparseMatrixCSC{Tv,Ti},\n         p::AbstractVector{<:Integer}, q::AbstractVector{<:Integer},\n         [C::SparseMatrixCSC{Tv,Ti}]) where {Tv,Ti}\n\nBilaterally permute A, storing result PAQ (A[p,q]) in X. Stores intermediate result (AQ)^T (transpose(A[:,q])) in optional argument C if present. Requires that none of X, A, and, if present, C alias each other; to store result PAQ back into A, use the following method lacking X:\n\npermute!(A::SparseMatrixCSC{Tv,Ti}, p::AbstractVector{<:Integer},\n         q::AbstractVector{<:Integer}[, C::SparseMatrixCSC{Tv,Ti},\n         [workcolptr::Vector{Ti}]]) where {Tv,Ti}\n\nX\'s dimensions must match those of A (X.m == A.m and X.n == A.n), and X must have enough storage to accommodate all allocated entries in A (length(X.rowval) >= nnz(A) and length(X.nzval) >= nnz(A)). Column-permutation q\'s length must match A\'s column count (length(q) == A.n). Row-permutation p\'s length must match A\'s row count (length(p) == A.m).\n\nC\'s dimensions must match those of transpose(A) (C.m == A.n and C.n == A.m), and C must have enough storage to accommodate all allocated entries in A (length(C.rowval) >= nnz(A) and length(C.nzval) >= nnz(A)).\n\nFor additional (algorithmic) information, and for versions of these methods that forgo argument checking, see (unexported) parent methods unchecked_noalias_permute! and unchecked_aliasing_permute!.\n\nSee also: permute.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/SparseArrays/#stdlib-sparse-arrays-1",
+    "page": "Sparse Arrays",
+    "title": "Sparse Arrays",
+    "category": "section",
+    "text": "SparseArrays.SparseVector\nSparseArrays.SparseMatrixCSC\nSparseArrays.sparse\nSparseArrays.sparsevec\nSparseArrays.issparse\nSparseArrays.nnz\nSparseArrays.findnz\nSparseArrays.spzeros\nSparseArrays.spdiagm\nSparseArrays.blockdiag\nSparseArrays.sprand\nSparseArrays.sprandn\nSparseArrays.nonzeros\nSparseArrays.rowvals\nSparseArrays.nzrange\nSparseArrays.dropzeros!\nSparseArrays.dropzeros\nSparseArrays.permute\npermute!{Tv, Ti, Tp <: Integer, Tq <: Integer}(::SparseMatrixCSC{Tv,Ti}, ::SparseMatrixCSC{Tv,Ti}, ::AbstractArray{Tp,1}, ::AbstractArray{Tq,1})DocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Statistics/#",
+    "page": "Statistics",
+    "title": "Statistics",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.std",
+    "page": "Statistics",
+    "title": "Statistics.std",
+    "category": "function",
+    "text": "std(v; corrected::Bool=true, mean=nothing, dims)\n\nCompute the sample standard deviation of a vector or array v, optionally along the given dimensions. The algorithm returns an estimator of the generative distribution\'s standard deviation under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sqrt(sum((v - mean(v)).^2) / (length(v) - 1)). A pre-computed mean may be provided. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.stdm",
+    "page": "Statistics",
+    "title": "Statistics.stdm",
+    "category": "function",
+    "text": "stdm(v, m; corrected::Bool=true)\n\nCompute the sample standard deviation of a vector v with known mean m. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.var",
+    "page": "Statistics",
+    "title": "Statistics.var",
+    "category": "function",
+    "text": "var(v; dims, corrected::Bool=true, mean=nothing)\n\nCompute the sample variance of a vector or array v, optionally along the given dimensions. The algorithm will return an estimator of the generative distribution\'s variance under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sum(abs2, v - mean(v)) / (length(v) - 1). If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x). The mean mean over the region may be provided.\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.varm",
+    "page": "Statistics",
+    "title": "Statistics.varm",
+    "category": "function",
+    "text": "varm(v, m; dims, corrected::Bool=true)\n\nCompute the sample variance of a collection v with known mean(s) m, optionally over the given dimensions. m may contain means for each dimension of v. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.cor",
+    "page": "Statistics",
+    "title": "Statistics.cor",
+    "category": "function",
+    "text": "cor(x::AbstractVector)\n\nReturn the number one.\n\n\n\n\n\ncor(X::AbstractMatrix; dims::Int=1)\n\nCompute the Pearson correlation matrix of the matrix X along the dimension dims.\n\n\n\n\n\ncor(x::AbstractVector, y::AbstractVector)\n\nCompute the Pearson correlation between the vectors x and y.\n\n\n\n\n\ncor(X::AbstractVecOrMat, Y::AbstractVecOrMat; dims=1)\n\nCompute the Pearson correlation between the vectors or matrices X and Y along the dimension dims.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.cov",
+    "page": "Statistics",
+    "title": "Statistics.cov",
+    "category": "function",
+    "text": "cov(x::AbstractVector; corrected::Bool=true)\n\nCompute the variance of the vector x. If corrected is true (the default) then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\n\n\n\n\ncov(X::AbstractMatrix; dims::Int=1, corrected::Bool=true)\n\nCompute the covariance matrix of the matrix X along the dimension dims. If corrected is true (the default) then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = size(X, dims).\n\n\n\n\n\ncov(x::AbstractVector, y::AbstractVector; corrected::Bool=true)\n\nCompute the covariance between the vectors x and y. If corrected is true (the default), computes frac1n-1sum_i=1^n (x_i-bar x) (y_i-bar y)^* where * denotes the complex conjugate and n = length(x) = length(y). If corrected is false, computes frac1nsum_i=1^n (x_i-bar x) (y_i-bar y)^*.\n\n\n\n\n\ncov(X::AbstractVecOrMat, Y::AbstractVecOrMat; dims::Int=1, corrected::Bool=true)\n\nCompute the covariance between the vectors or matrices X and Y along the dimension dims. If corrected is true (the default) then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = size(X, dims) = size(Y, dims).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.mean!",
+    "page": "Statistics",
+    "title": "Statistics.mean!",
+    "category": "function",
+    "text": "mean!(r, v)\n\nCompute the mean of v over the singleton dimensions of r, and write results to r.\n\nExamples\n\njulia> v = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> mean!([1., 1.], v)\n2-element Array{Float64,1}:\n 1.5\n 3.5\n\njulia> mean!([1. 1.], v)\n1×2 Array{Float64,2}:\n 2.0  3.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.mean",
+    "page": "Statistics",
+    "title": "Statistics.mean",
+    "category": "function",
+    "text": "mean(itr)\n\nCompute the mean of all elements in a collection.\n\nnote: Note\nIf itr contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the mean of non-missing values.\n\nExamples\n\njulia> mean(1:20)\n10.5\n\njulia> mean([1, missing, 3])\nmissing\n\njulia> mean(skipmissing([1, missing, 3]))\n2.0\n\n\n\n\n\nmean(f::Function, itr)\n\nApply the function f to each element of collection itr and take the mean.\n\njulia> mean(√, [1, 2, 3])\n1.3820881233139908\n\njulia> mean([√1, √2, √3])\n1.3820881233139908\n\n\n\n\n\nmean(A::AbstractArray; dims)\n\nCompute the mean of an array over the given dimensions.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> mean(A, dims=1)\n1×2 Array{Float64,2}:\n 2.0  3.0\n\njulia> mean(A, dims=2)\n2×1 Array{Float64,2}:\n 1.5\n 3.5\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.median!",
+    "page": "Statistics",
+    "title": "Statistics.median!",
+    "category": "function",
+    "text": "median!(v)\n\nLike median, but may overwrite the input vector.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.median",
+    "page": "Statistics",
+    "title": "Statistics.median",
+    "category": "function",
+    "text": "median(itr)\n\nCompute the median of all elements in a collection. For an even number of elements no exact median element exists, so the result is equivalent to calculating mean of two median elements.\n\nnote: Note\nIf itr contains NaN or missing values, the result is also NaN or missing (missing takes precedence if itr contains both). Use the skipmissing function to omit missing entries and compute the median of non-missing values.\n\nExamples\n\njulia> median([1, 2, 3])\n2.0\n\njulia> median([1, 2, 3, 4])\n2.5\n\njulia> median([1, 2, missing, 4])\nmissing\n\njulia> median(skipmissing([1, 2, missing, 4]))\n2.0\n\n\n\n\n\nmedian(A::AbstractArray; dims)\n\nCompute the median of an array along the given dimensions.\n\nExamples\n\njulia> median([1 2; 3 4], dims=1)\n1×2 Array{Float64,2}:\n 2.0  3.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.middle",
+    "page": "Statistics",
+    "title": "Statistics.middle",
+    "category": "function",
+    "text": "middle(x)\n\nCompute the middle of a scalar value, which is equivalent to x itself, but of the type of middle(x, x) for consistency.\n\n\n\n\n\nmiddle(x, y)\n\nCompute the middle of two reals x and y, which is equivalent in both value and type to computing their mean ((x + y) / 2).\n\n\n\n\n\nmiddle(range)\n\nCompute the middle of a range, which consists of computing the mean of its extrema. Since a range is sorted, the mean is performed with the first and last element.\n\njulia> middle(1:10)\n5.5\n\n\n\n\n\nmiddle(a)\n\nCompute the middle of an array a, which consists of finding its extrema and then computing their mean.\n\njulia> a = [1,2,3.6,10.9]\n4-element Array{Float64,1}:\n  1.0\n  2.0\n  3.6\n 10.9\n\njulia> middle(a)\n5.95\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.quantile!",
+    "page": "Statistics",
+    "title": "Statistics.quantile!",
+    "category": "function",
+    "text": "quantile!([q::AbstractArray, ] v::AbstractVector, p; sorted=false)\n\nCompute the quantile(s) of a vector v at a specified probability or vector or tuple of probabilities p on the interval [0,1]. If p is a vector, an optional output array q may also be specified. (If not provided, a new output array is created.) The keyword argument sorted indicates whether v can be assumed to be sorted; if false (the default), then the elements of v will be partially sorted in-place.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(v). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if v contains NaN or missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\njulia> x = [3, 2, 1];\n\njulia> quantile!(x, 0.5)\n2.0\n\njulia> x\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> y = zeros(3);\n\njulia> quantile!(y, x, [0.1, 0.5, 0.9]) === y\ntrue\n\njulia> y\n3-element Array{Float64,1}:\n 1.2\n 2.0\n 2.8\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics.quantile",
+    "page": "Statistics",
+    "title": "Statistics.quantile",
+    "category": "function",
+    "text": "quantile(itr, p; sorted=false)\n\nCompute the quantile(s) of a collection itr at a specified probability or vector or tuple of probabilities p on the interval [0,1]. The keyword argument sorted indicates whether itr can be assumed to be sorted.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(v). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if itr contains NaN or missing values. Use the skipmissing function to omit missing entries and compute the quantiles of non-missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\n```jldoctest julia> quantile(0:20, 0.5) 10.0\n\njulia> quantile(0:20, [0.1, 0.5, 0.9]) 3-element Array{Float64,1}:   2.0  10.0  18.0\n\njulia> quantile(skipmissing([1, 10, missing]), 0.5) 5.5  ```\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Statistics/#Statistics-1",
+    "page": "Statistics",
+    "title": "Statistics",
+    "category": "section",
+    "text": "DocTestSetup = :(using Statistics)The Statistics module contains basic statistics functionality.Statistics.std\nStatistics.stdm\nStatistics.var\nStatistics.varm\nStatistics.cor\nStatistics.cov\nStatistics.mean!\nStatistics.mean\nStatistics.median!\nStatistics.median\nStatistics.middle\nStatistics.quantile!\nStatistics.quantileDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Test/#",
+    "page": "Unit Testing",
+    "title": "Unit Testing",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Test/#Unit-Testing-1",
+    "page": "Unit Testing",
+    "title": "Unit Testing",
+    "category": "section",
+    "text": "DocTestSetup = :(using Test)"
+},
+
+{
+    "location": "stdlib/Test/#Base.runtests",
+    "page": "Unit Testing",
+    "title": "Base.runtests",
+    "category": "function",
+    "text": "Base.runtests(tests=[\"all\"]; ncores=ceil(Int, Sys.CPU_THREADS / 2),\n              exit_on_error=false, [seed])\n\nRun the Julia unit tests listed in tests, which can be either a string or an array of strings, using ncores processors. If exit_on_error is false, when one test fails, all remaining tests in other files will still be run; they are otherwise discarded, when exit_on_error == true. If a seed is provided via the keyword argument, it is used to seed the global RNG in the context where the tests are run; otherwise the seed is chosen randomly.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Testing-Base-Julia-1",
+    "page": "Unit Testing",
+    "title": "Testing Base Julia",
+    "category": "section",
+    "text": "Julia is under rapid development and has an extensive test suite to verify functionality across multiple platforms. If you build Julia from source, you can run this test suite with make test. In a binary install, you can run the test suite using Base.runtests().Base.runtests"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test",
+    "page": "Unit Testing",
+    "title": "Test.@test",
+    "category": "macro",
+    "text": "@test ex\n@test f(args...) key=val ...\n\nTests that the expression ex evaluates to true. Returns a Pass Result if it does, a Fail Result if it is false, and an Error Result if it could not be evaluated.\n\nExamples\n\njulia> @test true\nTest Passed\n\njulia> @test [1, 2] + [2, 1] == [3, 3]\nTest Passed\n\nThe @test f(args...) key=val... form is equivalent to writing @test f(args..., key=val...) which can be useful when the expression is a call using infix syntax such as approximate comparisons:\n\njulia> @test π ≈ 3.14 atol=0.01\nTest Passed\n\nThis is equivalent to the uglier test @test ≈(π, 3.14, atol=0.01). It is an error to supply more than one expression unless the first is a call expression and the rest are assignments (k=v).\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test_throws",
+    "page": "Unit Testing",
+    "title": "Test.@test_throws",
+    "category": "macro",
+    "text": "@test_throws exception expr\n\nTests that the expression expr throws exception. The exception may specify either a type, or a value (which will be tested for equality by comparing fields). Note that @test_throws does not support a trailing keyword form.\n\nExamples\n\njulia> @test_throws BoundsError [1, 2, 3][4]\nTest Passed\n      Thrown: BoundsError\n\njulia> @test_throws DimensionMismatch [1, 2, 3] + [1, 2]\nTest Passed\n      Thrown: DimensionMismatch\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Basic-Unit-Tests-1",
+    "page": "Unit Testing",
+    "title": "Basic Unit Tests",
+    "category": "section",
+    "text": "The Test module provides simple unit testing functionality. Unit testing is a way to see if your code is correct by checking that the results are what you expect. It can be helpful to ensure your code still works after you make changes, and can be used when developing as a way of specifying the behaviors your code should have when complete.Simple unit testing can be performed with the @test and @test_throws macros:Test.@test\nTest.@test_throwsFor example, suppose we want to check our new function foo(x) works as expected:julia> using Test\n\njulia> foo(x) = length(x)^2\nfoo (generic function with 1 method)If the condition is true, a Pass is returned:julia> @test foo(\"bar\") == 9\nTest Passed\n\njulia> @test foo(\"fizz\") >= 10\nTest PassedIf the condition is false, then a Fail is returned and an exception is thrown:julia> @test foo(\"f\") == 20\nTest Failed at none:1\n  Expression: foo(\"f\") == 20\n   Evaluated: 1 == 20\nERROR: There was an error during testingIf the condition could not be evaluated because an exception was thrown, which occurs in this case because length is not defined for symbols, an Error object is returned and an exception is thrown:julia> @test foo(:cat) == 1\nError During Test\n  Test threw an exception of type MethodError\n  Expression: foo(:cat) == 1\n  MethodError: no method matching length(::Symbol)\n  Closest candidates are:\n    length(::SimpleVector) at essentials.jl:256\n    length(::Base.MethodList) at reflection.jl:521\n    length(::MethodTable) at reflection.jl:597\n    ...\n  Stacktrace:\n  [...]\nERROR: There was an error during testingIf we expect that evaluating an expression should throw an exception, then we can use @test_throws to check that this occurs:julia> @test_throws MethodError foo(:cat)\nTest Passed\n      Thrown: MethodError"
+},
+
+{
+    "location": "stdlib/Test/#Test.@testset",
+    "page": "Unit Testing",
+    "title": "Test.@testset",
+    "category": "macro",
+    "text": "@testset [CustomTestSet] [option=val  ...] [\"description\"] begin ... end\n@testset [CustomTestSet] [option=val  ...] [\"description $v\"] for v in (...) ... end\n@testset [CustomTestSet] [option=val  ...] [\"description $v, $w\"] for v in (...), w in (...) ... end\n\nStarts a new test set, or multiple test sets if a for loop is provided.\n\nIf no custom testset type is given it defaults to creating a DefaultTestSet. DefaultTestSet records all the results and, if there are any Fails or Errors, throws an exception at the end of the top-level (non-nested) test set, along with a summary of the test results.\n\nAny custom testset type (subtype of AbstractTestSet) can be given and it will also be used for any nested @testset invocations. The given options are only applied to the test set where they are given. The default test set type does not take any options.\n\nThe description string accepts interpolation from the loop indices. If no description is provided, one is constructed based on the variables.\n\nBy default the @testset macro will return the testset object itself, though this behavior can be customized in other testset types. If a for loop is used then the macro collects and returns a list of the return values of the finish method, which by default will return a list of the testset objects used in each iteration.\n\nBefore the execution of the body of a @testset, there is an implicit call to Random.seed!(seed) where seed is the current seed of the global RNG. Moreover, after the execution of the body, the state of the global RNG is restored to what it was before the @testset. This is meant to ease reproducibility in case of failure, and to allow seamless re-arrangements of @testsets regardless of their side-effect on the global RNG state.\n\nExamples\n\njulia> @testset \"trigonometric identities\" begin\n           θ = 2/3*π\n           @test sin(-θ) ≈ -sin(θ)\n           @test cos(-θ) ≈ cos(θ)\n           @test sin(2θ) ≈ 2*sin(θ)*cos(θ)\n           @test cos(2θ) ≈ cos(θ)^2 - sin(θ)^2\n       end;\nTest Summary:            | Pass  Total\ntrigonometric identities |    4      4\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Working-with-Test-Sets-1",
+    "page": "Unit Testing",
+    "title": "Working with Test Sets",
+    "category": "section",
+    "text": "Typically a large number of tests are used to make sure functions work correctly over a range of inputs. In the event a test fails, the default behavior is to throw an exception immediately. However, it is normally preferable to run the rest of the tests first to get a better picture of how many errors there are in the code being tested.The @testset macro can be used to group tests into sets. All the tests in a test set will be run, and at the end of the test set a summary will be printed. If any of the tests failed, or could not be evaluated due to an error, the test set will then throw a TestSetException.Test.@testsetWe can put our tests for the foo(x) function in a test set:julia> @testset \"Foo Tests\" begin\n           @test foo(\"a\")   == 1\n           @test foo(\"ab\")  == 4\n           @test foo(\"abc\") == 9\n       end;\nTest Summary: | Pass  Total\nFoo Tests     |    3      3Test sets can also be nested:julia> @testset \"Foo Tests\" begin\n           @testset \"Animals\" begin\n               @test foo(\"cat\") == 9\n               @test foo(\"dog\") == foo(\"cat\")\n           end\n           @testset \"Arrays $i\" for i in 1:3\n               @test foo(zeros(i)) == i^2\n               @test foo(fill(1.0, i)) == i^2\n           end\n       end;\nTest Summary: | Pass  Total\nFoo Tests     |    8      8In the event that a nested test set has no failures, as happened here, it will be hidden in the summary. If we do have a test failure, only the details for the failed test sets will be shown:julia> @testset \"Foo Tests\" begin\n           @testset \"Animals\" begin\n               @testset \"Felines\" begin\n                   @test foo(\"cat\") == 9\n               end\n               @testset \"Canines\" begin\n                   @test foo(\"dog\") == 9\n               end\n           end\n           @testset \"Arrays\" begin\n               @test foo(zeros(2)) == 4\n               @test foo(fill(1.0, 4)) == 15\n           end\n       end\n\nArrays: Test Failed\n  Expression: foo(fill(1.0, 4)) == 15\n   Evaluated: 16 == 15\n[...]\nTest Summary: | Pass  Fail  Total\nFoo Tests     |    3     1      4\n  Animals     |    2            2\n  Arrays      |    1     1      2\nERROR: Some tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken."
+},
+
+{
+    "location": "stdlib/Test/#Test.@inferred",
+    "page": "Unit Testing",
+    "title": "Test.@inferred",
+    "category": "macro",
+    "text": "@inferred f(x)\n\nTests that the call expression f(x) returns a value of the same type inferred by the compiler. It is useful to check for type stability.\n\nf(x) can be any call expression. Returns the result of f(x) if the types match, and an Error Result if it finds different types.\n\njulia> f(a, b, c) = b > 1 ? 1 : 1.0\nf (generic function with 1 method)\n\njulia> typeof(f(1, 2, 3))\nInt64\n\njulia> @code_warntype f(1, 2, 3)\nBody::UNION{FLOAT64, INT64}\n1 1 ─ %1 = (Base.slt_int)(1, b)::Bool\n  └──      goto #3 if not %1\n  2 ─      return 1\n  3 ─      return 1.0\n\njulia> @inferred f(1, 2, 3)\nERROR: return type Int64 does not match inferred return type Union{Float64, Int64}\nStacktrace:\n[...]\n\njulia> @inferred max(1, 2)\n2\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test_logs",
+    "page": "Unit Testing",
+    "title": "Test.@test_logs",
+    "category": "macro",
+    "text": "@test_logs [log_patterns...] [keywords] expression\n\nCollect a list of log records generated by expression using collect_test_logs, check that they match the sequence log_patterns, and return the value of expression.  The keywords provide some simple filtering of log records: the min_level keyword controls the minimum log level which will be collected for the test, the match_mode keyword defines how matching will be performed (the default :all checks that all logs and patterns match pairwise; use :any to check that the pattern matches at least once somewhere in the sequence.)\n\nThe most useful log pattern is a simple tuple of the form (level,message). A different number of tuple elements may be used to match other log metadata, corresponding to the arguments to passed to AbstractLogger via the handle_message function: (level,message,module,group,id,file,line). Elements which are present will be matched pairwise with the log record fields using == by default, with the special cases that Symbols may be used for the standard log levels, and Regexs in the pattern will match string or Symbol fields using occursin.\n\nExamples\n\nConsider a function which logs a warning, and several debug messages:\n\nfunction foo(n)\n    @info \"Doing foo with n=$n\"\n    for i=1:n\n        @debug \"Iteration $i\"\n    end\n    42\nend\n\nWe can test the info message using\n\n@test_logs (:info,\"Doing foo with n=2\") foo(2)\n\nIf we also wanted to test the debug messages, these need to be enabled with the min_level keyword:\n\n@test_logs (:info,\"Doing foo with n=2\") (:debug,\"Iteration 1\") (:debug,\"Iteration 2\") min_level=Debug foo(2)\n\nThe macro may be chained with @test to also test the returned value:\n\n@test (@test_logs (:info,\"Doing foo with n=2\") foo(2)) == 42\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test_deprecated",
+    "page": "Unit Testing",
+    "title": "Test.@test_deprecated",
+    "category": "macro",
+    "text": "@test_deprecated [pattern] expression\n\nWhen --depwarn=yes, test that expression emits a deprecation warning and return the value of expression.  The log message string will be matched against pattern which defaults to r\"deprecated\"i.\n\nWhen --depwarn=no, simply return the result of executing expression.  When --depwarn=error, check that an ErrorException is thrown.\n\nExamples\n\n# Deprecated in julia 0.7\n@test_deprecated num2hex(1)\n\n# The returned value can be tested by chaining with @test:\n@test (@test_deprecated num2hex(1)) == \"0000000000000001\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test_warn",
+    "page": "Unit Testing",
+    "title": "Test.@test_warn",
+    "category": "macro",
+    "text": "@test_warn msg expr\n\nTest whether evaluating expr results in stderr output that contains the msg string or matches the msg regular expression.  If msg is a boolean function, tests whether msg(output) returns true.  If msg is a tuple or array, checks that the error output contains/matches each item in msg. Returns the result of evaluating expr.\n\nSee also @test_nowarn to check for the absence of error output.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test_nowarn",
+    "page": "Unit Testing",
+    "title": "Test.@test_nowarn",
+    "category": "macro",
+    "text": "@test_nowarn expr\n\nTest whether evaluating expr results in empty stderr output (no warnings or other messages).  Returns the result of evaluating expr.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Other-Test-Macros-1",
+    "page": "Unit Testing",
+    "title": "Other Test Macros",
+    "category": "section",
+    "text": "As calculations on floating-point values can be imprecise, you can perform approximate equality checks using either @test a ≈ b (where ≈, typed via tab completion of \\approx, is the isapprox function) or use isapprox directly.julia> @test 1 ≈ 0.999999999\nTest Passed\n\njulia> @test 1 ≈ 0.999999\nTest Failed at none:1\n  Expression: 1 ≈ 0.999999\n   Evaluated: 1 ≈ 0.999999\nERROR: There was an error during testingTest.@inferred\nTest.@test_logs\nTest.@test_deprecated\nTest.@test_warn\nTest.@test_nowarn"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test_broken",
+    "page": "Unit Testing",
+    "title": "Test.@test_broken",
+    "category": "macro",
+    "text": "@test_broken ex\n@test_broken f(args...) key=val ...\n\nIndicates a test that should pass but currently consistently fails. Tests that the expression ex evaluates to false or causes an exception. Returns a Broken Result if it does, or an Error Result if the expression evaluates to true.\n\nThe @test_broken f(args...) key=val... form works as for the @test macro.\n\nExamples\n\njulia> @test_broken 1 == 2\nTest Broken\n  Expression: 1 == 2\n\njulia> @test_broken 1 == 2 atol=0.1\nTest Broken\n  Expression: ==(1, 2, atol=0.1)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.@test_skip",
+    "page": "Unit Testing",
+    "title": "Test.@test_skip",
+    "category": "macro",
+    "text": "@test_skip ex\n@test_skip f(args...) key=val ...\n\nMarks a test that should not be executed but should be included in test summary reporting as Broken. This can be useful for tests that intermittently fail, or tests of not-yet-implemented functionality.\n\nThe @test_skip f(args...) key=val... form works as for the @test macro.\n\nExamples\n\njulia> @test_skip 1 == 2\nTest Broken\n  Skipped: 1 == 2\n\njulia> @test_skip 1 == 2 atol=0.1\nTest Broken\n  Skipped: ==(1, 2, atol=0.1)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Broken-Tests-1",
+    "page": "Unit Testing",
+    "title": "Broken Tests",
+    "category": "section",
+    "text": "If a test fails consistently it can be changed to use the @test_broken macro. This will denote the test as Broken if the test continues to fail and alerts the user via an Error if the test succeeds.Test.@test_broken@test_skip is also available to skip a test without evaluation, but counting the skipped test in the test set reporting. The test will not run but gives a Broken Result.Test.@test_skip"
+},
+
+{
+    "location": "stdlib/Test/#Test.record",
+    "page": "Unit Testing",
+    "title": "Test.record",
+    "category": "function",
+    "text": "record(ts::AbstractTestSet, res::Result)\n\nRecord a result to a testset. This function is called by the @testset infrastructure each time a contained @test macro completes, and is given the test result (which could be an Error). This will also be called with an Error if an exception is thrown inside the test block but outside of a @test context.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.finish",
+    "page": "Unit Testing",
+    "title": "Test.finish",
+    "category": "function",
+    "text": "finish(ts::AbstractTestSet)\n\nDo any final processing necessary for the given testset. This is called by the @testset infrastructure after a test block executes. One common use for this function is to record the testset to the parent\'s results list, using get_testset.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.get_testset",
+    "page": "Unit Testing",
+    "title": "Test.get_testset",
+    "category": "function",
+    "text": "get_testset()\n\nRetrieve the active test set from the task\'s local storage. If no test set is active, use the fallback default test set.\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Test.get_testset_depth",
+    "page": "Unit Testing",
+    "title": "Test.get_testset_depth",
+    "category": "function",
+    "text": "get_testset_depth()\n\nReturns the number of active test sets, not including the default test set\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Test/#Creating-Custom-AbstractTestSet-Types-1",
+    "page": "Unit Testing",
+    "title": "Creating Custom AbstractTestSet Types",
+    "category": "section",
+    "text": "Packages can create their own AbstractTestSet subtypes by implementing the record and finish methods. The subtype should have a one-argument constructor taking a description string, with any options passed in as keyword arguments.Test.record\nTest.finishTest takes responsibility for maintaining a stack of nested testsets as they are executed, but any result accumulation is the responsibility of the AbstractTestSet subtype. You can access this stack with the get_testset and get_testset_depth methods. Note that these functions are not exported.Test.get_testset\nTest.get_testset_depthTest also makes sure that nested @testset invocations use the same AbstractTestSet subtype as their parent unless it is set explicitly. It does not propagate any properties of the testset. Option inheritance behavior can be implemented by packages using the stack infrastructure that Test provides.Defining a basic AbstractTestSet subtype might look like:import Test: record, finish\nusing Test: AbstractTestSet, Result, Pass, Fail, Error\nusing Test: get_testset_depth, get_testset\nstruct CustomTestSet <: Test.AbstractTestSet\n    description::AbstractString\n    foo::Int\n    results::Vector\n    # constructor takes a description string and options keyword arguments\n    CustomTestSet(desc; foo=1) = new(desc, foo, [])\nend\n\nrecord(ts::CustomTestSet, child::AbstractTestSet) = push!(ts.results, child)\nrecord(ts::CustomTestSet, res::Result) = push!(ts.results, res)\nfunction finish(ts::CustomTestSet)\n    # just record if we\'re not the top-level parent\n    if get_testset_depth() > 0\n        record(get_testset(), ts)\n    end\n    ts\nendAnd using that testset looks like:@testset CustomTestSet foo=4 \"custom testset inner 2\" begin\n    # this testset should inherit the type, but not the argument.\n    @testset \"custom testset inner\" begin\n        @test true\n    end\nendDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/UUIDs/#",
+    "page": "UUIDs",
+    "title": "UUIDs",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/UUIDs/#UUIDs.uuid1",
+    "page": "UUIDs",
+    "title": "UUIDs.uuid1",
+    "category": "function",
+    "text": "uuid1([rng::AbstractRNG=GLOBAL_RNG]) -> UUID\n\nGenerates a version 1 (time-based) universally unique identifier (UUID), as specified by RFC 4122. Note that the Node ID is randomly generated (does not identify the host) according to section 4.5 of the RFC.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> uuid1(rng)\nUUID(\"cfc395e8-590f-11e8-1f13-43a2532b2fa8\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/UUIDs/#UUIDs.uuid4",
+    "page": "UUIDs",
+    "title": "UUIDs.uuid4",
+    "category": "function",
+    "text": "uuid4([rng::AbstractRNG=GLOBAL_RNG]) -> UUID\n\nGenerates a version 4 (random or pseudo-random) universally unique identifier (UUID), as specified by RFC 4122.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> uuid4(rng)\nUUID(\"196f2941-2d58-45ba-9f13-43a2532b2fa8\")\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/UUIDs/#UUIDs.uuid_version",
+    "page": "UUIDs",
+    "title": "UUIDs.uuid_version",
+    "category": "function",
+    "text": "uuid_version(u::UUID) -> Int\n\nInspects the given UUID and returns its version (see RFC 4122).\n\nExamples\n\njulia> uuid_version(uuid4())\n4\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/UUIDs/#UUIDs-1",
+    "page": "UUIDs",
+    "title": "UUIDs",
+    "category": "section",
+    "text": "DocTestSetup = :(using UUIDs, Random)UUIDs.uuid1\nUUIDs.uuid4\nUUIDs.uuid_versionDocTestSetup = nothing"
+},
+
+{
+    "location": "stdlib/Unicode/#",
+    "page": "Unicode",
+    "title": "Unicode",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "stdlib/Unicode/#Unicode.isassigned",
+    "page": "Unicode",
+    "title": "Unicode.isassigned",
+    "category": "function",
+    "text": "Unicode.isassigned(c) -> Bool\n\nReturns true if the given char or integer is an assigned Unicode code point.\n\nExamples\n\njulia> Unicode.isassigned(101)\ntrue\n\njulia> Unicode.isassigned(\'\\x01\')\ntrue\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Unicode/#Unicode.normalize",
+    "page": "Unicode",
+    "title": "Unicode.normalize",
+    "category": "function",
+    "text": "Unicode.normalize(s::AbstractString, normalform::Symbol)\n\nNormalize the string s according to one of the four \"normal forms\" of the Unicode standard: normalform can be :NFC, :NFD, :NFKC, or :NFKD.  Normal forms C (canonical composition) and D (canonical decomposition) convert different visually identical representations of the same abstract string into a single canonical form, with form C being more compact.  Normal forms KC and KD additionally canonicalize \"compatibility equivalents\": they convert characters that are abstractly similar but visually distinct into a single canonical choice (e.g. they expand ligatures into the individual characters), with form KC being more compact.\n\nAlternatively, finer control and additional transformations may be be obtained by calling Unicode.normalize(s; keywords...), where any number of the following boolean keywords options (which all default to false except for compose) are specified:\n\ncompose=false: do not perform canonical composition\ndecompose=true: do canonical decomposition instead of canonical composition (compose=true is ignored if present)\ncompat=true: compatibility equivalents are canonicalized\ncasefold=true: perform Unicode case folding, e.g. for case-insensitive string comparison\nnewline2lf=true, newline2ls=true, or newline2ps=true: convert various newline sequences (LF, CRLF, CR, NEL) into a linefeed (LF), line-separation (LS), or paragraph-separation (PS) character, respectively\nstripmark=true: strip diacritical marks (e.g. accents)\nstripignore=true: strip Unicode\'s \"default ignorable\" characters (e.g. the soft hyphen or the left-to-right marker)\nstripcc=true: strip control characters; horizontal tabs and form feeds are converted to spaces; newlines are also converted to spaces unless a newline-conversion flag was specified\nrejectna=true: throw an error if unassigned code points are found\nstable=true: enforce Unicode Versioning Stability\n\nFor example, NFKC corresponds to the options compose=true, compat=true, stable=true.\n\nExamples\n\njulia> \"μ\" == Unicode.normalize(\"µ\", compat=true) #LHS: Unicode U+03bc, RHS: Unicode U+00b5\ntrue\n\njulia> Unicode.normalize(\"JuLiA\", casefold=true)\n\"julia\"\n\njulia> Unicode.normalize(\"JúLiA\", stripmark=true)\n\"JuLiA\"\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Unicode/#Unicode.graphemes",
+    "page": "Unicode",
+    "title": "Unicode.graphemes",
+    "category": "function",
+    "text": "graphemes(s::AbstractString) -> GraphemeIterator\n\nReturns an iterator over substrings of s that correspond to the extended graphemes in the string, as defined by Unicode UAX #29. (Roughly, these are what users would perceive as single characters, even though they may contain more than one codepoint; for example a letter combined with an accent mark is a single grapheme.)\n\n\n\n\n\n"
+},
+
+{
+    "location": "stdlib/Unicode/#Unicode-1",
+    "page": "Unicode",
+    "title": "Unicode",
+    "category": "section",
+    "text": "DocTestSetup = :(using Unicode)Unicode.isassigned\nUnicode.normalize\nUnicode.graphemesDocTestSetup = nothing"
+},
+
+{
     "location": "devdocs/reflection/#",
     "page": "Reflection and introspection",
     "title": "Reflection and introspection",
@@ -14710,6 +22054,14 @@ var documenterSearchIndex = {"docs": [
     "title": "System Image Building",
     "category": "section",
     "text": ""
+},
+
+{
+    "location": "devdocs/sysimg/#Main.BuildSysImg.build_sysimg",
+    "page": "System Image Building",
+    "title": "Main.BuildSysImg.build_sysimg",
+    "category": "function",
+    "text": "build_sysimg(sysimg_path=default_sysimg_path(), cpu_target=\"native\", userimg_path=nothing; force=false)\n\nRebuild the system image. Store it in sysimg_path, which defaults to a file named sys.ji that sits in the same folder as libjulia.{so,dylib}, except on Windows where it defaults to Sys.BINDIR/../lib/julia/sys.ji.  Use the cpu instruction set given by cpu_target. Valid CPU targets are the same as for the -C option to julia, or the -march option to gcc.  Defaults to native, which means to use all CPU instructions available on the current processor. Include the user image file given by userimg_path, which should contain directives such as using MyPackage to include that package in the new system image. New system image will not replace an older image unless force is set to true.\n\n\n\n\n\n"
 },
 
 {
