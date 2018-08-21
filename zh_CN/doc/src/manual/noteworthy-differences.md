@@ -2,37 +2,35 @@
 
 ## 与 MATLAB 的显著差异
 
-Although MATLAB users may find Julia's syntax familiar, Julia is not a MATLAB clone. There are
-major syntactic and functional differences. The following are some noteworthy differences that
-may trip up Julia users accustomed to MATLAB:
+虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的Julia用户感到困扰的显著差异：
 
   * Julia 数组使用方括号 `A[i,j]` 进行索引。
   * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。
     as well.
-  * Julia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
-    will be visible in the caller.
-  * Julia does not automatically grow arrays in an assignment statement. Whereas in MATLAB `a(4) = 3.2`
-    can create the array `a = [0 0 0 3.2]` and `a(5) = 7` can grow it into `a = [0 0 0 3.2 7]`, the
-    corresponding Julia statement `a[5] = 7` throws an error if the length of `a` is less than 5 or
-    if this statement is the first use of the identifier `a`. Julia has [`push!`](@ref) and [`append!`](@ref),
+  * Julia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改
+    对调用者是可见的。
+  * Julia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 `a(4) = 3.2`
+    可以创建数组 `a = [0 0 0 3.2]` 和 `a(5) = 7` 可以将它增长为 `a = [0 0 0 3.2 7]`。
+    如果 `a` 的长度小于 5 或者这个语句是第一次使用标识符 `a`，则相应的 Julia 语句 `a[5] = 7` 会抛出错误。
+    Julia 使用 [`push!`](@ref) 和 [`append!`](@ref) 实现比 MATLAB 的 `a(end+1) = val` 更高效地增长 `Vector`。
     which grow `Vector`s much more efficiently than MATLAB's `a(end+1) = val`.
-  * The imaginary unit `sqrt(-1)` is represented in Julia as [`im`](@ref), not `i` or `j` as in MATLAB.
-  * In Julia, literal numbers without a decimal point (such as `42`) create integers instead of floating
-    point numbers. Arbitrarily large integer literals are supported. As a result, some operations
-    such as `2^-1` will throw a domain error as the result is not an integer (see [the FAQ entry on domain errors](@ref faq-domain-errors)
+  * 虚数单位 `sqrt(-1)` 在Julia中表示为 [`im`](@ref)，而不是在 MATLAB 中的 `i` 或 `j`。
+  * 在 Julia 中，没有小数点的字面数字（例如 `42`）会创建整数而不是浮点数。
+    也支持任意大整数。
+    因此，某些操作（如 `2^-1`）将抛出domain error，因为结果不是整数（有关详细信息，请参阅 [the FAQ entry on domain errors](@ref faq-domain-errors)）。
     for details).
-  * In Julia, multiple values are returned and assigned as tuples, e.g. `(a, b) = (1, 2)` or `a, b = 1, 2`.
-    MATLAB's `nargout`, which is often used in MATLAB to do optional work based on the number of returned
-    values, does not exist in Julia. Instead, users can use optional and keyword arguments to achieve
+  * 在 Julia 中，能返回多个值并将其赋值为元组，例如 `(a, b) = (1, 2)` 或 `a, b = 1, 2`。
+    在 Julia 中不存在 MATLAB 的 `nargout`，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。
+    取而代之的是，用户可以使用可选参数（optional arguments）和关键字参数（keyword arguments）来实现类似的功能。
     similar capabilities.
-  * Julia has true one-dimensional arrays. Column vectors are of size `N`, not `Nx1`. For example,
-    [`rand(N)`](@ref) makes a 1-dimensional array.
-  * In Julia, `[x,y,z]` will always construct a 3-element array containing `x`, `y` and `z`.
-    - To concatenate in the first ("vertical") dimension use either [`vcat(x,y,z)`](@ref) or separate
+  * Julia 拥有真正的一维数组。 列向量的大小为 `N`，而不是 `Nx1`。
+    例如，[`rand(N)`](@ref) 创建一个一维数组。
+  * 在 Julia 中，`[x,y,z]` 将始终构造一个包含`x`，`y` 和 `z` 的3元素数组。
+    - 要在第一个维度（“垂直列”）中连接元素，请使用 [`vcat(x,y,z)`](@ref) 或用分号分隔（`[x; y; z]`）。
       with semicolons (`[x; y; z]`).
-    - To concatenate in the second ("horizontal") dimension use either [`hcat(x,y,z)`](@ref) or separate
+    - 要在第二个维度（“水平行”）中连接元素，请使用 [`hcat(x,y,z)`](@ref) 或用空格分隔（`[x y z]`）。
       with spaces (`[x y z]`).
-    - To construct block matrices (concatenating in the first two dimensions), use either [`hvcat`](@ref)
+    - 要构造块矩阵（在前两个维度中连接元素），请使用 [`hvcat`](@ref)或组合空格和分号（`[a b; c d]`）。
       or combine spaces and semicolons (`[a b; c d]`).
   * In Julia, `a:b` and `a:b:c` construct `AbstractRange` objects. To construct a full vector like in MATLAB,
     use [`collect(a:b)`](@ref). Generally, there is no need to call `collect` though. An `AbstractRange` object will
@@ -197,7 +195,7 @@ For users coming to Julia from R, these are some noteworthy differences:
 ## 与 Python 的显著差异
 
   * Julia requires `end` to end a block. Unlike Python, Julia has no `pass` keyword.
-  * In Julia, indexing of arrays, strings, etc. is 1-based not 0-based.
+  * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
   * Julia's slice indexing includes the last element, unlike in Python. `a[2:3]` in Julia is `a[1:3]`
     in Python.
   * Julia does not support negative indices. In particular, the last element of a list or array is
@@ -219,33 +217,33 @@ For users coming to Julia from R, these are some noteworthy differences:
     the function `f(x=rand()) = x` returns a new random number every time it is invoked without argument.
     On the other hand, the function `g(x=[1,2]) = push!(x,3)` returns `[1,2,3]` every time it is called
     as `g()`.
-  * 与 C/C++ 的显著差异
+  * In Julia `%` is the remainder operator, whereas in Python it is the modulus.
 
-## Julia 的数组由方括号索引，方括号中可以包含不止一个维度 `A[i,j]`。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。
+## 与 C/C++ 的显著差异
 
-  * the Julia documentation for the syntax for array construction (it has changed between versions).
-    在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
-    Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。像 `+=` 这样的更新运算符不会以 in-place 的方式执行，而是相当于 `A = A + B`，将左侧绑定到右侧表达式的计算结果上。
-  * as well. Updating operators like `+=` do not operate in-place, they are equivalent to `A = A + B`
-  * which rebinds the left-hand side to the result of the right-hand side expression.
-    Julia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 [性能建议](@ref man-performance-tips)）。
+  * Julia 的数组由方括号索引，方括号中可以包含不止一个维度 `A[i,j]`。
+    这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见
+    Julia 文档数组构造的语法（依版本不同有所变动）。
+  * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
+  * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。像 `+=` 这样的更新运算符不会以 in-place 的方式执行，而是相当于 `A = A + B`，将左侧绑定到右侧表达式的计算结果上。
+    as well. Updating operators like `+=` do not operate in-place, they are equivalent to `A = A + B`
+    which rebinds the left-hand side to the result of the right-hand side expression.
+  * Julia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 [性能建议](@ref man-performance-tips)）。
     default. To get optimal performance when looping over arrays, the order of the loops should be
-  * reversed in Julia relative to C/C++ (see relevant section of [Performance Tips](@ref man-performance-tips)).
-    Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
-    will be visible in the caller.
+    reversed in Julia relative to C/C++ (see relevant section of [Performance Tips](@ref man-performance-tips)).
+  * Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改
+    对调用者是可见的。
   * 在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。
     whitespace from a Julia program.
   * 在 Julia 中，没有小数点的数值字面量（如 `42`）生成有符号整数，类型为 `Int`，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 `Int64`（如果 `Int` 是 `Int32`）、`Int128`，或者任意精度的 `BigInt` 类型。不存在诸如 `L`, `LL`, `U`, `UL`, `ULL` 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 `0x` 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同，
     `Int`, but literals too large to fit in the machine word size will automatically be promoted to
-  * a larger size type, such as `Int64` (if `Int` is `Int32`), `Int128`, or the arbitrarily large
-    `BigInt` type. There are no numeric literal suffixes, such as `L`, `LL`, `U`, `UL`, `ULL` to indicate
+    a larger size type, such as `Int64` (if `Int` is `Int32`), `Int128`, or the arbitrarily large
+    也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的**长度**，包括开头的 0。例如，`0x0` 和 `0x00` 的类型是 [`UInt8`](@ref)，`0x000` 和 `0x0000` 的类型是 [`UInt16`](@ref)。同理，字面量的长度在 5-8 之间，类型为 `UInt32`；在 9-16 之间，类型为 `UInt64`；在 17-32 之间，类型为 `UInt128`。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 `~0xf == 0xf0` 与 `~0x000f == 0xfff0` 完全不同。
     unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals
     (which start with `0x` like C/C++), are unsigned. Hexadecimal literals also, unlike C/C++/Java
-    也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的**长度**，包括开头的 0。例如，`0x0` 和 `0x00` 的类型是 [`UInt8`](@ref)，`0x000` 和 `0x0000` 的类型是 [`UInt16`](@ref)。同理，字面量的长度在 5-8 之间，类型为 `UInt32`；在 9-16 之间，类型为 `UInt64`；在 17-32 之间，类型为 `UInt128`。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 `~0xf == 0xf0` 与 `~0x000f == 0xfff0` 完全不同。
+    and unlike decimal literals in Julia, have a type based on the *length* of the literal, including
     leading 0s. For example, `0x0` and `0x00` have type [`UInt8`](@ref), `0x000` and `0x0000` have type
     [`UInt16`](@ref), then literals with 5 to 8 hex digits have type `UInt32`, 9 to 16 hex digits type
-    `UInt64` and 17 to 32 hex digits type `UInt128`. This needs to be taken into account when defining
-    64 位的 `Float64`
     `UInt64` and 17 to 32 hex digits type `UInt128`. This needs to be taken into account when defining
     hexadecimal masks, for example `~0xf == 0xf0` is very different from `~0x000f == 0xfff0`. 64 bit `Float64`
     and 32 bit [`Float32`](@ref) bit literals are expressed as `1.0` and `1.0f0` respectively. Floating point

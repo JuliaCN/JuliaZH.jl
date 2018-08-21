@@ -26,9 +26,7 @@ Julia 为它所有的基础数值类型，提供了整套的基础算术和位�
 |:---------- |:-------- |:---------------------------------------- |
 | `!x`       | 否定 | 将 `true` 和 `false` 互换 |
 
-Julia's promotion system makes arithmetic operations on mixtures of argument types "just work"
-naturally and automatically. See [Conversion and Promotion](@ref conversion-and-promotion) for details of the promotion
-system.
+Julia的类型提示系统使得混合参数类型上的代数运算也能平滑、自动地进行。可以参考 [类型提升系统](@ref conversion-and-promotion) 来了解更多。
 
 这里是使用算术运算的一些简单例子：
 
@@ -43,9 +41,7 @@ julia> 3*2/12
 0.5
 ```
 
-(By convention, we tend to space operators more tightly if they get applied before other nearby
-operators. For instance, we would generally write `-x + 2` to reflect that first `x` gets negated,
-and then `2` is added to that result.)
+习惯上我们会把优先运算的操作符紧邻操作数，比如 `-x + 2` 表示先要给 `x`  取反，然后再加 `2` 。
 
 ## 位运算符
 
@@ -57,7 +53,7 @@ and then `2` is added to that result.)
 | `x & y`    | 按位与                                                              |
 | `x \| y`   | 按位或                                                               |
 | `x ⊻ y`    | 按位异或（逻辑异或）                                               |
-| `x >>> y`  | [逻辑右移](https://en.wikipedia.org/wiki/Logical_shift) right       |
+| `x >>> y`  | [逻辑右移](https://en.wikipedia.org/wiki/Logical_shift)        |
 | `x >> y`   | [算术右移](https://en.wikipedia.org/wiki/Arithmetic_shift) |
 | `x << y`   | 逻辑/算术左移                                            |
 
@@ -88,10 +84,7 @@ julia> ~UInt8(123)
 
 ## 复合赋值操作符
 
-Every binary arithmetic and bitwise operator also has an updating version that assigns the result
-of the operation back into its left operand. The updating version of the binary operator is formed
-by placing a `=` immediately after the operator. For example, writing `x += 3` is equivalent to
-writing `x = x + 3`:
+每一个双目运算符和位运算符都可以给左操作数复合赋值：方法是把 `=` 直接放在双目运算符后面。比如， `x += 3` 等价于 `x = x + 3` 。
 
 ```jldoctest
 julia> x = 1
@@ -104,15 +97,14 @@ julia> x
 4
 ```
 
-The updating versions of all the binary arithmetic and bitwise operators are:
+双目运算和位操作的复合赋值操作符有下面几种：
 
 ```
 +=  -=  *=  /=  \=  ÷=  %=  ^=  &=  |=  ⊻=  >>>=  >>=  <<=
 ```
 
 !!! note
-    An updating operator rebinds the variable on the left-hand side. As a result, the type of the
-    variable may change.
+    复合赋值后会把变量重新绑定到左操作数上，所以变量的类型可能会改变。
 
     ```jldoctest
     julia> x = 0x01; typeof(x)
@@ -125,17 +117,9 @@ The updating versions of all the binary arithmetic and bitwise operators are:
     Int64
     ```
 
-## [Vectorized "dot" operators](@id man-dot-operators)
+## [矢量化的 "点" 运算符](@id man-dot-operators)
 
-For *every* binary operation like `^`, there is a corresponding
-"dot" operation `.^` that is *automatically* defined
-to perform `^` element-by-element on arrays. For example,
-`[1,2,3] ^ 3` is not defined, since there is no standard
-mathematical meaning to "cubing" a (non-square) array, but
-`[1,2,3] .^ 3` is defined as computing the elementwise
-(or "vectorized") result `[1^3, 2^3, 3^3]`.  Similarly for unary
-operators like `!` or `√`, there is a corresponding `.√` that
-applies the operator elementwise.
+对于每一个双目运算符，比如 `^` ，都有一个“点”运算符 `.^` 与之对应，它会对数组元素一一执行 `^` 运算。比如 `[1,2,3] ^ 3` 是非法的，因为数学上没有给（长宽不一样的）数组的立方下过定义。但是 `[1,2,3] .^ 3` 在Julia是合法的，它会逐个元素（即“向量式的”）计算，得到 `[1^3, 2^3, 3^3]` 。类似地，像 `!` 和 `√` 这种单目运算符也会依次针对每个元素运算。
 
 ```jldoctest
 julia> [1,2,3] .^ 3
@@ -257,14 +241,14 @@ false
 Julia provides additional functions to test numbers for special values, which can be useful in
 situations like hash key comparisons:
 
-| 函数                | Tests if                  |
+| 函数                | 测试是否满足如下性质                  |
 |:----------------------- |:------------------------- |
-| [`isequal(x, y)`](@ref) | `x` and `y` are identical |
-| [`isfinite(x)`](@ref)   | `x` is a finite number    |
-| [`isinf(x)`](@ref)      | `x` is infinite           |
-| [`isnan(x)`](@ref)      | `x` is not a number       |
+| [`isequal(x, y)`](@ref) | `x` 与 `y` 是完全相同的 |
+| [`isfinite(x)`](@ref)   | `x` 是有限大的数字    |
+| [`isinf(x)`](@ref)      | `x` 是（正/负）无穷大           |
+| [`isnan(x)`](@ref)      | `x` 是 `NaN`       |
 
-[`isequal`](@ref) considers `NaN`s equal to each other:
+[`isequal`](@ref) 认为 `NaN` 之间是相等的：
 
 ```jldoctest
 julia> isequal(NaN, NaN)
@@ -277,7 +261,7 @@ julia> isequal(NaN, NaN32)
 true
 ```
 
-`isequal` can also be used to distinguish signed zeros:
+`isequal` 也能用来区分带符号的零：
 
 ```jldoctest
 julia> -0.0 == 0.0
@@ -295,7 +279,7 @@ equality for your own types then you only need to add a [`==`](@ref) method.  If
 your own equality function, you should probably define a corresponding [`hash`](@ref) method
 to ensure that `isequal(x,y)` implies `hash(x) == hash(y)`.
 
-### Chaining comparisons
+### 链式比较
 
 Unlike most languages, with the [notable exception of Python](https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators),
 comparisons can be arbitrarily chained:
@@ -345,26 +329,26 @@ Moreover, these functions (like any Julia function) can be applied in "vectorize
 arrays and other collections with the [dot syntax](@ref man-vectorized) `f.(A)`,
 e.g. `sin.(A)` will compute the sine of each element of an array `A`.
 
-## Operator Precedence and Associativity
+## 运算符的优先级与结合性
 
 Julia applies the following order and associativity of operations, from highest precedence to lowest:
 
-| Category       | Operators                                                                                         | Associativity              |
+| 分类       | 运算符                                                                                         | 结合性              |
 |:-------------- |:------------------------------------------------------------------------------------------------- |:-------------------------- |
-| Syntax         | `.` followed by `::`                                                                              | Left                       |
-| 幂 | `^`                                                                                               | Right                      |
-| Unary          | `+ - √`                                                                                           | Right[^1]                  |
-| Bitshifts      | `<< >> >>>`                                                                                       | Left                       |
-| Fractions      | `//`                                                                                              | Left                       |
-| Multiplication | `* / % & \ ÷`                                                                                     | Left[^2]                   |
-| Addition       | `+ - \| ⊻`                                                                                        | Left[^2]                   |
-| Syntax         | `: ..`                                                                                            | Left                       |
-| Syntax         | `\|>`                                                                                             | Left                       |
-| Syntax         | `<\|`                                                                                             | Right                      |
-| Comparisons    | `> < >= <= == === != !== <:`                                                                      | Non-associative            |
-| Control flow   | `&&` followed by `\|\|` followed by `?`                                                           | Right                      |
-| Pair           | `=>`                                                                                              | Right                      |
-| Assignments    | `= += -= *= /= //= \= ^= ÷= %= \|= &= ⊻= <<= >>= >>>=`                                            | Right                      |
+| 语法组成         | `.` followed by `::`                                                                              | 左结合                       |
+| 幂运算 | `^`                                                                                               | 右结合                      |
+| 一元运算符          | `+ - √`                                                                                           | 右结合[^1]                  |
+| 位移运算      | `<< >> >>>`                                                                                       | 左结合                       |
+| 除法      | `//`                                                                                              | 左结合                       |
+| 乘法 | `* / % & \ ÷`                                                                                     | 左结合[^2]                   |
+| 加法       | `+ - \| ⊻`                                                                                        | 左结合[^2]                   |
+| 语法组成         | `: ..`                                                                                            | 左结合                       |
+| 语法组成         | `\|>`                                                                                             | 左结合                       |
+| 语法组成         | `<\|`                                                                                             | 右结合                      |
+| 比较    | `> < >= <= == === != !== <:`                                                                      | 无结合性            |
+| 控制流程   | `&&` followed by `\|\|` followed by `?`                                                           | 右结合                      |
+| Pair           | `=>`                                                                                              | 右结合                      |
+| 赋值    | `= += -= *= /= //= \= ^= ÷= %= \|= &= ⊻= <<= >>= >>>=`                                            | 右结合                      |
 
 [^1]:
     The unary operators `+` and `-` require explicit parentheses around their argument to disambiguate them from the operator `++`, etc. Other compositions of unary operators are parsed with right-associativity, e. g., `√√-a` as `√(√(-a))`.
@@ -398,7 +382,7 @@ julia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Bas
 Note that symbols such as `:sin` return precedence `0`. This value represents invalid operators and not
 operators of lowest precedence. Similarly, such operators are assigned associativity `:none`.
 
-## Numerical Conversions
+## 数值转换
 
 Julia supports three forms of numerical conversion, which differ in their handling of inexact
 conversions.
@@ -407,7 +391,7 @@ conversions.
 
       * If `T` is a floating-point type, the result is the nearest representable value, which could be
         positive or negative infinity.
-      * If `T` is an integer type, an `InexactError` is raised if `x` is not representable by `T`.
+      * 如果`T` 为整数类型，当`x`不为`T`类型时，会触发`InexactError`
   * `x % T` converts an integer `x` to a value of integer type `T` congruent to `x` modulo `2^n`,
     where `n` is the number of bits in `T`. In other words, the binary representation is truncated
     to fit.
@@ -455,7 +439,7 @@ Stacktrace:
 
 See [Conversion and Promotion](@ref conversion-and-promotion) for how to define your own conversions and promotions.
 
-### Rounding functions
+### 舍入函数
 
 | 函数              | 描述                      | 返回类型 |
 |:--------------------- |:-------------------------------- |:----------- |
@@ -468,7 +452,7 @@ See [Conversion and Promotion](@ref conversion-and-promotion) for how to define 
 | [`trunc(x)`](@ref)    | round `x` towards zero           | `typeof(x)` |
 | [`trunc(T, x)`](@ref) | round `x` towards zero           | `T`         |
 
-### Division functions
+### 除法函数
 
 | 函数                  | 描述                                                                                               |
 |:------------------------- |:--------------------------------------------------------------------------------------------------------- |
@@ -484,7 +468,7 @@ See [Conversion and Promotion](@ref conversion-and-promotion) for how to define 
 | [`gcd(x,y...)`](@ref)     | greatest positive common divisor of `x`, `y`,...                                                          |
 | [`lcm(x,y...)`](@ref)     | least positive common multiple of `x`, `y`,...                                                            |
 
-### Sign and absolute value functions
+### 符号和绝对值函数
 
 | 函数                | 描述                                                |
 |:----------------------- |:---------------------------------------------------------- |
@@ -495,7 +479,7 @@ See [Conversion and Promotion](@ref conversion-and-promotion) for how to define 
 | [`copysign(x,y)`](@ref) | a value with the magnitude of `x` and the sign of `y`      |
 | [`flipsign(x,y)`](@ref) | a value with the magnitude of `x` and the sign of `x*y`    |
 
-### Powers, logs and roots
+### 幂、对数与平方根
 
 | 函数                 | 描述                                                                |
 |:------------------------ |:-------------------------------------------------------------------------- |
@@ -517,7 +501,7 @@ For an overview of why functions like [`hypot`](@ref), [`expm1`](@ref), and [`lo
 are necessary and useful, see John D. Cook's excellent pair of blog posts on the subject: [expm1, log1p, erfc](https://www.johndcook.com/blog/2010/06/07/math-library-functions-that-seem-unnecessary/),
 and [hypot](https://www.johndcook.com/blog/2010/06/02/whats-so-hard-about-finding-a-hypotenuse/).
 
-### Trigonometric and hyperbolic functions
+### 三角和双曲函数
 
 All the standard trigonometric and hyperbolic functions are also defined:
 
@@ -544,6 +528,6 @@ sind   cosd   tand   cotd   secd   cscd
 asind  acosd  atand  acotd  asecd  acscd
 ```
 
-### Special functions
+### 特殊函数
 
-[SpecialFunctions.jl](https://github.com/JuliaMath/SpecialFunctions.jl)包提供了许多其他特殊的数学函数。
+[SpecialFunctions.jl](https://github.com/JuliaMath/SpecialFunctions.jl) 包提供了许多其他的特殊数学函数。

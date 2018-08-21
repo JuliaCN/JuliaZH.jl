@@ -505,7 +505,7 @@ When your broadcast operation involves several arguments, individual argument st
 combined to determine a single `DestStyle` that controls the type of the output container.
 For more details, see [below](@ref writing-binary-broadcasting-rules).
 
-### Selecting an appropriate output array
+### 选择合适的输出数组
 
 The broadcast style is computed for every broadcasting operation to allow for
 dispatch and specialization. The actual allocation of the result array is

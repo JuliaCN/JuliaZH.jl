@@ -2,22 +2,21 @@
 
 自Julia 0.4 开始，Julia允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。
 
-The basic syntax is simple: any string appearing at the top-level right before an object
-(function, macro, type or instance) will be interpreted as documenting it (these are called *docstrings*).
-Note that no blank lines or comments may intervene between a docstring and the documented object.
-Here is a basic example:
+基础语法很简单：紧接在对象（函数，宏，类型和实例）之前的字符串都会被认为是对应对象的文档（称作*docstrings*）。
+注意不要在docstring和文档对象之间有空行或者注释。
+这里有个基础的例子：
 
 ```julia
 "Tell whether there are too foo items in the array."
 foo(xs::Array) = ...
 ```
 
-Documentation is interpreted as [Markdown](https://en.wikipedia.org/wiki/Markdown), so you can
-use indentation and code fences to delimit code examples from text. Technically, any object can
-be associated with any other as metadata; Markdown happens to be the default, but one can construct
-other string macros and pass them to the `@doc` macro just as well.
+文档会被翻译成[Markdown](https://en.wikipedia.org/wiki/Markdown)，所以你可以
+使用缩进和代码栅栏来分隔代码示例和文本。从技术上来说，任何对象
+可以作为元数据与任何其他对象关联；Markdown是默认的，但是可以创建
+其他字符串宏并传递给`@doc`宏来使用其他格式。
 
-Here is a more complex example, still using Markdown:
+这里是更加复杂的例子，但仍然使用Markdown：
 
 ````julia
 """
@@ -35,42 +34,42 @@ julia> bar([1, 2], [1, 2])
 function bar(x, y) ...
 ````
 
-As in the example above, we recommend following some simple conventions when writing documentation:
+如上例所示，我们推荐在写文档时遵守一些简单约定：
 
-1. Always show the signature of a function at the top of the documentation, with a four-space indent
-   so that it is printed as Julia code.
+1. 始终在文档顶部显示函数的签名，带有四空格缩进
+   以便被像Julia代码一样显示。
 
-   This can be identical to the signature present in the Julia code (like `mean(x::AbstractArray)`),
-   or a simplified form. Optional arguments should be represented with their default values (i.e.
-   `f(x, y=1)`) when possible, following the actual Julia syntax. Optional arguments which do not
-   have a default value should be put in brackets (i.e. `f(x[, y])` and `f(x[, y[, z]])`). An alternative
-   solution is to use several lines: one without optional arguments, the other(s) with them. This
-   solution can also be used to document several related methods of a given function. When a function
-   accepts many keyword arguments, only include a `<keyword arguments>` placeholder in the signature
-   (i.e. `f(x; <keyword arguments>)`), and give the complete list under an `# Arguments` section
-   (see point 4 below).
-2. Include a single one-line sentence describing what the function does or what the object represents
-   after the simplified signature block. If needed, provide more details in a second paragraph, after
-   a blank line.
+   Julia代码中的签名显示是统一的（像`mean(x::AbstractArray)`），
+   另有简化模式。可选参数应该尽可能与默认值一同显示(例如
+   `f(x, y=1)`），遵循实际的Julia语法。没有默认值的
+   可选参数应该放在括号中（例如`f(x[, y])` 和 `f(x[, y[, z]]`)）。可选的解决方法是
+   使用多行：一个没有可选参数，其他的拥有可选参数（或者多个可选参数）。
+   这个解决方案也可以用作给某个函数的多个相关方法来写文档。当一个函数
+   接收到多个关键字参数，只在签名中包含占位符`<keyword arguments>`
+   （例如 `f(x; <keyword arguments>)`），并在`# 参数`章节给出完整列表
+   （参照下列点4）。
+2. 在简化的签名块后请包含一个描述函数能做什么或者对象代表什么的
+   单行句。如果需要的话，在一个空行之后，在第二段
+   提供更详细的信息。
 
-   The one-line sentence should use the imperative form ("Do this", "Return that") instead of the
-   third person (do not write "Returns the length...") when documenting functions. It should end
-   with a period. If the meaning of a function cannot be summarized easily, splitting it into separate
-   composable parts could be beneficial (this should not be taken as an absolute requirement for
-   every single case though).
-3. Do not repeat yourself.
+   当写文档时，单行句子硬使用祈使结构（“Do this”，“Return that”）而非
+   第三人称（不要写“Returns the length...”）。应
+   以句号结尾。如果函数的意义不能简单地总结，有利的方法是分成
+   分开的组合句（虽然这个不应被看做是对于每个事例
+   的绝对要求）。
+3. 不要自我重复。
 
-   Since the function name is given by the signature, there is no need to start the documentation
-   with "The function `bar`...": go straight to the point. Similarly, if the signature specifies
-   the types of the arguments, mentioning them in the description is redundant.
-4. Only provide an argument list when really necessary.
+   因为签名给出了函数名，所以没有必要用
+   "The function `bar`..."开始文档：直接说要点。相似地，如果签名指定了
+   参数的类型，在描述中提到这些是多余的。
+4. 只在确实必要时提供参数列表。
 
-   For simple functions, it is often clearer to mention the role of the arguments directly in the
-   description of the function's purpose. An argument list would only repeat information already
-   provided elsewhere. However, providing an argument list can be a good idea for complex functions
-   with many arguments (in particular keyword arguments). In that case, insert it after the general
-   description of the function, under an `# Arguments` header, with one `-` bullet for each argument.
-   The list should mention the types and default values (if any) of the arguments:
+   对于简单函数，直接在函数的目的描述中提到参数的作用
+   常常更加清楚。参数列表应只重复再其他地方提供过的
+   信息。然而提供一个参数列表对于拥有多个参数的复杂函数
+   是的好想法（特别是含有关键字参数的情况）。在这些事例中，请在函数的一般描述后
+   插入参数列表，在标题`# Arguments` 之后，每个参数之前有一个项目符号`-`。
+   参数列表应该提到参数的类型和默认值（如果有）：
 
    ```julia
    """
@@ -81,22 +80,22 @@ As in the example above, we recommend following some simple conventions when wri
    ...
    """
    ```
-5. Provide hints to related functions.
+5. 给相关函数提供提示。
 
-   Sometimes there are functions of related functionality. To increase discoverability please provide
-   a short list of these in a `See also:` paragraph.
+   有时会存在具有功能相联系的函数。为了提供可探索性请提供
+   一个相关函数的小列表，在段落`See also:`中。
 
    ```
    See also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)
    ```
-6. Include any code examples in an `# Examples` section.
+6. 请在`# Examples`中包含一些代码例子。
 
-   Examples should, whenever possible, be written as *doctests*. A *doctest* is a fenced code block
-   (see [Code blocks](@ref)) starting with ````` ```jldoctest````` and contains any number of `julia>`
-   prompts together with inputs and expected outputs that mimic the Julia REPL.
+   例子应尽可能按照*doctest*来写。*doctest*是一个栅栏分隔开的代码块
+   (参照 [Code blocks](@ref))，以 ````` ```jldoctest`````开头并包含任意数量的提示`julia>`
+   与输入和预期输出用来模拟Julia REPL。
 
-   For example in the following docstring a variable `a` is defined and the expected result, as printed
-   in a Julia REPL, appears afterwards:
+   例如在下面的docstring中定义了变量`a`，期待的输出
+   ，跟在Julia REPL中打印的一样，出现在后面。
 
    ````julia
    """
@@ -125,14 +124,14 @@ As in the example above, we recommend following some simple conventions when wri
        Note that whitespace in your doctest is significant! The doctest will fail if you misalign the
        output of pretty-printing an array, for example.
 
-   You can then run `make -C doc doctest=true` to run all the doctests in the Julia Manual and API
-   documentation, which will ensure that your example works.
+   你可以运行 `make -C doc doctest=true` 来运行在Julia手册和API文档中的doctests,
+   这样可以确保你的例子都能正常运行。
 
-   To indicate that the output result is truncated, you may write
-   `[...]` at the line where checking should stop. This is useful to
-   hide a stacktrace (which contains non-permanent references to lines
-   of julia code) when the doctest shows that an exception is thrown,
-   for example:
+   为了表示输出结果被截断了，你应该在校验
+   应该停止的一行写上`[...]`。这个在当
+   doctest显示有个异常被抛出时隐藏堆栈跟踪时很有用（堆栈跟踪包含
+   对julia代码的行的非永久引用）,
+   例如：
 
    ````julia
    ```jldoctest
@@ -142,21 +141,21 @@ As in the example above, we recommend following some simple conventions when wri
    ```
    ````
 
-   Examples that are untestable should be written within fenced code blocks starting with ````` ```julia`````
-   so that they are highlighted correctly in the generated documentation.
+   Julia那些不能进行测试的例子应该写在以````` ```julia`````开头的栅栏分隔的代码块中
+   以便在生成的文档中正确地高光显示。
 
    !!! tip
-       Wherever possible examples should be **self-contained** and **runnable** so that readers are able
-       to try them out without having to include any dependencies.
-7. Use backticks to identify code and equations.
+    例子应尽可能**独立**和**可运行**以便读者可以
+在不需要引入任何依赖的情况下进行对他们进行实验。
+7. 使用倒引号来标识代码和方程。
 
-   Julia identifiers and code excerpts should always appear between backticks ``` ` ``` to enable
-   highlighting. Equations in the LaTeX syntax can be inserted between double backticks ``` `` ```.
-   Use Unicode characters rather than their LaTeX escape sequence, i.e. ``` ``α = 1`` ``` rather
-   than ``` ``\\alpha = 1`` ```.
-8. Place the starting and ending `"""` characters on lines by themselves.
+   Julia标识符和代码摘录应该出现在倒引号``` ` ```之间来使其能
+   高光显示。LaTeX语法下的方程应该插入到双倒引号 ``` `` ```之间。
+   请使用Unicode字符而非LaTeX转义序列，比如 ``` ``α = 1`` ``` 而非
+   ``` ``\\alpha = 1`` ```。
+8. 请将起始和结束的`"""`符号单独成行。
 
-   That is, write:
+   也就是说，请写：
 
    ```julia
    """
@@ -167,7 +166,7 @@ As in the example above, we recommend following some simple conventions when wri
    f(x, y) = ...
    ```
 
-   rather than:
+   而非：
 
    ```julia
    """...
@@ -176,21 +175,21 @@ As in the example above, we recommend following some simple conventions when wri
    f(x, y) = ...
    ```
 
-   This makes it more clear where docstrings start and end.
-9. Respect the line length limit used in the surrounding code.
+   这将让docstring的起始和结束位置更加清楚。
+9. 请在代码中遵守单行长度限制。
 
-   Docstrings are edited using the same tools as code. Therefore, the same conventions should apply.
-   It it advised to add line breaks after 92 characters.
-6. Provide information allowing custom types to implement the function in an
-   `# Implementation` section. These implementation details intended for developers
-   rather than users, explaining e.g. which functions should be overridden and which functions
-   automatically use appropriate fallbacks, are better kept separate from the main description of
-   the function's behavior.
+   Docstring是使用与代码相同的工具编辑的。所以应运用同样的约定。
+   建议一行92个字符后换行。
+6. 请提供允许自定义类型来为此函数实现接口的信息，
+   在一个`# Implementation`章节。这些为了开发者而非用户的
+   解释了例如哪些函数应该被重写和哪些函数自动使用恰当的备用等信息的
+   接口信息最好与描述函数的主体描述
+   分开。
 
-## Accessing Documentation
+## 访问文档
 
-Documentation can be accessed at the REPL or in [IJulia](https://github.com/JuliaLang/IJulia.jl)
-by typing `?` followed by the name of a function or macro, and pressing `Enter`. For example,
+文档可以在REPL中访问，也可以在 [IJulia](https://github.com/JuliaLang/IJulia.jl)
+中通过键入`?`紧接函数或者宏的名字并按下`Enter`访问。例如，
 
 ```julia
 ?cos
@@ -198,17 +197,17 @@ by typing `?` followed by the name of a function or macro, and pressing `Enter`.
 ?r""
 ```
 
-will bring up docs for the relevant function, macro or string macro respectively. In [Juno](http://junolab.org)
-using `Ctrl-J, Ctrl-D` will bring up documentation for the object under the cursor.
+会分别为相应的函数，宏或者字符显示文档。在[Juno](http://junolab.org)
+中，使用`Ctrl-J, Ctrl-D`会为光标处的对象显示文档。
 
-## Functions & Methods
+## 函数与方法
 
-Functions in Julia may have multiple implementations, known as methods. While it's good practice
-for generic functions to have a single purpose, Julia allows methods to be documented individually
-if necessary. In general, only the most generic method should be documented, or even the function
-itself (i.e. the object created without any methods by `function bar end`). Specific methods should
-only be documented if their behaviour differs from the more generic ones. In any case, they should
-not repeat the information provided elsewhere. For example:
+在Julia中函数可能有多种实现，被称为方法。虽然通用函数
+一般只有一个目的，Julia允许在必要时可以对方法独立写文档。
+通常，应该只有最通用的方法才有文档，或者甚至只是函数本身
+（也就是在`function bar end`之前没有任何方法的对象）。特定方法应该
+只因为其行为与其他通用方法有所区别才写文档。在任何情况下都不应
+重复其他地方有的信息。例如
 
 ```julia
 """
@@ -243,20 +242,13 @@ search: * .*
   When applied to strings, concatenates them.
 ```
 
-When retrieving documentation for a generic function, the metadata for each method is concatenated
-with the `catdoc` function, which can of course be overridden for custom types.
+当从通用函数里抽取文档时，每个方法的元数据会用函数`catdoc`拼接，其当然可以被自定义类型重写。
 
-## Advanced Usage
+## 进阶用法
 
-The `@doc` macro associates its first argument with its second in a per-module dictionary called
-`META`. By default, documentation is expected to be written in Markdown, and the `doc""` string
-macro simply creates an object representing the Markdown content. In the future it is likely to
-do more advanced things such as allowing for relative image or link paths.
+`@doc`宏在叫做`META`的每个模块的字典中连接他的第一个和第二个参数。默认地，文档希望是用Markdown写成，并且`doc"""`字符串宏简单地创造一个代表了Markdown内容的对象。在未来，有可能支持更多的进阶功能比如考虑到相关的图像或者链接路径。
 
-To make it easier to write documentation, the parser treats the macro name `@doc` specially:
-if a call to `@doc` has one argument, but another expression appears after a single line
-break, then that additional expression is added as an argument to the macro.
-Therefore the following syntax is parsed as a 2-argument call to `@doc`:
+为了让写文档更加简单，语法分析器对宏名`@doc`特殊对待：如果`@doc`的调用只有一个参数，但是在下一行出现了另外一个表达式，那么这个表达式就会追加为宏的参数。所以接下来的语法会被分析成`@doc`的2个参数的调用：
 
 ```julia
 @doc raw"""
@@ -265,20 +257,16 @@ Therefore the following syntax is parsed as a 2-argument call to `@doc`:
 f(x) = x
 ```
 
-This makes it easy to use an arbitrary object (here a `raw` string) as a docstring.
+这就让使用任意对象（这里指的是`原始`字符串）作为docstring变得简单。
 
-When used for retrieving documentation, the `@doc` macro (or equally, the `doc` function) will
-search all `META` dictionaries for metadata relevant to the given object and return it. The returned
-object (some Markdown content, for example) will by default display itself intelligently. This
-design also makes it easy to use the doc system in a programmatic way; for example, to re-use
-documentation between different versions of a function:
+当`@doc`宏（或者`doc`函数）用作抽取文档时，他会在所有的`META`字典寻找与对象相关的元数据并且返回。返回的对象（例如一些Markdown内容）会默认智能地显示。这个设计也让以编程方法使用文档系统变得容易；例如，在一个函数的不同版本中重用文档：
 
 ```julia
 @doc "..." foo!
 @doc (@doc foo!) foo
 ```
 
-Or for use with Julia's metaprogramming functionality:
+或者与Julia的元编程功能一起使用：
 
 ```julia
 for (f, op) in ((:add, :+), (:subtract, :-), (:multiply, :*), (:divide, :/))
