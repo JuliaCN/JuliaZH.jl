@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "入门",
     "title": "入门",
     "category": "section",
-    "text": "无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。 只要按照 https://julialang.org/downloads/ 的提示就可以轻松下载并安装 Julia。启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 julia 就可以启动：io = IOBuffer()\nBase.banner(io)\nbanner = String(take!(io))\nimport Markdown\nMarkdown.parse(\"```\\n\\$ julia\\n\\n$(banner)\\njulia> 1 + 2\\n3\\n\\njulia> ans\\n3\\n```\")输入 CTRL-D（同时按 Ctrl 键和 d 键）或 exit() 便可以退出交互式会话。在交互式模式中，julia 会显示一个横幅并提示用户输入。一旦用户输入了一段完整的代码，例如 1 + 2，然后敲回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 ans 总会存储上一次执行代码的结果，需要注意的是，变量 ans 只在交互式会话中才有，不适用于其它方法运行的 Julia。在交互式会话中，要运行写在源文件 file.jl 中的代码，只需输入 include(\"file.jl\")。如果想非交互式地执行文件中的代码，可以把文件名作为 julia 命令的第一个参数：$ julia script.jl arg1 arg2...如这个例子所示，julia 后跟着的命令行参数会被作为程序 script.jl 的命令行参数。这些参数使用全局常量 ARGS 来传递，脚本自身的名字会以全局常量 PROGRAM_FILE 传入。注意当脚本以命令行里的 -e 选项输入时，ARGS 也会被设定（见下面的 julia 帮助输出）但是 PROGRAM_FILE 会是空的。比如说，如果想把输入给一个脚本的参数给显示出来，你可以这么写：$ julia -e \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' foo bar\n\nfoo\nbar或者你可以把代码写到一个脚本文件中再执行它：$ echo \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' > script.jl\n$ julia script.jl foo bar\nscript.jl\nfoo\nbar可以使用 -- 分隔符来将传给脚本文件和 Julia 本身的命令行参数区分开：$ julia --color=yes -O -- foo.jl arg1 arg2..使用选项 -p 或者 --machine-file 可以在并行模式下启动 Julia。 -p n 会启动额外的 n 个 worker，使用 --machine-file file 会为 file 文件中的每一行启动一个 worker。 定义在 file 中的机器必须能够通过一个不需要密码的 ssh 登陆访问到，且 Julia 的安装位置需要和当前主机相同。 定义机器的格式为 [count*][user@]host[:port] [bind_addr[:port]]。 user 默认值是当前用户； port 默认值是标准 ssh 端口； count 是在这个节点上的 worker 的数量，默认是 1； 可选的 bind-to bind_addr[:port] 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。如果你想让 Julia 每次启动都自动执行一些代码，你可以把它们放在 ~/.julia/config/startup.jl 中：$ echo \'println(\"Greetings! 你好! 안녕하세요?\")\' > ~/.julia/config/startup.jl\n$ julia\nGreetings! 你好! 안녕하세요?\n\n...和 perl 和 ruby 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：julia [switches] -- [programfile] [args...]选项 描述\n-v, --version 显示版本信息\n-h, --help 打印本条帮助信息\n-J, --sysimage <file> 用指定的镜像文件 (system image file) 启动\n-H, --home <dir> 设置 julia 可执行文件的路径\n--startup-file={yes|no} 是否载入 ~/.julia/config/startup.jl\n--handle-signals={yes|no} 开启或关闭 Julia 默认的 signal handlers\n--sysimage-native-code={yes|no} 在可能的情况下，使用系统镜像里的原生代码\n--compiled-modules={yes|no} 开启或关闭 module 的增量预编译功能\n-e, --eval <expr> 执行 <expr>\n-E, --print <expr> 执行 <expr> 并显示结果\n-L, --load <file> 立即在所有进程中载入 <file>\n-p, --procs {N|auto} 这里的整数 N 表示启动 N 个额外的工作进程；auto 表示启动与 CPU 线程数目（logical cores）一样多的进程\n--machine-file <file> 再 <file> 中列出的主机上运行进程\n-i 非交互式模式；REPL 运行且 isinteractive() 为 true\n-q, --quiet 安静的启动；REPL 启动时无横幅，不显示警告\n--banner={yes|no|auto} 开启或关闭 REPL 横幅\n--color={yes|no|auto} 开启或关闭文字颜色\n--history-file={yes|no} 载入或导出历史记录\n--depwarn={yes|no|error} 开启或关闭语法弃用警告，error 表示将弃用警告转换为错误。\n--warn-overwrite={yes|no} 开启或关闭“method overwrite”警告\n-C, --cpu-target <target> Limit usage of cpu features up to <target>; set to help to see the available options\n-O, --optimize={0,1,2,3} 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。\n-g, -g <level> 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。\n--inline={yes|no} 控制是否允许函数内联，此选项会覆盖源文件中的 @inline 声明\n--check-bounds={yes|no} 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明\n--math-mode={ieee,fast} 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 @fastmath 声明\n--code-coverage={none|user|all} 对源文件中每行代码执行的次数计数\n--code-coverage 等价于 --code-coverage=user\n--track-allocation={none|user|all} 对源文件中每行代码的内存分配计数，单位 byte\n--track-allocation 等价于 --track-allocation=user"
+    "text": "无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。 只要按照 https://julialang.org/downloads/ 的提示就可以轻松下载并安装 Julia。启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 julia 就可以启动：io = IOBuffer()\nBase.banner(io)\nbanner = String(take!(io))\nimport Markdown\nMarkdown.parse(\"```\\n\\$ julia\\n\\n$(banner)\\njulia> 1 + 2\\n3\\n\\njulia> ans\\n3\\n```\")输入 CTRL-D（同时按 Ctrl 键和 d 键）或 exit() 便可以退出交互式会话。在交互式模式中，julia 会显示一个横幅并提示用户输入。一旦用户输入了一段完整的代码，例如 1 + 2，然后敲回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 ans 总会存储上一次执行代码的结果，需要注意的是，变量 ans 只在交互式会话中才有，不适用于其它方法运行的 Julia。在交互式会话中，要运行写在源文件 file.jl 中的代码，只需输入 include(\"file.jl\")。如果想非交互式地执行文件中的代码，可以把文件名作为 julia 命令的第一个参数：$ julia script.jl arg1 arg2...如这个例子所示，julia 后跟着的命令行参数会被作为程序 script.jl 的命令行参数。这些参数使用全局常量 ARGS 来传递，脚本自身的名字会以全局常量 PROGRAM_FILE 传入。注意当脚本以命令行里的 -e 选项输入时，ARGS 也会被设定（见下面的 julia 帮助输出）但是 PROGRAM_FILE 会是空的。比如说，如果想把输入给一个脚本的参数给显示出来，你可以这么写：$ julia -e \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' foo bar\n\nfoo\nbar或者你可以把代码写到一个脚本文件中再执行它：$ echo \'println(PROGRAM_FILE); for x in ARGS; println(x); end\' > script.jl\n$ julia script.jl foo bar\nscript.jl\nfoo\nbar可以使用 -- 分隔符来将传给脚本文件和 Julia 本身的命令行参数区分开：$ julia --color=yes -O -- foo.jl arg1 arg2..使用选项 -p 或者 --machine-file 可以在并行模式下启动 Julia。 -p n 会启动额外的 n 个 worker，使用 --machine-file file 会为 file 文件中的每一行启动一个 worker。 定义在 file 中的机器必须能够通过一个不需要密码的 ssh 登陆访问到，且 Julia 的安装位置需要和当前主机相同。 定义机器的格式为 [count*][user@]host[:port] [bind_addr[:port]]。 user 默认值是当前用户； port 默认值是标准 ssh 端口； count 是在这个节点上的 worker 的数量，默认是 1； 可选的 bind-to bind_addr[:port] 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。如果你想让 Julia 每次启动都自动执行一些代码，你可以把它们放在 ~/.julia/config/startup.jl 中：$ echo \'println(\"Greetings! 你好! 안녕하세요?\")\' > ~/.julia/config/startup.jl\n$ julia\nGreetings! 你好! 안녕하세요?\n\n...和 perl 和 ruby 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：julia [switches] -- [programfile] [args...]选项 描述\n-v, --version 显示版本信息\n-h, --help 打印本条帮助信息\n-J, --sysimage <file> 用指定的镜像文件 (system image file) 启动\n-H, --home <dir> 设置 julia 可执行文件的路径\n--startup-file={yes|no} 是否载入 ~/.julia/config/startup.jl\n--handle-signals={yes|no} 开启或关闭 Julia 默认的 signal handlers\n--sysimage-native-code={yes|no} 在可能的情况下，使用系统镜像里的原生代码\n--compiled-modules={yes|no} 开启或关闭 module 的增量预编译功能\n-e, --eval <expr> 执行 <expr>\n-E, --print <expr> 执行 <expr> 并显示结果\n-L, --load <file> 立即在所有进程中载入 <file>\n-p, --procs {N|auto} 这里的整数 N 表示启动 N 个额外的工作进程；auto 表示启动与 CPU 线程数目（logical cores）一样多的进程\n--machine-file <file> 在 <file> 中列出的主机上运行进程\n-i 非交互式模式；REPL 运行且 isinteractive() 为 true\n-q, --quiet 安静的启动；REPL 启动时无横幅，不显示警告\n--banner={yes|no|auto} 开启或关闭 REPL 横幅\n--color={yes|no|auto} 开启或关闭文字颜色\n--history-file={yes|no} 载入或导出历史记录\n--depwarn={yes|no|error} 开启或关闭语法弃用警告，error 表示将弃用警告转换为错误。\n--warn-overwrite={yes|no} 开启或关闭“method overwrite”警告\n-C, --cpu-target <target> Limit usage of cpu features up to <target>; set to help to see the available options\n-O, --optimize={0,1,2,3} 设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。\n-g, -g <level> 开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。\n--inline={yes|no} 控制是否允许函数内联，此选项会覆盖源文件中的 @inline 声明\n--check-bounds={yes|no} 设置边界检查状态：始终检查或永不检查。永不检查时会忽略源文件中的相应声明\n--math-mode={ieee,fast} 开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 @fastmath 声明\n--code-coverage={none|user|all} 对源文件中每行代码执行的次数计数\n--code-coverage 等价于 --code-coverage=user\n--track-allocation={none|user|all} 对源文件中每行代码的内存分配计数，单位 byte\n--track-allocation 等价于 --track-allocation=user"
 },
 
 {
@@ -221,7 +221,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "算术运算符",
     "category": "section",
-    "text": "以下 算术运算符 支持所有的基本算术类型：表达式 名称 描述\n+x 一元加法运算符 全等操作\n-x 一元减法运算符 将值变为其相反数\nx + y 二元加法运算符 执行加法\nx - y 二元减法运算符 执行减法\nx * y 乘法运算符 执行乘法\nx / y 除法运算符 执行除法\nx ÷ y 整除 取x/y的整数部分\nx \\ y 反向除法 等价于y / x\nx ^ y 幂操作符 x的y次幂\nx % y 取余 等价于rem(x,y)以及对Bool类型的否定：表达式 名称 描述\n!x 否定 将 true 和 false 互换Julia\'s promotion system makes arithmetic operations on mixtures of argument types \"just work\" naturally and automatically. See Conversion and Promotion for details of the promotion system.这里是使用算术运算的一些简单例子：julia> 1 + 2 + 3\n6\n\njulia> 1 - 2\n-1\n\njulia> 3*2/12\n0.5(By convention, we tend to space operators more tightly if they get applied before other nearby operators. For instance, we would generally write -x + 2 to reflect that first x gets negated, and then 2 is added to that result.)"
+    "text": "以下 算术运算符 支持所有的基本算术类型：表达式 名称 描述\n+x 一元加法运算符 全等操作\n-x 一元减法运算符 将值变为其相反数\nx + y 二元加法运算符 执行加法\nx - y 二元减法运算符 执行减法\nx * y 乘法运算符 执行乘法\nx / y 除法运算符 执行除法\nx ÷ y 整除 取x/y的整数部分\nx \\ y 反向除法 等价于y / x\nx ^ y 幂操作符 x的y次幂\nx % y 取余 等价于rem(x,y)以及对Bool类型的否定：表达式 名称 描述\n!x 否定 将 true 和 false 互换Julia的类型提示系统使得混合参数类型上的代数运算也能平滑、自动地进行。可以参考 类型提升系统 来了解更多。这里是使用算术运算的一些简单例子：julia> 1 + 2 + 3\n6\n\njulia> 1 - 2\n-1\n\njulia> 3*2/12\n0.5习惯上我们会把优先运算的操作符紧邻操作数，比如 -x + 2 表示先要给 x  取反，然后再加 2 。"
 },
 
 {
@@ -229,7 +229,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "位运算符",
     "category": "section",
-    "text": "所有原始整数类型都支持以下按位算符：表达式 名称\n~x 按位取反\nx & y 按位与\nx | y 按位或\nx ⊻ y 按位异或（逻辑异或）\nx >>> y 逻辑右移 right\nx >> y 算术右移\nx << y 逻辑/算术左移以下是位运算符的一些示例：julia> ~123\n-124\n\njulia> 123 & 234\n106\n\njulia> 123 | 234\n251\n\njulia> 123 ⊻ 234\n145\n\njulia> xor(123, 234)\n145\n\njulia> ~UInt32(123)\n0xffffff84\n\njulia> ~UInt8(123)\n0x84"
+    "text": "所有原始整数类型都支持以下按位算符：表达式 名称\n~x 按位取反\nx & y 按位与\nx | y 按位或\nx ⊻ y 按位异或（逻辑异或）\nx >>> y 逻辑右移\nx >> y 算术右移\nx << y 逻辑/算术左移以下是位运算符的一些示例：julia> ~123\n-124\n\njulia> 123 & 234\n106\n\njulia> 123 | 234\n251\n\njulia> 123 ⊻ 234\n145\n\njulia> xor(123, 234)\n145\n\njulia> ~UInt32(123)\n0xffffff84\n\njulia> ~UInt8(123)\n0x84"
 },
 
 {
@@ -237,15 +237,15 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "复合赋值操作符",
     "category": "section",
-    "text": "Every binary arithmetic and bitwise operator also has an updating version that assigns the result of the operation back into its left operand. The updating version of the binary operator is formed by placing a = immediately after the operator. For example, writing x += 3 is equivalent to writing x = x + 3:julia> x = 1\n1\n\njulia> x += 3\n4\n\njulia> x\n4The updating versions of all the binary arithmetic and bitwise operators are:+=  -=  *=  /=  \\=  ÷=  %=  ^=  &=  |=  ⊻=  >>>=  >>=  <<=note: Note\nAn updating operator rebinds the variable on the left-hand side. As a result, the type of the variable may change.julia> x = 0x01; typeof(x)\nUInt8\n\njulia> x *= 2 # Same as x = x * 2\n2\n\njulia> typeof(x)\nInt64"
+    "text": "每一个双目运算符和位运算符都可以给左操作数复合赋值：方法是把 = 直接放在双目运算符后面。比如， x += 3 等价于 x = x + 3 。julia> x = 1\n1\n\njulia> x += 3\n4\n\njulia> x\n4双目运算和位操作的复合赋值操作符有下面几种：+=  -=  *=  /=  \\=  ÷=  %=  ^=  &=  |=  ⊻=  >>>=  >>=  <<=note: Note\n复合赋值后会把变量重新绑定到左操作数上，所以变量的类型可能会改变。julia> x = 0x01; typeof(x)\nUInt8\n\njulia> x *= 2 # Same as x = x * 2\n2\n\njulia> typeof(x)\nInt64"
 },
 
 {
     "location": "manual/mathematical-operations/#man-dot-operators-1",
     "page": "数学运算和初等函数",
-    "title": "Vectorized \"dot\" operators",
+    "title": "矢量化的 \"点\" 运算符",
     "category": "section",
-    "text": "For every binary operation like ^, there is a corresponding \"dot\" operation .^ that is automatically defined to perform ^ element-by-element on arrays. For example, [1,2,3] ^ 3 is not defined, since there is no standard mathematical meaning to \"cubing\" a (non-square) array, but [1,2,3] .^ 3 is defined as computing the elementwise (or \"vectorized\") result [1^3, 2^3, 3^3].  Similarly for unary operators like ! or √, there is a corresponding .√ that applies the operator elementwise.julia> [1,2,3] .^ 3\n3-element Array{Int64,1}:\n  1\n  8\n 27More specifically, a .^ b is parsed as the \"dot\" call (^).(a,b), which performs a broadcast operation: it can combine arrays and scalars, arrays of the same size (performing the operation elementwise), and even arrays of different shapes (e.g. combining row and column vectors to produce a matrix). Moreover, like all vectorized \"dot calls,\" these \"dot operators\" are fusing. For example, if you compute 2 .* A.^2 .+ sin.(A) (or equivalently @. 2A^2 + sin(A), using the @. macro) for an array A, it performs a single loop over A, computing 2a^2 + sin(a) for each element of A. In particular, nested dot calls like f.(g.(x)) are fused, and \"adjacent\" binary operators like x .+ 3 .* x.^2 are equivalent to nested dot calls (+).(x, (*).(3, (^).(x, 2))).Furthermore, \"dotted\" updating operators like a .+= b (or @. a += b) are parsed as a .= a .+ b, where .= is a fused in-place assignment operation (see the dot syntax documentation).Note the dot syntax is also applicable to user-defined operators. For example, if you define ⊗(A,B) = kron(A,B) to give a convenient infix syntax A ⊗ B for Kronecker products (kron), then [A,B] .⊗ [C,D] will compute [A⊗C, B⊗D] with no additional coding.Combining dot operators with numeric literals can be ambiguous. For example, it is not clear whether 1.+x means 1. + x or 1 .+ x. Therefore this syntax is disallowed, and spaces must be used around the operator in such cases."
+    "text": "对于每一个双目运算符，比如 ^ ，都有一个“点”运算符 .^ 与之对应，它会对数组元素一一执行 ^ 运算。比如 [1,2,3] ^ 3 是非法的，因为数学上没有给（长宽不一样的）数组的立方下过定义。但是 [1,2,3] .^ 3 在Julia是合法的，它会逐个元素（即“向量式的”）计算，得到 [1^3, 2^3, 3^3] 。类似地，像 ! 和 √ 这种单目运算符也会依次针对每个元素运算。julia> [1,2,3] .^ 3\n3-element Array{Int64,1}:\n  1\n  8\n 27More specifically, a .^ b is parsed as the \"dot\" call (^).(a,b), which performs a broadcast operation: it can combine arrays and scalars, arrays of the same size (performing the operation elementwise), and even arrays of different shapes (e.g. combining row and column vectors to produce a matrix). Moreover, like all vectorized \"dot calls,\" these \"dot operators\" are fusing. For example, if you compute 2 .* A.^2 .+ sin.(A) (or equivalently @. 2A^2 + sin(A), using the @. macro) for an array A, it performs a single loop over A, computing 2a^2 + sin(a) for each element of A. In particular, nested dot calls like f.(g.(x)) are fused, and \"adjacent\" binary operators like x .+ 3 .* x.^2 are equivalent to nested dot calls (+).(x, (*).(3, (^).(x, 2))).Furthermore, \"dotted\" updating operators like a .+= b (or @. a += b) are parsed as a .= a .+ b, where .= is a fused in-place assignment operation (see the dot syntax documentation).Note the dot syntax is also applicable to user-defined operators. For example, if you define ⊗(A,B) = kron(A,B) to give a convenient infix syntax A ⊗ B for Kronecker products (kron), then [A,B] .⊗ [C,D] will compute [A⊗C, B⊗D] with no additional coding.Combining dot operators with numeric literals can be ambiguous. For example, it is not clear whether 1.+x means 1. + x or 1 .+ x. Therefore this syntax is disallowed, and spaces must be used around the operator in such cases."
 },
 
 {
@@ -253,13 +253,13 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "数值比较",
     "category": "section",
-    "text": "Standard comparison operations are defined for all the primitive numeric types:Operator 名称\n== 相等\n!=, ≠ 不等\n< 小于\n<=, ≤ 小于等于\n> 大于\n>=, ≥ 大于等于下面是些简单的例子：julia> 1 == 1\ntrue\n\njulia> 1 == 2\nfalse\n\njulia> 1 != 2\ntrue\n\njulia> 1 == 1.0\ntrue\n\njulia> 1 < 2\ntrue\n\njulia> 1.0 > 3\nfalse\n\njulia> 1 >= 1.0\ntrue\n\njulia> -1 <= 1\ntrue\n\njulia> -1 <= -1\ntrue\n\njulia> -1 <= -2\nfalse\n\njulia> 3 < -0.5\nfalseIntegers are compared in the standard manner – by comparison of bits. Floating-point numbers are compared according to the IEEE 754 standard:Finite numbers are ordered in the usual manner.\nPositive zero is equal but not greater than negative zero.\nInf is equal to itself and greater than everything else except NaN.\n-Inf is equal to itself and less then everything else except NaN.\nNaN is not equal to, not less than, and not greater than anything, including itself.The last point is potentially surprising and thus worth noting:julia> NaN == NaN\nfalse\n\njulia> NaN != NaN\ntrue\n\njulia> NaN < NaN\nfalse\n\njulia> NaN > NaN\nfalseand can cause especial headaches with arrays:julia> [1 NaN] == [1 NaN]\nfalseJulia provides additional functions to test numbers for special values, which can be useful in situations like hash key comparisons:函数 Tests if\nisequal(x, y) x and y are identical\nisfinite(x) x is a finite number\nisinf(x) x is infinite\nisnan(x) x is not a numberisequal considers NaNs equal to each other:julia> isequal(NaN, NaN)\ntrue\n\njulia> isequal([1 NaN], [1 NaN])\ntrue\n\njulia> isequal(NaN, NaN32)\ntrueisequal can also be used to distinguish signed zeros:julia> -0.0 == 0.0\ntrue\n\njulia> isequal(-0.0, 0.0)\nfalseMixed-type comparisons between signed integers, unsigned integers, and floats can be tricky. A great deal of care has been taken to ensure that Julia does them correctly.For other types, isequal defaults to calling ==, so if you want to define equality for your own types then you only need to add a == method.  If you define your own equality function, you should probably define a corresponding hash method to ensure that isequal(x,y) implies hash(x) == hash(y)."
+    "text": "Standard comparison operations are defined for all the primitive numeric types:Operator 名称\n== 相等\n!=, ≠ 不等\n< 小于\n<=, ≤ 小于等于\n> 大于\n>=, ≥ 大于等于下面是些简单的例子：julia> 1 == 1\ntrue\n\njulia> 1 == 2\nfalse\n\njulia> 1 != 2\ntrue\n\njulia> 1 == 1.0\ntrue\n\njulia> 1 < 2\ntrue\n\njulia> 1.0 > 3\nfalse\n\njulia> 1 >= 1.0\ntrue\n\njulia> -1 <= 1\ntrue\n\njulia> -1 <= -1\ntrue\n\njulia> -1 <= -2\nfalse\n\njulia> 3 < -0.5\nfalseIntegers are compared in the standard manner – by comparison of bits. Floating-point numbers are compared according to the IEEE 754 standard:Finite numbers are ordered in the usual manner.\nPositive zero is equal but not greater than negative zero.\nInf is equal to itself and greater than everything else except NaN.\n-Inf is equal to itself and less then everything else except NaN.\nNaN is not equal to, not less than, and not greater than anything, including itself.The last point is potentially surprising and thus worth noting:julia> NaN == NaN\nfalse\n\njulia> NaN != NaN\ntrue\n\njulia> NaN < NaN\nfalse\n\njulia> NaN > NaN\nfalseand can cause especial headaches with arrays:julia> [1 NaN] == [1 NaN]\nfalseJulia provides additional functions to test numbers for special values, which can be useful in situations like hash key comparisons:函数 测试是否满足如下性质\nisequal(x, y) x 与 y 是完全相同的\nisfinite(x) x 是有限大的数字\nisinf(x) x 是（正/负）无穷大\nisnan(x) x 是 NaNisequal 认为 NaN 之间是相等的：julia> isequal(NaN, NaN)\ntrue\n\njulia> isequal([1 NaN], [1 NaN])\ntrue\n\njulia> isequal(NaN, NaN32)\ntrueisequal 也能用来区分带符号的零：julia> -0.0 == 0.0\ntrue\n\njulia> isequal(-0.0, 0.0)\nfalseMixed-type comparisons between signed integers, unsigned integers, and floats can be tricky. A great deal of care has been taken to ensure that Julia does them correctly.For other types, isequal defaults to calling ==, so if you want to define equality for your own types then you only need to add a == method.  If you define your own equality function, you should probably define a corresponding hash method to ensure that isequal(x,y) implies hash(x) == hash(y)."
 },
 
 {
-    "location": "manual/mathematical-operations/#Chaining-comparisons-1",
+    "location": "manual/mathematical-operations/#链式比较-1",
     "page": "数学运算和初等函数",
-    "title": "Chaining comparisons",
+    "title": "链式比较",
     "category": "section",
     "text": "Unlike most languages, with the notable exception of Python, comparisons can be arbitrarily chained:julia> 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5\ntrueChaining comparisons is often quite convenient in numerical code. Chained comparisons use the && operator for scalar comparisons, and the & operator for elementwise comparisons, which allows them to work on arrays. For example, 0 .< A .< 1 gives a boolean array whose entries are true where the corresponding elements of A are between 0 and 1.Note the evaluation behavior of chained comparisons:julia> v(x) = (println(x); x)\nv (generic function with 1 method)\n\njulia> v(1) < v(2) <= v(3)\n2\n1\n3\ntrue\n\njulia> v(1) > v(2) <= v(3)\n2\n1\nfalseThe middle expression is only evaluated once, rather than twice as it would be if the expression were written as v(1) < v(2) && v(2) <= v(3). However, the order of evaluations in a chained comparison is undefined. It is strongly recommended not to use expressions with side effects (such as printing) in chained comparisons. If side effects are required, the short-circuit && operator should be used explicitly (see Short-Circuit Evaluation)."
 },
@@ -273,67 +273,67 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/mathematical-operations/#Operator-Precedence-and-Associativity-1",
+    "location": "manual/mathematical-operations/#运算符的优先级与结合性-1",
     "page": "数学运算和初等函数",
-    "title": "Operator Precedence and Associativity",
+    "title": "运算符的优先级与结合性",
     "category": "section",
-    "text": "Julia applies the following order and associativity of operations, from highest precedence to lowest:Category Operators Associativity\nSyntax . followed by :: Left\n幂 ^ Right\nUnary + - √ Right[1]\nBitshifts << >> >>> Left\nFractions // Left\nMultiplication * / % & \\ ÷ Left[2]\nAddition + - | ⊻ Left[2]\nSyntax : .. Left\nSyntax |> Left\nSyntax <| Right\nComparisons > < >= <= == === != !== <: Non-associative\nControl flow && followed by || followed by ? Right\nPair => Right\nAssignments = += -= *= /= //= \\= ^= ÷= %= |= &= ⊻= <<= >>= >>>= Right[1]: The unary operators + and - require explicit parentheses around their argument to disambiguate them from the operator ++, etc. Other compositions of unary operators are parsed with right-associativity, e. g., √√-a as √(√(-a)).[2]: The operators +, ++ and * are non-associative. a + b + c is parsed as +(a, b, c) not +(+(a, b), c). However, the fallback methods for +(a, b, c, d...) and *(a, b, c, d...) both default to left-associative evaluation.For a complete list of every Julia operator\'s precedence, see the top of this file: src/julia-parser.scmYou can also find the numerical precedence for any given operator via the built-in function Base.operator_precedence, where higher numbers take precedence:julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)\n(11, 13, 17)\n\njulia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)\n(0, 1, 1)A symbol representing the operator associativity can also be found by calling the built-in function Base.operator_associativity:julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)\n(:left, :none, :right)\n\njulia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Base.operator_associativity(:→)\n(:left, :none, :right)Note that symbols such as :sin return precedence 0. This value represents invalid operators and not operators of lowest precedence. Similarly, such operators are assigned associativity :none."
+    "text": "Julia applies the following order and associativity of operations, from highest precedence to lowest:分类 运算符 结合性\n语法组成 . followed by :: 左结合\n幂运算 ^ 右结合\n一元运算符 + - √ 右结合[1]\n位移运算 << >> >>> 左结合\n除法 // 左结合\n乘法 * / % & \\ ÷ 左结合[2]\n加法 + - | ⊻ 左结合[2]\n语法组成 : .. 左结合\n语法组成 |> 左结合\n语法组成 <| 右结合\n比较 > < >= <= == === != !== <: 无结合性\n控制流程 && followed by || followed by ? 右结合\nPair => 右结合\n赋值 = += -= *= /= //= \\= ^= ÷= %= |= &= ⊻= <<= >>= >>>= 右结合[1]: The unary operators + and - require explicit parentheses around their argument to disambiguate them from the operator ++, etc. Other compositions of unary operators are parsed with right-associativity, e. g., √√-a as √(√(-a)).[2]: The operators +, ++ and * are non-associative. a + b + c is parsed as +(a, b, c) not +(+(a, b), c). However, the fallback methods for +(a, b, c, d...) and *(a, b, c, d...) both default to left-associative evaluation.For a complete list of every Julia operator\'s precedence, see the top of this file: src/julia-parser.scmYou can also find the numerical precedence for any given operator via the built-in function Base.operator_precedence, where higher numbers take precedence:julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)\n(11, 13, 17)\n\njulia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)\n(0, 1, 1)A symbol representing the operator associativity can also be found by calling the built-in function Base.operator_associativity:julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)\n(:left, :none, :right)\n\njulia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Base.operator_associativity(:→)\n(:left, :none, :right)Note that symbols such as :sin return precedence 0. This value represents invalid operators and not operators of lowest precedence. Similarly, such operators are assigned associativity :none."
 },
 
 {
-    "location": "manual/mathematical-operations/#Numerical-Conversions-1",
+    "location": "manual/mathematical-operations/#数值转换-1",
     "page": "数学运算和初等函数",
-    "title": "Numerical Conversions",
+    "title": "数值转换",
     "category": "section",
-    "text": "Julia supports three forms of numerical conversion, which differ in their handling of inexact conversions.The notation T(x) or convert(T,x) converts x to a value of type T.\nIf T is a floating-point type, the result is the nearest representable value, which could be positive or negative infinity.\nIf T is an integer type, an InexactError is raised if x is not representable by T.\nx % T converts an integer x to a value of integer type T congruent to x modulo 2^n, where n is the number of bits in T. In other words, the binary representation is truncated to fit.\nThe Rounding functions take a type T as an optional argument. For example, round(Int,x) is a shorthand for Int(round(x)).The following examples show the different forms.julia> Int8(127)\n127\n\njulia> Int8(128)\nERROR: InexactError: trunc(Int8, 128)\nStacktrace:\n[...]\n\njulia> Int8(127.0)\n127\n\njulia> Int8(3.14)\nERROR: InexactError: Int8(Int8, 3.14)\nStacktrace:\n[...]\n\njulia> Int8(128.0)\nERROR: InexactError: Int8(Int8, 128.0)\nStacktrace:\n[...]\n\njulia> 127 % Int8\n127\n\njulia> 128 % Int8\n-128\n\njulia> round(Int8,127.4)\n127\n\njulia> round(Int8,127.6)\nERROR: InexactError: trunc(Int8, 128.0)\nStacktrace:\n[...]See Conversion and Promotion for how to define your own conversions and promotions."
+    "text": "Julia supports three forms of numerical conversion, which differ in their handling of inexact conversions.The notation T(x) or convert(T,x) converts x to a value of type T.\nIf T is a floating-point type, the result is the nearest representable value, which could be positive or negative infinity.\n如果T 为整数类型，当x不为T类型时，会触发InexactError\nx % T converts an integer x to a value of integer type T congruent to x modulo 2^n, where n is the number of bits in T. In other words, the binary representation is truncated to fit.\nThe Rounding functions take a type T as an optional argument. For example, round(Int,x) is a shorthand for Int(round(x)).The following examples show the different forms.julia> Int8(127)\n127\n\njulia> Int8(128)\nERROR: InexactError: trunc(Int8, 128)\nStacktrace:\n[...]\n\njulia> Int8(127.0)\n127\n\njulia> Int8(3.14)\nERROR: InexactError: Int8(Int8, 3.14)\nStacktrace:\n[...]\n\njulia> Int8(128.0)\nERROR: InexactError: Int8(Int8, 128.0)\nStacktrace:\n[...]\n\njulia> 127 % Int8\n127\n\njulia> 128 % Int8\n-128\n\njulia> round(Int8,127.4)\n127\n\njulia> round(Int8,127.6)\nERROR: InexactError: trunc(Int8, 128.0)\nStacktrace:\n[...]See Conversion and Promotion for how to define your own conversions and promotions."
 },
 
 {
-    "location": "manual/mathematical-operations/#Rounding-functions-1",
+    "location": "manual/mathematical-operations/#舍入函数-1",
     "page": "数学运算和初等函数",
-    "title": "Rounding functions",
+    "title": "舍入函数",
     "category": "section",
     "text": "函数 描述 返回类型\nround(x) x 舍到最接近的整数 typeof(x)\nround(T, x) x 舍到最接近的整数 T\nfloor(x) x 舍到-Inf typeof(x)\nfloor(T, x) x 舍到-Inf T\nceil(x) round x towards +Inf typeof(x)\nceil(T, x) round x towards +Inf T\ntrunc(x) round x towards zero typeof(x)\ntrunc(T, x) round x towards zero T"
 },
 
 {
-    "location": "manual/mathematical-operations/#Division-functions-1",
+    "location": "manual/mathematical-operations/#除法函数-1",
     "page": "数学运算和初等函数",
-    "title": "Division functions",
+    "title": "除法函数",
     "category": "section",
     "text": "函数 描述\ndiv(x,y), x÷y truncated division; quotient rounded towards zero\nfld(x,y) floored division; quotient rounded towards -Inf\ncld(x,y) ceiling division; quotient rounded towards +Inf\nrem(x,y) remainder; satisfies x == div(x,y)*y + rem(x,y); sign matches x\nmod(x,y) modulus; satisfies x == fld(x,y)*y + mod(x,y); sign matches y\nmod1(x,y) mod with offset 1; returns r∈(0,y] for y>0 or r∈[y,0) for y<0, where mod(r, y) == mod(x, y)\nmod2pi(x) modulus with respect to 2pi;  0 <= mod2pi(x)    < 2pi\ndivrem(x,y) returns (div(x,y),rem(x,y))\nfldmod(x,y) returns (fld(x,y),mod(x,y))\ngcd(x,y...) greatest positive common divisor of x, y,...\nlcm(x,y...) least positive common multiple of x, y,..."
 },
 
 {
-    "location": "manual/mathematical-operations/#Sign-and-absolute-value-functions-1",
+    "location": "manual/mathematical-operations/#符号和绝对值函数-1",
     "page": "数学运算和初等函数",
-    "title": "Sign and absolute value functions",
+    "title": "符号和绝对值函数",
     "category": "section",
     "text": "函数 描述\nabs(x) a positive value with the magnitude of x\nabs2(x) the squared magnitude of x\nsign(x) indicates the sign of x, returning -1, 0, or +1\nsignbit(x) indicates whether the sign bit is on (true) or off (false)\ncopysign(x,y) a value with the magnitude of x and the sign of y\nflipsign(x,y) a value with the magnitude of x and the sign of x*y"
 },
 
 {
-    "location": "manual/mathematical-operations/#Powers,-logs-and-roots-1",
+    "location": "manual/mathematical-operations/#幂、对数与平方根-1",
     "page": "数学运算和初等函数",
-    "title": "Powers, logs and roots",
+    "title": "幂、对数与平方根",
     "category": "section",
     "text": "函数 描述\nsqrt(x), √x square root of x\ncbrt(x), ∛x cube root of x\nhypot(x,y) hypotenuse of right-angled triangle with other sides of length x and y\nexp(x) natural exponential function at x\nexpm1(x) accurate exp(x)-1 for x near zero\nldexp(x,n) x*2^n computed efficiently for integer values of n\nlog(x) natural logarithm of x\nlog(b,x) base b logarithm of x\nlog2(x) base 2 logarithm of x\nlog10(x) base 10 logarithm of x\nlog1p(x) accurate log(1+x) for x near zero\nexponent(x) binary exponent of x\nsignificand(x) binary significand (a.k.a. mantissa) of a floating-point number xFor an overview of why functions like hypot, expm1, and log1p are necessary and useful, see John D. Cook\'s excellent pair of blog posts on the subject: expm1, log1p, erfc, and hypot."
 },
 
 {
-    "location": "manual/mathematical-operations/#Trigonometric-and-hyperbolic-functions-1",
+    "location": "manual/mathematical-operations/#三角和双曲函数-1",
     "page": "数学运算和初等函数",
-    "title": "Trigonometric and hyperbolic functions",
+    "title": "三角和双曲函数",
     "category": "section",
     "text": "All the standard trigonometric and hyperbolic functions are also defined:sin    cos    tan    cot    sec    csc\nsinh   cosh   tanh   coth   sech   csch\nasin   acos   atan   acot   asec   acsc\nasinh  acosh  atanh  acoth  asech  acsch\nsinc   coscThese are all single-argument functions, with atan also accepting two arguments corresponding to a traditional atan2 function.Additionally, sinpi(x) and cospi(x) are provided for more accurate computations of sin(pi*x) and cos(pi*x) respectively.In order to compute trigonometric functions with degrees instead of radians, suffix the function with d. For example, sind(x) computes the sine of x where x is specified in degrees. The complete list of trigonometric functions with degree variants is:sind   cosd   tand   cotd   secd   cscd\nasind  acosd  atand  acotd  asecd  acscd"
 },
 
 {
-    "location": "manual/mathematical-operations/#Special-functions-1",
+    "location": "manual/mathematical-operations/#特殊函数-1",
     "page": "数学运算和初等函数",
-    "title": "Special functions",
+    "title": "特殊函数",
     "category": "section",
-    "text": "SpecialFunctions.jl包提供了许多其他特殊的数学函数。"
+    "text": "SpecialFunctions.jl 包提供了许多其他的特殊数学函数。"
 },
 
 {
@@ -381,7 +381,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "字符串",
     "category": "section",
-    "text": "字符串是由有限个字符组成的序列。然而, 字符又是什么呢。说英文者所熟悉的字符是字母  A, B, C, ...，以及数字和常用的标点符号。这些字符被 ASCII 标准统一标准化并且与 0 到 127 范围内的整数一一对应。当然，有很多用于非英文环境的字符，包括因发音和其他形式的修改而形成的 ASCII 字符的变体，例如西里尔字母和希腊字母，以及与 ASCII 和英文完全无关的字母系统，包括阿拉伯语, 中文, 希伯来语, 印度语, 日本语, 和韩语。Unicode 标准被用来解决字符如何定义这一复杂难题，并作为解决这一问题的确切标准而被普遍接受。 根据自身需求，你可以忽略这种复杂性，只处理 ASCII 字符，或者编写可以处理所有的字符和编码的代码以防非 ASCII 文本的出现。Julia 可以简单高效地处理纯粹的 ASCII 以及 Unicode 文本。 特别地，你也可以写 C 语言风格的字符串代码用来处理 ASCII 字符串，且在不失性能和语义的前提下达到预期效果。当代码遇到非 ASCII 文本时，Julia会优雅明确地提示错误信息而不是引入乱码。  这时，修改代码以处理非 ASCII 数据是简便直接的。关于Julia的字符串类型有一些值得注意的高级特性：Julia中用于字符串（和字符串文字）的内置具体类型是String。 它支持全部Unicode字符 通过UTF-8编码。（transcode函数是 提供Unicode编码和其他编码转换的函数。）\n所有的字符串类型都是抽象类型AbstractString的子类型，外部包定义了 补充 AbstractString 子类型（例如为其它的编码定义的子类型）。 如果你定义了以字符串为参数的函数 ， 你应该声明这个参数类型为 AbstractString 用于接受任意的字符串  类型。\nLike C and Java, but unlike most dynamic languages, Julia has a first-class type for representing a single character, called AbstractChar. The built-in Char subtype of AbstractChar is a 32-bit primitive type that can represent any Unicode character (and which is based on the UTF-8 encoding).\nAs in Java, strings are immutable: the value of an AbstractString object cannot be changed. To construct a different string value, you construct a new string from parts of other strings.\nConceptually, a string is a partial function from indices to characters: for some index values, no character value is returned, and instead an exception is thrown. This allows for efficient indexing into strings by the byte index of an encoded representation rather than by a character index, which cannot be implemented both efficiently and simply for variable-width encodings of Unicode字符串。"
+    "text": "字符串是由有限个字符组成的序列。然而, 字符又是什么呢。说英文者所熟悉的字符是字母  A, B, C, ...，以及数字和常用的标点符号。这些字符由 ASCII 标准统一标准化并且与 0 到 127 范围内的整数一一对应。当然，有很多用于非英文环境的字符，包括因发音和其他形式的修改而形成的 ASCII 字符的变体，例如西里尔字母和希腊字母，以及与 ASCII 和英文完全无关的字母系统，包括阿拉伯语, 中文, 希伯来语, 印度语, 日本语, 和韩语。Unicode 标准被用来解决字符如何定义这一复杂难题，并作为解决这一问题的确切标准而被普遍接受。 根据自身需求，你可以忽略这种复杂性，只处理 ASCII 字符，或者编写可以处理所有的字符和编码的代码以防非 ASCII 文本的出现。Julia 可以简单高效地处理纯粹的 ASCII 以及 Unicode 文本。 特别地，你也可以写 C 语言风格的字符串代码用来处理 ASCII 字符串，且在不失性能和语义的前提下达到预期效果。当代码遇到非 ASCII 文本时，Julia会优雅明确地提示错误信息而不是引入乱码。  这时，修改代码以处理非 ASCII 数据是简便直接的。关于 Julia 的字符串类型有一些值得注意的高级特性：Julia 中用于字符串（和字符串文字）的内置具体类型是 String。 它支持全部 Unicode 字符 通过 UTF-8 编码。（transcode 函数是 提供 Unicode 编码和其他编码转换的函数。）\n所有的字符串类型都是抽象类型 AbstractString 的子类型，而一些外部包定义了别的 AbstractString 子类型（例如为其它的编码定义的子类型）。若要定义需要字符串参数的函数，你应当声明此类型为 AbstractString 来让这函数接受任何字符串类型。\n类似 C 和 Java，但是和大多数动态语言不同的是，Julia 有优秀的表示单字符的类型，即 AbstractChar。Char 是 AbstractChar 的内置子类型，它能表示任何 Unicode 字符的 32 位原始类型（基于 UTF-8 编码）。 a single character, called AbstractChar. The built-in Char subtype of AbstractChar is a 32-bit primitive type that can represent any Unicode character (and which is based on the UTF-8 encoding).\nAs in Java, strings are immutable: the value of an AbstractString object cannot be changed. To construct a different string value, you construct a new string from parts of other strings.\nConceptually, a string is a partial function from indices to characters: for some index values, no character value is returned, and instead an exception is thrown. This allows for efficient indexing into strings by the byte index of an encoded representation rather than by a character index, which cannot be implemented both efficiently and simply for variable-width encodings of Unicode字符串。"
 },
 
 {
@@ -637,7 +637,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "流程控制",
     "category": "section",
-    "text": "Julia 提供了大量的流程控制组件：复合表达式: begin 和 (;)。\n条件表达式: if-elseif-else 和 ?: (三元运算符)。\n短路求值: &&, || 和链式比较。\n重复计算：循环: while 和 for.\n异常处理: try-catch, error 和 throw.\n任务（又名协程）: yieldto.最开始的五个流程控制机制是标准的高级编程语言通用的。 任务不是那么通用：他们提供了非局部的流程控制，可以在暂时中止的计算间进行切换。这是一种强大的组件：Julia中的异常处理和协同多任务都是使用任务实现的。通常的编程并不需要直接使用任务，但是某些问题可以用任务更简单地处理。"
+    "text": "Julia 提供了大量的流程控制组件：复合表达式: begin 和 (;)。\n条件表达式: if-elseif-else 和 ?: (三元运算符)。\n短路求值: &&, || 和链式比较。\n重复执行：循环: while 和 for.\n异常处理: try-catch, error 和 throw.\nTasks（又名协程）: yieldto.最开始的五个流程控制机制是标准的高级编程语言通用的。Task不是那么通用：他们提供了非局部的流程控制，可以在暂时中止的计算间进行切换。这是一种强大的组件：Julia 中的异常处理和协同多任务都是使用 Task 实现的。通常的编程并不需要直接使用 Task，但是某些问题可以用 Task 更简单地处理。"
 },
 
 {
@@ -645,7 +645,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "复合表达式",
     "category": "section",
-    "text": "有时一个表达式能够有序地计算若干子表达式，并返回最后一个子表达式的值作为它的值是很方便的。Julia有两个组件来完成这个: begin 代码块 和 (;) 链。这两个复合表达式组件的值都是最后一个子表达式的值。下面是一个begin 代码块的例子：julia> z = begin\n           x = 1\n           y = 2\n           x + y\n       end\n3因为这些是非常简短的表达式，它们可以简单地被放到一行里，这也是(;) 链的由来：julia> z = (x = 1; y = 2; x + y)\n3这个语法在定义简洁的单行函数的时候特别有用，参见 函数。尽管很典型，但是并不要求begin 代码块是多行的，或者 (;) 链是单行的：julia> begin x = 1; y = 2; x + y end\n3\n\njulia> (x = 1;\n        y = 2;\n        x + y)\n3"
+    "text": "有时一个表达式能够有序地计算若干子表达式，并返回最后一个子表达式的值作为它的值是很方便的。Julia 有两个组件来完成这个: begin 代码块 和 (;) 链。这两个复合表达式组件的值都是最后一个子表达式的值。下面是一个begin 代码块的例子：julia> z = begin\n           x = 1\n           y = 2\n           x + y\n       end\n3因为这些是非常简短的表达式，它们可以简单地被放到一行里，这也是 (;) 链的由来：julia> z = (x = 1; y = 2; x + y)\n3这个语法在定义简洁的单行函数的时候特别有用，参见 函数。尽管很典型，但是并不要求 begin 代码块是多行的，或者 (;) 链是单行的：julia> begin x = 1; y = 2; x + y end\n3\n\njulia> (x = 1;\n        y = 2;\n        x + y)\n3"
 },
 
 {
@@ -653,7 +653,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "条件表达式",
     "category": "section",
-    "text": "条件表达式（Conditional evaluation）可以根据布尔表达式的值，让部分代码被执行或者不被执行。下面是对 if-elseif-else 条件语法的分析：if x < y\n    println(\"x is less than y\")\nelseif x > y\n    println(\"x is greater than y\")\nelse\n    println(\"x is equal to y\")\nend如果表达式 x < y 是 true，那么对应的代码块被执行；否则判断条件表达式 x > y ，如果它是 true，对应的代码块被执行；如果没有表达式是 true， else 代码块被执行。下面是执行例子：julia> function test(x, y)\n           if x < y\n               println(\"x is less than y\")\n           elseif x > y\n               println(\"x is greater than y\")\n           else\n               println(\"x is equal to y\")\n           end\n       end\ntest (generic function with 1 method)\n\njulia> test(1, 2)\nx is less than y\n\njulia> test(2, 1)\nx is greater than y\n\njulia> test(1, 1)\nx is equal to yelseif 和 else 代码块是可选的，并且可以使用任意多个 elseif 代码块。 if-elseif-else 组件中的第一个条件表达式为 true 时，其他条件表达式才会被执行，当对应的代码块被执行后，其余的表达式或者代码块不会被执行。if 代码块是 \"有渗漏的\", 也就是说它们没有引入局部作用域。这意味着在 if 语句中新定义的变量尽管它们没有在它之前定义过，依然可以在 if 代码块之后被使用。所以我们可以定义上面的 test 函数为julia> function test(x,y)\n           if x < y\n               relation = \"less than\"\n           elseif x == y\n               relation = \"equal to\"\n           else\n               relation = \"greater than\"\n           end\n           println(\"x is \", relation, \" y.\")\n       end\ntest (generic function with 1 method)\n\njulia> test(2, 1)\nx is greater than y.变量 relation 在 if 代码块中被声明，但是在外部使用. 但是，在使用这种行为的时候，要保证那个变量在所有可能的代码路径下都有被定义。下面对以上函数的修改会导致运行时错误julia> function test(x,y)\n           if x < y\n               relation = \"less than\"\n           elseif x == y\n               relation = \"equal to\"\n           end\n           println(\"x is \", relation, \" y.\")\n       end\ntest (generic function with 1 method)\n\njulia> test(1,2)\nx is less than y.\n\njulia> test(2,1)\nERROR: UndefVarError: relation not defined\nStacktrace:\n [1] test(::Int64, ::Int64) at ./none:7if 代码块也会返回一个值，这可能对于一些以前使用其他语言的用户来说不是很直观。 它仅仅是被执行的分支中最后一个被执行的语句的返回值。 所以julia> x = 3\n3\n\njulia> if x > 0\n           \"positive!\"\n       else\n           \"negative...\"\n       end\n\"positive!\"注意的是在Julia中，非常短的条件表达式（单行）会被频繁地用短路求值来表示，会在下一节中介绍。与 C, MATLAB, Perl, Python, and Ruby 不同，但跟 Java ，还有一些别的严谨的类型语言类似, – 一个条件表达式的值如果不是true 或者 false 的话，会返回错误:julia> if 1\n           println(\"true\")\n       end\nERROR: TypeError: non-boolean (Int64) used in boolean context这个错误显示条件值有一个错误的类型: Int64 ，而不是期望的 Bool.所谓的 \"三元运算符\", ?:, 很类似 if-elseif-else 语法,它需要条件选择依赖于单个表达式的值，而不是依赖大段的代码块的条件执行。它因为是在很多语言中唯一一个有三个操作数的运算符而得名：a ? b : c在 ? 之前的表达式 a, 是一个条件表达式, 三元运算符计算在: 之前的表达式 b，如果条件a 是 true，或者 。如果它是  false, 执行: 后面的表达式 c  。注意的是， ? 和 : 旁边的空格是强制的。类似 a?b:c 的表达式不是一个有效的三元表达式（但在? 和 : 之后的换行是允许的 ）。最简单理解这种行为的方式的看一个例子。在上面的例子中，在三个分支中都有调用 println : 唯一的选择是打印哪一个字符串。这可以用三元运算符更紧凑地改写。为了更明白。我们先尝试两个选择的版本：julia> x = 1; y = 2;\n\njulia> println(x < y ? \"less than\" : \"not less than\")\nless than\n\njulia> x = 1; y = 0;\n\njulia> println(x < y ? \"less than\" : \"not less than\")\nnot less than如果表达式 x < y 为真，整个三元运算符会执行字符串 \"less than\" ，否则执行字符串 \"not less than\"。 原本的三个选择例子需要同时使用多次链式使用三元运算符 ：julia> test(x, y) = println(x < y ? \"x is less than y\"    :\n                            x > y ? \"x is greater than y\" : \"x is equal to y\")\ntest (generic function with 1 method)\n\njulia> test(1, 2)\nx is less than y\n\njulia> test(2, 1)\nx is greater than y\n\njulia> test(1, 1)\nx is equal to y为了方便链式传值，运算符从右到左连接到一起。重要地是，与 if-elseif-else 类似，: 之前和之后的表达式只有在条件表达式为 true 或者 false 时才会被相应地执行：julia> v(x) = (println(x); x)\nv (generic function with 1 method)\n\njulia> 1 < 2 ? v(\"yes\") : v(\"no\")\nyes\n\"yes\"\n\njulia> 1 > 2 ? v(\"yes\") : v(\"no\")\nno\n\"no\""
+    "text": "条件表达式（Conditional evaluation）可以根据布尔表达式的值，让部分代码被执行或者不被执行。下面是对 if-elseif-else 条件语法的分析：if x < y\n    println(\"x is less than y\")\nelseif x > y\n    println(\"x is greater than y\")\nelse\n    println(\"x is equal to y\")\nend如果表达式 x < y 是 true，那么对应的代码块被执行；否则判断条件表达式 x > y ，如果它是 true，对应的代码块被执行；如果没有表达式是 true，else 代码块被执行。下面是执行例子：julia> function test(x, y)\n           if x < y\n               println(\"x is less than y\")\n           elseif x > y\n               println(\"x is greater than y\")\n           else\n               println(\"x is equal to y\")\n           end\n       end\ntest (generic function with 1 method)\n\njulia> test(1, 2)\nx is less than y\n\njulia> test(2, 1)\nx is greater than y\n\njulia> test(1, 1)\nx is equal to yelseif 和 else 代码块是可选的，并且可以使用任意多个 elseif 代码块。 if-elseif-else 组件中的第一个条件表达式为 true 时，其他条件表达式才会被执行，当对应的代码块被执行后，其余的表达式或者代码块不会被执行。if 代码块是 \"有渗漏的\", 也就是说它们没有引入局部作用域。这意味着在 if 语句中新定义的变量尽管它们没有在它之前定义过，依然可以在 if 代码块之后被使用。所以我们可以定义上面的 test 函数为julia> function test(x,y)\n           if x < y\n               relation = \"less than\"\n           elseif x == y\n               relation = \"equal to\"\n           else\n               relation = \"greater than\"\n           end\n           println(\"x is \", relation, \" y.\")\n       end\ntest (generic function with 1 method)\n\njulia> test(2, 1)\nx is greater than y.变量 relation 在 if 代码块中被声明，但是在外部使用。然而，在利用这种行为的时候，要保证那个变量在所有可能的代码路径下都有被定义。下面对以上函数的修改会导致运行时错误julia> function test(x,y)\n           if x < y\n               relation = \"less than\"\n           elseif x == y\n               relation = \"equal to\"\n           end\n           println(\"x is \", relation, \" y.\")\n       end\ntest (generic function with 1 method)\n\njulia> test(1,2)\nx is less than y.\n\njulia> test(2,1)\nERROR: UndefVarError: relation not defined\nStacktrace:\n [1] test(::Int64, ::Int64) at ./none:7if 代码块也会返回一个值，这可能对于一些以前使用其他语言的用户来说不是很直观。 它仅仅是被执行的分支中最后一个被执行的语句的返回值。 所以julia> x = 3\n3\n\njulia> if x > 0\n           \"positive!\"\n       else\n           \"negative...\"\n       end\n\"positive!\"需要注意的是，在 Julia 中，经常会用短路求值来表示非常短的条件表达式（单行），这会在下一节中介绍。与 C, MATLAB, Perl, Python, 以及 Ruby 不同，但跟 Java ，还有一些别的严谨的类型语言类似, – 一个条件表达式的值如果不是true 或者 false 的话，会返回错误:julia> if 1\n           println(\"true\")\n       end\nERROR: TypeError: non-boolean (Int64) used in boolean context这个错误显示条件值有一个错误的类型: Int64 ，而不是期望的 Bool.所谓的 \"三元运算符\", ?:, 很类似 if-elseif-else 语法,它需要条件选择依赖于单个表达式的值，而不是依赖大段的代码块的条件执行。它因在很多语言中是唯一一个有三个操作数的运算符而得名：a ? b : c在 ? 之前的表达式 a, 是一个条件表达式，三元运算符计算在: 之前的表达式 b，如果条件a 是 true，或者 。如果它是 false，执行 : 后面的表达式 c 。注意，? 和 : 旁边的空格是强制的。类似 a?b:c 的表达式不是一个有效的三元表达式（但在? 和 : 之后的换行是允许的）。最简单理解这种行为的方式的看一个例子。在上面的例子中，在三个分支中都有调用 println : 唯一的选择是打印哪一个字符串。这可以用三元运算符更紧凑地改写。为了更明白。我们先尝试两个选择的版本：julia> x = 1; y = 2;\n\njulia> println(x < y ? \"less than\" : \"not less than\")\nless than\n\njulia> x = 1; y = 0;\n\njulia> println(x < y ? \"less than\" : \"not less than\")\nnot less than如果表达式 x < y 为真，整个三元运算符会执行字符串 \"less than\" ，否则执行字符串 \"not less than\"。 原本的三个选择例子需要同时使用多次链式使用三元运算符 ：julia> test(x, y) = println(x < y ? \"x is less than y\"    :\n                            x > y ? \"x is greater than y\" : \"x is equal to y\")\ntest (generic function with 1 method)\n\njulia> test(1, 2)\nx is less than y\n\njulia> test(2, 1)\nx is greater than y\n\njulia> test(1, 1)\nx is equal to y为了方便链式传值，运算符从右到左连接到一起。重要地是，与 if-elseif-else 类似，: 之前和之后的表达式只有在条件表达式为 true 或者 false 时才会被相应地执行：julia> v(x) = (println(x); x)\nv (generic function with 1 method)\n\njulia> 1 < 2 ? v(\"yes\") : v(\"no\")\nyes\n\"yes\"\n\njulia> 1 > 2 ? v(\"yes\") : v(\"no\")\nno\n\"no\""
 },
 
 {
@@ -723,33 +723,33 @@ var documenterSearchIndex = {"docs": [
 {
     "location": "manual/control-flow/#man-tasks-1",
     "page": "流程控制",
-    "title": "任务 (又名 协程)",
+    "title": "Task (又名 协程)",
     "category": "section",
-    "text": "任务（Task）是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。这个特性有时被叫做其它名字，例如 对称协程（symmetric coroutines），轻量级线程（lightweight threads），合作多任务处理（cooperative multitasking），或者单次续延（one-shot continuations）。当一部分计算任务（在实际中，执行一个特定的函数）可以被设计成一个任务，就可以中断它，并切换到另一个任务。原本的任务可以恢复到它上次中断的地方，并继续执行。第一眼感觉，这个跟函数调用很类似。但是有两个关键的区别。首先，是切换任务并不使用任何空间，所以任意数量的任务切换都不会使用调用堆栈。其次，在可以以任何次序在任务间切换，而不像函数调用那样，被调用函数必须在返回主调用函数之前结束执行。这种流程控制的方式使得解决一个特定问题更简便。在一些问题中，多个需求并不是有函数调用来自然连接的；在需要完成的工作之间并没有明确的“调用者”或者“被调用者”。一个例子是生产-消费问题，一个复杂的流程产生数据，另一个复杂的流程消费他们。消费者不能简单的调用生产函数来获得一个值，因为生产者可能有更多的值需要创建，还没有准备好返回。用任务的话，生产者和消费者能同时运行他们所需要的任意时间，根据需要传递值回来或者过去。Julia提供了 Channel 机制来解决这个问题。 一个Channel 是一个先进先出的队列，允许多个任务对它可以进行读和写。让我们定义一个生产者任务，调用 put! 来生产数值。为了消费数值，我们需要对生产者开始新任务进行排班。可以使用一个特殊的Channel 组件来运行一个与任务队列（channel）绑定的任务，这个特殊的任务队列能接受包含一个参数的函数作为它的参数。然后可以用take!从任务队列对象里不断地提取值：julia> function producer(c::Channel)\n           put!(c, \"start\")\n           for n=1:4\n               put!(c, 2n)\n           end\n           put!(c, \"stop\")\n       end;\n\njulia> chnl = Channel(producer);\n\njulia> take!(chnl)\n\"start\"\n\njulia> take!(chnl)\n2\n\njulia> take!(chnl)\n4\n\njulia> take!(chnl)\n6\n\njulia> take!(chnl)\n8\n\njulia> take!(chnl)\n\"stop\"一种思考这种行为地方式是，生产者 能够多次返回。 Between 在两次调用put!之间，生产者地执行是被 中断的，消费者接管控制。 返回的 Channel 可以被用作一个 for 循环的迭代对象, 循环变量 可以是所有产生的值。 当任务队列关闭时，循环被终止。julia> for x in Channel(producer)\n           println(x)\n       end\nstart\n2\n4\n6\n8\nstop注意我们并不需要显式在生产者中关闭任务队列。这是因为Channel 对 Task的绑定同时也意味着任务队列的生命周期与绑定的任务一致。当任务结束时，任务队列对象会自动关闭。多个任务队列可以绑定到一个任务中，反之亦然。当 Task构造器只有一个不含函数的函数， 的Channel方法创建绑定任务的任务队列，需要一个接受一个 Channel类型作为参数的函数。一个通用模式是对生产者参数化，此时需要一个部分函数应用来创建一个无参数，或者一个参数的 匿名函数。对于 任务对象，这个也可以直接完成或者用一个简便的宏。function mytask(myarg)\n    ...\nend\n\ntaskHdl = Task(() -> mytask(7))\n# or, equivalently\ntaskHdl = @task mytask(7)为了安排更高级的工作分配模式， bind 和 schedule可以与Task 和Channel构造器配合使用，显示地连接一些任务队列和生产者/消费者任务。注意目前Julia的任务并不分配到或者运行在不同的CPU核心。真正的内核进程将在分布式计算进行讨论。"
+    "text": "Task 是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。这个特性有时被叫做其它名字，例如 对称协程（symmetric coroutines），轻量级线程（lightweight threads），合作多任务处理（cooperative multitasking），或者单次续延（one-shot continuations）。当一部分计算任务（在实际中，执行一个特定的函数）可以被设计成一个 Task 时，就可以中断它，并切换到另一个 Task。原本的 Task 可以恢复到它上次中断的地方，并继续执行。第一眼感觉，这个跟函数调用很类似。但是有两个关键的区别。首先，是切换 Task 并不使用任何空间，所以任意数量的 Task 切换都不会使用调用堆栈（call stack）。其次，Task 可以以任意次序切换，而不像函数调用那样，被调用函数必须在返回主调用函数之前结束执行。这种流程控制的方式使得解决一个特定问题更简便。在一些问题中，多个需求并不是有函数调用来自然连接的；在需要完成的工作之间并没有明确的“调用者”或者“被调用者”。一个例子是生产-消费问题，一个复杂的流程产生数据，另一个复杂的流程消费他们。消费者不能简单的调用生产函数来获得一个值，因为生产者可能有更多的值需要创建，还没有准备好返回。用 Task 的话，生产者和消费者能同时运行他们所需要的任意时间，根据需要传递值回来或者过去。Julia 提供了 Channel 机制来解决这个问题。 一个Channel 是一个先进先出的队列，允许多个 Task 对它可以进行读和写。让我们定义一个生产者任务，调用 put! 来生产数值。为了消费数值，我们需要对生产者开始新任务进行排班。可以使用一个特殊的 Channel 组件来运行一个与其绑定的 Task，它能接受单参数函数作为其参数，然后可以用 take! 从 Channel 对象里不断地提取值：julia> function producer(c::Channel)\n           put!(c, \"start\")\n           for n=1:4\n               put!(c, 2n)\n           end\n           put!(c, \"stop\")\n       end;\n\njulia> chnl = Channel(producer);\n\njulia> take!(chnl)\n\"start\"\n\njulia> take!(chnl)\n2\n\njulia> take!(chnl)\n4\n\njulia> take!(chnl)\n6\n\njulia> take!(chnl)\n8\n\njulia> take!(chnl)\n\"stop\"一种思考这种行为地方式是，生产者能够多次返回。在两次调用 put! 之间，生产者的执行是被中断的，消费者接管控制。返回的 Channel 可以被用作一个 for 循环的迭代对象，循环变量可以是所有产生的值。当 Channel 关闭时，循环被终止。julia> for x in Channel(producer)\n           println(x)\n       end\nstart\n2\n4\n6\n8\nstop注意我们并不需要显式地在生产者中关闭 Channel。这是因为 Channel 对 Task 的绑定同时也意味着 Channel 的生命周期与绑定的 Task 一致。当 Task 结束时，Channel 对象会自动关闭。多个 Channel 可以绑定到一个 Task，反之亦然。尽管 Task 的构造函数只能接受一个“无参函数”，但 Channel 方法会创建一个与 Channel 绑定的 Task，并令其可以接受 Channel 类型的单参数函数。一个通用模式是对生产者参数化，此时需要一个部分函数应用来创建一个无参，或者单参的匿名函数。对于 Task 对象，可以直接用，也可以为了方便用宏。function mytask(myarg)\n    ...\nend\n\ntaskHdl = Task(() -> mytask(7))\n# or, equivalently\ntaskHdl = @task mytask(7)为了安排更高级的工作分配模式，bind 和 schedule 可以与 Task 和 Channel构造函数配合使用，显式地连接一些 Channel 和生产者或消费者 Task。注意目前 Julia 的 Task 并不分配到或者运行在不同的 CPU 核心上。真正的内核进程将在 分布式计算 进行讨论。"
 },
 
 {
-    "location": "manual/control-flow/#核心任务操作-1",
+    "location": "manual/control-flow/#Task-相关的核心操作-1",
     "page": "流程控制",
-    "title": "核心任务操作",
+    "title": "Task 相关的核心操作",
     "category": "section",
-    "text": "让我们来学习底层构造器yieldto来理解任务是如何切换工作。yieldto(task,value) 中断当前任务，切换到特定的任务，并且任务的最后一次yieldto调用会有特定的返回值。注意yieldto 是唯一一个需要用任务类型的流程控制的操作，仅需要切换到不同的任务，而不需要调用或者返回。这也就是为什么这个特性会被叫做“对称协程（symmetric coroutines）”；每一个任务以相同的机制进行切换或者被切换。yieldto 功能强大，但大多数任务的使用都不会直接调用它。思考为什么会这样。如果你切换当前任务，你很可能会在某个时候想切换回来。但知道什么时候切换回来和那个任务负责切换回来需要大量的协调。例如，put! 和 take! 是阻塞操作，当在渠道环境中使用时，维持状态以记住消费者是谁。不需要人为地记录消费任务，正是使得 put!比底层 yieldto易用的原因。除了yieldto之外，也需要一些其它的基本函数来更高效地使用任务。current_task 获取当前运行任务的索引。\nistaskdone 查询一个任务是否退出.\nistaskstarted 查询一个任务是否已经开始运行。\ntask_local_storage 操纵针对当前任务的键值存储。"
+    "text": "让我们来学习底层构造函数 yieldto 来理解 Task 是如何切换工作的。yieldto(task,value) 会中断当前的 Task，并切换到特定的 Task，并且 Task 的最后一次 yieldto 调用会有特定的返回值。注意 yieldto 是唯一一个需要用任务类型的流程控制的操作，仅需要切换到不同的 Task，而不需要调用或者返回。这也就是为什么这个特性会被叫做“对称协程（symmetric coroutines）”；每一个 Task 以相同的机制进行切换或者被切换。yieldto 功能强大，但大多数 Task 的使用都不会直接调用它。思考为什么会这样。如果你切换当前 Task，你很可能会在某个时候想切换回来。但知道什么时候切换回来和那个 Task 负责切换回来需要大量的协调。例如，put! 和 take! 是阻塞操作，当在渠道环境中使用时，维持状态以记住消费者是谁。不需要人为地记录消费 Task，正是使得 put! 比底层 yieldto 易用的原因。除了 yieldto 之外，也需要一些其它的基本函数来更高效地使用 Task。current_task 获取当前运行 Task 的索引。\nistaskdone 查询一个 Task 是否退出.\nistaskstarted 查询一个 Task 是否已经开始运行。\ntask_local_storage 操纵针对当前 Task 的键值存储。"
 },
 
 {
-    "location": "manual/control-flow/#任务和事件-1",
+    "location": "manual/control-flow/#Task-和事件-1",
     "page": "流程控制",
-    "title": "任务和事件",
+    "title": "Task 和事件",
     "category": "section",
-    "text": "多数任务切换是在等待如I/O请求的事件，由Julia Base里的调度器执行。调度器维持一个可运行任务的队列，并执行一个事件循环，来根据例如收到消息等外部事件来重启任务。等待一个事件的基本函数是wait。多个对象都能执行 wait；例如，给定一个Process 对象，wait将等待它退出。wait通常是隐式的，例如，wait可能发生在调用 read时等待数据可用。在所有这些情况下，wait 最终会操作一个 Condition 对象，由它负责排队和重启任务。当一个任务在一个Condition上调用 wait时，该任务就被标记为不可执行，加到条件的队列中，并切回调度器。调度器将选择另一个任务来运行，或者阻止外部事件的等待。如果所有运行良好，最终一个事件处理器将在这个条件下调用notify，使得等待该条件的任务又变成可运行。调用 Task显式创建的任务对于调度器时来说一开始时不知道的。如果你希望的话，你可以使用 yieldto来人为管理任务。但是当这种任务等待一个事件时，正如期待的那样，当事件发生时，它将自动重启。也能由调度器在任何可能的时候，运行一个任务，而无需等待任何事件。这可以调用schedule，或者使用 @async 宏（见 并行计算中的详细说明）。"
+    "text": "多数 Task 切换是在等待如 I/O 请求的事件，由 Julia Base 里的调度器执行。调度器维持一个可运行 Task 的队列，并执行一个事件循环，来根据例如收到消息等外部事件来重启 Task。等待一个事件的基本函数是 wait。很多对象都实现了 wait 函数；例如，给定一个 Process 对象，wait 将等待它退出。wait 通常是隐式的，例如，wait 可能发生在调用 read 时等待数据可用。在所有这些情况下，wait 最终会操作一个 Condition 对象，由它负责排队和重启 Task。当 Task 在一个 Condition 上调用 wait 时，该 Task 就被标记为不可执行，加到条件的队列中，并切回调度器。调度器将选择另一个 Task 来运行，或者阻止外部事件的等待。如果所有运行良好，最终一个事件处理器将在这个条件下调用 notify，使得等待该条件的 Task 又变成可运行。调用 Task 显式创建的 Task 对于调度器时来说一开始时不知道的。如果你希望的话，你可以使用 yieldto 来人为管理 Task。但是当这种 Task 等待一个事件时，正如期待的那样，当事件发生时，它将自动重启。也能由调度器在任何可能的时候运行一个 Task，而无需等待任何事件。这可以调用 schedule，或者使用 @async 宏（见 并行计算中的详细说明）。"
 },
 
 {
-    "location": "manual/control-flow/#任务状态-1",
+    "location": "manual/control-flow/#Task-的状态-1",
     "page": "流程控制",
-    "title": "任务状态",
+    "title": "Task 的状态",
     "category": "section",
-    "text": "任务由一个state 属性来描述他们的执行状态。一个Task state 时下面符号中的一个：符号 含义\n:runnable 正在运行，或者可以被切换到\n:waiting 被阻塞，等待一个特定事件\n:queued 处在调度器中的运行队列中，即将被重启\n:done 成功结束执行\n:failed 以一个没被捕获的异常结束"
+    "text": "Task 由 state 属性来描述他们的执行状态。Task state 的属性有：符号 含义\n:runnable 正在运行，或者可以被切换到\n:waiting 被阻塞，等待一个特定事件\n:queued 处在调度器中的运行队列中，即将被重启\n:done 成功结束执行\n:failed 以一个没被捕获的异常结束"
 },
 
 {
@@ -1409,9 +1409,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/interfaces/#Selecting-an-appropriate-output-array-1",
+    "location": "manual/interfaces/#选择合适的输出数组-1",
     "page": "接口",
-    "title": "Selecting an appropriate output array",
+    "title": "选择合适的输出数组",
     "category": "section",
     "text": "The broadcast style is computed for every broadcasting operation to allow for dispatch and specialization. The actual allocation of the result array is handled by similar, using the Broadcasted object as its first argument.Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})The fallback definition issimilar(bc::Broadcasted{DefaultArrayStyle{N}}, ::Type{ElType}) where {N,ElType} =\n    similar(Array{ElType}, axes(bc))However, if needed you can specialize on any or all of these arguments. The final argument bc is a lazy representation of a (potentially fused) broadcast operation, a Broadcasted object.  For these purposes, the most important fields of the wrapper are f and args, describing the function and argument list, respectively.  Note that the argument list can — and often does — include other nested Broadcasted wrappers.For a complete example, let\'s say you have created a type, ArrayAndChar, that stores an array and a single character:struct ArrayAndChar{T,N} <: AbstractArray{T,N}\n    data::Array{T,N}\n    char::Char\nend\nBase.size(A::ArrayAndChar) = size(A.data)\nBase.getindex(A::ArrayAndChar{T,N}, inds::Vararg{Int,N}) where {T,N} = A.data[inds...]\nBase.setindex!(A::ArrayAndChar{T,N}, val, inds::Vararg{Int,N}) where {T,N} = A.data[inds...] = val\nBase.showarg(io::IO, A::ArrayAndChar, toplevel) = print(io, typeof(A), \" with char \'\", A.char, \"\'\")You might want broadcasting to preserve the char \"metadata.\" First we defineBase.BroadcastStyle(::Type{<:ArrayAndChar}) = Broadcast.ArrayStyle{ArrayAndChar}()This means we must also define a corresponding similar method:function Base.similar(bc::Broadcast.Broadcasted{Broadcast.ArrayStyle{ArrayAndChar}}, ::Type{ElType}) where ElType\n    # Scan the inputs for the ArrayAndChar:\n    A = find_aac(bc)\n    # Use the char field of A to create the output\n    ArrayAndChar(similar(Array{ElType}, axes(bc)), A.char)\nend\n\n\"`A = find_aac(As)` returns the first ArrayAndChar among the arguments.\"\nfind_aac(bc::Base.Broadcast.Broadcasted) = find_aac(bc.args)\nfind_aac(args::Tuple) = find_aac(find_aac(args[1]), Base.tail(args))\nfind_aac(x) = x\nfind_aac(a::ArrayAndChar, rest) = a\nfind_aac(::Any, rest) = find_aac(rest)From these definitions, one obtains the following behavior:julia> a = ArrayAndChar([1 2; 3 4], \'x\')\n2×2 ArrayAndChar{Int64,2} with char \'x\':\n 1  2\n 3  4\n\njulia> a .+ 1\n2×2 ArrayAndChar{Int64,2} with char \'x\':\n 2  3\n 4  5\n\njulia> a .+ [5,10]\n2×2 ArrayAndChar{Int64,2} with char \'x\':\n  6   7\n 13  14"
 },
@@ -1541,31 +1541,31 @@ var documenterSearchIndex = {"docs": [
     "page": "文档",
     "title": "文档",
     "category": "section",
-    "text": "自Julia 0.4 开始，Julia允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。The basic syntax is simple: any string appearing at the top-level right before an object (function, macro, type or instance) will be interpreted as documenting it (these are called docstrings). Note that no blank lines or comments may intervene between a docstring and the documented object. Here is a basic example:\"Tell whether there are too foo items in the array.\"\nfoo(xs::Array) = ...Documentation is interpreted as Markdown, so you can use indentation and code fences to delimit code examples from text. Technically, any object can be associated with any other as metadata; Markdown happens to be the default, but one can construct other string macros and pass them to the @doc macro just as well.Here is a more complex example, still using Markdown:\"\"\"\n    bar(x[, y])\n\nCompute the Bar index between `x` and `y`. If `y` is missing, compute\nthe Bar index between all pairs of columns of `x`.\n\n# Examples\n```julia-repl\njulia> bar([1, 2], [1, 2])\n1\n```\n\"\"\"\nfunction bar(x, y) ...As in the example above, we recommend following some simple conventions when writing documentation:Always show the signature of a function at the top of the documentation, with a four-space indent so that it is printed as Julia code.\nThis can be identical to the signature present in the Julia code (like mean(x::AbstractArray)), or a simplified form. Optional arguments should be represented with their default values (i.e. f(x, y=1)) when possible, following the actual Julia syntax. Optional arguments which do not have a default value should be put in brackets (i.e. f(x[, y]) and f(x[, y[, z]])). An alternative solution is to use several lines: one without optional arguments, the other(s) with them. This solution can also be used to document several related methods of a given function. When a function accepts many keyword arguments, only include a <keyword arguments> placeholder in the signature (i.e. f(x; <keyword arguments>)), and give the complete list under an # Arguments section (see point 4 below).\nInclude a single one-line sentence describing what the function does or what the object represents after the simplified signature block. If needed, provide more details in a second paragraph, after a blank line.\nThe one-line sentence should use the imperative form (\"Do this\", \"Return that\") instead of the third person (do not write \"Returns the length...\") when documenting functions. It should end with a period. If the meaning of a function cannot be summarized easily, splitting it into separate composable parts could be beneficial (this should not be taken as an absolute requirement for every single case though).\nDo not repeat yourself.\nSince the function name is given by the signature, there is no need to start the documentation with \"The function bar...\": go straight to the point. Similarly, if the signature specifies the types of the arguments, mentioning them in the description is redundant.\nOnly provide an argument list when really necessary.\nFor simple functions, it is often clearer to mention the role of the arguments directly in the description of the function\'s purpose. An argument list would only repeat information already provided elsewhere. However, providing an argument list can be a good idea for complex functions with many arguments (in particular keyword arguments). In that case, insert it after the general description of the function, under an # Arguments header, with one - bullet for each argument. The list should mention the types and default values (if any) of the arguments:\n\"\"\"\n...\n# Arguments\n- `n::Integer`: the number of elements to compute.\n- `dim::Integer=1`: the dimensions along which to perform the computation.\n...\n\"\"\"\nProvide hints to related functions.\nSometimes there are functions of related functionality. To increase discoverability please provide a short list of these in a See also: paragraph.\nSee also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)\nInclude any code examples in an # Examples section.\nExamples should, whenever possible, be written as doctests. A doctest is a fenced code block (see Code blocks) starting with ```jldoctest and contains any number of julia> prompts together with inputs and expected outputs that mimic the Julia REPL.\nFor example in the following docstring a variable a is defined and the expected result, as printed in a Julia REPL, appears afterwards:\n\"\"\"\nSome nice documentation here.\n\n# Examples\n```jldoctest\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n```\n\"\"\"\nwarning: Warning\nCalling rand and other RNG-related functions should be avoided in doctests since they will not produce consistent outputs during different Julia sessions. If you would like to show some random number generation related functionality, one option is to explicitly construct and seed your own MersenneTwister (or other pseudorandom number generator) and pass it to the functions you are doctesting.Operating system word size (Int32 or Int64) as well as path separator differences (/ or \\) will also affect the reproducibility of some doctests.Note that whitespace in your doctest is significant! The doctest will fail if you misalign the output of pretty-printing an array, for example.\nYou can then run make -C doc doctest=true to run all the doctests in the Julia Manual and API documentation, which will ensure that your example works.\nTo indicate that the output result is truncated, you may write [...] at the line where checking should stop. This is useful to hide a stacktrace (which contains non-permanent references to lines of julia code) when the doctest shows that an exception is thrown, for example:\n```jldoctest\njulia> div(1, 0)\nERROR: DivideError: integer division error\n[...]\n```\nExamples that are untestable should be written within fenced code blocks starting with ```julia so that they are highlighted correctly in the generated documentation.\ntip: Tip\nWherever possible examples should be self-contained and runnable so that readers are able to try them out without having to include any dependencies.\nUse backticks to identify code and equations.\nJulia identifiers and code excerpts should always appear between backticks ` to enable highlighting. Equations in the LaTeX syntax can be inserted between double backticks ``. Use Unicode characters rather than their LaTeX escape sequence, i.e. ``α = 1`` rather than ``\\\\alpha = 1``.\nPlace the starting and ending \"\"\" characters on lines by themselves.\nThat is, write:\n\"\"\"\n...\n\n...\n\"\"\"\nf(x, y) = ...\nrather than:\n\"\"\"...\n\n...\"\"\"\nf(x, y) = ...\nThis makes it more clear where docstrings start and end.\nRespect the line length limit used in the surrounding code.\nDocstrings are edited using the same tools as code. Therefore, the same conventions should apply. It it advised to add line breaks after 92 characters.\nProvide information allowing custom types to implement the function in an # Implementation section. These implementation details intended for developers rather than users, explaining e.g. which functions should be overridden and which functions automatically use appropriate fallbacks, are better kept separate from the main description of the function\'s behavior."
+    "text": "自Julia 0.4 开始，Julia允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。基础语法很简单：紧接在对象（函数，宏，类型和实例）之前的字符串都会被认为是对应对象的文档（称作docstrings）。 注意不要在docstring和文档对象之间有空行或者注释。 这里有个基础的例子：\"Tell whether there are too foo items in the array.\"\nfoo(xs::Array) = ...文档会被翻译成Markdown，所以你可以 使用缩进和代码栅栏来分隔代码示例和文本。从技术上来说，任何对象 可以作为元数据与任何其他对象关联；Markdown是默认的，但是可以创建 其他字符串宏并传递给@doc宏来使用其他格式。这里是更加复杂的例子，但仍然使用Markdown：\"\"\"\n    bar(x[, y])\n\nCompute the Bar index between `x` and `y`. If `y` is missing, compute\nthe Bar index between all pairs of columns of `x`.\n\n# Examples\n```julia-repl\njulia> bar([1, 2], [1, 2])\n1\n```\n\"\"\"\nfunction bar(x, y) ...如上例所示，我们推荐在写文档时遵守一些简单约定：始终在文档顶部显示函数的签名，带有四空格缩进 以便被像Julia代码一样显示。\nJulia代码中的签名显示是统一的（像mean(x::AbstractArray)）， 另有简化模式。可选参数应该尽可能与默认值一同显示(例如 f(x, y=1)），遵循实际的Julia语法。没有默认值的 可选参数应该放在括号中（例如f(x[, y]) 和 f(x[, y[, z]])）。可选的解决方法是 使用多行：一个没有可选参数，其他的拥有可选参数（或者多个可选参数）。 这个解决方案也可以用作给某个函数的多个相关方法来写文档。当一个函数 接收到多个关键字参数，只在签名中包含占位符<keyword arguments> （例如 f(x; <keyword arguments>)），并在# 参数章节给出完整列表 （参照下列点4）。\n在简化的签名块后请包含一个描述函数能做什么或者对象代表什么的 单行句。如果需要的话，在一个空行之后，在第二段 提供更详细的信息。\n当写文档时，单行句子硬使用祈使结构（“Do this”，“Return that”）而非 第三人称（不要写“Returns the length...”）。应 以句号结尾。如果函数的意义不能简单地总结，有利的方法是分成 分开的组合句（虽然这个不应被看做是对于每个事例 的绝对要求）。\n不要自我重复。\n因为签名给出了函数名，所以没有必要用 \"The function bar...\"开始文档：直接说要点。相似地，如果签名指定了 参数的类型，在描述中提到这些是多余的。\n只在确实必要时提供参数列表。\n对于简单函数，直接在函数的目的描述中提到参数的作用 常常更加清楚。参数列表应只重复再其他地方提供过的 信息。然而提供一个参数列表对于拥有多个参数的复杂函数 是的好想法（特别是含有关键字参数的情况）。在这些事例中，请在函数的一般描述后 插入参数列表，在标题# Arguments 之后，每个参数之前有一个项目符号-。 参数列表应该提到参数的类型和默认值（如果有）：\n\"\"\"\n...\n# Arguments\n- `n::Integer`: the number of elements to compute.\n- `dim::Integer=1`: the dimensions along which to perform the computation.\n...\n\"\"\"\n给相关函数提供提示。\n有时会存在具有功能相联系的函数。为了提供可探索性请提供 一个相关函数的小列表，在段落See also:中。\nSee also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)\n请在# Examples中包含一些代码例子。\n例子应尽可能按照doctest来写。doctest是一个栅栏分隔开的代码块 (参照 Code blocks)，以 ```jldoctest开头并包含任意数量的提示julia> 与输入和预期输出用来模拟Julia REPL。\n例如在下面的docstring中定义了变量a，期待的输出 ，跟在Julia REPL中打印的一样，出现在后面。\n\"\"\"\nSome nice documentation here.\n\n# Examples\n```jldoctest\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n```\n\"\"\"\nwarning: Warning\nCalling rand and other RNG-related functions should be avoided in doctests since they will not produce consistent outputs during different Julia sessions. If you would like to show some random number generation related functionality, one option is to explicitly construct and seed your own MersenneTwister (or other pseudorandom number generator) and pass it to the functions you are doctesting.Operating system word size (Int32 or Int64) as well as path separator differences (/ or \\) will also affect the reproducibility of some doctests.Note that whitespace in your doctest is significant! The doctest will fail if you misalign the output of pretty-printing an array, for example.\n你可以运行 make -C doc doctest=true 来运行在Julia手册和API文档中的doctests, 这样可以确保你的例子都能正常运行。\n为了表示输出结果被截断了，你应该在校验 应该停止的一行写上[...]。这个在当 doctest显示有个异常被抛出时隐藏堆栈跟踪时很有用（堆栈跟踪包含 对julia代码的行的非永久引用）, 例如：\n```jldoctest\njulia> div(1, 0)\nERROR: DivideError: integer division error\n[...]\n```\nJulia那些不能进行测试的例子应该写在以```julia开头的栅栏分隔的代码块中 以便在生成的文档中正确地高光显示。\ntip: Tip\n\n例子应尽可能独立和可运行以便读者可以在不需要引入任何依赖的情况下进行对他们进行实验。使用倒引号来标识代码和方程。\nJulia标识符和代码摘录应该出现在倒引号`之间来使其能 高光显示。LaTeX语法下的方程应该插入到双倒引号 ``之间。 请使用Unicode字符而非LaTeX转义序列，比如 ``α = 1`` 而非 ``\\\\alpha = 1``。\n请将起始和结束的\"\"\"符号单独成行。\n也就是说，请写：\n\"\"\"\n...\n\n...\n\"\"\"\nf(x, y) = ...\n而非：\n\"\"\"...\n\n...\"\"\"\nf(x, y) = ...\n这将让docstring的起始和结束位置更加清楚。\n请在代码中遵守单行长度限制。\nDocstring是使用与代码相同的工具编辑的。所以应运用同样的约定。 建议一行92个字符后换行。\n请提供允许自定义类型来为此函数实现接口的信息， 在一个# Implementation章节。这些为了开发者而非用户的 解释了例如哪些函数应该被重写和哪些函数自动使用恰当的备用等信息的 接口信息最好与描述函数的主体描述 分开。"
 },
 
 {
-    "location": "manual/documentation/#Accessing-Documentation-1",
+    "location": "manual/documentation/#访问文档-1",
     "page": "文档",
-    "title": "Accessing Documentation",
+    "title": "访问文档",
     "category": "section",
-    "text": "Documentation can be accessed at the REPL or in IJulia by typing ? followed by the name of a function or macro, and pressing Enter. For example,?cos\n?@time\n?r\"\"will bring up docs for the relevant function, macro or string macro respectively. In Juno using Ctrl-J, Ctrl-D will bring up documentation for the object under the cursor."
+    "text": "文档可以在REPL中访问，也可以在 IJulia 中通过键入?紧接函数或者宏的名字并按下Enter访问。例如，?cos\n?@time\n?r\"\"会分别为相应的函数，宏或者字符显示文档。在Juno 中，使用Ctrl-J, Ctrl-D会为光标处的对象显示文档。"
 },
 
 {
-    "location": "manual/documentation/#Functions-and-Methods-1",
+    "location": "manual/documentation/#函数与方法-1",
     "page": "文档",
-    "title": "Functions & Methods",
+    "title": "函数与方法",
     "category": "section",
-    "text": "Functions in Julia may have multiple implementations, known as methods. While it\'s good practice for generic functions to have a single purpose, Julia allows methods to be documented individually if necessary. In general, only the most generic method should be documented, or even the function itself (i.e. the object created without any methods by function bar end). Specific methods should only be documented if their behaviour differs from the more generic ones. In any case, they should not repeat the information provided elsewhere. For example:\"\"\"\n    *(x, y, z...)\n\nMultiplication operator. `x * y * z *...` calls this function with multiple\narguments, i.e. `*(x, y, z...)`.\n\"\"\"\nfunction *(x, y, z...)\n    # ... [implementation sold separately] ...\nend\n\n\"\"\"\n    *(x::AbstractString, y::AbstractString, z::AbstractString...)\n\nWhen applied to strings, concatenates them.\n\"\"\"\nfunction *(x::AbstractString, y::AbstractString, z::AbstractString...)\n    # ... [insert secret sauce here] ...\nend\n\nhelp?> *\nsearch: * .*\n\n  *(x, y, z...)\n\n  Multiplication operator. x * y * z *... calls this function with multiple\n  arguments, i.e. *(x,y,z...).\n\n  *(x::AbstractString, y::AbstractString, z::AbstractString...)\n\n  When applied to strings, concatenates them.When retrieving documentation for a generic function, the metadata for each method is concatenated with the catdoc function, which can of course be overridden for custom types."
+    "text": "在Julia中函数可能有多种实现，被称为方法。虽然通用函数 一般只有一个目的，Julia允许在必要时可以对方法独立写文档。 通常，应该只有最通用的方法才有文档，或者甚至只是函数本身 （也就是在function bar end之前没有任何方法的对象）。特定方法应该 只因为其行为与其他通用方法有所区别才写文档。在任何情况下都不应 重复其他地方有的信息。例如\"\"\"\n    *(x, y, z...)\n\nMultiplication operator. `x * y * z *...` calls this function with multiple\narguments, i.e. `*(x, y, z...)`.\n\"\"\"\nfunction *(x, y, z...)\n    # ... [implementation sold separately] ...\nend\n\n\"\"\"\n    *(x::AbstractString, y::AbstractString, z::AbstractString...)\n\nWhen applied to strings, concatenates them.\n\"\"\"\nfunction *(x::AbstractString, y::AbstractString, z::AbstractString...)\n    # ... [insert secret sauce here] ...\nend\n\nhelp?> *\nsearch: * .*\n\n  *(x, y, z...)\n\n  Multiplication operator. x * y * z *... calls this function with multiple\n  arguments, i.e. *(x,y,z...).\n\n  *(x::AbstractString, y::AbstractString, z::AbstractString...)\n\n  When applied to strings, concatenates them.当从通用函数里抽取文档时，每个方法的元数据会用函数catdoc拼接，其当然可以被自定义类型重写。"
 },
 
 {
-    "location": "manual/documentation/#Advanced-Usage-1",
+    "location": "manual/documentation/#进阶用法-1",
     "page": "文档",
-    "title": "Advanced Usage",
+    "title": "进阶用法",
     "category": "section",
-    "text": "The @doc macro associates its first argument with its second in a per-module dictionary called META. By default, documentation is expected to be written in Markdown, and the doc\"\" string macro simply creates an object representing the Markdown content. In the future it is likely to do more advanced things such as allowing for relative image or link paths.To make it easier to write documentation, the parser treats the macro name @doc specially: if a call to @doc has one argument, but another expression appears after a single line break, then that additional expression is added as an argument to the macro. Therefore the following syntax is parsed as a 2-argument call to @doc:@doc raw\"\"\"\n...\n\"\"\"\nf(x) = xThis makes it easy to use an arbitrary object (here a raw string) as a docstring.When used for retrieving documentation, the @doc macro (or equally, the doc function) will search all META dictionaries for metadata relevant to the given object and return it. The returned object (some Markdown content, for example) will by default display itself intelligently. This design also makes it easy to use the doc system in a programmatic way; for example, to re-use documentation between different versions of a function:@doc \"...\" foo!\n@doc (@doc foo!) fooOr for use with Julia\'s metaprogramming functionality:for (f, op) in ((:add, :+), (:subtract, :-), (:multiply, :*), (:divide, :/))\n    @eval begin\n        $f(a,b) = $op(a,b)\n    end\nend\n@doc \"`add(a,b)` adds `a` and `b` together\" add\n@doc \"`subtract(a,b)` subtracts `b` from `a`\" subtractDocumentation written in non-toplevel blocks, such as begin, if, for, and let, is added to the documentation system as blocks are evaluated. For example:if condition()\n    \"...\"\n    f(x) = x\nendwill add documentation to f(x) when condition() is true. Note that even if f(x) goes out of scope at the end of the block, its documentation will remain."
+    "text": "@doc宏在叫做META的每个模块的字典中连接他的第一个和第二个参数。默认地，文档希望是用Markdown写成，并且doc\"\"\"字符串宏简单地创造一个代表了Markdown内容的对象。在未来，有可能支持更多的进阶功能比如考虑到相关的图像或者链接路径。为了让写文档更加简单，语法分析器对宏名@doc特殊对待：如果@doc的调用只有一个参数，但是在下一行出现了另外一个表达式，那么这个表达式就会追加为宏的参数。所以接下来的语法会被分析成@doc的2个参数的调用：@doc raw\"\"\"\n...\n\"\"\"\nf(x) = x这就让使用任意对象（这里指的是原始字符串）作为docstring变得简单。当@doc宏（或者doc函数）用作抽取文档时，他会在所有的META字典寻找与对象相关的元数据并且返回。返回的对象（例如一些Markdown内容）会默认智能地显示。这个设计也让以编程方法使用文档系统变得容易；例如，在一个函数的不同版本中重用文档：@doc \"...\" foo!\n@doc (@doc foo!) foo或者与Julia的元编程功能一起使用：for (f, op) in ((:add, :+), (:subtract, :-), (:multiply, :*), (:divide, :/))\n    @eval begin\n        $f(a,b) = $op(a,b)\n    end\nend\n@doc \"`add(a,b)` adds `a` and `b` together\" add\n@doc \"`subtract(a,b)` subtracts `b` from `a`\" subtractDocumentation written in non-toplevel blocks, such as begin, if, for, and let, is added to the documentation system as blocks are evaluated. For example:if condition()\n    \"...\"\n    f(x) = x\nendwill add documentation to f(x) when condition() is true. Note that even if f(x) goes out of scope at the end of the block, its documentation will remain."
 },
 
 {
@@ -1585,7 +1585,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/documentation/#Functions-and-Methods-2",
+    "location": "manual/documentation/#Functions-and-Methods-1",
     "page": "文档",
     "title": "Functions and Methods",
     "category": "section",
@@ -2573,7 +2573,7 @@ var documenterSearchIndex = {"docs": [
     "page": "调用 C 和 Fortran 代码",
     "title": "调用 C 和 Fortran 代码",
     "category": "section",
-    "text": "在数值计算领域，尽管有很多用 C 语言或 Fortran 写的高质量且成熟的库都可以用 Julia 重写，但为了便捷利用现有的C或Fortran代码，Julia 提供简洁且高效的调用方式。Julia 的哲学是\"no boilerplate\": Julia 可以直接调用 C/Fortran 的函数，不需要任何\"胶水\"代码，代码生成或其它编译过程 – 即使在交互式会话(REPL/Jupyter notebook)中使用也一样. 在 Julia 中，上述特性可以仅仅通过调用ccall实现，它的语法看起来就像是普通的函数调用。被调用的代码必须是一个 shared library (.so, .dylib, .dll). 大多数 C 和 Fortran 库都已经是以 shared library 发布的，但在用 GCC 或 Clang 编译自己的代码时，需要添加 -shared 和 -fPIC 编译器选项。由于 Julia 的 JIT 生成的机器码跟原生 C 代码的调用是一样，所以在 Julia 里调用 C/Fortran 库的 overhead 与直接从 C 里调用是一样的。(Non-library function calls in both C and Julia can be inlined and thus may have even less overhead than calls to shared library functions. When both libraries and executables are generated by LLVM, it is possible to perform whole-program optimizations that can even optimize across this boundary, but Julia does not yet support that. In the future, however, it may do so, yielding even greater performance gains.)我们可以通过 (:function, \"library\") 或 (\"function\", \"library\") 这两种形式来索引库中的函数，其中 function 是函数名，library 是库名。对于不同的平台/操作系统，库的载入路径可能会不同，如果库在默认载入路径中，则可以直接将 library 设为库名，否则，需要将其设为一个完整的路径。3 284/5000 可以单独使用函数名来代替元组（只用:function 或 \"function\"）。 在这种情况下，函数名在当前进程中进行解析。这一调用形式可用于调用C库函数，Julia运行时中的函数或链接到Julia的应用程序中的函数。默认情况下，Fortran编译器会改变变量名[generate mangled names]（https://en.wikipedia.org/wiki/Name_mangling#Fortran）（例如，将函数名转换为小写或大写，通常会添加下划线），要通过[ccall]（@ ref）调用Fortran函数，必须传递与Fortran编译器生成的相对应的标识符。 此外，在调用Fortran函数时，所有输入必须以指针形式传递，并已在堆或栈上分配内存。 这不仅适用于通常是堆分配的数组和其他可变对象，而且适用于整数和浮点数等标量值，这些值通常是栈分配的，并且在使用C或Julia调用约定时通常通过寄存器传递。Finally, you can use ccall to actually generate a call to the library function. Arguments to ccall are as follows:一个 (:function, \"library\") 对，必须为字面值常量形式，\n或\n一个函数指针，（例如，dlsym）。\n返回类型（参见下文，将声明的C类型对应到Julia）\n当包含的函数已经定义时，参数将会在编译时计算。\n输入类型的元组。输入类型必须为字面值元组，而非元组 变量或表达式。\n当包含的函数已经定义时，参数将会在编译时计算。\n紧接着的参数，如果有的话，将会以参数的实际值传递给函数。举一个完整而简单的例子：从标准C库函数中调用 clock函数。julia> t = ccall((:clock, \"libc\"), Int32, ())\n2292761\n\njulia> t\n2292761\n\njulia> typeof(ans)\nInt32clock 不接收任何参数，并返回一个 Int32 。一个常见的问题是必须要用逗号尾随来写一个1-元组。例如，要调用 getenv 函数来获取指向环境变量值的指针，可以这样来调用：julia> path = ccall((:getenv, \"libc\"), Cstring, (Cstring,), \"SHELL\")\nCstring(@0x00007fff5fbffc45)\n\njulia> unsafe_string(path)\n\"/bin/bash\"请注意，参数类型元组必须是 (Cstring,)，而不是 (Cstring) 。 这是因为 (Cstring) 只是括号括起来的表达式 Cstring ，而不是包含 Cstring 的1-元组：julia> (Cstring)\nCstring\n\njulia> (Cstring,)\n(Cstring,)在实践中，特别是在提供可重用功能时，通常在Julia函数中封装 ccall 用于设置参数的，然后在任何指示错误的 C 或 Fortran 函数中检查错误，作为异常传递给 Julia 调用者。这一点尤其重要，因为C和Fortran的API在如何指示错误条件方面存在众所周知的不一致。 例如，C库函数getenv 包含在以下Julia函数中，该函数是env.jl实际定义的简化版本：function getenv(var::AbstractString)\n    val = ccall((:getenv, \"libc\"),\n                Cstring, (Cstring,), var)\n    if val == C_NULL\n        error(\"getenv: undefined variable: \", var)\n    end\n    unsafe_string(val)\nendC函数 getenv 通过返回 NULL 指出了一个错误，但是其他标准C函数通过多种不同的方式来指出错误，包括返回-1, 0, 1和其它特殊值。这一层封装能抛出一个清晰地指出问题的异常，即是否调用者尝试获取一个不存在的环境变量：julia> getenv(\"SHELL\")\n\"/bin/bash\"\n\njulia> getenv(\"FOOBAR\")\ngetenv: undefined variable: FOOBAR这有一个稍微复杂一点的例子，它能发现本机的主机名：function gethostname()\n    hostname = Vector{UInt8}(128)\n    ccall((:gethostname, \"libc\"), Int32,\n          (Ptr{UInt8}, Csize_t),\n          hostname, sizeof(hostname))\n    hostname[end] = 0; # ensure null-termination\n    return unsafe_string(pointer(hostname))\nendThis example first allocates an array of bytes, then calls the C library function gethostname to fill the array in with the hostname, takes a pointer to the hostname buffer, and converts the pointer to a Julia string, assuming that it is a NUL-terminated C string. It is common for C libraries to use this pattern of requiring the caller to allocate memory to be passed to the callee and filled in. Allocation of memory from Julia like this is generally accomplished by creating an uninitialized array and passing a pointer to its data to the C function. This is why we don\'t use the Cstring type here: as the array is uninitialized, it could contain NUL bytes. Converting to a Cstring as part of the ccall checks for contained NUL bytes and could therefore throw a conversion error."
+    "text": "在数值计算领域，尽管有很多用 C 语言或 Fortran 写的高质量且成熟的库都可以用 Julia 重写，但为了便捷利用现有的 C 或 Fortran 代码，Julia 提供简洁且高效的调用方式。Julia 的哲学是 \"no boilerplate\": Julia 可以直接调用 C/Fortran 的函数，不需要任何\"胶水\"代码，代码生成或其它编译过程 – 即使在交互式会话 (REPL/Jupyter notebook) 中使用也一样. 在 Julia 中，上述特性可以仅仅通过调用ccall实现，它的语法看起来就像是普通的函数调用。被调用的代码必须是一个 shared library (.so, .dylib, .dll). 大多数 C 和 Fortran 库都已经是以 shared library 发布的，但在用 GCC 或 Clang 编译自己的代码时，需要添加 -shared 和 -fPIC 编译器选项。由于 Julia 的 JIT 生成的机器码跟原生 C 代码的调用是一样，所以在 Julia 里调用 C/Fortran 库的 overhead 与直接从 C 里调用是一样的。(在C和Julia中的非库函数调用都能被内联，因此可能会比调用标准库函数花销更少。当库与可执行文件都由 LLVM 生成时，可能会对整个程序执行甚至能跨越这一限制的优化，但是 Julia 现在还不支持这种优化。不过在未来，它可能会这么做，来获得更大的性能提升)我们可以通过 (:function, \"library\") 或 (\"function\", \"library\") 这两种形式来索引库中的函数，其中 function 是函数名，library 是库名。对于不同的平台/操作系统，库的载入路径可能会不同，如果库在默认载入路径中，则可以直接将 library 设为库名，否则，需要将其设为一个完整的路径。可以单独使用函数名来代替元组（只用:function 或 \"function\"）。 在这种情况下，函数名在当前进程中进行解析。这一调用形式可用于调用 C 库函数、Julia 运行时中的函数或链接到 Julia 的应用程序中的函数。默认情况下，Fortran编译器会改变变量名generate mangled names（例如，将函数名转换为小写或大写，通常会添加下划线），要通过 ccall 调用 Fortran 函数，必须传递与 Fortran 编译器生成的相对应的标识符。 此外，在调用 Fortran 函数时，所有输入必须以指针形式传递，并已在堆或栈上分配内存。 这不仅适用于通常是堆分配的数组和其他可变对象，而且适用于整数和浮点数等标量值，这些值通常是栈分配的，并且在使用 C 或 Julia 调用约定时通常通过寄存器传递。最终，你能使用ccall来实际生成一个对库函数的调用。ccall的参数如下：一个 (:function, \"library\") 对，必须为字面值常量形式，\n或\n一个函数指针，（例如，dlsym）。\n返回类型（参见下文，将声明的C类型对应到Julia）\n当包含的函数已经定义时，参数将会在编译时计算。\n输入类型的元组。输入类型必须为字面值元组，而非元组 变量或表达式。\n当包含的函数已经定义时，参数将会在编译时计算。\n紧接着的参数，如果有的话，将会以参数的实际值传递给函数。举一个完整而简单的例子：从标准C库函数中调用 clock函数。julia> t = ccall((:clock, \"libc\"), Int32, ())\n2292761\n\njulia> t\n2292761\n\njulia> typeof(ans)\nInt32clock 不接收任何参数，并返回一个 Int32 。一个常见的问题是必须要用逗号尾随来写一个1-元组。例如，要调用 getenv 函数来获取指向环境变量值的指针，可以这样来调用：julia> path = ccall((:getenv, \"libc\"), Cstring, (Cstring,), \"SHELL\")\nCstring(@0x00007fff5fbffc45)\n\njulia> unsafe_string(path)\n\"/bin/bash\"请注意，参数类型元组必须是 (Cstring,)，而不是 (Cstring) 。 这是因为 (Cstring) 只是括号括起来的表达式 Cstring ，而不是包含 Cstring 的1-元组：julia> (Cstring)\nCstring\n\njulia> (Cstring,)\n(Cstring,)在实践中，特别是在提供可重用功能时，通常在Julia函数中封装 ccall 用于设置参数的，然后在任何指示错误的 C 或 Fortran 函数中检查错误，作为异常传递给 Julia 调用者。这一点尤其重要，因为C和Fortran的API在如何指示错误条件方面存在众所周知的不一致。 例如，C库函数getenv 包含在以下Julia函数中，该函数是env.jl实际定义的简化版本：function getenv(var::AbstractString)\n    val = ccall((:getenv, \"libc\"),\n                Cstring, (Cstring,), var)\n    if val == C_NULL\n        error(\"getenv: undefined variable: \", var)\n    end\n    unsafe_string(val)\nendC函数 getenv 通过返回 NULL 指出了一个错误，但是其他标准C函数通过多种不同的方式来指出错误，包括返回-1, 0, 1和其它特殊值。这一层封装能抛出一个清晰地指出问题的异常，即是否调用者尝试获取一个不存在的环境变量：julia> getenv(\"SHELL\")\n\"/bin/bash\"\n\njulia> getenv(\"FOOBAR\")\ngetenv: undefined variable: FOOBAR这有一个稍微复杂一点的例子，它能发现本机的主机名：function gethostname()\n    hostname = Vector{UInt8}(128)\n    ccall((:gethostname, \"libc\"), Int32,\n          (Ptr{UInt8}, Csize_t),\n          hostname, sizeof(hostname))\n    hostname[end] = 0; # ensure null-termination\n    return unsafe_string(pointer(hostname))\nend这个例子首先分配一个由bytes组成的数组，然后调用C库函数gethostname用主机名填充数组，获取指向主机名缓冲区的指针，假设它是一个以NUL终止的C字符串，并将指针转换为指向Julia字符串的指针。 这种使用这种需要调用者分配内存以传递给被调用者来填充的模式对于C库函数很常见。 Julia中类似的内存分配通常是通过创建一个未初始化的数组并将指向其数据的指针传递给C函数来完成的。 这就是我们不在这里使用Cstring类型的原因：由于数组未初始化，它可能包含NUL字节。转换到Cstring作为 ccall 的一部分会检查包含的NUL字节，因此可能会抛出转换错误。"
 },
 
 {
@@ -2581,7 +2581,7 @@ var documenterSearchIndex = {"docs": [
     "page": "调用 C 和 Fortran 代码",
     "title": "创建和C兼容的Julia函数指针",
     "category": "section",
-    "text": "可以将Julia函数传递给接受函数指针参数的原生C函数。例如，要匹配满足下面的C原型：typedef returntype (*functiontype)(argumenttype, ...)The macro @cfunction generates the C-compatible function pointer for a call to a Julia function. Arguments to @cfunction are as follows:一个Julia函数\n返回类型\nA literal tuple of input typesLike ccall, all of these arguments will be evaluated at compile-time, when the containing method is defined.Currently, only the platform-default C calling convention is supported. This means that @cfunction-generated pointers cannot be used in calls where WINAPI expects stdcall function on 32-bit windows, but can be used on WIN64 (where stdcall is unified with the C calling convention).A classic example is the standard C library qsort function, declared as:void qsort(void *base, size_t nmemb, size_t size,\n           int (*compare)(const void*, const void*));The base argument is a pointer to an array of length nmemb, with elements of size bytes each. compare is a callback function which takes pointers to two elements a and b and returns an integer less/greater than zero if a should appear before/after b (or zero if any order is permitted). Now, suppose that we have a 1d array A of values in Julia that we want to sort using the qsort function (rather than Julia\'s built-in sort function). Before we worry about calling qsort and passing arguments, we need to write a comparison function that works for some arbitrary objects (which define <):julia> function mycompare(a, b)::Cint\n           return (a < b) ? -1 : ((a > b) ? +1 : 0)\n       end\nmycompare (generic function with 1 method)Notice that we have to be careful about the return type: qsort expects a function returning a C int, so we annotate the return type of the function to be sure it returns a Cint.In order to pass this function to C, we obtain its address using the macro @cfunction:julia> mycompare_c = @cfunction(mycompare, Cint, (Ref{Cdouble}, Ref{Cdouble}));@cfunction requires three arguments: the Julia function (mycompare), the return type (Cint), and a literal tuple of the input argument types, in this case to sort an array of Cdouble (Float64) elements.The final call to qsort looks like this:julia> A = [1.3, -2.7, 4.4, 3.1]\n4-element Array{Float64,1}:\n  1.3\n -2.7\n  4.4\n  3.1\n\njulia> ccall(:qsort, Cvoid, (Ptr{Cdouble}, Csize_t, Csize_t, Ptr{Cvoid}),\n             A, length(A), sizeof(eltype(A)), mycompare_c)\n\njulia> A\n4-element Array{Float64,1}:\n -2.7\n  1.3\n  3.1\n  4.4As can be seen, A is changed to the sorted array [-2.7, 1.3, 3.1, 4.4]. Note that Julia knows how to convert an array into a Ptr{Cdouble}, how to compute the size of a type in bytes (identical to C\'s sizeof operator), and so on. For fun, try inserting a println(\"mycompare($a, $b)\") line into mycompare, which will allow you to see the comparisons that qsort is performing (and to verify that it is really calling the Julia function that you passed to it)."
+    "text": "可以将Julia函数传递给接受函数指针参数的原生C函数。例如，要匹配满足下面的C原型：typedef returntype (*functiontype)(argumenttype, ...)宏 @cfunction 生成可兼容C的函数指针，来调用Julia函数。 @cfunction 的参数如下：一个Julia函数\n返回类型\n一个与输入类型相同的字面量元组与 ccall 一样，所有的参数将会在编译期执行，也就是包含的函数被定义时执行。目前仅支持平台默认的C调用转换。这意味着@cfunction产生的指针不能在WINAPI需要stdcall的32位Windows上使用，但是能在（stdcall独立于C调用转换的）WIN64上使用。一个典型的例子就是标准C库函数qsort，定义为：void qsort(void *base, size_t nmemb, size_t size,\n           int (*compare)(const void*, const void*));The base argument is a pointer to an array of length nmemb, with elements of size bytes each. compare is a callback function which takes pointers to two elements a and b and returns an integer less/greater than zero if a should appear before/after b (or zero if any order is permitted). Now, suppose that we have a 1d array A of values in Julia that we want to sort using the qsort function (rather than Julia\'s built-in sort function). Before we worry about calling qsort and passing arguments, we need to write a comparison function that works for some arbitrary objects (which define <):julia> function mycompare(a, b)::Cint\n           return (a < b) ? -1 : ((a > b) ? +1 : 0)\n       end\nmycompare (generic function with 1 method)Notice that we have to be careful about the return type: qsort expects a function returning a C int, so we annotate the return type of the function to be sure it returns a Cint.In order to pass this function to C, we obtain its address using the macro @cfunction:julia> mycompare_c = @cfunction(mycompare, Cint, (Ref{Cdouble}, Ref{Cdouble}));@cfunction requires three arguments: the Julia function (mycompare), the return type (Cint), and a literal tuple of the input argument types, in this case to sort an array of Cdouble (Float64) elements.The final call to qsort looks like this:julia> A = [1.3, -2.7, 4.4, 3.1]\n4-element Array{Float64,1}:\n  1.3\n -2.7\n  4.4\n  3.1\n\njulia> ccall(:qsort, Cvoid, (Ptr{Cdouble}, Csize_t, Csize_t, Ptr{Cvoid}),\n             A, length(A), sizeof(eltype(A)), mycompare_c)\n\njulia> A\n4-element Array{Float64,1}:\n -2.7\n  1.3\n  3.1\n  4.4As can be seen, A is changed to the sorted array [-2.7, 1.3, 3.1, 4.4]. Note that Julia knows how to convert an array into a Ptr{Cdouble}, how to compute the size of a type in bytes (identical to C\'s sizeof operator), and so on. For fun, try inserting a println(\"mycompare($a, $b)\") line into mycompare, which will allow you to see the comparisons that qsort is performing (and to verify that it is really calling the Julia function that you passed to it)."
 },
 
 {
@@ -2773,7 +2773,7 @@ var documenterSearchIndex = {"docs": [
     "page": "调用 C 和 Fortran 代码",
     "title": "Thread-safety",
     "category": "section",
-    "text": "Some C libraries execute their callbacks from a different thread, and since Julia isn\'t thread-safe you\'ll need to take some extra precautions. In particular, you\'ll need to set up a two-layered system: the C callback should only schedule (via Julia\'s event loop) the execution of your \"real\" callback. To do this, create an AsyncCondition object and wait on it:cond = Base.AsyncCondition()\nwait(cond)The callback you pass to C should only execute a ccall to :uv_async_send, passing cond.handle as the argument, taking care to avoid any allocations or other interactions with the Julia runtime.Note that events may be coalesced, so multiple calls to uv_async_send may result in a single wakeup notification to the condition."
+    "text": "Some C libraries execute their callbacks from a different thread, and since Julia isn\'t thread-safe you\'ll need to take some extra precautions. In particular, you\'ll need to set up a two-layered system: the C callback should only schedule (via Julia\'s event loop) the execution of your \"real\" callback. To do this, create an AsyncCondition object and wait on it:cond = Base.AsyncCondition()\nwait(cond)传递给C的回调应该只执行:uv_async_send的\' ccall \'，传递cond.handle参数，注意避免任何分配操作或与Julia运行时的其他交互。注意，事件可能会合并，因此对uv_async_send 的多个调用可能会导致对该条件的单个唤醒通知。"
 },
 
 {
@@ -4093,7 +4093,7 @@ var documenterSearchIndex = {"docs": [
     "page": "与其他语言的显著差异",
     "title": "与 MATLAB 的显著差异",
     "category": "section",
-    "text": "Although MATLAB users may find Julia\'s syntax familiar, Julia is not a MATLAB clone. There are major syntactic and functional differences. The following are some noteworthy differences that may trip up Julia users accustomed to MATLAB:Julia 数组使用方括号 A[i,j] 进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。 as well.\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。 will be visible in the caller.\nJulia does not automatically grow arrays in an assignment statement. Whereas in MATLAB a(4) = 3.2 can create the array a = [0 0 0 3.2] and a(5) = 7 can grow it into a = [0 0 0 3.2 7], the corresponding Julia statement a[5] = 7 throws an error if the length of a is less than 5 or if this statement is the first use of the identifier a. Julia has push! and append!, which grow Vectors much more efficiently than MATLAB\'s a(end+1) = val.\nThe imaginary unit sqrt(-1) is represented in Julia as im, not i or j as in MATLAB.\nIn Julia, literal numbers without a decimal point (such as 42) create integers instead of floating point numbers. Arbitrarily large integer literals are supported. As a result, some operations such as 2^-1 will throw a domain error as the result is not an integer (see the FAQ entry on domain errors for details).\nIn Julia, multiple values are returned and assigned as tuples, e.g. (a, b) = (1, 2) or a, b = 1, 2. MATLAB\'s nargout, which is often used in MATLAB to do optional work based on the number of returned values, does not exist in Julia. Instead, users can use optional and keyword arguments to achieve similar capabilities.\nJulia has true one-dimensional arrays. Column vectors are of size N, not Nx1. For example, rand(N) makes a 1-dimensional array.\nIn Julia, [x,y,z] will always construct a 3-element array containing x, y and z.\nTo concatenate in the first (\"vertical\") dimension use either vcat(x,y,z) or separate with semicolons ([x; y; z]).\nTo concatenate in the second (\"horizontal\") dimension use either hcat(x,y,z) or separate with spaces ([x y z]).\nTo construct block matrices (concatenating in the first two dimensions), use either hvcat or combine spaces and semicolons ([a b; c d]).\nIn Julia, a:b and a:b:c construct AbstractRange objects. To construct a full vector like in MATLAB, use collect(a:b). Generally, there is no need to call collect though. An AbstractRange object will act like a normal array in most cases but is more efficient because it lazily computes its values. This pattern of creating specialized objects instead of full arrays is used frequently, and is also seen in functions such as range, or with iterators such as enumerate, and zip. The special objects can mostly be used as if they were normal arrays.\nFunctions in Julia return values from their last expression or the return keyword instead of listing the names of variables to return in the function definition (see The return Keyword for details).\nA Julia script may contain any number of functions, and all definitions will be externally visible when the file is loaded. Function definitions can be loaded from files outside the current working directory.\nIn Julia, reductions such as sum, prod, and max are performed over every element of an array when called with a single argument, as in sum(A), even if A has more than one dimension.\nIn Julia, parentheses must be used to call a function with zero arguments, like in rand().\nJulia discourages the used of semicolons to end statements. The results of statements are not automatically printed (except at the interactive prompt), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output.\nIn Julia, if A and B are arrays, logical comparison operations like A == B do not return an array of booleans. Instead, use A .== B, and similarly for the other boolean operators like <, > and =.\nIn Julia, the operators &, |, and ⊻ (xor) perform the bitwise operations equivalent to and, or, and xor respectively in MATLAB, and have precedence similar to Python\'s bitwise operators (unlike C). They can operate on scalars or element-wise across arrays and can be used to combine logical arrays, but note the difference in order of operations: parentheses may be required (e.g., to select elements of A equal to 1 or 2 use (A .== 1) .| (A .== 2)).\nIn Julia, the elements of a collection can be passed as arguments to a function using the splat operator ..., as in xs=[1,2]; f(xs...).\nJulia\'s svd returns singular values as a vector instead of as a dense diagonal matrix.\nIn Julia, ... is not used to continue lines of code. Instead, incomplete expressions automatically continue onto the next line.\nIn both Julia and MATLAB, the variable ans is set to the value of the last expression issued in an interactive session. In Julia, unlike MATLAB, ans is not set when Julia code is run in non-interactive mode.\nJulia\'s structs do not support dynamically adding fields at runtime, unlike MATLAB\'s classes. Instead, use a Dict.\nIn Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.\nIn MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x(x>3) or in the statement x(x>3) = [] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays.\nThe analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in vertcat(A{:}) in MATLAB, is written using the splat operator in Julia, e.g. as vcat(A...)."
+    "text": "虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的Julia用户感到困扰的显著差异：Julia 数组使用方括号 A[i,j] 进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。 as well.\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改 对调用者是可见的。\nJulia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 a(4) = 3.2 可以创建数组 a = [0 0 0 3.2] 和 a(5) = 7 可以将它增长为 a = [0 0 0 3.2 7]。 如果 a 的长度小于 5 或者这个语句是第一次使用标识符 a，则相应的 Julia 语句 a[5] = 7 会抛出错误。 Julia 使用 push! 和 append! 实现比 MATLAB 的 a(end+1) = val 更高效地增长 Vector。 which grow Vectors much more efficiently than MATLAB\'s a(end+1) = val.\n虚数单位 sqrt(-1) 在Julia中表示为 im，而不是在 MATLAB 中的 i 或 j。\n在 Julia 中，没有小数点的字面数字（例如 42）会创建整数而不是浮点数。 也支持任意大整数。 因此，某些操作（如 2^-1）将抛出domain error，因为结果不是整数（有关详细信息，请参阅 the FAQ entry on domain errors）。 for details).\n在 Julia 中，能返回多个值并将其赋值为元组，例如 (a, b) = (1, 2) 或 a, b = 1, 2。 在 Julia 中不存在 MATLAB 的 nargout，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。 取而代之的是，用户可以使用可选参数（optional arguments）和关键字参数（keyword arguments）来实现类似的功能。 similar capabilities.\nJulia 拥有真正的一维数组。 列向量的大小为 N，而不是 Nx1。 例如，rand(N) 创建一个一维数组。\n在 Julia 中，[x,y,z] 将始终构造一个包含x，y 和 z 的3元素数组。\n要在第一个维度（“垂直列”）中连接元素，请使用 vcat(x,y,z) 或用分号分隔（[x; y; z]）。 with semicolons ([x; y; z]).\n要在第二个维度（“水平行”）中连接元素，请使用 hcat(x,y,z) 或用空格分隔（[x y z]）。 with spaces ([x y z]).\n要构造块矩阵（在前两个维度中连接元素），请使用 hvcat或组合空格和分号（[a b; c d]）。 or combine spaces and semicolons ([a b; c d]).\nIn Julia, a:b and a:b:c construct AbstractRange objects. To construct a full vector like in MATLAB, use collect(a:b). Generally, there is no need to call collect though. An AbstractRange object will act like a normal array in most cases but is more efficient because it lazily computes its values. This pattern of creating specialized objects instead of full arrays is used frequently, and is also seen in functions such as range, or with iterators such as enumerate, and zip. The special objects can mostly be used as if they were normal arrays.\nFunctions in Julia return values from their last expression or the return keyword instead of listing the names of variables to return in the function definition (see The return Keyword for details).\nA Julia script may contain any number of functions, and all definitions will be externally visible when the file is loaded. Function definitions can be loaded from files outside the current working directory.\nIn Julia, reductions such as sum, prod, and max are performed over every element of an array when called with a single argument, as in sum(A), even if A has more than one dimension.\nIn Julia, parentheses must be used to call a function with zero arguments, like in rand().\nJulia discourages the used of semicolons to end statements. The results of statements are not automatically printed (except at the interactive prompt), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output.\nIn Julia, if A and B are arrays, logical comparison operations like A == B do not return an array of booleans. Instead, use A .== B, and similarly for the other boolean operators like <, > and =.\nIn Julia, the operators &, |, and ⊻ (xor) perform the bitwise operations equivalent to and, or, and xor respectively in MATLAB, and have precedence similar to Python\'s bitwise operators (unlike C). They can operate on scalars or element-wise across arrays and can be used to combine logical arrays, but note the difference in order of operations: parentheses may be required (e.g., to select elements of A equal to 1 or 2 use (A .== 1) .| (A .== 2)).\nIn Julia, the elements of a collection can be passed as arguments to a function using the splat operator ..., as in xs=[1,2]; f(xs...).\nJulia\'s svd returns singular values as a vector instead of as a dense diagonal matrix.\nIn Julia, ... is not used to continue lines of code. Instead, incomplete expressions automatically continue onto the next line.\nIn both Julia and MATLAB, the variable ans is set to the value of the last expression issued in an interactive session. In Julia, unlike MATLAB, ans is not set when Julia code is run in non-interactive mode.\nJulia\'s structs do not support dynamically adding fields at runtime, unlike MATLAB\'s classes. Instead, use a Dict.\nIn Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.\nIn MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x(x>3) or in the statement x(x>3) = [] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays.\nThe analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in vertcat(A{:}) in MATLAB, is written using the splat operator in Julia, e.g. as vcat(A...)."
 },
 
 {
@@ -4109,15 +4109,15 @@ var documenterSearchIndex = {"docs": [
     "page": "与其他语言的显著差异",
     "title": "与 Python 的显著差异",
     "category": "section",
-    "text": "Julia requires end to end a block. Unlike Python, Julia has no pass keyword.\nIn Julia, indexing of arrays, strings, etc. is 1-based not 0-based.\nJulia\'s slice indexing includes the last element, unlike in Python. a[2:3] in Julia is a[1:3] in Python.\nJulia does not support negative indices. In particular, the last element of a list or array is indexed with end in Julia, not -1 as in Python.\nJulia\'s for, if, while, etc. blocks are terminated by the end keyword. Indentation level is not significant as it is in Python.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia arrays are column major (Fortran ordered) whereas NumPy arrays are row major (C-ordered) by default. To get optimal performance when looping over arrays, the order of the loops should be reversed in Julia relative to NumPy (see relevant section of Performance Tips).\nJulia\'s updating operators (e.g. +=, -=, ...) are not in-place whereas NumPy\'s are. This means A = [1, 1]; B = A; B += [3, 3] doesn\'t change values in A, it rather rebinds the name B to the result of the right-hand side B = B + 3, which is a new array. For in-place operation, use B .+= 3 (see also dot operators), explicit loops, or InplaceOps.jl.\nJulia evaluates default values of function arguments every time the method is invoked, unlike in Python where the default values are evaluated only once when the function is defined. For example, the function f(x=rand()) = x returns a new random number every time it is invoked without argument. On the other hand, the function g(x=[1,2]) = push!(x,3) returns [1,2,3] every time it is called as g().\n与 C/C++ 的显著差异"
+    "text": "Julia requires end to end a block. Unlike Python, Julia has no pass keyword.\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia\'s slice indexing includes the last element, unlike in Python. a[2:3] in Julia is a[1:3] in Python.\nJulia does not support negative indices. In particular, the last element of a list or array is indexed with end in Julia, not -1 as in Python.\nJulia\'s for, if, while, etc. blocks are terminated by the end keyword. Indentation level is not significant as it is in Python.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia arrays are column major (Fortran ordered) whereas NumPy arrays are row major (C-ordered) by default. To get optimal performance when looping over arrays, the order of the loops should be reversed in Julia relative to NumPy (see relevant section of Performance Tips).\nJulia\'s updating operators (e.g. +=, -=, ...) are not in-place whereas NumPy\'s are. This means A = [1, 1]; B = A; B += [3, 3] doesn\'t change values in A, it rather rebinds the name B to the result of the right-hand side B = B + 3, which is a new array. For in-place operation, use B .+= 3 (see also dot operators), explicit loops, or InplaceOps.jl.\nJulia evaluates default values of function arguments every time the method is invoked, unlike in Python where the default values are evaluated only once when the function is defined. For example, the function f(x=rand()) = x returns a new random number every time it is invoked without argument. On the other hand, the function g(x=[1,2]) = push!(x,3) returns [1,2,3] every time it is called as g().\nIn Julia % is the remainder operator, whereas in Python it is the modulus."
 },
 
 {
-    "location": "manual/noteworthy-differences/#Julia-的数组由方括号索引，方括号中可以包含不止一个维度-A[i,j]。这样的语法不仅仅是像-C/C-中那样对指针或者地址引用的语法糖，参见-Julia-文档数组构造的语法（依版本不同有所变动）。-1",
+    "location": "manual/noteworthy-differences/#与-C/C-的显著差异-1",
     "page": "与其他语言的显著差异",
-    "title": "Julia 的数组由方括号索引，方括号中可以包含不止一个维度 A[i,j]。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。",
+    "title": "与 C/C++ 的显著差异",
     "category": "section",
-    "text": "the Julia documentation for the syntax for array construction (it has changed between versions). 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。 Julia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。像 += 这样的更新运算符不会以 in-place 的方式执行，而是相当于 A = A + B，将左侧绑定到右侧表达式的计算结果上。\nas well. Updating operators like += do not operate in-place, they are equivalent to A = A + B\nwhich rebinds the left-hand side to the result of the right-hand side expression. Julia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 性能建议）。 default. To get optimal performance when looping over arrays, the order of the loops should be\nreversed in Julia relative to C/C++ (see relevant section of Performance Tips). Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。 will be visible in the caller.\n在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。 whitespace from a Julia program.\n在 Julia 中，没有小数点的数值字面量（如 42）生成有符号整数，类型为 Int，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 Int64（如果 Int 是 Int32）、Int128，或者任意精度的 BigInt 类型。不存在诸如 L, LL, U, UL, ULL 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 0x 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同， Int, but literals too large to fit in the machine word size will automatically be promoted to\na larger size type, such as Int64 (if Int is Int32), Int128, or the arbitrarily large BigInt type. There are no numeric literal suffixes, such as L, LL, U, UL, ULL to indicate unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals (which start with 0x like C/C++), are unsigned. Hexadecimal literals also, unlike C/C++/Java 也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的长度，包括开头的 0。例如，0x0 和 0x00 的类型是 UInt8，0x000 和 0x0000 的类型是 UInt16。同理，字面量的长度在 5-8 之间，类型为 UInt32；在 9-16 之间，类型为 UInt64；在 17-32 之间，类型为 UInt128。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 ~0xf == 0xf0 与 ~0x000f == 0xfff0 完全不同。 leading 0s. For example, 0x0 and 0x00 have type UInt8, 0x000 and 0x0000 have type UInt16, then literals with 5 to 8 hex digits have type UInt32, 9 to 16 hex digits type UInt64 and 17 to 32 hex digits type UInt128. This needs to be taken into account when defining 64 位的 Float64 UInt64 and 17 to 32 hex digits type UInt128. This needs to be taken into account when defining hexadecimal masks, for example ~0xf == 0xf0 is very different from ~0x000f == 0xfff0. 64 bit Float64 and 32 bit Float32 bit literals are expressed as 1.0 and 1.0f0 respectively. Floating point literals are rounded (and not promoted to the BigFloat type) if they can not be exactly represented.  Floating point literals are closer in behavior to C/C++. Octal (prefixed with 0o) and binary (prefixed with 0b) literals are also treated as unsigned.\nString literals can be delimited with either \"  or \"\"\", \"\"\" delimited literals can contain \" characters without quoting it like \"\\\"\" String literals can have values of other variables or expressions interpolated into them, indicated by $variablename or $(expression), which evaluates the variable name or the expression in the context of the function.\n// indicates a Rational number, and not a single-line comment (which is # in Julia)\n#= indicates the start of a multiline comment, and =# ends it.\nFunctions in Julia return values from their last expression(s) or the return keyword.  Multiple values can be returned from functions and assigned as tuples, e.g. (a, b) = myfunction() or a, b = myfunction(), instead of having to pass pointers to values as one would have to do in C/C++ (i.e. a = myfunction(&b).\nJulia does not require the use of semicolons to end statements. The results of expressions are not automatically printed (except at the interactive prompt, i.e. the REPL), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output. In the REPL, ; can be used to suppress output. ; also has a different meaning within [ ], something to watch out for. ; can be used to separate expressions on a single line, but are not strictly necessary in many cases, and are more an aid to readability.\nIn Julia, the operator ⊻ (xor) performs the bitwise XOR operation, i.e. ^ in C/C++.  Also, the bitwise operators do not have the same precedence as C/++, so parenthesis may be required.\nJulia\'s ^ is exponentiation (pow), not bitwise XOR as in C/C++ (use ⊻, or xor, in Julia)\nJulia has two right-shift operators, >> and >>>.  >>> performs an arithmetic shift, >> always performs a logical shift, unlike C/C++, where the meaning of >> depends on the type of the value being shifted.\nJulia\'s -> creates an anonymous function, it does not access a member via a pointer.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (int i=1; i <= 3; i++) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value), because of the operator precedence.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia macros operate on parsed expressions, rather than the text of the program, which allows them to perform sophisticated transformations of Julia code. Macro names start with the @ character, and have both a function-like syntax, @mymacro(arg1, arg2, arg3), and a statement-like syntax, @mymacro arg1 arg2 arg3. The forms are interchangeable; the function-like form is particularly useful if the macro appears within another expression, and is often clearest. The statement-like form is often used to annotate blocks, as in the distributed for construct: @distributed for i in 1:n; #= body =#; end. Where the end of the macro construct may be unclear, use the function-like form.\nJulia now has an enumeration type, expressed using the macro @enum(name, value1, value2, ...) For example: @enum(Fruit, banana=1, apple, pear)\nBy convention, functions that modify their arguments have a ! at the end of the name, for example push!.\nIn C++, by default, you have static dispatch, i.e. you need to annotate a function as virtual, in order to have dynamic dispatch. On the other hand, in Julia every method is \"virtual\" (although it\'s more general than that since methods are dispatched on every argument type, not only this, using the most-specific-declaration rule)."
+    "text": "Julia 的数组由方括号索引，方括号中可以包含不止一个维度 A[i,j]。 这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。像 += 这样的更新运算符不会以 in-place 的方式执行，而是相当于 A = A + B，将左侧绑定到右侧表达式的计算结果上。 as well. Updating operators like += do not operate in-place, they are equivalent to A = A + B which rebinds the left-hand side to the result of the right-hand side expression.\nJulia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 性能建议）。 default. To get optimal performance when looping over arrays, the order of the loops should be reversed in Julia relative to C/C++ (see relevant section of Performance Tips).\nJulia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改 对调用者是可见的。\n在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。 whitespace from a Julia program.\n在 Julia 中，没有小数点的数值字面量（如 42）生成有符号整数，类型为 Int，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 Int64（如果 Int 是 Int32）、Int128，或者任意精度的 BigInt 类型。不存在诸如 L, LL, U, UL, ULL 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 0x 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同， Int, but literals too large to fit in the machine word size will automatically be promoted to a larger size type, such as Int64 (if Int is Int32), Int128, or the arbitrarily large 也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的长度，包括开头的 0。例如，0x0 和 0x00 的类型是 UInt8，0x000 和 0x0000 的类型是 UInt16。同理，字面量的长度在 5-8 之间，类型为 UInt32；在 9-16 之间，类型为 UInt64；在 17-32 之间，类型为 UInt128。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 ~0xf == 0xf0 与 ~0x000f == 0xfff0 完全不同。 unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals (which start with 0x like C/C++), are unsigned. Hexadecimal literals also, unlike C/C++/Java and unlike decimal literals in Julia, have a type based on the length of the literal, including leading 0s. For example, 0x0 and 0x00 have type UInt8, 0x000 and 0x0000 have type UInt16, then literals with 5 to 8 hex digits have type UInt32, 9 to 16 hex digits type UInt64 and 17 to 32 hex digits type UInt128. This needs to be taken into account when defining hexadecimal masks, for example ~0xf == 0xf0 is very different from ~0x000f == 0xfff0. 64 bit Float64 and 32 bit Float32 bit literals are expressed as 1.0 and 1.0f0 respectively. Floating point literals are rounded (and not promoted to the BigFloat type) if they can not be exactly represented.  Floating point literals are closer in behavior to C/C++. Octal (prefixed with 0o) and binary (prefixed with 0b) literals are also treated as unsigned.\nString literals can be delimited with either \"  or \"\"\", \"\"\" delimited literals can contain \" characters without quoting it like \"\\\"\" String literals can have values of other variables or expressions interpolated into them, indicated by $variablename or $(expression), which evaluates the variable name or the expression in the context of the function.\n// indicates a Rational number, and not a single-line comment (which is # in Julia)\n#= indicates the start of a multiline comment, and =# ends it.\nFunctions in Julia return values from their last expression(s) or the return keyword.  Multiple values can be returned from functions and assigned as tuples, e.g. (a, b) = myfunction() or a, b = myfunction(), instead of having to pass pointers to values as one would have to do in C/C++ (i.e. a = myfunction(&b).\nJulia does not require the use of semicolons to end statements. The results of expressions are not automatically printed (except at the interactive prompt, i.e. the REPL), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output. In the REPL, ; can be used to suppress output. ; also has a different meaning within [ ], something to watch out for. ; can be used to separate expressions on a single line, but are not strictly necessary in many cases, and are more an aid to readability.\nIn Julia, the operator ⊻ (xor) performs the bitwise XOR operation, i.e. ^ in C/C++.  Also, the bitwise operators do not have the same precedence as C/++, so parenthesis may be required.\nJulia\'s ^ is exponentiation (pow), not bitwise XOR as in C/C++ (use ⊻, or xor, in Julia)\nJulia has two right-shift operators, >> and >>>.  >>> performs an arithmetic shift, >> always performs a logical shift, unlike C/C++, where the meaning of >> depends on the type of the value being shifted.\nJulia\'s -> creates an anonymous function, it does not access a member via a pointer.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (int i=1; i <= 3; i++) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value), because of the operator precedence.\nJulia has no line continuation syntax: if, at the end of a line, the input so far is a complete expression, it is considered done; otherwise the input continues. One way to force an expression to continue is to wrap it in parentheses.\nJulia macros operate on parsed expressions, rather than the text of the program, which allows them to perform sophisticated transformations of Julia code. Macro names start with the @ character, and have both a function-like syntax, @mymacro(arg1, arg2, arg3), and a statement-like syntax, @mymacro arg1 arg2 arg3. The forms are interchangeable; the function-like form is particularly useful if the macro appears within another expression, and is often clearest. The statement-like form is often used to annotate blocks, as in the distributed for construct: @distributed for i in 1:n; #= body =#; end. Where the end of the macro construct may be unclear, use the function-like form.\nJulia now has an enumeration type, expressed using the macro @enum(name, value1, value2, ...) For example: @enum(Fruit, banana=1, apple, pear)\nBy convention, functions that modify their arguments have a ! at the end of the name, for example push!.\nIn C++, by default, you have static dispatch, i.e. you need to annotate a function as virtual, in order to have dynamic dispatch. On the other hand, in Julia every method is \"virtual\" (although it\'s more general than that since methods are dispatched on every argument type, not only this, using the most-specific-declaration rule)."
 },
 
 {
@@ -4138,31 +4138,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#",
-    "page": "Essentials",
-    "title": "Essentials",
+    "page": "基本功能",
+    "title": "基本功能",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/base/#Essentials-1",
-    "page": "Essentials",
-    "title": "Essentials",
+    "location": "base/base/#基本功能-1",
+    "page": "基本功能",
+    "title": "基本功能",
     "category": "section",
     "text": ""
 },
 
 {
-    "location": "base/base/#Introduction-1",
-    "page": "Essentials",
-    "title": "Introduction",
+    "location": "base/base/#介绍-1",
+    "page": "基本功能",
+    "title": "介绍",
     "category": "section",
-    "text": "Julia Base包含一系列针对科学及数学计算而特殊设计的函数和宏，丰富性同传统的通用编程语言相当。同时，用户可以通过安装拓展包来增加Julia语言的功能。函数按主题划分如下：Some general notes:可以通过Import Module导入想要使用的模块，并利用Module.fn(x)语句来实现对模块内函数的调用。 functions.\n此外，using Module语句会将名为Module的模块中的所有可调函数引入当前的命名空间。\nBy convention, function names ending with an exclamation point (!) modify their arguments. Some functions have both modifying (e.g., sort!) and non-modifying (sort) versions."
+    "text": "Julia Base包含一系列针对科学及数学计算而特殊设计的函数和宏，丰富性同传统的通用编程语言相当。同时，用户可以通过安装包来拓展Julia语言的功能。函数按主题划分如下：一些通用注解：可以通过Import Module导入想要使用的模块，并利用Module.fn(x)语句来实现对模块内函数的调用。 函数。\n此外，using Module语句会将名为Module的模块中的所有可调函数引入当前的命名空间。\n按照约定，以感叹号（!）结尾的函数名会改变参数的值。 一些函数同时拥有改变参数（例如sort!）和不改变参数（sort）的版本"
 },
 
 {
     "location": "base/base/#Base.exit",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.exit",
     "category": "function",
     "text": "exit(code=0)\n\nStop the program with an exit code. The default exit code is zero, indicating that the program completed successfully. In an interactive session, exit() can be called with the keyboard shortcut ^D.\n\n\n\n\n\n"
@@ -4170,7 +4170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.atexit",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.atexit",
     "category": "function",
     "text": "atexit(f)\n\nRegister a zero-argument function f() to be called at process exit. atexit() hooks are called in last in first out (LIFO) order and run before object finalizers.\n\n\n\n\n\n"
@@ -4178,7 +4178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isinteractive",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isinteractive",
     "category": "function",
     "text": "isinteractive() -> Bool\n\nDetermine whether Julia is running an interactive session.\n\n\n\n\n\n"
@@ -4186,7 +4186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.summarysize",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.summarysize",
     "category": "function",
     "text": "Base.summarysize(obj; exclude=Union{...}, chargeall=Union{...}) -> Int\n\nCompute the amount of memory used by all unique objects reachable from the argument.\n\nKeyword Arguments\n\nexclude: specifies the types of objects to exclude from the traversal.\nchargeall: specifies the types of objects to always charge the size of all of their fields, even if those fields would normally be excluded.\n\n\n\n\n\n"
@@ -4194,7 +4194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.require",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.require",
     "category": "function",
     "text": "require(module::Symbol)\n\nThis function is part of the implementation of using / import, if a module is not already defined in Main. It can also be called directly to force reloading a module, regardless of whether it has been loaded before (for example, when interactively developing libraries).\n\nLoads a source file, in the context of the Main module, on every active node, searching standard locations for files. require is considered a top-level operation, so it sets the current include path but does not use it to search for files (see help for include). This function is typically used to load library code, and is implicitly called by using to load packages.\n\nWhen searching for files, require first looks for package code in the global array LOAD_PATH. require is case-sensitive on all platforms, including those with case-insensitive filesystems like macOS and Windows.\n\nFor more details regarding code loading, see the manual.\n\n\n\n\n\n"
@@ -4202,7 +4202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.compilecache",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.compilecache",
     "category": "function",
     "text": "Base.compilecache(module::PkgId)\n\nCreates a precompiled cache file for a module and all of its dependencies. This can be used to reduce package load times. Cache files are stored in DEPOT_PATH[1]/compiled. See Module initialization and precompilation for important notes.\n\n\n\n\n\n"
@@ -4210,7 +4210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.__precompile__",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.__precompile__",
     "category": "function",
     "text": "__precompile__(isprecompilable::Bool)\n\nSpecify whether the file calling this function is precompilable, defaulting to true. If a module or file is not safely precompilable, it should call __precompile__(false) in order to throw an error if Julia attempts to precompile it.\n\n\n\n\n\n"
@@ -4218,7 +4218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.include",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.include",
     "category": "function",
     "text": "Base.include([m::Module,] path::AbstractString)\n\nEvaluate the contents of the input source file in the global scope of module m. Every module (except those defined with baremodule) has its own 1-argument definition of include, which evaluates the file in that module. Returns the result of the last evaluated expression of the input file. During including, a task-local include path is set to the directory containing the file. Nested calls to include will search relative to that path. This function is typically used to load source interactively, or to combine files in packages that are broken into multiple source files.\n\n\n\n\n\n"
@@ -4226,7 +4226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.MainInclude.include",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.MainInclude.include",
     "category": "function",
     "text": "include(path::AbstractString)\n\nEvaluate the contents of the input source file in the global scope of the containing module. Every module (except those defined with baremodule) has its own 1-argument definition of include, which evaluates the file in that module. Returns the result of the last evaluated expression of the input file. During including, a task-local include path is set to the directory containing the file. Nested calls to include will search relative to that path. This function is typically used to load source interactively, or to combine files in packages that are broken into multiple source files.\n\nUse Base.include to evaluate a file into another module.\n\n\n\n\n\n"
@@ -4234,7 +4234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.include_string",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.include_string",
     "category": "function",
     "text": "include_string(m::Module, code::AbstractString, filename::AbstractString=\"string\")\n\nLike include, except reads code from the given string rather than from a file.\n\n\n\n\n\n"
@@ -4242,7 +4242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.include_dependency",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.include_dependency",
     "category": "function",
     "text": "include_dependency(path::AbstractString)\n\nIn a module, declare that the file specified by path (relative or absolute) is a dependency for precompilation; that is, the module will need to be recompiled if this file changes.\n\nThis is only needed if your module depends on a file that is not used via include. It has no effect outside of compilation.\n\n\n\n\n\n"
@@ -4250,7 +4250,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.which-Tuple{Any,Any}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.which",
     "category": "method",
     "text": "which(f, types)\n\nReturns the method of f (a Method object) that would be called for arguments of the given types.\n\nIf types is an abstract type, then the method that would be called by invoke is returned.\n\n\n\n\n\n"
@@ -4258,7 +4258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.methods",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.methods",
     "category": "function",
     "text": "methods(f, [types])\n\nReturns the method table for f.\n\nIf types is specified, returns an array of methods whose types match.\n\n\n\n\n\n"
@@ -4266,7 +4266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@show",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@show",
     "category": "macro",
     "text": "@show\n\nShow an expression and result, returning the result.\n\n\n\n\n\n"
@@ -4274,23 +4274,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#ans",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "ans",
     "category": "keyword",
     "text": "ans\n\nA variable referring to the last computed value, automatically set at the interactive prompt.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Getting-Around-1",
-    "page": "Essentials",
-    "title": "Getting Around",
+    "location": "base/base/#粗略浏览-1",
+    "page": "基本功能",
+    "title": "粗略浏览",
     "category": "section",
     "text": "Base.exit\nBase.atexit\nBase.isinteractive\nBase.summarysize\nBase.require\nBase.compilecache\nBase.__precompile__\nBase.include\nBase.MainInclude.include\nBase.include_string\nBase.include_dependency\nBase.which(::Any, ::Any)\nBase.methods\nBase.@show\nans"
 },
 
 {
     "location": "base/base/#module",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "module",
     "category": "keyword",
     "text": "module\n\nmodule declares a Module, which is a separate global variable workspace. Within a module, you can control which names from other modules are visible (via importing), and specify which of your names are intended to be public (via exporting). Modules allow you to create top-level definitions without worrying about name conflicts when your code is used together with somebody else’s. See the manual section about modules for more details.\n\nExamples\n\nmodule Foo\nimport Base.show\nexport MyType, foo\n\nstruct MyType\n    x\nend\n\nbar(x) = 2x\nfoo(a::MyType) = bar(a.x) + 1\nshow(io::IO, a::MyType) = print(io, \"MyType $(a.x)\")\nend\n\n\n\n\n\n"
@@ -4298,7 +4298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#export",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "export",
     "category": "keyword",
     "text": "export\n\nexport is used within modules to tell Julia which functions should be made available to the user. For example: export foo makes the name foo available when using the module. See the manual section about modules for details.\n\n\n\n\n\n"
@@ -4306,7 +4306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#import",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "import",
     "category": "keyword",
     "text": "import\n\nimport Foo will load the module or package Foo. Names from the imported Foo module can be accessed with dot syntax (e.g. Foo.foo to access the name foo). See the manual section about modules for details.\n\n\n\n\n\n"
@@ -4314,7 +4314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#using",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "using",
     "category": "keyword",
     "text": "using\n\nusing Foo will load the module or package Foo and make its exported names available for direct use. Names can also be used via dot syntax (e.g. Foo.foo to access the name foo), whether they are exported or not. See the manual section about modules for details.\n\n\n\n\n\n"
@@ -4322,7 +4322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#baremodule",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "baremodule",
     "category": "keyword",
     "text": "baremodule\n\nbaremodule declares a module that does not contain using Base or a definition of eval. It does still import Core.\n\n\n\n\n\n"
@@ -4330,7 +4330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#function",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "function",
     "category": "keyword",
     "text": "function\n\nFunctions are defined with the function keyword:\n\nfunction add(a, b)\n    return a + b\nend\n\nOr the short form notation:\n\nadd(a, b) = a + b\n\nThe use of the return keyword is exactly the same as in other languages, but is often optional. A function without an explicit return statement will return the last expression in the function body.\n\n\n\n\n\n"
@@ -4338,7 +4338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#macro",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "macro",
     "category": "keyword",
     "text": "macro\n\nmacro defines a method to include generated code in the final body of a program. A macro maps a tuple of arguments to a returned expression, and the resulting expression is compiled directly rather than requiring a runtime eval call. Macro arguments may include expressions, literal values, and symbols. For example:\n\nExamples\n\njulia> macro sayhello(name)\n           return :( println(\"Hello, \", $name, \"!\") )\n       end\n@sayhello (macro with 1 method)\n\njulia> @sayhello \"Charlie\"\nHello, Charlie!\n\n\n\n\n\n"
@@ -4346,7 +4346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#return",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "return",
     "category": "keyword",
     "text": "return\n\nreturn can be used in function bodies to exit early and return a given value, e.g.\n\nfunction compare(a, b)\n    a == b && return \"equal to\"\n    a < b ? \"less than\" : \"greater than\"\nend\n\nIn general you can place a return statement anywhere within a function body, including within deeply nested loops or conditionals, but be careful with do blocks. For example:\n\nfunction test1(xs)\n    for x in xs\n        iseven(x) && return 2x\n    end\nend\n\nfunction test2(xs)\n    map(xs) do x\n        iseven(x) && return 2x\n        x\n    end\nend\n\nIn the first example, the return breaks out of its enclosing function as soon as it hits an even number, so test1([5,6,7]) returns 12.\n\nYou might expect the second example to behave the same way, but in fact the return there only breaks out of the inner function (inside the do block) and gives a value back to map. test2([5,6,7]) then returns [5,12,7].\n\n\n\n\n\n"
@@ -4354,7 +4354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#do",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "do",
     "category": "keyword",
     "text": "do\n\nCreate an anonymous function. For example:\n\nmap(1:10) do x\n    2x\nend\n\nis equivalent to map(x->2x, 1:10).\n\nUse multiple arguments like so:\n\nmap(1:10, 11:20) do x, y\n    x + y\nend\n\n\n\n\n\n"
@@ -4362,7 +4362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#begin",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "begin",
     "category": "keyword",
     "text": "begin\n\nbegin...end denotes a block of code.\n\nbegin\n    println(\"Hello, \")\n    println(\"World!\")\nend\n\nUsually begin will not be necessary, since keywords such as function and let implicitly begin blocks of code. See also ;.\n\n\n\n\n\n"
@@ -4370,7 +4370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#end",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "end",
     "category": "keyword",
     "text": "end\n\nend marks the conclusion of a block of expressions, for example module, struct, mutable struct, begin, let, for etc. end may also be used when indexing into an array to represent the last index of a dimension.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> A[end, :]\n2-element Array{Int64,1}:\n 3\n 4\n\n\n\n\n\n"
@@ -4378,7 +4378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#let",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "let",
     "category": "keyword",
     "text": "let\n\nlet statements allocate new variable bindings each time they run. Whereas an assignment modifies an existing value location, let creates new locations. This difference is only detectable in the case of variables that outlive their scope via closures. The let syntax accepts a comma-separated series of assignments and variable names:\n\nlet var1 = value1, var2, var3 = value3\n    code\nend\n\nThe assignments are evaluated in order, with each right-hand side evaluated in the scope before the new variable on the left-hand side has been introduced. Therefore it makes sense to write something like let x = x, since the two x variables are distinct and have separate storage.\n\n\n\n\n\n"
@@ -4386,7 +4386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#if",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "if",
     "category": "keyword",
     "text": "if/elseif/else\n\nif/elseif/else performs conditional evaluation, which allows portions of code to be evaluated or not evaluated depending on the value of a boolean expression. Here is the anatomy of the if/elseif/else conditional syntax:\n\nif x < y\n    println(\"x is less than y\")\nelseif x > y\n    println(\"x is greater than y\")\nelse\n    println(\"x is equal to y\")\nend\n\nIf the condition expression x < y is true, then the corresponding block is evaluated; otherwise the condition expression x > y is evaluated, and if it is true, the corresponding block is evaluated; if neither expression is true, the else block is evaluated. The elseif and else blocks are optional, and as many elseif blocks as desired can be used.\n\n\n\n\n\n"
@@ -4394,7 +4394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#for",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "for",
     "category": "keyword",
     "text": "for\n\nfor loops repeatedly evaluate the body of the loop by iterating over a sequence of values.\n\nExamples\n\njulia> for i in [1, 4, 0]\n           println(i)\n       end\n1\n4\n0\n\n\n\n\n\n"
@@ -4402,7 +4402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#while",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "while",
     "category": "keyword",
     "text": "while\n\nwhile loops repeatedly evaluate a conditional expression, and continues evaluating the body of the while loop so long as the expression remains true. If the condition expression is false when the while loop is first reached, the body is never evaluated.\n\nExamples\n\njulia> i = 1\n1\n\njulia> while i < 5\n           println(i)\n           global i += 1\n       end\n1\n2\n3\n4\n\n\n\n\n\n"
@@ -4410,7 +4410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#break",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "break",
     "category": "keyword",
     "text": "break\n\nBreak out of a loop immediately.\n\nExamples\n\njulia> i = 0\n0\n\njulia> while true\n           global i += 1\n           i > 5 && break\n           println(i)\n       end\n1\n2\n3\n4\n5\n\n\n\n\n\n"
@@ -4418,7 +4418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#continue",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "continue",
     "category": "keyword",
     "text": "continue\n\nSkip the rest of the current loop iteration.\n\nExamples\n\njulia> for i = 1:6\n           iseven(i) && continue\n           println(i)\n       end\n1\n3\n5\n\n\n\n\n\n"
@@ -4426,7 +4426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#try",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "try",
     "category": "keyword",
     "text": "try/catch\n\nA try/catch statement allows for Exceptions to be tested for. For example, a customized square root function can be written to automatically call either the real or complex square root method on demand using Exceptions:\n\nf(x) = try\n    sqrt(x)\ncatch\n    sqrt(complex(x, 0))\nend\n\ntry/catch statements also allow the Exception to be saved in a variable, e.g. catch y.\n\nThe power of the try/catch construct lies in the ability to unwind a deeply nested computation immediately to a much higher level in the stack of calling functions.\n\n\n\n\n\n"
@@ -4434,7 +4434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#finally",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "finally",
     "category": "keyword",
     "text": "finally\n\nRun some code when a given block of code exits, regardless of how it exits. For example, here is how we can guarantee that an opened file is closed:\n\nf = open(\"file\")\ntry\n    operate_on_file(f)\nfinally\n    close(f)\nend\n\nWhen control leaves the try block (for example, due to a return, or just finishing normally), close(f) will be executed. If the try block exits due to an exception, the exception will continue propagating. A catch block may be combined with try and finally as well. In this case the finally block will run after catch has handled the error.\n\n\n\n\n\n"
@@ -4442,7 +4442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#quote",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "quote",
     "category": "keyword",
     "text": "quote\n\nquote creates multiple expression objects in a block without using the explicit Expr constructor. For example:\n\nex = quote\n    x = 1\n    y = 2\n    x + y\nend\n\nUnlike the other means of quoting, :( ... ), this form introduces QuoteNode elements to the expression tree, which must be considered when directly manipulating the tree. For other purposes, :( ... ) and quote .. end blocks are treated identically.\n\n\n\n\n\n"
@@ -4450,7 +4450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#local",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "local",
     "category": "keyword",
     "text": "local\n\nlocal introduces a new local variable. See the manual section on variable scoping for more information.\n\nExamples\n\njulia> function foo(n)\n           x = 0\n           for i = 1:n\n               local x # introduce a loop-local x\n               x = i\n           end\n           x\n       end\nfoo (generic function with 1 method)\n\njulia> foo(10)\n0\n\n\n\n\n\n"
@@ -4458,7 +4458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#global",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "global",
     "category": "keyword",
     "text": "global\n\nglobal x makes x in the current scope and its inner scopes refer to the global variable of that name. See the manual section on variable scoping for more information.\n\nExamples\n\njulia> z = 3\n3\n\njulia> function foo()\n           global z = 6 # use the z variable defined outside foo\n       end\nfoo (generic function with 1 method)\n\njulia> foo()\n6\n\njulia> z\n6\n\n\n\n\n\n"
@@ -4466,7 +4466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#const",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "const",
     "category": "keyword",
     "text": "const\n\nconst is used to declare global variables which are also constant. In almost all code (and particularly performance sensitive code) global variables should be declared constant in this way.\n\nconst x = 5\n\nMultiple variables can be declared within a single const:\n\nconst y, z = 7, 11\n\nNote that const only applies to one = operation, therefore const x = y = 1 declares x to be constant but not y. On the other hand, const x = const y = 1 declares both x and y as constants.\n\nNote that \"constant-ness\" is not enforced inside containers, so if x is an array or dictionary (for example) you can still add and remove elements.\n\nTechnically, you can even redefine const variables, although this will generate a warning from the compiler. The only strict requirement is that the type of the variable does not change, which is why const variables are much faster than regular globals.\n\n\n\n\n\n"
@@ -4474,7 +4474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#struct",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "struct",
     "category": "keyword",
     "text": "struct\n\nThe most commonly used kind of type in Julia is a struct, specified as a name and a set of fields.\n\nstruct Point\n    x\n    y\nend\n\nFields can have type restrictions, which may be parameterized:\n\n    struct Point{X}\n        x::X\n        y::Float64\n    end\n\nA struct can also declare an abstract super type via <: syntax:\n\nstruct Point <: AbstractPoint\n    x\n    y\nend\n\nstructs are immutable by default; an instance of one of these types cannot be modified after construction. Use mutable struct instead to declare a type whose instances can be modified.\n\nSee the manual section on Composite Types for more details, such as how to define constructors.\n\n\n\n\n\n"
@@ -4482,7 +4482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#mutable struct",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "mutable struct",
     "category": "keyword",
     "text": "mutable struct\n\nmutable struct is similar to struct, but additionally allows the fields of the type to be set after construction. See the manual section on Composite Types for more information.\n\n\n\n\n\n"
@@ -4490,7 +4490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#abstract type",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "abstract type",
     "category": "keyword",
     "text": "abstract type\n\nabstract type declares a type that cannot be instantiated, and serves only as a node in the type graph, thereby describing sets of related concrete types: those concrete types which are their descendants. Abstract types form the conceptual hierarchy which makes Julia’s type system more than just a collection of object implementations. For example:\n\nabstract type Number end\nabstract type Real <: Number end\n\nNumber has no supertype, whereas Real is an abstract subtype of Number.\n\n\n\n\n\n"
@@ -4498,7 +4498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#primitive type",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "primitive type",
     "category": "keyword",
     "text": "primitive type\n\nprimitive type declares a concrete type whose data consists only of a series of bits. Classic examples of primitive types are integers and floating-point values. Some example built-in primitive type declarations:\n\nprimitive type Char 32 end\nprimitive type Bool <: Integer 8 end\n\nThe number after the name indicates how many bits of storage the type requires. Currently, only sizes that are multiples of 8 bits are supported. The Bool declaration shows how a primitive type can be optionally declared to be a subtype of some supertype.\n\n\n\n\n\n"
@@ -4506,7 +4506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#...",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "...",
     "category": "keyword",
     "text": "...\n\nThe \"splat\" operator, ..., represents a sequence of arguments. ... can be used in function definitions, to indicate that the function accepts an arbitrary number of arguments. ... can also be used to apply a function to a sequence of arguments.\n\nExamples\n\njulia> add(xs...) = reduce(+, xs)\nadd (generic function with 1 method)\n\njulia> add(1, 2, 3, 4, 5)\n15\n\njulia> add([1, 2, 3]...)\n6\n\njulia> add(7, 1:100..., 1000:1100...)\n111107\n\n\n\n\n\n"
@@ -4514,23 +4514,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#;",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": ";",
     "category": "keyword",
     "text": ";\n\n; has a similar role in Julia as in many C-like languages, and is used to delimit the end of the previous statement. ; is not necessary after new lines, but can be used to separate statements on a single line or to join statements into a single expression. ; is also used to suppress output printing in the REPL and similar interfaces.\n\nExamples\n\njulia> function foo()\n           x = \"Hello, \"; x *= \"World!\"\n           return x\n       end\nfoo (generic function with 1 method)\n\njulia> bar() = (x = \"Hello, Mars!\"; return x)\nbar (generic function with 1 method)\n\njulia> foo();\n\njulia> bar()\n\"Hello, Mars!\"\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Keywords-1",
-    "page": "Essentials",
-    "title": "Keywords",
+    "location": "base/base/#关键字-1",
+    "page": "基本功能",
+    "title": "关键字",
     "category": "section",
     "text": "module\nexport\nimport\nusing\nbaremodule\nfunction\nmacro\nreturn\ndo\nbegin\nend\nlet\nif\nfor\nwhile\nbreak\ncontinue\ntry\nfinally\nquote\nlocal\nglobal\nconst\nstruct\nmutable struct\nabstract type\nprimitive type\n...\n;"
 },
 
 {
     "location": "base/base/#Base",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base",
     "category": "keyword",
     "text": "The base library of Julia.\n\n\n\n\n\n"
@@ -4538,7 +4538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Broadcast",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Broadcast",
     "category": "module",
     "text": "Base.Broadcast\n\nModule containing the broadcasting implementation.\n\n\n\n\n\n"
@@ -4546,7 +4546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Docs",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Docs",
     "category": "module",
     "text": "Docs\n\nThe Docs module provides the @doc macro which can be used to set and retrieve documentation metadata for Julia objects.\n\nPlease see the manual section on documentation for more information.\n\n\n\n\n\n"
@@ -4554,7 +4554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Iterators",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Iterators",
     "category": "module",
     "text": "Methods for working with Iterators.\n\n\n\n\n\n"
@@ -4562,7 +4562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Libc",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Libc",
     "category": "module",
     "text": "Interface to libc, the C standard library.\n\n\n\n\n\n"
@@ -4570,7 +4570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Meta",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Meta",
     "category": "module",
     "text": "Convenience functions for metaprogramming.\n\n\n\n\n\n"
@@ -4578,7 +4578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.StackTraces",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.StackTraces",
     "category": "module",
     "text": "Tools for collecting and manipulating stack traces. Mainly used for building errors.\n\n\n\n\n\n"
@@ -4586,7 +4586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys",
     "category": "module",
     "text": "Provide methods for retrieving information about hardware and the operating system.\n\n\n\n\n\n"
@@ -4594,7 +4594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Threads",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Threads",
     "category": "module",
     "text": "Experimental multithreading support.\n\n\n\n\n\n"
@@ -4602,23 +4602,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.GC",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.GC",
     "category": "module",
     "text": "Base.GC\n\nModule with garbage collection utilities.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Base-Modules-1",
-    "page": "Essentials",
-    "title": "Base Modules",
+    "location": "base/base/#基础模块-1",
+    "page": "基本功能",
+    "title": "基础模块",
     "category": "section",
     "text": "Base.Base\nBase.Broadcast\nBase.Docs\nBase.Iterators\nBase.Libc\nBase.Meta\nBase.StackTraces\nBase.Sys\nBase.Threads\nBase.GC"
 },
 
 {
     "location": "base/base/#Core.:===",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.:===",
     "category": "function",
     "text": "===(x,y) -> Bool\n≡(x,y) -> Bool\n\nDetermine whether x and y are identical, in the sense that no program could distinguish them. First the types of x and y are compared. If those are identical, mutable objects are compared by address in memory and immutable objects (such as numbers) are compared by contents at the bit level. This function is sometimes called \"egal\". It always returns a Bool value.\n\nExamples\n\njulia> a = [1, 2]; b = [1, 2];\n\njulia> a == b\ntrue\n\njulia> a === b\nfalse\n\njulia> a === a\ntrue\n\n\n\n\n\n"
@@ -4626,7 +4626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.isa",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.isa",
     "category": "function",
     "text": "isa(x, type) -> Bool\n\nDetermine whether x is of the given type. Can also be used as an infix operator, e.g. x isa type.\n\nExamples\n\njulia> isa(1, Int)\ntrue\n\njulia> isa(1, Matrix)\nfalse\n\njulia> isa(1, Char)\nfalse\n\njulia> isa(1, Number)\ntrue\n\njulia> 1 isa Number\ntrue\n\n\n\n\n\n"
@@ -4634,7 +4634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isequal",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isequal",
     "category": "function",
     "text": "isequal(x, y)\n\nSimilar to ==, except for the treatment of floating point numbers and of missing values. isequal treats all floating-point NaN values as equal to each other, treats -0.0 as unequal to 0.0, and missing as equal to missing. Always returns a Bool value.\n\nImplementation\n\nThe default implementation of isequal calls ==, so a type that does not involve floating-point values generally only needs to define ==.\n\nisequal is the comparison function used by hash tables (Dict). isequal(x,y) must imply that hash(x) == hash(y).\n\nThis typically means that types for which a custom == or isequal method exists must implement a corresponding hash method (and vice versa). Collections typically implement isequal by calling isequal recursively on all contents.\n\nScalar types generally do not need to implement isequal separate from ==, unless they represent floating-point numbers amenable to a more efficient implementation than that provided as a generic fallback (based on isnan, signbit, and ==).\n\nExamples\n\njulia> isequal([1., NaN], [1., NaN])\ntrue\n\njulia> [1., NaN] == [1., NaN]\nfalse\n\njulia> 0.0 == -0.0\ntrue\n\njulia> isequal(0.0, -0.0)\nfalse\n\n\n\n\n\nisequal(x)\n\nCreate a function that compares its argument to x using isequal, i.e. a function equivalent to y -> isequal(y, x).\n\nThe returned function is of type Base.Fix2{typeof(isequal)}, which can be used to implement specialized methods.\n\n\n\n\n\n"
@@ -4642,7 +4642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isless",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isless",
     "category": "function",
     "text": "isless(x, y)\n\nTest whether x is less than y, according to a canonical total order. Values that are normally unordered, such as NaN, are ordered in an arbitrary but consistent fashion. missing values are ordered last.\n\nThis is the default comparison used by sort.\n\nImplementation\n\nNon-numeric types with a canonical total order should implement this function. Numeric types only need to implement it if they have special values such as NaN. Types with a canonical partial order should implement <.\n\n\n\n\n\n"
@@ -4650,7 +4650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.ifelse",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.ifelse",
     "category": "function",
     "text": "ifelse(condition::Bool, x, y)\n\nReturn x if condition is true, otherwise return y. This differs from ? or if in that it is an ordinary function, so all the arguments are evaluated first. In some cases, using ifelse instead of an if statement can eliminate the branch in generated code and provide higher performance in tight loops.\n\nExamples\n\njulia> ifelse(1 > 2, 1, 2)\n2\n\n\n\n\n\n"
@@ -4658,7 +4658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.typeassert",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.typeassert",
     "category": "function",
     "text": "typeassert(x, type)\n\nThrow a TypeError unless x isa type. The syntax x::type calls this function.\n\n\n\n\n\n"
@@ -4666,7 +4666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.typeof",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.typeof",
     "category": "function",
     "text": "typeof(x)\n\nGet the concrete type of x.\n\nExamples\n\njulia> a = 1//2;\n\njulia> typeof(a)\nRational{Int64}\n\njulia> M = [1 2; 3.5 4];\n\njulia> typeof(M)\nArray{Float64,2}\n\n\n\n\n\n"
@@ -4674,7 +4674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.tuple",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.tuple",
     "category": "function",
     "text": "tuple(xs...)\n\nConstruct a tuple of the given objects.\n\nExamples\n\njulia> tuple(1, \'a\', pi)\n(1, \'a\', π = 3.1415926535897...)\n\n\n\n\n\n"
@@ -4682,7 +4682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.ntuple",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.ntuple",
     "category": "function",
     "text": "ntuple(f::Function, n::Integer)\n\nCreate a tuple of length n, computing each element as f(i), where i is the index of the element.\n\nExamples\n\njulia> ntuple(i -> 2*i, 4)\n(2, 4, 6, 8)\n\n\n\n\n\n"
@@ -4690,7 +4690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.objectid",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.objectid",
     "category": "function",
     "text": "objectid(x)\n\nGet a hash value for x based on object identity. objectid(x)==objectid(y) if x === y.\n\n\n\n\n\n"
@@ -4698,7 +4698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.hash",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.hash",
     "category": "function",
     "text": "hash(x[, h::UInt])\n\nCompute an integer hash code such that isequal(x,y) implies hash(x)==hash(y). The optional second argument h is a hash code to be mixed with the result.\n\nNew types should implement the 2-argument form, typically by calling the 2-argument hash method recursively in order to mix hashes of the contents with each other (and with h). Typically, any type that implements hash should also implement its own == (hence isequal) to guarantee the property mentioned above. Types supporting subtraction (operator -) should also implement widen, which is required to hash values inside heterogeneous arrays.\n\n\n\n\n\n"
@@ -4706,7 +4706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.finalizer",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.finalizer",
     "category": "function",
     "text": "finalizer(f, x)\n\nRegister a function f(x) to be called when there are no program-accessible references to x, and return x. The type of x must be a mutable struct, otherwise the behavior of this function is unpredictable.\n\n\n\n\n\n"
@@ -4714,7 +4714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.finalize",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.finalize",
     "category": "function",
     "text": "finalize(x)\n\nImmediately run finalizers registered for object x.\n\n\n\n\n\n"
@@ -4722,7 +4722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.copy",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.copy",
     "category": "function",
     "text": "copy(x)\n\nCreate a shallow copy of x: the outer structure is copied, but not all internal values. For example, copying an array produces a new array with identically-same elements as the original.\n\n\n\n\n\n"
@@ -4730,7 +4730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.deepcopy",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.deepcopy",
     "category": "function",
     "text": "deepcopy(x)\n\nCreate a deep copy of x: everything is copied recursively, resulting in a fully independent object. For example, deep-copying an array produces a new array whose elements are deep copies of the original elements. Calling deepcopy on an object should generally have the same effect as serializing and then deserializing it.\n\nAs a special case, functions can only be actually deep-copied if they are anonymous, otherwise they are just copied. The difference is only relevant in the case of closures, i.e. functions which may contain hidden internal references.\n\nWhile it isn\'t normally necessary, user-defined types can override the default deepcopy behavior by defining a specialized version of the function deepcopy_internal(x::T, dict::IdDict) (which shouldn\'t otherwise be used), where T is the type to be specialized for, and dict keeps track of objects copied so far within the recursion. Within the definition, deepcopy_internal should be used in place of deepcopy, and the dict variable should be updated as appropriate before returning.\n\n\n\n\n\n"
@@ -4738,7 +4738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.getproperty",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.getproperty",
     "category": "function",
     "text": "getproperty(value, name::Symbol)\n\nThe syntax a.b calls getproperty(a, :b).\n\n\n\n\n\n"
@@ -4746,7 +4746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.setproperty!",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.setproperty!",
     "category": "function",
     "text": "setproperty!(value, name::Symbol, x)\n\nThe syntax a.b = c calls setproperty!(a, :b, c).\n\n\n\n\n\n"
@@ -4754,7 +4754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.propertynames",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.propertynames",
     "category": "function",
     "text": "propertynames(x, private=false)\n\nGet a tuple or a vector of the properties (x.property) of an object x. This is typically the same as fieldnames(typeof(x)), but types that overload getproperty should generally overload propertynames as well to get the properties of an instance of the type.\n\npropertynames(x) may return only \"public\" property names that are part of the documented interface of x.   If you want it to also return \"private\" fieldnames intended for internal use, pass true for the optional second argument. REPL tab completion on x. shows only the private=false properties.\n\n\n\n\n\n"
@@ -4762,7 +4762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.getfield",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.getfield",
     "category": "function",
     "text": "getfield(value, name::Symbol)\n\nExtract a named field from a value of composite type. See also getproperty.\n\nExamples\n\njulia> a = 1//2\n1//2\n\njulia> getfield(a, :num)\n1\n\njulia> a.num\n1\n\n\n\n\n\n"
@@ -4770,7 +4770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.setfield!",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.setfield!",
     "category": "function",
     "text": "setfield!(value, name::Symbol, x)\n\nAssign x to a named field in value of composite type. The value must be mutable and x must be a subtype of fieldtype(typeof(value), name). See also setproperty!.\n\nExamples\n\njulia> mutable struct MyMutableStruct\n           field::Int\n       end\n\njulia> a = MyMutableStruct(1);\n\njulia> setfield!(a, :field, 2);\n\njulia> getfield(a, :field)\n2\n\njulia> a = 1//2\n1//2\n\njulia> setfield!(a, :num, 3);\nERROR: type Rational is immutable\n\n\n\n\n\n"
@@ -4778,7 +4778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.isdefined",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.isdefined",
     "category": "function",
     "text": "isdefined(m::Module, s::Symbol)\nisdefined(object, s::Symbol)\nisdefined(object, index::Int)\n\nTests whether an assignable location is defined. The arguments can be a module and a symbol or a composite object and field name (as a symbol) or index.\n\nExamples\n\njulia> isdefined(Base, :sum)\ntrue\n\njulia> isdefined(Base, :NonExistentMethod)\nfalse\n\njulia> a = 1//2;\n\njulia> isdefined(a, 2)\ntrue\n\njulia> isdefined(a, 3)\nfalse\n\njulia> isdefined(a, :num)\ntrue\n\njulia> isdefined(a, :numerator)\nfalse\n\n\n\n\n\n"
@@ -4786,7 +4786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@isdefined",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@isdefined",
     "category": "macro",
     "text": "@isdefined s -> Bool\n\nTests whether variable s is defined in the current scope.\n\nExamples\n\njulia> function f()\n           println(@isdefined x)\n           x = 3\n           println(@isdefined x)\n       end\nf (generic function with 1 method)\n\njulia> f()\nfalse\ntrue\n\n\n\n\n\n"
@@ -4794,7 +4794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.convert",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.convert",
     "category": "function",
     "text": "convert(T, x)\n\nConvert x to a value of type T.\n\nIf T is an Integer type, an InexactError will be raised if x is not representable by T, for example if x is not integer-valued, or is outside the range supported by T.\n\nExamples\n\njulia> convert(Int, 3.0)\n3\n\njulia> convert(Int, 3.5)\nERROR: InexactError: Int64(Int64, 3.5)\nStacktrace:\n[...]\n\nIf T is a AbstractFloat or Rational type, then it will return the closest value to x representable by T.\n\njulia> x = 1/3\n0.3333333333333333\n\njulia> convert(Float32, x)\n0.33333334f0\n\njulia> convert(Rational{Int32}, x)\n1//3\n\njulia> convert(Rational{Int64}, x)\n6004799503160661//18014398509481984\n\nIf T is a collection type and x a collection, the result of convert(T, x) may alias all or part of x.\n\njulia> x = Int[1, 2, 3];\n\njulia> y = convert(Vector{Int}, x);\n\njulia> y === x\ntrue\n\n\n\n\n\n"
@@ -4802,7 +4802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.promote",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.promote",
     "category": "function",
     "text": "promote(xs...)\n\nConvert all arguments to a common type, and return them all (as a tuple). If no arguments can be converted, an error is raised.\n\nExamples\n\njulia> promote(Int8(1), Float16(4.5), Float32(4.1))\n(1.0f0, 4.5f0, 4.1f0)\n\n\n\n\n\n"
@@ -4810,7 +4810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.oftype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.oftype",
     "category": "function",
     "text": "oftype(x, y)\n\nConvert y to the type of x (convert(typeof(x), y)).\n\nExamples\n\njulia> x = 4;\n\njulia> y = 3.;\n\njulia> oftype(x, y)\n3\n\njulia> oftype(y, x)\n4.0\n\n\n\n\n\n"
@@ -4818,7 +4818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.widen",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.widen",
     "category": "function",
     "text": "widen(x)\n\nIf x is a type, return a \"larger\" type, defined so that arithmetic operations + and - are guaranteed not to overflow nor lose precision for any combination of values that type x can hold.\n\nFor fixed-size integer types less than 128 bits, widen will return a type with twice the number of bits.\n\nIf x is a value, it is converted to widen(typeof(x)).\n\nExamples\n\njulia> widen(Int32)\nInt64\n\njulia> widen(1.5f0)\n1.5\n\n\n\n\n\n"
@@ -4826,31 +4826,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.identity",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.identity",
     "category": "function",
     "text": "identity(x)\n\nThe identity function. Returns its argument.\n\nExamples\n\njulia> identity(\"Well, what did you expect?\")\n\"Well, what did you expect?\"\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#All-Objects-1",
-    "page": "Essentials",
-    "title": "All Objects",
+    "location": "base/base/#所有对象-1",
+    "page": "基本功能",
+    "title": "所有对象",
     "category": "section",
     "text": "Core.:(===)\nCore.isa\nBase.isequal\nBase.isless\nBase.ifelse\nCore.typeassert\nCore.typeof\nCore.tuple\nBase.ntuple\nBase.objectid\nBase.hash\nBase.finalizer\nBase.finalize\nBase.copy\nBase.deepcopy\nBase.getproperty\nBase.setproperty!\nBase.propertynames\nCore.getfield\nCore.setfield!\nCore.isdefined\nBase.@isdefined\nBase.convert\nBase.promote\nBase.oftype\nBase.widen\nBase.identity"
 },
 
 {
-    "location": "base/base/#Properties-of-Types-1",
-    "page": "Essentials",
-    "title": "Properties of Types",
+    "location": "base/base/#类型的属性-1",
+    "page": "基本功能",
+    "title": "类型的属性",
     "category": "section",
     "text": ""
 },
 
 {
     "location": "base/base/#Base.supertype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.supertype",
     "category": "function",
     "text": "supertype(T::DataType)\n\nReturn the supertype of DataType T.\n\nExamples\n\njulia> supertype(Int32)\nSigned\n\n\n\n\n\n"
@@ -4858,7 +4858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.:<:",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.:<:",
     "category": "function",
     "text": "<:(T1, T2)\n\nSubtype operator: returns true if and only if all values of type T1 are also of type T2.\n\nExamples\n\njulia> Float64 <: AbstractFloat\ntrue\n\njulia> Vector{Int} <: AbstractArray\ntrue\n\njulia> Matrix{Float64} <: Matrix{AbstractFloat}\nfalse\n\n\n\n\n\n"
@@ -4866,7 +4866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.:>:",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.:>:",
     "category": "function",
     "text": ">:(T1, T2)\n\nSupertype operator, equivalent to T2 <: T1.\n\n\n\n\n\n"
@@ -4874,7 +4874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.typejoin",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.typejoin",
     "category": "function",
     "text": "typejoin(T, S)\n\nReturn the closest common ancestor of T and S, i.e. the narrowest type from which they both inherit.\n\n\n\n\n\n"
@@ -4882,7 +4882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.typeintersect",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.typeintersect",
     "category": "function",
     "text": "typeintersect(T, S)\n\nCompute a type that contains the intersection of T and S. Usually this will be the smallest such type or one close to it.\n\n\n\n\n\n"
@@ -4890,7 +4890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.promote_type",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.promote_type",
     "category": "function",
     "text": "promote_type(type1, type2)\n\nPromotion refers to converting values of mixed types to a single common type. promote_type represents the default promotion behavior in Julia when operators (usually mathematical) are given arguments of differing types. promote_type generally tries to return a type which can at least approximate most values of either input type without excessively widening.  Some loss is tolerated; for example, promote_type(Int64, Float64) returns Float64 even though strictly, not all Int64 values can be represented exactly as Float64 values.\n\njulia> promote_type(Int64, Float64)\nFloat64\n\njulia> promote_type(Int32, Int64)\nInt64\n\njulia> promote_type(Float32, BigInt)\nBigFloat\n\njulia> promote_type(Int16, Float16)\nFloat16\n\njulia> promote_type(Int64, Float16)\nFloat16\n\njulia> promote_type(Int8, UInt16)\nUInt16\n\n\n\n\n\n"
@@ -4898,7 +4898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.promote_rule",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.promote_rule",
     "category": "function",
     "text": "promote_rule(type1, type2)\n\nSpecifies what type should be used by promote when given values of types type1 and type2. This function should not be called directly, but should have definitions added to it for new types as appropriate.\n\n\n\n\n\n"
@@ -4906,23 +4906,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isdispatchtuple",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isdispatchtuple",
     "category": "function",
     "text": "isdispatchtuple(T)\n\nDetermine whether type T is a tuple \"leaf type\", meaning it could appear as a type signature in dispatch and has no subtypes (or supertypes) which could appear in a call.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Type-relations-1",
-    "page": "Essentials",
-    "title": "Type relations",
+    "location": "base/base/#类型联系-1",
+    "page": "基本功能",
+    "title": "类型联系",
     "category": "section",
     "text": "Base.supertype\nCore.:(<:)\nBase.:(>:)\nBase.typejoin\nBase.typeintersect\nBase.promote_type\nBase.promote_rule\nBase.isdispatchtuple"
 },
 
 {
     "location": "base/base/#Base.isimmutable",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isimmutable",
     "category": "function",
     "text": "isimmutable(v) -> Bool\n\nReturn true iff value v is immutable.  See Mutable Composite Types for a discussion of immutability. Note that this function works on values, so if you give it a type, it will tell you that a value of DataType is mutable.\n\nExamples\n\njulia> isimmutable(1)\ntrue\n\njulia> isimmutable([1,2])\nfalse\n\n\n\n\n\n"
@@ -4930,7 +4930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isabstracttype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isabstracttype",
     "category": "function",
     "text": "Base.isabstracttype(T)\n\nDetermine whether type T was declared as an abstract type (i.e. using the abstract keyword).\n\nExamples\n\njulia> Base.isabstracttype(AbstractArray)\ntrue\n\njulia> Base.isabstracttype(Vector)\nfalse\n\n\n\n\n\n"
@@ -4938,7 +4938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isprimitivetype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isprimitivetype",
     "category": "function",
     "text": "Base.isprimitivetype(T) -> Bool\n\nDetermine whether type T was declared as a primitive type (i.e. using the primitive keyword).\n\n\n\n\n\n"
@@ -4946,7 +4946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isstructtype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isstructtype",
     "category": "function",
     "text": "Base.isstructtype(T) -> Bool\n\nDetermine whether type T was declared as a struct type (i.e. using the struct or mutable struct keyword).\n\n\n\n\n\n"
@@ -4954,7 +4954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.nameof-Tuple{DataType}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.nameof",
     "category": "method",
     "text": "nameof(t::DataType) -> Symbol\n\nGet the name of a (potentially UnionAll-wrapped) DataType (without its parent module) as a symbol.\n\nExamples\n\njulia> module Foo\n           struct S{T}\n           end\n       end\nFoo\n\njulia> nameof(Foo.S{T} where T)\n:S\n\n\n\n\n\n"
@@ -4962,7 +4962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.fieldnames",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.fieldnames",
     "category": "function",
     "text": "fieldnames(x::DataType)\n\nGet a tuple with the names of the fields of a DataType.\n\nExamples\n\njulia> fieldnames(Rational)\n(:num, :den)\n\n\n\n\n\n"
@@ -4970,23 +4970,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.fieldname",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.fieldname",
     "category": "function",
     "text": "fieldname(x::DataType, i::Integer)\n\nGet the name of field i of a DataType.\n\nExamples\n\njulia> fieldname(Rational, 1)\n:num\n\njulia> fieldname(Rational, 2)\n:den\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Declared-structure-1",
-    "page": "Essentials",
-    "title": "Declared structure",
+    "location": "base/base/#已声明结构-1",
+    "page": "基本功能",
+    "title": "已声明结构",
     "category": "section",
     "text": "Base.isimmutable\nBase.isabstracttype\nBase.isprimitivetype\nBase.isstructtype\nBase.nameof(::DataType)\nBase.fieldnames\nBase.fieldname"
 },
 
 {
     "location": "base/base/#Base.sizeof-Tuple{Type}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.sizeof",
     "category": "method",
     "text": "sizeof(T::DataType)\nsizeof(obj)\n\nSize, in bytes, of the canonical binary representation of the given DataType T, if any. Size, in bytes, of object obj if it is not DataType.\n\nExamples\n\njulia> sizeof(Float32)\n4\n\njulia> sizeof(ComplexF64)\n16\n\njulia> sizeof(1.0)\n8\n\njulia> sizeof([1.0:10.0;])\n80\n\nIf DataType T does not have a specific size, an error is thrown.\n\njulia> sizeof(AbstractArray)\nERROR: argument is an abstract type; size is indeterminate\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -4994,7 +4994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isconcretetype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isconcretetype",
     "category": "function",
     "text": "isconcretetype(T)\n\nDetermine whether type T is a concrete type, meaning it could have direct instances (values x such that typeof(x) === T).\n\nExamples\n\njulia> isconcretetype(Complex)\nfalse\n\njulia> isconcretetype(Complex{Float32})\ntrue\n\njulia> isconcretetype(Vector{Complex})\ntrue\n\njulia> isconcretetype(Vector{Complex{Float32}})\ntrue\n\njulia> isconcretetype(Union{})\nfalse\n\njulia> isconcretetype(Union{Int,String})\nfalse\n\n\n\n\n\n"
@@ -5002,7 +5002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isbits",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isbits",
     "category": "function",
     "text": "isbits(x)\n\nReturn true if x is an instance of an isbitstype type.\n\n\n\n\n\n"
@@ -5010,7 +5010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isbitstype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isbitstype",
     "category": "function",
     "text": "isbitstype(T)\n\nReturn true if type T is a \"plain data\" type, meaning it is immutable and contains no references to other values, only primitive types and other isbitstype types. Typical examples are numeric types such as UInt8, Float64, and Complex{Float64}. This category of types is significant since they are valid as type parameters, may not track isdefined / isassigned status, and have a defined layout that is compatible with C.\n\nExamples\n\njulia> isbitstype(Complex{Float64})\ntrue\n\njulia> isbitstype(Complex)\nfalse\n\n\n\n\n\n"
@@ -5018,7 +5018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.fieldtype",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.fieldtype",
     "category": "function",
     "text": "fieldtype(T, name::Symbol | index::Int)\n\nDetermine the declared type of a field (specified by name or index) in a composite DataType T.\n\nExamples\n\njulia> struct Foo\n           x::Int64\n           y::String\n       end\n\njulia> fieldtype(Foo, :x)\nInt64\n\njulia> fieldtype(Foo, 2)\nString\n\n\n\n\n\n"
@@ -5026,7 +5026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.fieldcount",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.fieldcount",
     "category": "function",
     "text": "fieldcount(t::Type)\n\nGet the number of fields that an instance of the given type would have. An error is thrown if the type is too abstract to determine this.\n\n\n\n\n\n"
@@ -5034,7 +5034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.fieldoffset",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.fieldoffset",
     "category": "function",
     "text": "fieldoffset(type, i)\n\nThe byte offset of field i of a type relative to the data start. For example, we could use it in the following manner to summarize information about a struct:\n\njulia> structinfo(T) = [(fieldoffset(T,i), fieldname(T,i), fieldtype(T,i)) for i = 1:fieldcount(T)];\n\njulia> structinfo(Base.Filesystem.StatStruct)\n12-element Array{Tuple{UInt64,Symbol,DataType},1}:\n (0x0000000000000000, :device, UInt64)\n (0x0000000000000008, :inode, UInt64)\n (0x0000000000000010, :mode, UInt64)\n (0x0000000000000018, :nlink, Int64)\n (0x0000000000000020, :uid, UInt64)\n (0x0000000000000028, :gid, UInt64)\n (0x0000000000000030, :rdev, UInt64)\n (0x0000000000000038, :size, Int64)\n (0x0000000000000040, :blksize, Int64)\n (0x0000000000000048, :blocks, Int64)\n (0x0000000000000050, :mtime, Float64)\n (0x0000000000000058, :ctime, Float64)\n\n\n\n\n\n"
@@ -5042,7 +5042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.datatype_alignment",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.datatype_alignment",
     "category": "function",
     "text": "Base.datatype_alignment(dt::DataType) -> Int\n\nMemory allocation minimum alignment for instances of this type. Can be called on any isconcretetype.\n\n\n\n\n\n"
@@ -5050,7 +5050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.datatype_haspadding",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.datatype_haspadding",
     "category": "function",
     "text": "Base.datatype_haspadding(dt::DataType) -> Bool\n\nReturn whether the fields of instances of this type are packed in memory, with no intervening padding bytes. Can be called on any isconcretetype.\n\n\n\n\n\n"
@@ -5058,23 +5058,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.datatype_pointerfree",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.datatype_pointerfree",
     "category": "function",
     "text": "Base.datatype_pointerfree(dt::DataType) -> Bool\n\nReturn whether instances of this type can contain references to gc-managed memory. Can be called on any isconcretetype.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Memory-layout-1",
-    "page": "Essentials",
-    "title": "Memory layout",
+    "location": "base/base/#内存布局-1",
+    "page": "基本功能",
+    "title": "内存布局",
     "category": "section",
     "text": "Base.sizeof(::Type)\nBase.isconcretetype\nBase.isbits\nBase.isbitstype\nCore.fieldtype\nBase.fieldcount\nBase.fieldoffset\nBase.datatype_alignment\nBase.datatype_haspadding\nBase.datatype_pointerfree"
 },
 
 {
     "location": "base/base/#Base.typemin",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.typemin",
     "category": "function",
     "text": "typemin(T)\n\nThe lowest value representable by the given (real) numeric DataType T.\n\nExamples\n\njulia> typemin(Float16)\n-Inf16\n\njulia> typemin(Float32)\n-Inf32\n\n\n\n\n\n"
@@ -5082,7 +5082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.typemax",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.typemax",
     "category": "function",
     "text": "typemax(T)\n\nThe highest value representable by the given (real) numeric DataType.\n\nExamples\n\njulia> typemax(Int8)\n127\n\njulia> typemax(UInt32)\n0xffffffff\n\n\n\n\n\n"
@@ -5090,7 +5090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.floatmin",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.floatmin",
     "category": "function",
     "text": "floatmin(T)\n\nThe smallest in absolute value non-subnormal value representable by the given floating-point DataType T.\n\n\n\n\n\n"
@@ -5098,7 +5098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.floatmax",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.floatmax",
     "category": "function",
     "text": "floatmax(T)\n\nThe highest finite value representable by the given floating-point DataType T.\n\nExamples\n\njulia> floatmax(Float16)\nFloat16(6.55e4)\n\njulia> floatmax(Float32)\n3.4028235f38\n\n\n\n\n\n"
@@ -5106,7 +5106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.maxintfloat",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.maxintfloat",
     "category": "function",
     "text": "maxintfloat(T=Float64)\n\nThe largest consecutive integer that is exactly represented in the given floating-point type T (which defaults to Float64).\n\nThat is, maxintfloat returns the smallest positive integer n such that n+1 is not exactly representable in the type T.\n\n\n\n\n\nmaxintfloat(T, S)\n\nThe largest consecutive integer representable in the given floating-point type T that also does not exceed the maximum integer representable by the integer type S.  Equivalently, it is the minimum of maxintfloat(T) and typemax(S).\n\n\n\n\n\n"
@@ -5114,7 +5114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.eps-Tuple{Type{#s148} where #s148<:AbstractFloat}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.eps",
     "category": "method",
     "text": "eps(::Type{T}) where T<:AbstractFloat\neps()\n\nReturn the machine epsilon of the floating point type T (T = Float64 by default). This is defined as the gap between 1 and the next largest value representable by typeof(one(T)), and is equivalent to eps(one(T)).  (Since eps(T) is a bound on the relative error of T, it is a \"dimensionless\" quantity like one.)\n\nExamples\n\njulia> eps()\n2.220446049250313e-16\n\njulia> eps(Float32)\n1.1920929f-7\n\njulia> 1.0 + eps()\n1.0000000000000002\n\njulia> 1.0 + eps()/2\n1.0\n\n\n\n\n\n"
@@ -5122,7 +5122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.eps-Tuple{AbstractFloat}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.eps",
     "category": "method",
     "text": "eps(x::AbstractFloat)\n\nReturn the unit in last place (ulp) of x. This is the distance between consecutive representable floating point values at x. In most cases, if the distance on either side of x is different, then the larger of the two is taken, that is\n\neps(x) == max(x-prevfloat(x), nextfloat(x)-x)\n\nThe exceptions to this rule are the smallest and largest finite values (e.g. nextfloat(-Inf) and prevfloat(Inf) for Float64), which round to the smaller of the values.\n\nThe rationale for this behavior is that eps bounds the floating point rounding error. Under the default RoundNearest rounding mode, if y is a real number and x is the nearest floating point number to y, then\n\ny-x leq operatornameeps(x)2\n\nExamples\n\njulia> eps(1.0)\n2.220446049250313e-16\n\njulia> eps(prevfloat(2.0))\n2.220446049250313e-16\n\njulia> eps(2.0)\n4.440892098500626e-16\n\njulia> x = prevfloat(Inf)      # largest finite Float64\n1.7976931348623157e308\n\njulia> x + eps(x)/2            # rounds up\nInf\n\njulia> x + prevfloat(eps(x)/2) # rounds down\n1.7976931348623157e308\n\n\n\n\n\n"
@@ -5130,23 +5130,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.instances",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.instances",
     "category": "function",
     "text": "instances(T::Type)\n\nReturn a collection of all instances of the given type, if applicable. Mostly used for enumerated types (see @enum).\n\nExample\n\njulia> @enum Color red blue green\n\njulia> instances(Color)\n(red::Color = 0, blue::Color = 1, green::Color = 2)\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Special-values-1",
-    "page": "Essentials",
-    "title": "Special values",
+    "location": "base/base/#特殊值-1",
+    "page": "基本功能",
+    "title": "特殊值",
     "category": "section",
     "text": "Base.typemin\nBase.typemax\nBase.floatmin\nBase.floatmax\nBase.maxintfloat\nBase.eps(::Type{<:AbstractFloat})\nBase.eps(::AbstractFloat)\nBase.instances"
 },
 
 {
     "location": "base/base/#Core.Any",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.Any",
     "category": "type",
     "text": "Any::DataType\n\nAny is the union of all types. It has the defining property isa(x, Any) == true for any x. Any therefore describes the entire universe of possible values. For example Integer is a subset of Any that includes Int, Int8, and other integer types.\n\n\n\n\n\n"
@@ -5154,7 +5154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.Union",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.Union",
     "category": "type",
     "text": "Union{Types...}\n\nA type union is an abstract type which includes all instances of any of its argument types. The empty union Union{} is the bottom type of Julia.\n\nExamples\n\njulia> IntOrString = Union{Int,AbstractString}\nUnion{Int64, AbstractString}\n\njulia> 1 :: IntOrString\n1\n\njulia> \"Hello!\" :: IntOrString\n\"Hello!\"\n\njulia> 1.0 :: IntOrString\nERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got Float64\n\n\n\n\n\n"
@@ -5162,7 +5162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Union{}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Union{}",
     "category": "keyword",
     "text": "Union{}\n\nUnion{}, the empty Union of types, is the type that has no values. That is, it has the defining property isa(x, Union{}) == false for any x. Base.Bottom is defined as its alias and the type of Union{} is Core.TypeofBottom.\n\nExamples\n\njulia> isa(nothing, Union{})\nfalse\n\n\n\n\n\n"
@@ -5170,7 +5170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.UnionAll",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.UnionAll",
     "category": "type",
     "text": "UnionAll\n\nA union of types over all values of a type parameter. UnionAll is used to describe parametric types where the values of some parameters are not known.\n\nExamples\n\njulia> typeof(Vector)\nUnionAll\n\njulia> typeof(Vector{Int})\nDataType\n\n\n\n\n\n"
@@ -5178,7 +5178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.Tuple",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.Tuple",
     "category": "type",
     "text": "Tuple{Types...}\n\nTuples are an abstraction of the arguments of a function – without the function itself. The salient aspects of a function\'s arguments are their order and their types. Therefore a tuple type is similar to a parameterized immutable type where each parameter is the type of one field. Tuple types may have any number of parameters.\n\nTuple types are covariant in their parameters: Tuple{Int} is a subtype of Tuple{Any}. Therefore Tuple{Any} is considered an abstract type, and tuple types are only concrete if their parameters are. Tuples do not have field names; fields are only accessed by index.\n\nSee the manual section on Tuple Types.\n\n\n\n\n\n"
@@ -5186,7 +5186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.NamedTuple",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.NamedTuple",
     "category": "type",
     "text": "NamedTuple\n\nNamedTuples are, as their name suggests, named Tuples. That is, they\'re a tuple-like collection of values, where each entry has a unique name, represented as a Symbol. Like Tuples, NamedTuples are immutable; neither the names nor the values can be modified in place after construction.\n\nAccessing the value associated with a name in a named tuple can be done using field access syntax, e.g. x.a, or using getindex, e.g. x[:a]. A tuple of the names can be obtained using keys, and a tuple of the values can be obtained using values.\n\nnote: Note\nIteration over NamedTuples produces the values without the names. (See example below.) To iterate over the name-value pairs, use the pairs function.\n\nExamples\n\njulia> x = (a=1, b=2)\n(a = 1, b = 2)\n\njulia> x.a\n1\n\njulia> x[:a]\n1\n\njulia> keys(x)\n(:a, :b)\n\njulia> values(x)\n(1, 2)\n\njulia> collect(x)\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> collect(pairs(x))\n2-element Array{Pair{Symbol,Int64},1}:\n :a => 1\n :b => 2\n\n\n\n\n\n"
@@ -5194,7 +5194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Val",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Val",
     "category": "type",
     "text": "Val(c)\n\nReturn Val{c}(), which contains no run-time data. Types like this can be used to pass the information between functions through the value c, which must be an isbits value. The intent of this construct is to be able to dispatch on constants directly (at compile time) without having to test the value of the constant at run time.\n\nExamples\n\njulia> f(::Val{true}) = \"Good\"\nf (generic function with 1 method)\n\njulia> f(::Val{false}) = \"Bad\"\nf (generic function with 2 methods)\n\njulia> f(Val(true))\n\"Good\"\n\n\n\n\n\n"
@@ -5202,7 +5202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.Vararg",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.Vararg",
     "category": "type",
     "text": "Vararg{T,N}\n\nThe last parameter of a tuple type Tuple can be the special type Vararg, which denotes any number of trailing elements. The type Vararg{T,N} corresponds to exactly N elements of type T. Vararg{T} corresponds to zero or more elements of type T. Vararg tuple types are used to represent the arguments accepted by varargs methods (see the section on Varargs Functions in the manual.)\n\nExamples\n\njulia> mytupletype = Tuple{AbstractString,Vararg{Int}}\nTuple{AbstractString,Vararg{Int64,N} where N}\n\njulia> isa((\"1\",), mytupletype)\ntrue\n\njulia> isa((\"1\",1), mytupletype)\ntrue\n\njulia> isa((\"1\",1,2), mytupletype)\ntrue\n\njulia> isa((\"1\",1,2,3.0), mytupletype)\nfalse\n\n\n\n\n\n"
@@ -5210,7 +5210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.Nothing",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.Nothing",
     "category": "type",
     "text": "Nothing\n\nA type with no fields that is the type nothing.\n\n\n\n\n\n"
@@ -5218,7 +5218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Some",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Some",
     "category": "type",
     "text": "Some{T}\n\nA wrapper type used in Union{Some{T}, Nothing} to distinguish between the absence of a value (nothing) and the presence of a nothing value (i.e. Some(nothing)).\n\nUse something to access the value wrapped by a Some object.\n\n\n\n\n\n"
@@ -5226,7 +5226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.something",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.something",
     "category": "function",
     "text": "something(x, y...)\n\nReturn the first value in the arguments which is not equal to nothing, if any. Otherwise throw an error. Arguments of type Some are unwrapped.\n\nExamples\n\njulia> something(nothing, 1)\n1\n\njulia> something(Some(1), nothing)\n1\n\njulia> something(missing, nothing)\nmissing\n\njulia> something(nothing, nothing)\nERROR: ArgumentError: No value arguments present\n\n\n\n\n\n"
@@ -5234,23 +5234,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Enums.@enum",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Enums.@enum",
     "category": "macro",
     "text": "@enum EnumName[::BaseType] value1[=x] value2[=y]\n\nCreate an Enum{BaseType} subtype with name EnumName and enum member values of value1 and value2 with optional assigned values of x and y, respectively. EnumName can be used just like other types and enum member values as regular values, such as\n\nExamples\n\njulia> @enum Fruit apple=1 orange=2 kiwi=3\n\njulia> f(x::Fruit) = \"I\'m a Fruit with value: $(Int(x))\"\nf (generic function with 1 method)\n\njulia> f(apple)\n\"I\'m a Fruit with value: 1\"\n\nValues can also be specified inside a begin block, e.g.\n\n@enum EnumName begin\n    value1\n    value2\nend\n\nBaseType, which defaults to Int32, must be a primitive subtype of Integer. Member values can be converted between the enum type and BaseType. read and write perform these conversions automatically.\n\nTo list all the instances of an enum use instances, e.g.\n\njulia> instances(Fruit)\n(apple::Fruit = 1, orange::Fruit = 2, kiwi::Fruit = 3)\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Special-Types-1",
-    "page": "Essentials",
-    "title": "Special Types",
+    "location": "base/base/#特殊类型-1",
+    "page": "基本功能",
+    "title": "特殊类型",
     "category": "section",
     "text": "Core.Any\nCore.Union\nUnion{}\nCore.UnionAll\nCore.Tuple\nCore.NamedTuple\nBase.Val\nCore.Vararg\nCore.Nothing\nBase.Some\nBase.something\nBase.Enums.@enum"
 },
 
 {
     "location": "base/base/#Core.Function",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.Function",
     "category": "type",
     "text": "Function\n\nAbstract type of all functions.\n\njulia> isa(+, Function)\ntrue\n\njulia> typeof(sin)\ntypeof(sin)\n\njulia> ans <: Function\ntrue\n\n\n\n\n\n"
@@ -5258,7 +5258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.hasmethod",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.hasmethod",
     "category": "function",
     "text": "hasmethod(f, Tuple type; world = typemax(UInt)) -> Bool\n\nDetermine whether the given generic function has a method matching the given Tuple of argument types with the upper bound of world age given by world.\n\nExamples\n\njulia> hasmethod(length, Tuple{Array})\ntrue\n\n\n\n\n\n"
@@ -5266,7 +5266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.applicable",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.applicable",
     "category": "function",
     "text": "applicable(f, args...) -> Bool\n\nDetermine whether the given generic function has a method applicable to the given arguments.\n\nExamples\n\njulia> function f(x, y)\n           x + y\n       end;\n\njulia> applicable(f, 1)\nfalse\n\njulia> applicable(f, 1, 2)\ntrue\n\n\n\n\n\n"
@@ -5274,7 +5274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.invoke",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.invoke",
     "category": "function",
     "text": "invoke(f, argtypes::Type, args...; kwargs...)\n\nInvoke a method for the given generic function f matching the specified types argtypes on the specified arguments args and passing the keyword arguments kwargs. The arguments args must conform with the specified types in argtypes, i.e. conversion is not automatically performed. This method allows invoking a method other than the most specific matching method, which is useful when the behavior of a more general definition is explicitly needed (often as part of the implementation of a more specific method of the same function).\n\nExamples\n\njulia> f(x::Real) = x^2;\n\njulia> f(x::Integer) = 1 + invoke(f, Tuple{Real}, x);\n\njulia> f(2)\n5\n\n\n\n\n\n"
@@ -5282,7 +5282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.invokelatest",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.invokelatest",
     "category": "function",
     "text": "invokelatest(f, args...; kwargs...)\n\nCalls f(args...; kwargs...), but guarantees that the most recent method of f will be executed.   This is useful in specialized circumstances, e.g. long-running event loops or callback functions that may call obsolete versions of a function f. (The drawback is that invokelatest is somewhat slower than calling f directly, and the type of the result cannot be inferred by the compiler.)\n\n\n\n\n\n"
@@ -5290,7 +5290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#new",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "new",
     "category": "keyword",
     "text": "new\n\nSpecial function available to inner constructors which created a new object of the type. See the manual section on Inner Constructor Methods for more information.\n\n\n\n\n\n"
@@ -5298,7 +5298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.:|>",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.:|>",
     "category": "function",
     "text": "|>(x, f)\n\nApplies a function to the preceding argument. This allows for easy function chaining.\n\nExamples\n\njulia> [1:5;] |> x->x.^2 |> sum |> inv\n0.01818181818181818\n\n\n\n\n\n"
@@ -5306,23 +5306,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.:∘",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.:∘",
     "category": "function",
     "text": "f ∘ g\n\nCompose functions: i.e. (f ∘ g)(args...) means f(g(args...)). The ∘ symbol can be entered in the Julia REPL (and most editors, appropriately configured) by typing \\circ<tab>.\n\nExamples\n\njulia> map(uppercase∘first, [\"apple\", \"banana\", \"carrot\"])\n3-element Array{Char,1}:\n \'A\'\n \'B\'\n \'C\'\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Generic-Functions-1",
-    "page": "Essentials",
-    "title": "Generic Functions",
+    "location": "base/base/#范用函数-1",
+    "page": "基本功能",
+    "title": "范用函数",
     "category": "section",
     "text": "Core.Function\nBase.hasmethod\nCore.applicable\nCore.invoke\nBase.invokelatest\nnew\nBase.:(|>)\nBase.:(∘)"
 },
 
 {
     "location": "base/base/#Core.eval",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.eval",
     "category": "function",
     "text": "Core.eval(m::Module, expr)\n\nEvaluate an expression in the given module and return the result.\n\n\n\n\n\n"
@@ -5330,7 +5330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.MainInclude.eval",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.MainInclude.eval",
     "category": "function",
     "text": "eval(expr)\n\nEvaluate an expression in the global scope of the containing module. Every Module (except those defined with baremodule) has its own 1-argument definition of eval, which evaluates expressions in that module.\n\n\n\n\n\n"
@@ -5338,7 +5338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@eval",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@eval",
     "category": "macro",
     "text": "@eval [mod,] ex\n\nEvaluate an expression with values interpolated into it using eval. If two arguments are provided, the first is the module to evaluate in.\n\n\n\n\n\n"
@@ -5346,7 +5346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.evalfile",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.evalfile",
     "category": "function",
     "text": "evalfile(path::AbstractString, args::Vector{String}=String[])\n\nLoad the file using Base.include, evaluate all expressions, and return the value of the last one.\n\n\n\n\n\n"
@@ -5354,7 +5354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.esc",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.esc",
     "category": "function",
     "text": "esc(e)\n\nOnly valid in the context of an Expr returned from a macro. Prevents the macro hygiene pass from turning embedded variables into gensym variables. See the Macros section of the Metaprogramming chapter of the manual for more details and examples.\n\n\n\n\n\n"
@@ -5362,7 +5362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@inbounds",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@inbounds",
     "category": "macro",
     "text": "@inbounds(blk)\n\nEliminates array bounds checking within expressions.\n\nIn the example below the in-range check for referencing element i of array A is skipped to improve performance.\n\nfunction sum(A::AbstractArray)\n    r = zero(eltype(A))\n    for i = 1:length(A)\n        @inbounds r += A[i]\n    end\n    return r\nend\n\nwarning: Warning\nUsing @inbounds may return incorrect results/crashes/corruption for out-of-bounds indices. The user is responsible for checking it manually. Only use @inbounds when it is certain from the information locally available that all accesses are in bounds.\n\n\n\n\n\n"
@@ -5370,7 +5370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@boundscheck",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@boundscheck",
     "category": "macro",
     "text": "@boundscheck(blk)\n\nAnnotates the expression blk as a bounds checking block, allowing it to be elided by @inbounds.\n\nnote: Note\nThe function in which @boundscheck is written must be inlined into its caller in order for @inbounds to have effect.\n\nExamples\n\njulia> @inline function g(A, i)\n           @boundscheck checkbounds(A, i)\n           return \"accessing ($A)[$i]\"\n       end;\n\njulia> f1() = return g(1:2, -1);\n\njulia> f2() = @inbounds return g(1:2, -1);\n\njulia> f1()\nERROR: BoundsError: attempt to access 2-element UnitRange{Int64} at index [-1]\nStacktrace:\n [1] throw_boundserror(::UnitRange{Int64}, ::Tuple{Int64}) at ./abstractarray.jl:455\n [2] checkbounds at ./abstractarray.jl:420 [inlined]\n [3] g at ./none:2 [inlined]\n [4] f1() at ./none:1\n [5] top-level scope\n\njulia> f2()\n\"accessing (1:2)[-1]\"\n\nwarning: Warning\nThe @boundscheck annotation allows you, as a library writer, to opt-in to allowing other code to remove your bounds checks with @inbounds. As noted there, the caller must verify—using information they can access—that their accesses are valid before using @inbounds. For indexing into your AbstractArray subclasses, for example, this involves checking the indices against its size. Therefore, @boundscheck annotations should only be added to a getindex or setindex! implementation after you are certain its behavior is correct.\n\n\n\n\n\n"
@@ -5378,7 +5378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@inline",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@inline",
     "category": "macro",
     "text": "@inline\n\nGive a hint to the compiler that this function is worth inlining.\n\nSmall functions typically do not need the @inline annotation, as the compiler does it automatically. By using @inline on bigger functions, an extra nudge can be given to the compiler to inline it. This is shown in the following example:\n\n@inline function bigfunction(x)\n    #=\n        Function Definition\n    =#\nend\n\n\n\n\n\n"
@@ -5386,7 +5386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@noinline",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@noinline",
     "category": "macro",
     "text": "@noinline\n\nPrevents the compiler from inlining a function.\n\nSmall functions are typically inlined automatically. By using @noinline on small functions, auto-inlining can be prevented. This is shown in the following example:\n\n@noinline function smallfunction(x)\n    #=\n        Function Definition\n    =#\nend\n\n\n\n\n\n"
@@ -5394,7 +5394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@nospecialize",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@nospecialize",
     "category": "macro",
     "text": "@nospecialize\n\nApplied to a function argument name, hints to the compiler that the method should not be specialized for different types of that argument, but instead to use precisely the declared type for each argument. This is only a hint for avoiding excess code generation. Can be applied to an argument within a formal argument list, or in the function body. When applied to an argument, the macro must wrap the entire argument expression. When used in a function body, the macro must occur in statement position and before any code.\n\nWhen used without arguments, it applies to all arguments of the parent scope. In local scope, this means all arguments of the containing function. In global (top-level) scope, this means all methods subsequently defined in the current module.\n\nSpecialization can reset back to the default by using @specialize.\n\nfunction example_function(@nospecialize x)\n    ...\nend\n\nfunction example_function(@nospecialize(x = 1), y)\n    ...\nend\n\nfunction example_function(x, y, z)\n    @nospecialize x y\n    ...\nend\n\n@nospecialize\nf(y) = [x for x in y]\n@specialize\n\n\n\n\n\n"
@@ -5402,7 +5402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@specialize",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@specialize",
     "category": "macro",
     "text": "@specialize\n\nReset the specialization hint for an argument back to the default. For details, see @specialize.\n\n\n\n\n\n"
@@ -5410,7 +5410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.gensym",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.gensym",
     "category": "function",
     "text": "gensym([tag])\n\nGenerates a symbol which will not conflict with other variable names.\n\n\n\n\n\n"
@@ -5418,7 +5418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@gensym",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@gensym",
     "category": "macro",
     "text": "@gensym\n\nGenerates a gensym symbol for a variable. For example, @gensym x y is transformed into x = gensym(\"x\"); y = gensym(\"y\").\n\n\n\n\n\n"
@@ -5426,7 +5426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@goto",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@goto",
     "category": "macro",
     "text": "@goto name\n\n@goto name unconditionally jumps to the statement at the location @label name.\n\n@label and @goto cannot create jumps to different top-level statements. Attempts cause an error. To still use @goto, enclose the @label and @goto in a block.\n\n\n\n\n\n"
@@ -5434,7 +5434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@label",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@label",
     "category": "macro",
     "text": "@label name\n\nLabels a statement with the symbolic label name. The label marks the end-point of an unconditional jump with @goto name.\n\n\n\n\n\n"
@@ -5442,7 +5442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.SimdLoop.@simd",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.SimdLoop.@simd",
     "category": "macro",
     "text": "@simd\n\nAnnotate a for loop to allow the compiler to take extra liberties to allow loop re-ordering\n\nwarning: Warning\nThis feature is experimental and could change or disappear in future versions of Julia. Incorrect use of the @simd macro may cause unexpected results.\n\nThe object iterated over in a @simd for loop should be a one-dimensional range. By using @simd, you are asserting several properties of the loop:\n\n* It is safe to execute iterations in arbitrary or overlapping order, with special consideration for reduction variables.\n* Floating-point operations on reduction variables can be reordered, possibly causing different results than without `@simd`.\n\nIn many cases, Julia is able to automatically vectorize inner for loops without the use of @simd. Using @simd gives the compiler a little extra leeway to make it possible in more situations. In either case, your inner loop should have the following properties to allow vectorization:\n\n* The loop must be an innermost loop\n* The loop body must be straight-line code. Therefore, [`@inbounds`](@ref) is\n  currently needed for all array accesses. The compiler can sometimes turn\n  short `&&`, `||`, and `?:` expressions into straight-line code if it is safe\n  to evaluate all operands unconditionally. Consider using the [`ifelse`](@ref)\n  function instead of `?:` in the loop if it is safe to do so.\n* Accesses must have a stride pattern and cannot be \"gathers\" (random-index\n  reads) or \"scatters\" (random-index writes).\n* The stride should be unit stride.\n\nnote: Note\nThe @simd does not assert by default that the loop is completely free of loop-carried memory dependencies, which is an assumption that can easily be violated in generic code. If you are writing non-generic code, you can use @simd ivdep for ... end to also assert that:* There exists no loop-carried memory dependencies\n* No iteration ever waits on a previous iteration to make forward progress.\n\n\n\n\n\n"
@@ -5450,7 +5450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@polly",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@polly",
     "category": "macro",
     "text": "@polly\n\nTells the compiler to apply the polyhedral optimizer Polly to a function.\n\n\n\n\n\n"
@@ -5458,7 +5458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@generated",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@generated",
     "category": "macro",
     "text": "@generated f\n@generated(f)\n\n@generated is used to annotate a function which will be generated. In the body of the generated function, only types of arguments can be read (not the values). The function returns a quoted expression evaluated when the function is called. The @generated macro should not be used on functions mutating the global scope or depending on mutable elements.\n\nSee Metaprogramming for further details.\n\nExample:\n\njulia> @generated function bar(x)\n           if x <: Integer\n               return :(x ^ 2)\n           else\n               return :(x)\n           end\n       end\nbar (generic function with 1 method)\n\njulia> bar(4)\n16\n\njulia> bar(\"baz\")\n\"baz\"\n\n\n\n\n\n"
@@ -5466,23 +5466,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@pure",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@pure",
     "category": "macro",
     "text": "@pure ex\n@pure(ex)\n\n@pure gives the compiler a hint for the definition of a pure function, helping for type inference.\n\nA pure function can only depend on immutable information. This also means a @pure function cannot use any global mutable state, including generic functions. Calls to generic functions depend on method tables which are mutable global state. Use with caution, incorrect @pure annotation of a function may introduce hard to identify bugs. Double check for calls to generic functions.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Syntax-1",
-    "page": "Essentials",
-    "title": "Syntax",
+    "location": "base/base/#语法-1",
+    "page": "基本功能",
+    "title": "语法",
     "category": "section",
     "text": "Core.eval\nBase.MainInclude.eval\nBase.@eval\nBase.evalfile\nBase.esc\nBase.@inbounds\nBase.@boundscheck\nBase.@inline\nBase.@noinline\nBase.@nospecialize\nBase.@specialize\nBase.gensym\nBase.@gensym\nBase.@goto\nBase.@label\nBase.@simd\nBase.@polly\nBase.@generated\nBase.@pure"
 },
 
 {
     "location": "base/base/#Base.Missing",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Missing",
     "category": "type",
     "text": "Missing\n\nA type with no fields whose singleton instance missing is used to represent missing values.\n\n\n\n\n\n"
@@ -5490,7 +5490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.missing",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.missing",
     "category": "constant",
     "text": "missing\n\nThe singleton instance of type Missing representing a missing value.\n\n\n\n\n\n"
@@ -5498,7 +5498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.coalesce",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.coalesce",
     "category": "function",
     "text": "coalesce(x, y...)\n\nReturn the first value in the arguments which is not equal to missing, if any. Otherwise return missing.\n\nExamples\n\njulia> coalesce(missing, 1)\n1\n\njulia> coalesce(1, missing)\n1\n\njulia> coalesce(nothing, 1)  # returns `nothing`\n\njulia> coalesce(missing, missing)\nmissing\n\n\n\n\n\n"
@@ -5506,7 +5506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.ismissing",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.ismissing",
     "category": "function",
     "text": "ismissing(x)\n\nIndicate whether x is missing.\n\n\n\n\n\n"
@@ -5514,23 +5514,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.skipmissing",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.skipmissing",
     "category": "function",
     "text": "skipmissing(itr)\n\nReturn an iterator over the elements in itr skipping missing values.\n\nUse collect to obtain an Array containing the non-missing values in itr. Note that even if itr is a multidimensional array, the result will always be a Vector since it is not possible to remove missings while preserving dimensions of the input.\n\nExamples\n\njulia> sum(skipmissing([1, missing, 2]))\n3\n\njulia> collect(skipmissing([1, missing, 2]))\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> collect(skipmissing([1 missing; 2 missing]))\n2-element Array{Int64,1}:\n 1\n 2\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Missing-Values-1",
-    "page": "Essentials",
-    "title": "Missing Values",
+    "location": "base/base/#缺失值-1",
+    "page": "基本功能",
+    "title": "缺失值",
     "category": "section",
     "text": "Base.Missing\nBase.missing\nBase.coalesce\nBase.ismissing\nBase.skipmissing"
 },
 
 {
     "location": "base/base/#Base.run",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.run",
     "category": "function",
     "text": "run(command, args...; wait::Bool = true)\n\nRun a command object, constructed with backticks. Throws an error if anything goes wrong, including the process exiting with a non-zero status (when wait is true).\n\nIf wait is false, the process runs asynchronously. You can later wait for it and check its exit status by calling success on the returned process object.\n\nWhen wait is false, the process\' I/O streams are directed to devnull. When wait is true, I/O streams are shared with the parent process. Use pipeline to control I/O redirection.\n\n\n\n\n\n"
@@ -5538,7 +5538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.devnull",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.devnull",
     "category": "constant",
     "text": "devnull\n\nUsed in a stream redirect to discard all data written to it. Essentially equivalent to /dev/null on Unix or NUL on Windows. Usage:\n\nrun(pipeline(`cat test.txt`, devnull))\n\n\n\n\n\n"
@@ -5546,7 +5546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.success",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.success",
     "category": "function",
     "text": "success(command)\n\nRun a command object, constructed with backticks, and tell whether it was successful (exited with a code of 0). An exception is raised if the process cannot be started.\n\n\n\n\n\n"
@@ -5554,7 +5554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.process_running",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.process_running",
     "category": "function",
     "text": "process_running(p::Process)\n\nDetermine whether a process is currently running.\n\n\n\n\n\n"
@@ -5562,7 +5562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.process_exited",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.process_exited",
     "category": "function",
     "text": "process_exited(p::Process)\n\nDetermine whether a process has exited.\n\n\n\n\n\n"
@@ -5570,7 +5570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.kill-Tuple{Base.Process,Integer}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.kill",
     "category": "method",
     "text": "kill(p::Process, signum=SIGTERM)\n\nSend a signal to a process. The default is to terminate the process. Returns successfully if the process has already exited, but throws an error if killing the process failed for other reasons (e.g. insufficient permissions).\n\n\n\n\n\n"
@@ -5578,7 +5578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.set_process_title",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.set_process_title",
     "category": "function",
     "text": "Sys.set_process_title(title::AbstractString)\n\nSet the process title. No-op on some operating systems.\n\n\n\n\n\n"
@@ -5586,7 +5586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.get_process_title",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.get_process_title",
     "category": "function",
     "text": "Sys.get_process_title()\n\nGet the process title. On some systems, will always return an empty string.\n\n\n\n\n\n"
@@ -5594,7 +5594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.ignorestatus",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.ignorestatus",
     "category": "function",
     "text": "ignorestatus(command)\n\nMark a command object so that running it will not throw an error if the result code is non-zero.\n\n\n\n\n\n"
@@ -5602,7 +5602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.detach",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.detach",
     "category": "function",
     "text": "detach(command)\n\nMark a command object so that it will be run in a new process group, allowing it to outlive the julia process, and not have Ctrl-C interrupts passed to it.\n\n\n\n\n\n"
@@ -5610,7 +5610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Cmd",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Cmd",
     "category": "type",
     "text": "Cmd(cmd::Cmd; ignorestatus, detach, windows_verbatim, windows_hide, env, dir)\n\nConstruct a new Cmd object, representing an external program and arguments, from cmd, while changing the settings of the optional keyword arguments:\n\nignorestatus::Bool: If true (defaults to false), then the Cmd will not throw an error if the return code is nonzero.\ndetach::Bool: If true (defaults to false), then the Cmd will be run in a new process group, allowing it to outlive the julia process and not have Ctrl-C passed to it.\nwindows_verbatim::Bool: If true (defaults to false), then on Windows the Cmd will send a command-line string to the process with no quoting or escaping of arguments, even arguments containing spaces. (On Windows, arguments are sent to a program as a single \"command-line\" string, and programs are responsible for parsing it into arguments. By default, empty arguments and arguments with spaces or tabs are quoted with double quotes \" in the command line, and \\ or \" are preceded by backslashes. windows_verbatim=true is useful for launching programs that parse their command line in nonstandard ways.) Has no effect on non-Windows systems.\nwindows_hide::Bool: If true (defaults to false), then on Windows no new console window is displayed when the Cmd is executed. This has no effect if a console is already open or on non-Windows systems.\nenv: Set environment variables to use when running the Cmd. env is either a dictionary mapping strings to strings, an array of strings of the form \"var=val\", an array or tuple of \"var\"=>val pairs, or nothing. In order to modify (rather than replace) the existing environment, create env by copy(ENV) and then set env[\"var\"]=val as desired.\ndir::AbstractString: Specify a working directory for the command (instead of the current directory).\n\nFor any keywords that are not specified, the current settings from cmd are used. Normally, to create a Cmd object in the first place, one uses backticks, e.g.\n\nCmd(`echo \"Hello world\"`, ignorestatus=true, detach=false)\n\n\n\n\n\n"
@@ -5618,7 +5618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.setenv",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.setenv",
     "category": "function",
     "text": "setenv(command::Cmd, env; dir=\"\")\n\nSet environment variables to use when running the given command. env is either a dictionary mapping strings to strings, an array of strings of the form \"var=val\", or zero or more \"var\"=>val pair arguments. In order to modify (rather than replace) the existing environment, create env by copy(ENV) and then setting env[\"var\"]=val as desired, or use withenv.\n\nThe dir keyword argument can be used to specify a working directory for the command.\n\n\n\n\n\n"
@@ -5626,7 +5626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.withenv",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.withenv",
     "category": "function",
     "text": "withenv(f::Function, kv::Pair...)\n\nExecute f in an environment that is temporarily modified (not replaced as in setenv) by zero or more \"var\"=>val arguments kv. withenv is generally used via the withenv(kv...) do ... end syntax. A value of nothing can be used to temporarily unset an environment variable (if it is set). When withenv returns, the original environment has been restored.\n\n\n\n\n\n"
@@ -5634,7 +5634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.pipeline-Tuple{Any,Any,Any,Vararg{Any,N} where N}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.pipeline",
     "category": "method",
     "text": "pipeline(from, to, ...)\n\nCreate a pipeline from a data source to a destination. The source and destination can be commands, I/O streams, strings, or results of other pipeline calls. At least one argument must be a command. Strings refer to filenames. When called with more than two arguments, they are chained together from left to right. For example, pipeline(a,b,c) is equivalent to pipeline(pipeline(a,b),c). This provides a more concise way to specify multi-stage pipelines.\n\nExamples:\n\nrun(pipeline(`ls`, `grep xyz`))\nrun(pipeline(`ls`, \"out.txt\"))\nrun(pipeline(\"out.txt\", `grep xyz`))\n\n\n\n\n\n"
@@ -5642,7 +5642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.pipeline-Tuple{Base.AbstractCmd}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.pipeline",
     "category": "method",
     "text": "pipeline(command; stdin, stdout, stderr, append=false)\n\nRedirect I/O to or from the given command. Keyword arguments specify which of the command\'s streams should be redirected. append controls whether file output appends to the file. This is a more general version of the 2-argument pipeline function. pipeline(from, to) is equivalent to pipeline(from, stdout=to) when from is a command, and to pipeline(to, stdin=from) when from is another kind of data source.\n\nExamples:\n\nrun(pipeline(`dothings`, stdout=\"out.txt\", stderr=\"errs.txt\"))\nrun(pipeline(`update`, stdout=\"log.txt\", append=true))\n\n\n\n\n\n"
@@ -5650,7 +5650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Libc.gethostname",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Libc.gethostname",
     "category": "function",
     "text": "gethostname() -> AbstractString\n\nGet the local machine\'s host name.\n\n\n\n\n\n"
@@ -5658,7 +5658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Libc.getpid",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Libc.getpid",
     "category": "function",
     "text": "getpid() -> Int32\n\nGet Julia\'s process ID.\n\n\n\n\n\n"
@@ -5666,7 +5666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Libc.time-Tuple{}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Libc.time",
     "category": "method",
     "text": "time()\n\nGet the system time in seconds since the epoch, with fairly high (typically, microsecond) resolution.\n\n\n\n\n\n"
@@ -5674,7 +5674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.time_ns",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.time_ns",
     "category": "function",
     "text": "time_ns()\n\nGet the time in nanoseconds. The time corresponding to 0 is undefined, and wraps every 5.8 years.\n\n\n\n\n\n"
@@ -5682,7 +5682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@time",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@time",
     "category": "macro",
     "text": "@time\n\nA macro to execute an expression, printing the time it took to execute, the number of allocations, and the total number of bytes its execution caused to be allocated, before returning the value of the expression.\n\nSee also @timev, @timed, @elapsed, and @allocated.\n\njulia> @time rand(10^6);\n  0.001525 seconds (7 allocations: 7.630 MiB)\n\njulia> @time begin\n           sleep(0.3)\n           1+1\n       end\n  0.301395 seconds (8 allocations: 336 bytes)\n2\n\n\n\n\n\n"
@@ -5690,7 +5690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@timev",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@timev",
     "category": "macro",
     "text": "@timev\n\nThis is a verbose version of the @time macro. It first prints the same information as @time, then any non-zero memory allocation counters, and then returns the value of the expression.\n\nSee also @time, @timed, @elapsed, and @allocated.\n\njulia> @timev rand(10^6);\n  0.001006 seconds (7 allocations: 7.630 MiB)\nelapsed time (ns): 1005567\nbytes allocated:   8000256\npool allocs:       6\nmalloc() calls:    1\n\n\n\n\n\n"
@@ -5698,7 +5698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@timed",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@timed",
     "category": "macro",
     "text": "@timed\n\nA macro to execute an expression, and return the value of the expression, elapsed time, total bytes allocated, garbage collection time, and an object with various memory allocation counters.\n\nSee also @time, @timev, @elapsed, and @allocated.\n\njulia> val, t, bytes, gctime, memallocs = @timed rand(10^6);\n\njulia> t\n0.006634834\n\njulia> bytes\n8000256\n\njulia> gctime\n0.0055765\n\njulia> fieldnames(typeof(memallocs))\n(:allocd, :malloc, :realloc, :poolalloc, :bigalloc, :freecall, :total_time, :pause, :full_sweep)\n\njulia> memallocs.total_time\n5576500\n\n\n\n\n\n"
@@ -5706,7 +5706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@elapsed",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@elapsed",
     "category": "macro",
     "text": "@elapsed\n\nA macro to evaluate an expression, discarding the resulting value, instead returning the number of seconds it took to execute as a floating-point number.\n\nSee also @time, @timev, @timed, and @allocated.\n\njulia> @elapsed sleep(0.3)\n0.301391426\n\n\n\n\n\n"
@@ -5714,7 +5714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@allocated",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@allocated",
     "category": "macro",
     "text": "@allocated\n\nA macro to evaluate an expression, discarding the resulting value, instead returning the total number of bytes allocated during evaluation of the expression. Note: the expression is evaluated inside a local function, instead of the current context, in order to eliminate the effects of compilation, however, there still may be some allocations due to JIT compilation. This also makes the results inconsistent with the @time macros, which do not try to adjust for the effects of compilation.\n\nSee also @time, @timev, @timed, and @elapsed.\n\njulia> @allocated rand(10^6)\n8000080\n\n\n\n\n\n"
@@ -5722,7 +5722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.EnvDict",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.EnvDict",
     "category": "type",
     "text": "EnvDict() -> EnvDict\n\nA singleton of this type provides a hash table interface to environment variables.\n\n\n\n\n\n"
@@ -5730,7 +5730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.ENV",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.ENV",
     "category": "constant",
     "text": "ENV\n\nReference to the singleton EnvDict, providing a dictionary interface to system environment variables.\n\n\n\n\n\n"
@@ -5738,7 +5738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.isunix",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.isunix",
     "category": "function",
     "text": "Sys.isunix([os])\n\nPredicate for testing if the OS provides a Unix-like interface. See documentation in Handling Operating System Variation.\n\n\n\n\n\n"
@@ -5746,7 +5746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.isapple",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.isapple",
     "category": "function",
     "text": "Sys.isapple([os])\n\nPredicate for testing if the OS is a derivative of Apple Macintosh OS X or Darwin. See documentation in Handling Operating System Variation.\n\n\n\n\n\n"
@@ -5754,7 +5754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.islinux",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.islinux",
     "category": "function",
     "text": "Sys.islinux([os])\n\nPredicate for testing if the OS is a derivative of Linux. See documentation in Handling Operating System Variation.\n\n\n\n\n\n"
@@ -5762,7 +5762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.isbsd",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.isbsd",
     "category": "function",
     "text": "Sys.isbsd([os])\n\nPredicate for testing if the OS is a derivative of BSD. See documentation in Handling Operating System Variation.\n\nnote: Note\nThe Darwin kernel descends from BSD, which means that Sys.isbsd() is true on macOS systems. To exclude macOS from a predicate, use Sys.isbsd() && !Sys.isapple().\n\n\n\n\n\n"
@@ -5770,7 +5770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.iswindows",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.iswindows",
     "category": "function",
     "text": "Sys.iswindows([os])\n\nPredicate for testing if the OS is a derivative of Microsoft Windows NT. See documentation in Handling Operating System Variation.\n\n\n\n\n\n"
@@ -5778,7 +5778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Sys.windows_version",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Sys.windows_version",
     "category": "function",
     "text": "Sys.windows_version()\n\nReturn the version number for the Windows NT Kernel as a VersionNumber, i.e. v\"major.minor.build\", or v\"0.0.0\" if this is not running on Windows.\n\n\n\n\n\n"
@@ -5786,23 +5786,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@static",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@static",
     "category": "macro",
     "text": "@static\n\nPartially evaluate an expression at parse time.\n\nFor example, @static Sys.iswindows() ? foo : bar will evaluate Sys.iswindows() and insert either foo or bar into the expression. This is useful in cases where a construct would be invalid on other platforms, such as a ccall to a non-existent function. @static if Sys.isapple() foo end and @static foo <&&,||> bar are also valid syntax.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#System-1",
-    "page": "Essentials",
-    "title": "System",
+    "location": "base/base/#系统-1",
+    "page": "基本功能",
+    "title": "系统",
     "category": "section",
     "text": "Base.run\nBase.devnull\nBase.success\nBase.process_running\nBase.process_exited\nBase.kill(::Base.Process, ::Integer)\nBase.Sys.set_process_title\nBase.Sys.get_process_title\nBase.ignorestatus\nBase.detach\nBase.Cmd\nBase.setenv\nBase.withenv\nBase.pipeline(::Any, ::Any, ::Any, ::Any...)\nBase.pipeline(::Base.AbstractCmd)\nBase.Libc.gethostname\nBase.Libc.getpid\nBase.Libc.time()\nBase.time_ns\nBase.@time\nBase.@timev\nBase.@timed\nBase.@elapsed\nBase.@allocated\nBase.EnvDict\nBase.ENV\nBase.Sys.isunix\nBase.Sys.isapple\nBase.Sys.islinux\nBase.Sys.isbsd\nBase.Sys.iswindows\nBase.Sys.windows_version\nBase.@static"
 },
 
 {
     "location": "base/base/#Base.VersionNumber",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.VersionNumber",
     "category": "type",
     "text": "VersionNumber\n\nVersion number type which follow the specifications of semantic versioning, composed of major, minor and patch numeric values, followed by pre-release and build alpha-numeric annotations. See also @v_str.\n\nExamples\n\njulia> VersionNumber(\"1.2.3\")\nv\"1.2.3\"\n\njulia> VersionNumber(\"2.0.1-rc1\")\nv\"2.0.1-rc1\"\n\n\n\n\n\n"
@@ -5810,23 +5810,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@v_str",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@v_str",
     "category": "macro",
     "text": "@v_str\n\nString macro used to parse a string to a VersionNumber.\n\nExamples\n\njulia> v\"1.2.3\"\nv\"1.2.3\"\n\njulia> v\"2.0.1-rc1\"\nv\"2.0.1-rc1\"\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Versioning-1",
-    "page": "Essentials",
-    "title": "Versioning",
+    "location": "base/base/#版本控制-1",
+    "page": "基本功能",
+    "title": "版本控制",
     "category": "section",
     "text": "Base.VersionNumber\nBase.@v_str"
 },
 
 {
     "location": "base/base/#Base.error",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.error",
     "category": "function",
     "text": "error(message::AbstractString)\n\nRaise an ErrorException with the given message.\n\n\n\n\n\nerror(msg...)\n\nRaise an ErrorException with the given message.\n\n\n\n\n\n"
@@ -5834,7 +5834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.throw",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.throw",
     "category": "function",
     "text": "throw(e)\n\nThrow an object as an exception.\n\n\n\n\n\n"
@@ -5842,7 +5842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.rethrow",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.rethrow",
     "category": "function",
     "text": "rethrow([e])\n\nThrow an object without changing the current exception backtrace. The default argument is the current exception (if called within a catch block).\n\n\n\n\n\n"
@@ -5850,7 +5850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.backtrace",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.backtrace",
     "category": "function",
     "text": "backtrace()\n\nGet a backtrace object for the current program point.\n\n\n\n\n\n"
@@ -5858,7 +5858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.catch_backtrace",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.catch_backtrace",
     "category": "function",
     "text": "catch_backtrace()\n\nGet the backtrace of the current exception, for use within catch blocks.\n\n\n\n\n\n"
@@ -5866,7 +5866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@assert",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@assert",
     "category": "macro",
     "text": "@assert cond [text]\n\nThrow an AssertionError if cond is false. Preferred syntax for writing assertions. Message text is optionally displayed upon assertion failure.\n\nwarning: Warning\nAn assert might be disabled at various optimization levels. Assert should therefore only be used as a debugging tool and not used for authentication verification (e.g., verifying passwords), nor should side effects needed for the function to work correctly be used inside of asserts.\n\nExamples\n\njulia> @assert iseven(3) \"3 is an odd number!\"\nERROR: AssertionError: 3 is an odd number!\n\njulia> @assert isodd(3) \"What even are numbers?\"\n\n\n\n\n\n"
@@ -5874,7 +5874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.ArgumentError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.ArgumentError",
     "category": "type",
     "text": "ArgumentError(msg)\n\nThe parameters to a function call do not match a valid signature. Argument msg is a descriptive error string.\n\n\n\n\n\n"
@@ -5882,7 +5882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.AssertionError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.AssertionError",
     "category": "type",
     "text": "AssertionError([msg])\n\nThe asserted condition did not evaluate to true. Optional argument msg is a descriptive error string.\n\nExamples\n\njulia> @assert false \"this is not true\"\nERROR: AssertionError: this is not true\n\nAssertionError is usually thrown from @assert.\n\n\n\n\n\n"
@@ -5890,7 +5890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.BoundsError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.BoundsError",
     "category": "type",
     "text": "BoundsError([a],[i])\n\nAn indexing operation into an array, a, tried to access an out-of-bounds element at index i.\n\nExamples\n\njulia> A = fill(1.0, 7);\n\njulia> A[8]\nERROR: BoundsError: attempt to access 7-element Array{Float64,1} at index [8]\nStacktrace:\n [1] getindex(::Array{Float64,1}, ::Int64) at ./array.jl:660\n [2] top-level scope\n\njulia> B = fill(1.0, (2,3));\n\njulia> B[2, 4]\nERROR: BoundsError: attempt to access 2×3 Array{Float64,2} at index [2, 4]\nStacktrace:\n [1] getindex(::Array{Float64,2}, ::Int64, ::Int64) at ./array.jl:661\n [2] top-level scope\n\njulia> B[9]\nERROR: BoundsError: attempt to access 2×3 Array{Float64,2} at index [9]\nStacktrace:\n [1] getindex(::Array{Float64,2}, ::Int64) at ./array.jl:660\n [2] top-level scope\n\n\n\n\n\n"
@@ -5898,7 +5898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.CompositeException",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.CompositeException",
     "category": "type",
     "text": "CompositeException\n\nWrap a Vector of exceptions thrown by a Task (e.g. generated from a remote worker over a channel or an asynchronously executing local I/O write or a remote worker under pmap) with information about the series of exceptions. For example, if a group of workers are executing several tasks, and multiple workers fail, the resulting CompositeException will contain a \"bundle\" of information from each worker indicating where and why the exception(s) occurred.\n\n\n\n\n\n"
@@ -5906,7 +5906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.DimensionMismatch",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.DimensionMismatch",
     "category": "type",
     "text": "DimensionMismatch([msg])\n\nThe objects called do not have matching dimensionality. Optional argument msg is a descriptive error string.\n\n\n\n\n\n"
@@ -5914,7 +5914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.DivideError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.DivideError",
     "category": "type",
     "text": "DivideError()\n\nInteger division was attempted with a denominator value of 0.\n\nExamples\n\njulia> 2/0\nInf\n\njulia> div(2, 0)\nERROR: DivideError: integer division error\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -5922,7 +5922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.DomainError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.DomainError",
     "category": "type",
     "text": "DomainError(val)\nDomainError(val, msg)\n\nThe argument val to a function or constructor is outside the valid domain.\n\nExamples\n\njulia> sqrt(-1)\nERROR: DomainError with -1.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -5930,7 +5930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.EOFError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.EOFError",
     "category": "type",
     "text": "EOFError()\n\nNo more data was available to read from a file or stream.\n\n\n\n\n\n"
@@ -5938,7 +5938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.ErrorException",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.ErrorException",
     "category": "type",
     "text": "ErrorException(msg)\n\nGeneric error type. The error message, in the .msg field, may provide more specific details.\n\nExample\n\njulia> ex = ErrorException(\"I\'ve done a bad thing\");\n\njulia> ex.msg\n\"I\'ve done a bad thing\"\n\n\n\n\n\n"
@@ -5946,7 +5946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.InexactError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.InexactError",
     "category": "type",
     "text": "InexactError(name::Symbol, T, val)\n\nCannot exactly convert val to type T in a method of function name.\n\nExamples\n\njulia> convert(Float64, 1+2im)\nERROR: InexactError: Float64(Float64, 1 + 2im)\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -5954,7 +5954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.InterruptException",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.InterruptException",
     "category": "type",
     "text": "InterruptException()\n\nThe process was stopped by a terminal interrupt (CTRL+C).\n\n\n\n\n\n"
@@ -5962,7 +5962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.KeyError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.KeyError",
     "category": "type",
     "text": "KeyError(key)\n\nAn indexing operation into an AbstractDict (Dict) or Set like object tried to access or delete a non-existent element.\n\n\n\n\n\n"
@@ -5970,7 +5970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.LoadError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.LoadError",
     "category": "type",
     "text": "LoadError(file::AbstractString, line::Int, error)\n\nAn error occurred while includeing, requireing, or using a file. The error specifics should be available in the .error field.\n\n\n\n\n\n"
@@ -5978,7 +5978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.MethodError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.MethodError",
     "category": "type",
     "text": "MethodError(f, args)\n\nA method with the required type signature does not exist in the given generic function. Alternatively, there is no unique most-specific method.\n\n\n\n\n\n"
@@ -5986,7 +5986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.MissingException",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.MissingException",
     "category": "type",
     "text": "MissingException(msg)\n\nException thrown when a missing value is encountered in a situation where it is not supported. The error message, in the msg field may provide more specific details.\n\n\n\n\n\n"
@@ -5994,7 +5994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.OutOfMemoryError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.OutOfMemoryError",
     "category": "type",
     "text": "OutOfMemoryError()\n\nAn operation allocated too much memory for either the system or the garbage collector to handle properly.\n\n\n\n\n\n"
@@ -6002,7 +6002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.ReadOnlyMemoryError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.ReadOnlyMemoryError",
     "category": "type",
     "text": "ReadOnlyMemoryError()\n\nAn operation tried to write to memory that is read-only.\n\n\n\n\n\n"
@@ -6010,7 +6010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.OverflowError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.OverflowError",
     "category": "type",
     "text": "OverflowError(msg)\n\nThe result of an expression is too large for the specified type and will cause a wraparound.\n\n\n\n\n\n"
@@ -6018,7 +6018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.StackOverflowError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.StackOverflowError",
     "category": "type",
     "text": "StackOverflowError()\n\nThe function call grew beyond the size of the call stack. This usually happens when a call recurses infinitely.\n\n\n\n\n\n"
@@ -6026,7 +6026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.SystemError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.SystemError",
     "category": "type",
     "text": "SystemError(prefix::AbstractString, [errno::Int32])\n\nA system call failed with an error code (in the errno global variable).\n\n\n\n\n\n"
@@ -6034,7 +6034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.TypeError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.TypeError",
     "category": "type",
     "text": "TypeError(func::Symbol, context::AbstractString, expected::Type, got)\n\nA type assertion failure, or calling an intrinsic function with an incorrect argument type.\n\n\n\n\n\n"
@@ -6042,7 +6042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.UndefKeywordError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.UndefKeywordError",
     "category": "type",
     "text": "UndefKeywordError(var::Symbol)\n\nThe required keyword argument var was not assigned in a function call.\n\n\n\n\n\n"
@@ -6050,7 +6050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.UndefRefError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.UndefRefError",
     "category": "type",
     "text": "UndefRefError()\n\nThe item or field is not defined for the given object.\n\n\n\n\n\n"
@@ -6058,7 +6058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.UndefVarError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.UndefVarError",
     "category": "type",
     "text": "UndefVarError(var::Symbol)\n\nA symbol in the current scope is not defined.\n\nExamples\n\njulia> a\nERROR: UndefVarError: a not defined\n\njulia> a = 1;\n\njulia> a\n1\n\n\n\n\n\n"
@@ -6066,7 +6066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.StringIndexError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.StringIndexError",
     "category": "type",
     "text": "StringIndexError(str, i)\n\nAn error occurred when trying to access str at index i that is not valid.\n\n\n\n\n\n"
@@ -6074,7 +6074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.InitError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.InitError",
     "category": "type",
     "text": "InitError(mod::Symbol, error)\n\nAn error occurred when running a module\'s __init__ function. The actual error thrown is available in the .error field.\n\n\n\n\n\n"
@@ -6082,7 +6082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.retry",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.retry",
     "category": "function",
     "text": "retry(f::Function;  delays=ExponentialBackOff(), check=nothing) -> Function\n\nReturn an anonymous function that calls function f.  If an exception arises, f is repeatedly called again, each time check returns true, after waiting the number of seconds specified in delays.  check should input delays\'s current state and the Exception.\n\nExamples\n\nretry(f, delays=fill(5.0, 3))\nretry(f, delays=rand(5:10, 2))\nretry(f, delays=Base.ExponentialBackOff(n=3, first_delay=5, max_delay=1000))\nretry(http_get, check=(s,e)->e.status == \"503\")(url)\nretry(read, check=(s,e)->isa(e, IOError))(io, 128; all=false)\n\n\n\n\n\n"
@@ -6090,23 +6090,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.ExponentialBackOff",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.ExponentialBackOff",
     "category": "type",
     "text": "ExponentialBackOff(; n=1, first_delay=0.05, max_delay=10.0, factor=5.0, jitter=0.1)\n\nA Float64 iterator of length n whose elements exponentially increase at a rate in the interval factor * (1 ± jitter).  The first element is first_delay and all elements are clamped to max_delay.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Errors-1",
-    "page": "Essentials",
-    "title": "Errors",
+    "location": "base/base/#错误-1",
+    "page": "基本功能",
+    "title": "错误",
     "category": "section",
     "text": "Base.error\nCore.throw\nBase.rethrow\nBase.backtrace\nBase.catch_backtrace\nBase.@assert\nBase.ArgumentError\nBase.AssertionError\nCore.BoundsError\nBase.CompositeException\nBase.DimensionMismatch\nCore.DivideError\nCore.DomainError\nBase.EOFError\nCore.ErrorException\nCore.InexactError\nCore.InterruptException\nBase.KeyError\nBase.LoadError\nBase.MethodError\nBase.MissingException\nCore.OutOfMemoryError\nCore.ReadOnlyMemoryError\nCore.OverflowError\nCore.StackOverflowError\nBase.SystemError\nCore.TypeError\nCore.UndefKeywordError\nCore.UndefRefError\nCore.UndefVarError\nBase.StringIndexError\nBase.InitError\nBase.retry\nBase.ExponentialBackOff"
 },
 
 {
     "location": "base/base/#Base.Timer-Tuple{Function,Real}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Timer",
     "category": "method",
     "text": "Timer(callback::Function, delay; interval = 0)\n\nCreate a timer that wakes up tasks waiting for it (by calling wait on the timer object) and calls the function callback.\n\nWaiting tasks are woken and the function callback is called after an initial delay of delay seconds, and then repeating with the given interval in seconds. If interval is equal to 0, the timer is only triggered once. The function callback is called with a single argument, the timer itself. When the timer is closed (by close waiting tasks are woken with an error. Use isopen to check whether a timer is still active.\n\nExamples\n\nHere the first number is printed after a delay of two seconds, then the following numbers are printed quickly.\n\njulia> begin\n           i = 0\n           cb(timer) = (global i += 1; println(i))\n           t = Timer(cb, 2, interval = 0.2)\n           wait(t)\n           sleep(0.5)\n           close(t)\n       end\n1\n2\n3\n\n\n\n\n\n"
@@ -6114,7 +6114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Timer",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Timer",
     "category": "type",
     "text": "Timer(delay; interval = 0)\n\nCreate a timer that wakes up tasks waiting for it (by calling wait on the timer object).\n\nWaiting tasks are woken after an initial delay of delay seconds, and then repeating with the given interval in seconds. If interval is equal to 0, the timer is only triggered once. When the timer is closed (by close waiting tasks are woken with an error. Use isopen to check whether a timer is still active.\n\n\n\n\n\n"
@@ -6122,7 +6122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.AsyncCondition",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.AsyncCondition",
     "category": "type",
     "text": "AsyncCondition()\n\nCreate a async condition that wakes up tasks waiting for it (by calling wait on the object) when notified from C by a call to uv_async_send. Waiting tasks are woken with an error when the object is closed (by close. Use isopen to check whether it is still active.\n\n\n\n\n\n"
@@ -6130,23 +6130,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.AsyncCondition-Tuple{Function}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.AsyncCondition",
     "category": "method",
     "text": "AsyncCondition(callback::Function)\n\nCreate a async condition that calls the given callback function. The callback is passed one argument, the async condition object itself.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Events-1",
-    "page": "Essentials",
-    "title": "Events",
+    "location": "base/base/#事件-1",
+    "page": "基本功能",
+    "title": "事件",
     "category": "section",
     "text": "Base.Timer(::Function, ::Real)\nBase.Timer\nBase.AsyncCondition\nBase.AsyncCondition(::Function)"
 },
 
 {
     "location": "base/base/#Base.nameof-Tuple{Module}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.nameof",
     "category": "method",
     "text": "nameof(m::Module) -> Symbol\n\nGet the name of a Module as a Symbol.\n\nExamples\n\njulia> nameof(Base.Broadcast)\n:Broadcast\n\n\n\n\n\n"
@@ -6154,7 +6154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.parentmodule",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.parentmodule",
     "category": "function",
     "text": "parentmodule(m::Module) -> Module\n\nGet a module\'s enclosing Module. Main is its own parent.\n\nExamples\n\njulia> parentmodule(Main)\nMain\n\njulia> parentmodule(Base.Broadcast)\nBase\n\n\n\n\n\nparentmodule(t::DataType) -> Module\n\nDetermine the module containing the definition of a (potentially UnionAll-wrapped) DataType.\n\nExamples\n\njulia> module Foo\n           struct Int end\n       end\nFoo\n\njulia> parentmodule(Int)\nCore\n\njulia> parentmodule(Foo.Int)\nFoo\n\n\n\n\n\nparentmodule(f::Function) -> Module\n\nDetermine the module containing the (first) definition of a generic function.\n\n\n\n\n\nparentmodule(f::Function, types) -> Module\n\nDetermine the module containing a given definition of a generic function.\n\n\n\n\n\n"
@@ -6162,7 +6162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.pathof-Tuple{Module}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.pathof",
     "category": "method",
     "text": "pathof(m::Module)\n\nReturn the path of m.jl file that was used to import module m, or nothing if m was not imported from a package.\n\n\n\n\n\n"
@@ -6170,7 +6170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.moduleroot",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.moduleroot",
     "category": "function",
     "text": "moduleroot(m::Module) -> Module\n\nFind the root module of a given module. This is the first module in the chain of parent modules of m which is either a registered root module or which is its own parent module.\n\n\n\n\n\n"
@@ -6178,7 +6178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@__MODULE__",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@__MODULE__",
     "category": "macro",
     "text": "@__MODULE__ -> Module\n\nGet the Module of the toplevel eval, which is the Module code is currently being read from.\n\n\n\n\n\n"
@@ -6186,7 +6186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.fullname",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.fullname",
     "category": "function",
     "text": "fullname(m::Module)\n\nGet the fully-qualified name of a module as a tuple of symbols. For example,\n\nExamples\n\njulia> fullname(Base.Iterators)\n(:Base, :Iterators)\n\njulia> fullname(Main)\n(:Main,)\n\n\n\n\n\n"
@@ -6194,7 +6194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.names",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.names",
     "category": "function",
     "text": "names(x::Module; all::Bool = false, imported::Bool = false)\n\nGet an array of the names exported by a Module, excluding deprecated names. If all is true, then the list also includes non-exported names defined in the module, deprecated names, and compiler-generated names. If imported is true, then names explicitly imported from other modules are also included.\n\nAs a special case, all names defined in Main are considered \"exported\", since it is not idiomatic to explicitly export names from Main.\n\n\n\n\n\n"
@@ -6202,7 +6202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Core.nfields",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Core.nfields",
     "category": "function",
     "text": "nfields(x) -> Int\n\nGet the number of fields in the given object.\n\nExamples\n\njulia> a = 1//2;\n\njulia> nfields(a)\n2\n\njulia> b = 1\n1\n\njulia> nfields(b)\n0\n\njulia> ex = ErrorException(\"I\'ve done a bad thing\");\n\njulia> nfields(ex)\n1\n\nIn these examples, a is a Rational, which has two fields. b is an Int, which is a primitive bitstype with no fields at all. ex is an ErrorException, which has one field.\n\n\n\n\n\n"
@@ -6210,7 +6210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.isconst",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.isconst",
     "category": "function",
     "text": "isconst(m::Module, s::Symbol) -> Bool\n\nDetermine whether a global is declared const in a given Module.\n\n\n\n\n\n"
@@ -6218,7 +6218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.nameof-Tuple{Function}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.nameof",
     "category": "method",
     "text": "nameof(f::Function) -> Symbol\n\nGet the name of a generic Function as a symbol, or :anonymous.\n\n\n\n\n\n"
@@ -6226,7 +6226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.functionloc-Tuple{Any,Any}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.functionloc",
     "category": "method",
     "text": "functionloc(f::Function, types)\n\nReturns a tuple (filename,line) giving the location of a generic Function definition.\n\n\n\n\n\n"
@@ -6234,23 +6234,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.functionloc-Tuple{Method}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.functionloc",
     "category": "method",
     "text": "functionloc(m::Method)\n\nReturns a tuple (filename,line) giving the location of a Method definition.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Reflection-1",
-    "page": "Essentials",
-    "title": "Reflection",
+    "location": "base/base/#反射-1",
+    "page": "基本功能",
+    "title": "反射",
     "category": "section",
     "text": "Base.nameof(::Module)\nBase.parentmodule\nBase.pathof(::Module)\nBase.moduleroot\nBase.@__MODULE__\nBase.fullname\nBase.names\nCore.nfields\nBase.isconst\nBase.nameof(::Function)\nBase.functionloc(::Any, ::Any)\nBase.functionloc(::Method)"
 },
 
 {
     "location": "base/base/#Base.GC.gc",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.GC.gc",
     "category": "function",
     "text": "GC.gc()\n\nPerform garbage collection.\n\nwarning: Warning\nExcessive use will likely lead to poor performance.\n\n\n\n\n\n"
@@ -6258,7 +6258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.GC.enable",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.GC.enable",
     "category": "function",
     "text": "GC.enable(on::Bool)\n\nControl whether garbage collection is enabled using a boolean argument (true for enabled, false for disabled). Return previous GC state.\n\nwarning: Warning\nDisabling garbage collection should be used only with caution, as it can cause memory use to grow without bound.\n\n\n\n\n\n"
@@ -6266,7 +6266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.GC.@preserve",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.GC.@preserve",
     "category": "macro",
     "text": "GC.@preserve x1 x2 ... xn expr\n\nTemporarily protect the given objects from being garbage collected, even if they would otherwise be unreferenced.\n\nThe last argument is the expression during which the object(s) will be preserved. The previous arguments are the objects to preserve.\n\n\n\n\n\n"
@@ -6274,7 +6274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Meta.lower",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Meta.lower",
     "category": "function",
     "text": "lower(m, x)\n\nTakes the expression x and returns an equivalent expression in lowered form for executing in module m. See also code_lowered.\n\n\n\n\n\n"
@@ -6282,7 +6282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Meta.@lower",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Meta.@lower",
     "category": "macro",
     "text": "@lower [m] x\n\nReturn lowered form of the expression x in module m. By default m is the module in which the macro is called. See also lower.\n\n\n\n\n\n"
@@ -6290,7 +6290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Meta.parse-Tuple{AbstractString,Int64}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Meta.parse",
     "category": "method",
     "text": "parse(str, start; greedy=true, raise=true, depwarn=true)\n\nParse the expression string and return an expression (which could later be passed to eval for execution). start is the index of the first character to start parsing. If greedy is true (default), parse will try to consume as much input as it can; otherwise, it will stop as soon as it has parsed a valid expression. Incomplete but otherwise syntactically valid expressions will return Expr(:incomplete, \"(error message)\"). If raise is true (default), syntax errors other than incomplete expressions will raise an error. If raise is false, parse will return an expression that will raise an error upon evaluation. If depwarn is false, deprecation warnings will be suppressed.\n\njulia> Meta.parse(\"x = 3, y = 5\", 7)\n(:(y = 5), 13)\n\njulia> Meta.parse(\"x = 3, y = 5\", 5)\n(:((3, y) = 5), 13)\n\n\n\n\n\n"
@@ -6298,7 +6298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Meta.parse-Tuple{AbstractString}",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Meta.parse",
     "category": "method",
     "text": "parse(str; raise=true, depwarn=true)\n\nParse the expression string greedily, returning a single expression. An error is thrown if there are additional characters after the first expression. If raise is true (default), syntax errors will raise an error; otherwise, parse will return an expression that will raise an error upon evaluation.  If depwarn is false, deprecation warnings will be suppressed.\n\njulia> Meta.parse(\"x = 3\")\n:(x = 3)\n\njulia> Meta.parse(\"x = \")\n:($(Expr(:incomplete, \"incomplete: premature end of input\")))\n\njulia> Meta.parse(\"1.0.2\")\nERROR: Base.Meta.ParseError(\"invalid numeric constant \\\"1.0.\\\"\")\nStacktrace:\n[...]\n\njulia> Meta.parse(\"1.0.2\"; raise = false)\n:($(Expr(:error, \"invalid numeric constant \\\"1.0.\\\"\")))\n\n\n\n\n\n"
@@ -6306,7 +6306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.Meta.ParseError",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.Meta.ParseError",
     "category": "type",
     "text": "ParseError(msg)\n\nThe expression passed to the parse function could not be interpreted as a valid Julia expression.\n\n\n\n\n\n"
@@ -6314,7 +6314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.macroexpand",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.macroexpand",
     "category": "function",
     "text": "macroexpand(m::Module, x; recursive=true)\n\nTake the expression x and return an equivalent expression with all macros removed (expanded) for executing in module m. The recursive keyword controls whether deeper levels of nested macros are also expanded. This is demonstrated in the example below:\n\njulia> module M\n           macro m1()\n               42\n           end\n           macro m2()\n               :(@m1())\n           end\n       end\nM\n\njulia> macroexpand(M, :(@m2()), recursive=true)\n42\n\njulia> macroexpand(M, :(@m2()), recursive=false)\n:(#= REPL[16]:6 =# M.@m1)\n\n\n\n\n\n"
@@ -6322,7 +6322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@macroexpand",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@macroexpand",
     "category": "macro",
     "text": "@macroexpand\n\nReturn equivalent expression with all macros removed (expanded).\n\nThere are differences between @macroexpand and macroexpand.\n\nWhile macroexpand takes a keyword argument recursive, @macroexpand\n\nis always recursive. For a non recursive macro version, see @macroexpand1.\n\nWhile macroexpand has an explicit module argument, @macroexpand always\n\nexpands with respect to the module in which it is called. This is best seen in the following example:\n\njulia> module M\n           macro m()\n               1\n           end\n           function f()\n               (@macroexpand(@m),\n                macroexpand(M, :(@m)),\n                macroexpand(Main, :(@m))\n               )\n           end\n       end\nM\n\njulia> macro m()\n           2\n       end\n@m (macro with 1 method)\n\njulia> M.f()\n(1, 1, 2)\n\nWith @macroexpand the expression expands where @macroexpand appears in the code (module M in the example). With macroexpand the expression expands in the module given as the first argument.\n\n\n\n\n\n"
@@ -6330,7 +6330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.@macroexpand1",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.@macroexpand1",
     "category": "macro",
     "text": "@macroexpand1\n\nNon recursive version of @macroexpand.\n\n\n\n\n\n"
@@ -6338,7 +6338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.code_lowered",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.code_lowered",
     "category": "function",
     "text": "code_lowered(f, types; generated = true)\n\nReturn an array of the lowered forms (IR) for the methods matching the given generic function and type signature.\n\nIf generated is false, the returned CodeInfo instances will correspond to fallback implementations. An error is thrown if no fallback implementation exists. If generated is true, these CodeInfo instances will correspond to the method bodies yielded by expanding the generators.\n\nNote that an error will be thrown if types are not leaf types when generated is true and the corresponding method is a @generated method.\n\n\n\n\n\n"
@@ -6346,7 +6346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.code_typed",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.code_typed",
     "category": "function",
     "text": "code_typed(f, types; optimize=true)\n\nReturns an array of type-inferred lowered form (IR) for the methods matching the given generic function and type signature. The keyword argument optimize controls whether additional optimizations, such as inlining, are also applied.\n\n\n\n\n\n"
@@ -6354,16 +6354,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/base/#Base.precompile",
-    "page": "Essentials",
+    "page": "基本功能",
     "title": "Base.precompile",
     "category": "function",
     "text": "precompile(f, args::Tuple{Vararg{Any}})\n\nCompile the given function f for the argument tuple (of types) args, but do not execute it.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/base/#Internals-1",
-    "page": "Essentials",
-    "title": "Internals",
+    "location": "base/base/#内置-1",
+    "page": "基本功能",
+    "title": "内置",
     "category": "section",
     "text": "Base.GC.gc\nBase.GC.enable\nBase.GC.@preserve\nMeta.lower\nMeta.@lower\nMeta.parse(::AbstractString, ::Int)\nMeta.parse(::AbstractString)\nMeta.ParseError\nBase.macroexpand\nBase.@macroexpand\nBase.@macroexpand1\nBase.code_lowered\nBase.code_typed\nBase.precompile"
 },
@@ -6413,7 +6413,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "Iteration",
     "category": "section",
-    "text": "Sequential iteration is implemented by the iterate function. The general for loop:for i in iter   # or  \"for i = iter\"\n    # body\nend被转换成next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nend“state”对象能够是任何对象，并且对于每个可迭代的种类应该选择合适的“state”对象。 详情请参照「关于迭代接口的Manual部分」来获得关于定义一个常见迭代种类的更多细节Base.iterate\nBase.IteratorSize\nBase.IteratorEltypeFully implemented by:AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nEachLine\nAbstractString\nSet\nPair\nNamedTuple"
+    "text": "序列迭代由函数 iterate实现 普通的for循环for i in iter   # or  \"for i = iter\"\n    # body\nend被转换成next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nendstate对象能够是任何对象，并且对于每个可迭代的种类应该选择合适的“state”对象。 详情请参照 manual section on the iteration interface 来获得关于定义一个常见迭代种类的更多细节。Base.iterate\nBase.IteratorSize\nBase.IteratorEltype完全由以下实现：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nEachLine\nAbstractString\nSet\nPair\nNamedTuple"
 },
 
 {
@@ -6497,11 +6497,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/collections/#General-Collections-1",
+    "location": "base/collections/#通用集合-1",
     "page": "集合和数据结构",
-    "title": "General Collections",
+    "title": "通用集合",
     "category": "section",
-    "text": "Base.isempty\nBase.empty!\nBase.length完全由以下执行：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nAbstractString\nSet\nNamedTuple"
+    "text": "Base.isempty\nBase.empty!\nBase.length完全由以下实现：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nAbstractString\nSet\nNamedTuple"
 },
 
 {
@@ -6905,9 +6905,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/collections/#Iterable-Collections-1",
+    "location": "base/collections/#可迭代集合-1",
     "page": "集合和数据结构",
-    "title": "Iterable Collections",
+    "title": "可迭代集合",
     "category": "section",
     "text": "Base.in\nBase.:∉\nBase.eltype\nBase.indexin\nBase.unique\nBase.unique!\nBase.allunique\nBase.reduce(::Any, ::Any)\nBase.foldl(::Any, ::Any)\nBase.foldr(::Any, ::Any)\nBase.maximum\nBase.maximum!\nBase.minimum\nBase.minimum!\nBase.extrema\nBase.argmax\nBase.argmin\nBase.findmax\nBase.findmin\nBase.findmax!\nBase.findmin!\nBase.sum\nBase.sum!\nBase.prod\nBase.prod!\nBase.any(::Any)\nBase.any(::AbstractArray, ::Any)\nBase.any!\nBase.all(::Any)\nBase.all(::AbstractArray, ::Any)\nBase.all!\nBase.count\nBase.any(::Any, ::Any)\nBase.all(::Any, ::Any)\nBase.foreach\nBase.map\nBase.map!\nBase.mapreduce(::Any, ::Any, ::Any)\nBase.mapfoldl(::Any, ::Any, ::Any)\nBase.mapfoldr(::Any, ::Any, ::Any)\nBase.first\nBase.last\nBase.step\nBase.collect(::Any)\nBase.collect(::Type, ::Any)\nBase.filter\nBase.filter!\nBase.replace(::Any, ::Pair...)\nBase.replace(::Base.Callable, ::Any)\nBase.replace!"
 },
@@ -6945,11 +6945,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/collections/#Indexable-Collections-1",
+    "location": "base/collections/#可定标集合-1",
     "page": "集合和数据结构",
-    "title": "Indexable Collections",
+    "title": "可定标集合",
     "category": "section",
-    "text": "Base.getindex\nBase.setindex!\nBase.firstindex\nBase.lastindexFully implemented by:Array\nBitArray\nAbstractArray\nSubArrayPartially implemented by:AbstractRange\nUnitRange\nTuple\nAbstractString\nDict\nIdDict\nWeakKeyDict\nNamedTuple"
+    "text": "Base.getindex\nBase.setindex!\nBase.firstindex\nBase.lastindex完全由以下实现：Array\nBitArray\nAbstractArray\nSubArrayPartially implemented by:AbstractRange\nUnitRange\nTuple\nAbstractString\nDict\nIdDict\nWeakKeyDict\nNamedTuple"
 },
 
 {
@@ -7069,7 +7069,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "Base.pairs",
     "category": "function",
-    "text": "pairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\npairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\n"
+    "text": "pairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\npairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\n"
 },
 
 {
@@ -7121,11 +7121,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/collections/#Dictionaries-1",
+    "location": "base/collections/#字典-1",
     "page": "集合和数据结构",
-    "title": "Dictionaries",
+    "title": "字典",
     "category": "section",
-    "text": "Dict is the standard dictionary. Its implementation uses hash as the hashing function for the key, and isequal to determine equality. Define these two functions for custom types to override how they are stored in a hash table.IdDict is a special hash table where the keys are always object identities.WeakKeyDict is a hash table implementation where the keys are weak references to objects, and thus may be garbage collected even when referenced in a hash table. Like Dict it uses hash for hashing and isequal for equality, unlike Dict it does not convert keys on insertion.Dicts can be created by passing pair objects constructed with => to a Dict constructor: Dict(\"A\"=>1, \"B\"=>2). This call will attempt to infer type information from the keys and values (i.e. this example creates a Dict{String, Int64}). To explicitly specify types use the syntax Dict{KeyType,ValueType}(...). For example, Dict{String,Int32}(\"A\"=>1, \"B\"=>2).Dictionaries may also be created with generators. For example, Dict(i => f(i) for i = 1:10).Given a dictionary D, the syntax D[x] returns the value of key x (if it exists) or throws an error, and D[x] = y stores the key-value pair x => y in D (replacing any existing value for the key x).  Multiple arguments to D[...] are converted to tuples; for example, the syntax D[x,y]  is equivalent to D[(x,y)], i.e. it refers to the value keyed by the tuple (x,y).Base.Dict\nBase.IdDict\nBase.WeakKeyDict\nBase.ImmutableDict\nBase.haskey\nBase.get(::Any, ::Any, ::Any)\nBase.get\nBase.get!(::Any, ::Any, ::Any)\nBase.get!(::Function, ::Any, ::Any)\nBase.getkey\nBase.delete!\nBase.pop!(::Any, ::Any, ::Any)\nBase.keys\nBase.values\nBase.pairs\nBase.merge\nBase.merge!(::AbstractDict, ::AbstractDict...)\nBase.merge!(::Function, ::AbstractDict, ::AbstractDict...)\nBase.sizehint!\nBase.keytype\nBase.valtypeFully implemented by:IdDict\nDict\nWeakKeyDictPartially implemented by:BitSet\nSet\nEnvDict\nArray\nBitArray\nImmutableDict\nIterators.Pairs"
+    "text": "Dict是一个标准字典。其实现利用了 hash 作为键的哈希函数和isequal来决定是否相等。 对自定义类型定义这两个函数来重载类型在哈希表内的存储方式。IdDict是一种特殊的哈希表，在里面键始终是对象标识符。WeakKeyDict 是一个哈希表的实现，里面键是对象的弱引用，所以 即使键在哈希表中被引用也有可能被垃圾回收。 它像Dict一样使用hash来做哈希和isequal来做相等判断，但是它不会在插入时转换键，这点不像Dict。Dicts 可以由传递含有=>的成对对象给 Dict的构造器来被创建： Dict(\"A\"=>1, \"B\"=>2)。这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 Dict{String, Int64}）。为了显式指定类型， 请使用语法Dict{KeyType,ValueType}(...)。例如， Dict{String,Int32}(\"A\"=>1, \"B\"=>2)。字典也可以用生成器创建。例如Dict(i => f(i) for i = 1:10)。存在一个字典D，语法D[x]返回键x的值（如果存在）或者扔出 一个错误，D[x] = y存储键值对x => y在D中（覆盖键\'x\'的 已有的值）。多个参数传入D[...]会被转化成元组；例如，语法 D[x,y]等于 D[(x,y)]，也就是说，它指向键为元组(x,y)的值。Base.Dict\nBase.IdDict\nBase.WeakKeyDict\nBase.ImmutableDict\nBase.haskey\nBase.get(::Any, ::Any, ::Any)\nBase.get\nBase.get!(::Any, ::Any, ::Any)\nBase.get!(::Function, ::Any, ::Any)\nBase.getkey\nBase.delete!\nBase.pop!(::Any, ::Any, ::Any)\nBase.keys\nBase.values\nBase.pairs\nBase.merge\nBase.merge!(::AbstractDict, ::AbstractDict...)\nBase.merge!(::Function, ::AbstractDict, ::AbstractDict...)\nBase.sizehint!\nBase.keytype\nBase.valtype完全由以下实现：IdDict\nDict\nWeakKeyDictPartially implemented by:BitSet\nSet\nEnvDict\nArray\nBitArray\nImmutableDict\nIterators.Pairs"
 },
 
 {
@@ -7241,11 +7241,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/collections/#Set-Like-Collections-1",
+    "location": "base/collections/#类set集合-1",
     "page": "集合和数据结构",
-    "title": "Set-Like Collections",
+    "title": "类set集合",
     "category": "section",
-    "text": "Base.Set\nBase.BitSet\nBase.union\nBase.union!\nBase.intersect\nBase.setdiff\nBase.setdiff!\nBase.symdiff\nBase.symdiff!\nBase.intersect!\nBase.issubset\nBase.:⊈\nBase.:⊊\nBase.issetequalFully implemented by:BitSet\nSetPartially implemented by:Array"
+    "text": "Base.Set\nBase.BitSet\nBase.union\nBase.union!\nBase.intersect\nBase.setdiff\nBase.setdiff!\nBase.symdiff\nBase.symdiff!\nBase.intersect!\nBase.issubset\nBase.:⊈\nBase.:⊊\nBase.issetequal完全由以下实现：BitSet\nSet部分由以下实现：Array"
 },
 
 {
@@ -7329,11 +7329,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/collections/#Dequeues-1",
+    "location": "base/collections/#双端队列-1",
     "page": "集合和数据结构",
-    "title": "Dequeues",
+    "title": "双端队列",
     "category": "section",
-    "text": "Base.push!\nBase.pop!\nBase.pushfirst!\nBase.popfirst!\nBase.insert!\nBase.deleteat!\nBase.splice!\nBase.resize!\nBase.append!\nBase.prepend!Fully implemented by:Vector (a.k.a. 1-dimensional Array)\nBitVector (a.k.a. 1-dimensional BitArray)"
+    "text": "Base.push!\nBase.pop!\nBase.pushfirst!\nBase.popfirst!\nBase.insert!\nBase.deleteat!\nBase.splice!\nBase.resize!\nBase.append!\nBase.prepend!完全由以下实现：Vector (a.k.a. 1-dimensional Array)\nBitVector (a.k.a. 1-dimensional BitArray)"
 },
 
 {
@@ -7353,32 +7353,32 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/collections/#Utility-Collections-1",
+    "location": "base/collections/#实用程序集合-1",
     "page": "集合和数据结构",
-    "title": "Utility Collections",
+    "title": "实用程序集合",
     "category": "section",
     "text": "Base.Pair\nIterators.Pairs"
 },
 
 {
     "location": "base/math/#",
-    "page": "数学",
-    "title": "数学",
+    "page": "数学相关",
+    "title": "数学相关",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/math/#数学-1",
-    "page": "数学",
-    "title": "数学",
+    "location": "base/math/#数学相关-1",
+    "page": "数学相关",
+    "title": "数学相关",
     "category": "section",
     "text": ""
 },
 
 {
     "location": "base/math/#Base.:--Tuple{Any}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:-",
     "category": "method",
     "text": "-(x)\n\nUnary minus operator.\n\nExamples\n\njulia> -1\n-1\n\njulia> -(2)\n-2\n\njulia> -[1 2; 3 4]\n2×2 Array{Int64,2}:\n -1  -2\n -3  -4\n\n\n\n\n\n"
@@ -7386,15 +7386,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:+",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:+",
     "category": "function",
-    "text": "dt::Date + t::Time -> DateTime\n\nThe addition of a Date with a Time produces a DateTime. The hour, minute, second, and millisecond parts of the Time are used along with the year, month, and day of the Date to create the new DateTime. Non-zero microseconds or nanoseconds in the Time type will result in an InexactError being thrown.\n\n\n\n\n\n+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\n"
+    "text": "+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\ndt::Date + t::Time -> DateTime\n\nThe addition of a Date with a Time produces a DateTime. The hour, minute, second, and millisecond parts of the Time are used along with the year, month, and day of the Date to create the new DateTime. Non-zero microseconds or nanoseconds in the Time type will result in an InexactError being thrown.\n\n\n\n\n\n"
 },
 
 {
     "location": "base/math/#Base.:--Tuple{Any,Any}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:-",
     "category": "method",
     "text": "-(x, y)\n\nSubtraction operator.\n\nExamples\n\njulia> 2 - 3\n-1\n\njulia> -(2, 4.5)\n-2.5\n\n\n\n\n\n"
@@ -7402,7 +7402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:*-Tuple{Any,Vararg{Any,N} where N}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:*",
     "category": "method",
     "text": "*(x, y...)\n\nMultiplication operator. x*y*z*... calls this function with all arguments, i.e. *(x, y, z, ...).\n\nExamples\n\njulia> 2 * 7 * 8\n112\n\njulia> *(2, 7, 8)\n112\n\n\n\n\n\n"
@@ -7410,7 +7410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:/",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:/",
     "category": "function",
     "text": "/(x, y)\n\nRight division operator: multiplication of x by the inverse of y on the right. Gives floating-point results for integer arguments.\n\nExamples\n\njulia> 1/2\n0.5\n\njulia> 4/2\n2.0\n\njulia> 4.5/2\n2.25\n\n\n\n\n\n"
@@ -7418,7 +7418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:\\-Tuple{Any,Any}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:\\",
     "category": "method",
     "text": "\\(x, y)\n\nLeft division operator: multiplication of y by the inverse of x on the left. Gives floating-point results for integer arguments.\n\nExamples\n\njulia> 3 \\ 6\n2.0\n\njulia> inv(3) * 6\n2.0\n\njulia> A = [1 2; 3 4]; x = [5, 6];\n\njulia> A \\ x\n2-element Array{Float64,1}:\n -4.0\n  4.5\n\njulia> inv(A) * x\n2-element Array{Float64,1}:\n -4.0\n  4.5\n\n\n\n\n\n"
@@ -7426,7 +7426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:^-Tuple{Number,Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:^",
     "category": "method",
     "text": "^(x, y)\n\nExponentiation operator. If x is a matrix, computes matrix exponentiation.\n\nIf y is an Int literal (e.g. 2 in x^2 or -3 in x^-3), the Julia code x^y is transformed by the compiler to Base.literal_pow(^, x, Val(y)), to enable compile-time specialization on the value of the exponent. (As a default fallback we have Base.literal_pow(^, x, Val(y)) = ^(x,y), where usually ^ == Base.^ unless ^ has been defined in the calling namespace.)\n\njulia> 3^5\n243\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> A^3\n2×2 Array{Int64,2}:\n 37   54\n 81  118\n\n\n\n\n\n"
@@ -7434,7 +7434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fma",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.fma",
     "category": "function",
     "text": "fma(x, y, z)\n\nComputes x*y+z without rounding the intermediate result x*y. On some systems this is significantly more expensive than x*y+z. fma is used to improve accuracy in certain algorithms. See muladd.\n\n\n\n\n\n"
@@ -7442,7 +7442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.muladd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.muladd",
     "category": "function",
     "text": "muladd(x, y, z)\n\nCombined multiply-add: computes x*y+z, but allowing the add and multiply to be merged with each other or with surrounding operations for performance. For example, this may be implemented as an fma if the hardware supports it efficiently. The result can be different on different machines and can also be different on the same machine due to constant propagation or other optimizations. See fma.\n\nExamples\n\njulia> muladd(3, 2, 1)\n7\n\njulia> 3 * 2 + 1\n7\n\n\n\n\n\n"
@@ -7450,7 +7450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.inv-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.inv",
     "category": "method",
     "text": "inv(x)\n\nReturn the multiplicative inverse of x, such that x*inv(x) or inv(x)*x yields one(x) (the multiplicative identity) up to roundoff errors.\n\nIf x is a number, this is essentially the same as one(x)/x, but for some types inv(x) may be slightly more efficient.\n\nExamples\n\njulia> inv(2)\n0.5\n\njulia> inv(1 + 2im)\n0.2 - 0.4im\n\njulia> inv(1 + 2im) * (1 + 2im)\n1.0 + 0.0im\n\njulia> inv(2//3)\n3//2\n\n\n\n\n\n"
@@ -7458,7 +7458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.div",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.div",
     "category": "function",
     "text": "div(x, y)\n÷(x, y)\n\nThe quotient from Euclidean division. Computes x/y, truncated to an integer.\n\nExamples\n\njulia> 9 ÷ 4\n2\n\njulia> -5 ÷ 3\n-1\n\n\n\n\n\n"
@@ -7466,7 +7466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fld",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.fld",
     "category": "function",
     "text": "fld(x, y)\n\nLargest integer less than or equal to x/y.\n\nExamples\n\njulia> fld(7.3,5.5)\n1.0\n\n\n\n\n\n"
@@ -7474,7 +7474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cld",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.cld",
     "category": "function",
     "text": "cld(x, y)\n\nSmallest integer larger than or equal to x/y.\n\nExamples\n\njulia> cld(5.5,2.2)\n3.0\n\n\n\n\n\n"
@@ -7482,7 +7482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.mod",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.mod",
     "category": "function",
     "text": "mod(x, y)\nrem(x, y, RoundDown)\n\nThe reduction of x modulo y, or equivalently, the remainder of x after floored division by y, i.e.\n\nx - y*fld(x,y)\n\nif computed without intermediate rounding.\n\nThe result will have the same sign as y, and magnitude less than abs(y) (with some exceptions, see note below).\n\nnote: Note\nWhen used with floating point values, the exact result may not be representable by the type, and so rounding error may occur. In particular, if the exact result is very close to y, then it may be rounded to y.\n\njulia> mod(8, 3)\n2\n\njulia> mod(9, 3)\n0\n\njulia> mod(8.9, 3)\n2.9000000000000004\n\njulia> mod(eps(), 3)\n2.220446049250313e-16\n\njulia> mod(-eps(), 3)\n3.0\n\n\n\n\n\nrem(x::Integer, T::Type{<:Integer}) -> T\nmod(x::Integer, T::Type{<:Integer}) -> T\n%(x::Integer, T::Type{<:Integer}) -> T\n\nFind y::T such that x ≡ y (mod n), where n is the number of integers representable in T, and y is an integer in [typemin(T),typemax(T)]. If T can represent any integer (e.g. T == BigInt), then this operation corresponds to a conversion to T.\n\nExamples\n\njulia> 129 % Int8\n-127\n\n\n\n\n\n"
@@ -7490,7 +7490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.rem",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.rem",
     "category": "function",
     "text": "rem(x, y)\n%(x, y)\n\nRemainder from Euclidean division, returning a value of the same sign as x, and smaller in magnitude than y. This value is always exact.\n\nExamples\n\njulia> x = 15; y = 4;\n\njulia> x % y\n3\n\njulia> x == div(x, y) * y + rem(x, y)\ntrue\n\n\n\n\n\n"
@@ -7498,7 +7498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.rem2pi",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.rem2pi",
     "category": "function",
     "text": "rem2pi(x, r::RoundingMode)\n\nCompute the remainder of x after integer division by 2π, with the quotient rounded according to the rounding mode r. In other words, the quantity\n\nx - 2π*round(x/(2π),r)\n\nwithout any intermediate rounding. This internally uses a high precision approximation of 2π, and so will give a more accurate result than rem(x,2π,r)\n\nif r == RoundNearest, then the result is in the interval -π π. This will generally be the most accurate result.\nif r == RoundToZero, then the result is in the interval 0 2π if x is positive,. or -2π 0 otherwise.\nif r == RoundDown, then the result is in the interval 0 2π.\nif r == RoundUp, then the result is in the interval -2π 0.\n\nExamples\n\njulia> rem2pi(7pi/4, RoundNearest)\n-0.7853981633974485\n\njulia> rem2pi(7pi/4, RoundDown)\n5.497787143782138\n\n\n\n\n\n"
@@ -7506,7 +7506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.mod2pi",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.mod2pi",
     "category": "function",
     "text": "mod2pi(x)\n\nModulus after division by 2π, returning in the range 02π).\n\nThis function computes a floating point representation of the modulus after division by numerically exact 2π, and is therefore not exactly the same as mod(x,2π), which would compute the modulus of x relative to division by the floating-point number 2π.\n\nExamples\n\njulia> mod2pi(9*pi/4)\n0.7853981633974481\n\n\n\n\n\n"
@@ -7514,7 +7514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.divrem",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.divrem",
     "category": "function",
     "text": "divrem(x, y)\n\nThe quotient and remainder from Euclidean division. Equivalent to (div(x,y), rem(x,y)) or (x÷y, x%y).\n\nExamples\n\njulia> divrem(3,7)\n(0, 3)\n\njulia> divrem(7,3)\n(2, 1)\n\n\n\n\n\n"
@@ -7522,7 +7522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fldmod",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.fldmod",
     "category": "function",
     "text": "fldmod(x, y)\n\nThe floored quotient and modulus after division. Equivalent to (fld(x,y), mod(x,y)).\n\n\n\n\n\n"
@@ -7530,7 +7530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fld1",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.fld1",
     "category": "function",
     "text": "fld1(x, y)\n\nFlooring division, returning a value consistent with mod1(x,y)\n\nSee also: mod1, fldmod1.\n\nExamples\n\njulia> x = 15; y = 4;\n\njulia> fld1(x, y)\n4\n\njulia> x == fld(x, y) * y + mod(x, y)\ntrue\n\njulia> x == (fld1(x, y) - 1) * y + mod1(x, y)\ntrue\n\n\n\n\n\n"
@@ -7538,7 +7538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.mod1",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.mod1",
     "category": "function",
     "text": "mod1(x, y)\n\nModulus after flooring division, returning a value r such that mod(r, y) == mod(x, y) in the range (0 y for positive y and in the range y0) for negative y.\n\nSee also: fld1, fldmod1.\n\nExamples\n\njulia> mod1(4, 2)\n2\n\njulia> mod1(4, 3)\n1\n\n\n\n\n\n"
@@ -7546,7 +7546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.fldmod1",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.fldmod1",
     "category": "function",
     "text": "fldmod1(x, y)\n\nReturn (fld1(x,y), mod1(x,y)).\n\nSee also: fld1, mod1.\n\n\n\n\n\n"
@@ -7554,7 +7554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.://",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.://",
     "category": "function",
     "text": "//(num, den)\n\nDivide two integers or rational numbers, giving a Rational result.\n\nExamples\n\njulia> 3 // 5\n3//5\n\njulia> (3 // 5) // (2 // 1)\n3//10\n\n\n\n\n\n"
@@ -7562,7 +7562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.rationalize",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.rationalize",
     "category": "function",
     "text": "rationalize([T<:Integer=Int,] x; tol::Real=eps(x))\n\nApproximate floating point number x as a Rational number with components of the given integer type. The result will differ from x by no more than tol.\n\nExamples\n\njulia> rationalize(5.6)\n28//5\n\njulia> a = rationalize(BigInt, 10.3)\n103//10\n\njulia> typeof(numerator(a))\nBigInt\n\n\n\n\n\n"
@@ -7570,7 +7570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.numerator",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.numerator",
     "category": "function",
     "text": "numerator(x)\n\nNumerator of the rational representation of x.\n\nExamples\n\njulia> numerator(2//3)\n2\n\njulia> numerator(4)\n4\n\n\n\n\n\n"
@@ -7578,7 +7578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.denominator",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.denominator",
     "category": "function",
     "text": "denominator(x)\n\nDenominator of the rational representation of x.\n\nExamples\n\njulia> denominator(2//3)\n3\n\njulia> denominator(4)\n1\n\n\n\n\n\n"
@@ -7586,7 +7586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:<<",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:<<",
     "category": "function",
     "text": "<<(x, n)\n\nLeft bit shift operator, x << n. For n >= 0, the result is x shifted left by n bits, filling with 0s. This is equivalent to x * 2^n. For n < 0, this is equivalent to x >> -n.\n\nExamples\n\njulia> Int8(3) << 2\n12\n\njulia> bitstring(Int8(3))\n\"00000011\"\n\njulia> bitstring(Int8(12))\n\"00001100\"\n\nSee also >>, >>>.\n\n\n\n\n\n<<(B::BitVector, n) -> BitVector\n\nLeft bit shift operator, B << n. For n >= 0, the result is B with elements shifted n positions backwards, filling with false values. If n < 0, elements are shifted forwards. Equivalent to B >> -n.\n\nExamples\n\njulia> B = BitVector([true, false, true, false, false])\n5-element BitArray{1}:\n  true\n false\n  true\n false\n false\n\njulia> B << 1\n5-element BitArray{1}:\n false\n  true\n false\n false\n false\n\njulia> B << -1\n5-element BitArray{1}:\n false\n  true\n false\n  true\n false\n\n\n\n\n\n"
@@ -7594,7 +7594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>>",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:>>",
     "category": "function",
     "text": ">>(x, n)\n\nRight bit shift operator, x >> n. For n >= 0, the result is x shifted right by n bits, where n >= 0, filling with 0s if x >= 0, 1s if x < 0, preserving the sign of x. This is equivalent to fld(x, 2^n). For n < 0, this is equivalent to x << -n.\n\nExamples\n\njulia> Int8(13) >> 2\n3\n\njulia> bitstring(Int8(13))\n\"00001101\"\n\njulia> bitstring(Int8(3))\n\"00000011\"\n\njulia> Int8(-14) >> 2\n-4\n\njulia> bitstring(Int8(-14))\n\"11110010\"\n\njulia> bitstring(Int8(-4))\n\"11111100\"\n\nSee also >>>, <<.\n\n\n\n\n\n>>(B::BitVector, n) -> BitVector\n\nRight bit shift operator, B >> n. For n >= 0, the result is B with elements shifted n positions forward, filling with false values. If n < 0, elements are shifted backwards. Equivalent to B << -n.\n\nExamples\n\njulia> B = BitVector([true, false, true, false, false])\n5-element BitArray{1}:\n  true\n false\n  true\n false\n false\n\njulia> B >> 1\n5-element BitArray{1}:\n false\n  true\n false\n  true\n false\n\njulia> B >> -1\n5-element BitArray{1}:\n false\n  true\n false\n false\n false\n\n\n\n\n\n"
@@ -7602,7 +7602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>>>",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:>>>",
     "category": "function",
     "text": ">>>(x, n)\n\nUnsigned right bit shift operator, x >>> n. For n >= 0, the result is x shifted right by n bits, where n >= 0, filling with 0s. For n < 0, this is equivalent to x << -n.\n\nFor Unsigned integer types, this is equivalent to >>. For Signed integer types, this is equivalent to signed(unsigned(x) >> n).\n\nExamples\n\njulia> Int8(-14) >>> 2\n60\n\njulia> bitstring(Int8(-14))\n\"11110010\"\n\njulia> bitstring(Int8(60))\n\"00111100\"\n\nBigInts are treated as if having infinite size, so no filling is required and this is equivalent to >>.\n\nSee also >>, <<.\n\n\n\n\n\n>>>(B::BitVector, n) -> BitVector\n\nUnsigned right bitshift operator, B >>> n. Equivalent to B >> n. See >> for details and examples.\n\n\n\n\n\n"
@@ -7610,7 +7610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.::",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.::",
     "category": "function",
     "text": "(:)(start, [step], stop)\n\nRange operator. a:b constructs a range from a to b with a step size of 1 (a UnitRange) , and a:s:b is similar but uses a step size of s (a StepRange).\n\n: is also used in indexing to select whole dimensions.\n\n\n\n\n\n"
@@ -7618,7 +7618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.range",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.range",
     "category": "function",
     "text": "range(start; length, stop, step=1)\n\nGiven a starting value, construct a range either by length or from start to stop, optionally with a given step (defaults to 1, a UnitRange). One of length or stop is required.  If length, stop, and step are all specified, they must agree.\n\nIf length and stop are provided and step is not, the step size will be computed automatically such that there are length linearly spaced elements in the range (a LinRange).\n\nIf step and stop are provided and length is not, the overall range length will be computed automatically such that the elements are step spaced (a StepRange).\n\nExamples\n\njulia> range(1, length=100)\n1:100\n\njulia> range(1, stop=100)\n1:100\n\njulia> range(1, step=5, length=100)\n1:5:496\n\njulia> range(1, step=5, stop=100)\n1:5:96\n\n\n\n\n\n"
@@ -7626,7 +7626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.OneTo",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.OneTo",
     "category": "type",
     "text": "Base.OneTo(n)\n\nDefine an AbstractUnitRange that behaves like 1:n, with the added distinction that the lower limit is guaranteed (by the type system) to be 1.\n\n\n\n\n\n"
@@ -7634,7 +7634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.StepRangeLen",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.StepRangeLen",
     "category": "type",
     "text": "StepRangeLen{T,R,S}(ref::R, step::S, len, [offset=1]) where {T,R,S}\nStepRangeLen(       ref::R, step::S, len, [offset=1]) where {  R,S}\n\nA range r where r[i] produces values of type T (in the second form, T is deduced automatically), parameterized by a reference value, a step, and the length. By default ref is the starting value r[1], but alternatively you can supply it as the value of r[offset] for some other index 1 <= offset <= len. In conjunction with TwicePrecision this can be used to implement ranges that are free of roundoff error.\n\n\n\n\n\n"
@@ -7642,7 +7642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:==",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:==",
     "category": "function",
     "text": "==(x, y)\n\nGeneric equality operator. Falls back to ===. Should be implemented for all types with a notion of equality, based on the abstract value that an instance represents. For example, all numeric types are compared by numeric value, ignoring type. Strings are compared as sequences of characters, ignoring encoding. For collections, == is generally called recursively on all contents, though other properties (like the shape for arrays) may also be taken into account.\n\nThis operator follows IEEE semantics for floating-point numbers: 0.0 == -0.0 and NaN != NaN.\n\nThe result is of type Bool, except when one of the operands is missing, in which case missing is returned (three-valued logic). For collections, missing is returned if at least one of the operands contains a missing value and all non-missing values are equal. Use isequal or === to always get a Bool result.\n\nImplementation\n\nNew numeric types should implement this function for two arguments of the new type, and handle comparison to other types via promotion rules where possible.\n\nisequal falls back to ==, so new methods of == will be used by the Dict type to compare keys. If your type will be used as a dictionary key, it should therefore also implement hash.\n\n\n\n\n\n==(x)\n\nCreate a function that compares its argument to x using ==, i.e. a function equivalent to y -> y == x.\n\nThe returned function is of type Base.Fix2{typeof(==)}, which can be used to implement specialized methods.\n\n\n\n\n\n==(a::AbstractString, b::AbstractString) -> Bool\n\nTest whether two strings are equal character by character (technically, Unicode code point by code point).\n\nExamples\n\njulia> \"abc\" == \"abc\"\ntrue\n\njulia> \"abc\" == \"αβγ\"\nfalse\n\n\n\n\n\n"
@@ -7650,7 +7650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:!=",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:!=",
     "category": "function",
     "text": "!=(x, y)\n≠(x,y)\n\nNot-equals comparison operator. Always gives the opposite answer as ==.\n\nImplementation\n\nNew types should generally not implement this, and rely on the fallback definition !=(x,y) = !(x==y) instead.\n\nExamples\n\njulia> 3 != 2\ntrue\n\njulia> \"foo\" ≠ \"foo\"\nfalse\n\n\n\n\n\n"
@@ -7658,7 +7658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:!==",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:!==",
     "category": "function",
     "text": "!==(x, y)\n≢(x,y)\n\nAlways gives the opposite answer as ===.\n\nExamples\n\njulia> a = [1, 2]; b = [1, 2];\n\njulia> a ≢ b\ntrue\n\njulia> a ≢ a\nfalse\n\n\n\n\n\n"
@@ -7666,7 +7666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:<",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:<",
     "category": "function",
     "text": "<(x, y)\n\nLess-than comparison operator. Falls back to isless. Because of the behavior of floating-point NaN values, this operator implements a partial order.\n\nImplementation\n\nNew numeric types with a canonical partial order should implement this function for two arguments of the new type. Types with a canonical total order should implement isless instead. (x < y) | (x == y)\n\nExamples\n\njulia> \'a\' < \'b\'\ntrue\n\njulia> \"abc\" < \"abd\"\ntrue\n\njulia> 5 < 3\nfalse\n\n\n\n\n\n"
@@ -7674,7 +7674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:<=",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:<=",
     "category": "function",
     "text": "<=(x, y)\n≤(x,y)\n\nLess-than-or-equals comparison operator. Falls back to (x < y) | (x == y).\n\nExamples\n\njulia> \'a\' <= \'b\'\ntrue\n\njulia> 7 ≤ 7 ≤ 9\ntrue\n\njulia> \"abc\" ≤ \"abc\"\ntrue\n\njulia> 5 <= 3\nfalse\n\n\n\n\n\n"
@@ -7682,7 +7682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:>",
     "category": "function",
     "text": ">(x, y)\n\nGreater-than comparison operator. Falls back to y < x.\n\nImplementation\n\nGenerally, new types should implement < instead of this function, and rely on the fallback definition >(x, y) = y < x.\n\nExamples\n\njulia> \'a\' > \'b\'\nfalse\n\njulia> 7 > 3 > 1\ntrue\n\njulia> \"abc\" > \"abd\"\nfalse\n\njulia> 5 > 3\ntrue\n\n\n\n\n\n"
@@ -7690,7 +7690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:>=",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:>=",
     "category": "function",
     "text": ">=(x, y)\n≥(x,y)\n\nGreater-than-or-equals comparison operator. Falls back to y <= x.\n\nExamples\n\njulia> \'a\' >= \'b\'\nfalse\n\njulia> 7 ≥ 7 ≥ 3\ntrue\n\njulia> \"abc\" ≥ \"abc\"\ntrue\n\njulia> 5 >= 3\ntrue\n\n\n\n\n\n"
@@ -7698,7 +7698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cmp",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.cmp",
     "category": "function",
     "text": "cmp(x,y)\n\nReturn -1, 0, or 1 depending on whether x is less than, equal to, or greater than y, respectively. Uses the total order implemented by isless.\n\nExamples\n\njulia> cmp(1, 2)\n-1\n\njulia> cmp(2, 1)\n1\n\njulia> cmp(2+im, 3-im)\nERROR: MethodError: no method matching isless(::Complex{Int64}, ::Complex{Int64})\n[...]\n\n\n\n\n\ncmp(<, x, y)\n\nReturn -1, 0, or 1 depending on whether x is less than, equal to, or greater than y, respectively. The first argument specifies a less-than comparison function to use.\n\n\n\n\n\ncmp(a::AbstractString, b::AbstractString) -> Int\n\nCompare two strings. Return 0 if both strings have the same length and the character at each index is the same in both strings. Return -1 if a is a prefix of b, or if a comes before b in alphabetical order. Return 1 if b is a prefix of a, or if b comes before a in alphabetical order (technically, lexicographical order by Unicode code points).\n\nExamples\n\njulia> cmp(\"abc\", \"abc\")\n0\n\njulia> cmp(\"ab\", \"abc\")\n-1\n\njulia> cmp(\"abc\", \"ab\")\n1\n\njulia> cmp(\"ab\", \"ac\")\n-1\n\njulia> cmp(\"ac\", \"ab\")\n1\n\njulia> cmp(\"α\", \"a\")\n1\n\njulia> cmp(\"b\", \"β\")\n-1\n\n\n\n\n\n"
@@ -7706,7 +7706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:~",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:~",
     "category": "function",
     "text": "~(x)\n\nBitwise not.\n\nExamples\n\njulia> ~4\n-5\n\njulia> ~10\n-11\n\njulia> ~true\nfalse\n\n\n\n\n\n"
@@ -7714,7 +7714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:&",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:&",
     "category": "function",
     "text": "&(x, y)\n\nBitwise and. Implements three-valued logic, returning missing if one operand is missing and the other is true.\n\nExamples\n\njulia> 4 & 10\n0\n\njulia> 4 & 12\n4\n\njulia> true & missing\nmissing\n\njulia> false & missing\nfalse\n\n\n\n\n\n"
@@ -7722,7 +7722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:|",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:|",
     "category": "function",
     "text": "|(x, y)\n\nBitwise or. Implements three-valued logic, returning missing if one operand is missing and the other is false.\n\nExamples\n\njulia> 4 | 10\n14\n\njulia> 4 | 1\n5\n\njulia> true | missing\ntrue\n\njulia> false | missing\nmissing\n\n\n\n\n\n"
@@ -7730,7 +7730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.xor",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.xor",
     "category": "function",
     "text": "xor(x, y)\n⊻(x, y)\n\nBitwise exclusive or of x and y. Implements three-valued logic, returning missing if one of the arguments is missing.\n\nThe infix operation a ⊻ b is a synonym for xor(a,b), and ⊻ can be typed by tab-completing \\xor or \\veebar in the Julia REPL.\n\nExamples\n\njulia> xor(true, false)\ntrue\n\njulia> xor(true, true)\nfalse\n\njulia> xor(true, missing)\nmissing\n\njulia> false ⊻ false\nfalse\n\njulia> [true; true; false] .⊻ [true; false; false]\n3-element BitArray{1}:\n false\n  true\n false\n\n\n\n\n\n"
@@ -7738,7 +7738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.:!",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.:!",
     "category": "function",
     "text": "!(x)\n\nBoolean not. Implements three-valued logic, returning missing if x is missing.\n\nExamples\n\njulia> !true\nfalse\n\njulia> !false\ntrue\n\njulia> !missing\nmissing\n\njulia> .![true false true]\n1×3 BitArray{2}:\n false  true  false\n\n\n\n\n\n!f::Function\n\nPredicate function negation: when the argument of ! is a function, it returns a function which computes the boolean negation of f.\n\nExamples\n\njulia> str = \"∀ ε > 0, ∃ δ > 0: |x-y| < δ ⇒ |f(x)-f(y)| < ε\"\n\"∀ ε > 0, ∃ δ > 0: |x-y| < δ ⇒ |f(x)-f(y)| < ε\"\n\njulia> filter(isletter, str)\n\"εδxyδfxfyε\"\n\njulia> filter(!isletter, str)\n\"∀  > 0, ∃  > 0: |-| <  ⇒ |()-()| < \"\n\n\n\n\n\n"
@@ -7746,7 +7746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#&&",
-    "page": "数学",
+    "page": "数学相关",
     "title": "&&",
     "category": "keyword",
     "text": "x && y\n\nShort-circuiting boolean AND.\n\n\n\n\n\n"
@@ -7754,7 +7754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#||",
-    "page": "数学",
+    "page": "数学相关",
     "title": "||",
     "category": "keyword",
     "text": "x || y\n\nShort-circuiting boolean OR.\n\n\n\n\n\n"
@@ -7762,7 +7762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#math-ops-1",
-    "page": "数学",
+    "page": "数学相关",
     "title": "数学运算符",
     "category": "section",
     "text": "Base.:-(::Any)\nBase.:(+)\nBase.:-(::Any, ::Any)\nBase.:*(::Any, ::Any...)\nBase.:(/)\nBase.:\\(::Any, ::Any)\nBase.:^(::Number, ::Number)\nBase.fma\nBase.muladd\nBase.inv(::Number)\nBase.div\nBase.fld\nBase.cld\nBase.mod\nBase.rem\nBase.rem2pi\nBase.Math.mod2pi\nBase.divrem\nBase.fldmod\nBase.fld1\nBase.mod1\nBase.fldmod1\nBase.:(//)\nBase.rationalize\nBase.numerator\nBase.denominator\nBase.:(<<)\nBase.:(>>)\nBase.:(>>>)\nBase.:(:)\nBase.range\nBase.OneTo\nBase.StepRangeLen\nBase.:(==)\nBase.:(!=)\nBase.:(!==)\nBase.:(<)\nBase.:(<=)\nBase.:(>)\nBase.:(>=)\nBase.cmp\nBase.:(~)\nBase.:(&)\nBase.:(|)\nBase.xor\nBase.:(!)\n&&\n||"
@@ -7770,7 +7770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.isapprox",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.isapprox",
     "category": "function",
     "text": "isapprox(x, y; rtol::Real=atol>0 ? 0 : √eps, atol::Real=0, nans::Bool=false, norm::Function)\n\nInexact equality comparison: true if norm(x-y) <= max(atol, rtol*max(norm(x), norm(y))). The default atol is zero and the default rtol depends on the types of x and y. The keyword argument nans determines whether or not NaN values are considered equal (defaults to false).\n\nFor real or complex floating-point values, if an atol > 0 is not specified, rtol defaults to the square root of eps of the type of x or y, whichever is bigger (least precise). This corresponds to requiring equality of about half of the significand digits. Otherwise, e.g. for integer arguments or if an atol > 0 is supplied, rtol defaults to zero.\n\nx and y may also be arrays of numbers, in which case norm defaults to vecnorm but may be changed by passing a norm::Function keyword argument. (For numbers, norm is the same thing as abs.) When x and y are arrays, if norm(x-y) is not finite (i.e. ±Inf or NaN), the comparison falls back to checking whether all elements of x and y are approximately equal component-wise.\n\nThe binary operator ≈ is equivalent to isapprox with the default arguments, and x ≉ y is equivalent to !isapprox(x,y).\n\nNote that x ≈ 0 (i.e., comparing to zero with the default tolerances) is equivalent to x == 0 since the default atol is 0.  In such cases, you should either supply an appropriate atol (or use norm(x) ≤ atol) or rearrange your code (e.g. use x ≈ y rather than x - y ≈ 0).   It is not possible to pick a nonzero atol automatically because it depends on the overall scaling (the \"units\") of your problem: for example, in x - y ≈ 0, atol=1e-9 is an absurdly small tolerance if x is the radius of the Earth in meters, but an absurdly large tolerance if x is the radius of a Hydrogen atom in meters.\n\nExamples\n\njulia> 0.1 ≈ (0.1 - 1e-10)\ntrue\n\njulia> isapprox(10, 11; atol = 2)\ntrue\n\njulia> isapprox([10.0^9, 1.0], [10.0^9, 2.0])\ntrue\n\njulia> 1e-10 ≈ 0\nfalse\n\njulia> isapprox(1e-10, 0, atol=1e-8)\ntrue\n\n\n\n\n\n"
@@ -7778,7 +7778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sin-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.sin",
     "category": "method",
     "text": "sin(x)\n\nCompute sine of x, where x is in radians.\n\n\n\n\n\n"
@@ -7786,7 +7786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cos-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.cos",
     "category": "method",
     "text": "cos(x)\n\nCompute cosine of x, where x is in radians.\n\n\n\n\n\n"
@@ -7794,7 +7794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sincos-Tuple{Float64}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.sincos",
     "category": "method",
     "text": "sincos(x)\n\nSimultaneously compute the sine and cosine of x, where the x is in radians.\n\n\n\n\n\n"
@@ -7802,7 +7802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.tan-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.tan",
     "category": "method",
     "text": "tan(x)\n\nCompute tangent of x, where x is in radians.\n\n\n\n\n\n"
@@ -7810,7 +7810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sind",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.sind",
     "category": "function",
     "text": "sind(x)\n\nCompute sine of x, where x is in degrees. \n\n\n\n\n\n"
@@ -7818,7 +7818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cosd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.cosd",
     "category": "function",
     "text": "cosd(x)\n\nCompute cosine of x, where x is in degrees. \n\n\n\n\n\n"
@@ -7826,7 +7826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.tand",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.tand",
     "category": "function",
     "text": "tand(x)\n\nCompute tangent of x, where x is in degrees. \n\n\n\n\n\n"
@@ -7834,7 +7834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sinpi",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.sinpi",
     "category": "function",
     "text": "sinpi(x)\n\nCompute sin(pi x) more accurately than sin(pi*x), especially for large x.\n\n\n\n\n\n"
@@ -7842,7 +7842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cospi",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.cospi",
     "category": "function",
     "text": "cospi(x)\n\nCompute cos(pi x) more accurately than cos(pi*x), especially for large x.\n\n\n\n\n\n"
@@ -7850,7 +7850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sinh-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.sinh",
     "category": "method",
     "text": "sinh(x)\n\nCompute hyperbolic sine of x.\n\n\n\n\n\n"
@@ -7858,7 +7858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cosh-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.cosh",
     "category": "method",
     "text": "cosh(x)\n\nCompute hyperbolic cosine of x.\n\n\n\n\n\n"
@@ -7866,7 +7866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.tanh-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.tanh",
     "category": "method",
     "text": "tanh(x)\n\nCompute hyperbolic tangent of x.\n\n\n\n\n\n"
@@ -7874,7 +7874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.asin-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.asin",
     "category": "method",
     "text": "asin(x)\n\nCompute the inverse sine of x, where the output is in radians.\n\n\n\n\n\n"
@@ -7882,7 +7882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.acos-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.acos",
     "category": "method",
     "text": "acos(x)\n\nCompute the inverse cosine of x, where the output is in radians\n\n\n\n\n\n"
@@ -7890,7 +7890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.atan-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.atan",
     "category": "method",
     "text": "atan(y)\natan(y, x)\n\nCompute the inverse tangent of y or y/x, respectively.\n\nFor one argument, this is the angle in radians between the positive x-axis and the point (1, y), returning a value in the interval -pi2 pi2.\n\nFor two arguments, this is the angle in radians between the positive x-axis and the point (x, y), returning a value in the interval -pi pi. This corresponds to a standard atan2 function.\n\n\n\n\n\n"
@@ -7898,7 +7898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asind",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.asind",
     "category": "function",
     "text": "asind(x)\n\nCompute the inverse sine of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -7906,7 +7906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acosd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.acosd",
     "category": "function",
     "text": "acosd(x)\n\nCompute the inverse cosine of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -7914,7 +7914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.atand",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.atand",
     "category": "function",
     "text": "atand(y)\natand(y,x)\n\nCompute the inverse tangent of y or y/x, respectively, where the output is in degrees.\n\n\n\n\n\n"
@@ -7922,7 +7922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sec-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.sec",
     "category": "method",
     "text": "sec(x)\n\nCompute the secant of x, where x is in radians.\n\n\n\n\n\n"
@@ -7930,7 +7930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.csc-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.csc",
     "category": "method",
     "text": "csc(x)\n\nCompute the cosecant of x, where x is in radians.\n\n\n\n\n\n"
@@ -7938,7 +7938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cot-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.cot",
     "category": "method",
     "text": "cot(x)\n\nCompute the cotangent of x, where x is in radians.\n\n\n\n\n\n"
@@ -7946,7 +7946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.secd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.secd",
     "category": "function",
     "text": "secd(x)\n\nCompute the secant of x, where x is in degrees.\n\n\n\n\n\n"
@@ -7954,7 +7954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cscd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.cscd",
     "category": "function",
     "text": "cscd(x)\n\nCompute the cosecant of x, where x is in degrees.\n\n\n\n\n\n"
@@ -7962,7 +7962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cotd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.cotd",
     "category": "function",
     "text": "cotd(x)\n\nCompute the cotangent of x, where x is in degrees.\n\n\n\n\n\n"
@@ -7970,7 +7970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asec-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.asec",
     "category": "method",
     "text": "asec(x)\n\nCompute the inverse secant of x, where the output is in radians. \n\n\n\n\n\n"
@@ -7978,7 +7978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acsc-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.acsc",
     "category": "method",
     "text": "acsc(x)\n\nCompute the inverse cosecant of x, where the output is in radians. \n\n\n\n\n\n"
@@ -7986,7 +7986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acot-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.acot",
     "category": "method",
     "text": "acot(x)\n\nCompute the inverse cotangent of x, where the output is in radians. \n\n\n\n\n\n"
@@ -7994,7 +7994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asecd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.asecd",
     "category": "function",
     "text": "asecd(x)\n\nCompute the inverse secant of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -8002,7 +8002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acscd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.acscd",
     "category": "function",
     "text": "acscd(x)\n\nCompute the inverse cosecant of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -8010,7 +8010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acotd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.acotd",
     "category": "function",
     "text": "acotd(x)\n\nCompute the inverse cotangent of x, where the output is in degrees. \n\n\n\n\n\n"
@@ -8018,7 +8018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sech-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.sech",
     "category": "method",
     "text": "sech(x)\n\nCompute the hyperbolic secant of x.\n\n\n\n\n\n"
@@ -8026,7 +8026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.csch-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.csch",
     "category": "method",
     "text": "csch(x)\n\nCompute the hyperbolic cosecant of x.\n\n\n\n\n\n"
@@ -8034,7 +8034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.coth-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.coth",
     "category": "method",
     "text": "coth(x)\n\nCompute the hyperbolic cotangent of x.\n\n\n\n\n\n"
@@ -8042,7 +8042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.asinh-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.asinh",
     "category": "method",
     "text": "asinh(x)\n\nCompute the inverse hyperbolic sine of x.\n\n\n\n\n\n"
@@ -8050,7 +8050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.acosh-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.acosh",
     "category": "method",
     "text": "acosh(x)\n\nCompute the inverse hyperbolic cosine of x.\n\n\n\n\n\n"
@@ -8058,7 +8058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.atanh-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.atanh",
     "category": "method",
     "text": "atanh(x)\n\nCompute the inverse hyperbolic tangent of x.\n\n\n\n\n\n"
@@ -8066,7 +8066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.asech-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.asech",
     "category": "method",
     "text": "asech(x)\n\nCompute the inverse hyperbolic secant of x. \n\n\n\n\n\n"
@@ -8074,7 +8074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acsch-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.acsch",
     "category": "method",
     "text": "acsch(x)\n\nCompute the inverse hyperbolic cosecant of x. \n\n\n\n\n\n"
@@ -8082,7 +8082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.acoth-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.acoth",
     "category": "method",
     "text": "acoth(x)\n\nCompute the inverse hyperbolic cotangent of x. \n\n\n\n\n\n"
@@ -8090,7 +8090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.sinc",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.sinc",
     "category": "function",
     "text": "sinc(x)\n\nCompute sin(pi x)  (pi x) if x neq 0, and 1 if x = 0.\n\n\n\n\n\n"
@@ -8098,7 +8098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cosc",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.cosc",
     "category": "function",
     "text": "cosc(x)\n\nCompute cos(pi x)  x - sin(pi x)  (pi x^2) if x neq 0, and 0 if x = 0. This is the derivative of sinc(x).\n\n\n\n\n\n"
@@ -8106,7 +8106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.deg2rad",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.deg2rad",
     "category": "function",
     "text": "deg2rad(x)\n\nConvert x from degrees to radians.\n\nExamples\n\njulia> deg2rad(90)\n1.5707963267948966\n\n\n\n\n\n"
@@ -8114,7 +8114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.rad2deg",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.rad2deg",
     "category": "function",
     "text": "rad2deg(x)\n\nConvert x from radians to degrees.\n\nExamples\n\njulia> rad2deg(pi)\n180.0\n\n\n\n\n\n"
@@ -8122,7 +8122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.hypot",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.hypot",
     "category": "function",
     "text": "hypot(x, y)\n\nCompute the hypotenuse sqrtx^2+y^2 avoiding overflow and underflow.\n\nExamples\n\njulia> a = 10^10;\n\njulia> hypot(a, a)\n1.4142135623730951e10\n\njulia> √(a^2 + a^2) # a^2 overflows\nERROR: DomainError with -2.914184810805068e18:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]\n\n\n\n\n\nhypot(x...)\n\nCompute the hypotenuse sqrtsum x_i^2 avoiding overflow and underflow.\n\n\n\n\n\n"
@@ -8130,7 +8130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log-Tuple{Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.log",
     "category": "method",
     "text": "log(x)\n\nCompute the natural logarithm of x. Throws DomainError for negative Real arguments. Use complex negative arguments to obtain complex results.\n\n\n\n\n\n"
@@ -8138,7 +8138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log-Tuple{Number,Number}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.log",
     "category": "method",
     "text": "log(b,x)\n\nCompute the base b logarithm of x. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log(4,8)\n1.5\n\njulia> log(4,2)\n0.5\n\njulia> log(-2, 3)\nERROR: DomainError with log:\n-2.0 will only return a complex result if called with a complex argument. Try -2.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\njulia> log(2, -3)\nERROR: DomainError with log:\n-3.0 will only return a complex result if called with a complex argument. Try -3.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\nnote: Note\nIf b is a power of 2 or 10, log2 or log10 should be used, as these will typically be faster and more accurate. For example,julia> log(100,1000000)\n2.9999999999999996\n\njulia> log10(1000000)/2\n3.0\n\n\n\n\n\n"
@@ -8146,7 +8146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log2",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.log2",
     "category": "function",
     "text": "log2(x)\n\nCompute the logarithm of x to base 2. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log2(4)\n2.0\n\njulia> log2(10)\n3.321928094887362\n\njulia> log2(-2)\nERROR: DomainError with -2.0:\nNaN result for non-NaN input.\nStacktrace:\n [1] nan_dom_err at ./math.jl:325 [inlined]\n[...]\n\n\n\n\n\n"
@@ -8154,7 +8154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log10",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.log10",
     "category": "function",
     "text": "log10(x)\n\nCompute the logarithm of x to base 10. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log10(100)\n2.0\n\njulia> log10(2)\n0.3010299956639812\n\njulia> log10(-2)\nERROR: DomainError with -2.0:\nNaN result for non-NaN input.\nStacktrace:\n [1] nan_dom_err at ./math.jl:325 [inlined]\n[...]\n\n\n\n\n\n"
@@ -8162,7 +8162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.log1p",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.log1p",
     "category": "function",
     "text": "log1p(x)\n\nAccurate natural logarithm of 1+x. Throws DomainError for Real arguments less than -1.\n\nExamples\n\njulia> log1p(-0.5)\n-0.6931471805599453\n\njulia> log1p(0)\n0.0\n\njulia> log1p(-2)\nERROR: DomainError with log1p:\n-2.0 will only return a complex result if called with a complex argument. Try -2.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\n\n\n\n\n"
@@ -8170,7 +8170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.frexp",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.frexp",
     "category": "function",
     "text": "frexp(val)\n\nReturn (x,exp) such that x has a magnitude in the interval 12 1) or 0, and val is equal to x times 2^exp.\n\n\n\n\n\n"
@@ -8178,7 +8178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.exp-Tuple{Float64}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.exp",
     "category": "method",
     "text": "exp(x)\n\nCompute the natural base exponential of x, in other words e^x.\n\nExamples\n\njulia> exp(1.0)\n2.718281828459045\n\n\n\n\n\n"
@@ -8186,7 +8186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.exp2",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.exp2",
     "category": "function",
     "text": "exp2(x)\n\nCompute the base 2 exponential of x, in other words 2^x.\n\nExamples\n\njulia> exp2(5)\n32.0\n\n\n\n\n\n"
@@ -8194,7 +8194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.exp10",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.exp10",
     "category": "function",
     "text": "exp10(x)\n\nCompute the base 10 exponential of x, in other words 10^x.\n\nExamples\n\njulia> exp10(2)\n100.0\n\n\n\n\n\nexp10(x)\n\nCompute 10^x.\n\nExamples\n\njulia> exp10(2)\n100.0\n\njulia> exp10(0.2)\n1.5848931924611136\n\n\n\n\n\n"
@@ -8202,7 +8202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.ldexp",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.ldexp",
     "category": "function",
     "text": "ldexp(x, n)\n\nCompute x times 2^n.\n\nExamples\n\njulia> ldexp(5., 2)\n20.0\n\n\n\n\n\n"
@@ -8210,7 +8210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.modf",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.modf",
     "category": "function",
     "text": "modf(x)\n\nReturn a tuple (fpart, ipart) of the fractional and integral parts of a number. Both parts have the same sign as the argument.\n\nExamples\n\njulia> modf(3.5)\n(0.5, 3.0)\n\njulia> modf(-3.5)\n(-0.5, -3.0)\n\n\n\n\n\n"
@@ -8218,7 +8218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.expm1",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.expm1",
     "category": "function",
     "text": "expm1(x)\n\nAccurately compute e^x-1.\n\n\n\n\n\n"
@@ -8226,7 +8226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.round-Tuple{Type,Any}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.round",
     "category": "method",
     "text": "round([T,] x, [r::RoundingMode])\nround(x, [r::RoundingMode]; digits::Integer=0, base = 10)\nround(x, [r::RoundingMode]; sigdigits::Integer, base = 10)\n\nRounds the number x.\n\nWithout keyword arguments, x is rounded to an integer value, returning a value of type T, or of the same type of x if no T is provided. An InexactError will be thrown if the value is not representable by T, similar to convert.\n\nIf the digits keyword argument is provided, it rounds to the specified number of digits after the decimal place (or before if negative), in base base.\n\nIf the sigdigits keyword argument is provided, it rounds to the specified number of significant digits, in base base.\n\nThe RoundingMode r controls the direction of the rounding; the default is RoundNearest, which rounds to the nearest integer, with ties (fractional values of 0.5) being rounded to the nearest even integer. Note that round may give incorrect results if the global rounding mode is changed (see rounding).\n\nExamples\n\njulia> round(1.7)\n2.0\n\njulia> round(Int, 1.7)\n2\n\njulia> round(1.5)\n2.0\n\njulia> round(2.5)\n2.0\n\njulia> round(pi; digits=2)\n3.14\n\njulia> round(pi; digits=3, base=2)\n3.125\n\njulia> round(123.456; sigdigits=2)\n120.0\n\njulia> round(357.913; sigdigits=4, base=2)\n352.0\n\nnote: Note\nRounding to specified digits in bases other than 2 can be inexact when operating on binary floating point numbers. For example, the Float64 value represented by 1.15 is actually less than 1.15, yet will be rounded to 1.2.Examplesjulia> x = 1.15\n1.15\n\njulia> @sprintf \"%.20f\" x\n\"1.14999999999999991118\"\n\njulia> x < 115//100\ntrue\n\njulia> round(x, digits=1)\n1.2\n\nExtensions\n\nTo extend round to new numeric types, it is typically sufficient to define Base.round(x::NewType, r::RoundingMode).\n\n\n\n\n\n"
@@ -8234,7 +8234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundingMode",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundingMode",
     "category": "type",
     "text": "RoundingMode\n\nA type used for controlling the rounding mode of floating point operations (via rounding/setrounding functions), or as optional arguments for rounding to the nearest integer (via the round function).\n\nCurrently supported rounding modes are:\n\nRoundNearest (default)\nRoundNearestTiesAway\nRoundNearestTiesUp\nRoundToZero\nRoundFromZero (BigFloat only)\nRoundUp\nRoundDown\n\n\n\n\n\n"
@@ -8242,7 +8242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundNearest",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundNearest",
     "category": "constant",
     "text": "RoundNearest\n\nThe default rounding mode. Rounds to the nearest integer, with ties (fractional values of 0.5) being rounded to the nearest even integer.\n\n\n\n\n\n"
@@ -8250,7 +8250,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundNearestTiesAway",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundNearestTiesAway",
     "category": "constant",
     "text": "RoundNearestTiesAway\n\nRounds to nearest integer, with ties rounded away from zero (C/C++ round behaviour).\n\n\n\n\n\n"
@@ -8258,7 +8258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundNearestTiesUp",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundNearestTiesUp",
     "category": "constant",
     "text": "RoundNearestTiesUp\n\nRounds to nearest integer, with ties rounded toward positive infinity (Java/JavaScript round behaviour).\n\n\n\n\n\n"
@@ -8266,7 +8266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundToZero",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundToZero",
     "category": "constant",
     "text": "RoundToZero\n\nround using this rounding mode is an alias for trunc.\n\n\n\n\n\n"
@@ -8274,7 +8274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundFromZero",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundFromZero",
     "category": "constant",
     "text": "RoundFromZero\n\nRounds away from zero. This rounding mode may only be used with T == BigFloat inputs to round.\n\nExamples\n\njulia> BigFloat(\"1.0000000000000001\", 5, RoundFromZero)\n1.06\n\n\n\n\n\n"
@@ -8282,7 +8282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundUp",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundUp",
     "category": "constant",
     "text": "RoundUp\n\nround using this rounding mode is an alias for ceil.\n\n\n\n\n\n"
@@ -8290,7 +8290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Rounding.RoundDown",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Rounding.RoundDown",
     "category": "constant",
     "text": "RoundDown\n\nround using this rounding mode is an alias for floor.\n\n\n\n\n\n"
@@ -8298,7 +8298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.round-Tuple{Complex{#s148} where #s148<:AbstractFloat,RoundingMode,RoundingMode}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.round",
     "category": "method",
     "text": "round(z::Complex[, RoundingModeReal, [RoundingModeImaginary]])\nround(z::Complex[, RoundingModeReal, [RoundingModeImaginary]]; digits=, base=10)\nround(z::Complex[, RoundingModeReal, [RoundingModeImaginary]]; sigdigits=, base=10)\n\nReturn the nearest integral value of the same type as the complex-valued z to z, breaking ties using the specified RoundingModes. The first RoundingMode is used for rounding the real components while the second is used for rounding the imaginary components.\n\nExample\n\njulia> round(3.14 + 4.5im)\n3.0 + 4.0im\n\n\n\n\n\n"
@@ -8306,7 +8306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.ceil",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.ceil",
     "category": "function",
     "text": "ceil([T,] x)\nceil(x; digits::Integer= [, base = 10])\nceil(x; sigdigits::Integer= [, base = 10])\n\nceil(x) returns the nearest integral value of the same type as x that is greater than or equal to x.\n\nceil(T, x) converts the result to type T, throwing an InexactError if the value is not representable.\n\ndigits, sigdigits and base work as for round.\n\n\n\n\n\n"
@@ -8314,7 +8314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.floor",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.floor",
     "category": "function",
     "text": "floor([T,] x)\nfloor(x; digits::Integer= [, base = 10])\nfloor(x; sigdigits::Integer= [, base = 10])\n\nfloor(x) returns the nearest integral value of the same type as x that is less than or equal to x.\n\nfloor(T, x) converts the result to type T, throwing an InexactError if the value is not representable.\n\ndigits, sigdigits and base work as for round.\n\n\n\n\n\n"
@@ -8322,7 +8322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.trunc",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.trunc",
     "category": "function",
     "text": "trunc([T,] x)\ntrunc(x; digits::Integer= [, base = 10])\ntrunc(x; sigdigits::Integer= [, base = 10])\n\ntrunc(x) returns the nearest integral value of the same type as x whose absolute value is less than or equal to x.\n\ntrunc(T, x) converts the result to type T, throwing an InexactError if the value is not representable.\n\ndigits, sigdigits and base work as for round.\n\n\n\n\n\n"
@@ -8330,7 +8330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.unsafe_trunc",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.unsafe_trunc",
     "category": "function",
     "text": "unsafe_trunc(T, x)\n\nReturn the nearest integral value of type T whose absolute value is less than or equal to x. If the value is not representable by T, an arbitrary value will be returned.\n\n\n\n\n\n"
@@ -8338,7 +8338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.min",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.min",
     "category": "function",
     "text": "min(x, y, ...)\n\nReturn the minimum of the arguments. See also the minimum function to take the minimum element from a collection.\n\nExamples\n\njulia> min(2, 5, 1)\n1\n\n\n\n\n\n"
@@ -8346,7 +8346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.max",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.max",
     "category": "function",
     "text": "max(x, y, ...)\n\nReturn the maximum of the arguments. See also the maximum function to take the maximum element from a collection.\n\nExamples\n\njulia> max(2, 5, 1)\n5\n\n\n\n\n\n"
@@ -8354,7 +8354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.minmax",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.minmax",
     "category": "function",
     "text": "minmax(x, y)\n\nReturn (min(x,y), max(x,y)). See also: extrema that returns (minimum(x), maximum(x)).\n\nExamples\n\njulia> minmax(\'c\',\'b\')\n(\'b\', \'c\')\n\n\n\n\n\n"
@@ -8362,7 +8362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.clamp",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.clamp",
     "category": "function",
     "text": "clamp(x, lo, hi)\n\nReturn x if lo <= x <= hi. If x > hi, return hi. If x < lo, return lo. Arguments are promoted to a common type.\n\nExamples\n\njulia> clamp.([pi, 1.0, big(10.)], 2., 9.)\n3-element Array{BigFloat,1}:\n 3.141592653589793238462643383279502884197169399375105820974944592307816406286198\n 2.0\n 9.0\n\njulia> clamp.([11,8,5],10,6) # an example where lo > hi\n3-element Array{Int64,1}:\n  6\n  6\n 10\n\n\n\n\n\n"
@@ -8370,7 +8370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.clamp!",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.clamp!",
     "category": "function",
     "text": "clamp!(array::AbstractArray, lo, hi)\n\nRestrict values in array to the specified range, in-place. See also clamp.\n\n\n\n\n\n"
@@ -8378,7 +8378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.abs",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.abs",
     "category": "function",
     "text": "abs(x)\n\nThe absolute value of x.\n\nWhen abs is applied to signed integers, overflow may occur, resulting in the return of a negative value. This overflow occurs only when abs is applied to the minimum representable value of a signed integer. That is, when x == typemin(typeof(x)), abs(x) == x < 0, not -x as might be expected.\n\nExamples\n\njulia> abs(-3)\n3\n\njulia> abs(1 + im)\n1.4142135623730951\n\njulia> abs(typemin(Int64))\n-9223372036854775808\n\n\n\n\n\n"
@@ -8386,7 +8386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_abs",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_abs",
     "category": "function",
     "text": "Base.checked_abs(x)\n\nCalculates abs(x), checking for overflow errors where applicable. For example, standard two\'s complement signed integers (e.g. Int) cannot represent abs(typemin(Int)), thus leading to an overflow.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8394,7 +8394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_neg",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_neg",
     "category": "function",
     "text": "Base.checked_neg(x)\n\nCalculates -x, checking for overflow errors where applicable. For example, standard two\'s complement signed integers (e.g. Int) cannot represent -typemin(Int), thus leading to an overflow.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8402,7 +8402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_add",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_add",
     "category": "function",
     "text": "Base.checked_add(x, y)\n\nCalculates x+y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8410,7 +8410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_sub",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_sub",
     "category": "function",
     "text": "Base.checked_sub(x, y)\n\nCalculates x-y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8418,7 +8418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_mul",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_mul",
     "category": "function",
     "text": "Base.checked_mul(x, y)\n\nCalculates x*y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8426,7 +8426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_div",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_div",
     "category": "function",
     "text": "Base.checked_div(x, y)\n\nCalculates div(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8434,7 +8434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_rem",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_rem",
     "category": "function",
     "text": "Base.checked_rem(x, y)\n\nCalculates x%y, checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8442,7 +8442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_fld",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_fld",
     "category": "function",
     "text": "Base.checked_fld(x, y)\n\nCalculates fld(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8450,7 +8450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_mod",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_mod",
     "category": "function",
     "text": "Base.checked_mod(x, y)\n\nCalculates mod(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8458,7 +8458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.checked_cld",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.checked_cld",
     "category": "function",
     "text": "Base.checked_cld(x, y)\n\nCalculates cld(x,y), checking for overflow errors where applicable.\n\nThe overflow protection may impose a perceptible performance penalty.\n\n\n\n\n\n"
@@ -8466,7 +8466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.add_with_overflow",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.add_with_overflow",
     "category": "function",
     "text": "Base.add_with_overflow(x, y) -> (r, f)\n\nCalculates r = x+y, with the flag f indicating whether overflow has occurred.\n\n\n\n\n\n"
@@ -8474,7 +8474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.sub_with_overflow",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.sub_with_overflow",
     "category": "function",
     "text": "Base.sub_with_overflow(x, y) -> (r, f)\n\nCalculates r = x-y, with the flag f indicating whether overflow has occurred.\n\n\n\n\n\n"
@@ -8482,7 +8482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Checked.mul_with_overflow",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Checked.mul_with_overflow",
     "category": "function",
     "text": "Base.mul_with_overflow(x, y) -> (r, f)\n\nCalculates r = x*y, with the flag f indicating whether overflow has occurred.\n\n\n\n\n\n"
@@ -8490,7 +8490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.abs2",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.abs2",
     "category": "function",
     "text": "abs2(x)\n\nSquared absolute value of x.\n\nExamples\n\njulia> abs2(-3)\n9\n\n\n\n\n\n"
@@ -8498,7 +8498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.copysign",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.copysign",
     "category": "function",
     "text": "copysign(x, y) -> z\n\nReturn z which has the magnitude of x and the same sign as y.\n\nExamples\n\njulia> copysign(1, -2)\n-1\n\njulia> copysign(-1, 2)\n1\n\n\n\n\n\n"
@@ -8506,7 +8506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sign",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.sign",
     "category": "function",
     "text": "sign(x)\n\nReturn zero if x==0 and xx otherwise (i.e., ±1 for real x).\n\n\n\n\n\n"
@@ -8514,7 +8514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.signbit",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.signbit",
     "category": "function",
     "text": "signbit(x)\n\nReturns true if the value of the sign of x is negative, otherwise false.\n\nExamples\n\njulia> signbit(-4)\ntrue\n\njulia> signbit(5)\nfalse\n\njulia> signbit(5.5)\nfalse\n\njulia> signbit(-4.1)\ntrue\n\n\n\n\n\n"
@@ -8522,7 +8522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.flipsign",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.flipsign",
     "category": "function",
     "text": "flipsign(x, y)\n\nReturn x with its sign flipped if y is negative. For example abs(x) = flipsign(x,x).\n\nExamples\n\njulia> flipsign(5, 3)\n5\n\njulia> flipsign(5, -3)\n-5\n\n\n\n\n\n"
@@ -8530,7 +8530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.sqrt-Tuple{Real}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.sqrt",
     "category": "method",
     "text": "sqrt(x)\n\nReturn sqrtx. Throws DomainError for negative Real arguments. Use complex negative arguments instead. The prefix operator √ is equivalent to sqrt.\n\nExamples\n\njulia> sqrt(big(81))\n9.0\n\njulia> sqrt(big(-81))\nERROR: DomainError with -8.1e+01:\nNaN result for non-NaN input.\nStacktrace:\n [1] sqrt(::BigFloat) at ./mpfr.jl:501\n[...]\n\njulia> sqrt(big(complex(-81)))\n0.0 + 9.0im\n\n\n\n\n\n"
@@ -8538,7 +8538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.isqrt",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.isqrt",
     "category": "function",
     "text": "isqrt(n::Integer)\n\nInteger square root: the largest integer m such that m*m <= n.\n\njulia> isqrt(5)\n2\n\n\n\n\n\n"
@@ -8546,7 +8546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.cbrt",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.cbrt",
     "category": "function",
     "text": "cbrt(x::Real)\n\nReturn the cube root of x, i.e. x^13. Negative values are accepted (returning the negative real root when x  0).\n\nThe prefix operator ∛ is equivalent to cbrt.\n\nExamples\n\njulia> cbrt(big(27))\n3.0\n\njulia> cbrt(big(-27))\n-3.0\n\n\n\n\n\n"
@@ -8554,7 +8554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.real-Tuple{Complex}",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.real",
     "category": "method",
     "text": "real(z)\n\nReturn the real part of the complex number z.\n\nExamples\n\njulia> real(1 + 3im)\n1\n\n\n\n\n\n"
@@ -8562,7 +8562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.imag",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.imag",
     "category": "function",
     "text": "imag(z)\n\nReturn the imaginary part of the complex number z.\n\nExamples\n\njulia> imag(1 + 3im)\n3\n\n\n\n\n\n"
@@ -8570,7 +8570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.reim",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.reim",
     "category": "function",
     "text": "reim(z)\n\nReturn both the real and imaginary parts of the complex number z.\n\nExamples\n\njulia> reim(1 + 3im)\n(1, 3)\n\n\n\n\n\n"
@@ -8578,7 +8578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.conj",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.conj",
     "category": "function",
     "text": "conj(z)\n\nCompute the complex conjugate of a complex number z.\n\nExamples\n\njulia> conj(1 + 3im)\n1 - 3im\n\n\n\n\n\n"
@@ -8586,7 +8586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.angle",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.angle",
     "category": "function",
     "text": "angle(z)\n\nCompute the phase angle in radians of a complex number z.\n\nExamples\n\njulia> rad2deg(angle(1 + im))\n45.0\n\njulia> rad2deg(angle(1 - im))\n-45.0\n\njulia> rad2deg(angle(-1 - im))\n-135.0\n\n\n\n\n\n"
@@ -8594,7 +8594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.cis",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.cis",
     "category": "function",
     "text": "cis(z)\n\nReturn exp(iz).\n\nExamples\n\njulia> cis(π) ≈ -1\ntrue\n\n\n\n\n\n"
@@ -8602,7 +8602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.binomial",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.binomial",
     "category": "function",
     "text": "binomial(n::Integer, k::Integer)\n\nThe binomial coefficient inomnk, being the coefficient of the kth term in the polynomial expansion of (1+x)^n.\n\nIf n is non-negative, then it is the number of ways to choose k out of n items:\n\ninomnk = racnk (n-k)\n\nwhere n is the factorial function.\n\nIf n is negative, then it is defined in terms of the identity\n\ninomnk = (-1)^k inomk-n-1k\n\nExamples\n\njulia> binomial(5, 3)\n10\n\njulia> factorial(5) ÷ (factorial(5-3) * factorial(3))\n10\n\njulia> binomial(-5, 3)\n-35\n\nSee also\n\nfactorial\n\nExternal links\n\nBinomial coeffient on Wikipedia.\n\n\n\n\n\n"
@@ -8610,7 +8610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.factorial",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.factorial",
     "category": "function",
     "text": "factorial(n::Integer)\n\nFactorial of n. If n is an Integer, the factorial is computed as an integer (promoted to at least 64 bits). Note that this may overflow if n is not small, but you can use factorial(big(n)) to compute the result exactly in arbitrary precision.\n\nExamples\n\njulia> factorial(6)\n720\n\njulia> factorial(21)\nERROR: OverflowError: 21 is too large to look up in the table\nStacktrace:\n[...]\n\njulia> factorial(big(21))\n51090942171709440000\n\nSee also\n\nbinomial\n\nExternal links\n\nFactorial on Wikipedia.\n\n\n\n\n\n"
@@ -8618,7 +8618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.gcd",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.gcd",
     "category": "function",
     "text": "gcd(x,y)\n\nGreatest common (positive) divisor (or zero if x and y are both zero).\n\nExamples\n\njulia> gcd(6,9)\n3\n\njulia> gcd(6,-9)\n3\n\n\n\n\n\n"
@@ -8626,7 +8626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.lcm",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.lcm",
     "category": "function",
     "text": "lcm(x,y)\n\nLeast common (non-negative) multiple.\n\nExamples\n\njulia> lcm(2,3)\n6\n\njulia> lcm(-2,3)\n6\n\n\n\n\n\n"
@@ -8634,7 +8634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.gcdx",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.gcdx",
     "category": "function",
     "text": "gcdx(x,y)\n\nComputes the greatest common (positive) divisor of x and y and their Bézout coefficients, i.e. the integer coefficients u and v that satisfy ux+vy = d = gcd(xy). gcdx(xy) returns (duv).\n\nExamples\n\njulia> gcdx(12, 42)\n(6, -3, 1)\n\njulia> gcdx(240, 46)\n(2, -9, 47)\n\nnote: Note\nBézout coefficients are not uniquely defined. gcdx returns the minimal Bézout coefficients that are computed by the extended Euclidean algorithm. (Ref: D. Knuth, TAoCP, 2/e, p. 325, Algorithm X.) For signed integers, these coefficients u and v are minimal in the sense that u  yd and v  xd. Furthermore, the signs of u and v are chosen so that d is positive. For unsigned integers, the coefficients u and v might be near their typemax, and the identity then holds only via the unsigned integers\' modulo arithmetic.\n\n\n\n\n\n"
@@ -8642,7 +8642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.ispow2",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.ispow2",
     "category": "function",
     "text": "ispow2(n::Integer) -> Bool\n\nTest whether n is a power of two.\n\nExamples\n\njulia> ispow2(4)\ntrue\n\njulia> ispow2(5)\nfalse\n\n\n\n\n\n"
@@ -8650,7 +8650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.nextpow",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.nextpow",
     "category": "function",
     "text": "nextpow(a, x)\n\nThe smallest a^n not less than x, where n is a non-negative integer. a must be greater than 1, and x must be greater than 0.\n\nExamples\n\njulia> nextpow(2, 7)\n8\n\njulia> nextpow(2, 9)\n16\n\njulia> nextpow(5, 20)\n25\n\njulia> nextpow(4, 16)\n16\n\nSee also prevpow.\n\n\n\n\n\n"
@@ -8658,7 +8658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.prevpow",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.prevpow",
     "category": "function",
     "text": "prevpow(a, x)\n\nThe largest a^n not greater than x, where n is a non-negative integer. a must be greater than 1, and x must not be less than 1.\n\nExamples\n\njulia> prevpow(2, 7)\n4\n\njulia> prevpow(2, 9)\n8\n\njulia> prevpow(5, 20)\n5\n\njulia> prevpow(4, 16)\n16\n\nSee also nextpow.\n\n\n\n\n\n"
@@ -8666,7 +8666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.nextprod",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.nextprod",
     "category": "function",
     "text": "nextprod([k_1, k_2,...], n)\n\nNext integer greater than or equal to n that can be written as prod k_i^p_i for integers p_1, p_2, etc.\n\nExamples\n\njulia> nextprod([2, 3], 105)\n108\n\njulia> 2^2 * 3^3\n108\n\n\n\n\n\n"
@@ -8674,7 +8674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.invmod",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.invmod",
     "category": "function",
     "text": "invmod(x,m)\n\nTake the inverse of x modulo m: y such that x y = 1 pmod m, with div(xy) = 0. This is undefined for m = 0, or if gcd(xm) neq 1.\n\nExamples\n\njulia> invmod(2,5)\n3\n\njulia> invmod(2,3)\n2\n\njulia> invmod(5,6)\n5\n\n\n\n\n\n"
@@ -8682,7 +8682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.powermod",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.powermod",
     "category": "function",
     "text": "powermod(x::Integer, p::Integer, m)\n\nCompute x^p pmod m.\n\nExamples\n\njulia> powermod(2, 6, 5)\n4\n\njulia> mod(2^6, 5)\n4\n\njulia> powermod(5, 2, 20)\n5\n\njulia> powermod(5, 2, 19)\n6\n\njulia> powermod(5, 3, 19)\n11\n\n\n\n\n\n"
@@ -8690,7 +8690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.ndigits",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.ndigits",
     "category": "function",
     "text": "ndigits(n::Integer; base::Integer=10, pad::Integer=1)\n\nCompute the number of digits in integer n written in base base (base must not be in [-1, 0, 1]), optionally padded with zeros to a specified size (the result will never be less than pad).\n\nExamples\n\njulia> ndigits(12345)\n5\n\njulia> ndigits(1022, base=16)\n3\n\njulia> string(1022, base=16)\n\"3fe\"\n\njulia> ndigits(123, pad=5)\n5\n\n\n\n\n\n"
@@ -8698,7 +8698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.widemul",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.widemul",
     "category": "function",
     "text": "widemul(x, y)\n\nMultiply x and y, giving the result as a larger type.\n\nExamples\n\njulia> widemul(Float32(3.), 4.)\n1.2e+01\n\n\n\n\n\n"
@@ -8706,7 +8706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.Math.@evalpoly",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.Math.@evalpoly",
     "category": "macro",
     "text": "@evalpoly(z, c...)\n\nEvaluate the polynomial sum_k ck z^k-1 for the coefficients c[1], c[2], ...; that is, the coefficients are given in ascending order by power of z.  This macro expands to efficient inline code that uses either Horner\'s method or, for complex z, a more efficient Goertzel-like algorithm.\n\nExamples\n\njulia> @evalpoly(3, 1, 0, 1)\n10\n\njulia> @evalpoly(2, 1, 0, 1)\n5\n\njulia> @evalpoly(2, 1, 1, 1)\n7\n\n\n\n\n\n"
@@ -8714,7 +8714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#Base.FastMath.@fastmath",
-    "page": "数学",
+    "page": "数学相关",
     "title": "Base.FastMath.@fastmath",
     "category": "macro",
     "text": "@fastmath expr\n\nExecute a transformed version of the expression, which calls functions that may violate strict IEEE semantics. This allows the fastest possible operation, but results are undefined – be careful when doing this, as it may change numerical results.\n\nThis sets the LLVM Fast-Math flags, and corresponds to the -ffast-math option in clang. See the notes on performance annotations for more details.\n\nExamples\n\njulia> @fastmath 1+2\n3\n\njulia> @fastmath(sin(3))\n0.1411200080598672\n\n\n\n\n\n"
@@ -8722,7 +8722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/math/#数学函数-1",
-    "page": "数学",
+    "page": "数学相关",
     "title": "数学函数",
     "category": "section",
     "text": "Base.isapprox\nBase.sin(::Number)\nBase.cos(::Number)\nBase.sincos(::Float64)\nBase.tan(::Number)\nBase.Math.sind\nBase.Math.cosd\nBase.Math.tand\nBase.Math.sinpi\nBase.Math.cospi\nBase.sinh(::Number)\nBase.cosh(::Number)\nBase.tanh(::Number)\nBase.asin(::Number)\nBase.acos(::Number)\nBase.atan(::Number)\nBase.Math.asind\nBase.Math.acosd\nBase.Math.atand\nBase.Math.sec(::Number)\nBase.Math.csc(::Number)\nBase.Math.cot(::Number)\nBase.Math.secd\nBase.Math.cscd\nBase.Math.cotd\nBase.Math.asec(::Number)\nBase.Math.acsc(::Number)\nBase.Math.acot(::Number)\nBase.Math.asecd\nBase.Math.acscd\nBase.Math.acotd\nBase.Math.sech(::Number)\nBase.Math.csch(::Number)\nBase.Math.coth(::Number)\nBase.asinh(::Number)\nBase.acosh(::Number)\nBase.atanh(::Number)\nBase.Math.asech(::Number)\nBase.Math.acsch(::Number)\nBase.Math.acoth(::Number)\nBase.Math.sinc\nBase.Math.cosc\nBase.Math.deg2rad\nBase.Math.rad2deg\nBase.Math.hypot\nBase.log(::Number)\nBase.log(::Number, ::Number)\nBase.log2\nBase.log10\nBase.log1p\nBase.Math.frexp\nBase.exp(::Float64)\nBase.exp2\nBase.exp10\nBase.Math.ldexp\nBase.Math.modf\nBase.expm1\nBase.round(::Type, ::Any)\nBase.Rounding.RoundingMode\nBase.Rounding.RoundNearest\nBase.Rounding.RoundNearestTiesAway\nBase.Rounding.RoundNearestTiesUp\nBase.Rounding.RoundToZero\nBase.Rounding.RoundFromZero\nBase.Rounding.RoundUp\nBase.Rounding.RoundDown\nBase.round(::Complex{<: AbstractFloat}, ::RoundingMode, ::RoundingMode)\nBase.ceil\nBase.floor\nBase.trunc\nBase.unsafe_trunc\nBase.min\nBase.max\nBase.minmax\nBase.Math.clamp\nBase.Math.clamp!\nBase.abs\nBase.Checked.checked_abs\nBase.Checked.checked_neg\nBase.Checked.checked_add\nBase.Checked.checked_sub\nBase.Checked.checked_mul\nBase.Checked.checked_div\nBase.Checked.checked_rem\nBase.Checked.checked_fld\nBase.Checked.checked_mod\nBase.Checked.checked_cld\nBase.Checked.add_with_overflow\nBase.Checked.sub_with_overflow\nBase.Checked.mul_with_overflow\nBase.abs2\nBase.copysign\nBase.sign\nBase.signbit\nBase.flipsign\nBase.sqrt(::Real)\nBase.isqrt\nBase.Math.cbrt\nBase.real(::Complex)\nBase.imag\nBase.reim\nBase.conj\nBase.angle\nBase.cis\nBase.binomial\nBase.factorial\nBase.gcd\nBase.lcm\nBase.gcdx\nBase.ispow2\nBase.nextpow\nBase.prevpow\nBase.nextprod\nBase.invmod\nBase.powermod\nBase.ndigits\nBase.widemul\nBase.Math.@evalpoly\nBase.FastMath.@fastmath"
@@ -10505,9 +10505,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/arrays/#Constructors-and-Types-1",
+    "location": "base/arrays/#构造函数与类型-1",
     "page": "Arrays",
-    "title": "Constructors and Types",
+    "title": "构造函数与类型",
     "category": "section",
     "text": "Core.AbstractArray\nBase.AbstractVector\nBase.AbstractMatrix\nBase.AbstractVecOrMat\nCore.Array\nCore.Array(::UndefInitializer, ::Any)\nCore.Array(::Nothing, ::Any)\nCore.Array(::Missing, ::Any)\nCore.UndefInitializer\nCore.undef\nBase.Vector\nBase.Vector(::UndefInitializer, ::Any)\nBase.Vector(::Nothing, ::Any)\nBase.Vector(::Missing, ::Any)\nBase.Matrix\nBase.Matrix(::UndefInitializer, ::Any, ::Any)\nBase.Matrix(::Nothing, ::Any, ::Any)\nBase.Matrix(::Missing, ::Any, ::Any)\nBase.VecOrMat\nCore.DenseArray\nBase.DenseVector\nBase.DenseMatrix\nBase.DenseVecOrMat\nBase.StridedArray\nBase.StridedVector\nBase.StridedMatrix\nBase.StridedVecOrMat\nBase.getindex(::Type, ::Any...)\nBase.zeros\nBase.ones\nBase.BitArray\nBase.BitArray(::UndefInitializer, ::Integer...)\nBase.BitArray(::Any)\nBase.trues\nBase.falses\nBase.fill\nBase.fill!\nBase.similar"
 },
@@ -10593,9 +10593,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/arrays/#Basic-functions-1",
+    "location": "base/arrays/#基础函数-1",
     "page": "Arrays",
-    "title": "Basic functions",
+    "title": "基础函数",
     "category": "section",
     "text": "Base.ndims\nBase.size\nBase.axes(::Any)\nBase.axes(::AbstractArray, ::Any)\nBase.length(::AbstractArray)\nBase.eachindex\nBase.IndexStyle\nBase.conj!\nBase.stride\nBase.strides"
 },
@@ -10673,11 +10673,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/arrays/#Broadcast-and-vectorization-1",
+    "location": "base/arrays/#广播与向量化-1",
     "page": "Arrays",
-    "title": "Broadcast and vectorization",
+    "title": "广播与向量化",
     "category": "section",
-    "text": "See also the dot syntax for vectorizing functions; for example, f.(args...) implicitly calls broadcast(f, args...). Rather than relying on \"vectorized\" methods of functions like sin to operate on arrays, you should use sin.(a) to vectorize via broadcast.Base.broadcast\nBase.Broadcast.broadcast!\nBase.@__dot__For specializing broadcast on custom types, seeBase.BroadcastStyle\nBase.broadcast_axes\nBase.Broadcast.AbstractArrayStyle\nBase.Broadcast.ArrayStyle\nBase.Broadcast.DefaultArrayStyle\nBase.Broadcast.broadcastable"
+    "text": "也可参照 dot syntax for vectorizing functions； 例如，f.(args...) 隐式调用 broadcast(f, args...)。 与其依赖如sin函数的“已向量化”方法，你应该使用sin.(a)来使用broadcast来向量化。Base.broadcast\nBase.Broadcast.broadcast!\nBase.@__dot__特殊类型的特殊化广播，请参照Base.BroadcastStyle\nBase.broadcast_axes\nBase.Broadcast.AbstractArrayStyle\nBase.Broadcast.ArrayStyle\nBase.Broadcast.DefaultArrayStyle\nBase.Broadcast.broadcastable"
 },
 
 {
@@ -10777,9 +10777,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/arrays/#Indexing-and-assignment-1",
+    "location": "base/arrays/#定标与分派-1",
     "page": "Arrays",
-    "title": "Indexing and assignment",
+    "title": "定标与分派",
     "category": "section",
     "text": "Base.getindex(::AbstractArray, ::Any...)\nBase.setindex!(::AbstractArray, ::Any, ::Any...)\nBase.copyto!(::AbstractArray, ::CartesianIndices, ::AbstractArray, ::CartesianIndices)\nBase.isassigned\nBase.Colon\nBase.CartesianIndex\nBase.CartesianIndices\nBase.Dims\nBase.LinearIndices\nBase.to_indices\nBase.checkbounds\nBase.checkindex"
 },
@@ -11049,9 +11049,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/arrays/#Concatenation-and-permutation-1",
+    "location": "base/arrays/#拼接与排列-1",
     "page": "Arrays",
-    "title": "Concatenation and permutation",
+    "title": "拼接与排列",
     "category": "section",
     "text": "Base.cat\nBase.vcat\nBase.hcat\nBase.hvcat\nBase.vect\nBase.circshift\nBase.circshift!\nBase.circcopy!\nBase.findall(::Any)\nBase.findall(::Function, ::Any)\nBase.findfirst(::Any)\nBase.findfirst(::Function, ::Any)\nBase.findlast(::Any)\nBase.findlast(::Function, ::Any)\nBase.findnext(::Any, ::Integer)\nBase.findnext(::Function, ::Any, ::Integer)\nBase.findprev(::Any, ::Integer)\nBase.findprev(::Function, ::Any, ::Integer)\nBase.permutedims\nBase.permutedims!\nBase.PermutedDimsArray\nBase.promote_shape"
 },
@@ -11153,9 +11153,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/arrays/#Array-functions-1",
+    "location": "base/arrays/#数组函数-1",
     "page": "Arrays",
-    "title": "Array functions",
+    "title": "数组函数",
     "category": "section",
     "text": "Base.accumulate\nBase.accumulate!\nBase.cumprod\nBase.cumprod!\nBase.cumsum\nBase.cumsum!\nBase.diff\nBase.repeat\nBase.rot180\nBase.rotl90\nBase.rotr90\nBase.mapslices"
 },
@@ -11217,9 +11217,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/arrays/#Combinatorics-1",
+    "location": "base/arrays/#组合-1",
     "page": "Arrays",
-    "title": "Combinatorics",
+    "title": "组合",
     "category": "section",
     "text": "Base.invperm\nBase.isperm\nBase.permute!(::Any, ::AbstractVector)\nBase.invpermute!\nBase.reverse(::AbstractVector; kwargs...)\nBase.reverseind\nBase.reverse!"
 },
@@ -12298,23 +12298,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#",
-    "page": "I/O and Network",
-    "title": "I/O and Network",
+    "page": "I/O 与网络",
+    "title": "I/O 与网络",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/io-network/#I/O-and-Network-1",
-    "page": "I/O and Network",
-    "title": "I/O and Network",
+    "location": "base/io-network/#I/O-与网络-1",
+    "page": "I/O 与网络",
+    "title": "I/O 与网络",
     "category": "section",
     "text": ""
 },
 
 {
     "location": "base/io-network/#Base.stdout",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.stdout",
     "category": "constant",
     "text": "stdout\n\nGlobal variable referring to the standard out stream.\n\n\n\n\n\n"
@@ -12322,7 +12322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.stderr",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.stderr",
     "category": "constant",
     "text": "stderr\n\nGlobal variable referring to the standard error stream.\n\n\n\n\n\n"
@@ -12330,7 +12330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.stdin",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.stdin",
     "category": "constant",
     "text": "stdin\n\nGlobal variable referring to the standard input stream.\n\n\n\n\n\n"
@@ -12338,7 +12338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.open",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.open",
     "category": "function",
     "text": "open(filename::AbstractString; keywords...) -> IOStream\n\nOpen a file in a mode specified by five boolean keyword arguments:\n\nKeyword Description Default\nread open for reading !write\nwrite open for writing truncate | append\ncreate create if non-existent !read & write | truncate | append\ntruncate truncate to zero size !read & write\nappend seek to end false\n\nThe default when no keywords are passed is to open files for reading only. Returns a stream for accessing the opened file.\n\n\n\n\n\nopen(filename::AbstractString, [mode::AbstractString]) -> IOStream\n\nAlternate syntax for open, where a string-based mode specifier is used instead of the five booleans. The values of mode correspond to those from fopen(3) or Perl open, and are equivalent to setting the following boolean groups:\n\nMode Description Keywords\nr read none\nw write, create, truncate write = true\na write, create, append append = true\nr+ read, write read = true, write = true\nw+ read, write, create, truncate truncate = true, read = true\na+ read, write, create, append append = true, read = true\n\nExamples\n\njulia> io = open(\"myfile.txt\", \"w\");\n\njulia> write(io, \"Hello world!\");\n\njulia> close(io);\n\njulia> io = open(\"myfile.txt\", \"r\");\n\njulia> read(io, String)\n\"Hello world!\"\n\njulia> write(io, \"This file is read only\")\nERROR: ArgumentError: write failed, IOStream is not writeable\n[...]\n\njulia> close(io)\n\njulia> io = open(\"myfile.txt\", \"a\");\n\njulia> write(io, \"This stream is not read only\")\n28\n\njulia> close(io)\n\njulia> rm(\"myfile.txt\")\n\n\n\n\n\nopen(f::Function, args...; kwargs....)\n\nApply the function f to the result of open(args...; kwargs...) and close the resulting file descriptor upon completion.\n\nExamples\n\njulia> open(\"myfile.txt\", \"w\") do io\n           write(io, \"Hello world!\")\n       end;\n\njulia> open(f->read(f, String), \"myfile.txt\")\n\"Hello world!\"\n\njulia> rm(\"myfile.txt\")\n\n\n\n\n\nopen(command, stdio=devnull; write::Bool = false, read::Bool = !write)\n\nStart running command asynchronously, and return a tuple (stream,process).  If read is true, then stream reads from the process\'s standard output and stdio optionally specifies the process\'s standard input stream.  If write is true, then stream writes to the process\'s standard input and stdio optionally specifies the process\'s standard output stream.\n\n\n\n\n\nopen(f::Function, command, mode::AbstractString=\"r\", stdio=devnull)\n\nSimilar to open(command, mode, stdio), but calls f(stream) on the resulting process stream, then closes the input stream and waits for the process to complete. Returns the value returned by f.\n\n\n\n\n\n"
@@ -12346,7 +12346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.IOBuffer",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.IOBuffer",
     "category": "type",
     "text": "IOBuffer([data::AbstractVector{UInt8}]; keywords...) -> IOBuffer\n\nCreate an in-memory I/O stream, which may optionally operate on a pre-existing array.\n\nIt may take optional keyword arguments:\n\nread, write, append: restricts operations to the buffer; see open for details.\ntruncate: truncates the buffer size to zero length.\nmaxsize: specifies a size beyond which the buffer may not be grown.\nsizehint: suggests a capacity of the buffer (data must implement sizehint!(data, size)).\n\nWhen data is not given, the buffer will be both readable and writable by default.\n\nExamples\n\njulia> io = IOBuffer();\n\njulia> write(io, \"JuliaLang is a GitHub organization.\", \" It has many members.\")\n56\n\njulia> String(take!(io))\n\"JuliaLang is a GitHub organization. It has many members.\"\n\njulia> io = IOBuffer(b\"JuliaLang is a GitHub organization.\")\nIOBuffer(data=UInt8[...], readable=true, writable=false, seekable=true, append=false, size=35, maxsize=Inf, ptr=1, mark=-1)\n\njulia> read(io, String)\n\"JuliaLang is a GitHub organization.\"\n\njulia> write(io, \"This isn\'t writable.\")\nERROR: ArgumentError: ensureroom failed, IOBuffer is not writeable\n\njulia> io = IOBuffer(UInt8[], read=true, write=true, maxsize=34)\nIOBuffer(data=UInt8[...], readable=true, writable=true, seekable=true, append=false, size=0, maxsize=34, ptr=1, mark=-1)\n\njulia> write(io, \"JuliaLang is a GitHub organization.\")\n34\n\njulia> String(take!(io))\n\"JuliaLang is a GitHub organization\"\n\njulia> length(read(IOBuffer(b\"data\", read=true, truncate=false)))\n4\n\njulia> length(read(IOBuffer(b\"data\", read=true, truncate=true)))\n0\n\n\n\n\n\nIOBuffer(string::String)\n\nCreate a read-only IOBuffer on the data underlying the given string.\n\nExamples\n\njulia> io = IOBuffer(\"Haho\");\n\njulia> String(take!(io))\n\"Haho\"\n\njulia> String(take!(io))\n\"Haho\"\n\n\n\n\n\n"
@@ -12354,7 +12354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.take!-Tuple{Base.GenericIOBuffer}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.take!",
     "category": "method",
     "text": "take!(b::IOBuffer)\n\nObtain the contents of an IOBuffer as an array, without copying. Afterwards, the IOBuffer is reset to its initial state.\n\nExamples\n\njulia> io = IOBuffer();\n\njulia> write(io, \"JuliaLang is a GitHub organization.\", \" It has many members.\")\n56\n\njulia> String(take!(io))\n\"JuliaLang is a GitHub organization. It has many members.\"\n\n\n\n\n\n"
@@ -12362,7 +12362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.fdio",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.fdio",
     "category": "function",
     "text": "fdio([name::AbstractString, ]fd::Integer[, own::Bool=false]) -> IOStream\n\nCreate an IOStream object from an integer file descriptor. If own is true, closing this object will close the underlying descriptor. By default, an IOStream is closed when it is garbage collected. name allows you to associate the descriptor with a named file.\n\n\n\n\n\n"
@@ -12370,7 +12370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.flush",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.flush",
     "category": "function",
     "text": "flush(stream)\n\nCommit all currently buffered writes to the given stream.\n\n\n\n\n\n"
@@ -12378,7 +12378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.close",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.close",
     "category": "function",
     "text": "close(stream)\n\nClose an I/O stream. Performs a flush first.\n\n\n\n\n\n"
@@ -12386,7 +12386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.write",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.write",
     "category": "function",
     "text": "write(io::IO, x)\nwrite(filename::AbstractString, x)\n\nWrite the canonical binary representation of a value to the given I/O stream or file. Return the number of bytes written into the stream.   See also print to write a text representation (with an encoding that may depend upon io).\n\nYou can write multiple values with the same write call. i.e. the following are equivalent:\n\nwrite(io, x, y...)\nwrite(io, x) + write(io, y...)\n\nExamples\n\njulia> io = IOBuffer();\n\njulia> write(io, \"JuliaLang is a GitHub organization.\", \" It has many members.\")\n56\n\njulia> String(take!(io))\n\"JuliaLang is a GitHub organization. It has many members.\"\n\njulia> write(io, \"Sometimes those members\") + write(io, \" write documentation.\")\n44\n\njulia> String(take!(io))\n\"Sometimes those members write documentation.\"\n\n\n\n\n\n"
@@ -12394,7 +12394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.read",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.read",
     "category": "function",
     "text": "read(io::IO, T)\n\nRead a single value of type T from io, in canonical binary representation.\n\nread(io::IO, String)\n\nRead the entirety of io, as a String.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> read(io, Char)\n\'J\': ASCII/Unicode U+004a (category Lu: Letter, uppercase)\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> read(io, String)\n\"JuliaLang is a GitHub organization\"\n\n\n\n\n\nread(filename::AbstractString, args...)\n\nOpen a file and read its contents. args is passed to read: this is equivalent to open(io->read(io, args...), filename).\n\nread(filename::AbstractString, String)\n\nRead the entire contents of a file as a string.\n\n\n\n\n\nread(s::IO, nb=typemax(Int))\n\nRead at most nb bytes from s, returning a Vector{UInt8} of the bytes read.\n\n\n\n\n\nread(s::IOStream, nb::Integer; all=true)\n\nRead at most nb bytes from s, returning a Vector{UInt8} of the bytes read.\n\nIf all is true (the default), this function will block repeatedly trying to read all requested bytes, until an error or end-of-file occurs. If all is false, at most one read call is performed, and the amount of data returned is device-dependent. Note that not all stream types support the all option.\n\n\n\n\n\n"
@@ -12402,7 +12402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.read!",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.read!",
     "category": "function",
     "text": "read!(stream::IO, array::Union{Array, BitArray})\nread!(filename::AbstractString, array::Union{Array, BitArray})\n\nRead binary data from an I/O stream or file, filling in array.\n\n\n\n\n\n"
@@ -12410,7 +12410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.readbytes!",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.readbytes!",
     "category": "function",
     "text": "readbytes!(stream::IO, b::AbstractVector{UInt8}, nb=length(b))\n\nRead at most nb bytes from stream into b, returning the number of bytes read. The size of b will be increased if needed (i.e. if nb is greater than length(b) and enough bytes could be read), but it will never be decreased.\n\n\n\n\n\nreadbytes!(stream::IOStream, b::AbstractVector{UInt8}, nb=length(b); all::Bool=true)\n\nRead at most nb bytes from stream into b, returning the number of bytes read. The size of b will be increased if needed (i.e. if nb is greater than length(b) and enough bytes could be read), but it will never be decreased.\n\nSee read for a description of the all option.\n\n\n\n\n\n"
@@ -12418,7 +12418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.unsafe_read",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.unsafe_read",
     "category": "function",
     "text": "unsafe_read(io::IO, ref, nbytes::UInt)\n\nCopy nbytes from the IO stream object into ref (converted to a pointer).\n\nIt is recommended that subtypes T<:IO override the following method signature to provide more efficient implementations: unsafe_read(s::T, p::Ptr{UInt8}, n::UInt)\n\n\n\n\n\n"
@@ -12426,7 +12426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.unsafe_write",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.unsafe_write",
     "category": "function",
     "text": "unsafe_write(io::IO, ref, nbytes::UInt)\n\nCopy nbytes from ref (converted to a pointer) into the IO object.\n\nIt is recommended that subtypes T<:IO override the following method signature to provide more efficient implementations: unsafe_write(s::T, p::Ptr{UInt8}, n::UInt)\n\n\n\n\n\n"
@@ -12434,7 +12434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.position",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.position",
     "category": "function",
     "text": "position(s)\n\nGet the current position of a stream.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization.\");\n\njulia> seek(io, 5);\n\njulia> position(io)\n5\n\njulia> skip(io, 10);\n\njulia> position(io)\n15\n\njulia> seekend(io);\n\njulia> position(io)\n35\n\n\n\n\n\n"
@@ -12442,7 +12442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.seek",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.seek",
     "category": "function",
     "text": "seek(s, pos)\n\nSeek a stream to the given position.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization.\");\n\njulia> seek(io, 5);\n\njulia> read(io, Char)\n\'L\': ASCII/Unicode U+004c (category Lu: Letter, uppercase)\n\n\n\n\n\n"
@@ -12450,7 +12450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.seekstart",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.seekstart",
     "category": "function",
     "text": "seekstart(s)\n\nSeek a stream to its beginning.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization.\");\n\njulia> seek(io, 5);\n\njulia> read(io, Char)\n\'L\': ASCII/Unicode U+004c (category Lu: Letter, uppercase)\n\njulia> seekstart(io);\n\njulia> read(io, Char)\n\'J\': ASCII/Unicode U+004a (category Lu: Letter, uppercase)\n\n\n\n\n\n"
@@ -12458,7 +12458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.seekend",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.seekend",
     "category": "function",
     "text": "seekend(s)\n\nSeek a stream to its end.\n\n\n\n\n\n"
@@ -12466,7 +12466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.skip",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.skip",
     "category": "function",
     "text": "skip(s, offset)\n\nSeek a stream relative to the current position.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization.\");\n\njulia> seek(io, 5);\n\njulia> skip(io, 10);\n\njulia> read(io, Char)\n\'G\': ASCII/Unicode U+0047 (category Lu: Letter, uppercase)\n\n\n\n\n\n"
@@ -12474,7 +12474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.mark",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.mark",
     "category": "function",
     "text": "mark(s)\n\nAdd a mark at the current position of stream s. Return the marked position.\n\nSee also unmark, reset, ismarked.\n\n\n\n\n\n"
@@ -12482,7 +12482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.unmark",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.unmark",
     "category": "function",
     "text": "unmark(s)\n\nRemove a mark from stream s. Return true if the stream was marked, false otherwise.\n\nSee also mark, reset, ismarked.\n\n\n\n\n\n"
@@ -12490,7 +12490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.reset",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.reset",
     "category": "function",
     "text": "reset(s)\n\nReset a stream s to a previously marked position, and remove the mark. Return the previously marked position. Throw an error if the stream is not marked.\n\nSee also mark, unmark, ismarked.\n\n\n\n\n\n"
@@ -12498,7 +12498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.ismarked",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.ismarked",
     "category": "function",
     "text": "ismarked(s)\n\nReturn true if stream s is marked.\n\nSee also mark, unmark, reset.\n\n\n\n\n\n"
@@ -12506,7 +12506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.eof",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.eof",
     "category": "function",
     "text": "eof(stream) -> Bool\n\nTest whether an I/O stream is at end-of-file. If the stream is not yet exhausted, this function will block to wait for more data if necessary, and then return false. Therefore it is always safe to read one byte after seeing eof return false. eof will return false as long as buffered data is still available, even if the remote end of a connection is closed.\n\n\n\n\n\n"
@@ -12514,7 +12514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.isreadonly",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.isreadonly",
     "category": "function",
     "text": "isreadonly(io) -> Bool\n\nDetermine whether a stream is read-only.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> isreadonly(io)\ntrue\n\njulia> io = IOBuffer();\n\njulia> isreadonly(io)\nfalse\n\n\n\n\n\n"
@@ -12522,7 +12522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.iswritable",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.iswritable",
     "category": "function",
     "text": "iswritable(io) -> Bool\n\nReturn true if the specified IO object is writable (if that can be determined).\n\nExamples\n\njulia> open(\"myfile.txt\", \"w\") do io\n           print(io, \"Hello world!\");\n           iswritable(io)\n       end\ntrue\n\njulia> open(\"myfile.txt\", \"r\") do io\n           iswritable(io)\n       end\nfalse\n\njulia> rm(\"myfile.txt\")\n\n\n\n\n\n"
@@ -12530,7 +12530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.isreadable",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.isreadable",
     "category": "function",
     "text": "isreadable(io) -> Bool\n\nReturn true if the specified IO object is readable (if that can be determined).\n\nExamples\n\njulia> open(\"myfile.txt\", \"w\") do io\n           print(io, \"Hello world!\");\n           isreadable(io)\n       end\nfalse\n\njulia> open(\"myfile.txt\", \"r\") do io\n           isreadable(io)\n       end\ntrue\n\njulia> rm(\"myfile.txt\")\n\n\n\n\n\n"
@@ -12538,7 +12538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.isopen",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.isopen",
     "category": "function",
     "text": "isopen(object) -> Bool\n\nDetermine whether an object - such as a stream or timer – is not yet closed. Once an object is closed, it will never produce a new event. However, since a closed stream may still have data to read in its buffer, use eof to check for the ability to read data. Use the FileWatching package to be notified when a stream might be writable or readable.\n\nExamples\n\njulia> io = open(\"my_file.txt\", \"w+\");\n\njulia> isopen(io)\ntrue\n\njulia> close(io)\n\njulia> isopen(io)\nfalse\n\n\n\n\n\n"
@@ -12546,7 +12546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Grisu.print_shortest",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Grisu.print_shortest",
     "category": "function",
     "text": "print_shortest(io::IO, x)\n\nPrint the shortest possible representation, with the minimum number of consecutive non-zero digits, of number x, ensuring that it would parse to the exact same number.\n\n\n\n\n\n"
@@ -12554,7 +12554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.fd",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.fd",
     "category": "function",
     "text": "fd(stream)\n\nReturn the file descriptor backing the stream or file. Note that this function only applies to synchronous File\'s and IOStream\'s not to any of the asynchronous streams.\n\n\n\n\n\n"
@@ -12562,7 +12562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.redirect_stdout",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.redirect_stdout",
     "category": "function",
     "text": "redirect_stdout([stream]) -> (rd, wr)\n\nCreate a pipe to which all C and Julia level stdout output will be redirected. Returns a tuple (rd, wr) representing the pipe ends. Data written to stdout may now be read from the rd end of the pipe. The wr end is given for convenience in case the old stdout object was cached by the user and needs to be replaced elsewhere.\n\nIf called with the optional stream argument, then returns stream itself.\n\nnote: Note\nstream must be a TTY, a Pipe, or a socket.\n\n\n\n\n\n"
@@ -12570,7 +12570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.redirect_stdout-Tuple{Function,Any}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.redirect_stdout",
     "category": "method",
     "text": "redirect_stdout(f::Function, stream)\n\nRun the function f while redirecting stdout to stream. Upon completion, stdout is restored to its prior setting.\n\nnote: Note\nstream must be a TTY, a Pipe, or a socket.\n\n\n\n\n\n"
@@ -12578,7 +12578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.redirect_stderr",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.redirect_stderr",
     "category": "function",
     "text": "redirect_stderr([stream]) -> (rd, wr)\n\nLike redirect_stdout, but for stderr.\n\nnote: Note\nstream must be a TTY, a Pipe, or a socket.\n\n\n\n\n\n"
@@ -12586,7 +12586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.redirect_stderr-Tuple{Function,Any}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.redirect_stderr",
     "category": "method",
     "text": "redirect_stderr(f::Function, stream)\n\nRun the function f while redirecting stderr to stream. Upon completion, stderr is restored to its prior setting.\n\nnote: Note\nstream must be a TTY, a Pipe, or a socket.\n\n\n\n\n\n"
@@ -12594,7 +12594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.redirect_stdin",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.redirect_stdin",
     "category": "function",
     "text": "redirect_stdin([stream]) -> (rd, wr)\n\nLike redirect_stdout, but for stdin. Note that the order of the return tuple is still (rd, wr), i.e. data to be read from stdin may be written to wr.\n\nnote: Note\nstream must be a TTY, a Pipe, or a socket.\n\n\n\n\n\n"
@@ -12602,7 +12602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.redirect_stdin-Tuple{Function,Any}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.redirect_stdin",
     "category": "method",
     "text": "redirect_stdin(f::Function, stream)\n\nRun the function f while redirecting stdin to stream. Upon completion, stdin is restored to its prior setting.\n\nnote: Note\nstream must be a TTY, a Pipe, or a socket.\n\n\n\n\n\n"
@@ -12610,7 +12610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.readchomp",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.readchomp",
     "category": "function",
     "text": "readchomp(x)\n\nRead the entirety of x as a string and remove a single trailing newline if there is one. Equivalent to chomp(read(x, String)).\n\nExamples\n\njulia> open(\"my_file.txt\", \"w\") do io\n           write(io, \"JuliaLang is a GitHub organization.\\nIt has many members.\\n\");\n       end;\n\njulia> readchomp(\"my_file.txt\")\n\"JuliaLang is a GitHub organization.\\nIt has many members.\"\n\njulia> rm(\"my_file.txt\");\n\n\n\n\n\n"
@@ -12618,7 +12618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.truncate",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.truncate",
     "category": "function",
     "text": "truncate(file, n)\n\nResize the file or buffer given by the first argument to exactly n bytes, filling previously unallocated space with \'\\0\' if the file or buffer is grown.\n\nExamples\n\njulia> io = IOBuffer();\n\njulia> write(io, \"JuliaLang is a GitHub organization.\")\n35\n\njulia> truncate(io, 15)\nIOBuffer(data=UInt8[...], readable=true, writable=true, seekable=true, append=false, size=15, maxsize=Inf, ptr=16, mark=-1)\n\njulia> String(take!(io))\n\"JuliaLang is a \"\n\njulia> io = IOBuffer();\n\njulia> write(io, \"JuliaLang is a GitHub organization.\");\n\njulia> truncate(io, 40);\n\njulia> String(take!(io))\n\"JuliaLang is a GitHub organization.\\0\\0\\0\\0\\0\"\n\n\n\n\n\n"
@@ -12626,7 +12626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.skipchars",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.skipchars",
     "category": "function",
     "text": "skipchars(predicate, io::IO; linecomment=nothing)\n\nAdvance the stream io such that the next-read character will be the first remaining for which predicate returns false. If the keyword argument linecomment is specified, all characters from that character until the start of the next line are ignored.\n\nExamples\n\njulia> buf = IOBuffer(\"    text\")\nIOBuffer(data=UInt8[...], readable=true, writable=false, seekable=true, append=false, size=8, maxsize=Inf, ptr=1, mark=-1)\n\njulia> skipchars(isspace, buf)\nIOBuffer(data=UInt8[...], readable=true, writable=false, seekable=true, append=false, size=8, maxsize=Inf, ptr=5, mark=-1)\n\njulia> String(readavailable(buf))\n\"text\"\n\n\n\n\n\n"
@@ -12634,7 +12634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.countlines",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.countlines",
     "category": "function",
     "text": "countlines(io::IO; eol::AbstractChar = \'\\n\')\n\nRead io until the end of the stream/file and count the number of lines. To specify a file pass the filename as the first argument. EOL markers other than \'\\n\' are supported by passing them as the second argument.  The last non-empty line of io is counted even if it does not end with the EOL, matching the length returned by eachline and readlines.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization.\\n\");\n\njulia> countlines(io)\n1\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization.\");\n\njulia> countlines(io)\n1\n\njulia> countlines(io, eol = \'.\')\n0\n\n\n\n\n\n"
@@ -12642,7 +12642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.PipeBuffer",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.PipeBuffer",
     "category": "function",
     "text": "PipeBuffer(data::Vector{UInt8}=UInt8[]; maxsize::Integer = typemax(Int))\n\nAn IOBuffer that allows reading and performs writes by appending. Seeking and truncating are not supported. See IOBuffer for the available constructors. If data is given, creates a PipeBuffer to operate on a data vector, optionally specifying a size beyond which the underlying Array may not be grown.\n\n\n\n\n\n"
@@ -12650,7 +12650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.readavailable",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.readavailable",
     "category": "function",
     "text": "readavailable(stream)\n\nRead all available data on the stream, blocking the task only if no data is available. The result is a Vector{UInt8,1}.\n\n\n\n\n\n"
@@ -12658,7 +12658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.IOContext",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.IOContext",
     "category": "type",
     "text": "IOContext\n\nIOContext provides a mechanism for passing output configuration settings among show methods.\n\nIn short, it is an immutable dictionary that is a subclass of IO. It supports standard dictionary operations such as getindex, and can also be used as an I/O stream.\n\n\n\n\n\n"
@@ -12666,7 +12666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.IOContext-Tuple{IO,Pair}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.IOContext",
     "category": "method",
     "text": "IOContext(io::IO, KV::Pair...)\n\nCreate an IOContext that wraps a given stream, adding the specified key=>value pairs to the properties of that stream (note that io can itself be an IOContext).\n\nuse (key => value) in io to see if this particular combination is in the properties set\nuse get(io, key, default) to retrieve the most recent value for a particular key\n\nThe following properties are in common use:\n\n:compact: Boolean specifying that small values should be printed more compactly, e.g. that numbers should be printed with fewer digits. This is set when printing array elements.\n:limit: Boolean specifying that containers should be truncated, e.g. showing … in place of most elements.\n:displaysize: A Tuple{Int,Int} giving the size in rows and columns to use for text output. This can be used to override the display size for called functions, but to get the size of the screen use the displaysize function.\n:typeinfo: a Type characterizing the information already printed concerning the type of the object about to be displayed. This is mainly useful when displaying a collection of objects of the same type, so that redundant type information can be avoided (e.g. [Float16(0)] can be shown as \"Float16[0.0]\" instead of \"Float16[Float16(0.0)]\" : while displaying the elements of the array, the :typeinfo property will be set to Float16).\n:color: Boolean specifying whether ANSI color/escape codes are supported/expected. By default, this is determined by whether io is a compatible terminal and by any --color command-line flag when julia was launched.\n\nExamples\n\njulia> io = IOBuffer();\n\njulia> printstyled(IOContext(io, :color => true), \"string\", color=:red)\n\njulia> String(take!(io))\n\"\\e[31mstring\\e[39m\"\n\njulia> printstyled(io, \"string\", color=:red)\n\njulia> String(take!(io))\n\"string\"\n\njulia> print(IOContext(stdout, :compact => false), 1.12341234)\n1.12341234\njulia> print(IOContext(stdout, :compact => true), 1.12341234)\n1.12341\n\njulia> function f(io::IO)\n           if get(io, :short, false)\n               print(io, \"short\")\n           else\n               print(io, \"loooooong\")\n           end\n       end\nf (generic function with 1 method)\n\njulia> f(stdout)\nloooooong\njulia> f(IOContext(stdout, :short => true))\nshort\n\n\n\n\n\n"
@@ -12674,23 +12674,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.IOContext-Tuple{IO,IOContext}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.IOContext",
     "category": "method",
     "text": "IOContext(io::IO, context::IOContext)\n\nCreate an IOContext that wraps an alternate IO but inherits the properties of context.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/io-network/#General-I/O-1",
-    "page": "I/O and Network",
-    "title": "General I/O",
+    "location": "base/io-network/#通用-I/O-1",
+    "page": "I/O 与网络",
+    "title": "通用 I/O",
     "category": "section",
     "text": "Base.stdout\nBase.stderr\nBase.stdin\nBase.open\nBase.IOBuffer\nBase.take!(::Base.GenericIOBuffer)\nBase.fdio\nBase.flush\nBase.close\nBase.write\nBase.read\nBase.read!\nBase.readbytes!\nBase.unsafe_read\nBase.unsafe_write\nBase.position\nBase.seek\nBase.seekstart\nBase.seekend\nBase.skip\nBase.mark\nBase.unmark\nBase.reset\nBase.ismarked\nBase.eof\nBase.isreadonly\nBase.iswritable\nBase.isreadable\nBase.isopen\nBase.Grisu.print_shortest\nBase.fd\nBase.redirect_stdout\nBase.redirect_stdout(::Function, ::Any)\nBase.redirect_stderr\nBase.redirect_stderr(::Function, ::Any)\nBase.redirect_stdin\nBase.redirect_stdin(::Function, ::Any)\nBase.readchomp\nBase.truncate\nBase.skipchars\nBase.countlines\nBase.PipeBuffer\nBase.readavailable\nBase.IOContext\nBase.IOContext(::IO, ::Pair)\nBase.IOContext(::IO, ::IOContext)"
 },
 
 {
     "location": "base/io-network/#Base.show-Tuple{Any}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.show",
     "category": "method",
     "text": "show(x)\n\nWrite an informative text representation of a value to the current output stream. New types should overload show(io, x) where the first argument is a stream. The representation used by show generally includes Julia-specific formatting and type information.\n\n\n\n\n\n"
@@ -12698,7 +12698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.summary",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.summary",
     "category": "function",
     "text": "summary(io::IO, x)\nstr = summary(x)\n\nPrint to a stream io, or return a string str, giving a brief description of a value. By default returns string(typeof(x)), e.g. Int64.\n\nFor arrays, returns a string of size and type info, e.g. 10-element Array{Int64,1}.\n\nExamples\n\njulia> summary(1)\n\"Int64\"\n\njulia> summary(zeros(2))\n\"2-element Array{Float64,1}\"\n\n\n\n\n\n"
@@ -12706,7 +12706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.print",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.print",
     "category": "function",
     "text": "print([io::IO], xs...)\n\nWrite to io (or to the default output stream stdout if io is not given) a canonical (un-decorated) text representation of values xs if there is one, otherwise call show. The representation used by print includes minimal formatting and tries to avoid Julia-specific details.\n\nPrinting nothing is deprecated and will throw an error in the future.\n\nExamples\n\njulia> print(\"Hello World!\")\nHello World!\njulia> io = IOBuffer();\n\njulia> print(io, \"Hello\", \' \', :World!)\n\njulia> String(take!(io))\n\"Hello World!\"\n\n\n\n\n\n"
@@ -12714,7 +12714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.println",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.println",
     "category": "function",
     "text": "println([io::IO], xs...)\n\nPrint (using print) xs followed by a newline. If io is not supplied, prints to stdout.\n\nExamples\n\njulia> println(\"Hello, world\")\nHello, world\n\njulia> io = IOBuffer();\n\njulia> println(io, \"Hello, world\")\n\njulia> String(take!(io))\n\"Hello, world\\n\"\n\n\n\n\n\n"
@@ -12722,7 +12722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.printstyled",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.printstyled",
     "category": "function",
     "text": "printstyled([io], xs...; bold::Bool=false, color::Union{Symbol,Int}=:normal)\n\nPrint xs in a color specified as a symbol or integer, optionally in bold.\n\ncolor may take any of the values :normal, :default, :bold, :black, :blink, :blue, :cyan, :green, :hidden, :light_black, :light_blue, :light_cyan, :light_green, :light_magenta, :light_red, :light_yellow, :magenta, :nothing, :red, :reverse, :underline, :white, or  :yellow or an integer between 0 and 255 inclusive. Note that not all terminals support 256 colors. If the keyword bold is given as true, the result will be printed in bold.\n\n\n\n\n\n"
@@ -12730,7 +12730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.sprint",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.sprint",
     "category": "function",
     "text": "sprint(f::Function, args...; context=nothing, sizehint=0)\n\nCall the given function with an I/O stream and the supplied extra arguments. Everything written to this I/O stream is returned as a string. context can be either an IOContext whose properties will be used, or a Pair specifying a property and its value. sizehint suggests the capacity of the buffer (in bytes).\n\nThe optional keyword argument context can be set to :key=>value pair or an IO or IOContext object whose attributes are used for the I/O stream passed to f.  The optional sizehint is a suggersted (in bytes) to allocate for the buffer used to write the string.\n\nExamples\n\njulia> sprint(show, 66.66666; context=:compact => true)\n\"66.6667\"\n\njulia> sprint(showerror, BoundsError([1], 100))\n\"BoundsError: attempt to access 1-element Array{Int64,1} at index [100]\"\n\n\n\n\n\n"
@@ -12738,7 +12738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.showerror",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.showerror",
     "category": "function",
     "text": "showerror(io, e)\n\nShow a descriptive representation of an exception object e. This method is used to display the exception after a call to throw.\n\nExamples\n\njulia> struct MyException <: Exception\n           msg::AbstractString\n       end\n\njulia> function Base.showerror(io::IO, err::MyException)\n           print(io, \"MyException: \")\n           print(io, err.msg)\n       end\n\njulia> err = MyException(\"test exception\")\nMyException(\"test exception\")\n\njulia> sprint(showerror, err)\n\"MyException: test exception\"\n\njulia> throw(MyException(\"test exception\"))\nERROR: MyException: test exception\n\n\n\n\n\n"
@@ -12746,7 +12746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.dump",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.dump",
     "category": "function",
     "text": "dump(x; maxdepth=8)\n\nShow every part of the representation of a value. The depth of the output is truncated at maxdepth.\n\nExamples\n\njulia> struct MyStruct\n           x\n           y\n       end\n\njulia> x = MyStruct(1, (2,3));\n\njulia> dump(x)\nMyStruct\n  x: Int64 1\n  y: Tuple{Int64,Int64}\n    1: Int64 2\n    2: Int64 3\n\njulia> dump(x; maxdepth = 1)\nMyStruct\n  x: Int64 1\n  y: Tuple{Int64,Int64}\n\n\n\n\n\n"
@@ -12754,7 +12754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Meta.@dump",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Meta.@dump",
     "category": "macro",
     "text": "@dump expr\n\nShow every part of the representation of the given expression. Equivalent to dump(:(expr)).\n\n\n\n\n\n"
@@ -12762,7 +12762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.readline",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.readline",
     "category": "function",
     "text": "readline(io::IO=stdin; keep::Bool=false)\nreadline(filename::AbstractString; keep::Bool=false)\n\nRead a single line of text from the given I/O stream or file (defaults to stdin). When reading from a file, the text is assumed to be encoded in UTF-8. Lines in the input end with \'\\n\' or \"\\r\\n\" or the end of an input stream. When keep is false (as it is by default), these trailing newline characters are removed from the line before it is returned. When keep is true, they are returned as part of the line.\n\nExamples\n\njulia> open(\"my_file.txt\", \"w\") do io\n           write(io, \"JuliaLang is a GitHub organization.\\nIt has many members.\\n\");\n       end\n57\n\njulia> readline(\"my_file.txt\")\n\"JuliaLang is a GitHub organization.\"\n\njulia> readline(\"my_file.txt\", keep=true)\n\"JuliaLang is a GitHub organization.\\n\"\n\njulia> rm(\"my_file.txt\")\n\n\n\n\n\n"
@@ -12770,7 +12770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.readuntil",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.readuntil",
     "category": "function",
     "text": "readuntil(stream::IO, delim; keep::Bool = false)\nreaduntil(filename::AbstractString, delim; keep::Bool = false)\n\nRead a string from an I/O stream or a file, up to the given delimiter. The delimiter can be a UInt8, AbstractChar, string, or vector. Keyword argument keep controls whether the delimiter is included in the result. The text is assumed to be encoded in UTF-8.\n\nExamples\n\njulia> open(\"my_file.txt\", \"w\") do io\n           write(io, \"JuliaLang is a GitHub organization.\\nIt has many members.\\n\");\n       end\n57\n\njulia> readuntil(\"my_file.txt\", \'L\')\n\"Julia\"\n\njulia> readuntil(\"my_file.txt\", \'.\', keep = true)\n\"JuliaLang is a GitHub organization.\"\n\njulia> rm(\"my_file.txt\")\n\n\n\n\n\n"
@@ -12778,7 +12778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.readlines",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.readlines",
     "category": "function",
     "text": "readlines(io::IO=stdin; keep::Bool=false)\nreadlines(filename::AbstractString; keep::Bool=false)\n\nRead all lines of an I/O stream or a file as a vector of strings. Behavior is equivalent to saving the result of reading readline repeatedly with the same arguments and saving the resulting lines as a vector of strings.\n\nExamples\n\njulia> open(\"my_file.txt\", \"w\") do io\n           write(io, \"JuliaLang is a GitHub organization.\\nIt has many members.\\n\");\n       end\n57\n\njulia> readlines(\"my_file.txt\")\n2-element Array{String,1}:\n \"JuliaLang is a GitHub organization.\"\n \"It has many members.\"\n\njulia> readlines(\"my_file.txt\", keep=true)\n2-element Array{String,1}:\n \"JuliaLang is a GitHub organization.\\n\"\n \"It has many members.\\n\"\n\njulia> rm(\"my_file.txt\")\n\n\n\n\n\n"
@@ -12786,7 +12786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.eachline",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.eachline",
     "category": "function",
     "text": "eachline(io::IO=stdin; keep::Bool=false)\neachline(filename::AbstractString; keep::Bool=false)\n\nCreate an iterable EachLine object that will yield each line from an I/O stream or a file. Iteration calls readline on the stream argument repeatedly with keep passed through, determining whether trailing end-of-line characters are retained. When called with a file name, the file is opened once at the beginning of iteration and closed at the end. If iteration is interrupted, the file will be closed when the EachLine object is garbage collected.\n\nExamples\n\njulia> open(\"my_file.txt\", \"w\") do io\n           write(io, \"JuliaLang is a GitHub organization.\\n It has many members.\\n\");\n       end;\n\njulia> for line in eachline(\"my_file.txt\")\n           print(line)\n       end\nJuliaLang is a GitHub organization. It has many members.\n\njulia> rm(\"my_file.txt\");\n\n\n\n\n\n"
@@ -12794,23 +12794,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.displaysize",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.displaysize",
     "category": "function",
     "text": "displaysize([io::IO]) -> (lines, columns)\n\nReturn the nominal size of the screen that may be used for rendering output to this IO object. If no input is provided, the environment variables LINES and COLUMNS are read. If those are not set, a default size of (24, 80) is returned.\n\nExamples\n\njulia> withenv(\"LINES\" => 30, \"COLUMNS\" => 100) do\n           displaysize()\n       end\n(30, 100)\n\nTo get your TTY size,\n\njulia> displaysize(stdout)\n(34, 147)\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/io-network/#Text-I/O-1",
-    "page": "I/O and Network",
-    "title": "Text I/O",
+    "location": "base/io-network/#文本-I/O-1",
+    "page": "I/O 与网络",
+    "title": "文本 I/O",
     "category": "section",
     "text": "Base.show(::Any)\nBase.summary\nBase.print\nBase.println\nBase.printstyled\nBase.sprint\nBase.showerror\nBase.dump\nMeta.@dump\nBase.readline\nBase.readuntil\nBase.readlines\nBase.eachline\nBase.displaysize"
 },
 
 {
     "location": "base/io-network/#Base.Multimedia.display",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.display",
     "category": "function",
     "text": "display(x)\ndisplay(d::AbstractDisplay, x)\ndisplay(mime, x)\ndisplay(d::AbstractDisplay, mime, x)\n\nAbstractDisplay x using the topmost applicable display in the display stack, typically using the richest supported multimedia output for x, with plain-text stdout output as a fallback. The display(d, x) variant attempts to display x on the given display d only, throwing a MethodError if d cannot display objects of this type.\n\nIn general, you cannot assume that display output goes to stdout (unlike print(x) or show(x)).  For example, display(x) may open up a separate window with an image. display(x) means \"show x in the best way you can for the current output device(s).\" If you want REPL-like text output that is guaranteed to go to stdout, use show(stdout, \"text/plain\", x) instead.\n\nThere are also two variants with a mime argument (a MIME type string, such as \"image/png\"), which attempt to display x using the requested MIME type only, throwing a MethodError if this type is not supported by either the display(s) or by x. With these variants, one can also supply the \"raw\" data in the requested MIME type by passing x::AbstractString (for MIME types with text-based storage, such as text/html or application/postscript) or x::Vector{UInt8} (for binary MIME types).\n\n\n\n\n\n"
@@ -12818,7 +12818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Multimedia.redisplay",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.redisplay",
     "category": "function",
     "text": "redisplay(x)\nredisplay(d::AbstractDisplay, x)\nredisplay(mime, x)\nredisplay(d::AbstractDisplay, mime, x)\n\nBy default, the redisplay functions simply call display. However, some display backends may override redisplay to modify an existing display of x (if any). Using redisplay is also a hint to the backend that x may be redisplayed several times, and the backend may choose to defer the display until (for example) the next interactive prompt.\n\n\n\n\n\n"
@@ -12826,7 +12826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Multimedia.displayable",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.displayable",
     "category": "function",
     "text": "displayable(mime) -> Bool\ndisplayable(d::AbstractDisplay, mime) -> Bool\n\nReturns a boolean value indicating whether the given mime type (string) is displayable by any of the displays in the current display stack, or specifically by the display d in the second variant.\n\n\n\n\n\n"
@@ -12834,7 +12834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.show-Tuple{Any,Any,Any}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.show",
     "category": "method",
     "text": "show(io, mime, x)\n\nThe display functions ultimately call show in order to write an object x as a given mime type to a given I/O stream io (usually a memory buffer), if possible. In order to provide a rich multimedia representation of a user-defined type T, it is only necessary to define a new show method for T, via: show(io, ::MIME\"mime\", x::T) = ..., where mime is a MIME-type string and the function body calls write (or similar) to write that representation of x to io. (Note that the MIME\"\" notation only supports literal strings; to construct MIME types in a more flexible manner use MIME{Symbol(\"\")}.)\n\nFor example, if you define a MyImage type and know how to write it to a PNG file, you could define a function show(io, ::MIME\"image/png\", x::MyImage) = ... to allow your images to be displayed on any PNG-capable AbstractDisplay (such as IJulia). As usual, be sure to import Base.show in order to add new methods to the built-in Julia function show.\n\nThe default MIME type is MIME\"text/plain\". There is a fallback definition for text/plain output that calls show with 2 arguments. Therefore, this case should be handled by defining a 2-argument show(io::IO, x::MyType) method.\n\nTechnically, the MIME\"mime\" macro defines a singleton type for the given mime string, which allows us to exploit Julia\'s dispatch mechanisms in determining how to display objects of any given type.\n\nThe first argument to show can be an IOContext specifying output format properties. See IOContext for details.\n\n\n\n\n\n"
@@ -12842,7 +12842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Multimedia.showable",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.showable",
     "category": "function",
     "text": "showable(mime, x)\n\nReturns a boolean value indicating whether or not the object x can be written as the given mime type.\n\n(By default, this is determined automatically by the existence of the corresponding show method for typeof(x).  Some types provide custom showable methods; for example, if the available MIME formats depend on the value of x.)\n\nExamples\n\njulia> showable(MIME(\"text/plain\"), rand(5))\ntrue\n\njulia> showable(\"img/png\", rand(5))\nfalse\n\n\n\n\n\n"
@@ -12850,7 +12850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.repr-Tuple{MIME,Any}",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.repr",
     "category": "method",
     "text": "repr(mime, x; context=nothing)\n\nReturns an AbstractString or Vector{UInt8} containing the representation of x in the requested mime type, as written by show(io, mime, x) (throwing a MethodError if no appropriate show is available). An AbstractString is returned for MIME types with textual representations (such as \"text/html\" or \"application/postscript\"), whereas binary data is returned as Vector{UInt8}. (The function istextmime(mime) returns whether or not Julia treats a given mime type as text.)\n\nThe optional keyword argument context can be set to :key=>value pair or an IO or IOContext object whose attributes are used for the I/O stream passed to show.\n\nAs a special case, if x is an AbstractString (for textual MIME types) or a Vector{UInt8} (for binary MIME types), the repr function assumes that x is already in the requested mime format and simply returns x. This special case does not apply to the \"text/plain\" MIME type. This is useful so that raw data can be passed to display(m::MIME, x).\n\nIn particular, repr(\"text/plain\", x) is typically a \"pretty-printed\" version of x designed for human consumption.  See also repr(x) to instead return a string corresponding to show(x) that may be closer to how the value of x would be entered in Julia.\n\nExamples\n\njulia> A = [1 2; 3 4];\n\njulia> repr(\"text/plain\", A)\n\"2×2 Array{Int64,2}:\\n 1  2\\n 3  4\"\n\n\n\n\n\n"
@@ -12858,7 +12858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Multimedia.pushdisplay",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.pushdisplay",
     "category": "function",
     "text": "pushdisplay(d::AbstractDisplay)\n\nPushes a new display d on top of the global display-backend stack. Calling display(x) or display(mime, x) will display x on the topmost compatible backend in the stack (i.e., the topmost backend that does not throw a MethodError).\n\n\n\n\n\n"
@@ -12866,7 +12866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Multimedia.popdisplay",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.popdisplay",
     "category": "function",
     "text": "popdisplay()\npopdisplay(d::AbstractDisplay)\n\nPop the topmost backend off of the display-backend stack, or the topmost copy of d in the second variant.\n\n\n\n\n\n"
@@ -12874,7 +12874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Multimedia.TextDisplay",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.TextDisplay",
     "category": "type",
     "text": "TextDisplay(io::IO)\n\nReturns a TextDisplay <: AbstractDisplay, which displays any object as the text/plain MIME type (by default), writing the text representation to the given I/O stream. (This is how objects are printed in the Julia REPL.)\n\n\n\n\n\n"
@@ -12882,23 +12882,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.Multimedia.istextmime",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.Multimedia.istextmime",
     "category": "function",
     "text": "istextmime(m::MIME)\n\nDetermine whether a MIME type is text data. MIME types are assumed to be binary data except for a set of types known to be text data (possibly Unicode).\n\nExamples\n\njulia> istextmime(MIME(\"text/plain\"))\ntrue\n\njulia> istextmime(MIME(\"img/png\"))\nfalse\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/io-network/#Multimedia-I/O-1",
-    "page": "I/O and Network",
-    "title": "Multimedia I/O",
+    "location": "base/io-network/#多媒体-I/O-1",
+    "page": "I/O 与网络",
+    "title": "多媒体 I/O",
     "category": "section",
-    "text": "Just as text output is performed by print and user-defined types can indicate their textual representation by overloading show, Julia provides a standardized mechanism for rich multimedia output (such as images, formatted text, or even audio and video), consisting of three parts:A function display(x) to request the richest available multimedia display of a Julia object x (with a plain-text fallback).\nOverloading show allows one to indicate arbitrary multimedia representations (keyed by standard MIME types) of user-defined types.\nMultimedia-capable display backends may be registered by subclassing a generic AbstractDisplay type and pushing them onto a stack of display backends via pushdisplay.The base Julia runtime provides only plain-text display, but richer displays may be enabled by loading external modules or by using graphical Julia environments (such as the IPython-based IJulia notebook).Base.Multimedia.display\nBase.Multimedia.redisplay\nBase.Multimedia.displayable\nBase.show(::Any, ::Any, ::Any)\nBase.Multimedia.showable\nBase.repr(::MIME, ::Any)As mentioned above, one can also define new display backends. For example, a module that can display PNG images in a window can register this capability with Julia, so that calling display(x) on types with PNG representations will automatically display the image using the module\'s window.In order to define a new display backend, one should first create a subtype D of the abstract class AbstractDisplay.  Then, for each MIME type (mime string) that can be displayed on D, one should define a function display(d::D, ::MIME\"mime\", x) = ... that displays x as that MIME type, usually by calling show(io, mime, x) or repr(io, mime, x). A MethodError should be thrown if x cannot be displayed as that MIME type; this is automatic if one calls show or repr. Finally, one should define a function display(d::D, x) that queries showable(mime, x) for the mime types supported by D and displays the \"best\" one; a MethodError should be thrown if no supported MIME types are found for x.  Similarly, some subtypes may wish to override redisplay(d::D, ...). (Again, one should import Base.display to add new methods to display.) The return values of these functions are up to the implementation (since in some cases it may be useful to return a display \"handle\" of some type).  The display functions for D can then be called directly, but they can also be invoked automatically from display(x) simply by pushing a new display onto the display-backend stack with:Base.Multimedia.pushdisplay\nBase.Multimedia.popdisplay\nBase.Multimedia.TextDisplay\nBase.Multimedia.istextmime"
+    "text": "就像文本输出用 print 实现，用户自定义类型可以通过重载show 来指定其文本化表示，Julia 提供了一个应用于富多媒体输出的 标准化机制（例如图片，格式化文本，甚至音频和视频），由以下三部分组成：函数display(x)来请求一个Julia对象的最富的可得的多媒体展示 x (with a plain-text fallback).\n重载 show 允许指定用户自定义类型的任意多媒体表示（ 以标准MIME类型为键）。\n支持多媒体显示后端可以被注册，通过子类化通用的AbstractDisplay类型 并通过pushdisplay将其压进显示后端的栈中。基础Julia运行环境只提供纯文本显示，但是更富的显示可以 通过加载外部模块或者使用图形化Julia环境（比如基于IPython的IJulia  notebook）来实现。Base.Multimedia.display\nBase.Multimedia.redisplay\nBase.Multimedia.displayable\nBase.show(::Any, ::Any, ::Any)\nBase.Multimedia.showable\nBase.repr(::MIME, ::Any)如上面提到的，用户可以定义新的显示后端。例如，可以在窗口显示PNG图片的模块可以在Julia中注册这个能力，以便为有PNG表示的类型调用display(x)时可以在模块窗口中自动显示图片。In order to define a new display backend, one should first create a subtype D of the abstract class AbstractDisplay.  Then, for each MIME type (mime string) that can be displayed on D, one should define a function display(d::D, ::MIME\"mime\", x) = ... that displays x as that MIME type, usually by calling show(io, mime, x) or repr(io, mime, x). A MethodError should be thrown if x cannot be displayed as that MIME type; this is automatic if one calls show or repr. Finally, one should define a function display(d::D, x) that queries showable(mime, x) for the mime types supported by D and displays the \"best\" one; a MethodError should be thrown if no supported MIME types are found for x.  Similarly, some subtypes may wish to override redisplay(d::D, ...). (Again, one should import Base.display to add new methods to display.) The return values of these functions are up to the implementation (since in some cases it may be useful to return a display \"handle\" of some type).  The display functions for D can then be called directly, but they can also be invoked automatically from display(x) simply by pushing a new display onto the display-backend stack with:Base.Multimedia.pushdisplay\nBase.Multimedia.popdisplay\nBase.Multimedia.TextDisplay\nBase.Multimedia.istextmime"
 },
 
 {
     "location": "base/io-network/#Base.bytesavailable",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.bytesavailable",
     "category": "function",
     "text": "bytesavailable(io)\n\nReturn the number of bytes available for reading before a read from this stream or buffer will block.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> bytesavailable(io)\n34\n\n\n\n\n\n"
@@ -12906,7 +12906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.ntoh",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.ntoh",
     "category": "function",
     "text": "ntoh(x)\n\nConvert the endianness of a value from Network byte order (big-endian) to that used by the Host.\n\n\n\n\n\n"
@@ -12914,7 +12914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.hton",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.hton",
     "category": "function",
     "text": "hton(x)\n\nConvert the endianness of a value from that used by the Host to Network byte order (big-endian).\n\n\n\n\n\n"
@@ -12922,7 +12922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.ltoh",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.ltoh",
     "category": "function",
     "text": "ltoh(x)\n\nConvert the endianness of a value from Little-endian to that used by the Host.\n\n\n\n\n\n"
@@ -12930,7 +12930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.htol",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.htol",
     "category": "function",
     "text": "htol(x)\n\nConvert the endianness of a value from that used by the Host to Little-endian.\n\n\n\n\n\n"
@@ -12938,7 +12938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Base.ENDIAN_BOM",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Base.ENDIAN_BOM",
     "category": "constant",
     "text": "ENDIAN_BOM\n\nThe 32-bit byte-order-mark indicates the native byte order of the host machine. Little-endian machines will contain the value 0x04030201. Big-endian machines will contain the value 0x01020304.\n\n\n\n\n\n"
@@ -12946,7 +12946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/io-network/#Network-I/O-1",
-    "page": "I/O and Network",
+    "page": "I/O 与网络",
     "title": "Network I/O",
     "category": "section",
     "text": "Base.bytesavailable\nBase.ntoh\nBase.hton\nBase.ltoh\nBase.htol\nBase.ENDIAN_BOM"
@@ -12954,18 +12954,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/punctuation/#",
-    "page": "Punctuation",
-    "title": "Punctuation",
+    "page": "标点符号",
+    "title": "标点符号",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/punctuation/#Punctuation-1",
-    "page": "Punctuation",
-    "title": "Punctuation",
+    "location": "base/punctuation/#标点符号-1",
+    "page": "标点符号",
+    "title": "标点符号",
     "category": "section",
-    "text": "Extended documentation for mathematical symbols & functions is here.symbol meaning\n@m invoke macro m; followed by space-separated expressions\n! prefix \"not\" (logical negation) operator\na!( ) at the end of a function name, ! is used as a convention to indicate that a function modifies its argument(s)\n# begin single line comment\n#= begin multi-line comment (these are nestable)\n=# end multi-line comment\n$ string and expression interpolation\n% remainder operator\n^ exponent operator\n& bitwise and\n&& short-circuiting boolean and\n| bitwise or\n|| short-circuiting boolean or\n⊻ bitwise xor operator\n* multiply, or matrix multiply\n() the empty tuple\n~ bitwise not operator\n\\ backslash operator\n\' complex transpose operator Aᴴ\na[] array indexing (calling getindex or setindex!)\n[,] vector literal constructor (calling vect)\n[;] vertical concatenation (calling vcat or hvcat)\n[    ] with space-separated expressions, horizontal concatenation (calling hcat or hvcat)\nT{ } parametric type instantiation\n; statement separator\n, separate function arguments or tuple components\n? 3-argument conditional operator (used like: conditional ? if_true : if_false)\n\"\" delimit string literals\n\'\' delimit character literals\n` ` delimit external process (command) specifications\n... splice arguments into a function call or declare a varargs function\n. access named fields in objects/modules (calling getproperty or setproperty!), also prefixes elementwise function calls (calling broadcast)\na:b range a, a+1, a+2, ..., b\na:s:b range a, a+s, a+2s, ..., b\n: index an entire dimension (firstindex:lastindex), see Colon)\n:: type annotation or typeassert, depending on context\n:( ) quoted expression\n:a symbol a\n<: subtype operator\n>: supertype operator (reverse of subtype operator)\n=== egal comparison operator"
+    "text": "扩展的数学符号和函数文档在 here.符号 意义\n@m 调用宏 m；随后是空格分割的表达式\n! 前缀 “not”(逻辑反)  运算符\na!( ) 在函数名的末尾，! 用作表示函数会修改参数（或多个参数）的约定\n# 开始单行注释\n#= 开始多行注释（可嵌套）\n=# 结束单行注释\n$ 字符串和表达式插值\n% 求余运算符\n^ 指数运算符\n& 按位与\n&& 短路布尔值和\n| 按位或\n|| 短路布尔值或\n⊻ 按位异或运算符\n* 乘法，或者矩阵乘法\n() 空元组\n~ 按位否运算符\n\\ 反斜线运算符\n\' 复转置运算符Aᴴ\na[] 数组定标（调用getindex 或 setindex!）\n[,] 向量字面构造器（调用vect）\n[;] 纵向拼接（调用 vcat或者hvcat）\n[    ] 和空格分隔的表达式，横向拼接（调用hcat or hvcat）\nT{ } 参数化类型实例化\n; 语句运算符\n, 分隔函数参数或者元组成分\n? 3元条件运算符（如此使用： 条件 ? 真条支 : 假条支）\n\"\" 分界字符串字面值\n\'\' 分界字符字面值\n` ` 分界外部操作（命令）指定\n... 拼接参数到函数调用或者声明一个可变参数的函数\n. 存取对象/模块的命名空间（调用 getproperty 或 setproperty!），并且为逐元素函数调用（调用broadcast）加前缀\na:b 范围 a, a+1, a+2, ..., b\na:s:b 范围 a, a+s, a+2s, ..., b\n: 为整个维度定标（初始下标：末尾下标），参照Colon)\n:: 类型注释或 typeassert，取决于上下文\n:( ) 引用表达式\n:a 符号 a\n<: 子类型运算符\n>: 父类型运算符 (reverse of subtype operator)\n=== egal comparison operator"
 },
 
 {
@@ -13114,15 +13114,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#",
-    "page": "Iteration utilities",
-    "title": "Iteration utilities",
+    "page": "迭代相关",
+    "title": "迭代相关",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "base/iterators/#Base.Iterators.Stateful",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.Stateful",
     "category": "type",
     "text": "Stateful(itr)\n\nThere are several different ways to think about this iterator wrapper:\n\nIt provides a mutable wrapper around an iterator and its iteration state.\nIt turns an iterator-like abstraction into a Channel-like abstraction.\nIt\'s an iterator that mutates to become its own rest iterator whenever an item is produced.\n\nStateful provides the regular iterator interface. Like other mutable iterators (e.g. Channel), if iteration is stopped early (e.g. by a break in a for loop), iteration can be resumed from the same spot by continuing to iterate over the same iterator object (in contrast, an immutable iterator would restart from the beginning).\n\nExamples\n\njulia> a = Iterators.Stateful(\"abcdef\");\n\njulia> isempty(a)\nfalse\n\njulia> popfirst!(a)\n\'a\': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)\n\njulia> collect(Iterators.take(a, 3))\n3-element Array{Char,1}:\n \'b\'\n \'c\'\n \'d\'\n\njulia> collect(a)\n2-element Array{Char,1}:\n \'e\'\n \'f\'\n\njulia> a = Iterators.Stateful([1,1,1,2,3,4]);\n\njulia> for x in a; x == 1 || break; end\n\njulia> Base.peek(a)\n3\n\njulia> sum(a) # Sum the remaining elements\n7\n\n\n\n\n\n"
@@ -13130,7 +13130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.zip",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.zip",
     "category": "function",
     "text": "zip(iters...)\n\nFor a set of iterable objects, return an iterable of tuples, where the ith tuple contains the ith component of each input iterable.\n\nExamples\n\njulia> a = 1:5\n1:5\n\njulia> b = [\"e\",\"d\",\"b\",\"c\",\"a\"]\n5-element Array{String,1}:\n \"e\"\n \"d\"\n \"b\"\n \"c\"\n \"a\"\n\njulia> c = zip(a,b)\nBase.Iterators.Zip2{UnitRange{Int64},Array{String,1}}(1:5, [\"e\", \"d\", \"b\", \"c\", \"a\"])\n\njulia> length(c)\n5\n\njulia> first(c)\n(1, \"e\")\n\n\n\n\n\n"
@@ -13138,7 +13138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.enumerate",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.enumerate",
     "category": "function",
     "text": "enumerate(iter)\n\nAn iterator that yields (i, x) where i is a counter starting at 1, and x is the ith value from the given iterator. It\'s useful when you need not only the values x over which you are iterating, but also the number of iterations so far. Note that i may not be valid for indexing iter; it\'s also possible that x != iter[i], if iter has indices that do not start at 1. See the enumerate(IndexLinear(), iter) method if you want to ensure that i is an index.\n\nExamples\n\njulia> a = [\"a\", \"b\", \"c\"];\n\njulia> for (index, value) in enumerate(a)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n\n\n\n\n\n"
@@ -13146,7 +13146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.rest",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.rest",
     "category": "function",
     "text": "rest(iter, state)\n\nAn iterator that yields the same elements as iter, but starting at the given state.\n\nExamples\n\njulia> collect(Iterators.rest([1,2,3,4], 2))\n3-element Array{Int64,1}:\n 2\n 3\n 4\n\n\n\n\n\n"
@@ -13154,7 +13154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.countfrom",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.countfrom",
     "category": "function",
     "text": "countfrom(start=1, step=1)\n\nAn iterator that counts forever, starting at start and incrementing by step.\n\nExamples\n\njulia> for v in Iterators.countfrom(5, 2)\n           v > 10 && break\n           println(v)\n       end\n5\n7\n9\n\n\n\n\n\n"
@@ -13162,7 +13162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.take",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.take",
     "category": "function",
     "text": "take(iter, n)\n\nAn iterator that generates at most the first n elements of iter.\n\nExamples\n\njulia> a = 1:2:11\n1:2:11\n\njulia> collect(a)\n6-element Array{Int64,1}:\n  1\n  3\n  5\n  7\n  9\n 11\n\njulia> collect(Iterators.take(a,3))\n3-element Array{Int64,1}:\n 1\n 3\n 5\n\n\n\n\n\n"
@@ -13170,7 +13170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.drop",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.drop",
     "category": "function",
     "text": "drop(iter, n)\n\nAn iterator that generates all but the first n elements of iter.\n\nExamples\n\njulia> a = 1:2:11\n1:2:11\n\njulia> collect(a)\n6-element Array{Int64,1}:\n  1\n  3\n  5\n  7\n  9\n 11\n\njulia> collect(Iterators.drop(a,4))\n2-element Array{Int64,1}:\n  9\n 11\n\n\n\n\n\n"
@@ -13178,7 +13178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.cycle",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.cycle",
     "category": "function",
     "text": "cycle(iter)\n\nAn iterator that cycles through iter forever. If iter is empty, so is cycle(iter).\n\nExamples\n\njulia> for (i, v) in enumerate(Iterators.cycle(\"hello\"))\n           print(v)\n           i > 10 && break\n       end\nhellohelloh\n\n\n\n\n\n"
@@ -13186,7 +13186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.repeated",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.repeated",
     "category": "function",
     "text": "repeated(x[, n::Int])\n\nAn iterator that generates the value x forever. If n is specified, generates x that many times (equivalent to take(repeated(x), n)).\n\nExamples\n\njulia> a = Iterators.repeated([1 2], 4);\n\njulia> collect(a)\n4-element Array{Array{Int64,2},1}:\n [1 2]\n [1 2]\n [1 2]\n [1 2]\n\n\n\n\n\n"
@@ -13194,7 +13194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.product",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.product",
     "category": "function",
     "text": "product(iters...)\n\nReturn an iterator over the product of several iterators. Each generated element is a tuple whose ith element comes from the ith argument iterator. The first iterator changes the fastest.\n\nExamples\n\njulia> collect(Iterators.product(1:2, 3:5))\n2×3 Array{Tuple{Int64,Int64},2}:\n (1, 3)  (1, 4)  (1, 5)\n (2, 3)  (2, 4)  (2, 5)\n\n\n\n\n\n"
@@ -13202,7 +13202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.flatten",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.flatten",
     "category": "function",
     "text": "flatten(iter)\n\nGiven an iterator that yields iterators, return an iterator that yields the elements of those iterators. Put differently, the elements of the argument iterator are concatenated.\n\nExamples\n\njulia> collect(Iterators.flatten((1:2, 8:9)))\n4-element Array{Int64,1}:\n 1\n 2\n 8\n 9\n\n\n\n\n\n"
@@ -13210,7 +13210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.partition",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.partition",
     "category": "function",
     "text": "partition(collection, n)\n\nIterate over a collection n elements at a time.\n\nExamples\n\njulia> collect(Iterators.partition([1,2,3,4,5], 2))\n3-element Array{Array{Int64,1},1}:\n [1, 2]\n [3, 4]\n [5]\n\n\n\n\n\n"
@@ -13218,7 +13218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.filter",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.filter",
     "category": "function",
     "text": "Iterators.filter(flt, itr)\n\nGiven a predicate function flt and an iterable object itr, return an iterable object which upon iteration yields the elements x of itr that satisfy flt(x). The order of the original iterator is preserved.\n\nThis function is lazy; that is, it is guaranteed to return in Θ(1) time and use Θ(1) additional space, and flt will not be called by an invocation of filter. Calls to flt will be made when iterating over the returned iterable object. These calls are not cached and repeated calls will be made when reiterating.\n\nSee Base.filter for an eager implementation of filtering for arrays.\n\nExamples\n\njulia> f = Iterators.filter(isodd, [1, 2, 3, 4, 5])\nBase.Iterators.Filter{typeof(isodd),Array{Int64,1}}(isodd, [1, 2, 3, 4, 5])\n\njulia> foreach(println, f)\n1\n3\n5\n\n\n\n\n\n"
@@ -13226,31 +13226,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/iterators/#Base.Iterators.reverse",
-    "page": "Iteration utilities",
+    "page": "迭代相关",
     "title": "Base.Iterators.reverse",
     "category": "function",
     "text": "Iterators.reverse(itr)\n\nGiven an iterator itr, then reverse(itr) is an iterator over the same collection but in the reverse order.\n\nThis iterator is \"lazy\" in that it does not make a copy of the collection in order to reverse it; see Base.reverse for an eager implementation.\n\nNot all iterator types T support reverse-order iteration.  If T doesn\'t, then iterating over Iterators.reverse(itr::T) will throw a MethodError because of the missing iterate methods for Iterators.Reverse{T}. (To implement these methods, the original iterator itr::T can be obtained from r = Iterators.reverse(itr) by r.itr.)\n\nExamples\n\njulia> foreach(println, Iterators.reverse(1:5))\n5\n4\n3\n2\n1\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/iterators/#Iteration-utilities-1",
-    "page": "Iteration utilities",
-    "title": "Iteration utilities",
+    "location": "base/iterators/#迭代相关-1",
+    "page": "迭代相关",
+    "title": "迭代相关",
     "category": "section",
     "text": "Base.Iterators.Stateful\nBase.Iterators.zip\nBase.Iterators.enumerate\nBase.Iterators.rest\nBase.Iterators.countfrom\nBase.Iterators.take\nBase.Iterators.drop\nBase.Iterators.cycle\nBase.Iterators.repeated\nBase.Iterators.product\nBase.Iterators.flatten\nBase.Iterators.partition\nBase.Iterators.filter\nBase.Iterators.reverse"
 },
 
 {
     "location": "base/c/#",
-    "page": "C Interface",
-    "title": "C Interface",
+    "page": "C 接口",
+    "title": "C 接口",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "base/c/#ccall",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "ccall",
     "category": "keyword",
     "text": "ccall((function_name, library), returntype, (argtype1, ...), argvalue1, ...)\nccall(function_pointer, returntype, (argtype1, ...), argvalue1, ...)\n\nCall a function in a C-exported shared library, specified by the tuple (function_name, library), where each component is either a string or symbol. Alternatively, ccall may also be used to call a function pointer function_pointer, such as one returned by dlsym.\n\nNote that the argument type tuple must be a literal tuple, and not a tuple-valued variable or expression.\n\nEach argvalue to the ccall will be converted to the corresponding argtype, by automatic insertion of calls to unsafe_convert(argtype, cconvert(argtype, argvalue)). (See also the documentation for unsafe_convert and cconvert for further details.) In most cases, this simply results in a call to convert(argtype, argvalue).\n\n\n\n\n\n"
@@ -13258,7 +13258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Core.Intrinsics.cglobal",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Core.Intrinsics.cglobal",
     "category": "function",
     "text": "cglobal((symbol, library) [, type=Cvoid])\n\nObtain a pointer to a global variable in a C-exported shared library, specified exactly as in ccall. Returns a Ptr{Type}, defaulting to Ptr{Cvoid} if no Type argument is supplied. The values can be read or written by unsafe_load or unsafe_store!, respectively.\n\n\n\n\n\n"
@@ -13266,7 +13266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.@cfunction",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.@cfunction",
     "category": "macro",
     "text": "@cfunction(callable, ReturnType, (ArgumentTypes...,)) -> Ptr{Cvoid}\n@cfunction($callable, ReturnType, (ArgumentTypes...,)) -> CFunction\n\nGenerate a C-callable function pointer from the Julia function closure for the given type signature. To pass the return value to a ccall, use the argument type Ptr{Cvoid} in the signature.\n\nNote that the argument type tuple must be a literal tuple, and not a tuple-valued variable or expression (although it can include a splat expression). And that these arguments will be evaluated in global scope during compile-time (not deferred until runtime). Adding a \'$\' in front of the function argument changes this to instead create a runtime closure over the local variable callable.\n\nSee manual section on ccall and cfunction usage.\n\nExamples\n\njulia> function foo(x::Int, y::Int)\n           return x + y\n       end\n\njulia> @cfunction(foo, Int, (Int, Int))\nPtr{Cvoid} @0x000000001b82fcd0\n\n\n\n\n\n"
@@ -13274,7 +13274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.CFunction",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.CFunction",
     "category": "type",
     "text": "CFunction struct\n\nGarbage-collection handle for the return value from @cfunction when the first argument is annotated with \'$\'. Like all cfunction handles, it should be passed to ccall as a Ptr{Cvoid}, and will be converted automatically at the call site to the appropriate type.\n\nSee @cfunction.\n\n\n\n\n\n"
@@ -13282,7 +13282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.unsafe_convert",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.unsafe_convert",
     "category": "function",
     "text": "unsafe_convert(T, x)\n\nConvert x to a C argument of type T where the input x must be the return value of cconvert(T, ...).\n\nIn cases where convert would need to take a Julia object and turn it into a Ptr, this function should be used to define and perform that conversion.\n\nBe careful to ensure that a Julia reference to x exists as long as the result of this function will be used. Accordingly, the argument x to this function should never be an expression, only a variable name or field reference. For example, x=a.b.c is acceptable, but x=[a,b,c] is not.\n\nThe unsafe prefix on this function indicates that using the result of this function after the x argument to this function is no longer accessible to the program may cause undefined behavior, including program corruption or segfaults, at any later time.\n\nSee also cconvert\n\n\n\n\n\n"
@@ -13290,7 +13290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.cconvert",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.cconvert",
     "category": "function",
     "text": "cconvert(T,x)\n\nConvert x to a value to be passed to C code as type T, typically by calling convert(T, x).\n\nIn cases where x cannot be safely converted to T, unlike convert, cconvert may return an object of a type different from T, which however is suitable for unsafe_convert to handle. The result of this function should be kept valid (for the GC) until the result of unsafe_convert is not needed anymore. This can be used to allocate memory that will be accessed by the ccall. If multiple objects need to be allocated, a tuple of the objects can be used as return value.\n\nNeither convert nor cconvert should take a Julia object and turn it into a Ptr.\n\n\n\n\n\n"
@@ -13298,7 +13298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.unsafe_load",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.unsafe_load",
     "category": "function",
     "text": "unsafe_load(p::Ptr{T}, i::Integer=1)\n\nLoad a value of type T from the address of the ith element (1-indexed) starting at p. This is equivalent to the C expression p[i-1].\n\nThe unsafe prefix on this function indicates that no validation is performed on the pointer p to ensure that it is valid. Incorrect usage may segfault your program or return garbage answers, in the same manner as C.\n\n\n\n\n\n"
@@ -13306,7 +13306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.unsafe_store!",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.unsafe_store!",
     "category": "function",
     "text": "unsafe_store!(p::Ptr{T}, x, i::Integer=1)\n\nStore a value of type T to the address of the ith element (1-indexed) starting at p. This is equivalent to the C expression p[i-1] = x.\n\nThe unsafe prefix on this function indicates that no validation is performed on the pointer p to ensure that it is valid. Incorrect usage may corrupt or segfault your program, in the same manner as C.\n\n\n\n\n\n"
@@ -13314,7 +13314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.unsafe_copyto!-Union{Tuple{T}, Tuple{Ptr{T},Ptr{T},Any}} where T",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.unsafe_copyto!",
     "category": "method",
     "text": "unsafe_copyto!(dest::Ptr{T}, src::Ptr{T}, N)\n\nCopy N elements from a source pointer to a destination, with no checking. The size of an element is determined by the type of the pointers.\n\nThe unsafe prefix on this function indicates that no validation is performed on the pointers dest and src to ensure that they are valid. Incorrect usage may corrupt or segfault your program, in the same manner as C.\n\n\n\n\n\n"
@@ -13322,7 +13322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.unsafe_copyto!-Union{Tuple{T}, Tuple{Array{T,N} where N,Any,Array{T,N} where N,Any,Any}} where T",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.unsafe_copyto!",
     "category": "method",
     "text": "unsafe_copyto!(dest::Array, do, src::Array, so, N)\n\nCopy N elements from a source array to a destination, starting at offset so in the source and do in the destination (1-indexed).\n\nThe unsafe prefix on this function indicates that no validation is performed to ensure that N is inbounds on either array. Incorrect usage may corrupt or segfault your program, in the same manner as C.\n\n\n\n\n\n"
@@ -13330,7 +13330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.copyto!",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.copyto!",
     "category": "function",
     "text": "copyto!(dest, do, src, so, N)\n\nCopy N elements from collection src starting at offset so, to array dest starting at offset do. Return dest.\n\n\n\n\n\ncopyto!(dest::AbstractArray, src) -> dest\n\nCopy all elements from collection src to array dest, whose length must be greater than or equal to the length n of src. The first n elements of dest are overwritten, the other elements are left untouched.\n\nExamples\n\njulia> x = [1., 0., 3., 0., 5.];\n\njulia> y = zeros(7);\n\njulia> copyto!(y, x);\n\njulia> y\n7-element Array{Float64,1}:\n 1.0\n 0.0\n 3.0\n 0.0\n 5.0\n 0.0\n 0.0\n\n\n\n\n\ncopyto!(dest, Rdest::CartesianIndices, src, Rsrc::CartesianIndices) -> dest\n\nCopy the block of src in the range of Rsrc to the block of dest in the range of Rdest. The sizes of the two regions must match.\n\n\n\n\n\n"
@@ -13338,7 +13338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.pointer",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.pointer",
     "category": "function",
     "text": "pointer(array [, index])\n\nGet the native address of an array or string, optionally at a given location index.\n\nThis function is \"unsafe\". Be careful to ensure that a Julia reference to array exists as long as this pointer will be used. The GC.@preserve macro should be used to protect the array argument from garbage collection within a given block of code.\n\nCalling Ref(array[, index]) is generally preferable to this function as it guarantees validity.\n\n\n\n\n\n"
@@ -13346,7 +13346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.unsafe_wrap-Union{Tuple{N}, Tuple{T}, Tuple{Union{Type{Array}, Type{Array{T,N} where N}, Type{Array{T,N}}},Ptr{T},Tuple{Vararg{Int64,N}}}} where N where T",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.unsafe_wrap",
     "category": "method",
     "text": "unsafe_wrap(Array, pointer::Ptr{T}, dims; own = false)\n\nWrap a Julia Array object around the data at the address given by pointer, without making a copy.  The pointer element type T determines the array element type. dims is either an integer (for a 1d array) or a tuple of the array dimensions. own optionally specifies whether Julia should take ownership of the memory, calling free on the pointer when the array is no longer referenced.\n\nThis function is labeled \"unsafe\" because it will crash if pointer is not a valid memory address to data of the requested length.\n\n\n\n\n\n"
@@ -13354,7 +13354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.pointer_from_objref",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.pointer_from_objref",
     "category": "function",
     "text": "pointer_from_objref(x)\n\nGet the memory address of a Julia object as a Ptr. The existence of the resulting Ptr will not protect the object from garbage collection, so you must ensure that the object remains referenced for the whole time that the Ptr will be used.\n\nThis function may not be called on immutable objects, since they do not have stable memory addresses.\n\n\n\n\n\n"
@@ -13362,7 +13362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.unsafe_pointer_to_objref",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.unsafe_pointer_to_objref",
     "category": "function",
     "text": "unsafe_pointer_to_objref(p::Ptr)\n\nConvert a Ptr to an object reference. Assumes the pointer refers to a valid heap-allocated Julia object. If this is not the case, undefined behavior results, hence this function is considered \"unsafe\" and should be used with care.\n\n\n\n\n\n"
@@ -13370,7 +13370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.disable_sigint",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.disable_sigint",
     "category": "function",
     "text": "disable_sigint(f::Function)\n\nDisable Ctrl-C handler during execution of a function on the current task, for calling external code that may call julia code that is not interrupt safe. Intended to be called using do block syntax as follows:\n\ndisable_sigint() do\n    # interrupt-unsafe code\n    ...\nend\n\nThis is not needed on worker threads (Threads.threadid() != 1) since the InterruptException will only be delivered to the master thread. External functions that do not call julia code or julia runtime automatically disable sigint during their execution.\n\n\n\n\n\n"
@@ -13378,7 +13378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.reenable_sigint",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.reenable_sigint",
     "category": "function",
     "text": "reenable_sigint(f::Function)\n\nRe-enable Ctrl-C handler during execution of a function. Temporarily reverses the effect of disable_sigint.\n\n\n\n\n\n"
@@ -13386,7 +13386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.systemerror",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.systemerror",
     "category": "function",
     "text": "systemerror(sysfunc, iftrue)\n\nRaises a SystemError for errno with the descriptive string sysfunc if iftrue is true\n\n\n\n\n\n"
@@ -13394,7 +13394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Core.Ptr",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Core.Ptr",
     "category": "type",
     "text": "Ptr{T}\n\nA memory address referring to data of type T.  However, there is no guarantee that the memory is actually valid, or that it actually represents data of the specified type.\n\n\n\n\n\n"
@@ -13402,7 +13402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Core.Ref",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Core.Ref",
     "category": "type",
     "text": "Ref{T}\n\nAn object that safely references data of type T. This type is guaranteed to point to valid, Julia-allocated memory of the correct type. The underlying data is protected from freeing by the garbage collector as long as the Ref itself is referenced.\n\nIn Julia, Ref objects are dereferenced (loaded or stored) with [].\n\nCreation of a Ref to a value x of type T is usually written Ref(x). Additionally, for creating interior pointers to containers (such as Array or Ptr), it can be written Ref(a, i) for creating a reference to the i-th element of a.\n\nWhen passed as a ccall argument (either as a Ptr or Ref type), a Ref object will be converted to a native pointer to the data it references.\n\nThere is no invalid (NULL) Ref in Julia, but a C_NULL instance of Ptr can be passed to a ccall Ref argument.\n\n\n\n\n\n"
@@ -13410,7 +13410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cchar",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cchar",
     "category": "type",
     "text": "Cchar\n\nEquivalent to the native char c-type.\n\n\n\n\n\n"
@@ -13418,7 +13418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cuchar",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cuchar",
     "category": "type",
     "text": "Cuchar\n\nEquivalent to the native unsigned char c-type (UInt8).\n\n\n\n\n\n"
@@ -13426,7 +13426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cshort",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cshort",
     "category": "type",
     "text": "Cshort\n\nEquivalent to the native signed short c-type (Int16).\n\n\n\n\n\n"
@@ -13434,7 +13434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cstring",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cstring",
     "category": "type",
     "text": "Cstring\n\nA C-style string composed of the native character type Cchars. Cstrings are NUL-terminated. For C-style strings composed of the native wide character type, see Cwstring. For more information about string interopability with C, see the manual.\n\n\n\n\n\n"
@@ -13442,7 +13442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cushort",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cushort",
     "category": "type",
     "text": "Cushort\n\nEquivalent to the native unsigned short c-type (UInt16).\n\n\n\n\n\n"
@@ -13450,7 +13450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cint",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cint",
     "category": "type",
     "text": "Cint\n\nEquivalent to the native signed int c-type (Int32).\n\n\n\n\n\n"
@@ -13458,7 +13458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cuint",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cuint",
     "category": "type",
     "text": "Cuint\n\nEquivalent to the native unsigned int c-type (UInt32).\n\n\n\n\n\n"
@@ -13466,7 +13466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Clong",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Clong",
     "category": "type",
     "text": "Clong\n\nEquivalent to the native signed long c-type.\n\n\n\n\n\n"
@@ -13474,7 +13474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Culong",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Culong",
     "category": "type",
     "text": "Culong\n\nEquivalent to the native unsigned long c-type.\n\n\n\n\n\n"
@@ -13482,7 +13482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Clonglong",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Clonglong",
     "category": "type",
     "text": "Clonglong\n\nEquivalent to the native signed long long c-type (Int64).\n\n\n\n\n\n"
@@ -13490,7 +13490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Culonglong",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Culonglong",
     "category": "type",
     "text": "Culonglong\n\nEquivalent to the native unsigned long long c-type (UInt64).\n\n\n\n\n\n"
@@ -13498,7 +13498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cintmax_t",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cintmax_t",
     "category": "type",
     "text": "Cintmax_t\n\nEquivalent to the native intmax_t c-type (Int64).\n\n\n\n\n\n"
@@ -13506,7 +13506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cuintmax_t",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cuintmax_t",
     "category": "type",
     "text": "Cuintmax_t\n\nEquivalent to the native uintmax_t c-type (UInt64).\n\n\n\n\n\n"
@@ -13514,7 +13514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Csize_t",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Csize_t",
     "category": "type",
     "text": "Csize_t\n\nEquivalent to the native size_t c-type (UInt).\n\n\n\n\n\n"
@@ -13522,7 +13522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cssize_t",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cssize_t",
     "category": "type",
     "text": "Cssize_t\n\nEquivalent to the native ssize_t c-type.\n\n\n\n\n\n"
@@ -13530,7 +13530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cptrdiff_t",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cptrdiff_t",
     "category": "type",
     "text": "Cptrdiff_t\n\nEquivalent to the native ptrdiff_t c-type (Int).\n\n\n\n\n\n"
@@ -13538,7 +13538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cwchar_t",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cwchar_t",
     "category": "type",
     "text": "Cwchar_t\n\nEquivalent to the native wchar_t c-type (Int32).\n\n\n\n\n\n"
@@ -13546,7 +13546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cwstring",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cwstring",
     "category": "type",
     "text": "Cwstring\n\nA C-style string composed of the native wide character type Cwchar_ts. Cwstrings are NUL-terminated. For C-style strings composed of the native character type, see Cstring. For more information about string interopability with C, see the manual.\n\n\n\n\n\n"
@@ -13554,7 +13554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cfloat",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cfloat",
     "category": "type",
     "text": "Cfloat\n\nEquivalent to the native float c-type (Float32).\n\n\n\n\n\n"
@@ -13562,23 +13562,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#Base.Cdouble",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Base.Cdouble",
     "category": "type",
     "text": "Cdouble\n\nEquivalent to the native double c-type (Float64).\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/c/#C-Interface-1",
-    "page": "C Interface",
-    "title": "C Interface",
+    "location": "base/c/#C-接口-1",
+    "page": "C 接口",
+    "title": "C 接口",
     "category": "section",
     "text": "ccall\nCore.Intrinsics.cglobal\nBase.@cfunction\nBase.CFunction\nBase.unsafe_convert\nBase.cconvert\nBase.unsafe_load\nBase.unsafe_store!\nBase.unsafe_copyto!{T}(::Ptr{T}, ::Ptr{T}, ::Any)\nBase.unsafe_copyto!{T}(::Array{T}, ::Any, ::Array{T}, ::Any, ::Any)\nBase.copyto!\nBase.pointer\nBase.unsafe_wrap{T,N}(::Union{Type{Array},Type{Array{T}},Type{Array{T,N}}}, ::Ptr{T}, ::NTuple{N,Int})\nBase.pointer_from_objref\nBase.unsafe_pointer_to_objref\nBase.disable_sigint\nBase.reenable_sigint\nBase.systemerror\nCore.Ptr\nCore.Ref\nBase.Cchar\nBase.Cuchar\nBase.Cshort\nBase.Cstring\nBase.Cushort\nBase.Cint\nBase.Cuint\nBase.Clong\nBase.Culong\nBase.Clonglong\nBase.Culonglong\nBase.Cintmax_t\nBase.Cuintmax_t\nBase.Csize_t\nBase.Cssize_t\nBase.Cptrdiff_t\nBase.Cwchar_t\nBase.Cwstring\nBase.Cfloat\nBase.Cdouble"
 },
 
 {
     "location": "base/c/#Core.Intrinsics.llvmcall",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "Core.Intrinsics.llvmcall",
     "category": "function",
     "text": "llvmcall(IR::String, ReturnType, (ArgumentType1, ...), ArgumentValue1, ...)\nllvmcall((declarations::String, IR::String), ReturnType, (ArgumentType1, ...), ArgumentValue1, ...)\n\nCall LLVM IR string in the first argument. Similar to an LLVM function define block, arguments are available as consecutive unnamed SSA variables (%0, %1, etc.).\n\nThe optional declarations string contains external functions declarations that are necessary for llvm to compile the IR string. Multiple declarations can be passed in by separating them with line breaks.\n\nNote that the argument type tuple must be a literal tuple, and not a tuple-valued variable or expression.\n\nEach ArgumentValue to llvmcall will be converted to the corresponding ArgumentType, by automatic insertion of calls to unsafe_convert(ArgumentType, cconvert(ArgumentType, ArgumentValue)). (See also the documentation for unsafe_convert and cconvert for further details.) In most cases, this simply results in a call to convert(ArgumentType, ArgumentValue).\n\nSee test/llvmcall.jl for usage examples.\n\n\n\n\n\n"
@@ -13586,7 +13586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/c/#LLVM-Interface-1",
-    "page": "C Interface",
+    "page": "C 接口",
     "title": "LLVM Interface",
     "category": "section",
     "text": "Core.Intrinsics.llvmcall"
@@ -13594,15 +13594,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#",
-    "page": "C Standard Library",
-    "title": "C Standard Library",
+    "page": "C 标准库",
+    "title": "C 标准库",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "base/libc/#Base.Libc.malloc",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.malloc",
     "category": "function",
     "text": "malloc(size::Integer) -> Ptr{Cvoid}\n\nCall malloc from the C standard library.\n\n\n\n\n\n"
@@ -13610,7 +13610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.calloc",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.calloc",
     "category": "function",
     "text": "calloc(num::Integer, size::Integer) -> Ptr{Cvoid}\n\nCall calloc from the C standard library.\n\n\n\n\n\n"
@@ -13618,7 +13618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.realloc",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.realloc",
     "category": "function",
     "text": "realloc(addr::Ptr, size::Integer) -> Ptr{Cvoid}\n\nCall realloc from the C standard library.\n\nSee warning in the documentation for free regarding only using this on memory originally obtained from malloc.\n\n\n\n\n\n"
@@ -13626,7 +13626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.free",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.free",
     "category": "function",
     "text": "free(addr::Ptr)\n\nCall free from the C standard library. Only use this on memory obtained from malloc, not on pointers retrieved from other C libraries. Ptr objects obtained from C libraries should be freed by the free functions defined in that library, to avoid assertion failures if multiple libc libraries exist on the system.\n\n\n\n\n\n"
@@ -13634,7 +13634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.errno",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.errno",
     "category": "function",
     "text": "errno([code])\n\nGet the value of the C library\'s errno. If an argument is specified, it is used to set the value of errno.\n\nThe value of errno is only valid immediately after a ccall to a C library routine that sets it. Specifically, you cannot call errno at the next prompt in a REPL, because lots of code is executed between prompts.\n\n\n\n\n\n"
@@ -13642,7 +13642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.strerror",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.strerror",
     "category": "function",
     "text": "strerror(n=errno())\n\nConvert a system call error code to a descriptive string\n\n\n\n\n\n"
@@ -13650,7 +13650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.GetLastError",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.GetLastError",
     "category": "function",
     "text": "GetLastError()\n\nCall the Win32 GetLastError function [only available on Windows].\n\n\n\n\n\n"
@@ -13658,7 +13658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.FormatMessage",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.FormatMessage",
     "category": "function",
     "text": "FormatMessage(n=GetLastError())\n\nConvert a Win32 system call error code to a descriptive string [only available on Windows].\n\n\n\n\n\n"
@@ -13666,7 +13666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.time-Tuple{Base.Libc.TmStruct}",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.time",
     "category": "method",
     "text": "time(t::TmStruct)\n\nConverts a TmStruct struct to a number of seconds since the epoch.\n\n\n\n\n\n"
@@ -13674,7 +13674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.strftime",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.strftime",
     "category": "function",
     "text": "strftime([format], time)\n\nConvert time, given as a number of seconds since the epoch or a TmStruct, to a formatted string using the given format. Supported formats are the same as those in the standard C library.\n\n\n\n\n\n"
@@ -13682,7 +13682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.strptime",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.strptime",
     "category": "function",
     "text": "strptime([format], timestr)\n\nParse a formatted time string into a TmStruct giving the seconds, minute, hour, date, etc. Supported formats are the same as those in the standard C library. On some platforms, timezones will not be parsed correctly. If the result of this function will be passed to time to convert it to seconds since the epoch, the isdst field should be filled in manually. Setting it to -1 will tell the C library to use the current system settings to determine the timezone.\n\n\n\n\n\n"
@@ -13690,7 +13690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.TmStruct",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.TmStruct",
     "category": "type",
     "text": "TmStruct([seconds])\n\nConvert a number of seconds since the epoch to broken-down format, with fields sec, min, hour, mday, month, year, wday, yday, and isdst.\n\n\n\n\n\n"
@@ -13698,16 +13698,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/libc/#Base.Libc.flush_cstdio",
-    "page": "C Standard Library",
+    "page": "C 标准库",
     "title": "Base.Libc.flush_cstdio",
     "category": "function",
     "text": "flush_cstdio()\n\nFlushes the C stdout and stderr streams (which may have been written to by external C code).\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/libc/#C-Standard-Library-1",
-    "page": "C Standard Library",
-    "title": "C Standard Library",
+    "location": "base/libc/#C-标准库-1",
+    "page": "C 标准库",
+    "title": "C 标准库",
     "category": "section",
     "text": "Base.Libc.malloc\nBase.Libc.calloc\nBase.Libc.realloc\nBase.Libc.free\nBase.Libc.errno\nBase.Libc.strerror\nBase.Libc.GetLastError\nBase.Libc.FormatMessage\nBase.Libc.time(::Base.Libc.TmStruct)\nBase.Libc.strftime\nBase.Libc.strptime\nBase.Libc.TmStruct\nBase.Libc.flush_cstdio"
 },
@@ -13770,18 +13770,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/simd-types/#",
-    "page": "SIMD Support",
-    "title": "SIMD Support",
+    "page": "SIMD 支持",
+    "title": "SIMD 支持",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/simd-types/#SIMD-Support-1",
-    "page": "SIMD Support",
-    "title": "SIMD Support",
+    "location": "base/simd-types/#SIMD-支持-1",
+    "page": "SIMD 支持",
+    "title": "SIMD 支持",
     "category": "section",
-    "text": "Type VecElement{T} is intended for building libraries of SIMD operations. Practical use of it requires using llvmcall. The type is defined as:struct VecElement{T}\n    value::T\nendIt has a special compilation rule: a homogeneous tuple of VecElement{T} maps to an LLVM vector type when T is a primitive bits type and the tuple length is in the set {2-6,8-10,16}.At -O3, the compiler might automatically vectorize operations on such tuples. For example, the following program, when compiled with julia -O3 generates two SIMD addition instructions (addps) on x86 systems:const m128 = NTuple{4,VecElement{Float32}}\n\nfunction add(a::m128, b::m128)\n    (VecElement(a[1].value+b[1].value),\n     VecElement(a[2].value+b[2].value),\n     VecElement(a[3].value+b[3].value),\n     VecElement(a[4].value+b[4].value))\nend\n\ntriple(c::m128) = add(add(c,c),c)\n\ncode_native(triple,(m128,))However, since the automatic vectorization cannot be relied upon, future use will mostly be via libraries that use llvmcall."
+    "text": "VecElement{T}类型是为了构建SIMD运算符的库。实际使用中 要求使用 llvmcall。类型按下文定义：struct VecElement{T}\n    value::T\nend它有特别的编译规则：当T是初始位类型并且元组长度在集合{2-6,8-10,16}中，VecElement{T}的同态元组会映射到LLVMvector中。在-O3处，编译器可能自动为这样的元组向量化运算符。例如 接下来的程序，当用julia -O3编译，在x86系统中会生成两个SIMD附加指令（addps）：const m128 = NTuple{4,VecElement{Float32}}\n\nfunction add(a::m128, b::m128)\n    (VecElement(a[1].value+b[1].value),\n     VecElement(a[2].value+b[2].value),\n     VecElement(a[3].value+b[3].value),\n     VecElement(a[4].value+b[4].value))\nend\n\ntriple(c::m128) = add(add(c,c),c)\n\ncode_native(triple,(m128,))然而，因为无法依靠自动向量化，未来将大量通过使用llvmcall的库来使用。"
 },
 
 {
@@ -20485,7 +20485,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Sockets",
     "title": "Base.bind",
     "category": "function",
-    "text": "bind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\nbind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\n"
+    "text": "bind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\nbind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\n"
 },
 
 {
@@ -21130,74 +21130,74 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/reflection/#",
-    "page": "Reflection and introspection",
-    "title": "Reflection and introspection",
+    "page": "反射 与 自我检查",
+    "title": "反射 与 自我检查",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "devdocs/reflection/#Reflection-and-introspection-1",
-    "page": "Reflection and introspection",
-    "title": "Reflection and introspection",
+    "location": "devdocs/reflection/#反射-与-自我检查-1",
+    "page": "反射 与 自我检查",
+    "title": "反射 与 自我检查",
     "category": "section",
-    "text": "Julia provides a variety of runtime reflection capabilities."
+    "text": "朱莉娅提供了多种运行时的反射功能。"
 },
 
 {
-    "location": "devdocs/reflection/#Module-bindings-1",
-    "page": "Reflection and introspection",
-    "title": "Module bindings",
+    "location": "devdocs/reflection/#模块绑定-1",
+    "page": "反射 与 自我检查",
+    "title": "模块绑定",
     "category": "section",
-    "text": "The exported names for a Module are available using names(m::Module), which will return an array of Symbol elements representing the exported bindings. names(m::Module, all = true) returns symbols for all bindings in m, regardless of export status."
+    "text": "Module 导出的名称使用  names(m::Module) ，会返回一个由 Symbol 元素组成的数组，表示导出的绑定。 不管导出状态如何，names(m::Module, all = true) 返回 m 中所有绑定的符号。"
 },
 
 {
-    "location": "devdocs/reflection/#DataType-fields-1",
-    "page": "Reflection and introspection",
-    "title": "DataType fields",
+    "location": "devdocs/reflection/#数据类型字段-1",
+    "page": "反射 与 自我检查",
+    "title": "数据类型字段",
     "category": "section",
-    "text": "The names of DataType fields may be interrogated using fieldnames. For example, given the following type, fieldnames(Point) returns a tuple of Symbols representing the field names:julia> struct Point\n           x::Int\n           y\n       end\n\njulia> fieldnames(Point)\n(:x, :y)The type of each field in a Point object is stored in the types field of the Point variable itself:julia> Point.types\nsvec(Int64, Any)While x is annotated as an Int, y was unannotated in the type definition, therefore y defaults to the Any type.Types are themselves represented as a structure called DataType:julia> typeof(Point)\nDataTypeNote that fieldnames(DataType) gives the names for each field of DataType itself, and one of these fields is the types field observed in the example above."
+    "text": "数据类型 的所有字段名称可以使用 fieldnames 来获取。 例如下面给定一个类型，fieldnames(Point) 会返回一个表示字段名称的 关于 Symbol 的元组julia> struct Point\n           x::Int\n           y\n       end\n\njulia> fieldnames(Point)\n(:x, :y)Point 对象中的每个字段的类型 存储在 Point 本身的 types 变量中。julia> Point.types\nsvec(Int64, Any)不过x 被声明为 Int，而 y 未声明类型，因此y 默认为 Any 类型。类型本身表示为一个叫做 DataType 的结构：julia> typeof(Point)\nDataType注意 fieldnames(DataType) 给出了 DataType 本身的每个字段的名称，其中一个字段是上面示例中看到的 types 字段。"
 },
 
 {
     "location": "devdocs/reflection/#Subtypes-1",
-    "page": "Reflection and introspection",
+    "page": "反射 与 自我检查",
     "title": "Subtypes",
     "category": "section",
-    "text": "The direct subtypes of any DataType may be listed using subtypes. For example, the abstract DataType AbstractFloat has four (concrete) subtypes:julia> subtypes(AbstractFloat)\n4-element Array{Any,1}:\n BigFloat\n Float16\n Float32\n Float64Any abstract subtype will also be included in this list, but further subtypes thereof will not; recursive application of subtypes may be used to inspect the full type tree."
+    "text": "任何 数据类型 的 直接 子类型 都可以通过使用 subtypes 来列出。 例如 抽象类型 DataType AbstractFloat 有四个（具体的）子类型：julia> subtypes(AbstractFloat)\n4-element Array{Any,1}:\n BigFloat\n Float16\n Float32\n Float64Any abstract subtype will also be included in this list, but further subtypes thereof will not; 任何抽象的子类型也会被包括其中，但不会有更深的子类型。 subtypes 的递归使用可以检查出整个类型树"
 },
 
 {
-    "location": "devdocs/reflection/#DataType-layout-1",
-    "page": "Reflection and introspection",
-    "title": "DataType layout",
+    "location": "devdocs/reflection/#数据类型布局设计-1",
+    "page": "反射 与 自我检查",
+    "title": "数据类型布局设计",
     "category": "section",
-    "text": "The internal representation of a DataType is critically important when interfacing with C code and several functions are available to inspect these details. isbits(T::DataType) returns true if T is stored with C-compatible alignment. fieldoffset(T::DataType, i::Integer) returns the (byte) offset for field i relative to the start of the type."
+    "text": "用 C 代码接口时，DataType 的内部表现非常重要。有几个函数可以检查这些细节。isbits(T::DataType) 如果 T 类型是以 C 兼容的对齐方式存储，则为 true。    fieldoffset(T::DataType, i::Integer) 返回字段 i 相对于类型开始的 (字节) 偏移量。"
 },
 
 {
-    "location": "devdocs/reflection/#Function-methods-1",
-    "page": "Reflection and introspection",
-    "title": "Function methods",
+    "location": "devdocs/reflection/#函数方法-1",
+    "page": "反射 与 自我检查",
+    "title": "函数方法",
     "category": "section",
-    "text": "The methods of any generic function may be listed using methods. The method dispatch table may be searched for methods accepting a given type using methodswith."
+    "text": "任何泛型函数的方法都可以使用 methods 来列出。用 methodswith 搜索 方法调度表 来查找 接收给定类型的方法。"
 },
 
 {
-    "location": "devdocs/reflection/#Expansion-and-lowering-1",
-    "page": "Reflection and introspection",
-    "title": "Expansion and lowering",
+    "location": "devdocs/reflection/#扩展和更底层-1",
+    "page": "反射 与 自我检查",
+    "title": "扩展和更底层",
     "category": "section",
-    "text": "As discussed in the Metaprogramming section, the macroexpand function gives the unquoted and interpolated expression (Expr) form for a given macro. To use macroexpand, quote the expression block itself (otherwise, the macro will be evaluated and the result will be passed instead!). For example:julia> macroexpand(@__MODULE__, :(@edit println(\"\")) )\n:((InteractiveUtils.edit)(println, (Base.typesof)(\"\")))The functions Base.Meta.show_sexpr and dump are used to display S-expr style views and depth-nested detail views for any expression.Finally, the Meta.lower function gives the lowered form of any expression and is of particular interest for understanding how language constructs map to primitive operations such as assignments, branches, and calls:julia> Meta.lower(@__MODULE__, :([1+2, sin(0.5)]) )\n:($(Expr(:thunk, CodeInfo(\n 1 ─ %1 = 1 + 2\n │   %2 = sin(0.5)\n │   %3 = (Base.vect)(%1, %2)\n └──      return %3\n))))"
+    "text": "像 Metaprogramming 部分讨论的那样,  macroexpand 函数提供不带 quote 和 插值表达式 (Expr) 的形式。若要使用 macroexpand, quote 表达式代码块本身，（不然宏将被执行并替换为结果）。例如： the unquoted and interpolated expression (Expr) form for a given macro. To use macroexpand, quote the expression block itself (otherwise, the macro will be evaluated and the result will be passed instead!). For example:julia> macroexpand(@__MODULE__, :(@edit println(\"\")) )\n:((InteractiveUtils.edit)(println, (Base.typesof)(\"\")))函数 Base.Meta.show_sexpr 和 dump 用来展示 S-表达式样式预览 并且对任何表达式显示深层网络结构细节。最终， Meta.lower 函数对任何表达式提供 底层 的形式，并且是令人感兴趣的是理解 语言的结构 映射到 原始的操作比如赋值、分支以及调用：julia> Meta.lower(@__MODULE__, :([1+2, sin(0.5)]) )\n:($(Expr(:thunk, CodeInfo(\n 1 ─ %1 = 1 + 2\n │   %2 = sin(0.5)\n │   %3 = (Base.vect)(%1, %2)\n └──      return %3\n))))"
 },
 
 {
-    "location": "devdocs/reflection/#Intermediate-and-compiled-representations-1",
-    "page": "Reflection and introspection",
-    "title": "Intermediate and compiled representations",
+    "location": "devdocs/reflection/#中间表示和编译后表示-1",
+    "page": "反射 与 自我检查",
+    "title": "中间表示和编译后表示",
     "category": "section",
-    "text": "Inspecting the lowered form for functions requires selection of the specific method to display, because generic functions may have many methods with different type signatures. For this purpose, method-specific code-lowering is available using code_lowered, and the type-inferred form is available using code_typed. code_warntype adds highlighting to the output of code_typed.Closer to the machine, the LLVM intermediate representation of a function may be printed using by code_llvm, and finally the compiled machine code is available using code_native (this will trigger JIT compilation/code generation for any function which has not previously been called).For convenience, there are macro versions of the above functions which take standard function calls and expand argument types automatically:julia> @code_llvm +(1,1)\n\n; Function Attrs: sspreq\ndefine i64 @\"julia_+_130862\"(i64, i64) #0 {\ntop:\n    %2 = add i64 %1, %0, !dbg !8\n    ret i64 %2, !dbg !8\n}See @code_lowered, @code_typed, @code_warntype, @code_llvm, and @code_native."
+    "text": "检查函数的底层形式 需要选择所要显示的特定方法，因为泛型函数可能会有许多具有不同类型签名的方法。为此， 用 code_lowered 可以指定代码底层中的方法。 并且可以用  code_typed 来进行类型推断。 code_warntype 增加 code_typed 输出的高亮。更加接近于机器， 一个函数的 LLVM-IR 可以通过使用 code_llvm 打印出。 最终编译的机器码使用 code_native 查看（这将触发 之前未调用过的任何函数的 JIT 编译/代码生成）。为方便起见，上述函数有 宏的版本，它们接受标准函数调用并自动展开参数类型：julia> @code_llvm +(1,1)\n\n; Function Attrs: sspreq\ndefine i64 @\"julia_+_130862\"(i64, i64) #0 {\ntop:\n    %2 = add i64 %1, %0, !dbg !8\n    ret i64 %2, !dbg !8\n}See @code_lowered, @code_typed, @code_warntype, @code_llvm, and @code_native."
 },
 
 {
@@ -21274,23 +21274,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#",
-    "page": "Julia ASTs",
-    "title": "Julia ASTs",
+    "page": "Julia 的 AST",
+    "title": "Julia 的 AST",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "devdocs/ast/#Julia-ASTs-1",
-    "page": "Julia ASTs",
-    "title": "Julia ASTs",
+    "location": "devdocs/ast/#Julia-的-AST-1",
+    "page": "Julia 的 AST",
+    "title": "Julia 的 AST",
     "category": "section",
-    "text": "Julia has two representations of code. First there is a surface syntax AST returned by the parser (e.g. the Meta.parse function), and manipulated by macros. It is a structured representation of code as it is written, constructed by julia-parser.scm from a character stream. Next there is a lowered form, or IR (intermediate representation), which is used by type inference and code generation. In the lowered form there are fewer types of nodes, all macros are expanded, and all control flow is converted to explicit branches and sequences of statements. The lowered form is constructed by julia-syntax.scm.First we will focus on the lowered form, since it is more important to the compiler. It is also less obvious to the human, since it results from a significant rearrangement of the input syntax."
+    "text": "Julia 有两种 代码的表现形式。 第一种是解析器返回的表面语法 AST （例如 Meta.parse 函数），由宏来操控。是代码编写时的结构化表示，由字符流中的 julia-parser.scm 构造。 另一种则是低级的形式，或者 IR（中间表示），用来类型推导和代码生成。在低级形式上有少部分结点的类型，所有的宏都会被展开，所有的控制流会被转化成显式的分支和语句的序列。底层的形式由 julia-syntax.scm 构建。First we will focus on the lowered form, since it is more important to the compiler. It is also less obvious to the human, since it results from a significant rearrangement of the input syntax."
 },
 
 {
     "location": "devdocs/ast/#Lowered-form-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Lowered form",
     "category": "section",
     "text": "The following data types exist in lowered form:Expr\nHas a node type indicated by the head field, and an args field which is a Vector{Any} of subexpressions. While almost every part of a surface AST is represented by an Expr, the IR uses only a limited number of Exprs, mostly for calls, conditional branches (gotoifnot), and returns.\nSlot\nIdentifies arguments and local variables by consecutive numbering. Slot is an abstract type with subtypes SlotNumber and TypedSlot. Both types have an integer-valued id field giving the slot index. Most slots have the same type at all uses, and so are represented with SlotNumber. The types of these slots are found in the slottypes field of their MethodInstance object. Slots that require per-use type annotations are represented with TypedSlot, which has a typ field.\nCodeInfo\nWraps the IR of a method. Its code field is an array of expressions to execute.\nGotoNode\nUnconditional branch. The argument is the branch target, represented as an index in the code array to jump to.\nQuoteNode\nWraps an arbitrary value to reference as data. For example, the function f() = :a contains a QuoteNode whose value field is the symbol a, in order to return the symbol itself instead of evaluating it.\nGlobalRef\nRefers to global variable name in module mod.\nSSAValue\nRefers to a consecutively-numbered (starting at 1) static single assignment (SSA) variable inserted by the compiler. The number (id) of an SSAValue is the code array index of the expression whose value it represents.\nNewvarNode\nMarks a point where a variable (slot) is created. This has the effect of resetting a variable to undefined."
@@ -21298,7 +21298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Expr-types-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Expr types",
     "category": "section",
     "text": "These symbols appear in the head field of Exprs in lowered form.call\nFunction call (dynamic dispatch). args[1] is the function to call, args[2:end] are the arguments.\ninvoke\nFunction call (static dispatch). args[1] is the MethodInstance to call, args[2:end] are the arguments (including the function that is being called, at args[2]).\nstatic_parameter\nReference a static parameter by index.\ngotoifnot\nConditional branch. If args[1] is false, goes to the index identified in args[2].\n=\nAssignment. In the IR, the first argument is always a Slot or a GlobalRef.\nmethod\nAdds a method to a generic function and assigns the result if necessary.\nHas a 1-argument form and a 4-argument form. The 1-argument form arises from the syntax function foo end. In the 1-argument form, the argument is a symbol. If this symbol already names a function in the current scope, nothing happens. If the symbol is undefined, a new function is created and assigned to the identifier specified by the symbol. If the symbol is defined but names a non-function, an error is raised. The definition of \"names a function\" is that the binding is constant, and refers to an object of singleton type. The rationale for this is that an instance of a singleton type uniquely identifies the type to add the method to. When the type has fields, it wouldn\'t be clear whether the method was being added to the instance or its type.\nThe 4-argument form has the following arguments:\nargs[1]\nA function name, or false if unknown. If a symbol, then the expression first behaves like the 1-argument form above. This argument is ignored from then on. When this is false, it means a method is being added strictly by type, (::T)(x) = x.\nargs[2]\nA SimpleVector of argument type data. args[2][1] is a SimpleVector of the argument types, and args[2][2] is a SimpleVector of type variables corresponding to the method\'s static parameters.\nargs[3]\nA CodeInfo of the method itself. For \"out of scope\" method definitions (adding a method to a function that also has methods defined in different scopes) this is an expression that evaluates to a :lambda expression.\nargs[4]\ntrue or false, identifying whether the method is staged (@generated function).\nconst\nDeclares a (global) variable as constant.\nnull\nHas no arguments; simply yields the value nothing.\nnew\nAllocates a new struct-like object. First argument is the type. The new pseudo-function is lowered to this, and the type is always inserted by the compiler.  This is very much an internal-only feature, and does no checking. Evaluating arbitrary new expressions can easily segfault.\nreturn\nReturns its argument as the value of the enclosing function.\nthe_exception\nYields the caught exception inside a catch block. This is the value of the run time system variable jl_exception_in_transit.\nenter\nEnters an exception handler (setjmp). args[1] is the label of the catch block to jump to on error.\nleave\nPop exception handlers. args[1] is the number of handlers to pop.\ninbounds\nControls turning bounds checks on or off. A stack is maintained; if the first argument of this expression is true or false (true means bounds checks are disabled), it is pushed onto the stack. If the first argument is :pop, the stack is popped.\nboundscheck\nHas the value false if inlined into a section of code marked with @inbounds, otherwise has the value true.\ncopyast\nPart of the implementation of quasi-quote. The argument is a surface syntax AST that is simply copied recursively and returned at run time.\nmeta\nMetadata. args[1] is typically a symbol specifying the kind of metadata, and the rest of the arguments are free-form. The following kinds of metadata are commonly used:\n:inline and :noinline: Inlining hints."
@@ -21306,7 +21306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Method-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Method",
     "category": "section",
     "text": "A unique\'d container describing the shared metadata for a single method.name, module, file, line, sig\nMetadata to uniquely identify the method for the computer and the human.\nambig\nCache of other methods that may be ambiguous with this one.\nspecializations\nCache of all MethodInstance ever created for this Method, used to ensure uniqueness. Uniqueness is required for efficiency, especially for incremental precompile and tracking of method invalidation.\nsource\nThe original source code (usually compressed).\nroots\nPointers to non-AST things that have been interpolated into the AST, required by compression of the AST, type-inference, or the generation of native code.\nnargs, isva, called, isstaged, pure\nDescriptive bit-fields for the source code of this Method.\nmin_world / max_world\nThe range of world ages for which this method is visible to dispatch."
@@ -21314,7 +21314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#MethodInstance-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "MethodInstance",
     "category": "section",
     "text": "A unique\'d container describing a single callable signature for a Method. See especially Proper maintenance and care of multi-threading locks for important details on how to modify these fields safely.specTypes\nThe primary key for this MethodInstance. Uniqueness is guaranteed through a def.specializations lookup.\ndef\nThe Method that this function describes a specialization of. Or a Module, if this is a top-level Lambda expanded in Module, and which is not part of a Method.\nsparam_vals\nThe values of the static parameters in specTypes indexed by def.sparam_syms. For the MethodInstance at Method.unspecialized, this is the empty SimpleVector. But for a runtime MethodInstance from the MethodTable cache, this will always be defined and indexable.\nrettype\nThe inferred return type for the specFunctionObject field, which (in most cases) is also the computed return type for the function in general.\ninferred\nMay contain a cache of the inferred source for this function, or other information about the inference result such as a constant return value may be put here (if jlcall_api == 2), or it could be set to nothing to just indicate rettype is inferred.\nftpr\nThe generic jlcall entry point.\njlcall_api\nThe ABI to use when calling fptr. Some significant ones include:\n0 - Not compiled yet\n1 - JLCALLABLE `jlvaluet ()(jlfunctiont *f, jlvaluet *args[nargs], uint32t nargs)`\n2 - Constant (value stored in inferred)\n3 - With Static-parameters forwarded jl_value_t *(*)(jl_svec_t *sparams, jl_function_t *f, jl_value_t *args[nargs], uint32_t nargs)\n4 - Run in interpreter jl_value_t *(*)(jl_method_instance_t *meth, jl_function_t *f, jl_value_t *args[nargs], uint32_t nargs)\nmin_world / max_world\nThe range of world ages for which this method instance is valid to be called."
@@ -21322,7 +21322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#CodeInfo-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "CodeInfo",
     "category": "section",
     "text": "A temporary container for holding lowered source code.code\nAn Any array of statements\nslotnames\nAn array of symbols giving the name of each slot (argument or local variable).\nslottypes\nAn array of types for the slots.\nslotflags\nA UInt8 array of slot properties, represented as bit flags:\n2  - assigned (only false if there are no assignment statements with this var on the left)\n8  - const (currently unused for local variables)\n16 - statically assigned once\n32 - might be used before assigned. This flag is only valid after type inference.\nssavaluetypes\nEither an array or an Int.\nIf an Int, it gives the number of compiler-inserted temporary locations in the function. If an array, specifies a type for each location.\nlinetable\nAn array of source location objects\ncodelocs\nAn array of integer indices into the linetable, giving the location associated with each statement.Boolean properties:inferred\nWhether this has been produced by type inference.\ninlineable\nWhether this should be inlined.\npropagate_inbounds\nWhether this should should propagate @inbounds when inlined for the purpose of eliding @boundscheck blocks.\npure\nWhether this is known to be a pure function of its arguments, without respect to the state of the method caches or other mutable global state."
@@ -21330,7 +21330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Surface-syntax-AST-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Surface syntax AST",
     "category": "section",
     "text": "Front end ASTs consist almost entirely of Exprs and atoms (e.g. symbols, numbers). There is generally a different expression head for each visually distinct syntactic form. Examples will be given in s-expression syntax. Each parenthesized list corresponds to an Expr, where the first element is the head. For example (call f x) corresponds to Expr(:call, :f, :x) in Julia."
@@ -21338,7 +21338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Calls-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Calls",
     "category": "section",
     "text": "Input AST\nf(x) (call f x)\nf(x, y=1, z=2) (call f x (kw y 1) (kw z 2))\nf(x; y=1) (call f (parameters (kw y 1)) x)\nf(x...) (call f (... x))do syntax:f(x) do a,b\n    body\nendparses as (do (call f x) (-> (tuple a b) (block body)))."
@@ -21346,7 +21346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Operators-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Operators",
     "category": "section",
     "text": "Most uses of operators are just function calls, so they are parsed with the head call. However some operators are special forms (not necessarily function calls), and in those cases the operator itself is the expression head. In julia-parser.scm these are referred to as \"syntactic operators\". Some operators (+ and *) use N-ary parsing; chained calls are parsed as a single N-argument call. Finally, chains of comparisons have their own special expression structure.Input AST\nx+y (call + x y)\na+b+c+d (call + a b c d)\n2x (call * 2 x)\na&&b (&& a b)\nx += 1 (+= x 1)\na ? 1 : 2 (if a 1 2)\na:b (: a b)\na:b:c (: a b c)\na,b (tuple a b)\na==b (call == a b)\n1<i<=n (comparison 1 < i <= n)\na.b (. a (quote b))\na.(b) (. a b)"
@@ -21354,7 +21354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Bracketed-forms-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Bracketed forms",
     "category": "section",
     "text": "Input AST\na[i] (ref a i)\nt[i;j] (typed_vcat t i j)\nt[i j] (typed_hcat t i j)\nt[a b; c d] (typed_vcat t (row a b) (row c d))\na{b} (curly a b)\na{b;c} (curly a (parameters c) b)\n[x] (vect x)\n[x,y] (vect x y)\n[x;y] (vcat x y)\n[x y] (hcat x y)\n[x y; z t] (vcat (row x y) (row z t))\n[x for y in z, a in b] (comprehension x (= y z) (= a b))\nT[x for y in z] (typed_comprehension T x (= y z))\n(a, b, c) (tuple a b c)\n(a; b; c) (block a (block b c))"
@@ -21362,7 +21362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Macros-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Macros",
     "category": "section",
     "text": "Input AST\n@m x y (macrocall @m (line) x y)\nBase.@m x y (macrocall (. Base (quote @m)) (line) x y)\n@Base.m x y (macrocall (. Base (quote @m)) (line) x y)"
@@ -21370,7 +21370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Strings-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Strings",
     "category": "section",
     "text": "Input AST\n\"a\" \"a\"\nx\"y\" (macrocall @x_str (line) \"y\")\nx\"y\"z (macrocall @x_str (line) \"y\" \"z\")\n\"x = $x\" (string \"x = \" x)\n`a b c` (macrocall @cmd (line) \"a b c\")Doc string syntax:\"some docs\"\nf(x) = xparses as (macrocall (|.| Core \'@doc) (line) \"some docs\" (= (call f x) (block x)))."
@@ -21378,7 +21378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Imports-and-such-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Imports and such",
     "category": "section",
     "text": "Input AST\nimport a (import (. a))\nimport a.b.c (import (. a b c))\nimport ...a (import (. . . . a))\nimport a.b, c.d (import (. a b) (. c d))\nimport Base: x (import (: (. Base) (. x)))\nimport Base: x, y (import (: (. Base) (. x) (. y)))\nexport a, b (export a b)"
@@ -21386,7 +21386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Numbers-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Numbers",
     "category": "section",
     "text": "Julia supports more number types than many scheme implementations, so not all numbers are represented directly as scheme numbers in the AST.Input AST\n11111111111111111111 (macrocall @int128_str (null) \"11111111111111111111\")\n0xfffffffffffffffff (macrocall @uint128_str (null) \"0xfffffffffffffffff\")\n1111...many digits... (macrocall @big_str (null) \"1111....\")"
@@ -21394,7 +21394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Block-forms-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Block forms",
     "category": "section",
     "text": "A block of statements is parsed as (block stmt1 stmt2 ...).If statement:if a\n    b\nelseif c\n    d\nelse\n    e\nendparses as:(if a (block (line 2) b)\n    (elseif (block (line 3) c) (block (line 4) d)\n            (block (line 5 e))))A while loop parses as (while condition body).A for loop parses as (for (= var iter) body). If there is more than one iteration specification, they are parsed as a block: (for (block (= v1 iter1) (= v2 iter2)) body).break and continue are parsed as 0-argument expressions (break) and (continue).let is parsed as (let (= var val) body) or (let (block (= var1 val1) (= var2 val2) ...) body), like for loops.A basic function definition is parsed as (function (call f x) body). A more complex example:function f(x::T; k = 1) where T\n    return x+1\nendparses as:(function (where (call f (parameters (kw k 1))\n                       (:: x T))\n                 T)\n          (block (line 2) (return (call + x 1))))Type definition:mutable struct Foo{T<:S}\n    x::T\nendparses as:(struct true (curly Foo (<: T S))\n        (block (line 2) (:: x T)))The first argument is a boolean telling whether the type is mutable.try blocks parse as (try try_block var catch_block finally_block). If no variable is present after catch, var is #f. If there is no finally clause, then the last argument is not present."
@@ -21402,7 +21402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Quote-expressions-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Quote expressions",
     "category": "section",
     "text": "Julia source syntax forms for code quoting (quote and :( )) support interpolation with $. In Lisp terminology, this means they are actually \"backquote\" or \"quasiquote\" forms. Internally, there is also a need for code quoting without interpolation. In Julia\'s scheme code, non-interpolating quote is represented with the expression head inert.inert expressions are converted to Julia QuoteNode objects. These objects wrap a single value of any type, and when evaluated simply return that value.A quote expression whose argument is an atom also gets converted to a QuoteNode."
@@ -21410,7 +21410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Line-numbers-1",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Line numbers",
     "category": "section",
     "text": "Source location information is represented as (line line_num file_name) where the third component is optional (and omitted when the current line number, but not file name, changes).These expressions are represented as LineNumberNodes in Julia."
@@ -21418,7 +21418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/ast/#Macros-2",
-    "page": "Julia ASTs",
+    "page": "Julia 的 AST",
     "title": "Macros",
     "category": "section",
     "text": "Macro hygiene is represented through the expression head pair escape and hygienic-scope. The result of a macro expansion is automatically wrapped in (hygienic-scope block module), to represent the result of the new scope. The user can insert (escape block) inside to interpolate code from the caller."
@@ -22586,39 +22586,39 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#",
-    "page": "gdb debugging tips",
-    "title": "gdb debugging tips",
+    "page": "gdb 调试提示",
+    "title": "gdb 调试提示",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "devdocs/debuggingtips/#gdb-debugging-tips-1",
-    "page": "gdb debugging tips",
-    "title": "gdb debugging tips",
+    "location": "devdocs/debuggingtips/#gdb-调试提示-1",
+    "page": "gdb 调试提示",
+    "title": "gdb 调试提示",
     "category": "section",
     "text": ""
 },
 
 {
-    "location": "devdocs/debuggingtips/#Displaying-Julia-variables-1",
-    "page": "gdb debugging tips",
-    "title": "Displaying Julia variables",
+    "location": "devdocs/debuggingtips/#显示-Julia-变量-1",
+    "page": "gdb 调试提示",
+    "title": "显示 Julia 变量",
     "category": "section",
-    "text": "Within gdb, any jl_value_t* object obj can be displayed using(gdb) call jl_(obj)The object will be displayed in the julia session, not in the gdb session. This is a useful way to discover the types and values of objects being manipulated by Julia\'s C code.Similarly, if you\'re debugging some of Julia\'s internals (e.g., compiler.jl), you can print obj usingccall(:jl_, Cvoid, (Any,), obj)This is a good way to circumvent problems that arise from the order in which julia\'s output streams are initialized.Julia\'s flisp interpreter uses value_t objects; these can be displayed with call fl_print(fl_ctx, ios_stdout, obj)."
+    "text": "在 gdb 中, 任何 jl_value_t* 类型的变量 obj 的展示可以通过使用：(gdb) call jl_(obj)这个对象会在 julia 会话中展示，而不是在 gdb 会话中。这是一种行之有效的方式来发现由 Julia 的 C 代码操控的对象的类型和值。同样，如果你在调试一些 Julia 内部的东西 （比如 compiler.jl ），你可以通过使用这些来打印 obj ：ccall(:jl_, Cvoid, (Any,), obj)这是一种很好的方法，可以避免 Julia 的输出流初始化顺序引起的问题。Julia的 flisp 解释器使用 value_t 对象；能够通过  call fl_print(fl_ctx, ios_stdout, obj) 来展示。"
 },
 
 {
-    "location": "devdocs/debuggingtips/#Useful-Julia-variables-for-Inspecting-1",
-    "page": "gdb debugging tips",
-    "title": "Useful Julia variables for Inspecting",
+    "location": "devdocs/debuggingtips/#有用的用于检查的-Julia-变量-1",
+    "page": "gdb 调试提示",
+    "title": "有用的用于检查的 Julia 变量",
     "category": "section",
     "text": "While the addresses of many variables, like singletons, can be be useful to print for many failures, there are a number of additional variables (see julia.h for a complete list) that are even more useful.(when in jl_apply_generic) mfunc and jl_uncompress_ast(mfunc->def, mfunc->code) :: for figuring out a bit about the call-stack\njl_lineno and jl_filename :: for figuring out what line in a test to go start debugging from (or figure out how far into a file has been parsed)\n$1 :: not really a variable, but still a useful shorthand for referring to the result of the last gdb command (such as print)\njl_options :: sometimes useful, since it lists all of the command line options that were successfully parsed\njl_uv_stderr :: because who doesn\'t like to be able to interact with stdio"
 },
 
 {
     "location": "devdocs/debuggingtips/#Useful-Julia-functions-for-Inspecting-those-variables-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Useful Julia functions for Inspecting those variables",
     "category": "section",
     "text": "jl_gdblookup($rip) :: For looking up the current function and line. (use $eip on i686 platforms)\njlbacktrace() :: For dumping the current Julia backtrace stack to stderr. Only usable after record_backtrace() has been called.\njl_dump_llvm_value(Value*) :: For invoking Value->dump() in gdb, where it doesn\'t work natively. For example, f->linfo->functionObject, f->linfo->specFunctionObject, and to_function(f->linfo).\nType->dump() :: only works in lldb. Note: add something like ;1 to prevent lldb from printing its prompt over the output\njl_eval_string(\"expr\") :: for invoking side-effects to modify the current state or to lookup symbols\njl_typeof(jl_value_t*) :: for extracting the type tag of a Julia value (in gdb, call macro define jl_typeof jl_typeof first, or pick something short like ty for the first arg to define a shorthand)"
@@ -22626,7 +22626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Inserting-breakpoints-for-inspection-from-gdb-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Inserting breakpoints for inspection from gdb",
     "category": "section",
     "text": "In your gdb session, set a breakpoint in jl_breakpoint like so:(gdb) break jl_breakpointThen within your Julia code, insert a call to jl_breakpoint by addingccall(:jl_breakpoint, Cvoid, (Any,), obj)where obj can be any variable or tuple you want to be accessible in the breakpoint.It\'s particularly helpful to back up to the jl_apply frame, from which you can display the arguments to a function using, e.g.,(gdb) call jl_(args[0])Another useful frame is to_function(jl_method_instance_t *li, bool cstyle). The jl_method_instance_t* argument is a struct with a reference to the final AST sent into the compiler. However, the AST at this point will usually be compressed; to view the AST, call jl_uncompress_ast and then pass the result to jl_:#2  0x00007ffff7928bf7 in to_function (li=0x2812060, cstyle=false) at codegen.cpp:584\n584          abort();\n(gdb) p jl_(jl_uncompress_ast(li, li->ast))"
@@ -22634,7 +22634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Inserting-breakpoints-upon-certain-conditions-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Inserting breakpoints upon certain conditions",
     "category": "section",
     "text": ""
@@ -22642,7 +22642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Loading-a-particular-file-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Loading a particular file",
     "category": "section",
     "text": "Let\'s say the file is sysimg.jl:(gdb) break jl_load if strcmp(fname, \"sysimg.jl\")==0"
@@ -22650,7 +22650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Calling-a-particular-method-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Calling a particular method",
     "category": "section",
     "text": "(gdb) break jl_apply_generic if strcmp((char*)(jl_symbol_name)(jl_gf_mtable(F)->name), \"method_to_break\")==0Since this function is used for every call, you will make everything 1000x slower if you do this."
@@ -22658,7 +22658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Dealing-with-signals-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Dealing with signals",
     "category": "section",
     "text": "Julia requires a few signal to function property. The profiler uses SIGUSR2 for sampling and the garbage collector uses SIGSEGV for threads synchronization. If you are debugging some code that uses the profiler or multiple threads, you may want to let the debugger ignore these signals since they can be triggered very often during normal operations. The command to do this in GDB is (replace SIGSEGV with SIGUSRS or other signals you want to ignore):(gdb) handle SIGSEGV noprint nostop passThe corresponding LLDB command is (after the process is started):(lldb) pro hand -p true -s false -n false SIGSEGVIf you are debugging a segfault with threaded code, you can set a breakpoint on jl_critical_error (sigdie_handler should also work on Linux and BSD) in order to only catch the actual segfault rather than the GC synchronization points."
@@ -22666,7 +22666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Debugging-during-Julia\'s-build-process-(bootstrap)-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Debugging during Julia\'s build process (bootstrap)",
     "category": "section",
     "text": "Errors that occur during make need special handling. Julia is built in two stages, constructing sys0 and sys.ji. To see what commands are running at the time of failure, use make VERBOSE=1.At the time of this writing, you can debug build errors during the sys0 phase from the base directory using:julia/base$ gdb --args ../usr/bin/julia-debug -C native --build ../usr/lib/julia/sys0 sysimg.jlYou might need to delete all the files in usr/lib/julia/ to get this to work.You can debug the sys.ji phase using:julia/base$ gdb --args ../usr/bin/julia-debug -C native --build ../usr/lib/julia/sys -J ../usr/lib/julia/sys0.ji sysimg.jlBy default, any errors will cause Julia to exit, even under gdb. To catch an error \"in the act\", set a breakpoint in jl_error (there are several other useful spots, for specific kinds of failures, including: jl_too_few_args, jl_too_many_args, and jl_throw).Once an error is caught, a useful technique is to walk up the stack and examine the function by inspecting the related call to jl_apply. To take a real-world example:Breakpoint 1, jl_throw (e=0x7ffdf42de400) at task.c:802\n802 {\n(gdb) p jl_(e)\nErrorException(\"auto_unbox: unable to determine argument type\")\n$2 = void\n(gdb) bt 10\n#0  jl_throw (e=0x7ffdf42de400) at task.c:802\n#1  0x00007ffff65412fe in jl_error (str=0x7ffde56be000 <_j_str267> \"auto_unbox:\n   unable to determine argument type\")\n   at builtins.c:39\n#2  0x00007ffde56bd01a in julia_convert_16886 ()\n#3  0x00007ffff6541154 in jl_apply (f=0x7ffdf367f630, args=0x7fffffffc2b0, nargs=2) at julia.h:1281\n...The most recent jl_apply is at frame #3, so we can go back there and look at the AST for the function julia_convert_16886. This is the uniqued name for some method of convert. f in this frame is a jl_function_t*, so we can look at the type signature, if any, from the specTypes field:(gdb) f 3\n#3  0x00007ffff6541154 in jl_apply (f=0x7ffdf367f630, args=0x7fffffffc2b0, nargs=2) at julia.h:1281\n1281            return f->fptr((jl_value_t*)f, args, nargs);\n(gdb) p f->linfo->specTypes\n$4 = (jl_tupletype_t *) 0x7ffdf39b1030\n(gdb) p jl_( f->linfo->specTypes )\nTuple{Type{Float32}, Float64}           # <-- type signature for julia_convert_16886Then, we can look at the AST for this function:(gdb) p jl_( jl_uncompress_ast(f->linfo, f->linfo->ast) )\nExpr(:lambda, Array{Any, 1}[:#s29, :x], Array{Any, 1}[Array{Any, 1}[], Array{Any, 1}[Array{Any, 1}[:#s29, :Any, 0], Array{Any, 1}[:x, :Any, 0]], Array{Any, 1}[], 0], Expr(:body,\nExpr(:line, 90, :float.jl)::Any,\nExpr(:return, Expr(:call, :box, :Float32, Expr(:call, :fptrunc, :Float32, :x)::Any)::Any)::Any)::Any)::AnyFinally, and perhaps most usefully, we can force the function to be recompiled in order to step through the codegen process. To do this, clear the cached functionObject from the jl_lamdbda_info_t*:(gdb) p f->linfo->functionObject\n$8 = (void *) 0x1289d070\n(gdb) set f->linfo->functionObject = NULLThen, set a breakpoint somewhere useful (e.g. emit_function, emit_expr, emit_call, etc.), and run codegen:(gdb) p jl_compile(f)\n... # your breakpoint here"
@@ -22674,7 +22674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Debugging-precompilation-errors-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Debugging precompilation errors",
     "category": "section",
     "text": "Module precompilation spawns a separate Julia process to precompile each module. Setting a breakpoint or catching failures in a precompile worker requires attaching a debugger to the worker. The easiest approach is to set the debugger watch for new process launches matching a given name. For example:(gdb) attach -w -n julia-debugor:(lldb) process attach -w -n julia-debugThen run a script/command to start precompilation. As described earlier, use conditional breakpoints in the parent process to catch specific file-loading events and narrow the debugging window. (some operating systems may require alternative approaches, such as following each fork from the parent process)"
@@ -22682,7 +22682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "devdocs/debuggingtips/#Mozilla\'s-Record-and-Replay-Framework-(rr)-1",
-    "page": "gdb debugging tips",
+    "page": "gdb 调试提示",
     "title": "Mozilla\'s Record and Replay Framework (rr)",
     "category": "section",
     "text": "Julia now works out of the box with rr, the lightweight recording and deterministic debugging framework from Mozilla. This allows you to replay the trace of an execution deterministically.  The replayed execution\'s address spaces, register contents, syscall data etc are exactly the same in every run.A recent version of rr (3.1.0 or higher) is required."
