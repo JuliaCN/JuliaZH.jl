@@ -2,8 +2,8 @@
 
 ## [Iteration](@id lib-collections-iteration)
 
-Sequential iteration is implemented by the [`iterate`](@ref) function.
-The general `for` loop:
+序列迭代由函数 [`iterate`](@ref)实现
+普通的`for`循环
 
 ```julia
 for i in iter   # or  "for i = iter"
@@ -22,8 +22,8 @@ while next !== nothing
 end
 ```
 
-“state”对象能够是任何对象，并且对于每个可迭代的种类应该选择合适的“state”对象。
-详情请参照「关于迭代接口的Manual部分」来获得关于定义一个常见迭代种类的更多细节
+`state`对象能够是任何对象，并且对于每个可迭代的种类应该选择合适的“state”对象。
+详情请参照 [manual section on the iteration interface](@ref man-interface-iteration) 来获得关于定义一个常见迭代种类的更多细节。
 
 ```@docs
 Base.iterate
@@ -31,7 +31,7 @@ Base.IteratorSize
 Base.IteratorEltype
 ```
 
-Fully implemented by:
+完全由以下实现：
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
@@ -59,7 +59,7 @@ Base.UnitRange
 Base.LinRange
 ```
 
-## General Collections
+## 通用集合
 
 ```@docs
 Base.isempty
@@ -67,7 +67,7 @@ Base.empty!
 Base.length
 ```
 
-完全由以下执行：
+完全由以下实现：
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
@@ -82,7 +82,7 @@ Base.length
   * [`Set`](@ref)
   * [`NamedTuple`](@ref)
 
-## Iterable Collections
+## 可迭代集合
 
 ```@docs
 Base.in
@@ -137,7 +137,7 @@ Base.replace(::Base.Callable, ::Any)
 Base.replace!
 ```
 
-## Indexable Collections
+## 可定标集合
 
 ```@docs
 Base.getindex
@@ -146,7 +146,7 @@ Base.firstindex
 Base.lastindex
 ```
 
-Fully implemented by:
+完全由以下实现：
 
   * [`Array`](@ref)
   * [`BitArray`](@ref)
@@ -164,30 +164,28 @@ Partially implemented by:
   * [`WeakKeyDict`](@ref)
   * [`NamedTuple`](@ref)
 
-## Dictionaries
+## 字典
 
-[`Dict`](@ref) is the standard dictionary. Its implementation uses [`hash`](@ref)
-as the hashing function for the key, and [`isequal`](@ref) to determine equality. Define these
-two functions for custom types to override how they are stored in a hash table.
+[`Dict`](@ref)是一个标准字典。其实现利用了 [`hash`](@ref)
+作为键的哈希函数和[`isequal`](@ref)来决定是否相等。
+对自定义类型定义这两个函数来重载类型在哈希表内的存储方式。
 
-[`IdDict`](@ref) is a special hash table where the keys are always object identities.
+[`IdDict`](@ref)是一种特殊的哈希表，在里面键始终是对象标识符。
 
-[`WeakKeyDict`](@ref) is a hash table implementation where the keys are weak references to objects, and
-thus may be garbage collected even when referenced in a hash table.
-Like `Dict` it uses `hash` for hashing and `isequal` for equality, unlike `Dict` it does
-not convert keys on insertion.
+[`WeakKeyDict`](@ref) 是一个哈希表的实现，里面键是对象的弱引用，所以
+即使键在哈希表中被引用也有可能被垃圾回收。
+它像`Dict`一样使用`hash`来做哈希和`isequal`来做相等判断，但是它不会在插入时转换键，这点不像`Dict`。
 
-[`Dict`](@ref)s can be created by passing pair objects constructed with `=>` to a [`Dict`](@ref)
-constructor: `Dict("A"=>1, "B"=>2)`. This call will attempt to infer type information from the
-keys and values (i.e. this example creates a `Dict{String, Int64}`). To explicitly specify types
-use the syntax `Dict{KeyType,ValueType}(...)`. For example, `Dict{String,Int32}("A"=>1, "B"=>2)`.
+[`Dict`](@ref)s 可以由传递含有`=>`的成对对象给 [`Dict`](@ref)的构造器来被创建：
+`Dict("A"=>1, "B"=>2)`。这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 `Dict{String, Int64}`）。为了显式指定类型，
+请使用语法`Dict{KeyType,ValueType}(...)`。例如， `Dict{String,Int32}("A"=>1, "B"=>2)`。
 
-Dictionaries may also be created with generators. For example, `Dict(i => f(i) for i = 1:10)`.
+字典也可以用生成器创建。例如`Dict(i => f(i) for i = 1:10)`。
 
-Given a dictionary `D`, the syntax `D[x]` returns the value of key `x` (if it exists) or throws
-an error, and `D[x] = y` stores the key-value pair `x => y` in `D` (replacing any existing value
-for the key `x`).  Multiple arguments to `D[...]` are converted to tuples; for example, the syntax
-`D[x,y]`  is equivalent to `D[(x,y)]`, i.e. it refers to the value keyed by the tuple `(x,y)`.
+存在一个字典`D`，语法`D[x]`返回键`x`的值（如果存在）或者扔出
+一个错误，`D[x] = y`存储键值对`x => y`在`D`中（覆盖键'x'的
+已有的值）。多个参数传入`D[...]`会被转化成元组；例如，语法
+` D[x,y]`等于 `D[(x,y)]`，也就是说，它指向键为元组`(x,y)`的值。
 
 ```@docs
 Base.Dict
@@ -213,7 +211,7 @@ Base.keytype
 Base.valtype
 ```
 
-Fully implemented by:
+完全由以下实现：
 
   * [`IdDict`](@ref)
   * [`Dict`](@ref)
@@ -229,7 +227,7 @@ Partially implemented by:
   * [`ImmutableDict`](@ref Base.ImmutableDict)
   * [`Iterators.Pairs`](@ref)
 
-## Set-Like Collections
+## 类set集合
 
 ```@docs
 Base.Set
@@ -248,16 +246,16 @@ Base.:⊊
 Base.issetequal
 ```
 
-Fully implemented by:
+完全由以下实现：
 
   * [`BitSet`](@ref)
   * [`Set`](@ref)
 
-Partially implemented by:
+部分由以下实现：
 
   * [`Array`](@ref)
 
-## Dequeues
+## 双端队列
 
 ```@docs
 Base.push!
@@ -272,12 +270,12 @@ Base.append!
 Base.prepend!
 ```
 
-Fully implemented by:
+完全由以下实现：
 
   * `Vector` (a.k.a. 1-dimensional [`Array`](@ref))
   * `BitVector` (a.k.a. 1-dimensional [`BitArray`](@ref))
 
-## Utility Collections
+## 实用程序集合
 
 ```@docs
 Base.Pair

@@ -1,22 +1,22 @@
 # [字符串](@id man-strings)
 
 字符串是由有限个字符组成的序列。然而, 字符又是什么呢。说英文者所熟悉的字符是字母  `A`, `B`,
-`C`, ...，以及数字和常用的标点符号。这些字符被 [ASCII](https://en.wikipedia.org/wiki/ASCII) 标准统一标准化并且与 0 到 127 范围内的整数一一对应。当然，有很多用于非英文环境的字符，包括因发音和其他形式的修改而形成的 ASCII 字符的变体，例如西里尔字母和希腊字母，以及与 ASCII 和英文完全无关的字母系统，包括阿拉伯语, 中文,
+`C`, ...，以及数字和常用的标点符号。这些字符由 [ASCII](https://en.wikipedia.org/wiki/ASCII) 标准统一标准化并且与 0 到 127 范围内的整数一一对应。当然，有很多用于非英文环境的字符，包括因发音和其他形式的修改而形成的 ASCII 字符的变体，例如西里尔字母和希腊字母，以及与 ASCII 和英文完全无关的字母系统，包括阿拉伯语, 中文,
 希伯来语, 印度语, 日本语, 和韩语。[Unicode](https://en.wikipedia.org/wiki/Unicode) 标准被用来解决字符如何定义这一复杂难题，并作为解决这一问题的确切标准而被普遍接受。
 根据自身需求，你可以忽略这种复杂性，只处理 ASCII 字符，或者编写可以处理所有的字符和编码的代码以防非 ASCII 文本的出现。Julia 可以简单高效地处理纯粹的 ASCII 以及 Unicode 文本。
 特别地，你也可以写 C 语言风格的字符串代码用来处理 ASCII 字符串，且在不失性能和语义的前提下达到预期效果。当代码遇到非 ASCII 文本时，Julia会优雅明确地提示错误信息而不是引入乱码。  这时，修改代码以处理非 ASCII 数据是简便直接的。
 
-关于Julia的字符串类型有一些值得注意的高级特性：
+关于 Julia 的字符串类型有一些值得注意的高级特性：
 
-  * Julia中用于字符串（和字符串文字）的内置具体类型是[`String`](@ref)。
-    它支持全部[Unicode](https://en.wikipedia.org/wiki/Unicode)字符
-    通过[UTF-8](https://en.wikipedia.org/wiki/UTF-8)编码。（[`transcode`](@ref)函数是
-    提供Unicode编码和其他编码转换的函数。）
-  * 所有的字符串类型都是抽象类型`AbstractString`的子类型，外部包定义了
-    补充 `AbstractString` 子类型（例如为其它的编码定义的子类型）。 如果你定义了以字符串为参数的函数 ，
-    你应该声明这个参数类型为 `AbstractString` 用于接受任意的字符串 
-    类型。
-  * Like C and Java, but unlike most dynamic languages, Julia has a first-class type for representing
+  * Julia 中用于字符串（和字符串文字）的内置具体类型是 [`String`](@ref)。
+    它支持全部 [Unicode](https://en.wikipedia.org/wiki/Unicode) 字符
+    通过 [UTF-8](https://en.wikipedia.org/wiki/UTF-8) 编码。（[`transcode`](@ref) 函数是
+    提供 Unicode 编码和其他编码转换的函数。）
+  * 所有的字符串类型都是抽象类型 `AbstractString` 的子类型，而一些外部包定义了别的 `AbstractString` 子类型（例如为其它的编码定义的子类型）。若要定义需要字符串参数的函数，你应当声明此类型为 `AbstractString` 来让这函数接受任何字符串类型。
+     
+     
+     
+  * 类似 C 和 Java，但是和大多数动态语言不同的是，Julia 有优秀的表示单字符的类型，即 [`AbstractChar`](@ref)。[`Char`](@ref) 是 `AbstractChar` 的内置子类型，它能表示任何 Unicode 字符的 32 位原始类型（基于 UTF-8 编码）。
     a single character, called [`AbstractChar`](@ref). The built-in [`Char`](@ref) subtype of `AbstractChar`
     is a 32-bit primitive type that can represent any Unicode character (and which is based
     on the UTF-8 encoding).

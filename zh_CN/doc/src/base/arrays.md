@@ -1,6 +1,6 @@
 # [Arrays](@id lib-arrays)
 
-## Constructors and Types
+## 构造函数与类型
 
 ```@docs
 Core.AbstractArray
@@ -43,7 +43,7 @@ Base.fill!
 Base.similar
 ```
 
-## Basic functions
+## 基础函数
 
 ```@docs
 Base.ndims
@@ -58,12 +58,11 @@ Base.stride
 Base.strides
 ```
 
-## Broadcast and vectorization
+## 广播与向量化
 
-See also the [dot syntax for vectorizing functions](@ref man-vectorized);
-for example, `f.(args...)` implicitly calls `broadcast(f, args...)`.
-Rather than relying on "vectorized" methods of functions like `sin`
-to operate on arrays, you should use `sin.(a)` to vectorize via `broadcast`.
+也可参照 [dot syntax for vectorizing functions](@ref man-vectorized)；
+例如，`f.(args...)` 隐式调用 `broadcast(f, args...)`。
+与其依赖如`sin`函数的“已向量化”方法，你应该使用`sin.(a)`来使用`broadcast`来向量化。
 
 ```@docs
 Base.broadcast
@@ -71,7 +70,7 @@ Base.Broadcast.broadcast!
 Base.@__dot__
 ```
 
-For specializing broadcast on custom types, see
+特殊类型的特殊化广播，请参照
 ```@docs
 Base.BroadcastStyle
 Base.broadcast_axes
@@ -81,7 +80,7 @@ Base.Broadcast.DefaultArrayStyle
 Base.Broadcast.broadcastable
 ```
 
-## Indexing and assignment
+## 定标与分派
 
 ```@docs
 Base.getindex(::AbstractArray, ::Any...)
@@ -113,7 +112,7 @@ Base.dropdims
 Base.vec
 ```
 
-## Concatenation and permutation
+## 拼接与排列
 
 ```@docs
 Base.cat
@@ -140,7 +139,7 @@ Base.PermutedDimsArray
 Base.promote_shape
 ```
 
-## Array functions
+## 数组函数
 
 ```@docs
 Base.accumulate
@@ -157,7 +156,7 @@ Base.rotr90
 Base.mapslices
 ```
 
-## Combinatorics
+## 组合
 
 ```@docs
 Base.invperm

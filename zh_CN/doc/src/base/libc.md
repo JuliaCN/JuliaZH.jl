@@ -1,4 +1,4 @@
-# C Standard Library
+# C 标准库
 
 ```@docs
 Base.Libc.malloc

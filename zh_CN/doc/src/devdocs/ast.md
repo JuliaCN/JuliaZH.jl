@@ -1,12 +1,8 @@
-# Julia ASTs
+# Julia 的 AST
 
-Julia has two representations of code. First there is a surface syntax AST returned by the parser
-(e.g. the [`Meta.parse`](@ref) function), and manipulated by macros. It is a structured representation
-of code as it is written, constructed by `julia-parser.scm` from a character stream. Next there
-is a lowered form, or IR (intermediate representation), which is used by type inference and code
-generation. In the lowered form there are fewer types of nodes, all macros are expanded, and all
-control flow is converted to explicit branches and sequences of statements. The lowered form is
-constructed by `julia-syntax.scm`.
+Julia 有两种 代码的表现形式。
+第一种是解析器返回的表面语法 AST （例如 [`Meta.parse`](@ref) 函数），由宏来操控。是代码编写时的结构化表示，由字符流中的 `julia-parser.scm` 构造。
+另一种则是低级的形式，或者 IR（中间表示），用来类型推导和代码生成。在低级形式上有少部分结点的类型，所有的宏都会被展开，所有的控制流会被转化成显式的分支和语句的序列。底层的形式由 `julia-syntax.scm` 构建。
 
 First we will focus on the lowered form, since it is more important to the compiler. It is also
 less obvious to the human, since it results from a significant rearrangement of the input syntax.

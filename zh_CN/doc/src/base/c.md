@@ -1,4 +1,4 @@
-# C Interface
+# C 接口
 
 ```@docs
 ccall

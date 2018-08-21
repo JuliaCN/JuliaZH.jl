@@ -1,18 +1,18 @@
-# Essentials
+# 基本功能
 
-## Introduction
+## 介绍
 
-Julia Base包含一系列针对科学及数学计算而特殊设计的函数和宏，丰富性同传统的通用编程语言相当。同时，用户可以通过安装拓展包来增加Julia语言的功能。函数按主题划分如下：
+Julia Base包含一系列针对科学及数学计算而特殊设计的函数和宏，丰富性同传统的通用编程语言相当。同时，用户可以通过安装包来拓展Julia语言的功能。函数按主题划分如下：
 
-Some general notes:
+一些通用注解：
 
   * 可以通过`Import Module`导入想要使用的模块，并利用`Module.fn(x)`语句来实现对模块内函数的调用。
-    functions.
+    函数。
   * 此外，`using Module`语句会将名为`Module`的模块中的所有可调函数引入当前的命名空间。
-  * By convention, function names ending with an exclamation point (`!`) modify their arguments.
-    Some functions have both modifying (e.g., `sort!`) and non-modifying (`sort`) versions.
+  * 按照约定，以感叹号（`!`）结尾的函数名会改变参数的值。
+    一些函数同时拥有改变参数（例如`sort!`）和不改变参数（`sort`）的版本
 
-## Getting Around
+## 粗略浏览
 
 ```@docs
 Base.exit
@@ -32,7 +32,7 @@ Base.@show
 ans
 ```
 
-## Keywords
+## 关键字
 
 ```@docs
 module
@@ -66,7 +66,7 @@ primitive type
 ;
 ```
 
-## Base Modules
+## 基础模块
 ```@docs
 Base.Base
 Base.Broadcast
@@ -80,7 +80,7 @@ Base.Threads
 Base.GC
 ```
 
-## All Objects
+## 所有对象
 
 ```@docs
 Core.:(===)
@@ -112,9 +112,9 @@ Base.widen
 Base.identity
 ```
 
-## Properties of Types
+## 类型的属性
 
-### Type relations
+### 类型联系
 
 ```@docs
 Base.supertype
@@ -127,7 +127,7 @@ Base.promote_rule
 Base.isdispatchtuple
 ```
 
-### Declared structure
+### 已声明结构
 
 ```@docs
 Base.isimmutable
@@ -139,7 +139,7 @@ Base.fieldnames
 Base.fieldname
 ```
 
-### Memory layout
+### 内存布局
 
 ```@docs
 Base.sizeof(::Type)
@@ -154,7 +154,7 @@ Base.datatype_haspadding
 Base.datatype_pointerfree
 ```
 
-### Special values
+### 特殊值
 
 ```@docs
 Base.typemin
@@ -167,7 +167,7 @@ Base.eps(::AbstractFloat)
 Base.instances
 ```
 
-## Special Types
+## 特殊类型
 
 ```@docs
 Core.Any
@@ -184,7 +184,7 @@ Base.something
 Base.Enums.@enum
 ```
 
-## Generic Functions
+## 范用函数
 
 ```@docs
 Core.Function
@@ -197,7 +197,7 @@ Base.:(|>)
 Base.:(∘)
 ```
 
-## Syntax
+## 语法
 
 ```@docs
 Core.eval
@@ -221,7 +221,7 @@ Base.@generated
 Base.@pure
 ```
 
-## Missing Values
+## 缺失值
 ```@docs
 Base.Missing
 Base.missing
@@ -230,7 +230,7 @@ Base.ismissing
 Base.skipmissing
 ```
 
-## System
+## 系统
 
 ```@docs
 Base.run
@@ -268,14 +268,14 @@ Base.Sys.windows_version
 Base.@static
 ```
 
-## Versioning
+## 版本控制
 
 ```@docs
 Base.VersionNumber
 Base.@v_str
 ```
 
-## Errors
+## 错误
 
 ```@docs
 Base.error
@@ -314,7 +314,7 @@ Base.retry
 Base.ExponentialBackOff
 ```
 
-## Events
+## 事件
 
 ```@docs
 Base.Timer(::Function, ::Real)
@@ -323,7 +323,7 @@ Base.AsyncCondition
 Base.AsyncCondition(::Function)
 ```
 
-## Reflection
+## 反射
 
 ```@docs
 Base.nameof(::Module)
@@ -340,7 +340,7 @@ Base.functionloc(::Any, ::Any)
 Base.functionloc(::Method)
 ```
 
-## Internals
+## 内置
 
 ```@docs
 Base.GC.gc
