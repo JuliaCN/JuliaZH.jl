@@ -2,9 +2,10 @@
 
 [![Build Status](https://travis-ci.org/JuliaCN/JuliaZH.jl.svg?branch=master)](https://travis-ci.org/JuliaCN/JuliaZH.jl)
 
-|    | 国内镜像 | Stable | Latest | Preview |
-|:---:|:---:|:---:|:---:|
+|     |国内镜像 | Stable | Latest | Preview |
+|:---:|:---:|:---:|:---:|:---:|
 | 文档 | http://docs.juliacn.com | [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliacn.github.io/JuliaZH.jl/stable) | [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliacn.github.io/JuliaZH.jl/latest) | [Gitlab Pages](https://juliacn.gitlab.io/JuliaZH.jl) |
+
 
 ## 安装
 
