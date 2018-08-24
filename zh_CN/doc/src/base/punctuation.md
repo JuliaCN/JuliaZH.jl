@@ -44,4 +44,4 @@
 | `:a`        | 符号 a                                                                                    |
 | `<:`        | [`子类型运算符`](@ref <:)                                                               |
 | `>:`        | [`父类型运算符`](@ref >:) (reverse of subtype operator)                               |
-| `===`       | [`egal comparison operator`](@ref ===)                                                      |
+| `===`       | [`"egal" 比较运算符`](@ref ===)                                                      |

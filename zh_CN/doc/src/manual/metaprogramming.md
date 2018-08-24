@@ -1094,8 +1094,8 @@ When defining generated functions, there are four main differences to ordinary f
 3. Instead of calculating something or performing some action, you return a *quoted expression* which,
    when evaluated, does what you want.
 4. Generated functions must not *mutate* or *observe* any non-constant global state (including,
-   for example, IO, locks, non-local dictionaries, or using `hasmethod`).
-   This means they can only read global constants, and cannot have any side effects.
+   例如，IO、锁、非本地词典或者使用`hasmethod`）
+   即它们只能读取全局常量，且没有任何副作用。
    In other words, they must be completely pure.
    Due to an implementation limitation, this also means that they currently cannot define a closure
    or generator.

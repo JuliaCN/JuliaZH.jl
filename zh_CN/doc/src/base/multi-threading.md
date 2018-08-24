@@ -1,8 +1,8 @@
 
 # 多线程
 
-This experimental interface supports Julia's multi-threading capabilities. Types and functions
-described here might (and likely will) change in the future.
+这个实验性接口支持Julia的多线程功能。类型和函数
+在本节的相关描述很有可能会在未来进行修改。
 
 ```@docs
 Base.Threads.threadid
@@ -22,13 +22,13 @@ Base.Threads.atomic_min!
 Base.Threads.atomic_fence
 ```
 
-## ccall using a threadpool (Experimental)
+## 使用线程池的ccal方法（实验性）
 
 ```@docs
 Base.@threadcall
 ```
 
-## Synchronization Primitives
+## 同步原始类型
 
 ```@docs
 Base.Threads.AbstractLock

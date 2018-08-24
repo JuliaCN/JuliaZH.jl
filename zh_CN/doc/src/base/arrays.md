@@ -97,7 +97,7 @@ Base.checkbounds
 Base.checkindex
 ```
 
-## Views (SubArrays and other view types)
+## 视图(子数组和其他视图类型)
 
 ```@docs
 Base.view

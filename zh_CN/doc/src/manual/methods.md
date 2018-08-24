@@ -1,38 +1,10 @@
 # 方法
 
-Recall from [Functions](@ref man-functions) that a function is an object that maps a tuple of arguments to a
-return value, or throws an exception if no appropriate value can be returned. It is common for
-the same conceptual function or operation to be implemented quite differently for different types
-of arguments: adding two integers is very different from adding two floating-point numbers, both
-of which are distinct from adding an integer to a floating-point number. Despite their implementation
-differences, these operations all fall under the general concept of "addition". Accordingly, in
-Julia, these behaviors all belong to a single object: the `+` function.
+我们回想一下，在[函数](@ref man-functions)中我们知道函数是这么一个对象，它把一组参数映射成一个返回值，或者当没有办法返回恰当的值时扔出一个异常。对于相同概念的函数或者运算对不同的参数类型有十分不一样的实现这件事是普遍存在的：两个整数的加法与两个浮点数的加法是相当不一样的，整数与浮点数之间的加法也不一样。除开他们实现上的不同，这些运算都归在"加法"这么一个通用概念之下。因此在Julia中这些行为都属于一个对象：`+`函数。
 
-To facilitate using many different implementations of the same concept smoothly, functions need
-not be defined all at once, but can rather be defined piecewise by providing specific behaviors
-for certain combinations of argument types and counts. A definition of one possible behavior for
-a function is called a *method*. Thus far, we have presented only examples of functions defined
-with a single method, applicable to all types of arguments. However, the signatures of method
-definitions can be annotated to indicate the types of arguments in addition to their number, and
-more than a single method definition may be provided. When a function is applied to a particular
-tuple of arguments, the most specific method applicable to those arguments is applied. Thus, the
-overall behavior of a function is a patchwork of the behaviors of its various method definitions.
-If the patchwork is well designed, even though the implementations of the methods may be quite
-different, the outward behavior of the function will appear seamless and consistent.
+为了让对同样的概念使用许多不同的实现这件事更顺畅，函数没有必要马上全部都被定义，反而应该是一块一块地定义，为特定的参数类型和数量的组合提供指定的行为。对于一个函数的一个可能行为的定义叫做*方法*。直到这里，我们只展示了那些只定了一个方法的，对参数的所有类型都适用的函数。但是方法定义的特点是不仅能表明参数的数量，也能表明参数的类型，并且能提供多个方法定义。当一个函数被应用于特殊的一组参数时，能用于这一组参数的最特定的方法会被使用。所以，函数的全体行为是他的不同的方法定义的行为的组合。如果这个组合被设计得好，即使方法们的实现之间会很不一样，函数的外部行为也会显得无缝而自洽。
 
-The choice of which method to execute when a function is applied is called *dispatch*. Julia allows
-the dispatch process to choose which of a function's methods to call based on the number of arguments
-given, and on the types of all of the function's arguments. This is different than traditional
-object-oriented languages, where dispatch occurs based only on the first argument, which often
-has a special argument syntax, and is sometimes implied rather than explicitly written as an argument.
-[^1] Using all of a function's arguments to choose which method should be invoked, rather than
-just the first, is known as [multiple dispatch](https://en.wikipedia.org/wiki/Multiple_dispatch).
-Multiple dispatch is particularly useful for mathematical code, where it makes little sense to
-artificially deem the operations to "belong" to one argument more than any of the others: does
-the addition operation in `x + y` belong to `x` any more than it does to `y`? The implementation
-of a mathematical operator generally depends on the types of all of its arguments. Even beyond
-mathematical operations, however, multiple dispatch ends up being a powerful and convenient paradigm
-for structuring and organizing programs.
+当一个函数被应用时执行方法的选择被称为*分派*。Julia允许分派过程来基于给的参数的个数和所有的参数的类型来选择调用函数的哪个方法。这与传统的面对对象的语言不一样，面对对象语言的分派只基于第一参数，经常有特殊的参数语法并且有时是暗含而非显式写成一个参数。[^1]使用函数的所有参数，而非只用第一个，来决定调用哪个方法被称为[多重分派](https://en.wikipedia.org/wiki/Multiple_dispatch)。多重分派对于数学代码来说特别有用，人工地将运算视为对于其中一个参数的属于程度比其他所有的参数都强的这个概念对于数学代码是几乎没有意义的：`x + y`中的加法运算对`x`的属于程度比对`y`更强？一个数学运算符的实现普遍基于它所有的参数的类型。即使跳出数学运算，多重分派是对于结构和组织程序来说也是一个强大而方便的范式。
 
 [^1]:
     In C++ or Java, for example, in a method call like `obj.meth(arg1,arg2)`, the object obj "receives"
@@ -43,15 +15,9 @@ for structuring and organizing programs.
 
 ## 定义方法
 
-Until now, we have, in our examples, defined only functions with a single method having unconstrained
-argument types. Such functions behave just like they would in traditional dynamically typed languages.
-Nevertheless, we have used multiple dispatch and methods almost continually without being aware
-of it: all of Julia's standard functions and operators, like the aforementioned `+` function,
-have many methods defining their behavior over various possible combinations of argument type
-and count.
+直到这里，在我们的例子中，我们只定义了只有一个不限制参数类型的方法的函数。这样的函数的行为就像在传统的动态类型的语言中一样。不过，我们已经在没有意识到的情况下使用了多重分派和方法：所有的Julia的标准函数和运算符，就像之前提到的`+`函数，都有基于参数类型和数量的不同可能的组合而定义的大量方法。
 
-When defining a function, one can optionally constrain the types of parameters it is applicable
-to, using the `::` type-assertion operator, introduced in the section on [Composite Types](@ref):
+当定义一个函数时，可以视需要来约束可以应用的参数类型，使用在[Composite Types](@ref)中介绍的`::`类型断言运算符。
 
 ```jldoctest fofxy
 julia> f(x::Float64, y::Float64) = 2x + y
@@ -66,7 +32,7 @@ julia> f(2.0, 3.0)
 7.0
 ```
 
-Applying it to any other types of arguments will result in a [`MethodError`](@ref):
+将其运用于其他任意的参数类型会导致 [`MethodError`](@ref):
 
 ```jldoctest fofxy
 julia> f(2.0, 3)
@@ -88,13 +54,7 @@ julia> f("2.0", "3.0")
 ERROR: MethodError: no method matching f(::String, ::String)
 ```
 
-As you can see, the arguments must be precisely of type [`Float64`](@ref). Other numeric
-types, such as integers or 32-bit floating-point values, are not automatically converted
-to 64-bit floating-point, nor are strings parsed as numbers. Because `Float64` is a concrete
-type and concrete types cannot be subclassed in Julia, such a definition can only be applied
-to arguments that are exactly of type `Float64`. It may often be useful, however, to write
-more general methods where the declared parameter types are abstract:
-
+如同你所看到的，参数必须精确地是类型[`Float64`](@ref)。其他的数字类型，比如整数或者32位浮点数值都不会自动转化成64位浮点数，字符串也不会分析成数字。因为`Float64`是一个具体类型，在Julia中具体类型无法有子类，这样的定义只会被应用于确实是类型`Float64`的参数。然而这对写声明的参数类型是抽象的通用方法来说是常常有用的：
 ```jldoctest fofxy
 julia> f(x::Number, y::Number) = 2x - y
 f (generic function with 2 methods)
@@ -103,20 +63,9 @@ julia> f(2.0, 3)
 1.0
 ```
 
-This method definition applies to any pair of arguments that are instances of [`Number`](@ref).
-They need not be of the same type, so long as they are each numeric values. The problem of
-handling disparate numeric types is delegated to the arithmetic operations in the
-expression `2x - y`.
+这个方法定义应用于任意一对[`Number`](@ref)的实例的参数。他们不需要是同一类型的，只要他们都是数字值。操作不同数字类型的问题就委派给了表达式`2x - y`中的算法运算。
 
-To define a function with multiple methods, one simply defines the function multiple times, with
-different numbers and types of arguments. The first method definition for a function creates the
-function object, and subsequent method definitions add new methods to the existing function object.
-The most specific method definition matching the number and types of the arguments will be executed
-when the function is applied. Thus, the two method definitions above, taken together, define the
-behavior for `f` over all pairs of instances of the abstract type `Number` -- but with a different
-behavior specific to pairs of [`Float64`](@ref) values. If one of the arguments is a 64-bit
-float but the other one is not, then the `f(Float64,Float64)` method cannot be called and
-the more general `f(Number,Number)` method must be used:
+为了定义一个有多个方法的函数，只需简单定义这个函数多次，使用不同的参数数量和类型。函数的第一个方法定义会建立这个函数对象，后续的方法定义会添加新的方法到存在的函数对象中去。当函数被应用时，最符合参数的数量和类型的特定方法会被执行。所以，上面的两个方法定义在一起定义了函数`f`对于所有的一对虚拟类型`Number`实例的行为 -- 但是针对一对[`Float64`](@ref)值有不同的行为。如果一个参数是64位浮点数而另一个不是，`f(Float64,Float64)`方法不会被调用，而一定使用更加通用的`f(Number,Number)`方法：
 
 ```jldoctest fofxy
 julia> f(2.0, 3.0)
@@ -132,38 +81,28 @@ julia> f(2, 3)
 1
 ```
 
-The `2x + y` definition is only used in the first case, while the `2x - y` definition is used
-in the others. No automatic casting or conversion of function arguments is ever performed: all
-conversion in Julia is non-magical and completely explicit. [Conversion and Promotion](@ref conversion-and-promotion),
-however, shows how clever application of sufficiently advanced technology can be indistinguishable
-from magic. [^Clarke61]
-
-For non-numeric values, and for fewer or more than two arguments, the function `f` remains undefined,
-and applying it will still result in a [`MethodError`](@ref):
-
+`2x + y`定义只用于第一个情况，`2x - y`定义用于其他的情况。没有使用任何自动的函数参数的指派或者类型转换：Julia中的所有转换都不是magic的，都是完全显式的。然而[类型转换和类型提升](@ref conversion-and-promotion)显示了足够先进的技术的智能应用能够与magic不可分辨到什么程度。[^Clark61]对于非数字值，和比两个参数更多或者更少的情况，函数`f`并没有定义，应用会导致[`MethodError`](@ref)：
 ```jldoctest fofxy
 julia> f("foo", 3)
 ERROR: MethodError: no method matching f(::String, ::Int64)
 Closest candidates are:
-  f(!Matched::Number, ::Number) at none:1
+ f(!Matched::Number, ::Number) at none:1
 
 julia> f()
 ERROR: MethodError: no method matching f()
 Closest candidates are:
-  f(!Matched::Float64, !Matched::Float64) at none:1
-  f(!Matched::Number, !Matched::Number) at none:1
+ f(!Matched::Float64, !Matched::Float64) at none:1
+ f(!Matched::Number, !Matched::Number) at none:1
 ```
 
-You can easily see which methods exist for a function by entering the function object itself in
-an interactive session:
+可以简单地看到对于函数存在哪些方法，通过在交互式会话中键入函数对象本身：
 
 ```jldoctest fofxy
 julia> f
 f (generic function with 2 methods)
 ```
 
-This output tells us that `f` is a function object with two methods. To find out what the signatures
-of those methods are, use the [`methods`](@ref) function:
+这个输出告诉我们`f`是有两个方法的函数对象。为了找出那些方法的signature是什么，使用 [`methods`](@ref)函数：
 
 ```julia-repl
 julia> methods(f)
@@ -172,13 +111,9 @@ julia> methods(f)
 [2] f(x::Number, y::Number) in Main at none:1
 ```
 
-which shows that `f` has two methods, one taking two `Float64` arguments and one taking arguments
-of type `Number`. It also indicates the file and line number where the methods were defined: because
-these methods were defined at the REPL, we get the apparent line number `none:1`.
+这表示`f`有两个方法，一个接受两个`Float64`参数一个接受两个`Number`类型的参数。它也显示了这些方法定义所在的文件和行数：因为这些方法是在REPL中定义的，我们得到了表面上的行数`none:1`.
 
-In the absence of a type declaration with `::`, the type of a method parameter is `Any` by default,
-meaning that it is unconstrained since all values in Julia are instances of the abstract type
-`Any`. Thus, we can define a catch-all method for `f` like so:
+没有`::`的类型声明，方法参数的类型默认为`Any`，这就意味着没有约束，因为Julia中的所有的值都是抽象类型`Any`的实例。所以，我们可以为`f`定义一个接受所有的方法，像这样：
 
 ```jldoctest fofxy
 julia> f(x,y) = println("Whoa there, Nelly.")
@@ -188,12 +123,9 @@ julia> f("foo", 1)
 Whoa there, Nelly.
 ```
 
-This catch-all is less specific than any other possible method definition for a pair of parameter
-values, so it will only be called on pairs of arguments to which no other method definition applies.
+这个接受所有的方法比其他的对一堆参数值的其他任意可能的方法定义更不专用。所以他只会被没有其他方法定义应用的一对参数调用。
 
-Although it seems a simple concept, multiple dispatch on the types of values is perhaps the single
-most powerful and central feature of the Julia language. Core operations typically have dozens
-of methods:
+虽然这像是一个简单的概念，基于值的类型的多重分派可能是Julia语言的一个最强大和中心特征。核心运算符都典型地含有很多方法：
 
 ```julia-repl
 julia> methods(+)
@@ -219,14 +151,11 @@ julia> methods(+)
 [180] +(a, b, c, xs...) in Base at operators.jl:424
 ```
 
-Multiple dispatch together with the flexible parametric type system give Julia its ability to
-abstractly express high-level algorithms decoupled from implementation details, yet generate efficient,
-specialized code to handle each case at run time.
+多重分派和灵活的参数化类型系统让Julia有能力抽象地表达高层级算法，而与实现细节解耦，也能生成高效而专用的代码来在运行中处理每个情况。
 
-## [Method Ambiguities](@id man-ambiguities)
+## [方法歧义](@id man-ambiguities)
 
-It is possible to define a set of function methods such that there is no unique most specific
-method applicable to some combinations of arguments:
+在一系列的函数方法定义时没有单独的最专用的方法能适用于参数的某些组合是可能的：
 
 ```jldoctest gofxy
 julia> g(x::Float64, y) = 2x + y

@@ -43,7 +43,7 @@ Base.Cfloat
 Base.Cdouble
 ```
 
-# LLVM Interface
+# LLVM 接口
 
 ```@docs
 Core.Intrinsics.llvmcall
