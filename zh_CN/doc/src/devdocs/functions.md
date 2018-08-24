@@ -1,6 +1,6 @@
-# Julia Functions
+# Julia的相关函数
 
-This document will explain how functions, method definitions, and method tables work.
+本文档将解释函数、方法定义以及方法表是如何工作的。
 
 ## Method Tables
 

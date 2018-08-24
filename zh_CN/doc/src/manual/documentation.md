@@ -1,9 +1,9 @@
 # 文档
 
-自Julia 0.4 开始，Julia允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。
+自Julia 0.4 开始，Julia 允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。
 
-基础语法很简单：紧接在对象（函数，宏，类型和实例）之前的字符串都会被认为是对应对象的文档（称作*docstrings*）。
-注意不要在docstring和文档对象之间有空行或者注释。
+基础语法很简单：紧接在对象（函数，宏，类型和实例）之前的字符串都会被认为是对应对象的文档（称作 *docstrings*）。
+注意不要在 docstring 和文档对象之间有空行或者注释。
 这里有个基础的例子：
 
 ```julia
@@ -11,12 +11,12 @@
 foo(xs::Array) = ...
 ```
 
-文档会被翻译成[Markdown](https://en.wikipedia.org/wiki/Markdown)，所以你可以
-使用缩进和代码栅栏来分隔代码示例和文本。从技术上来说，任何对象
-可以作为元数据与任何其他对象关联；Markdown是默认的，但是可以创建
-其他字符串宏并传递给`@doc`宏来使用其他格式。
+文档会被翻译成 [Markdown](https://en.wikipedia.org/wiki/Markdown)，所以你可以
+使用缩进和代码块来分隔代码示例和文本。从技术上来说，任何对象
+都可以作为 metadata 与任何其他对象关联；Markdown 是默认的，但是可以创建
+其它字符串宏并传递给 `@doc` 宏来使用其他格式。
 
-这里是更加复杂的例子，但仍然使用Markdown：
+这里是一个更加复杂的例子，但仍然使用 Markdown：
 
 ````julia
 """
@@ -37,14 +37,14 @@ function bar(x, y) ...
 如上例所示，我们推荐在写文档时遵守一些简单约定：
 
 1. 始终在文档顶部显示函数的签名，带有四空格缩进
-   以便被像Julia代码一样显示。
+   以便能够显示成 Julia 代码。
 
-   Julia代码中的签名显示是统一的（像`mean(x::AbstractArray)`），
-   另有简化模式。可选参数应该尽可能与默认值一同显示(例如
-   `f(x, y=1)`），遵循实际的Julia语法。没有默认值的
-   可选参数应该放在括号中（例如`f(x[, y])` 和 `f(x[, y[, z]]`)）。可选的解决方法是
+   这和在 Julia 代码中的签名是一样的（像 `mean(x::AbstractArray)`），
+   或是简化版。可选参数应该尽可能与默认值一同显示（例如
+   `f(x, y=1)`），与实际的 Julia 语法一致。没有默认值的
+   可选参数应该放在括号中（例如 `f(x[, y])` 和 `f(x[, y[, z]]`)）。可选的解决方法是
    使用多行：一个没有可选参数，其他的拥有可选参数（或者多个可选参数）。
-   这个解决方案也可以用作给某个函数的多个相关方法来写文档。当一个函数
+   这个解决方案也可以用作给某个函数的多个方法来写文档。当一个函数
    接收到多个关键字参数，只在签名中包含占位符`<keyword arguments>`
    （例如 `f(x; <keyword arguments>)`），并在`# 参数`章节给出完整列表
    （参照下列点4）。
@@ -145,7 +145,7 @@ function bar(x, y) ...
    以便在生成的文档中正确地高光显示。
 
    !!! tip
-    例子应尽可能**独立**和**可运行**以便读者可以
+  例子应尽可能**独立**和**可运行**以便读者可以
 在不需要引入任何依赖的情况下进行对他们进行实验。
 7. 使用倒引号来标识代码和方程。
 
@@ -278,8 +278,7 @@ end
 @doc "`subtract(a,b)` subtracts `b` from `a`" subtract
 ```
 
-Documentation written in non-toplevel blocks, such as `begin`, `if`, `for`, and `let`, is
-added to the documentation system as blocks are evaluated. For example:
+写在非顶级块，比如`begin`, `if`, `for`, 和 `let`，中的文档会根据块的评估情况加入文档系统中，例如：
 
 ```julia
 if condition()
@@ -288,14 +287,11 @@ if condition()
 end
 ```
 
-will add documentation to `f(x)` when `condition()` is `true`. Note that even if `f(x)` goes
-out of scope at the end of the block, its documentation will remain.
+会被加到`f(x)`的文档中，当`condition()`是`true`的时候。注意即使`f(x)`在块的末尾离开了作用域，他的文档还会保留。
 
-### Dynamic documentation
+### 动态写文档
 
-Sometimes the appropriate documentation for an instance of a type depends on the field values of that
-instance, rather than just on the type itself. In these cases, you can add a method to `Docs.getdoc`
-for your custom type that returns the documentation on a per-instance basis. For instance,
+有些时候类型的实例的合适的文档并非只取决于类型本身，也取决于实例的值。在这些情况下，你可以添加一个方法给自定义类型的`Docs.getdoc`函数，返回基于每个实例的文档。例如，
 
 ```julia
 struct MyType
@@ -308,19 +304,17 @@ x = MyType("x")
 y = MyType("y")
 ```
 
-`?x` will display "Documentation for MyType with value x" while `?y` will display
-"Documentation for MyType with value y".
+输入`?x`会显示"Documentation for MyType with value x"，输入`?y`则会显示"Documentation for MyType with value y"。
 
-## Syntax Guide
+## 语法指南
 
-A comprehensive overview of all documentable Julia syntax.
+对于所有的可写文档的Julia语法的总览。
 
-In the following examples `"..."` is used to illustrate an arbitrary docstring.
+在下述例子中`"..."`用来表示任意的docstring。
 
-`doc""` should only be used when the docstring contains `$` or `\` characters that should not
-be parsed by Julia such as LaTeX syntax or Julia source code examples containing interpolation.
+`doc""`只应用在如下情况下：docstring包含不应被Julia分析的`$`或者`\`字符，比如LaTeX语法；Julia源码中包含插值。
 
-### Functions and Methods
+### 函数与方法
 
 ```julia
 "..."
@@ -330,8 +324,7 @@ function f end
 f
 ```
 
-Adds docstring `"..."` to the function `f`. The first version is the preferred syntax, however both
-are equivalent.
+把docstring`"..."`添加给了函数`f`。第一种语法是首选，虽然两者是等价的。
 
 ```julia
 "..."
@@ -346,30 +339,30 @@ end
 f(x)
 ```
 
-Adds docstring `"..."` to the method `f(::Any)`.
+把docstring `"..."` 添加给了方法`f(::Any)`。
 
 ```julia
 "..."
 f(x, y = 1) = x + y
 ```
 
-Adds docstring `"..."` to two `Method`s, namely `f(::Any)` and `f(::Any, ::Any)`.
+把docstring`"..."`添加给了两个`方法`，分别为`f(::Any)`和`f(::Any, ::Any)`。
 
-### Macros
+### 宏
 
 ```julia
 "..."
 macro m(x) end
 ```
 
-Adds docstring `"..."` to the `@m(::Any)` macro definition.
+把docstring`"..."`添加给了 `@m(::Any)` 的宏定义。
 
 ```julia
 "..."
 :(@m)
 ```
 
-Adds docstring `"..."` to the macro named `@m`.
+把docstring`"..."`添加给了名字为`@m`的宏。
 
 ### 类型
 
@@ -388,7 +381,7 @@ struct T3
 end
 ```
 
-Adds the docstring `"..."` to types `T1`, `T2`, and `T3`.
+把docstring`"..."`添加给了类型`T1`, `T2`和`T3`。
 
 ```julia
 "..."
@@ -400,8 +393,7 @@ struct T
 end
 ```
 
-Adds docstring `"..."` to type `T`, `"x"` to field `T.x` and `"y"` to field `T.y`. Also applicable
-to `mutable struct` types.
+把docstring `"..."` 添加给了类型`T`，`"x"`添加给了域`T.y`，`"y"`添加给了域`T.y`。也可以运用于`可变结构`类型。
 
 ### 模块
 
@@ -417,8 +409,7 @@ M
 end
 ```
 
-Adds docstring `"..."` to the `Module``M`. Adding the docstring above the `Module` is the preferred
-syntax, however both are equivalent.
+把docstring `"..."` 添加给了`模块``M`.在`模块`之前添加docstring的语法是首选，虽然两者是等价的。
 
 ```julia
 "..."
@@ -436,11 +427,9 @@ f(x) = x
 end
 ```
 
-Documenting a `baremodule` by placing a docstring above the expression automatically imports
-`@doc` into the module. These imports must be done manually when the module expression is not
-documented. Empty `baremodule`s cannot be documented.
+通过把docstring放在表达式之上来给一个`baremodule`写文档会自动在模块中引入`@doc`。当模块表达式并没有文档时必须手动引入。空的`baremodule`不能有文档。
 
-### Global Variables
+### 全局变量
 
 ```julia
 "..."
@@ -453,52 +442,44 @@ b = 2
 global c = 3
 ```
 
-Adds docstring `"..."` to the `Binding`s `a`, `b`, and `c`.
+把docstring`"..."`添加给了`绑定` `a`，`b`和`c`。
 
-`Binding`s are used to store a reference to a particular `Symbol` in a `Module` without storing
-the referenced value itself.
+`绑定`是用来在`模块`中存储对于特定`符号`的引用而非存储被引用的值本身。
 
 !!! note
-    When a `const` definition is only used to define an alias of another definition, such as is the
-    case with the function `div` and its alias `÷` in `Base`, do not document the alias and instead
-    document the actual function.
+  当一个`不变`定义只是用作定义另外一个定义的别名时，比如函数`div`和其在`Base`中的别名`÷`，并不要为别名写文档，转而去为实际的函数写文档。
 
-    If the alias is documented and not the real definition then the docsystem (`?` mode) will not
-    return the docstring attached to the alias when the real definition is searched for.
+如果给别名写了文档而非实际的函数，当寻找实际的函数时，文档系统(`?`模式)不会返回别名中对的文档。
+比如你应该写
 
-    For example you should write
+ ```julia
+ "..."
+ f(x) = x + 1
+ const alias = f
+ ```
+而非
 
-    ```julia
-    "..."
-    f(x) = x + 1
-    const alias = f
-    ```
-
-    rather than
-
-    ```julia
-    f(x) = x + 1
-    "..."
-    const alias = f
-    ```
+ ```julia
+ f(x) = x + 1
+ "..."
+ const alias = f
+ ```
 
 ```julia
 "..."
 sym
 ```
 
-Adds docstring `"..."` to the value associated with `sym`. Users should prefer documenting `sym`
-at its definition.
+把docstring `"..."`添加给值`sym`。用户应首选在`sym`定义处写文档。
 
-### Multiple Objects
+### 多重对象
 
 ```julia
 "..."
 a, b
 ```
 
-Adds docstring `"..."` to `a` and `b` each of which should be a documentable expression. This
-syntax is equivalent to
+把docstring `"..."` 添加给`a`和`b`，两个都应该是可以写文档的表达式。这个语法等价于
 
 ```julia
 "..."
@@ -508,70 +489,61 @@ a
 b
 ```
 
-Any number of expressions many be documented together in this way. This syntax can be useful when
-two functions are related, such as non-mutating and mutating versions `f` and `f!`.
+这种方法可以给任意数量的表达式写文档。当两个函数相关，比如非变版本`f`和可变版本`f!`，这个语法是有用的。
 
-### Macro-generated code
+### 宏生成代码
 
 ```julia
 "..."
 @m expression
 ```
 
-Adds docstring `"..."` to expression generated by expanding `@m expression`. This allows for expressions
-decorated with `@inline`, `@noinline`, `@generated`, or any other macro to be documented in the
-same way as undecorated expressions.
+把docstring `"..."` 添加给通过展开`@m expression`生成的表达式。这就允许由`@inline`,`@noinline`,`@generated`或者任意其他宏装饰的表达式能和没有装饰的表达式以同样的方式写文档。
 
-Macro authors should take note that only macros that generate a single expression will automatically
-support docstrings. If a macro returns a block containing multiple subexpressions then the subexpression
-that should be documented must be marked using the [`@__doc__`](@ref Core.@__doc__) macro.
+宏作者应该注意到只有只生成单个表达式的宏才会自动支持docstring。如果宏返回的是含有多个子表达式的块，需要写文档的子表达式应该使用宏 [`@__doc__`](@ref Core.@__doc__) 标记。
 
-The `@enum` macro makes use of `@__doc__` to allow for documenting `Enum`s. Examining its definition
-should serve as an example of how to use `@__doc__` correctly.
+`@enum`宏使用了`@__doc__`来允许给`Enum`写文档。检查其定义可以作为如何正确使用`@__doc__`的范例。
 
 ```@docs
 Core.@__doc__
 ```
 
-## Markdown syntax
+## Markdown语法
 
-The following markdown syntax is supported in Julia.
+Julia支持下列的markdown语法。
 
-### Inline elements
+### 内联元素
 
-Here "inline" refers to elements that can be found within blocks of text, i.e. paragraphs. These
-include the following elements.
+这里"内联"指存在于文本块，如段落，中的元素，包括以下元素：
 
-#### Bold
+#### 粗体
 
-Surround words with two asterisks, `**`, to display the enclosed text in boldface.
+使用两个星号`**`包围单词，用来以粗体显示被包围的文本。
 
 ```
 A paragraph containing a **bold** word.
 ```
 
-#### Italics
+#### 斜体
 
-Surround words with one asterisk, `*`, to display the enclosed text in italics.
+使用一个星号`*`包围单词，用来以斜体显示被包围的文本。
 
 ```
 A paragraph containing an *emphasised* word.
 ```
 
-#### Literals
+#### 字面值
 
-Surround text that should be displayed exactly as written with single backticks, ``` ` ``` .
+使用单倒引号``` ` ```包围单词，用来正确显示文本。
 
 ```
 A paragraph containing a `literal` word.
 ```
 
-Literals should be used when writing text that refers to names of variables, functions, or other
-parts of a Julia program.
+当编写引用变量和函数名字或者Julia程序的部分内容的文本时，应使用字面量。
 
 !!! tip
-    To include a backtick character within literal text use three backticks rather than one to enclose
-    the text.
+为了在字面量文本中包含一个倒引号，使用三个倒引号来包围文本，而非单倒引号。
 
     ```
     A paragraph containing a ``` `backtick` character ```.
@@ -581,30 +553,24 @@ parts of a Julia program.
 
 #### ``\LaTeX``
 
-Surround text that should be displayed as mathematics using ``\LaTeX`` syntax with double backticks,
-``` `` ``` .
+使用``\LaTeX``语法和双倒引号``` `` ```包围文本，以便以数学表达式的方式显示。
 
 ```
 A paragraph containing some ``\LaTeX`` markup.
 ```
 
 !!! tip
-    As with literals in the previous section, if literal backticks need to be written within double
-    backticks use an even number greater than two. Note that if a single literal backtick needs to
-    be included within ``\LaTeX`` markup then two enclosing backticks is sufficient.
+如同上一节的字面量，如果字面倒引号需要写在双倒引号中，请写数量为大于2的偶数的倒引号。注意如果在```\LaTeX``标记中包含一个字面倒引号，两个闭合的倒引号就足够了。
 
-#### Links
+#### 链接
 
-Links to either external or internal addresses can be written using the following syntax, where
-the text enclosed in square brackets, `[ ]`, is the name of the link and the text enclosed in
-parentheses, `( )`, is the URL.
+链接到外部或者内部的地址的链接应该按照下列的语法编写：中括号`[ ]`围绕的文本是链接的名字，小括号`( )`围绕的文本是URL。
 
 ```
 A paragraph containing a link to [Julia](http://www.julialang.org).
 ```
 
-It's also possible to add cross-references to other documented functions/methods/variables within
-the Julia documentation itself. For example:
+在Julia文档中对其他的有文档的函数/方法/变量进行交叉引用是可以的。例如：
 
 ```julia
 """
@@ -614,39 +580,29 @@ Cumulative operation `op` on a vector `x`, storing the result in `y`. See also [
 """
 ```
 
-This will create a link in the generated docs to the `accumulate` documentation
-(which has more information about what this function actually does). It's good to include
-cross references to mutating/non-mutating versions of a function, or to highlight a difference
-between two similar-seeming functions.
+这会在生成的文档中生成指向 `accumulate` 文档的一个链接（含有更多的关于函数实际的功能的信息）。在函数的可变/不变版本中包含交叉引用或者在两个看起来相似地函数中间高光其区别是鼓励的。
 
 !!! note
-    The above cross referencing is *not* a Markdown feature, and relies on
-    [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl), which is
-    used to build base Julia's documentation.
+上述的交叉引用*不是*Markdown的特色，其依赖于 [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl)，这个包用来构建基础的Julia文档。
 
-#### Footnote references
+#### 脚注引用
 
-Named and numbered footnote references can be written using the following syntax. A footnote name
-must be a single alphanumeric word containing no punctuation.
+命名的和编号的脚注引用应按照下列的语法编写：脚注名必须是没有截断的只有字母或者数字的单个单词。
 
 ```
 A paragraph containing a numbered footnote [^1] and a named one [^named].
 ```
 
 !!! note
-    The text associated with a footnote can be written anywhere within the same page as the footnote
-    reference. The syntax used to define the footnote text is discussed in the [Footnotes](@ref) section
-    below.
+与脚注相关的文本能写在脚注链接同一页的任意地方。用于定义脚注文本的语法在下面的[Footnotes](@ref)章节中讨论。
 
-### Toplevel elements
+### 顶层元素
 
-The following elements can be written either at the "toplevel" of a document or within another
-"toplevel" element.
+下列元素可以写在文档的"顶层"或者"顶层"元素之中。
 
-#### Paragraphs
+#### 段落
 
-A paragraph is a block of plain text, possibly containing any number of inline elements defined
-in the [Inline elements](@ref) section above, with one or more blank lines above and below it.
+段落是一个纯文本的块，可能包含任意数量的在[Inline elements](@ref)中定义了的内联元素，在段落前后会拥有一个或者多个空行。
 
 ```
 This is a paragraph.
@@ -655,9 +611,9 @@ And this is *another* one containing some emphasised text.
 A new line, but still part of the same paragraph.
 ```
 
-#### Headers
+#### 标题
 
-A document can be split up into different sections using headers. Headers use the following syntax:
+文档可以使用标题分成不同的章节。标题使用的是下列的语法：
 
 ```julia
 # Level One
@@ -668,17 +624,14 @@ A document can be split up into different sections using headers. Headers use th
 ###### Level Six
 ```
 
-A header line can contain any inline syntax in the same way as a paragraph can.
+如同段落一样，标题行可以包含任意的内联语法。
 
 !!! tip
-    Try to avoid using too many levels of header within a single document. A heavily nested document
-    may be indicative of a need to restructure it or split it into several pages covering separate
-    topics.
+尽量避免单个文档中使用过多层级的标题。重度嵌套的文档会给人以有将其重建或者分离成包含不同主题的多页的需要的印象。
 
-#### Code blocks
+#### 代码块
 
-Source code can be displayed as a literal block using an indent of four spaces as shown in the
-following example.
+源代码会以带有四空格缩进的字面量块的形式显示，如下列所示。
 
 ```
 This is a paragraph.
@@ -690,8 +643,7 @@ This is a paragraph.
 Another paragraph.
 ```
 
-Additionally, code blocks can be enclosed using triple backticks with an optional "language" to
-specify how a block of code should be highlighted.
+另外，代码块可以由三个倒引号包围起来，并有可选的“语言”来指定块中代码的高光方式。
 
 ````
 A code block without a "language":
@@ -712,13 +664,11 @@ end
 ````
 
 !!! note
-    "Fenced" code blocks, as shown in the last example, should be preferred over indented code blocks
-    since there is no way to specify what language an indented code block is written in.
+"栅栏分隔"的代码块，如同最近的例子，应该比缩进代码块更优选因为在缩进代码块中无法指定语言。
 
-#### Block quotes
+#### 块引用
 
-Text from external sources, such as quotations from books or websites, can be quoted using `>`
-characters prepended to each line of the quote as follows.
+来自外部源的文本，比如来自书本或者网站的引用，应该在每行之前使用`>`字符来引用，如下所示。
 
 ```
 Here's a quote:
@@ -728,21 +678,19 @@ Here's a quote:
 > technical computing environments.
 ```
 
-Note that a single space must appear after the `>` character on each line. Quoted blocks may themselves
-contain other toplevel or inline elements.
+注意每行的`>`字符之后一定要有单个空格。引用块可能自己含有其他的顶层或者内联元素。
 
-#### Images
+#### 图片
 
-The syntax for images is similar to the link syntax mentioned above. Prepending a `!` character
-to a link will display an image from the specified URL rather than a link to it.
+图片的语法与之前提到的链接语法相类似。在链接前加一个`!`字符就可以从指定的URL显示图片而非链接。
 
 ```julia
 ![alternative text](link/to/image.png)
 ```
 
-#### Lists
+#### 列表
 
-Unordered lists can be written by prepending each item in a list with either `*`, `+`, or `-`.
+无序列表可以通过在列表的每项前加`*`,`+`或`-`来编写。
 
 ```
 A list of items:
@@ -752,11 +700,9 @@ A list of items:
   * item three
 ```
 
-Note the two spaces before each `*` and the single space after each one.
+注意每个`*`之前有两个空格，之后有一个空格。
 
-Lists can contain other nested toplevel elements such as lists, code blocks, or quoteblocks. A
-blank line should be left between each list item when including any toplevel elements within a
-list.
+列表可以包含其他的嵌套顶层元素，比如列表，代码块或者引用块。如果列表中包含任意顶级元素，请在每个列表项之间流出一个空行。
 
 ```
 Another list:
@@ -769,18 +715,16 @@ Another list:
     f(x) = x
     ```
 
-  * And a sublist:
+  * 一个子列表：
 
-      + sub-item one
-      + sub-item two
+      + 子项一
+      + 子项二
 ```
 
 !!! note
-    The contents of each item in the list must line up with the first line of the item. In the above
-    example the fenced code block must be indented by four spaces to align with the `i` in `item two`.
+列表里的每一项的内容必须与项的第一行对齐。在上面的例子中栅栏分隔的代码块必须缩进四个空格以便于`item two`中的`i`对齐。
 
-Ordered lists are written by replacing the "bullet" character, either `*`, `+`, or `-`, with a
-positive integer followed by either `.` or `)`.
+有序列表可以通过用正整数加`.`或者`)`来替代"项目"符号，`*`，`+`或者`-`，来编写。
 
 ```
 Two ordered lists:
@@ -794,14 +738,11 @@ Two ordered lists:
  7) item seven
 ```
 
-An ordered list may start from a number other than one, as in the second list of the above example,
-where it is numbered from five. As with unordered lists, ordered lists can contain nested toplevel
-elements.
+一个有序列表可以不从1开始编号，如同上例的第二个列表所示，这个列表从5开始编号。如同无序列表一样，有序列表可以包含嵌套的顶层元素。
 
-#### Display equations
+#### 显示方程
 
-Large ``\LaTeX`` equations that do not fit inline within a paragraph may be written as display
-equations using a fenced code block with the "language" `math` as in the example below.
+大型的``\LaTeX``方程无法放进段落的行列中，可以使用"语言"为`math`的栅栏分隔的代码块将其写成显示方程，如同下列例子：
 
 ````julia
 ```math
@@ -809,13 +750,11 @@ f(a) = \frac{1}{2\pi}\int_{0}^{2\pi} (\alpha+R\cos(\theta))d\theta
 ```
 ````
 
-#### Footnotes
+#### 脚注
 
-This syntax is paired with the inline syntax for [Footnote references](@ref). Make sure to read
-that section as well.
+这个语法是与[Footnote references](@ref)内联语法相配合的。请确认也读过那个章节。
 
-Footnote text is defined using the following syntax, which is similar to footnote reference syntax,
-aside from the `:` character that is appended to the footnote label.
+与脚注引用语法相似，脚注文本使用如下语法定义，不包括脚注标签之后的`:`字符：
 
 ```
 [^1]: Numbered footnote text.
@@ -836,74 +775,62 @@ aside from the `:` character that is appended to the footnote label.
 ```
 
 !!! note
-    No checks are done during parsing to make sure that all footnote references have matching footnotes.
+在语法分析中并没有校验所有的脚注引用是否都有对应的脚注。
 
-#### Horizontal rules
+#### 横向法则
 
-The equivalent of an `<hr>` HTML tag can be written using the following syntax:
+HTML标签`<hr>`等效于下列语法：
 
 ```
-Text above the line.
+该行之上的文本
 
 ---
 
-And text below the line.
+和该行之下的文本。
 ```
 
-#### Tables
+#### 表格
 
-Basic tables can be written using the syntax described below. Note that markdown tables have limited
-features and cannot contain nested toplevel elements unlike other elements discussed above –
-only inline elements are allowed. Tables must always contain a header row with column names. Cells
-cannot span multiple rows or columns of the table.
+基础表格可以使用下列语法编写。注意Markdown表格只有有限的特征，不像上述讨论的其他元素，不能包含嵌套的顶层元素 –
+只允许内联元素。表格必须包含有列名的标题行。表格单元格不能够跨行或者跨列。
 
 ```
-| Column One | Column Two | Column Three |
+| 列一 | 列二 | 列三 |
 |:---------- | ---------- |:------------:|
-| Row `1`    | Column `2` |              |
-| *Row* 2    | **Row** 2  | Column ``3`` |
+| 行 `1`    | 列 `2` |              |
+| *行* 2    | **行** 2  | 列 ``3`` |
 ```
 
 !!! note
-    As illustrated in the above example each column of `|` characters must be aligned vertically.
+如同上例中所示，每列的`|`字符必须纵向对齐。
 
-    A `:` character on either end of a column's header separator (the row containing `-` characters)
-    specifies whether the row is left-aligned, right-aligned, or (when `:` appears on both ends) center-aligned.
-    Providing no `:` characters will default to right-aligning the column.
+在每列的标题分隔符(含有`-`字符的行)两边中一边出现的`:`字符指定这一行是左对齐，右对齐还是（当两边都出现`:`）居中对齐。
+没有`:`字符时默认右对齐。
 
-#### Admonitions
+#### 警告
 
-Specially formatted blocks, known as admonitions, can be used to highlight particular remarks.
-They can be defined using the following `!!!` syntax:
+特殊格式的块，被称为警告，可用来高光特殊的备注。它们可以使用下列的`!!!`语法定义：
 
 ```
 !!! note
 
-    This is the content of the note.
+  这是笔记的内容。
 
 !!! warning "Beware!"
 
-    And this is another one.
+这是另外一个。
 
-    This warning admonition has a custom title: `"Beware!"`.
+warning警告有一个自定义标题：`"Beware!"`。
 ```
 
-The type of the admonition can be any word, but some types produce special styling,
-namely (in order of decreasing severity): `danger`, `warning`, `info`/`note`, and `tip`.
+警告的类型可以是任意单词，但是有些类型会产生特殊的类型化，名为（按严重程度降序）: `danger`，`warning`，`info`/`note`，和`tip`。
 
-A custom title for the box can be provided as a string (in double quotes) after the admonition type.
-If no title text is specified after the admonition type, then the title used will be the type of the block,
-i.e. `"Note"` in the case of the `note` admonition.
+盒子的自定义标题可以以警告类型之后的字符串（以双重引用形式）形式提供。如果在警告类型后没有指定标题文本，块的类型将用作标题，也就是说`note`警告时会使用`"Note"`作为标题。
 
-Admonitions, like most other toplevel elements, can contain other toplevel elements.
+警告，和大部分其他顶层元素一样，也可以包含其他顶层元素。
 
-## Markdown Syntax Extensions
+## Markdown语法扩展
 
-Julia's markdown supports interpolation in a very similar way to basic string literals, with the
-difference that it will store the object itself in the Markdown tree (as opposed to converting
-it to a string). When the Markdown content is rendered the usual `show` methods will be called,
-and these can be overridden as usual. This design allows the Markdown to be extended with arbitrarily
-complex features (such as references) without cluttering the basic syntax.
+Julia的Markdown支持插值，与基础的字符串字面值非常相似，区别是它会将对象本身存储到一个Markdown树（对应的是直接转换成字符串）。当Markdown内容渲染时，常用的`show`方法会被调用，也会照例重写。这个设计允许在不把基础语法搞杂乱的情况下可以扩展出任意的复杂的特征（比如引用）。
 
-In principle, the Markdown parser itself can also be arbitrarily extended by packages, or an entirely
-custom flavour of Markdown can be used, but this should generally be unnecessary.
+原则上，Markdown语法分析器自己可以通过包来进行任意扩展，或者可以使用完整的自定义的Markdown风味，但是这通常应该是非必须的。

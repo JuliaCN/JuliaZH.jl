@@ -2,11 +2,11 @@
 
 ## 会话和 REPL
 
-### 如何从内存中删除对象？
+### 如何从内存中删除某个对象？
 
 Julia 没有类似于 MATLAB 的 `clear` 函数，某个名称一旦定义在 Julia 的会话中（准确地说，在 `Main` 模块中），它就会一直存在下去。
 
-如果关心内存用量，一个对象总能被一个占用更少内存的对象替换掉。例如，如果 `A` 是一个不再需要的吉字节量级的数组，可以使用 `A = nothing` 来释放内存。该内存将在下一次垃圾回收器运行时被释放，也可以使用 [`gc()`](@ref Base.GC.gc) 强制执行。另外，试图使用 `A` 很可能导致错误，因为大部分方法在 `Nothing` 类型上没有定义。
+如果关心内存用量，一个对象总能被一个占用更少内存的对象替换掉。例如，如果 `A` 是一个不再需要的GB量级的数组，可以使用 `A = nothing` 来释放内存。该内存将在下一次垃圾回收器运行时被释放，也可以使用 [`gc()`](@ref Base.GC.gc) 强制执行。另外，试图使用 `A` 很可能导致错误，因为大部分方法（method）在 `Nothing` 类型上没有定义。
 
 ### 如何在会话中修改某个类型的声明？
 
@@ -18,7 +18,7 @@ ERROR: invalid redefinition of constant MyType
 
 模块 `Main` 中的类型不能重新定义。
 
-尽管这在开发新代码时会造成不便，但是对于这个问题仍然有一个不错的解决办法：可以用重新定义的方法替换模块，所以可以把所有新代码封装在一个模块里。虽说不能将类型名称导入到 `Main` 模块中再去重新定义，但是可以用模块名来解决这个问题。换言之，开发时的工作流可能类似这样：
+尽管这在开发新代码时会造成不便，但是对于这个问题仍然有一个不错的解决办法：可以用重新定义的模块替换原有的模块，所以可以把所有新代码封装在一个模块里，然后重新定义类型和常量。虽说不能将类型名称导入到 `Main` 模块中再去重新定义，但是可以用模块名来改变作用范围。换言之，开发时的工作流可能类似这样：
 
 ```julia
 include("mynewcode.jl") # this defines a module MyModule
@@ -54,12 +54,9 @@ julia> x # x is unchanged!
 10
 ```
 
-In Julia, the binding of a variable `x` cannot be changed by passing `x` as an argument to a function.
-When calling `change_value!(x)` in the above example, `y` is a newly created variable, bound initially
-to the value of `x`, i.e. `10`; then `y` is rebound to the constant `17`, while the variable
-`x` of the outer scope is left untouched.
+在 Julia 中，通过将 `x` 作为参数传递给函数，不能改变变量`x`的绑定。在上例中，调用 `change_value!(x)` 时，`y` 是一个新建变量，初始时与 `x` 的值绑定，即 `10`。然后 `y` 与常量 `17` 重新绑定，此时变量外作用域中的 `x` 并没有变动。
 
-但是这里有一个需要注意的点: 假设 'x' 被绑定至 'Array' 类型 (或者其他 *可变* 的类型). 在函数中,你无法改变'x' 的'Array'类型, 但是你可以改变其内容. 例如
+但是这里有一个需要注意的点：假设 `x` 被绑定至 `Array` 类型 (或者其他 *可变* 的类型)。在函数中，你无法将 `x` 与 Array “解绑”，但是你可以改变其内容。例如：
 
 ```jldoctest
 julia> x = [1,2,3]
@@ -83,10 +80,7 @@ julia> x
  3
 ```
 
-Here we created a function `change_array!`, that assigns `5` to the first element of the passed
-array (bound to `x` at the call site, and bound to `A` within the function). Notice that, after
-the function call, `x` is still bound to the same array, but the content of that array changed:
-the variables `A` and `x` were distinct bindings referring to the same mutable `Array` object.
+这里我们新建了一个函数`chang_array!`，它把`5`赋值给传入的数组（在调用处与`x`绑定，在函数中与`A`绑定）的第一个元素。注意，在函数调用之后，`x`依旧与同一个数组绑定，但是数组的内容变化了：变量`A`和`x`是引用同一个可变的`Array`对象的不同引用。
 
 ### 函数内部能否使用 `using` 或 `import`？
 
@@ -103,9 +97,9 @@ the variables `A` and `x` were distinct bindings referring to the same mutable `
    end
    ```
 
-   这会加载 `Foo` 模块，同时定义一个变量 `Foo` 引用该模块，但并不会将其他任何符号从该模块中导入当前的名字空间。`Foo` 等符号可以由限定的名称 `Foo.bar` 等引用。
-   import any of the other symbols from the module into the current namespace.  You refer to the
-   `Foo` symbols by their qualified names `Foo.bar` etc.
+   这会加载 `Foo` 模块，同时定义一个变量 `Foo` 引用该模块，但并不会
+   将其他任何符号从该模块中导入当前的名字空间。
+   `Foo` 等符号可以由限定的名称 `Foo.bar` 等引用等。
 2. 将函数封装到模块中：
 
    ```julia
@@ -123,16 +117,13 @@ the variables `A` and `x` were distinct bindings referring to the same mutable `
 
 ### 运算符 `...` 有何作用？
 
-### The two uses of the `...` operator: slurping and splatting
+### `...`运算符的两个用法：slurping和splatting
 
-Many newcomers to Julia find the use of `...` operator confusing. Part of what makes the `...`
-operator confusing is that it means two different things depending on context.
+很多Julia的新手会对运算符`...`的用法感到困惑。让`...`用法如此困惑的部分原因是根据上下文它有两种不同的含义。
 
-### `...` combines many arguments into one argument in function definitions
+### `...`在函数定义中将多个参数组合成一个参数
 
-In the context of function definitions, the `...` operator is used to combine many different arguments
-into a single argument. This use of `...` for combining many different arguments into a single
-argument is called slurping:
+在函数定义的上下文中，`...`运算符用来将多个不同的参数组合成单个参数。`...`运算符的这种将多个不同参数组合成单个参数的用法称为slurping：
 
 ```jldoctest
 julia> function printargs(args...)
@@ -150,15 +141,11 @@ Arg #2 = 2
 Arg #3 = 3
 ```
 
-If Julia were a language that made more liberal use of ASCII characters, the slurping operator
-might have been written as `<-...` instead of `...`.
+如果Julia是一个使用ASCII字符更加自由的语言的话，slurping运算符可能会写作`<-...`而非`...`。
 
-### `...` splits one argument into many different arguments in function calls
+### `...`在函数调用中将一个参数分解成多个不同参数
 
-In contrast to the use of the `...` operator to denote slurping many different arguments into
-one argument when defining a function, the `...` operator is also used to cause a single function
-argument to be split apart into many different arguments when used in the context of a function
-call. This use of `...` is called splatting:
+与在定义函数时表示将多个不同参数组合成一个参数的`...`运算符用法相对，当用在函数调用的上下文中`...`运算符也用来将单个的函数参数分成多个不同的参数。`...`函数的这个用法叫做splatting：
 
 ```jldoctest
 julia> function threeargs(a, b, c)
@@ -180,12 +167,11 @@ b = 2::Int64
 c = 3::Int64
 ```
 
-If Julia were a language that made more liberal use of ASCII characters, the splatting operator
-might have been written as `...->` instead of `...`.
+如果Julia是一个使用ASCII字符更加自由的语言的话，splatting运算符可能会写作`...->`而非`...`。
 
-### What is the return value of an assignment?
+### 赋值语句的返回值是什么？
 
-The operator `=` always returns the right-hand side, therefore:
+`=`运算符始终返回右侧的值，所以：
 
 ```jldoctest
 julia> function threeint()
@@ -206,7 +192,7 @@ julia> threefloat()
 3.0
 ```
 
-and similarly:
+相似地：
 
 ```jldoctest
 julia> function threetup()
@@ -229,11 +215,11 @@ julia> threearr()
  3
 ```
 
-## Types, type declarations, and constructors
+## 类型，类型声明和构造函数
 
 ### [何谓“类型稳定”？](@id man-type-stability)
 
-这意味着输出的类型可以由输入的类型预测出来。特别地，这意味着输出的类型不会因输入的**值**的不同而变化。以下代码**不是**类型稳定的：
+这意味着输出的类型可以由输入的类型预测出来。特别地，这意味着输出的类型不会因输入的*值*的不同而变化。以下代码*不是*类型稳定的：
 
 ```jldoctest
 julia> function unstable(flag::Bool)
@@ -261,21 +247,18 @@ Stacktrace:
 [...]
 ```
 
-这一行为是为了保证类型稳定而带来的不便。对于 [`sqrt`](@ref)，许多用户会希望 `sqrt(2.0)` 产生一个实数，如果得到了复数 `1.4142135623730951 + 0.0im` 则会不高兴。也可以编写 [`sqrt`](@ref) 函数，只有当传递一个负数时才切换到复值输出，但结果将不是类型稳定的，而且 [`sqrt`](@ref) 函数的性能会很差。
+这一行为是为了保证类型稳定而带来的不便。对于 [`sqrt`](@ref)，许多用户会希望 `sqrt(2.0)` 产生一个实数，如果得到了复数 `1.4142135623730951 + 0.0im` 则会不高兴。也可以编写 [`sqrt`](@ref) 函数，只有当传递一个负数时才切换到复值输出，但结果将不是[类型稳定](@ref man-type-stability)的，而且 [`sqrt`](@ref) 函数的性能会很差。
 
-In these and other cases, you can get the result you want by choosing an *input type* that conveys
-your willingness to accept an *output type* in which the result can be represented:
+在这样那样的情况下，若你想得到希望的结果，你可以选择一个*输入类型*，它可以使根据你的想法接受一个*输出类型*，从而结果可以这样表示：
 
 ```jldoctest
 julia> sqrt(-2.0+0im)
 0.0 + 1.4142135623730951im
 ```
 
-### Why does Julia use native machine integer arithmetic?
+### 为什么Julia使用原生机器整数算法？
 
-Julia uses machine arithmetic for integer computations. This means that the range of `Int` values
-is bounded and wraps around at either end so that adding, subtracting and multiplying integers
-can overflow or underflow, leading to some results that can be unsettling at first:
+Julia使用机器算法进行整数计算。这意味着`Int`的范围是有界的，值在范围的两端循环，也就是说整数的加法，减法和乘法会上溢或者下溢，导致出现某些最开始会令人不安的结果：
 
 ```jldoctest
 julia> typemax(Int)
@@ -291,41 +274,13 @@ julia> 2*ans
 0
 ```
 
-Clearly, this is far from the way mathematical integers behave, and you might think it less than
-ideal for a high-level programming language to expose this to the user. For numerical work where
-efficiency and transparency are at a premium, however, the alternatives are worse.
+无疑，这与数学上的整数的行为很不一样，并且你会想对于高阶编程语言来说把这个暴露给用户难称完美。然而，对于效率和透明度优先的数值工作来说，其他的备选方案更糟。
 
-One alternative to consider would be to check each integer operation for overflow and promote
-results to bigger integer types such as [`Int128`](@ref) or [`BigInt`](@ref) in the case of overflow.
-Unfortunately, this introduces major overhead on every integer operation (think incrementing a
-loop counter) – it requires emitting code to perform run-time overflow checks after arithmetic
-instructions and branches to handle potential overflows. Worse still, this would cause every computation
-involving integers to be type-unstable. As we mentioned above, [type-stability is crucial](@ref man-type-stability)
-for effective generation of efficient code. If you can't count on the results of integer operations
-being integers, it's impossible to generate fast, simple code the way C and Fortran compilers
-do.
+考虑的一个备选方案是去检查每个整数运算是否溢出，如果溢出的话则将结果提升到更大的整数类型比如[`Int128`](@ref)或者[`BigInt`](@ref)。 不幸的是，这会给所有的整数操作（比如让循环计数器自增）带来巨大的计算开销 — 这需要生成代码去在算法指令后进行运行溢出检测和生成分支去处理潜在的溢出。更糟糕的是，这会让涉及整数的所有运算变得类型不稳定。如同上面提到的，对于高效生成高效的代码[类型稳定很重要](@ref man-type-stability)。如果不指望整数运算的结果是整数，就无法想C和Fortran编译器一样生成快速简单的代码。
 
-A variation on this approach, which avoids the appearance of type instability is to merge the
-`Int` and [`BigInt`](@ref) types into a single hybrid integer type, that internally changes representation
-when a result no longer fits into the size of a machine integer. While this superficially avoids
-type-instability at the level of Julia code, it just sweeps the problem under the rug by foisting
-all of the same difficulties onto the C code implementing this hybrid integer type. This approach
-*can* be made to work and can even be made quite fast in many cases, but has several drawbacks.
-One problem is that the in-memory representation of integers and arrays of integers no longer
-match the natural representation used by C, Fortran and other languages with native machine integers.
-Thus, to interoperate with those languages, we would ultimately need to introduce native integer
-types anyway. Any unbounded representation of integers cannot have a fixed number of bits, and
-thus cannot be stored inline in an array with fixed-size slots – large integer values will always
-require separate heap-allocated storage. And of course, no matter how clever a hybrid integer
-implementation one uses, there are always performance traps – situations where performance degrades
-unexpectedly. Complex representation, lack of interoperability with C and Fortran, the inability
-to represent integer arrays without additional heap storage, and unpredictable performance characteristics
-make even the cleverest hybrid integer implementations a poor choice for high-performance numerical
-work.
+这个方法有个避免类型不稳定的变体，是将类型`Int`和[`BigInt`](@ref)合并成单个混合整数类型，当结果不再满足机器整数的大小时会内部自动切换表示。虽然表面上在Julia代码层面解决了类型不稳定，但是这个只是通过将所有的困难硬塞给实现混合整数类型的C代码把这个问题给掩盖了。这个方法*可能*有用，甚至在很多情况下速度很快，但是它有很多缺点。一个是整数和整数数组的内存上的表示不再与C、Fortran和其他使用原生机器整数的怨言所使用的自然表示一样。所以，为了与那些语言协作，我们无论如何最终都需要引入原生整数类型。任何整数的无界表示都不会占用固定的比特数，所以无法使用固定大小的槽来内联地存储在数组中 — 大的整数值通常需要单独的堆分配的存储。并且无论使用的混合整数实现多么智能，总会存在性能陷阱 —无法预期的性能下降的情况。复杂的表示，与C和Fortran协作能力的缺乏，无法在不使用另外的堆存储的情况下表示整数数组，和无法预测的性能特性让即使是最智能化的混合整数实现也是高性能数值计算的一个很差的选择。
 
-An alternative to using hybrid integers or promoting to BigInts is to use saturating integer arithmetic,
-where adding to the largest integer value leaves it unchanged and likewise for subtracting from
-the smallest integer value. This is precisely what Matlab™ does:
+除了使用混合整数和提升到BigInt，另一个备选方案是使用饱和整数算法，此时最大整数值加一个数时值保持不变，最小整数值减一个数时也是同样的。这就是Matlab™的做法：
 
 ```
 >> int64(9223372036854775807)
@@ -353,15 +308,7 @@ ans =
  -9223372036854775808
 ```
 
-At first blush, this seems reasonable enough since 9223372036854775807 is much closer to 9223372036854775808
-than -9223372036854775808 is and integers are still represented with a fixed size in a natural
-way that is compatible with C and Fortran. Saturated integer arithmetic, however, is deeply problematic.
-The first and most obvious issue is that this is not the way machine integer arithmetic works,
-so implementing saturated operations requires emitting instructions after each machine integer
-operation to check for underflow or overflow and replace the result with [`typemin(Int)`](@ref)
-or [`typemax(Int)`](@ref) as appropriate. This alone expands each integer operation from a single,
-fast instruction into half a dozen instructions, probably including branches. Ouch. But it gets
-worse – saturating integer arithmetic isn't associative. Consider this Matlab computation:
+乍一看，这个似乎足够合理，因为9223372036854775807比-9223372036854775808更接近于9223372036854775808并且整数还是以固定大小的自然方式表示的，这与C和Fortran相兼容。但是饱和整数算法是很有问题的。首先最明显的问题是这并不是机器整数算法的工作方式，所以实现饱和整数算法需要生成指令，在每个机器整数运算后检查上溢或者下溢并正确地讲这些结果用[`typemin(Int)`](@ref)或者[`typemax(Int)`](@ref)取代。单单这个就将整数运算从单语句的快速的指令扩展成六个指令，还可能包括分支。哎呦喂~~但是还有更糟的 — 饱和整数算法并不满足结合律。考虑下列的Matlab计算：
 
 ```
 >> n = int64(2)^62
@@ -374,9 +321,7 @@ worse – saturating integer arithmetic isn't associative. Consider this Matlab 
 9223372036854775806
 ```
 
-This makes it hard to write many basic integer algorithms since a lot of common techniques depend
-on the fact that machine addition with overflow *is* associative. Consider finding the midpoint
-between integer values `lo` and `hi` in Julia using the expression `(lo + hi) >>> 1`:
+这就让写很多基础整数算法变得困难因为很多常用技术都是基于有溢出的机器加法*是*满足结合律这一事实的。考虑一下在Julia中求整数值`lo`和`hi`之间的中点值，使用表达式`(lo + hi) >>> 1`:
 
 ```jldoctest
 julia> n = 2^62
@@ -386,8 +331,7 @@ julia> (n + 2n) >>> 1
 6917529027641081856
 ```
 
-See? No problem. That's the correct midpoint between 2^62 and 2^63, despite the fact that `n + 2n`
-is -4611686018427387904. Now try it in Matlab:
+看到了吗？没有任何问题。那就是2^62和2^63之间的正确地中点值，虽然`n + 2n`的值是 -4611686018427387904。现在使用Matlab试一下：
 
 ```
 >> (n + 2*n)/2
@@ -397,14 +341,9 @@ ans =
   4611686018427387904
 ```
 
-Oops. Adding a `>>>` operator to Matlab wouldn't help, because saturation that occurs when adding
-`n` and `2n` has already destroyed the information necessary to compute the correct midpoint.
+哎呦喂。在Matlab中添加`>>>`运算符没有任何作用，因为在将`n`与`2n`相加时已经破坏了能计算出正确地中点值的必要信息，已经出现饱和。
 
-Not only is lack of associativity unfortunate for programmers who cannot rely it for techniques
-like this, but it also defeats almost anything compilers might want to do to optimize integer
-arithmetic. For example, since Julia integers use normal machine integer arithmetic, LLVM is free
-to aggressively optimize simple little functions like `f(k) = 5k-1`. The machine code for this
-function is just this:
+没有结合性不但对于不能依靠像这样的技术的程序员是不幸的，并且让几乎所有的希望优化整数算法的编译器铩羽而归。例如，因为Julia中的整数使用平常的机器整数算法，LLVM就可以自由地激进地优化像`f(k) = 5k-1`这样的简单地小函数。这个函数的机器码如下所示：
 
 ```julia-repl
 julia> code_native(f, Tuple{Int})
@@ -419,8 +358,7 @@ Source line: 1
   nopl  (%rax,%rax)
 ```
 
-The actual body of the function is a single `leaq` instruction, which computes the integer multiply
-and add at once. This is even more beneficial when `f` gets inlined into another function:
+这个函数的实际函数体只是一个简单地`leap`指令，可以立马计算整数乘法与加法。当`f`内联在其他函数中的时候这个更加有益：
 
 ```julia-repl
 julia> function g(k, n)
@@ -454,8 +392,7 @@ L26:
   nop
 ```
 
-Since the call to `f` gets inlined, the loop body ends up being just a single `leaq` instruction.
-Next, consider what happens if we make the number of loop iterations fixed:
+因为`f`的调用内联化，循环体就只是简单地`leap`指令。接着，考虑一下如果循环迭代的次数固定的时候会发生什么：
 
 ```julia-repl
 julia> function g(k)
@@ -480,25 +417,13 @@ Source line: 5
   nopw  %cs:(%rax,%rax)
 ```
 
-Because the compiler knows that integer addition and multiplication are associative and that multiplication
-distributes over addition – neither of which is true of saturating arithmetic – it can optimize
-the entire loop down to just a multiply and an add. Saturated arithmetic completely defeats this
-kind of optimization since associativity and distributivity can fail at each loop iteration, causing
-different outcomes depending on which iteration the failure occurs in. The compiler can unroll
-the loop, but it cannot algebraically reduce multiple operations into fewer equivalent operations.
+因为编译器知道整数加法和乘法是满足结合律的并且乘法可以在加法上使用分配律 — 两者在饱和算法中都不成立 — 所以编译器就可以把整个循环优化到只有一个乘法和一个加法。饱和算法完全无法使用这种优化，因为在每个循环迭代中结合律和分配律都会失效导致不同的失效位置会得到不同的结果。编译器可以展开循环，但是不能代数上将多个操作简化到更少的等效操作。
 
-The most reasonable alternative to having integer arithmetic silently overflow is to do checked
-arithmetic everywhere, raising errors when adds, subtracts, and multiplies overflow, producing
-values that are not value-correct. In this [blog post](http://danluu.com/integer-overflow/), Dan
-Luu analyzes this and finds that rather than the trivial cost that this approach should in theory
-have, it ends up having a substantial cost due to compilers (LLVM and GCC) not gracefully optimizing
-around the added overflow checks. If this improves in the future, we could consider defaulting
-to checked integer arithmetic in Julia, but for now, we have to live with the possibility of overflow.
+让整数算法静默溢出的最合理的备用方案是所有地方都使用检查算法，当加法、减法和乘法溢出，产生不正确的值时引发错误。在[blog post](http://danluu.com/integer-overflow/)中，Dan Luu分析了这个方案，发现这个方案理论上的性能微不足道，但是最终仍然会消耗大量的性能因为编译器（LLVM和GCC）无法在加法溢出检测处优雅地进行优化。如果未来有所进步我们会考虑在Julia中默认设置为检查整数算法，但是现在，我们需要和溢出可能共同相处。
 
-### What are the possible causes of an `UndefVarError` during remote execution?
+### 在远程执行中`UndefVarError`的可能原因有哪些？
 
-As the error states, an immediate cause of an `UndefVarError` on a remote node is that a binding
-by that name does not exist. Let us explore some of the possible causes.
+如同这个错误表述的，远程结点上的`UndefVarError`的直接原因是变量名的绑定并不存在。让我们探索一下一些可能的原因。
 
 ```julia-repl
 julia> module Foo
@@ -512,11 +437,9 @@ Stacktrace:
 [...]
 ```
 
-The closure `x->x` carries a reference to `Foo`, and since `Foo` is unavailable on node 2,
-an `UndefVarError` is thrown.
+闭包`x->x`中有`Foo`的引用，因为`Foo`在节点2上不存在，所以`UndefVarError`被扔出。
 
-Globals under modules other than `Main` are not serialized by value to the remote node. Only a reference is sent.
-Functions which create global bindings (except under `Main`) may cause an `UndefVarError` to be thrown later.
+在模块中而非`Main`中的全局变量不会在远程节点上按值序列化。只传递了一个引用。新建全局绑定的函数（除了`Main`中）可能会导致之后扔出`UndefVarError`。
 
 ```julia-repl
 julia> @everywhere module Foo
@@ -533,11 +456,9 @@ Stacktrace:
 [...]
 ```
 
-In the above example, `@everywhere module Foo` defined `Foo` on all nodes. However the call to `Foo.foo()` created
-a new global binding `gvar` on the local node, but this was not found on node 2 resulting in an `UndefVarError` error.
+在上面的例子中，`@everywhere module Foo`在所有节点上定义了`Foo`。但是调用`Foo.foo()`在本地节点上新建了新的全局绑定`gvar`，但是节点2中并没有找到这个绑定，这会导致`UndefVarError`错误。
 
-Note that this does not apply to globals created under module `Main`. Globals under module `Main` are serialized
-and new bindings created under `Main` on the remote node.
+注意着并不适用于在模块`Main`下新建的全局变量。模块`Main`下的全局变量会被序列化并且在远程节点的`Main`下新建新的绑定。
 
 ```julia-repl
 julia> gvar_self = "Node1"
@@ -555,8 +476,7 @@ Main               Module
 gvar_self 13 bytes String
 ```
 
-This does not apply to `function` or `struct` declarations. However, anonymous functions bound to global
-variables are serialized as can be seen below.
+这并不适用于`函数`或者`结构体`声明。但是绑定到全局变量的匿名函数被序列化，如下例所示。
 
 ```julia-repl
 julia> bar() = 1
@@ -574,79 +494,45 @@ julia> remotecall_fetch(anon_bar, 2)
 1
 ```
 
-## Packages and Modules
+## 包和模块
 
-### What is the difference between "using" and "import"?
+### "using"和"import"的区别是什么？
 
-There is only one difference, and on the surface (syntax-wise) it may seem very minor. The difference
-between `using` and `import` is that with `using` you need to say `function Foo.bar(..` to
-extend module Foo's function bar with a new method, but with `import Foo.bar`,
-you only need to say `function bar(...` and it automatically extends module Foo's function bar.
+只有一个区别，并且在表面上（语法层面）这个区别看来很小。`using`和`import`的区别是使用`using`时你需要写`function Foo.bar(..`来用一个新方法来扩展模块Foo的函数bar，但是使用`import Foo.bar`时，你只需要写`function bar(...`，会自动扩展模块Foo的函数bar。
 
-The reason this is important enough to have been given separate syntax is that you don't want
-to accidentally extend a function that you didn't know existed, because that could easily cause
-a bug. This is most likely to happen with a method that takes a common type like a string or integer,
-because both you and the other module could define a method to handle such a common type. If you
-use `import`, then you'll replace the other module's implementation of `bar(s::AbstractString)`
-with your new implementation, which could easily do something completely different (and break
-all/many future usages of the other functions in module Foo that depend on calling bar).
+这个区别足够重要以至于提供不同的语法的原因是你不希望意外地扩展一个你根本不知道其存在的函数，因为这很容易造成bug。对于使用像字符串后者整数这样的常用类型的方法最有可能出现这个问题，因为你和其他模块都可能定义了方法来处理这样的常用类型。如果你使用`import`，你会用你自己的新实现覆盖别的函数的`bar(s::AbstractString)`实现，这会导致做的事情天差地别（并且破坏模块Foo中其他的依赖于调用bar的函数的所有/大部分的将来的使用）。
 
-## Nothingness and missing values
+## 空值与缺失值
 
-### [How does "null", "nothingness" or "missingness" work in Julia?](@id faq-nothing)
+### [在Julia中"null"，"空"或者"缺失"是怎么工作的?](@id faq-nothing)
 
-Unlike many languages (for example, C and Java), Julia objects cannot be "null" by default.
-When a reference (variable, object field, or array element) is uninitialized, accessing it
-will immediately throw an error. This situation can be detected using the
-[`isdefined`](@ref) or [`isassigned`](@ref Base.isassigned) functions.
+不像很多语言（例如C和Java）一样，Julia对象默认不能为"null"。当一个引用（变量，对象域，或者数组元素）没有被初始化，存取它会立即扔出一个错误。这种情况可以使用函数[`isdefined`](@ref)或者[`isassigned`](@ref Base.isassigned)探测到。
 
-Some functions are used only for their side effects, and do not need to return a value. In these
-cases, the convention is to return the value `nothing`, which is just a singleton object of type
-`Nothing`. This is an ordinary type with no fields; there is nothing special about it except for
-this convention, and that the REPL does not print anything for it. Some language constructs that
+一些函数只为了其副作用使用，并不需要返回一个值。在这些情况下，约定的是返回`nothing`这个值，这只是`Nothing`类型的一个单例对象。这是一个没有域的平凡类型；除了这个约定之外没有任何特殊点，REPL不会为它打印任何东西。Some language constructs that
 would not otherwise have a value also yield `nothing`, for example `if false; end`.
 
-For situations where a value `x` of type `T` exists only sometimes, the `Union{T, Nothing}`
-type can be used for function arguments, object fields and array element types
-as the equivalent of [`Nullable`, `Option` or `Maybe`](https://en.wikipedia.org/wiki/Nullable_type)
-in other languages. If the value itself can be `nothing` (notably, when `T` is `Any`),
-the `Union{Some{T}, Nothing}` type is more appropriate since `x == nothing` then indicates
-the absence of a value, and `x == Some(nothing)` indicates the presence of a value equal
-to `nothing`. The [`something`](@ref) function allows unwrapping `Some` objects and
-using a default value instead of `nothing` arguments. Note that the compiler is able to
-generate efficient code when working with `Union{T, Nothing}` arguments or fields.
+对于类型`T`的值`x`只会有时存在的情况，`Union{T,Nothing}`类型可以用作函数参数，对象域和数组元素的类型，与其他语言中的[`Nullable`, `Option` or `Maybe`](https://en.wikipedia.org/wiki/Nullable_type)相等。如果值本身可以是`nothing`(显然当`T`是`Any`时），`Union{Some{T}, Nothing}`类型更加准确因为`x == nothing`表示值的缺失，`x == Some(nothing)`表示与`nothing`相等的值的存在。[`something`](@ref)函数允许使用默认值的展开的`Some`对象，而非`nothing`参数。注意在使用`Union{T,Nothing}`参数或者域时编译器能够生成高效的代码。
 
-To represent missing data in the statistical sense (`NA` in R or `NULL` in SQL), use the
-[`missing`](@ref) object. See the [`Missing Values`](@ref missing) section for more details.
+在统计语义下表示缺失的数据（R中的`NA`或者SQL中的`NULL`）请使用[`missing`](@ref)对象。请参照[`缺失值`](@ref missing)章节来获取详细信息。
 
-The empty tuple (`()`) is another form of nothingness. But, it should not really be thought of
-as nothing but rather a tuple of zero values.
+空元组（`()`）是空值的另一个表示方式。但是这不应该真的被认为是空值，而应被认为是零值的元组。
 
-The empty (or "bottom") type, written as `Union{}` (an empty union type), is a type with
-no values and no subtypes (except itself). You will generally not need to use this type.
+空（或者"底层"）类型，写作`Union{}`（空的union类型）是没有值和子类型（除了自己）的类型。通常你没有必要用这个类型。
 
 
-### How do I check if the current file is being run as the main script?
+### 该如何检查当前文件是否正在以主脚本运行？
 
-When a file is run as the main script using `julia file.jl` one might want to activate extra
-functionality like command line argument handling. A way to determine that a file is run in
-this fashion is to check if `abspath(PROGRAM_FILE) == @__FILE__` is `true`.
+当一个文件通过使用`julia file.jl`来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查`abspath(PROGRAM_FILE) == @__FILE__`是不是`true`。
 
 ## 内存
 
-### Why does `x += y` allocate memory when `x` and `y` are arrays?
+### 为什么当`x`和`y`都是数组时`x += y`还会申请内存？
 
-In Julia, `x += y` gets replaced during parsing by `x = x + y`. For arrays, this has the consequence
-that, rather than storing the result in the same location in memory as `x`, it allocates a new
-array to store the result.
+在 Julia 中，`x += y` 在语法分析中会用 `x = x + y` 代替。对于数组，结果就是它会申请一个新数组来存储结果，而非把结果存在 `x` 同一位置的内存上。
 
-While this behavior might surprise some, the choice is deliberate. The main reason is the presence
-of immutable objects within Julia, which cannot change their value once created.  Indeed, a
-number is an immutable object; the statements `x = 5; x += 1` do not modify the meaning of `5`,
-they modify the value bound to `x`. For an immutable, the only way to change the value is to reassign
-it.
+这个行为可能会让一些人吃惊，但是这个结果是经过深思熟虑的。主要原因是Julia中的不可变对象，这些对象一旦新建就不能改变他们的值。实际上，数字是不可变对象，语句`x = 5; x += 1`不会改变`5`的意义，改变的是与`x`绑定的值。对于不可变对象，改变其值的唯一方法是重新赋值。
 
-To amplify a bit further, consider the following function:
+为了稍微详细一点，考虑下列的函数：
 
 ```julia
 function power_by_squaring(x, n::Int)
@@ -659,28 +545,24 @@ function power_by_squaring(x, n::Int)
 end
 ```
 
-After a call like `x = 5; y = power_by_squaring(x, 4)`, you would get the expected result: `x == 5 && y == 625`.
- However, now suppose that `*=`, when used with matrices, instead mutated the left hand side.
- There would be two problems:
+在`x = 5; y = power_by_squaring(x, 4)`调用后，你可以得到期望的结果`x == 5 && y == 625`。然而，现在假设当`*=`与矩阵一起使用时会改变左边的值，这会有两个问题：
 
-  * For general square matrices, `A = A*B` cannot be implemented without temporary storage: `A[1,1]`
-    gets computed and stored on the left hand side before you're done using it on the right hand side.
-  * Suppose you were willing to allocate a temporary for the computation (which would eliminate most
-    of the point of making `*=` work in-place); if you took advantage of the mutability of `x`, then
-    this function would behave differently for mutable vs. immutable inputs. In particular, for immutable
-    `x`, after the call you'd have (in general) `y != x`, but for mutable `x` you'd have `y == x`.
+  * 对于普通的方阵，`A = A*B` 不能在没有临时存储的情况下实现：`A[1,1]`
+    会被计算并且在被右边使用完之前存储在左边。
+  * 假设你愿意申请一个计算的临时存储（这会消除
+    `*=`就地计算的大部分要点）；如果你利用了`x`的可变性，
+    这个函数会对于可变和不可变的输入有不同的行为。特别地，
+    对于不可变的`x`，在调用后（通常）你会得到`y != x`，而对可变的`x`，你会有`y == x`。
 
-Because supporting generic programming is deemed more important than potential performance optimizations
-that can be achieved by other means (e.g., using explicit loops), operators like `+=` and `*=`
-work by rebinding new values.
+因为支持范用计算被认为比能使用其他方法完成的潜在的性能优化（比如使用显式循环）更加重要，所以像`+=`和`*=`运算符以绑定新值的方式工作。
 
-## Asynchronous IO and concurrent synchronous writes
+## 异步IO与并发同步写入
 
-### Why do concurrent writes to the same stream result in inter-mixed output?
+### 为什么对于同一个流的并发写入会导致相互混合的输出？
 
-While the streaming I/O API is synchronous, the underlying implementation is fully asynchronous.
+虽然流式 I/O 的 API 是同步的，底层的实现是完全异步的。
 
-Consider the printed output from the following:
+思考一下下面的输出：
 
 ```jldoctest
 julia> @sync for i in 1:3
@@ -689,11 +571,9 @@ julia> @sync for i in 1:3
 123 Foo  Foo  Foo  Bar  Bar  Bar
 ```
 
-This is happening because, while the `write` call is synchronous, the writing of each argument
-yields to other tasks while waiting for that part of the I/O to complete.
+这是因为，虽然`write`调用是同步的，每个参数的写入在等待那一部分I/O完成时会生成其他的Tasks。
 
-`print` and `println` "lock" the stream during a call. Consequently changing `write` to `println`
-in the above example results in:
+`print`和`println`在调用中会"锁定"该流。因此把上例中的`write`改成`println`会导致：
 
 ```jldoctest
 julia> @sync for i in 1:3
@@ -704,7 +584,7 @@ julia> @sync for i in 1:3
 3 Foo  Bar
 ```
 
-You can lock your writes with a `ReentrantLock` like this:
+你可以使用`ReentrantLock`来锁定你的写入，就像这样：
 
 ```jldoctest
 julia> l = ReentrantLock()
@@ -723,15 +603,11 @@ julia> @sync for i in 1:3
 1 Foo  Bar 2 Foo  Bar 3 Foo  Bar
 ```
 
-## Arrays
+## 数组
 
-### What are the differences between zero-dimensional arrays and scalars?
+### 零维数组和标量之间的有什么差别？
 
-Zero-dimensional arrays are arrays of the form `Array{T,0}`. They behave similar
-to scalars, but there are important differences. They deserve a special mention
-because they are a special case which makes logical sense given the generic
-definition of arrays, but might be a bit unintuitive at first. The following
-line defines a zero-dimensional array:
+零维数组是`Array{T,0}`形式的数组，它与标量的行为相似，但是有很多重要的不同。这值得一提，因为这是使用数组的范用定义来解释也符合逻辑的特殊情况，虽然最开始看起来有些非直觉。下面一行定义了一个零维数组：
 
 ```
 julia> A = zeros()
@@ -739,33 +615,20 @@ julia> A = zeros()
 0.0
 ```
 
-In this example, `A` is a mutable container that contains one element, which can
-be set by `A[] = 1.0` and retrieved with `A[]`. All zero-dimensional arrays have
-the same size (`size(A) == ()`), and length (`length(A) == 1`). In particular,
-zero-dimensional arrays are not empty. If you find this unintuitive, here are
-some ideas that might help to understand Julia's definition.
+在这个例子中，`A`是一个含有一个元素的可变容器，这个元素可以通过`A[] = 1.0`来设置，通过`A[]`来读取。所有的零维数组都有同样的大小（`size(A) == ()`）和长度（`length(A) == 1`）。特别地，零维数组不是空数组。如果你觉得这个非直觉，这里有些想法可以帮助理解Julia的这个定义。
 
-* Zero-dimensional arrays are the "point" to vector's "line" and matrix's
-  "plane". Just as a line has no area (but still represents a set of things), a
-  point has no length or any dimensions at all (but still represents a thing).
-* We define `prod(())` to be 1, and the total number of elements in an array is
-  the product of the size. The size of a zero-dimensional array is `()`, and
-  therefore its length is `1`.
-* Zero-dimensional arrays don't natively have any dimensions into which you
-  index -- they’re just `A[]`. We can apply the same "trailing one" rule for them
-  as for all other array dimensionalities, so you can indeed index them as
-  `A[1]`, `A[1,1]`, etc.
+* 类比的话，零维数组是"点"，向量是"线"而矩阵
+  是"面"。就像线没有面积一样（但是也能代表事物的一个集合）,
+  点没有长度和任意一个维度（但是也能表示一个事物）。
+* 我们定义`prod(())`为1，一个数组中的所有的元素个数是
+  大小的乘积。零维数组的大小为`()`，所以
+  它的长度为`1`。
+* 零维数组原生没有任何你可以索引的维度
+  -- 它们仅仅是`A[]`。我们可以给它们应用同样的"trailing one"规则，
+  如同所有其他的数组维度一样，所以你实际上可以使用
+  `A[1]`，`A[1,1]`等来索引
 
-It is also important to understand the differences to ordinary scalars. Scalars
-are not mutable containers (even though they are iterable and define things
-like `length`, `getindex`, *e.g.* `1[] == 1`). In particular, if `x = 0.0` is
-defined as a scalar, it is an error to attempt to change its value via
-`x[] = 1.0`. A scalar `x` can be converted into a zero-dimensional array
-containing it via `fill(x)`, and conversely, a zero-dimensional array `a` can
-be converted to the contained scalar via `a[]`. Another difference is that
-a scalar can participate in linear algebra operations such as `2 * rand(2,2)`,
-but the analogous operation with a zero-dimensional array
-`fill(2) * rand(2,2)` is an error.
+理解它与普通的标量之间的区别也很重要。标量不是一个可变的容器（尽管它们是可迭代的，可以定义像`length`，`getindex`这样的东西，*例如*`1[] == 1`）。特别地，如果`x = 0.0`是以一个标量来定义，尝试通过`x[] = 1.0`来改变它的值会报错。标量`x`能够通过`fill(x)`转化成包含它的零维数组，并且相对地，一个零维数组`a`可以通过`a[]`转化成其包含的标量。另外一个区别是标量可以参与到线性代数运算中，比如`2 * rand(2,2)`，但是零维数组的相似操作`fill(2) * rand(2,2)`会报错。
 
 ## Julia 版本发布
 
@@ -783,5 +646,4 @@ but the analogous operation with a zero-dimensional array
 
 ### 已弃用的功能会在何时移除？
 
-Deprecated functions are removed after the subsequent release. For example, functions marked as
-deprecated in the 0.1 release will not be available starting with the 0.2 release.
+已弃用的函数会被随后发布的版本中移除。例如，在1.0版本中被标记为已弃用的函数会在0.2版本及之后的版本中无法使用。

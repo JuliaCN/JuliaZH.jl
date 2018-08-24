@@ -97,20 +97,7 @@ Base.repr(::MIME, ::Any)
 
 如上面提到的，用户可以定义新的显示后端。例如，可以在窗口显示PNG图片的模块可以在Julia中注册这个能力，以便为有PNG表示的类型调用[`display(x)`](@ref)时可以在模块窗口中自动显示图片。
 
-In order to define a new display backend, one should first create a subtype `D` of the abstract
-class `AbstractDisplay`.  Then, for each MIME type (`mime` string) that can be displayed on `D`, one should
-define a function `display(d::D, ::MIME"mime", x) = ...` that displays `x` as that MIME type,
-usually by calling [`show(io, mime, x)`](@ref) or [`repr(io, mime, x)`](@ref).
-A `MethodError` should be thrown if `x` cannot be displayed
-as that MIME type; this is automatic if one calls `show` or `repr`. Finally, one should define a function
-`display(d::D, x)` that queries [`showable(mime, x)`](@ref) for the `mime` types supported by `D`
-and displays the "best" one; a `MethodError` should be thrown if no supported MIME types are found
-for `x`.  Similarly, some subtypes may wish to override [`redisplay(d::D, ...)`](@ref Base.Multimedia.redisplay). (Again, one should
-`import Base.display` to add new methods to `display`.) The return values of these functions are
-up to the implementation (since in some cases it may be useful to return a display "handle" of
-some type).  The display functions for `D` can then be called directly, but they can also be invoked
-automatically from [`display(x)`](@ref) simply by pushing a new display onto the display-backend stack
-with:
+为了定义新的显示后端，应该首先创建抽象类`AbstractDisplay`的子类型`D`。然后，对于每个可以显示在`D`上的MIME类型(`mime` string)，用户应该定义一个函数`display(d::D, ::MIME"mime", x) = ...` 这里的`x`表示为 MIME　类型，经常在[`show(io, mime, x)`](@ref)或[`repr(io, mime, x)`](@ref)中被调用。如果`x`不能被表示为 MIME 类型则`MethodError`会被抛出； 这在用户调用`show` 或`repr`的时候是会自动执行的。最后，用户应该定义一个函数`display(d::D, x)` 来查询[`showable(mime, x)`](@ref)以获得`D`支持的`mime`类型并把它显示为＂最好＂的一个;如果没有为`x`找到支持的 MIME 类型，就应该抛出`MethodError`。类似地，一些子类型可能希望重写[`redisplay(d::D, ...)`](@ref　Base.Multimedia.redisplay)。（同样，用户也应该通过`import Base.display`去添加新的方法去`display`。）这些函数的返回值取决于实现（因为在某些情况下，返回某种类型的显示“句柄”可能很有用）。`D`的显示功能可以直接调用，但它们也可以从[`display(x)`](@ref)自动调用，只需在显示后端栈中添加一个新显示即可:
 
 ```@docs
 Base.Multimedia.pushdisplay
@@ -119,7 +106,7 @@ Base.Multimedia.TextDisplay
 Base.Multimedia.istextmime
 ```
 
-## Network I/O
+## 网络 I/O
 
 ```@docs
 Base.bytesavailable

@@ -48,7 +48,7 @@ julia> ∑(2, 3)
 
 Julia函数参数遵循有时称为“pass-by-sharing”的约定，这意味着变量在被传递给函数时其值并不会被复制。函数参数本身充当新的变量绑定（指向变量值的新地址），它们所指向的值与所传递变量的值完全相同。调用者可以看到对函数内可变值（如数组）的修改。这与Scheme，大多数Lisps，Python，Ruby和Perl以及其他动态语言中的行为相同。
 
-## `return`关键词
+## `return`关键字
 
 函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在示例函数中`f`，从上一节开始，这是表达式的 `x + y`值。与在C和大多数其他命令式或函数式语言中一样，`return`关键字会导致函数立即返回，从而提供返回值的表达式：
 
@@ -117,11 +117,9 @@ Int8
 
 这个函数将忽略`x` 和`y`的类型，返回`Int8`类型的值。有关返回类型的更多信息，请参见 [类型声明](@ref)。
 
-## 操作符也是一类函数
+## 操作符也是函数
 
-在 Julia,大多数操作符只不过是支持一些特殊语法的函数。( `&&` 和`||`等具有特殊评估语义的操作符例外）
-这些操作符不能是函数，因为[Short-Circuit Evaluation](@ref)要求在评估整个运算符之前不评估它们的操作数。
-因此，您也可以使用带括号的参数列表来应用它们，就像你任何其他功能一样：
+在 Julia中，大多数操作符只不过是支持特殊语法的函数（ `&&` 和`||` 等具有特殊评估语义的操作符除外，他们不能是函数，因为 [Short-Circuit Evaluation](@ref) 要求在计算整个表达式的值之前不计算每个操作数）。因此，您也可以使用带括号的参数列表来使用它们，就和任何其他函数一样：
 
 ```jldoctest
 julia> 1 + 2 + 3
@@ -131,9 +129,7 @@ julia> +(1,2,3)
 6
 ```
 
-中缀形式和函数形式的使用完全等价。
-事实上，前一种形式被内在地解释为函数调用。
-这意味着你可以对操作符，例如 [`+`](@ref) and [`*`](@ref) 进行赋值和传递，就像对其它函数值一样。
+中缀表达式和函数形式完全等价。—— 事实上，前一种形式会被编译器转换为函数调用。这也意味着你可以对操作符，例如 [`+`](@ref) 和 [`*`](@ref) ，进行赋值和传参，就像其它函数传参一样。
 
 ```jldoctest
 julia> f = +;
@@ -142,13 +138,13 @@ julia> f(1,2,3)
 6
 ```
 
-然而，函数以`f`命名时并不支持中缀形式。
+然而，函数以`f`命名时不再支持中缀表达式。
 
 ## 具有特殊名称的操作符
 
-有一些特殊的表达式调用的函数调用没有显示的函数名称，它们是：
+有一些特殊的表达式对应的函数调用没有显示的函数名称，它们是：
 
-| 表达式        | 调用                   |
+| 表达式        | 函数调用                   |
 |:----------------- |:----------------------- |
 | `[A B C ...]`     | [`hcat`](@ref)          |
 | `[A; B; C; ...]`  | [`vcat`](@ref)          |
@@ -161,7 +157,7 @@ julia> f(1,2,3)
 
 ## [匿名函数](@id man-anonymous-functions)
 
-函数在Julia里是[一等公民](https://en.wikipedia.org/wiki/First-class_citizen)：可以指定给变量，和使用标准函数调用语法通过被指定的变量被调用。函数可以用作参数，也可以当作返回值。函数也可以不带函数名地匿名创建，使用如下语法：
+函数在Julia里是[一等公民](https://en.wikipedia.org/wiki/First-class_citizen)：可以指定给变量，并使用标准函数调用语法通过被指定的变量调用。函数可以用作参数，也可以当作返回值。函数也可以不带函数名称地匿名创建，使用语法如下：
 
 ```jldoctest
 julia> x -> x^2 + 2x - 1
@@ -173,9 +169,9 @@ julia> function (x)
 #3 (generic function with 1 method)
 ```
 
-这样就创建了一个接受一个参数`x`和返回当前值下多项式`x^2+2x-1`的函数。注意到结果是个泛型函数，但是带了编译器生成的连续编号的名字。
+这样就创建了一个接受一个参数 `x` 并返回当前值的多项式 `x^2+2x-1` 的函数。注意结果是个泛型函数，但是带了编译器生成的连续编号的名字。
 
-匿名函数最主要的作用是传递给接收其他函数作为参数的函数。一个经典的例子是[`map`](@ref), 为数组的每个值应用一个函数，然后返回一个包含结果的值的新数组：
+匿名函数最主要的用法是传递给接收函数作为参数的函数。一个经典的例子是 [`map`](@ref) ，为数组的每个元素应用一次函数，然后返回一个包含结果值的新数组：
 
 ```jldoctest
 julia> map(round, [1.2,3.5,1.7])
@@ -185,10 +181,7 @@ julia> map(round, [1.2,3.5,1.7])
  2.0
 ```
 
-This is fine if a named function effecting the transform already exists to pass as the first argument
-to [`map`](@ref). Often, however, a ready-to-use, named function does not exist. In these
-situations, the anonymous function construct allows easy creation of a single-use function object
-without needing a name:
+如果做为第一个参数传递给 [`map`](@ref) 的转换函数已经存在，那直接使用函数名称是没问题的。但是通常要使用的函数还没有定义好，这样使用匿名函数就更加方便：
 
 ```jldoctest
 julia> map(x -> x^2 + 2x - 1, [1,3,-1])
@@ -198,10 +191,7 @@ julia> map(x -> x^2 + 2x - 1, [1,3,-1])
  -2
 ```
 
-An anonymous function accepting multiple arguments can be written using the syntax `(x,y,z)->2x+y-z`.
-A zero-argument anonymous function is written as `()->3`. The idea of a function with no arguments
-may seem strange, but is useful for "delaying" a computation. In this usage, a block of code is
-wrapped in a zero-argument function, which is later invoked by calling it as `f`.
+接受多个参数的匿名函数写法可以使用语法 `(x,y,z)->2x+y-z`，而无参匿名函数写作 `()->3` 。无参函数的这种写法看起来可能有些奇怪，不过它对于延迟计算很有必要。这种用法会把代码块包进一个无参函数中，后续把它当做 `f` 调用。
 
 ## 元组
 
@@ -223,12 +213,11 @@ julia> x[2]
 "hello"
 ```
 
-注意，长度为1的元组必须使用逗号`(1,)`，而`(1)`只是一个带括号的值。`()`表示空元组（长度为0）。
+注意，长度为1的元组必须使用逗号 `(1,)`，而 `(1)` 只是一个带括号的值。`()` 表示空元组（长度为0）。
 
-## Named Tuples
+## 具名元组
 
-The components of tuples can optionally be named, in which case a *named tuple* is
-constructed:
+元组的元素可以有名字，这时候就有了*具名元组*：
 
 ```jldoctest
 julia> x = (a=1, b=1+1)
@@ -238,8 +227,7 @@ julia> x.a
 1
 ```
 
-Named tuples are very similar to tuples, except that fields can additionally be accessed by name
-using dot syntax (`x.a`).
+具名元组和元组很像，除了具名元组的字段可以通过点号语法访问 `(x.a)` 。
 
 ## 多返回值
 

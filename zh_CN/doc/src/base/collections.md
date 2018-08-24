@@ -48,7 +48,7 @@ Base.IteratorEltype
   * [`Pair`](@ref)
   * [`NamedTuple`](@ref)
 
-## 构造器和类型
+## 构造函数和类型
 
 ```@docs
 Base.AbstractRange
@@ -137,7 +137,7 @@ Base.replace(::Base.Callable, ::Any)
 Base.replace!
 ```
 
-## 可定标集合
+## 可索引集合
 
 ```@docs
 Base.getindex
@@ -176,7 +176,7 @@ Partially implemented by:
 即使键在哈希表中被引用也有可能被垃圾回收。
 它像`Dict`一样使用`hash`来做哈希和`isequal`来做相等判断，但是它不会在插入时转换键，这点不像`Dict`。
 
-[`Dict`](@ref)s 可以由传递含有`=>`的成对对象给 [`Dict`](@ref)的构造器来被创建：
+[`Dict`](@ref)s 可以由传递含有`=>`的成对对象给 [`Dict`](@ref)的构造函数来被创建：
 `Dict("A"=>1, "B"=>2)`。这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 `Dict{String, Int64}`）。为了显式指定类型，
 请使用语法`Dict{KeyType,ValueType}(...)`。例如， `Dict{String,Int32}("A"=>1, "B"=>2)`。
 

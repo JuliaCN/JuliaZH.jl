@@ -18,48 +18,41 @@ those for which `JULIA` appears in the name.
 
 ### `JULIA_BINDIR`
 
-The absolute path of the directory containing the Julia executable, which sets
-the global variable [`Sys.BINDIR`](@ref). If `$JULIA_BINDIR` is not set, then
-Julia determines the value `Sys.BINDIR` at run-time.
+包含 Julia 可执行文件的目录的绝对路径会设置全局变量 [`Sys.BINDIR`](@ref)。`$JULIA_BINDIR` 如果没有设置，那么 Julia 在运行时确定 `Sys.BINDIR` 的值。
 
-The executable itself is one of
+可执行文件是下列值中的一个
 
 ```
 $JULIA_BINDIR/julia
 $JULIA_BINDIR/julia-debug
 ```
 
-by default.
+在默认情况下。
 
-The global variable `Base.DATAROOTDIR` determines a relative path from
-`Sys.BINDIR` to the data directory associated with Julia. Then the path
+全局变量 `Base.DATAROOTDIR` 确定一个从 `Sys.BINDIR` 到与 Julia 相关的数据目录的相对路径。路径
 
 ```
 $JULIA_BINDIR/$DATAROOTDIR/julia/base
 ```
 
-determines the directory in which Julia initially searches for source files (via
-`Base.find_source_file()`).
+确定 Julia 最初搜索源文件的路径。（通过`Base.find_source_file()`）。
 
-Likewise, the global variable `Base.SYSCONFDIR` determines a relative path to the
-configuration file directory. Then Julia searches for a `startup.jl` file at
+同样，全局变量 `Base.SYSCONFDIR` 确定了一个到配置文件目录的相对路径。Julia 在下列文件中搜索 `startup.jl` 文件
 
 ```
 $JULIA_BINDIR/$SYSCONFDIR/julia/startup.jl
 $JULIA_BINDIR/../etc/julia/startup.jl
 ```
 
-by default (via `Base.load_julia_startup()`).
+在默认情况下（通过 `Base.load_julia_startup()`）。
 
-For example, a Linux installation with a Julia executable located at
-`/bin/julia`, a `DATAROOTDIR` of `../share`, and a `SYSCONFDIR` of `../etc` will
-have `JULIA_BINDIR` set to `/bin`, a source-file search path of
+例如，一个 Linux 安装包的 Julia 可执行文件位于 `/bin/julia`，`DATAROOTDIR` 为 `../share`，`SYSCONFDIR` 为 `../etc`，`JULIA_BINDIR` 会被设置为 `/bin`，会有一个源文件搜索路径
 
 ```
 /share/julia/base
 ```
 
-and a global configuration search path of
+和一个全局配置搜索路径
 
 ```
 /etc/julia/startup.jl
@@ -102,14 +95,11 @@ Suppose the value of `$JULIA_PKGRESOLVE_ACCURACY` is `n`. Then
 
 ### `JULIA_SHELL`
 
-The absolute path of the shell with which Julia should execute external commands
-(via `Base.repl_cmd()`). Defaults to the environment variable `$SHELL`, and
-falls back to `/bin/sh` if `$SHELL` is unset.
+Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd()`）。默认为环境变量 `$SHELL`，如果 `$SHELL` 为设置，则为 `/bin/sh`。
 
 !!! note
 
-    On Windows, this environment variable is ignored, and external commands are
-    executed directly.
+    在 Windows 上，此环境变量将被忽略，并且外部命令直接被执行。
 
 ### `JULIA_EDITOR`
 

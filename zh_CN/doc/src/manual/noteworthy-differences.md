@@ -214,7 +214,7 @@ For users coming to Julia from R, these are some noteworthy differences:
     (see also [dot operators](@ref man-dot-operators)), explicit loops, or `InplaceOps.jl`.
   * Julia evaluates default values of function arguments every time the method is invoked, unlike
     in Python where the default values are evaluated only once when the function is defined. For example,
-    the function `f(x=rand()) = x` returns a new random number every time it is invoked without argument.
+    每次无输入参数调用时，函数`f(x=rand()) = x`都返回一个新的随机数
     On the other hand, the function `g(x=[1,2]) = push!(x,3)` returns `[1,2,3]` every time it is called
     as `g()`.
   * In Julia `%` is the remainder operator, whereas in Python it is the modulus.

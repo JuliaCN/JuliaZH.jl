@@ -1116,7 +1116,7 @@ These are some minor points that might help in tight inner loops.
 Sometimes you can enable better optimization by promising certain program properties.
 
   * Use [`@inbounds`](@ref) to eliminate array bounds checking within expressions. Be certain before doing
-    this. If the subscripts are ever out of bounds, you may suffer crashes or silent corruption.
+    如果下标越界，会发生崩溃或潜在的故障
   * Use [`@fastmath`](@ref) to allow floating point optimizations that are correct for real numbers, but lead
     to differences for IEEE numbers. Be careful when doing this, as this may change numerical results.
     This corresponds to the `-ffast-math` option of clang.

@@ -880,8 +880,7 @@ remote store.
     deserialized [`RemoteChannel`](@ref) object (on any worker), therefore also points to the same
     backing store as the original.
 
-The channels example from above can be modified for interprocess communication,
-as shown below.
+如上的通道示例可以修改为进程间通信，如下所示
 
 We start 4 workers to process a single `jobs` remote channel. Jobs, identified by an id (`job_id`),
 are written to the channel. Each remotely executing task in this simulation reads a `job_id`,
