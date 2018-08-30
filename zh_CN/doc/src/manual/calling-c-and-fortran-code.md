@@ -3,7 +3,7 @@
 在数值计算领域，尽管有很多用 C 语言或 Fortran 写的高质量且成熟的库都可以用 Julia 重写，但为了便捷利用现有的 C 或 Fortran 代码，Julia 提供简洁且高效的调用方式。Julia 的哲学是 "no boilerplate":
 Julia 可以直接调用 C/Fortran 的函数，不需要任何"胶水"代码，代码生成或其它编译过程 -- 即使在交互式会话 (REPL/Jupyter notebook) 中使用也一样. 在 Julia 中，上述特性可以仅仅通过调用[`ccall`](@ref)实现，它的语法看起来就像是普通的函数调用。
 
-被调用的代码必须是一个 shared library (.so, .dylib, .dll). 大多数 C 和 Fortran 库都已经是以 shared library 发布的，但在用 GCC 或 Clang 编译自己的代码时，需要添加 `-shared` 和 `-fPIC` 编译器选项。由于 Julia 的 JIT 生成的机器码跟原生 C 代码的调用是一样，所以在 Julia 里调用 C/Fortran 库的 overhead 与直接从 C 里调用是一样的。(在C和Julia中的非库函数调用都能被内联，因此可能会比调用标准库函数花销更少。当库与可执行文件都由 LLVM 生成时，可能会对整个程序执行甚至能跨越这一限制的优化，但是 Julia 现在还不支持这种优化。不过在未来，它可能会这么做，来获得更大的性能提升)
+被调用的代码必须是一个 shared library (.so, .dylib, .dll). 大多数 C 和 Fortran 库都已经是以 shared library 发布的，但在用 GCC 或 Clang 编译自己的代码时，需要添加 `-shared` 和 `-fPIC` 编译器选项。由于 Julia 的 JIT 生成的机器码跟原生 C 代码的调用是一样，所以在 Julia 里调用 C/Fortran 库的 overhead 与直接从 C 里调用是一样的。(在 C 和 Julia 中的非库函数调用都能被内联，因此可能会比调用标准库函数花销更少。当库与可执行文件都由 LLVM 生成时，可能会对整个程序执行甚至能跨越这一限制的优化，但是 Julia 现在还不支持这种优化。不过在未来，它可能会这么做，来获得更大的性能提升)
 
 我们可以通过 `(:function, "library")` 或 `("function", "library")` 这两种形式来索引库中的函数，其中 `function` 是函数名，`library` 是库名。对于不同的平台/操作系统，库的载入路径可能会不同，如果库在默认载入路径中，则可以直接将 `library` 设为库名，否则，需要将其设为一个完整的路径。
 
@@ -127,13 +127,7 @@ void qsort(void *base, size_t nmemb, size_t size,
            int (*compare)(const void*, const void*));
 ```
 
-The `base` argument is a pointer to an array of length `nmemb`, with elements of `size` bytes
-each. `compare` is a callback function which takes pointers to two elements `a` and `b` and returns
-an integer less/greater than zero if `a` should appear before/after `b` (or zero if any order
-is permitted). Now, suppose that we have a 1d array `A` of values in Julia that we want to sort
-using the `qsort` function (rather than Julia's built-in `sort` function). Before we worry about
-calling `qsort` and passing arguments, we need to write a comparison function that works for some
-arbitrary objects (which define `<`):
+`base` 是一个指向长度为`nmemb`，每个元素大小为`size`的数组的指针。`compare` 是一个回调函数，它接受指向两个元素`a`和`b`的指针并根据`a`应该排在`b`的前面或者后面返回一个大于或小于0的整数（如果在顺序无关紧要时返回0）。现在，假设在Julia中有一整个1维数组`A`的值我们希望用`qsort`（或者Julia的内置`sort`函数）函数进行排序。在我们关心调用`qsort`及其参数传递之前，我们需要写一个为每对值之间进行比较的函数（定义`<`）。
 
 ```jldoctest mycompare
 julia> function mycompare(a, b)::Cint
@@ -142,20 +136,17 @@ julia> function mycompare(a, b)::Cint
 mycompare (generic function with 1 method)
 ```
 
-Notice that we have to be careful about the return type: `qsort` expects a function returning
-a C `int`, so we annotate the return type of the function to be sure it returns a `Cint`.
+注意，我们需要小心返回值的类型：`qsort`期待一个返回C语言`int`类型的函数，所以我们需要标出这个函数的返回值类型来确保它返回`Cint`。
 
-In order to pass this function to C, we obtain its address using the macro `@cfunction`:
+为了传递这个函数给C，我们可以用宏 `@cfunction` 取得它的地址：
 
 ```jldoctest mycompare
 julia> mycompare_c = @cfunction(mycompare, Cint, (Ref{Cdouble}, Ref{Cdouble}));
 ```
 
-[`@cfunction`](@ref) requires three arguments: the Julia function (`mycompare`), the return type
-(`Cint`), and a literal tuple of the input argument types, in this case to sort an array of `Cdouble`
-([`Float64`](@ref)) elements.
+[`@cfunction`](@ref) 需要三个参数: Julia函数 (`mycompare`), 返回值类型(`Cint`), 和一个输入参数类型的值元组, 此处是要排序的`Cdouble`([`Float64`](@ref)) 元素的数组.
 
-The final call to `qsort` looks like this:
+`qsort`的最终调用看起来是这样的：
 
 ```jldoctest mycompare
 julia> A = [1.3, -2.7, 4.4, 3.1]

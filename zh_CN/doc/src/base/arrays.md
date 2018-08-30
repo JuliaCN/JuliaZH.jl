@@ -58,11 +58,11 @@ Base.stride
 Base.strides
 ```
 
-## 广播与向量化
+## 广播与矢量化
 
 也可参照 [dot syntax for vectorizing functions](@ref man-vectorized)；
 例如，`f.(args...)` 隐式调用 `broadcast(f, args...)`。
-与其依赖如`sin`函数的“已向量化”方法，你应该使用`sin.(a)`来使用`broadcast`来向量化。
+与其依赖如 `sin` 函数的“已矢量化”方法，你应该使用 `sin.(a)` 来使用`broadcast`来矢量化。
 
 ```@docs
 Base.broadcast
@@ -70,7 +70,7 @@ Base.Broadcast.broadcast!
 Base.@__dot__
 ```
 
-特殊类型的特殊化广播，请参照
+自定义类型的广播，请参照
 ```@docs
 Base.BroadcastStyle
 Base.broadcast_axes
@@ -80,7 +80,7 @@ Base.Broadcast.DefaultArrayStyle
 Base.Broadcast.broadcastable
 ```
 
-## 定标与分派
+## 索引与赋值
 
 ```@docs
 Base.getindex(::AbstractArray, ::Any...)
@@ -97,7 +97,7 @@ Base.checkbounds
 Base.checkindex
 ```
 
-## 视图(子数组和其他视图类型)
+## Views (SubArrays 以及其它 view 类型)
 
 ```@docs
 Base.view
@@ -112,7 +112,7 @@ Base.dropdims
 Base.vec
 ```
 
-## 拼接与排列
+## 级联与置换
 
 ```@docs
 Base.cat

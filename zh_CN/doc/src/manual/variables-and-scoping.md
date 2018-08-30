@@ -1,17 +1,8 @@
 # [变量作用域](@id scope-of-variables)
 
-The *scope* of a variable is the region of code within which a variable is visible. Variable scoping
-helps avoid variable naming conflicts. The concept is intuitive: two functions can both have arguments
-called `x` without the two `x`'s referring to the same thing. Similarly there are many other cases
-where different blocks of code can use the same name without referring to the same thing. The
-rules for when the same variable name does or doesn't refer to the same thing are called scope
-rules; this section spells them out in detail.
+变量的*作用域*是代码的一个区域，在这个区域中这个变量是可见的。给变量划分作用域有助于解决变量命名冲突。这个概念是符合直觉的：两个函数可能同时都有叫做`x`的参量，而这两个`x`并不指向同一个东西。相似地，也有很多其他的情况下代码的不同块会使用同样名字而并不指向同一个东西。相同的变量名是否指向同一个东西的规则被称为作用域规则；这一届会详细地把这个规则讲清楚。
 
-Certain constructs in the language introduce *scope blocks*, which are regions of code that are
-eligible to be the scope of some set of variables. The scope of a variable cannot be an arbitrary
-set of source lines; instead, it will always line up with one of these blocks. There are two
-main types of scopes in Julia, *global scope* and *local scope*, the latter can be nested. The
-constructs introducing scope blocks are:
+语言中的某个创建会引入*作用域块*，这是代码中的一个区域，有资格成为一些变量集合的作用域。一个变量的作用域不可能是源代码行的任意集合；相反，它始终与这些块之一关系密切。在Julia中有两个主要类型的作用域，*全局作用域*与*局部作用域*，后者可以嵌套。引入作用域块的创建是：
 
 # [](@id man-scope-table)
 
@@ -19,33 +10,27 @@ constructs introducing scope blocks are:
 
     - 全局作用域
 
-      + module, baremodule
+      + 模块，裸模块
 
-      + at interactive prompt (REPL)
+      + 在交互式提示行（REPL）
 
-    - local scope (don't allow nesting)
+    - 局部作用域（不允许嵌套）
 
-      + (mutable) struct, macro
+      + （可变的）结构，宏
 
-  * Scope blocks which may nest anywhere (in global or local scope):
+  * 可以在任何地方嵌套的作用域块（在全局或者局部作用域中）：
 
-    - local scope
+    - 局部作用域
 
-      + for, while, try-catch-finally, let
+      + for，while，try-catch-finally，let
 
-      + functions (either syntax, anonymous & do-blocks)
+      + 函数（语法，匿名或者do语法块）
 
-      + comprehensions, broadcast-fusing
+      + 推导式，broadcast-fusing
 
-Notably missing from this table are
-[begin blocks](@ref man-compound-expressions) and [if blocks](@ref man-conditional-evaluation)
-which do *not* introduce new scope blocks.
-Both types of scopes follow somewhat different rules which will be explained below.
+值得注意的是，这个表内没有的是[ begin 块](@ref man-compound-experessions)和[ if 块](@ref man-conditional-evaluation)，这两个块*不会*引进新的作用域块。这两种作用域遵循的规则有点不一样，会在下面解释。
 
-Julia uses [lexical scoping](https://en.wikipedia.org/wiki/Scope_%28computer_science%29#Lexical_scoping_vs._dynamic_scoping),
-meaning that a function's scope does not inherit from its caller's scope, but from the scope in
-which the function was defined. For example, in the following code the `x` inside `foo` refers
-to the `x` in the global scope of its module `Bar`:
+Julia使用[词法作用域](https://en.wikipedia.org/wiki/Scope_%28computer_science%29#Lexical_scoping_vs._dynamic_scoping)，也就是说一个函数的作用域不会从其调用者的作用域继承，而从函数定义处的作用域继承。举个例子，在下列的代码中`foo`中的`x`指向的是模块`Bar`的全局作用域中的`x`。
 
 ```jldoctest moduleBar
 julia> module Bar
@@ -54,7 +39,7 @@ julia> module Bar
        end;
 ```
 
-and not a `x` in the scope where `foo` is used:
+并且在`foo`被使用的地方`x`并不在作用域中：
 
 ```jldoctest moduleBar
 julia> import .Bar
@@ -65,15 +50,11 @@ julia> Bar.foo()
 1
 ```
 
-Thus *lexical scope* means that the scope of variables can be inferred from the source code alone.
+所以*词法作用域*表明变量作用域只能通过源码推断。
 
-## Global Scope
+## 全局作用域
 
-Each module introduces a new global scope, separate from the global scope of all other modules;
-there is no all-encompassing global scope. Modules can introduce variables of other modules into
-their scope through the [using or import](@ref modules) statements or through qualified access using the
-dot-notation, i.e. each module is a so-called *namespace*. Note that variable bindings can only
-be changed within their global scope and not from an outside module.
+每个模块会引进一个新的全局作用域，与其他所有模块的全局作用域分开；无所不包的全局作用域不存在。模块可以把其他模块的变量引入到它的作用域中，通过[using 或者 import](@ref modules)语句或者通过点符号这种有资格的通路，也就是说每个模块都是所谓的*命名空间*。值得注意的是变量绑定只能在它们的全局作用域中改变，在外部模块中不行。
 
 ```jldoctest
 julia> module A
@@ -102,24 +83,15 @@ julia> module E
 ERROR: cannot assign variables in other modules
 ```
 
-Note that the interactive prompt (aka REPL) is in the global scope of the module `Main`.
+注意交互式提示行（即REPL）是在模块`Main`的全局作用域中。
 
-## Local Scope
+## 局部作用域
 
-A new local scope is introduced by most code blocks (see above
-[table](@ref man-scope-table) for a complete list).
-A local scope inherits all the variables from a parent local scope,
-both for reading and writing.
-Additionally, the local scope inherits all globals that are assigned
-to in its parent global scope block (if it is surrounded by a global `if` or `begin` scope).
-Unlike global scopes, local scopes are not namespaces,
-thus variables in an inner scope cannot be retrieved from the parent scope through some sort of
-qualified access.
+大多数代码块都会引进一个新的局部作用域（参见上面的[表](@ref man-scope-table)以获取完整列表）。局部作用域会从父作用域中继承所有的变量，读和写都一样。另外，局部作用域还会继承赋值给其父全局作用域块的所有全局变量（如果由全局`if`或者`begin`作用域包围）。不像全局作用域，局部作用域并不是命名空间，所以在其内部作用域中的变量无法通过一些合格的通路在其父作用域中得到。
 
-The following rules and examples pertain to local scopes.
-A newly introduced variable in a local scope does not
-back-propagate to its parent scope.
-For example, here the ``z`` is not introduced into the top-level scope:
+接下来的规则和例子都适用于局部作用域。
+在局部作用域中新引进的变量不会反向传播到其父作用域。
+例如，这里``z``并没有引入到顶层作用域：
 
 ```jldoctest
 julia> for i = 1:10
@@ -130,10 +102,9 @@ julia> z
 ERROR: UndefVarError: z not defined
 ```
 
-(Note, in this and all following examples it is assumed that their top-level is a global scope
-with a clean workspace, for instance a newly started REPL.)
+（注意，在这个和以下所有的例子中都假设了它们的顶层作用域是一个工作空间是空的全局作用域，比如一个新打开的REPL。）
 
-Inside a local scope a variable can be forced to be a new local variable using the `local` keyword:
+在局部作用域中可以使用`local`关键字来使一个变量强制为新的局部变量。
 
 ```jldoctest
 julia> x = 0;
@@ -147,7 +118,7 @@ julia> x
 0
 ```
 
-Inside a local scope a global variable can be assigned to by using the keyword `global`:
+在局部作用域内部，可以使用`global`关键字赋值给一个全局变量：
 
 ```jldoctest
 julia> for i = 1:10
@@ -159,8 +130,7 @@ julia> z
 10
 ```
 
-The location of both the `local` and `global` keywords within the scope block is irrelevant.
-The following is equivalent to the last example (although stylistically worse):
+在作用域块中`local`和`global`关键字的位置都无关痛痒。下面的例子与上面最后的一个例子是等价的（虽然在文体上更差）:
 
 ```jldoctest
 julia> for i = 1:10
@@ -172,19 +142,16 @@ julia> z
 10
 ```
 
-The `local` and `global` keywords can also be applied to destructuring assignments, e.g.
-`local x, y = 1, 2`. In this case the keyword affects all listed variables.
+`local`和`global`关键字都可以用于解构赋值，也就是说`local x, y = 1, 2`。在这个例子中关键字影响所有的列出来的变量。
 
-Local scopes are introduced by most block keywords,
-with notable exceptions of `begin` and `if`.
+大多数块关键字都会引入局部作用域，而`begin`和`if`是例外。
 
-In a local scope, all variables are inherited from its parent
-global scope block unless:
+在一个局部作用域中，所有的变量都会从其父作用域块中继承，除非：
 
-  * an assignment would result in a modified *global* variable, or
-  * a variable is specifically marked with the keyword `local`.
+  * 赋值会导致*全局*变量改变，或者
+  * 变量专门使用`local`关键字标记。
 
-Thus global variables are only inherited for reading but not for writing:
+所以全局变量只能通过读来继承，而不能通过写来继承。
 
 ```jldoctest
 julia> x, y = 1, 2;
@@ -201,15 +168,10 @@ julia> x
 1
 ```
 
-An explicit `global` is needed to assign to a global variable:
+为一个全局变量赋值需要显式的`global`：
 
-!!! sidebar "Avoiding globals"
-    Avoiding changing the value of global variables is considered by many
-    to be a programming best-practice.
-    One reason for this is that remotely changing the state of global variables in other
-    modules should be done with care as it makes the local behavior of the program hard to reason about.
-    This is why the scope blocks that introduce local scope require the ``global``
-    keyword to declare the intent to modify a global variable.
+!!! sidebar "不要用全局变量"
+为了使得编出来的程序是最好的，很多人都考虑了避免改变全局变量的值。一个原因是远程改变其他模块中的全局变量的状态会导致程序的局部行为变得难以琢磨，应该小心行事。这也是为什么引入局部作用域的作用域块需要``global``关键字来声明其改变一个全局变量的意图。
 
 ```jldoctest
 julia> x = 1;
@@ -224,7 +186,7 @@ julia> x
 2
 ```
 
-Note that *nested functions* can modify their parent scope's *local* variables:
+注意*嵌套函数*会改变其父作用域的*局部*变量：
 
 ```jldoctest
 julia> x, y = 1, 2;
@@ -245,10 +207,8 @@ julia> x, y # verify that global x and y are unchanged
 (1, 2)
 ```
 
-The reason to allow *modifying local* variables of parent scopes in
-nested functions is to allow constructing [`closures`](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29)
-which have a private state, for instance the ``state`` variable in the
-following example:
+允许嵌套函数*修改*其父作用域的*局部*变量的原因是允许构建[`闭包`](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29)，
+闭包中有一个私有的态，例如下面例子中的``state``变量：
 
 ```jldoctest
 julia> let state = 0
@@ -262,16 +222,9 @@ julia> counter()
 2
 ```
 
-See also the closures in the examples in the next two sections. A variable
-such as `x` in the first example and `state` in the second that is inherited
-from the enclosing scope by the inner function is sometimes called a
-*captured* variable. Captured variables can present performance challenges
-discussed in [performance tips](@ref man-performance-tips).
+也可以参见接下来两节例子中的闭包。例如在第一个例子中的`x`与在第二个例子中的`state`，内部函数从包含它的作用域中继承的变量有时被称为*捕获*变量。捕获变量会带来性能挑战，这会在[性能建议](@ref man-performance-tips)中讨论。
 
-The distinction between inheriting global scope and nesting local scope
-can lead to some slight differences between functions
-defined in local vs. global scopes for variable assignments.
-Consider the modification of the last example by moving `bar` to the global scope:
+继承全局作用域与嵌套局部作用域的区别会导致在局部或者全局作用域中定义的函数在变量赋值上的稍许区别。考虑一下上面最后一个例子的一个变化，把`bar`移动到全局作用域中：
 
 ```jldoctest
 julia> x, y = 1, 2;
@@ -293,12 +246,9 @@ julia> x, y # verify that global x and y are unchanged
 (1, 2)
 ```
 
-Note that the above nesting rules do not pertain to type and macro definitions as they can only appear
-at the global scope. There are special scoping rules concerning the evaluation of default and
-keyword function arguments which are described in the [Function section](@ref man-functions).
+注意到在上面的嵌套规则并不适用于类型和宏定义因为他们只能出现在全局作用域中。涉及到[函数](@ref man-functions)中提到的默认和关键字函数参数的评估的话会有特别的作用域规则。
 
-An assignment introducing a variable used inside a function, type or macro definition need not
-come before its inner usage:
+在函数，类型或者宏定义内部使用的变量，将其引入到作用域中的赋值行为不必在其内部使用之前进行：
 
 ```jldoctest
 julia> f = y -> y + a;
@@ -315,12 +265,7 @@ julia> f(3)
 4
 ```
 
-This behavior may seem slightly odd for a normal variable, but allows for named functions -- which
-are just normal variables holding function objects -- to be used before they are defined. This
-allows functions to be defined in whatever order is intuitive and convenient, rather than forcing
-bottom up ordering or requiring forward declarations, as long as they are defined by the time
-they are actually called. As an example, here is an inefficient, mutually recursive way to test
-if positive integers are even or odd:
+这个行为看起来对于普通变量来说有点奇怪，但是这个允许命名过的函数 -- 它只是连接了函数对象的普通变量 -- 在定义之前就能被使用。这就允许函数能以符合直觉和方便的顺序定义，而非强制以颠倒顺序或者需要前置声明，只要在实际调用之前被定义就行。举个例子，这里有个不高效的，相互递归的方法去检验正整数是奇数还是偶数的方法：
 
 ```jldoctest
 julia> even(n) = (n == 0) ? true : odd(n - 1);
@@ -334,17 +279,11 @@ julia> odd(3)
 true
 ```
 
-Julia provides built-in, efficient functions to test for oddness and evenness called [`iseven`](@ref)
-and [`isodd`](@ref) so the above definitions should only be considered to be examples of scope,
-not efficient design.
+Julia提供了叫做[`iseven`](@ref)和[`isodd`](@ref)的内置的高效的奇偶性检验的函数，所以之上的定义只能被认为是作用域的一个例子，而非高效的设计。
 
-### Let Blocks
+### let块
 
-Unlike assignments to local variables, `let` statements allocate new variable bindings each time
-they run. An assignment modifies an existing value location, and `let` creates new locations.
-This difference is usually not important, and is only detectable in the case of variables that
-outlive their scope via closures. The `let` syntax accepts a comma-separated series of assignments
-and variable names:
+不像局部变量的赋值行为，`let`语句每次运行都新建一个新的变量绑定。赋值改变的是已存在值的位置，`let`会新建新的位置。这个区别通常都不重要，只会在通过闭包跳出作用域的变量的情况下能探测到。`let`语法接受由逗号隔开的一系列的赋值和变量名：
 
 ```jldoctest
 julia> x, y, z = -1, -1, -1;
@@ -357,10 +296,7 @@ x: 1, y: -1
 ERROR: UndefVarError: z not defined
 ```
 
-The assignments are evaluated in order, with each right-hand side evaluated in the scope before
-the new variable on the left-hand side has been introduced. Therefore it makes sense to write
-something like `let x = x` since the two `x` variables are distinct and have separate storage.
-Here is an example where the behavior of `let` is needed:
+这个赋值会按顺序评估，在左边的新变量被引入之前右边的每隔两都会在作用域中被评估。所以编写像`let x = x`这样的东西是有意义的，因为两个`x`变量是不一样的，拥有不同的存储位置。这里有个例子，在例子中`let`的行为是必须的：
 
 ```jldoctest
 julia> Fs = Vector{Any}(undef, 2); i = 1;
@@ -377,9 +313,7 @@ julia> Fs[2]()
 3
 ```
 
-Here we create and store two closures that return variable `i`. However, it is always the same
-variable `i`, so the two closures behave identically. We can use `let` to create a new binding
-for `i`:
+这里我创建并存储了两个返回变量`i`的闭包。但是这两个始终是同一个变量`i`。所以这两个闭包行为是相同的。我们可以使用`let`来为`i`创建新的绑定：
 
 ```jldoctest
 julia> Fs = Vector{Any}(undef, 2); i = 1;
@@ -398,8 +332,7 @@ julia> Fs[2]()
 2
 ```
 
-Since the `begin` construct does not introduce a new scope, it can be useful to use a zero-argument
-`let` to just introduce a new scope block without creating any new bindings:
+以为`begin`结构不会引入新的作用域，使用没有参数的`let`来只引进一个新的作用域块而不创建新的绑定是有用的：
 
 ```jldoctest
 julia> let
@@ -412,14 +345,11 @@ julia> let
 1
 ```
 
-Since `let` introduces a new scope block, the inner local `x` is a different variable than the
-outer local `x`.
+因为`let`引进了一个新的作用域块，内部的局部`x`与外部的局部`x`是不同的变量。
 
-### For Loops and Comprehensions
+### 对于循环和推导式
 
-`for` loops, `while` loops, and [Comprehensions](@ref) have the following behavior: any new variables
-introduced in their body scopes are freshly allocated for each loop iteration, as if the loop body
-were surrounded by a `let` block:
+`for`循环，`while`循环，和[Comprehensions](@ref)拥有下述的行为：任何在它们的内部的作用域中引入的新变量在每次循环迭代中都会被新分配一块内存，就像循环体是被`let`块包围一样。
 
 ```jldoctest
 julia> Fs = Vector{Any}(undef, 2);
@@ -435,39 +365,38 @@ julia> Fs[2]()
 2
 ```
 
-A `for` loop or comprehension iteration variable is always a new variable:
+`for`循环或者推导式的迭代变量始终是个新的变量：
 
 ```julia-repl enable_doctest_when_deprecation_warning_is_removed
 julia> function f()
-           i = 0
-           for i = 1:3
-           end
-           return i
-       end;
+ i = 0
+ for i = 1:3
+ end
+ return i
+ end;
 
 julia> f()
 0
 ```
 
-However, it is occasionally useful to reuse an existing variable as the iteration variable.
-This can be done conveniently by adding the keyword `outer`:
+但是，有时重复使用一个存在的变量作为迭代变量是有用的。
+这能够通过添加关键字`outer`来方便地做到：
 
 ```jldoctest
 julia> function f()
-           i = 0
-           for outer i = 1:3
-           end
-           return i
-       end;
+ i = 0
+ for outer i = 1:3
+ end
+ return i
+ end;
 
 julia> f()
 3
 ```
 
-## Constants
+## 常量
 
-A common use of variables is giving names to specific, unchanging values. Such variables are only
-assigned once. This intent can be conveyed to the compiler using the `const` keyword:
+变量的经常的一个使用方式是给一个特定的不变的值一个名字。这样的变量只会被赋值一次。这个想法可以通过使用`const`关键字传递给编译器：
 
 ```jldoctest
 julia> const e  = 2.71828182845904523536;
@@ -475,29 +404,21 @@ julia> const e  = 2.71828182845904523536;
 julia> const pi = 3.14159265358979323846;
 ```
 
-Multiple variables can be declared in a single `const` statement:
+多个变量可以使用单个`const`语句进行声明：
 ```jldoctest
 julia> const a, b = 1, 2
 (1, 2)
 ```
 
-The `const` declaration should only be used in global scope on globals.
-It is difficult for the compiler to optimize code involving global variables, since
-their values (or even their types) might change at almost any time. If a global variable will
-not change, adding a `const` declaration solves this performance problem.
+`const`声明只应该在全局作用域中对全局变量使用。编译器很难为包含全局变量的代码优化，因为它们的值（甚至它们的类型）可以任何时候改变。如果一个全局变量不会改变，添加`const`声明会解决这个问题。
 
-Local constants are quite different. The compiler is able to determine automatically when a local
-variable is constant, so local constant declarations are not necessary, and in fact are currently
-not supported.
+局部常量却大有不同。编译器能够自动确定一个局部变量什么时候是不变的，所以局部常量声明是不必要的，其实现在也并不支持。
 
-Special top-level assignments, such as those performed by the `function` and `struct` keywords,
-are constant by default.
+特别的顶层赋值，比如使用`function`和`structure`关键字进行的，默认是不变的。
 
-Note that `const` only affects the variable binding; the variable may be bound to a mutable
-object (such as an array), and that object may still be modified. Additionally when one tries
-to assign a value a variable that is declared constant the following scenarios are possible:
+注意`const`只会影响变量绑定；变量可能会绑定到一个可变的对象上（比如一个数组）使得其任然能被改变。另外当尝试给一个声明为常量的变量赋值时下列情景是可能的：
 
-* if a new value has a different type than the type of the constant then an error is thrown:
+* 如果一个新值的类型与常量类型不一样时会扔出一个错误：
 ```jldoctest
 julia> const x = 1.0
 1.0
@@ -505,7 +426,7 @@ julia> const x = 1.0
 julia> x = 1
 ERROR: invalid redefinition of constant x
 ```
-* if a new value has the same type as the constant then a warning is printed:
+* 如果一个新值的类型与常量一样会打印一个警告：
 ```jldoctest
 julia> const y = 1.0
 1.0
@@ -514,7 +435,7 @@ julia> y = 2.0
 WARNING: redefining constant y
 2.0
 ```
-* if an assignment would not result in the change of variable value no message is given:
+* 如果赋值不会导致变量值的变化，不会给出任何信息：
 ```jldoctest
 julia> const z = 100
 100
@@ -543,7 +464,7 @@ julia> pointer.([s1, s2], 1)
  Ptr{UInt8} @0x0000000013dd3d18
  Ptr{UInt8} @0x0000000013dd3d18
 ```
-However, for mutable objects the warning is printed as expected:
+但是对于可变对象，警告会如预期出现：
 ```jldoctest
 julia> const a = [1]
 1-element Array{Int64,1}:
@@ -555,9 +476,7 @@ WARNING: redefining constant a
  1
 ```
 
-Note that although possible, changing the value of a variable that is declared as constant
-is strongly discouraged. For instance, if a method references a constant and is already
-compiled before the constant is changed then it might keep using the old value:
+注意，即使可能，改变一个声明为常量的变量的值是十分不推荐的。举个例子，如果一个方法引用了一个常量并且在常量被改变之前已经被编译了，那么这个变量还是会保留使用原来的值：
 ```jldoctest
 julia> const x = 1
 1

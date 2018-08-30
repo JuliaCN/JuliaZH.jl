@@ -1,44 +1,42 @@
 # 接口
 
-A lot of the power and extensibility in Julia comes from a collection of informal interfaces.
- By extending a few specific methods to work for a custom type, objects of that type not only
-receive those functionalities, but they are also able to be used in other methods that are written
-to generically build upon those behaviors.
+Julia的很多能力和扩展性都来自于一些非正式的接口。
+通过为自定义的类型及其对象扩展一些特定的方法，
+可以不但获得它们的功能，
+而且使它们能够被用到其它的基于它们的行为而定义的通用方法中。
 
-## [循环](@id man-interface-iteration)
+## [Iteration](@id man-interface-iteration)
 
-| 必须方法               |                        | Brief description                                                                     |
+| 必须方法               |                        | 简短描述                                                                     |
 |:------------------------------ |:---------------------- |:------------------------------------------------------------------------------------- |
-| `iterate(iter)`                |                        | Returns either a tuple of the first item and initial state or [`nothing`](@ref) if empty        |
-| `iterate(iter, state)`         |                        | Returns either a tuple of the next item and next state or `nothing` if no items remain  |
-| **Important optional methods** | **Default definition** | **Brief description**                                                                 |
-| `IteratorSize(IterType)`       | `HasLength()`          | One of `HasLength()`, `HasShape{N}()`, `IsInfinite()`, or `SizeUnknown()` as appropriate |
-| `IteratorEltype(IterType)`     | `HasEltype()`          | Either `EltypeUnknown()` or `HasEltype()` as appropriate                              |
-| `eltype(IterType)`             | `Any`                  | The type of the first entry of the tuple returned by `iterate()`                      |
-| `length(iter)`                 | (*undefined*)          | The number of items, if known                                                         |
-| `size(iter, [dim...])`         | (*undefined*)          | The number of items in each dimension, if known                                       |
+| `iterate(iter)`                |                        | 通常返回由第一项及其其初始状态组成的元组，但如果是空，则要么返回[`nothing`](@ref)         |
+| `iterate(iter, state)`         |                        | 通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回[`nothing`](@ref)。  |
+| **重要可选方法** | **默认定义** | **简短描述**                                                                 |
+| `IteratorSize(IterType)`       | `HasLength()`          |  `HasLength()` ， `HasShape{N}()` ，  `IsInfinite()` ， 或者 `SizeUnknown()` 作为合适的 |
+| `IteratorEltype(IterType)`     | `HasEltype()`          | `EltypeUnknown()`  和 `HasEltype()`  都是可接受的                              |
+| `eltype(IterType)`             | `Any`                  | 元组中第一个条目的类型由 `iterate()` 返回。                      |
+| `length(iter)`                 | (*未定义*)          | The number of items, if known                                                         |
+| `size(iter, [dim...])`         | (*未定义*)          | 在各个维度上条目的数量，如果知道                                       |
 
-| Value returned by `IteratorSize(IterType)` | Required Methods                           |
+|  `IteratorSize(IterType)` 返回的值。 | 必须方法                           |
 |:------------------------------------------ |:------------------------------------------ |
 | `HasLength()`                              | [`length(iter)`](@ref)                     |
 | `HasShape{N}()`                            | `length(iter)`  and `size(iter, [dim...])` |
 | `IsInfinite()`                             | (*none*)                                   |
 | `SizeUnknown()`                            | (*none*)                                   |
 
-| Value returned by `IteratorEltype(IterType)` | Required Methods   |
+| 由 `IteratorEltype(IterType)` 返回的值 | 必须方法   |
 |:-------------------------------------------- |:------------------ |
 | `HasEltype()`                                | `eltype(IterType)` |
 | `EltypeUnknown()`                            | (*none*)           |
 
-Sequential iteration is implemented by the [`iterate`](@ref) function. Instead
-of mutating objects as they are iterated over, Julia iterators may keep track
-of the iteration state externally from the object. The return value from iterate
-is always either a tuple of a value and a state, or `nothing` if no elements remain.
-The state object will be passed back to the iterate function on the next iteration
-and is generally considered an implementation detail private to the iterable object.
+顺序迭代由  [`iterate`](@ref) 函数实现. 
+Julia的迭代器可以从目标外部跟踪迭代状态，而不是在迭代过程中改变目标本身。
+迭代过程中的返回一个包含了当前迭代值及其状态的元组，或者在没有元素存在的情况下返回  `nothing`  。
+状态对象将在下一次迭代时传递回迭代函数 并且通常被认为是可迭代对象的私有实现细节。
 
-Any object that defines this function is iterable and can be used in the [many functions that rely upon iteration](@ref lib-collections-iteration).
-It can also be used directly in a [`for`](@ref) loop since the syntax:
+任何定义了这个函数的兑现个都是可迭代的，并且可以被应用到  [many functions that rely upon iteration](@ref lib-collections-iteration) 。
+也可以直接被应用到  [`for`](@ref) 循环中，因为根据语法：
 
 ```julia
 for i in iter   # or  "for i = iter"
@@ -46,7 +44,7 @@ for i in iter   # or  "for i = iter"
 end
 ```
 
-is translated into:
+被解释为：
 
 ```julia
 next = iterate(iter)
@@ -57,7 +55,7 @@ while next !== nothing
 end
 ```
 
-A simple example is an iterable sequence of square numbers with a defined length:
+一个简单的例子是一组定长数据的平方数迭代序列：
 
 ```jldoctest squaretype
 julia> struct Squares
@@ -67,9 +65,8 @@ julia> struct Squares
 julia> Base.iterate(S::Squares, state=1) = state > S.count ? nothing : (state*state, state+1)
 ```
 
-With only [`iterate`](@ref) definition, the `Squares` type is already pretty powerful.
-We can iterate over all the elements:
-
+仅仅定义了  [`iterate`](@ref) 函数的 `Squares` 类型就已经很强大了。
+我们现在可以迭代所有的元素了：
 ```jldoctest squaretype
 julia> for i in Squares(7)
            println(i)
@@ -83,9 +80,7 @@ julia> for i in Squares(7)
 49
 ```
 
-We can use many of the builtin methods that work with iterables,
-like [`in`](@ref), or [`mean`](@ref) and [`std`](@ref) from the
-`Statistics` standard library module:
+我们可以利用许多内置方法来处理迭代，比如标准库 `Statistics`  中的  [`in`](@ref) ， [`mean`](@ref) 和 [`std`](@ref) 。
 
 ```jldoctest squaretype
 julia> 25 in Squares(10)
@@ -98,13 +93,10 @@ julia> mean(Squares(100))
 
 julia> std(Squares(100))
 3024.355854282583
-```
-
-There are a few more methods we can extend to give Julia more information about this iterable
-collection.  We know that the elements in a `Squares` sequence will always be `Int`. By extending
-the [`eltype`](@ref) method, we can give that information to Julia and help it make more specialized
-code in the more complicated methods. We also know the number of elements in our sequence, so
-we can extend [`length`](@ref), too:
+我们可以扩展一些其它的方法，为Julia提供有关此可迭代集合的更多信息。
+我们知道 `Squares`  序列中的元素总是  `Int` 型的。
+通过扩展  [`eltype`](@ref)  方法，  我们可以给Julia过多的信息来帮助其在更复杂的方法中产生更加具体的代码。
+我们同时也知道我们序列中的元素数目，所以我们也同样可以扩展  [`length`](@ref) ：
 
 ```jldoctest squaretype
 julia> Base.eltype(::Type{Squares}) = Int # Note that this is defined for the type
@@ -112,8 +104,7 @@ julia> Base.eltype(::Type{Squares}) = Int # Note that this is defined for the ty
 julia> Base.length(S::Squares) = S.count
 ```
 
-Now, when we ask Julia to [`collect`](@ref) all the elements into an array it can preallocate a `Vector{Int}`
-of the right size instead of blindly [`push!`](@ref)ing each element into a `Vector{Any}`:
+现在，当我们让Julia去  [`collect`](@ref) 所有元素到一个array中时，Julia可以预分配一个 适当大小的  `Vector{Int}` ，而不是盲目地  [`push!`](@ref) 每一个元素到 `Vector{Any}` ：
 
 ```jldoctest squaretype
 julia> collect(Squares(4))
@@ -216,14 +207,14 @@ ourselves, we can officially define it as a subtype of an [`AbstractArray`](@ref
 
 ## [Abstract Arrays](@id man-interface-array)
 
-| Methods to implement                            |                                        | Brief description                                                                     |
+| Methods to implement                            |                                        | 简短描述                                                                     |
 |:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |
 | `size(A)`                                       |                                        | Returns a tuple containing the dimensions of `A`                                      |
 | `getindex(A, i::Int)`                           |                                        | (if `IndexLinear`) Linear scalar indexing                                             |
 | `getindex(A, I::Vararg{Int, N})`                |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexing             |
 | `setindex!(A, v, i::Int)`                       |                                        | (if `IndexLinear`) Scalar indexed assignment                                          |
 | `setindex!(A, v, I::Vararg{Int, N})`            |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexed assignment   |
-| **Optional methods**                            | **Default definition**                 | **Brief description**                                                                 |
+| **Optional methods**                            | **默认定义**                 | **简短描述**                                                                 |
 | `IndexStyle(::Type)`                            | `IndexCartesian()`                     | Returns either `IndexLinear()` or `IndexCartesian()`. See the description below.      |
 | `getindex(A, I...)`                             | defined in terms of scalar `getindex`  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |
 | `setindex!(A, I...)`                            | defined in terms of scalar `setindex!` | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |
@@ -233,7 +224,7 @@ ourselves, we can officially define it as a subtype of an [`AbstractArray`](@ref
 | `similar(A, ::Type{S})`                         | `similar(A, S, size(A))`               | Return a mutable array with the same shape and the specified element type             |
 | `similar(A, dims::NTuple{Int})`                 | `similar(A, eltype(A), dims)`          | Return a mutable array with the same element type and size *dims*                     |
 | `similar(A, ::Type{S}, dims::NTuple{Int})`      | `Array{S}(undef, dims)`               | Return a mutable array with the specified element type and size                       |
-| **Non-traditional indices**                     | **Default definition**                 | **Brief description**                                                                 |
+| **Non-traditional indices**                     | **默认定义**                 | **简短描述**                                                                 |
 | `axes(A)`                                    | `map(OneTo, size(A))`                  | Return the `AbstractUnitRange` of valid indices                                       |
 | `Base.similar(A, ::Type{S}, inds::NTuple{Ind})` | `similar(A, S, Base.to_shape(inds))`   | Return a mutable array with the specified indices `inds` (see below)                  |
 | `Base.similar(T::Union{Type,Function}, inds)`   | `T(Base.to_shape(inds))`               | Return an array similar to `T` with the specified indices `inds` (see below)          |
@@ -434,7 +425,7 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 
 ## [Customizing broadcasting](@id man-interfaces-broadcasting)
 
-| Methods to implement | Brief description |
+| Methods to implement | 简短描述 |
 |:-------------------- |:----------------- |
 | `Base.BroadcastStyle(::Type{SrcType}) = SrcStyle()` | Broadcasting behavior of `SrcType` |
 | `Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})` | Allocation of output container |

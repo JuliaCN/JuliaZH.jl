@@ -2,8 +2,8 @@
 
 ## [Iteration](@id lib-collections-iteration)
 
-序列迭代由函数 [`iterate`](@ref)实现
-普通的`for`循环
+序列迭代由 [`iterate`](@ref) 实现
+广义的`for`循环
 
 ```julia
 for i in iter   # or  "for i = iter"
@@ -22,8 +22,8 @@ while next !== nothing
 end
 ```
 
-`state`对象能够是任何对象，并且对于每个可迭代的种类应该选择合适的“state”对象。
-详情请参照 [manual section on the iteration interface](@ref man-interface-iteration) 来获得关于定义一个常见迭代种类的更多细节。
+`state` 对象可以是任何对象，并且对于每个可迭代类型应该选择合适的 `state` 对象。
+请参照 [manual section on the iteration interface](@ref man-interface-iteration) 来获取关于定义一个常见迭代类型的更多细节。
 
 ```@docs
 Base.iterate
@@ -166,11 +166,9 @@ Partially implemented by:
 
 ## 字典
 
-[`Dict`](@ref)是一个标准字典。其实现利用了 [`hash`](@ref)
-作为键的哈希函数和[`isequal`](@ref)来决定是否相等。
-对自定义类型定义这两个函数来重载类型在哈希表内的存储方式。
+[`Dict`](@ref) 是一个标准字典。其实现利用了 [`hash`](@ref) 作为键的哈希函数和 [`isequal`](@ref) 来决定是否相等。对于自定义类型，可以定义这两个函数来重载它们在哈希表内的存储方式。
 
-[`IdDict`](@ref)是一种特殊的哈希表，在里面键始终是对象标识符。
+[`IdDict`](@ref) 是一种特殊的哈希表，在里面键始终是对象标识符。
 
 [`WeakKeyDict`](@ref) 是一个哈希表的实现，里面键是对象的弱引用，所以
 即使键在哈希表中被引用也有可能被垃圾回收。
@@ -227,7 +225,7 @@ Partially implemented by:
   * [`ImmutableDict`](@ref Base.ImmutableDict)
   * [`Iterators.Pairs`](@ref)
 
-## 类set集合
+## 类似 Set 的集合
 
 ```@docs
 Base.Set
@@ -275,7 +273,7 @@ Base.prepend!
   * `Vector` (a.k.a. 1-dimensional [`Array`](@ref))
   * `BitVector` (a.k.a. 1-dimensional [`BitArray`](@ref))
 
-## 实用程序集合
+## 集合相关的实用工具
 
 ```@docs
 Base.Pair

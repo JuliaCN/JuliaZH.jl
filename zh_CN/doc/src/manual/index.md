@@ -17,7 +17,7 @@
   * [接口](@ref)
   * [模块](@ref)
   * [文档](@ref)
-  * [Metaprogramming](@ref)
+  * [元编程](@ref)
   * [多维数组](@ref man-multi-dim-arrays)
   * [缺失值处理](@ref missing)
   * [网络和流](@ref)

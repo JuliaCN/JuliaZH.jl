@@ -10,18 +10,18 @@ Julia加载代码有两种机制：
 !!! 注
    除非你想了解Julia中包加载的技术细节，您才需要阅读本章。如果您只想安装和使用包，只需使用Julia的内置软件包管理器，将包添加到环境中，并在代码中使用表达式`import X`或`using X`来加载包即可。
 
-A *package* is a source tree with a standard layout providing functionality that can be reused by other Julia projects. A package is loaded by `import X` or  `using X` statements. These statements also make the module named `X`, which results from loading the package code, available within the module where the import statement occurs. The meaning of `X` in `import X` is context-dependent: which `X` package is loaded depends on what code the statement occurs in. The effect of `import X` depends on two questions:
+一个 *包（package）* 就是一个源树，其标准布局中提供了其他 Julia 项目可以复用的功能。这个包可由 `import X` 或 `using X` 语句来加载。这些语句还使得名为 `X` 的模块在加载包代码时被产生，该模块在 import 语句发生的模块中可用。 `import X` 中 `X` 的含义与上下文有关：程序中加载哪个 `X` 包取决于语句出现的代码。`import X` 的效果取决于以下两个问题：
 
-1. **What** package is `X` in this context?
-2. **Where** can that `X` package be found?
+1. 在上下文中，**哪个包**是 `X` ？
+2. `X` 包在**哪里**能够被找到？
 
-Understanding how Julia answers these questions is key to understanding package loading.
+理解 Julia 是如何回答这些问题是理解包如何被加载的重点。
 
-## Federation of packages
+## 包联盟
 
-Julia supports federated management of packages. This means that multiple independent parties can maintain both public and private packages and registries of them, and that projects can depend on a mix of public and private packages from different registries. Packages from various registries are installed and managed using a common set of tools and workflows. The `Pkg` package manager ships with Julia 0.7/1.0 and lets you install and manage dependencies of your projects, by creating and manipulating project files, which describe what your project depends on, and manifest files that snapshot exact versions of your project's complete dependency graph.
+Julia 支持包的联合管理。这意味着多个独立方可以维护公共和私有包及其注册列表，并且项目可以依赖于来自不同注册表的公共和私有包的组合。您也可以使用一组通用工具和工作流（workflow）来安装和管理来自各种注册表的包。 `Pkg` 软件包管理器附带 Julia 0.7/1.0 ，允许您通过创建和操作项目文件来安装和管理项目的依赖项，而项目文件描述了项目所依赖的内容，以及清单文件，用于给您的项目的完整依赖库的确切版本进行一次快照。
 
-One consequence of federation is that there cannot be a central authority for package naming. Different entities may use the same name to refer to unrelated packages. This possibility is unavoidable since these entities do not coordinate and may not even know about each other. Because of the lack of a central naming authority, a single project can quite possibly end up depending on different packages with the same name. Julia's package loading mechanism handles this by not requiring package names to be globally unique, even within the dependency graph of a single project. Instead, packages are identified by [universally unique identifiers](https://en.wikipedia.org/wiki/Universally_unique_identifier) (UUIDs) which are assigned to them before they are registered. The question *"what is `X`?"* is answered by determining the UUID of `X`.
+联合管理的一个可能后果是没有包命名的中央权限。不同组织可以使用相同的名称来引用不相关的包。这并不是没有可能的，因为这些组织可能没有协作，甚至不知道彼此。由于缺乏中央命名权限，单个项目很可能最终依赖着具有相同名称的不同包。 Julia 的包加载机制通过不要求包名称是全局唯一的来解决这一问题，即使在单个项目的依赖关系图中也是如此。相反，包由[通用唯一标识符]（https://en.wikipedia.org/wiki/Universally_unique_identifier）（UUID）进行标识，这些标识符在注册之前分配给它们。问题*“什么是`X`？”*通过确定 `X` 的UUID来回答。
 
 Since the decentralized naming problem is somewhat abstract, it may help to walk through a concrete scenario to understand the issue. Suppose you're developing an application called `App`, which uses two packages: `Pub` and  `Priv`. `Priv` is a private package that you created, whereas `Pub` is a public package that you use but don't control. When you created `Priv`, there was no public package by that name. Subsequently, however, an unrelated package also named `Priv` has been published and become popular. In fact, the `Pub` package has started to use it. Therefore, when you next upgrade `Pub` to get the latest bug fixes and features, `App` will end up—through no action of yours other than upgrading—depending on two different packages named `Priv`. `App` has a direct dependency on your private `Priv` package, and an indirect dependency, through `Pub`, on the new public `Priv` package. Since these two `Priv` packages are different but both required for `App` to continue working correctly, the expression `import Priv` must refer to different `Priv` packages depending on whether it occurs in `App`'s code or in `Pub`'s code. Julia's package loading mechanism allows this by distinguishing the two `Priv` packages by context and UUID. How this distinction works is determined by environments, as explained in the following sections.
 
