@@ -1,10 +1,6 @@
-# [Modules](@id modules)
+# [模块](@id modules)
 
-Modules in Julia are separate variable workspaces, i.e. they introduce a new global scope. They
-are delimited syntactically, inside `module Name ... end`. Modules allow you to create top-level
-definitions (aka global variables) without worrying about name conflicts when your code is used
-together with somebody else's. Within a module, you can control which names from other modules
-are visible (via importing), and specify which of your names are intended to be public (via exporting).
+Julia 中的模块（module）是单独的变量工作空间，即它们引入了新的全局作用域。 它们在语法上以 `module Name ... end` 界定。 模块允许你创建顶层定义（也称为全局变量），而无需担心在你的代码与其他人的代码一起使用时产生名字冲突。 在模块中，你可以控制其他模块中的哪些名称可用（通过导入），并指定哪些你的名称是公开的（通过导出）。
 
 下面的示例演示了模块的主要功能。它不需要运行，只是为了说明目的：
 
@@ -29,36 +25,23 @@ show(io::IO, a::MyType) = print(io, "MyType $(a.x)")
 end
 ```
 
-注意，样式不是缩进模块主体，因为这通常会导致整个文件缩进。
+注意，模块中的代码样式不需要缩进，否则的话，会导致整个文件缩进。
 
-This module defines a type `MyType`, and two functions. Function `foo` and type `MyType` are exported,
-and so will be available for importing into other modules.  Function `bar` is private to `MyModule`.
+上面的模块定义了一个 `MyType` 类型，以及两个函数，其中，函数 `foo` 和类型 `MyType` 被导出了，因而可以被导入到其它模块，而函数 `bar` 是模块 `MyModule` 的私有函数。
 
-The statement `using Lib` means that a module called `Lib` will be available for resolving names
-as needed. When a global variable is encountered that has no definition in the current module,
-the system will search for it among variables exported by `Lib` and import it if it is found there.
-This means that all uses of that global within the current module will resolve to the definition
-of that variable in `Lib`.
+`using Lib` 意味着一个名称为 `Lib` 的模块会在需要的时候用于解释变量名。当一个全局变量在当前模块中没有定义时，系统就会从 `Lib` 中导出的变量中搜索该变量，如果找到了的话，就导入进来。也就是说，当前模块中，所有使用该全局变量的地方都会解释为 `Lib` 中对应的变量。
 
-The statement `using BigLib: thing1, thing2` brings just the identifiers `thing1` and `thing2`
-into scope from module `BigLib`. If these names refer to functions, adding methods to them
-will not be allowed (you may only "use" them, not extend them).
+代码 `using BigLib: thing1, thing2` 显式地将标识符 `thing1` 和 `thing2` 从模块 `BigLib` 中引入到当前作用域。 如果这两个变量是函数的话，那么是允许给他们增加实现方法的，毕竟代码里写的是 "using" （使用）它们，而不是扩展它们。
 
-The `import` keyword supports the same syntax as `using`, but only operates on a single name
-at a time. It does not add modules to be searched the way `using` does. `import` also differs
-from `using` in that functions imported using `import` can be extended with new methods.
+`import` 关键字所支持的语法与 `using` 一致，不过一次只作用于一个名字。此外它并不会像 `using` 那样将模块添加到搜索空间中，与 `using` 不同的，`import` 引入的函数可以为其增加新的方法。
 
-In `MyModule` above we wanted to add a method to the standard `show` function, so we had to write
-`import Base.show`. Functions whose names are only visible via `using` cannot be extended.
+前面的 `MyModule` 模块中，我们希望给 `show` 函数增加一个方法，于是需要写成 `import Base.show`，这里如果写成 `using` 的话，就不能给 `show` 函数增加一个实现了。
 
-Once a variable is made visible via `using` or `import`, a module may not create its own variable
-with the same name. Imported variables are read-only; assigning to a global variable always affects
-a variable owned by the current module, or else raises an error.
+一旦一个变量通过 `using` 或 `import` 引入，当前模块就不能创建同名的变量了。而且导入的变量是只读的，给全局变量赋值只能影响当前模块的变量，否则会报错。
 
 ## Summary of module usage
 
-To load a module, two main keywords can be used: `using` and `import`. To understand their differences,
-consider the following example:
+要导入一个模块，可以用 `using` 或 `import` 关键字。为了更好地理解它们的区别，看看下面的例子：
 
 ```julia
 module MyModule
@@ -72,11 +55,9 @@ p() = "p"
 end
 ```
 
-In this module we export the `x` and `y` functions (with the keyword `export`), and also have
-the non-exported function `p`. There are several different ways to load the Module and its inner
-functions into the current workspace:
+这个模块用关键字 `export` 导出了 `x` 和 `y` 函数，此外还有一个没有被导出的函数 `p`。想要将该模块及其内部的函数导入当前模块有以下方法：
 
-| Import Command                  | What is brought into scope                                                      | Available for method extension              |
+| `import` 命令                  | 将哪些变量导入了当前作用域？                                                      | Available for method extension              |
 |:------------------------------- |:------------------------------------------------------------------------------- |:------------------------------------------- |
 | `using MyModule`                | All `export`ed names (`x` and `y`), `MyModule.x`, `MyModule.y` and `MyModule.p` | `MyModule.x`, `MyModule.y` and `MyModule.p` |
 | `using MyModule: x, p`          | `x` and `p`                                                                     |                                             |
@@ -84,10 +65,9 @@ functions into the current workspace:
 | `import MyModule.x, MyModule.p` | `x` and `p`                                                                     | `x` and `p`                                 |
 | `import MyModule: x, p`         | `x` and `p`                                                                     | `x` and `p`                                 |
 
-### Modules and files
+### 模块和文件
 
-Files and file names are mostly unrelated to modules; modules are associated only with module
-expressions. One can have multiple files per module, and multiple modules per file:
+文件和文件名与模块无关；模块只与模块表达式有关。一个模块可以有多个文件，一个文件也可以有多个模块。
 
 ```julia
 module Foo
@@ -98,9 +78,7 @@ include("file2.jl")
 end
 ```
 
-Including the same code in different modules provides mixin-like behavior. One could use this
-to run the same code with different base definitions, for example testing code by running it with
-"safe" versions of some operators:
+在不同的模块中引入同一段代码，提供了一种类似 mixin 的行为。这可以用于给定不同的base执行同一段代码，例如，在测试的时候，可以运行一些相对 **安全** 的操作符。
 
 ```julia
 module Normal
@@ -113,29 +91,21 @@ include("mycode.jl")
 end
 ```
 
-### Standard modules
+### 标准模块
 
-There are three important standard modules: Main, Core, and Base.
+有三个非常重要的标准模块： Main, Core 和 Base
 
-Main is the top-level module, and Julia starts with Main set as the current module.  Variables
-defined at the prompt go in Main, and `varinfo()` lists variables in Main.
+Main 是最顶层的模块，Julia 启动后会将 Main 设置为当前模块。 在提示符下定义的变量会进入到 Main，执行 `varinfo()` 会列出 Main 中的变量。
 
-Core contains all identifiers considered "built in" to the language, i.e. part of the core language
-and not libraries. Every module implicitly specifies `using Core`, since you can't do anything
-without those definitions.
+Core 包含所有语言内置的标识符（语言的核心部分，不是库），每个模块都默认声明了 `using Core`（否则的话啥也做不了）。
 
-Base is a module that contains basic functionality (the contents of base/). All modules implicitly contain `using Base`,
-since this is needed in the vast majority of cases.
+Base 模块包含了一些基本的功能 ( 即源码中 base/ 目录下的内容)。 所有模块都默认包含了 `using Base` ，因为对大多数库来说，都会用到。
 
-### Default top-level definitions and bare modules
+### 默认顶层定义以及裸模块
 
-In addition to `using Base`, modules also automatically contain
-definitions of the `eval` and `include` functions,
-which evaluate expressions/files within the global scope of that module.
+除了默认包含 `using Base` 之外，所有模块都还包含 `eval` 和 `include` 函数。这两个函数用于将表达式和文件引入到全局作用域中
 
-If these default definitions are not wanted, modules can be defined using the keyword `baremodule`
-instead (note: `Core` is still imported, as per above). In terms of `baremodule`, a standard
-`module` looks like this:
+如果这些默认的定义都不需要，那么可以用 `baremodule` 定义裸模块（不过 `Core` 模块仍然被引入领导，否则啥也写不了）。与标准的模块定义类似，一个裸模块的定义如下：
 
 ```
 baremodule Mod
@@ -150,7 +120,7 @@ include(p) = Base.include(Mod, p)
 end
 ```
 
-### Relative and absolute module paths
+### 模块的绝对路径和相对路径
 
 Given the statement `using Foo`, the system consults an internal table of top-level modules
 to look for one named `Foo`. If the module does not exist, the system attempts to `require(:Foo)`,

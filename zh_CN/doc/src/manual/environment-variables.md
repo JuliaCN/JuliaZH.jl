@@ -1,18 +1,8 @@
 # 环境变量
 
-Julia may be configured with a number of environment variables, either in the
-usual way of the operating system, or in a portable way from within Julia.
-Suppose you want to set the environment variable `JULIA_EDITOR` to
-`vim`, then either type `ENV["JULIA_EDITOR"] = "vim"` for instance in the REPL
-to make this change on a case by case basis, or add the same to the user
-configuration file `~/.julia/config/startup.jl` in the user's home directory to have
-a permanent effect. The current value of the same environment variable is
-determined by evaluating `ENV["JULIA_EDITOR"]`.
+Julia 可以配置许多环境变量，可以以通常的操作系统方式，或者在 Julia 中以一种便携的方式。假设你要将环境变量 `JULIA_EDITOR` 设置为 `vim`，然后在 REPL 中输入 `ENV["JULIA_EDITOR"] = "vim"`，请根据具体情况进行此修改；或将其添加到用户主目录中的配置文件 `~/.julia/config/startup.jl`，这会永久生效。一些环境变量的当前值是通过求 `ENV["JULIA_EDITOR"]` 的值来确定。
 
-The environment variables that Julia uses generally start with `JULIA`. If
-[`InteractiveUtils.versioninfo`](@ref) is called with `verbose` equal to `true`, then the
-output will list defined environment variables relevant for Julia, including
-those for which `JULIA` appears in the name.
+Julia 使用的环境变量通常以 `JULIA` 开头。如果 [`InteractiveUtils.versioninfo`](@ref) 调用时 `verbose` 等于 `true`，那么输出将列出与 Julia 相关的已定义环境变量，包括那些名称中包含 `JULIA` 的环境变量。
 
 ## 文件位置
 
@@ -60,19 +50,11 @@ $JULIA_BINDIR/../etc/julia/startup.jl
 
 ### `JULIA_LOAD_PATH`
 
-A separated list of absolute paths that are to be appended to the variable
-[`LOAD_PATH`](@ref). (In Unix-like systems, the path separator is `:`; in
-Windows systems, the path separator is `;`.) The `LOAD_PATH` variable is where
-[`Base.require`](@ref) and `Base.load_in_path()` look for code; it defaults to
-the absolute path
-`$JULIA_HOME/../share/julia/stdlib/v$(VERSION.major).$(VERSION.minor)` so that,
-e.g., version 0.7 of Julia on a Linux system with a Julia executable at
-`/bin/julia` will have a default `LOAD_PATH` of `/share/julia/stdlib/v0.7`.
+一个由被附加到变量 [`LOAD_PATH`](@ref) 的绝对路径组成的分隔列表（在类 Unix 系统中，路径分隔符为 `:`；在 Windows 系统中，路径分隔符为 `;`）。`LOAD_PATH` 变量是 [`Base.require`](@ref) 和 `Base.load_in_path()` 寻找代码的地方。它默认为绝对路径 `$JULIA_HOME/../share/julia/stdlib/v$(VERSION.major).$(VERSION.minor)`，例如，在 0.7 版本的 Julia 上，其中系统为 Linux 且 Julia 可执行文件为 `/bin/julia`，`LOAD_PATH` 将默认为 `/share/julia/stdlib/v0.7`。
 
 ### `JULIA_HISTORY`
 
-The absolute path `REPL.find_hist_file()` of the REPL's history file. If
-`$JULIA_HISTORY` is not set, then `REPL.find_hist_file()` defaults to
+REPL 历史文件中 `REPL.find_hist_file()` 的绝对路径。如果 `$JULIA_HISTORY` 没有定义，`REPL.find_hist_file()` 默认为
 
 ```
 $HOME/.julia/logs/repl_history.jl
@@ -91,11 +73,11 @@ Suppose the value of `$JULIA_PKGRESOLVE_ACCURACY` is `n`. Then
 *   the number of iterations between decimation steps is `10*n`, and
 *   at decimation steps, at most one in every `20*n` packages is decimated.
 
-## External applications
+## 外部应用
 
 ### `JULIA_SHELL`
 
-Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd()`）。默认为环境变量 `$SHELL`，如果 `$SHELL` 为设置，则为 `/bin/sh`。
+Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd()`）。默认为环境变量 `$SHELL`，如果 `$SHELL` 未设置，则为 `/bin/sh`。
 
 !!! note
 
@@ -103,13 +85,9 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 ### `JULIA_EDITOR`
 
-The editor returned by `InteractiveUtils.editor()` and used in, e.g., [`InteractiveUtils.edit`](@ref),
-referring to the command of the preferred editor, for instance `vim`.
+由 `InteractiveUtils.editor()` 返回的编辑器并被使用，例如，[`InteractiveUtils.edit`](@ref)，引用首选编辑器的命令，比如 `vim`。
 
-`$JULIA_EDITOR` takes precedence over `$VISUAL`, which in turn takes precedence
-over `$EDITOR`. If none of these environment variables is set, then the editor
-is taken to be `open` on Windows and OS X, or `/etc/alternatives/editor` if it
-exists, or `emacs` otherwise.
+`$JULIA_EDITOR` 优先于 `$VISUAL`，而后者优先于 `$EDITOR`。如果这些环境变量都没有设置，那么编辑器在 Windows 和 OS X 上设置为 `open`，或者 `/etc/alternatives/editor` 如果其存在，否则为 `emacs`。
 
 ## Parallelization
 
@@ -146,48 +124,37 @@ If set to anything besides `0`, then Julia's thread policy is consistent with
 running on a dedicated machine: the master thread is on proc 0, and threads are
 affinitized. Otherwise, Julia lets the operating system handle thread policy.
 
-## REPL formatting
+## REPL 格式化
 
-Environment variables that determine how REPL output should be formatted at the
-terminal. Generally, these variables should be set to [ANSI terminal escape
-sequences](http://ascii-table.com/ansi-escape-sequences.php). Julia provides
-a high-level interface with much of the same functionality: see the section on
-[The Julia REPL](@ref).
+决定 REPL 输出在终端中应当如何被格式化的环境变量。通常，这些变量应当被设置为 [ANSI 终端转义序列](http://ascii-table.com/ansi-escape-sequences.php)。Julia 提供了具有相同功能的高级接口：请参阅 [The Julia REPL](@ref)。
 
 ### `JULIA_ERROR_COLOR`
 
-The formatting `Base.error_color()` (default: light red, `"\033[91m"`) that
-errors should have at the terminal.
+`Base.error_color()`（默认值：亮红，`"\033[91m"`），errors 在终端中的格式。
 
 ### `JULIA_WARN_COLOR`
 
-The formatting `Base.warn_color()` (default: yellow, `"\033[93m"`) that warnings
-should have at the terminal.
+`Base.warn_color()`（默认值：黄，`"\033[93m"`），warnings 在终端中的格式。
 
 ### `JULIA_INFO_COLOR`
 
-The formatting `Base.info_color()` (default: cyan, `"\033[36m"`) that info
-should have at the terminal.
+`Base.info_color()`（默认值：青，`"\033[36m"`），info 在终端中的格式。
 
 ### `JULIA_INPUT_COLOR`
 
-The formatting `Base.input_color()` (default: normal, `"\033[0m"`) that input
-should have at the terminal.
+`Base.input_color()`（默认值：标准，`"\033[0m"`），输入在终端中的格式。
 
 ### `JULIA_ANSWER_COLOR`
 
-The formatting `Base.answer_color()` (default: normal, `"\033[0m"`) that output
-should have at the terminal.
+`Base.answer_color()`（默认值：标准，`"\033[0m"`），输出在终端中的格式。
 
 ### `JULIA_STACKFRAME_LINEINFO_COLOR`
 
-The formatting `Base.stackframe_lineinfo_color()` (default: bold, `"\033[1m"`)
-that line info should have during a stack trace at the terminal.
+`Base.stackframe_lineinfo_color()`（默认值：粗体，`"\033[1m"`），堆栈跟踪时行信息在终端中的格式。
 
 ### `JULIA_STACKFRAME_FUNCTION_COLOR`
 
-The formatting `Base.stackframe_function_color()` (default: bold, `"\033[1m"`)
-that function calls should have during a stack trace at the terminal.
+`Base.stackframe_function_color()`（默认值：粗体，`"\033[1m"`），堆栈跟踪期间函数调用在终端中的形式。
 
 ## Debugging and profiling
 

@@ -30,7 +30,7 @@ end
 
 一个更好的编程风格是将变量作为参数传给函数。这样可以使得代码更易复用，以及清晰的展示函数的输入和输出。
 
-!!! 注意
+!!! note
     所有的REPL中的代码都是在全局作用域中求值的，因此在顶层的变量的定义与赋值都会成为一个**全局**变量。在模块的顶层作用域定义的变量也是全局变量。
 
 在下面的REPL会话中：
@@ -107,38 +107,28 @@ julia> time_sum(x)
 496.84883432553846
 ```
 
-In some situations, your function may need to allocate memory as part of its operation, and this
-can complicate the simple picture above. In such cases, consider using one of the [tools](@ref tools)
-below to diagnose problems, or write a version of your function that separates allocation from
-its algorithmic aspects (see [Pre-allocating outputs](@ref)).
-
+在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的[工具](@ref tools)之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见[Pre-allocating outputs](@ref)）。
 !!! note
-    For more serious benchmarking, consider the [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)
-    package which among other things evaluates the function multiple times in order to reduce noise.
 
-## [Tools](@id tools)
+对于更加正经的性能测试，考虑一下[BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)包，这个包除了其他方面之外会多次评估函数的性能以降低噪声。
 
-Julia and its package ecosystem includes tools that may help you diagnose problems and improve
-the performance of your code:
+## [工具](@id tools)
 
-  * [Profiling](@ref) allows you to measure the performance of your running code and identify lines
-    that serve as bottlenecks. For complex projects, the [ProfileView](https://github.com/timholy/ProfileView.jl)
-    package can help you visualize your profiling results.
-  * The [Traceur](https://github.com/MikeInnes/Traceur.jl) package can help you find common performance problems in your code.
-  * Unexpectedly-large memory allocations--as reported by [`@time`](@ref), [`@allocated`](@ref), or
-    the profiler (through calls to the garbage-collection routines)--hint that there might be issues
-    with your code. If you don't see another reason for the allocations, suspect a type problem.
-     You can also start Julia with the `--track-allocation=user` option and examine the resulting
-    `*.mem` files to see information about where those allocations occur. See [Memory allocation analysis](@ref).
-  * `@code_warntype` generates a representation of your code that can be helpful in finding expressions
-    that result in type uncertainty. See [`@code_warntype`](@ref) below.
+Julia和其包生态圈包含了能帮助你诊断问题和提高你的代码的性能表现的工具：
 
-## Avoid containers with abstract type parameters
+* [Profiling](@ref)允许你测量你运行的代码的性能表现并找出是性能瓶颈的代码。对于复杂的工程，[ProfileView](https://github.com/timholy/ProfileView.jl)能帮你将性能分析结果可视化。
 
-When working with parameterized types, including arrays, it is best to avoid parameterizing with
-abstract types where possible.
+* [Traceur](https://github.com/MikeInnes/Traceur.jl)包能帮你找到你代码中的常见性能问题。
 
-Consider the following:
+* 没有预想到的巨大的内存申请 -- 像[`@time`](@ref)，[`@allocated`](@ref) 或者性能分析器（通过对于垃圾回收进程的调用）告诉你的一样 -- 提示着你的代码会有问题。 如果没有见到有关内存申请的其他原因，你需要怀疑这是一个类型问题。你也可以通过`-track-allocation=user`选项开启Julia并检查生成的`*.mem`文件来检查有关内存申请发生位置的信息。参见[Memory allocation analysis](@ref)。
+
+*`@code_warntype`生成你的代码的一个表示，对于找到会造成类型不确定的表达式有用。参见下面的[`@code_warntype`](@ref)。
+
+## 避免拥有抽象类型参数的容器
+
+当处理参数化类型，包括数组，时，最好尽可能避免通过抽象类型进行参数化。
+
+考虑一下下面的代码：
 
 ```jldoctest
 julia> a = Real[]
@@ -146,16 +136,12 @@ julia> a = Real[]
 
 julia> push!(a, 1); push!(a, 2.0); push!(a, π)
 3-element Array{Real,1}:
-  1
-  2.0
+ 1
+ 2.0
  π = 3.1415926535897...
 ```
 
-Because `a` is a an array of abstract type [`Real`](@ref), it must be able to hold any
-`Real` value. Since `Real` objects can be of arbitrary size and structure, `a` must be
-represented as an array of pointers to individually allocated `Real` objects. However, if we instead
-only allow numbers of the same type, e.g. [`Float64`](@ref), to be stored in `a` these can be stored more
-efficiently:
+因为`a`是一个抽象类型[`Real`](@ref)的数组，它必须能容纳任何一个`Real`值。因为`Real`对象可以有任意的大小和结构，`a`必须用指针的数组来表示，以便能独立地为`Real`对象进行内存分配。但是如果我们只允许同样类型的数，比如[`Float64`](@ref)，才能存在`a`中，它们就能被更有效率地存储：
 
 ```jldoctest
 julia> a = Float64[]
@@ -168,21 +154,17 @@ julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
  3.141592653589793
 ```
 
-Assigning numbers into `a` will now convert them to `Float64` and `a` will be stored as
-a contiguous block of 64-bit floating-point values that can be manipulated efficiently.
+把数字赋值给`a`会即时将数字转换成`Float64`并且`a`会按照64位浮点数值的连续的块来储存，这就能高效地处理。
 
-See also the discussion under [Parametric Types](@ref).
+也请参见在[Parametric Types](@ref)下的讨论。
 
-## Type declarations
+## 类型声明
 
-In many languages with optional type declarations, adding declarations is the principal way to
-make code run faster. This is *not* the case in Julia. In Julia, the compiler generally knows
-the types of all function arguments, local variables, and expressions. However, there are a few
-specific instances where declarations are helpful.
+在有可选类型声明的语言中，添加声明是使代码运行更快的原则性方法。在Julia中*并不是*这种情况。在Julia中，编译器都知道所有的函数参数，局部变量和表达式的类型。但是，有一些特殊的情况下声明是有帮助的。
 
-### Avoid fields with abstract type
+### 避免有抽象类型的域
 
-Types can be declared without specifying the types of their fields:
+类型能在不指定其域的类型的情况下被声明：
 
 ```jldoctest myambig
 julia> struct MyAmbiguousType
@@ -190,10 +172,7 @@ julia> struct MyAmbiguousType
        end
 ```
 
-This allows `a` to be of any type. This can often be useful, but it does have a downside: for
-objects of type `MyAmbiguousType`, the compiler will not be able to generate high-performance
-code. The reason is that the compiler uses the types of objects, not their values, to determine
-how to build code. Unfortunately, very little can be inferred about an object of type `MyAmbiguousType`:
+这就允许`a`可以是任意类型。这经常很有用，但是有个缺点：对于类型`MyAmbiguousType`的对象，编译器不能够生成高性能的代码。原因是编译器使用对象的类型，而非值，来确定如何构建代码。不幸的是，几乎没有信息可以从类型`MyAmbiguousType`的对象中推导出来：
 
 ```jldoctest myambig
 julia> b = MyAmbiguousType("Hello")

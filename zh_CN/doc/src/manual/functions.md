@@ -231,10 +231,7 @@ julia> x.a
 
 ## 多返回值
 
-In Julia, one returns a tuple of values to simulate returning multiple values. However, tuples
-can be created and destructured without needing parentheses, thereby providing an illusion that
-multiple values are being returned, rather than a single tuple value. For example, the following
-function returns a pair of values:
+Julia 中，一个函数可以返回一个元组来实现返回多个值。不过，元组的创建和消除都不一定要用括号，这时候给人的感觉就是返回了多个值而非一个元组。比如下面这个例子，函数返回了两个值：
 
 ```jldoctest foofunc
 julia> function foo(a,b)
@@ -251,8 +248,7 @@ julia> foo(2,3)
 (5, 6)
 ```
 
-A typical usage of such a pair of return values, however, extracts each value into a variable.
-Julia supports simple tuple "destructuring" that facilitates this:
+这种值对的典型用法是把每个值抽取为一个变量。Julia 支持简洁的元组“解构”：
 
 ```jldoctest foofunc
 julia> x, y = foo(2,3)
@@ -275,11 +271,10 @@ end
 
 这与之前的定义的`foo`函数具有完全相同的效果。
 
-## Argument destructuring
+## 参数解构
 
-The destructuring feature can also be used within a function argument.
-If a function argument name is written as a tuple (e.g. `(x, y)`) instead of just
-a symbol, then an assignment `(x, y) = argument` will be inserted for you:
+析构特性也可以被用在函数参数中。
+如果一个函数的参数被写成了元组形式 (如  `(x, y)`) 而不是简单的符号，那么一个赋值运算 `(x, y) = argument` 将会被默认插入：
 
 ```julia
 julia> minmax(x, y) = (y < x) ? (y, x) : (x, y)
@@ -290,24 +285,19 @@ julia> range(minmax(10, 2))
 8
 ```
 
-Notice the extra set of parentheses in the definition of `range`.
-Without those, `range` would be a two-argument function, and this example would
-not work.
+注意 `range` 定义中的额外括号。
+如果没有这些括号，`range`将是一个双参数函数，这个例子就会行不通。
 
-## Varargs Functions
+## 变参函数
 
-It is often convenient to be able to write functions taking an arbitrary number of arguments.
-Such functions are traditionally known as "varargs" functions, which is short for "variable number
-of arguments". You can define a varargs function by following the last argument with an ellipsis:
+定义有任意个参数的函数通常是很方便的。
+这样的函数通常被称为变参函数 （Varargs Functions）， 是“参数数量可变的函数”的简称。
+你可以通过在最后一个参数后面增加一个省略号来定义一个变参函数：
 
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
 bar (generic function with 1 method)
-```
-
-The variables `a` and `b` are bound to the first two argument values as usual, and the variable
-`x` is bound to an iterable collection of the zero or more values passed to `bar` after its first
-two arguments:
+变量 `a` 和 `b` 和以前一样被绑定给前两个参数，后面的参数整个做为迭代集合被绑定到变量 `x` 上 :
 
 ```jldoctest barfunc
 julia> bar(1,2)
@@ -323,14 +313,11 @@ julia> bar(1,2,3,4,5,6)
 (1, 2, (3, 4, 5, 6))
 ```
 
-In all these cases, `x` is bound to a tuple of the trailing values passed to `bar`.
+在所有这些情况下，`x` 被绑定到传递给 `bar` 的尾随值的元组。
 
-It is possible to constrain the number of values passed as a variable argument; this will be discussed
-later in [Parametrically-constrained Varargs methods](@ref).
+也可以限制可以传递给函数的参数的数量，这部分内容稍后在  [Parametrically-constrained Varargs methods](@ref)  中讨论。
 
-On the flip side, it is often handy to "splat" the values contained in an iterable collection
-into a function call as individual arguments. To do this, one also uses `...` but in the function
-call instead:
+另一方面，将可迭代集中包含的值拆解为单独的参数进行函数调用通常很方便。 要实现这一点，需要在函数调用中额外使用 `...` 而不仅仅只是变量：
 
 ```jldoctest barfunc
 julia> x = (3, 4)
@@ -340,8 +327,7 @@ julia> bar(1,2,x...)
 (1, 2, (3, 4))
 ```
 
-In this case a tuple of values is spliced into a varargs call precisely where the variable number
-of arguments go. This need not be the case, however:
+在这个情况下一组值会被精确切片成一个可变参数调用，这里参数的数量是可变的。但是并不需要成为这种情况：
 
 ```jldoctest barfunc
 julia> x = (2, 3, 4)
@@ -357,7 +343,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Furthermore, the iterable object splatted into a function call need not be a tuple:
+进一步，拆解给函数调用中的可迭代对象不需要是个元组：
 
 ```jldoctest barfunc
 julia> x = [3,4]
@@ -377,36 +363,32 @@ julia> x = [1,2,3,4]
 
 julia> bar(x...)
 (1, 2, (3, 4))
-```
-
-Also, the function that arguments are splatted into need not be a varargs function (although it
-often is):
+另外，参数可拆解的函数也不一定就是变参函数 —— 尽管一般都是：
 
 ```jldoctest
 julia> baz(a,b) = a + b;
 
 julia> args = [1,2]
 2-element Array{Int64,1}:
- 1
- 2
+1
+2
 
 julia> baz(args...)
 3
 
 julia> args = [1,2,3]
 3-element Array{Int64,1}:
- 1
- 2
- 3
+1
+2
+3
 
 julia> baz(args...)
 ERROR: MethodError: no method matching baz(::Int64, ::Int64, ::Int64)
 Closest candidates are:
-  baz(::Any, ::Any) at none:1
+baz(::Any, ::Any) at none:1
 ```
 
-As you can see, if the wrong number of elements are in the splatted container, then the function
-call will fail, just as it would if too many arguments were given explicitly.
+正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。
 
 ## Optional Arguments
 

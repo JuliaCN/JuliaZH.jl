@@ -32,17 +32,17 @@
       with spaces (`[x y z]`).
     - 要构造块矩阵（在前两个维度中连接元素），请使用 [`hvcat`](@ref)或组合空格和分号（`[a b; c d]`）。
       or combine spaces and semicolons (`[a b; c d]`).
-  * In Julia, `a:b` and `a:b:c` construct `AbstractRange` objects. To construct a full vector like in MATLAB,
-    use [`collect(a:b)`](@ref). Generally, there is no need to call `collect` though. An `AbstractRange` object will
-    act like a normal array in most cases but is more efficient because it lazily computes its values.
-    This pattern of creating specialized objects instead of full arrays is used frequently, and is
-    also seen in functions such as [`range`](@ref), or with iterators such as `enumerate`, and
-    `zip`. The special objects can mostly be used as if they were normal arrays.
-  * Functions in Julia return values from their last expression or the `return` keyword instead of
-    listing the names of variables to return in the function definition (see [The return Keyword](@ref)
+  * 在 Julia 中，`a:b` 和 `a:b:c` 构造 `AbstractRange` 对象。使用 [`collect(a:b)`](@ref) 构造一个类似 MATLAB 中完整的向量。
+    通常，不需要调用 `collect`。
+    在大多数情况下，`AbstractRange` 对象将像普通数组一样运行，但效率更高，因为它是懒惰求值。
+    这种创建专用对象而不是完整数组的模式经常被使用，并且
+    也可以在诸如 [`range`](@ref) 之类的函数中看到，或者在诸如 `enumerate` 和 `zip` 之类的迭代器中看到。
+    特殊对象大多可以像正常数组一样使用。
+  * Julia 中的函数返回其最后一个表达式或 `return` 关键字的值而无需
+    在函数定义中列出要返回的变量的名称（有关详细信息，请参阅 [The return Keyword](@ref)）。
     for details).
-  * A Julia script may contain any number of functions, and all definitions will be externally visible
-    when the file is loaded. Function definitions can be loaded from files outside the current working
+  * Julia 脚本可以包含任意数量的函数，并且在加载文件时，所有定义都将在外部可见。
+    可以从当前工作目录之外的文件加载函数定义。
     directory.
   * In Julia, reductions such as [`sum`](@ref), [`prod`](@ref), and [`max`](@ref) are performed
     over every element of an array when called with a single argument, as in `sum(A)`, even if `A`

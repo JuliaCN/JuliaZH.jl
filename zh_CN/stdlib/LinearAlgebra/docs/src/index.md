@@ -4,9 +4,8 @@
 DocTestSetup = :(using LinearAlgebra)
 ```
 
-In addition to (and as part of) its support for multi-dimensional arrays, Julia provides native implementations
-of many common and useful linear algebra operations. Basic operations, such as [`tr`](@ref), [`det`](@ref),
-and [`inv`](@ref) are all supported:
+除了（且作为一部分）对多维数组的支持，Julia 还提供了许多常见和实用的线性代数操作的本地实现。基础的操作，比如 [`tr`](@ref)，[`det`](@ref) 和 [`inv`](@ref) 都是支持的：
+
 
 ```jldoctest
 julia> A = [1 2 3; 4 1 6; 7 8 1]
@@ -28,7 +27,7 @@ julia> inv(A)
   0.240385   0.0576923  -0.0673077
 ```
 
-As well as other useful operations, such as finding eigenvalues or eigenvectors:
+还有其它实用的操作，比如寻找特征值或特征向量：
 
 ```jldoctest
 julia> A = [-4. -17.; 2. 2.]
@@ -47,10 +46,7 @@ julia> eigvecs(A)
  -0.166924-0.278207im  -0.166924+0.278207im
 ```
 
-In addition, Julia provides many [factorizations](@ref man-linalg-factorizations) which can be used to
-speed up problems such as linear solve or matrix exponentiation by pre-factorizing a matrix into a form
-more amenable (for performance or memory reasons) to the problem. See the documentation on [`factorize`](@ref)
-for more information. As an example:
+此外，Julia 提供了许多 [factorizations](@ref man-linalg-factorizations)，它们可用于加快问题的求解，比如线性求解或矩阵或矩阵求幂，这通过将矩阵预先分解成更适合问题的形式（出于性能或存储上的原因）。有关的更多信息，请参阅文档 [`factorize`](@ref)。举个例子：
 
 ```jldoctest
 julia> A = [1.5 2 -4; 3 -1 -6; -10 2.3 4]
@@ -73,8 +69,7 @@ U factor:
    0.0  0.0    -5.24947
 ```
 
-Since `A` is not Hermitian, symmetric, triangular, tridiagonal, or bidiagonal, an LU factorization may be the
-best we can do. Compare with:
+因为 `A` 不是埃尔米特、对称、三角、三对角或双对角矩阵，LU 分解也许是我们能做的最好分解。与之相比：
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
@@ -102,10 +97,7 @@ permutation:
  3
 ```
 
-Here, Julia was able to detect that `B` is in fact symmetric, and used a more appropriate factorization.
-Often it's possible to write more efficient code for a matrix that is known to have certain properties e.g.
-it is symmetric, or tridiagonal. Julia provides some special types so that you can "tag" matrices as having
-these properties. For instance:
+在这里，Julia 能够发现 `B` 确实是对称矩阵，并且使用一种更适当的分解。针对一个具有某些属性的矩阵，比如一个对称或三对角矩阵，往往有可能写出更高效的代码。Julia 提供了一些特殊的类型好让你可以根据矩阵所具有的属性「标记」它们。例如：
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]

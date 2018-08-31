@@ -1,6 +1,6 @@
 # 嵌入 Julia
 
-正如我们在 [Calling C and Fortran Code](@ref) 中看到的, Julia 有着简单高效的方法来调用 C 编写的函数。但有时恰恰相反，我们需要在 C 中调用 Julia 的函数。这可以将 Julia 代码集成到一个更大的C/C++项目而无需在 C/C++ 中重写所有内容。Julia 有一个 C API 来实现这一目标。几乎所有编程语言都能以某种方式来调用 C 语言的函数，因此 Julia 的 C API 也就能够进行更多语言的桥接。(例如在 Python 或是 C# 中调用 Julia ).
+正如我们在 [调用 C 和 Fortran 代码](@ref) 中看到的, Julia 有着简单高效的方法来调用 C 编写的函数。但有时恰恰相反，我们需要在 C 中调用 Julia 的函数。这可以将 Julia 代码集成到一个更大的 C/C++ 项目而无需在 C/C++ 中重写所有内容。Julia 有一个 C API 来实现这一目标。几乎所有编程语言都能以某种方式来调用 C 语言的函数，因此 Julia 的 C API 也就能够进行更多语言的桥接。(例如在 Python 或是 C# 中调用 Julia ).
 
 ## 高级别嵌入
 

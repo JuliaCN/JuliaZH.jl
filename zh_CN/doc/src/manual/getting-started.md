@@ -1,7 +1,7 @@
 # [入门](@id man-getting-started)
 
 无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。
-只要按照 [https://julialang.org/downloads/](https://julialang.org/downloads/) 的提示就可以轻松下载并安装 Julia。
+请按照 [https://julialang.org/downloads/](https://julialang.org/downloads/) 的提示来下载和安装 Julia。
 
 启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 `julia` 就可以启动：
 
@@ -13,7 +13,7 @@ import Markdown
 Markdown.parse("```\n\$ julia\n\n$(banner)\njulia> 1 + 2\n3\n\njulia> ans\n3\n```")
 ```
 
-输入 `CTRL-D`（同时按 `Ctrl` 键和 `d` 键）或 `exit()` 便可以退出交互式会话。在交互式模式中，`julia` 会显示一个横幅并提示用户输入。一旦用户输入了一段完整的代码，例如 `1 + 2`，然后敲回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 `ans` 总会存储上一次执行代码的结果，需要注意的是，变量 `ans` 只在交互式会话中才有，不适用于其它方法运行的 Julia。
+输入 `CTRL-D`（同时按 `Ctrl` 键和 `d` 键）或 `exit()` 便可以退出交互式会话。在交互式模式中，`julia` 会显示一条横幅并提示用户输入。一旦用户输入了一段完整的代码（表达式），例如 `1 + 2`，然后按回车，交互式会话就会执行这段代码，并将结果显示出来。如果输入的代码以分号结尾，那么结果将不会显示出来。然而不管结果显示与否，变量 `ans` 总会存储上一次执行代码的结果，需要注意的是，变量 `ans` 只在交互式会话中才有。
 
 在交互式会话中，要运行写在源文件 `file.jl` 中的代码，只需输入 `include("file.jl")`。
 
@@ -23,7 +23,7 @@ Markdown.parse("```\n\$ julia\n\n$(banner)\njulia> 1 + 2\n3\n\njulia> ans\n3\n``
 $ julia script.jl arg1 arg2...
 ```
 
-如这个例子所示，`julia` 后跟着的命令行参数会被作为程序 `script.jl` 的命令行参数。这些参数使用全局常量 `ARGS` 来传递，脚本自身的名字会以全局常量 `PROGRAM_FILE` 传入。注意当脚本以命令行里的 `-e` 选项输入时，`ARGS` 也会被设定（见下面的 `julia` 帮助输出）但是 `PROGRAM_FILE` 会是空的。比如说，如果想把输入给一个脚本的参数给显示出来，你可以这么写：
+如这个例子所示，`julia` 后跟着的命令行参数会被作为程序 `script.jl` 的命令行参数。这些参数使用全局常量 `ARGS` 来传递，脚本自身的名字会以全局变量 `PROGRAM_FILE` 传入。注意当脚本以命令行里的 `-e` 选项输入时，`ARGS` 也会被设定（详见此页末尾列表）但是 `PROGRAM_FILE` 会是空的。例如，要把一个脚本的输入参数显示出来，你可以：
 
 ```
 $ julia -e 'println(PROGRAM_FILE); for x in ARGS; println(x); end' foo bar
@@ -42,7 +42,7 @@ foo
 bar
 ```
 
-可以使用 `--` 分隔符来将传给脚本文件和 Julia 本身的命令行参数区分开：
+可以使用 `--` 分隔符来将传给脚本文件的参数和 Julia 本身的命令行参数区分开：
 
 ```
 $ julia --color=yes -O -- foo.jl arg1 arg2..
@@ -57,7 +57,7 @@ $ julia --color=yes -O -- foo.jl arg1 arg2..
 `count` 是在这个节点上的 worker 的数量，默认是 1；
 可选的 `bind-to bind_addr[:port]` 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。
 
-如果你想让 Julia 每次启动都自动执行一些代码，你可以把它们放在 `~/.julia/config/startup.jl` 中：
+要让 Julia 每次启动都自动执行一些代码，你可以把它们放在 `~/.julia/config/startup.jl` 中：
 
 ```
 $ echo 'println("Greetings! 你好! 안녕하세요?")' > ~/.julia/config/startup.jl
@@ -77,7 +77,7 @@ julia [switches] -- [programfile] [args...]
 |:---                                   |:---|
 |`-v`, `--version`                      |显示版本信息|
 |`-h`, `--help`                         |打印本条帮助信息|
-|`-J`, `--sysimage <file>`              |用指定的镜像文件 (system image file) 启动|
+|`-J`, `--sysimage <file>`              |用指定的镜像文件（system image file）启动|
 |`-H`, `--home <dir>`                   |设置 `julia` 可执行文件的路径|
 |`--startup-file={yes\|no}`             |是否载入 `~/.julia/config/startup.jl`|
 |`--handle-signals={yes\|no}`           |开启或关闭 Julia 默认的 signal handlers|

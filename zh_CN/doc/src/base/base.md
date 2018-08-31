@@ -2,17 +2,17 @@
 
 ## 介绍
 
-Julia Base包含一系列针对科学及数学计算而特殊设计的函数和宏，丰富性同传统的通用编程语言相当。同时，用户可以通过安装包来拓展Julia语言的功能。函数按主题划分如下：
+Julia Base 中包含一系列适用于科学及数值计算的函数和宏，但也可以用于通用编程，其它功能则由 Julia 生态圈中的各种库来提供。函数按主题划分如下：
 
-一些通用注解：
+一些通用的提示：
 
-  * 可以通过`Import Module`导入想要使用的模块，并利用`Module.fn(x)`语句来实现对模块内函数的调用。
-    函数。
-  * 此外，`using Module`语句会将名为`Module`的模块中的所有可调函数引入当前的命名空间。
-  * 按照约定，以感叹号（`!`）结尾的函数名会改变参数的值。
-    一些函数同时拥有改变参数（例如`sort!`）和不改变参数（`sort`）的版本
+  * 可以通过 `Import Module` 导入想要使用的模块，并利用 `Module.fn(x)` 语句来实现对模块内函数的调用。
+     
+  * 此外，`using Module` 语句会将名为 `Module` 的模块中的所有可调函数引入当前的命名空间。
+  * 按照约定，名字以感叹号（`!`）结尾的函数会改变其输入参数的内容。
+    一些函数同时拥有改变参数（例如 `sort!`）和不改变参数（`sort`）的版本
 
-## 粗略浏览
+## 概览
 
 ```@docs
 Base.exit
@@ -66,7 +66,7 @@ primitive type
 ;
 ```
 
-## 基础模块
+## Base 模块
 ```@docs
 Base.Base
 Base.Broadcast
@@ -114,7 +114,7 @@ Base.identity
 
 ## 类型的属性
 
-### 类型联系
+### 类型关系
 
 ```@docs
 Base.supertype
@@ -184,7 +184,7 @@ Base.something
 Base.Enums.@enum
 ```
 
-## 范用函数
+## 范型函数
 
 ```@docs
 Core.Function
@@ -340,7 +340,7 @@ Base.functionloc(::Any, ::Any)
 Base.functionloc(::Method)
 ```
 
-## 内置
+## 内核
 
 ```@docs
 Base.GC.gc

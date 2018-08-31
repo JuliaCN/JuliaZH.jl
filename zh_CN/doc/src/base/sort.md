@@ -1,6 +1,6 @@
 # 排序及相关函数
 
-Julia拥有为数众多的灵活的API，用于对已经排序的值数组进行排序和交互。 默认情况下，Julia选择合理的算法并按标准升序进行排序：
+Julia 拥有为数众多的灵活的 API，用于对已经排序的值数组进行排序和交互。默认情况下，Julia 会选择合理的算法并按标准升序进行排序：
 
 ```jldoctest
 julia> sort([2,3,1])
@@ -20,7 +20,7 @@ julia> sort([2,3,1], rev=true)
  1
 ```
 
-对数组进行in-place排序时，要使用“bang”版的排序函数：
+对数组进行 in-place 排序时，要使用 `!` 版的排序函数：
 
 ```jldoctest
 julia> a = [2,3,1];
@@ -34,7 +34,7 @@ julia> a
  3
 ```
 
-您可以计算数组索引的排列，这些索引将数组按顺序排列，而不是直接对数组进行排序：
+你可以计算用于排列的索引，而不是直接对数组进行排序：
 
 ```julia-repl
 julia> v = randn(5)
@@ -74,7 +74,7 @@ julia> sort(v, by=abs)
  -0.839027
 ```
 
-或者通过转换来进行反序排序
+或者通过转换来进行逆序排序
 
 ```julia-repl
 julia> sort(v, by=abs, rev=true)
@@ -86,7 +86,7 @@ julia> sort(v, by=abs, rev=true)
  -0.0104452
 ```
 
-如果需要，可以选择排序算法：
+如有必要，可以选择排序算法：
 
 ```julia-repl
 julia> sort(v, alg=InsertionSort)
@@ -98,7 +98,7 @@ julia> sort(v, alg=InsertionSort)
   0.382396
 ```
 
-所有与排序和顺序相关的函数依赖于“小于”关系，该关系定义了要操纵的值的总顺序。 默认情况下会调用`isless`函数，但可以通过`lt`关键字指定关系。
+所有与排序和顺序相关的函数依赖于“小于”关系，该关系定义了要操纵的值的总顺序。默认情况下会调用 `isless` 函数，但可以通过 `lt` 关键字指定关系。
 
 ## 排序函数
 
@@ -110,7 +110,7 @@ Base.Sort.sortperm!
 Base.Sort.sortslices
 ```
 
-## 序列相关的函数
+## 排列顺序相关的函数
 
 ```@docs
 Base.issorted
@@ -125,14 +125,14 @@ Base.Sort.partialsortperm!
 
 ## 排序算法
 
-目前在基本的Julia中有四种可用的排序算法
+目前，Julia Base 中有四种可用的排序算法：
 
   * `InsertionSort`
   * `QuickSort`
   * `PartialQuickSort(k)`
   * `MergeSort`
 
-`InsertionSort`是一个在`QuickSort`中使用的时间复杂度为O(n^2)的稳定的排序算法，它通常在`n`比较小的时候才具有较高的效率。
+`InsertionSort` 是一个在 `QuickSort` 中使用的时间复杂度为 O(n^2) 的稳定的排序算法，它通常在 `n` 比较小的时候才具有较高的效率。
 
 `QuickSort`是一个内置并且非常快，但是不稳定的时间复杂度为O(n log n）的排序算法，例如即使数组两个元素相等的，它们排序之后的顺序也可能和在原数组中顺序不一致。`QuickSort`是内置的包括整数和浮点数在内的数字值的默认排序算法。
 

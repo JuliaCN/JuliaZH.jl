@@ -2,7 +2,7 @@
 
 我们回想一下，在[函数](@ref man-functions)中我们知道函数是这么一个对象，它把一组参数映射成一个返回值，或者当没有办法返回恰当的值时扔出一个异常。对于相同概念的函数或者运算对不同的参数类型有十分不一样的实现这件事是普遍存在的：两个整数的加法与两个浮点数的加法是相当不一样的，整数与浮点数之间的加法也不一样。除开他们实现上的不同，这些运算都归在"加法"这么一个通用概念之下。因此在Julia中这些行为都属于一个对象：`+`函数。
 
-为了让对同样的概念使用许多不同的实现这件事更顺畅，函数没有必要马上全部都被定义，反而应该是一块一块地定义，为特定的参数类型和数量的组合提供指定的行为。对于一个函数的一个可能行为的定义叫做*方法*。直到这里，我们只展示了那些只定了一个方法的，对参数的所有类型都适用的函数。但是方法定义的特点是不仅能表明参数的数量，也能表明参数的类型，并且能提供多个方法定义。当一个函数被应用于特殊的一组参数时，能用于这一组参数的最特定的方法会被使用。所以，函数的全体行为是他的不同的方法定义的行为的组合。如果这个组合被设计得好，即使方法们的实现之间会很不一样，函数的外部行为也会显得无缝而自洽。
+为了让对同样的概念使用许多不同的实现这件事更顺畅，函数没有必要马上全部都被定义，反而应该是一块一块地定义，为特定的参数类型和数量的组合提供指定的行为。对于一个函数的一个可能行为的定义叫做*方法*。直到这里，我们只展示了那些只定了一个方法的，对参数的所有类型都适用的函数。但是方法定义的特征是不仅能表明参数的数量，也能表明参数的类型，并且能提供多个方法定义。当一个函数被应用于特殊的一组参数时，能用于这一组参数的最特定的方法会被使用。所以，函数的全体行为是他的不同的方法定义的行为的组合。如果这个组合被设计得好，即使方法们的实现之间会很不一样，函数的外部行为也会显得无缝而自洽。
 
 当一个函数被应用时执行方法的选择被称为*分派*。Julia允许分派过程来基于给的参数的个数和所有的参数的类型来选择调用函数的哪个方法。这与传统的面对对象的语言不一样，面对对象语言的分派只基于第一参数，经常有特殊的参数语法并且有时是暗含而非显式写成一个参数。[^1]使用函数的所有参数，而非只用第一个，来决定调用哪个方法被称为[多重分派](https://en.wikipedia.org/wiki/Multiple_dispatch)。多重分派对于数学代码来说特别有用，人工地将运算视为对于其中一个参数的属于程度比其他所有的参数都强的这个概念对于数学代码是几乎没有意义的：`x + y`中的加法运算对`x`的属于程度比对`y`更强？一个数学运算符的实现普遍基于它所有的参数的类型。即使跳出数学运算，多重分派是对于结构和组织程序来说也是一个强大而方便的范式。
 
@@ -102,7 +102,7 @@ julia> f
 f (generic function with 2 methods)
 ```
 
-这个输出告诉我们`f`是有两个方法的函数对象。为了找出那些方法的signature是什么，使用 [`methods`](@ref)函数：
+这个输出告诉我们`f`是有两个方法的函数对象。为了找出那些方法的特征是什么，使用 [`methods`](@ref)函数：
 
 ```julia-repl
 julia> methods(f)
@@ -125,7 +125,7 @@ Whoa there, Nelly.
 
 这个接受所有的方法比其他的对一堆参数值的其他任意可能的方法定义更不专用。所以他只会被没有其他方法定义应用的一对参数调用。
 
-虽然这像是一个简单的概念，基于值的类型的多重分派可能是Julia语言的一个最强大和中心特征。核心运算符都典型地含有很多方法：
+虽然这像是一个简单的概念，基于值的类型的多重分派可能是Julia语言的一个最强大和中心特性。核心运算符都典型地含有很多方法：
 
 ```julia-repl
 julia> methods(+)
@@ -151,11 +151,11 @@ julia> methods(+)
 [180] +(a, b, c, xs...) in Base at operators.jl:424
 ```
 
-多重分派和灵活的参数化类型系统让Julia有能力抽象地表达高层级算法，而与实现细节解耦，也能生成高效而专用的代码来在运行中处理每个情况。
+多重分派和灵活的参数类型系统让Julia有能力抽象地表达高层级算法，而与实现细节解耦，也能生成高效而专用的代码来在运行中处理每个情况。
 
 ## [方法歧义](@id man-ambiguities)
 
-在一系列的函数方法定义时没有单独的最专用的方法能适用于参数的某些组合是可能的：
+在一系列的函数方法定义时有可能没有单独的最专用的方法能适用于参数的某些组合：
 
 ```jldoctest gofxy
 julia> g(x::Float64, y) = 2x + y
@@ -178,10 +178,7 @@ Possible fix, define
   g(::Float64, ::Float64)
 ```
 
-Here the call `g(2.0, 3.0)` could be handled by either the `g(Float64, Any)` or the `g(Any, Float64)`
-method, and neither is more specific than the other. In such cases, Julia raises a [`MethodError`](@ref)
-rather than arbitrarily picking a method. You can avoid method ambiguities by specifying an appropriate
-method for the intersection case:
+这里`g(2.0,3.0)`的调用使用`g(Float64, Any)`和`g(Any, Float64)`都能处理，并且两个都不更加专用。在这样的情况下，Julia会扔出[`MethodError`](@ref)而非任意选择一个方法。你可以通过对交叉情况指定一个合适的方法来避免方法歧义：
 
 ```jldoctest gofxy
 julia> g(x::Float64, y::Float64) = 2x + 2y
@@ -197,15 +194,13 @@ julia> g(2.0, 3.0)
 10.0
 ```
 
-It is recommended that the disambiguating method be defined first, since otherwise the ambiguity
-exists, if transiently, until the more specific method is defined.
+建议先定义没有歧义的方法，因为不这样的话，歧义就会存在，即使是暂时性的，知道更加专用的方法被定义。
 
-In more complex cases, resolving method ambiguities involves a certain
-element of design; this topic is explored further [below](@ref man-method-design-ambiguities).
+在更加复杂的情况下，解决方法歧义会会涉及到设计的某一个元素；这个主题将会在[下面](@ref man-method-design-ambiguities)进行进一步的探索。
 
-## Parametric Methods
+## 参数方法
 
-Method definitions can optionally have type parameters qualifying the signature:
+方法定义可以视需要存在限定特征的类型参数：
 
 ```jldoctest same_typefunc
 julia> same_type(x::T, y::T) where {T} = true
@@ -215,10 +210,7 @@ julia> same_type(x,y) = false
 same_type (generic function with 2 methods)
 ```
 
-The first method applies whenever both arguments are of the same concrete type, regardless of
-what type that is, while the second method acts as a catch-all, covering all other cases. Thus,
-overall, this defines a boolean function that checks whether its two arguments are of the same
-type:
+第一个方法应用于两个参数都是同一个具体类型时，不管类型是什么，而第二个方法接受一切，涉及其他所有情况。所以，总得来说，这个定义了一个布尔函数来检查两个参数是否是同样的类型：
 
 ```jldoctest same_typefunc
 julia> same_type(1, 2)
@@ -240,14 +232,9 @@ julia> same_type(Int32(1), Int64(2))
 false
 ```
 
-Such definitions correspond to methods whose type signatures are `UnionAll` types
-(see [UnionAll Types](@ref)).
+这样的定义对应着那些类型特征是`UnionAll`类型的方法（参见[UnionAll Types](@ref)）。
 
-This kind of definition of function behavior by dispatch is quite common -- idiomatic, even --
-in Julia. Method type parameters are not restricted to being used as the types of arguments:
-they can be used anywhere a value would be in the signature of the function or body of the function.
-Here's an example where the method type parameter `T` is used as the type parameter to the parametric
-type `Vector{T}` in the method signature:
+在Julia中这种通过分派进行函数行为的定义是十分常见的，甚至是惯用的。方法类型参数并不局限于用作参数的类型：他们可以用在任意地方，只要值会在函数或者函数体的特征中。这里有个例子，例子中方法类型参数`T`用作方法特征中的参数类型`Vector{T}`的类型参数：
 
 ```jldoctest
 julia> myappend(v::Vector{T}, x::T) where {T} = [v..., x]
@@ -278,9 +265,7 @@ Closest candidates are:
   myappend(::Array{T,1}, !Matched::T) where T at none:1
 ```
 
-As you can see, the type of the appended element must match the element type of the vector it
-is appended to, or else a [`MethodError`](@ref) is raised. In the following example, the method type parameter
-`T` is used as the return value:
+如你所看到的，追加的元素的类型必须匹配它追加到的向量的元素类型，否则会引起[`MethodError`](@ref)。在下面的例子中，方法类型参量`T`用作返回值：
 
 ```jldoctest
 julia> mytypeof(x::T) where {T} = T
@@ -293,8 +278,7 @@ julia> mytypeof(1.0)
 Float64
 ```
 
-Just as you can put subtype constraints on type parameters in type declarations (see [Parametric Types](@ref)),
-you can also constrain type parameters of methods:
+就像你能在类型声明时通过类型参数对子类型进行约束一样（参见[Parametric Types](@ref)），你也可以约束方法的类型参数：
 
 ```jldoctest
 julia> same_type_numeric(x::T, y::T) where {T<:Number} = true
@@ -325,26 +309,14 @@ julia> same_type_numeric(Int32(1), Int64(2))
 false
 ```
 
-The `same_type_numeric` function behaves much like the `same_type` function defined above, but
-is only defined for pairs of numbers.
+`same_type_numeric`函数的行为与上面定义的`same_type`函数基本相似，但是它只对一对数定义。
 
-Parametric methods allow the same syntax as `where` expressions used to write types
-(see [UnionAll Types](@ref)).
-If there is only a single parameter, the enclosing curly braces (in `where {T}`) can be omitted,
-but are often preferred for clarity.
-Multiple parameters can be separated with commas, e.g. `where {T, S<:Real}`, or written using
-nested `where`, e.g. `where S<:Real where T`.
+参数方法允许与`where`表达式同样的语法用来写类型（参见[UnionAll Types](@ref)）。如果只有一个参数，封闭的大括号（在`where {T}`中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如`where {T, S <: Real}`，或者使用嵌套的`where`来写，例如`where S<:Real where T`。
 
-Redefining Methods
+重定义方法
 ------------------
 
-When redefining a method or adding new methods,
-it is important to realize that these changes don't take effect immediately.
-This is key to Julia's ability to statically infer and compile code to run fast,
-without the usual JIT tricks and overhead.
-Indeed, any new method definition won't be visible to the current runtime environment,
-including Tasks and Threads (and any previously defined `@generated` functions).
-Let's start with an example to see what this means:
+当重定义一个方法或者增加一个方法时，知道这个变化不会立即生效很重要。这是Julia能够静态推断和编译代码使其运行很快而没有惯常的JIT技巧和额外开销的关键。实际上，任意新的方法定义不会对当前运行环境可见，包括Tasks和线程（和所有的之前定义的`@generated`函数）。让我们通过一个例子说明这意味着什么：
 
 ```julia-repl
 julia> function tryeval()
@@ -365,31 +337,17 @@ julia> newfun()
 1
 ```
 
-In this example, observe that the new definition for `newfun` has been created,
-but can't be immediately called.
-The new global is immediately visible to the `tryeval` function,
-so you could write `return newfun` (without parentheses).
-But neither you, nor any of your callers, nor the functions they call, or etc.
-can call this new method definition!
+在这个例子中看到`newfun`的新定义已经被创建，但是并不能立即调用。新的全局变量立即对`tryeval`函数可见，所以你可以写`return newfun`（没有小括号）。但是你，你的调用器，和他们调用的函数等等都不能调用这个新的方法定义！
 
-But there's an exception: future calls to `newfun` *from the REPL* work as expected,
-being able to both see and call the new definition of `newfun`.
+但是这里有个例外：*来自REPL*的未来的`newfun`的调用会按照预期工作，能够见到并调用`newfun`。
 
-However, future calls to `tryeval` will continue to see the definition of `newfun` as it was
-*at the previous statement at the REPL*, and thus before that call to `tryeval`.
+但是对于`tryeval`的未来的调用会继续能见到`newfun`的定义，就像它在*REPL中的前一个语句中*，在`tryeval`的调用之前一样。
 
-You may want to try this for yourself to see how it works.
+你可以试试这个来让自己了解这是如何工作的。
 
-The implementation of this behavior is a "world age counter".
-This monotonically increasing value tracks each method definition operation.
-This allows describing "the set of method definitions visible to a given runtime environment"
-as a single number, or "world age".
-It also allows comparing the methods available in two worlds just by comparing their ordinal value.
-In the example above, we see that the "current world" (in which the method `newfun` exists),
-is one greater than the task-local "runtime world" that was fixed when the execution of `tryeval` started.
+这个行为的实现方法是一个"世界年龄计数器"。这个单调增加的值追踪每个方法定义运算。这允许把"对于给定的运行环境可见的方法定义集合"描述为一个数，或称为"世界年龄"。这也允许比较在两个世界中的可用的方法，仅仅通过依次比较他们的值。在上面的例子中，我们看到"当前世界"（方法`newfun`存在的世界）比当`tryeval`的执行开始时是固定的对任务是局部的"运行世界"大一。
 
-Sometimes it is necessary to get around this (for example, if you are implementing the above REPL).
-Fortunately, there is an easy solution: call the function using [`Base.invokelatest`](@ref):
+有时规避这个是必要的（例如，如果你在实现上面的REPL）。幸运的是这里有个简单地解决方法：使用[`Base.invokelatest`](@ref)调用函数：
 
 ```jldoctest
 julia> function tryeval2()
@@ -402,15 +360,15 @@ julia> tryeval2()
 2
 ```
 
-Finally, let's take a look at some more complex examples where this rule comes into play.
-Define a function `f(x)`, which initially has one method:
+最后，让我们看一些这个规则生效的更复杂的例子。
+定义一个函数`f(x)`，最开始有一个方法：
 
 ```jldoctest redefinemethod
 julia> f(x) = "original definition"
 f (generic function with 1 method)
 ```
 
-Start some other operations that use `f(x)`:
+开始一些使用`f(x)`的运算：
 
 ```jldoctest redefinemethod
 julia> g(x) = f(x)
@@ -419,7 +377,7 @@ g (generic function with 1 method)
 julia> t = @async f(wait()); yield();
 ```
 
-Now we add some new methods to `f(x)`:
+现在我们给`f(x)`加上一些新的方法：
 
 ```jldoctest redefinemethod
 julia> f(x::Int) = "definition for Int"
@@ -429,7 +387,7 @@ julia> f(x::Type{Int}) = "definition for Type{Int}"
 f (generic function with 3 methods)
 ```
 
-Compare how these results differ:
+比较一下这些结果如何不同：
 
 ```jldoctest redefinemethod
 julia> f(1)
@@ -447,29 +405,24 @@ julia> fetch(schedule(t, 1))
 "definition for Int"
 ```
 
-## Design Patterns with Parametric Methods
+## 使用参数方法设计样式
 
 
-While complex dispatch logic is not required for performance or usability,
-sometimes it can be the best way to express some algorithm.
-Here are a few common design patterns that come up sometimes when using dispatch in this way.
+虽然复杂的分派逻辑对于性能或者可用性并不是必须的，但是有时这是表达某些算法的最好的方法。
+这里有一些常见的设计样式，在以这个方法使用分派时有时会出现。
 
-### Extracting the type parameter from a super-type
+### 从超类型中提取出类型参数
 
 
-Here is the correct code template for returning the element-type `T`
-of any arbitrary subtype of `AbstractArray`:
+这里是一个正确地代码模板，它返回`AbstractArray`的任意子类型的元素类型`T`:
 
 ```julia
 abstract type AbstractArray{T, N} end
 eltype(::Type{<:AbstractArray{T}}) where {T} = T
 ```
-using so-called triangular dispatch.  Note that if `T` is a `UnionAll`
-type, as e.g. `eltype(Array{T} where T <: Integer)`, then `Any` is
-returned (as does the the version of `eltype` in `Base`).
+使用了所谓的三角分派。注意如果`T`是一个`UnionAll`类型，比如`eltype(Array{T} where T <: Integer)`，会返回`Any`（如同`Base`中的`eltype`一样）。
 
-Another way, which used to be the only correct way before the advent of
-triangular dispatch in Julia v0.6, is:
+另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：
 
 ```julia
 abstract type AbstractArray{T, N} end
@@ -479,9 +432,7 @@ eltype(::Type{AbstractArray{T, N}}) where {T, N} = T
 eltype(::Type{A}) where {A<:AbstractArray} = eltype(supertype(A))
 ```
 
-Another possibility is the following, which could useful to adapt
-to cases where the parameter `T` would need to be matched more
-narrowly:
+另外一个可能性如下例，这可以对适配那些参数`T`需要更严格匹配的情况有用：
 ```julia
 eltype(::Type{AbstractArray{T, N} where {T<:S, N<:M}}) where {M, S} = Any
 eltype(::Type{AbstractArray{T, N} where {T<:S}}) where {N, S} = Any
@@ -491,107 +442,64 @@ eltype(::Type{A}) where {A <: AbstractArray} = eltype(supertype(A))
 ```
 
 
-One common mistake is to try and get the element-type by using introspection:
+一个常见的错误是试着使用内省来得到元素类型：
 
 ```julia
 eltype_wrong(::Type{A}) where {A<:AbstractArray} = A.parameters[1]
 ```
 
-However, it is not hard to construct cases where this will fail:
+但是创建一个这个方法会失败的情况不难：
 
 ```julia
 struct BitVector <: AbstractArray{Bool, 1}; end
 ```
 
-Here we have created a type `BitVector` which has no parameters,
-but where the element-type is still fully specified, with `T` equal to `Bool`!
+这里我们已经创建了一个没有参数的类型`BitVector`，但是元素类型已经完全指定了，`T`等于`Bool`！
 
 
-### Building a similar type with a different type parameter
+### 用不同的类型参数构建相似的类型
 
-When building generic code, there is often a need for constructing a similar
-object with some change made to the layout of the type, also
-necessitating a change of the type parameters.
-For instance, you might have some sort of abstract array with an arbitrary element type
-and want to write your computation on it with a specific element type.
-We must implement a method for each `AbstractArray{T}` subtype that describes how to compute this type transform.
-There is no general transform of one subtype into another subtype with a different parameter.
-(Quick review: do you see why this is?)
+当构建通用代码时，通常需要创建一些类似对象，在类型的布局上有一些变化，这就也让类型参数的变化变得必要。
+例如，你会有一些任意元素类型的抽象数组，想使用特定的元素类型来编写你基于它的计算。你必须实现为每个`AbstractArray{T}`的子类型实现方法，这些方法描述了如何计算类型转换。从一个子类型转化成拥有一个不同参数的另一个子类型的通用方法在这里不存在。（快速复习：你明白为什么吗？）
 
-The subtypes of `AbstractArray` typically implement two methods to
-achieve this:
-A method to convert the input array to a subtype of a specific `AbstractArray{T, N}` abstract type;
-and a method to make a new uninitialized array with a specific element type.
-Sample implementations of these can be found in Julia Base.
-Here is a basic example usage of them, guaranteeing that `input` and
-`output` are of the same type:
+`AbstractArray`的子类型典型情况下会实现两个方法来完成这个：
+一个方法把输入输入转换成特定的`AbstractArray{T,N}`抽象类型的子类型；一个方法用特定的元素类型构建一个新的未初始化的数组。这些的样例实现可以在Julia Base里面找到。这里是一个基础的样例使用，保证`输入`与`输出`是同一种类型：
 
 ```julia
 input = convert(AbstractArray{Eltype}, input)
 output = similar(input, Eltype)
 ```
 
-As an extension of this, in cases where the algorithm needs a copy of
-the input array,
-[`convert`](@ref) is insufficient as the return value may alias the original input.
-Combining [`similar`](@ref) (to make the output array) and [`copyto!`](@ref) (to fill it with the input data)
-is a generic way to express the requirement for a mutable copy of the input argument:
+作为这个的扩展，在算法需要输入数组的拷贝的情况下，[`convert`](@ref)使无法胜任的，因为返回值可能只是原始输入的别名。把[`similar`](@ref)（构建输出数组）和[`copyto!`](@ref)（用输入数据填满）结合起来是需要给出输入参数的可变拷贝的一个范用方法：
 
 ```julia
 copy_with_eltype(input, Eltype) = copyto!(similar(input, Eltype), input)
 ```
 
-### Iterated dispatch
+### 迭代分派
 
-In order to dispatch a multi-level parametric argument list,
-often it is best to separate each level of dispatch into distinct functions.
-This may sound similar in approach to single-dispatch, but as we shall see below, it is still more flexible.
+为了分派一个多层的参数参量列表，将每一层分派分开到不同的函数中常常是最好的。这可能听起来跟单分派的方法相似，但是你会在下面见到，这个更加灵活。
 
-For example, trying to dispatch on the element-type of an array will often run into ambiguous situations.
-Instead, commonly code will dispatch first on the container type,
-then recurse down to a more specific method based on eltype.
-In most cases, the algorithms lend themselves conveniently to this hierarchical approach,
-while in other cases, this rigor must be resolved manually.
-This dispatching branching can be observed, for example, in the logic to sum two matrices:
+例如，尝试按照数组的元素类型进行分派常常会引起歧义。相反地，常见的代码会首先按照容易类型分派，然后基于eltype递归到更加更加专用的方法。在大部分情况下，算法会很方便地就屈从与这个分层方法，在其他情况下，这种严苛的工作必须手动解决。这个分派分支能被观察到，例如在两个矩阵的加法的逻辑中：
 
 ```julia
-# First dispatch selects the map algorithm for element-wise summation.
+# 首先分派选择了逐元素相加的map算法。
 +(a::Matrix, b::Matrix) = map(+, a, b)
-# Then dispatch handles each element and selects the appropriate
-# common element type for the computation.
+# 然后分派处理了每个元素然后选择了计算的
+# 恰当的常见元素类型。
 +(a, b) = +(promote(a, b)...)
-# Once the elements have the same type, they can be added.
-# For example, via primitive operations exposed by the processor.
+# 一旦元素有了相同类型，它们就可以相加。
+# 例如，通过处理器暴露出的原始运算。
 +(a::Float64, b::Float64) = Core.add(a, b)
 ```
 
-### Trait-based dispatch
+### 基于 Trait 的分派
 
-A natural extension to the iterated dispatch above is to add a layer to
-method selection that allows to dispatch on sets of types which are
-independent from the sets defined by the type hierarchy.
-We could construct such a set by writing out a `Union` of the types in question,
-but then this set would not be extensible as `Union`-types cannot be
-altered after creation.
-However, such an extensible set can be programmed with a design pattern
-often referred to as a
-["Holy-trait"](https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633).
+对于上面的可迭代分派的一个自然扩展是给方法选择加一个内涵层，这个层允许按照那些与类型层级定义的集合相独立的类型的集合来分派。我们可以通过写出问题中的类型的一个`Union`来创建这个一个集合，但是这不能够扩展，因为`Union`类型在创建之后无法改变。但是这么一个可扩展的集合可以通过一个叫做["Holy-trait"](https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633)的一个设计样式来实现。
 
-This pattern is implemented by defining a generic function which
-computes a different singleton value (or type) for each trait-set to which the
-function arguments may belong to.  If this function is pure there is
-no impact on performance compared to normal dispatch.
+这个样式是通过定义一个范用函数来实现，这个函数为函数参数可能属于的每个trait集合都计算出不同的单例值（或者类型）。如果这个函数是单纯的，这与通常的分派对于性能没有任何影响。
 
-The example in the previous section glossed over the implementation details of
-[`map`](@ref) and [`promote`](@ref), which both operate in terms of these traits.
-When iterating over a matrix, such as in the implementation of `map`,
-one important question is what order to use to traverse the data.
-When `AbstractArray` subtypes implement the [`Base.IndexStyle`](@ref) trait,
-other functions such as `map` can dispatch on this information to pick
-the best algorithm (see [Abstract Array Interface](@ref man-interface-array)).
-This means that each subtype does not need to implement a custom version of `map`,
-since the generic definitions + trait classes will enable the system to select the fastest version.
-Here a toy implementation of `map` illustrating the trait-based dispatch:
+上一节的例子掩盖了[`map`](@ref)和[`promote`](@ref)的实现细节，这两个都是依据trait来进行运算的。当对一个矩阵进行迭代，比如`map`的实现中，一个重要的问题是按照什么顺序去遍历数据。当`AbstractArray`的子类型实现了[`Base.IndexStyle`](@ref)trait，其他函数，比如`map`就可以根据这个信息进行分派，以选择最好的算法（参见[抽象数组接口](@ref man-interface-array)）。这意味着每个子类型就没有必要去实现对应的`map`版本，因为通用的定义加trait类就能让系统选择最快的版本。这里一个玩具似的`map`实现说明了基于trait的分派：
 
 ```julia
 map(f, a::AbstractArray, b::AbstractArray) = map(Base.IndexStyle(a, b), f, a, b)
@@ -601,34 +509,24 @@ map(::Base.IndexCartesian, f, a::AbstractArray, b::AbstractArray) = ...
 map(::Base.IndexLinear, f, a::AbstractArray, b::AbstractArray) = ...
 ```
 
-This trait-based approach is also present in the [`promote`](@ref)
-mechanism employed by the scalar `+`.
-It uses [`promote_type`](@ref), which returns the optimal common type to
-compute the operation given the two types of the operands.
-This makes it possible to reduce the problem of implementing every function for every pair of possible type arguments,
-to the much smaller problem of implementing a conversion operation from each type to a common type,
-plus a table of preferred pair-wise promotion rules.
+这个基于trait的方法也出现在[`promote`](@ref)机制中，被标量`+`使用。
+它使用了[`promote_type`](@ref)，这在知道两个计算对象的类型的情况下返回计算这个运算的最佳的常用类型。这就使得我们不用为每一对可能的类型参数实现每一个函数，而把问题简化为对于每个类型实现一个类型转换运算这样一个小很多的问题，还有一个优选的逐对的类型提升规则的表格。
 
 
-### Output-type computation
+### 输出类型计算
 
-The discussion of trait-based promotion provides a transition into our next design pattern:
-computing the output element type for a matrix operation.
+基于trait的类型提升的讨论可以过渡到我们的下一个设计样式：为矩阵运算计算输出元素类型。
 
-For implementing primitive operations, such as addition,
-we use the [`promote_type`](@ref) function to compute the desired output type.
-(As before, we saw this at work in the `promote` call in the call to `+`).
+为了实现像加法这样的原始运算，我们使用[`promote_type`](@ref)函数来计算想要的输出类型。（像之前一样，我们在`+`调用中的`promote`调用中见到了这个工作）。
 
-For more complex functions on matrices, it may be necessary to compute the expected return
-type for a more complex sequence of operations.
-This is often performed by the following steps:
+对于矩阵的更加复杂的函数，对于更加复杂的运算符序列来计算预期的返回类型是必要的。这经常按下列步骤进行：
 
-1. Write a small function `op` that expresses the set of operations performed by the kernel of the algorithm.
-2. Compute the element type `R` of the result matrix as `promote_op(op, argument_types...)`,
-   where `argument_types` is computed from `eltype` applied to each input array.
-3. Build the output matrix as `similar(R, dims)`, where `dims` are the desired dimensions of the output array.
+1. 编写一个小函数`op`来表示算法核心中使用的运算的集合。
+2. 使用`promote_op(op, argument_types...)`计算结果矩阵的元素类型`R`，
+   这里`argument_types`是通过应用到每个输入数组的`eltype`计算的。
+3. 创建类似于`similar(R, dims)`的输出矩阵，这里`dims`是输出矩阵的预期维度数。
 
-For a more specific example, a generic square-matrix multiply pseudo-code might look like:
+作为一个更加具体的例子，一个范用的方阵乘法的伪代码是：
 
 ```julia
 function matmul(a::AbstractMatrix, b::AbstractMatrix)
@@ -673,15 +571,11 @@ function matmul(a::AbstractMatrix, b::AbstractMatrix)
 end
 ```
 
-### Separate convert and kernel logic
+### 分离转换和内核逻辑
 
-One way to significantly cut down on compile-times and testing complexity is to isolate
-the logic for converting to the desired type and the computation.
-This lets the compiler specialize and inline the conversion logic independent
-from the rest of the body of the larger kernel.
+能有效减少编译时间和测试复杂度的一个方法是将预期的类型和计算转换的逻辑隔离。这会让编译器将与大型内核的其他部分相独立的类型转换逻辑特别化并内联。
 
-This is a common pattern seen when converting from a larger class of types
-to the one specific argument type that is actually supported by the algorithm:
+将更大的类型类转换成被算法实际支持的特定参数类是一个常见的设计样式：
 
 ```julia
 complexfunction(arg::Int) = ...
@@ -691,11 +585,9 @@ matmul(a::T, b::T) = ...
 matmul(a, b) = matmul(promote(a, b)...)
 ```
 
-## Parametrically-constrained Varargs methods
+## 参数化约束的可变参数方法
 
-Function parameters can also be used to constrain the number of arguments that may be supplied
-to a "varargs" function ([Varargs Functions](@ref)).  The notation `Vararg{T,N}` is used to indicate
-such a constraint.  For example:
+函数参数也可以用于约束应用于"可变参数"函数([Varargs Functions](@ref))的参数的数量。`Vararg{T,N}`可用于表明这么一个约束。举个例子：
 
 ```jldoctest
 julia> bar(a,b,x::Vararg{Any,2}) = (a,b,x)
@@ -715,27 +607,25 @@ Closest candidates are:
   bar(::Any, ::Any, ::Any, ::Any) at none:1
 ```
 
-More usefully, it is possible to constrain varargs methods by a parameter. For example:
+更加有用的是，用一个参数就约束可变参数的方法是可能的。例如：
 
 ```julia
 function getindex(A::AbstractArray{T,N}, indices::Vararg{Number,N}) where {T,N}
 ```
 
-would be called only when the number of `indices` matches the dimensionality of the array.
+只会在`indices`的个数与数组的维数相同时才会调用。
 
-When only the type of supplied arguments needs to be constrained `Vararg{T}` can be equivalently
-written as `T...`. For instance `f(x::Int...) = x` is a shorthand for `f(x::Vararg{Int}) = x`.
+当只有提供的参数的类型需要被约束时，`Vararg{T}`可以写成`T...`。例如`f(x::Int...) = x`是`f(x::Vararg{Int}) = x`的简便写法。
 
-## Note on Optional and keyword Arguments
+## 可选参数和关键字的参数的注意事项
 
-As mentioned briefly in [Functions](@ref man-functions), optional arguments are implemented as syntax for multiple
-method definitions. For example, this definition:
+与在[函数](@ref man-functions)中简要提到的一样，可选参数是使用多方法定义语法来实现的。例如，这个定义：
 
 ```julia
 f(a=1,b=2) = a+2b
 ```
 
-translates to the following three methods:
+翻译成下列三个方法：
 
 ```julia
 f(a,b) = a+2b
@@ -743,30 +633,21 @@ f(a) = f(a,2)
 f() = f(1,2)
 ```
 
-This means that calling `f()` is equivalent to calling `f(1,2)`. In this case the result is `5`,
-because `f(1,2)` invokes the first method of `f` above. However, this need not always be the case.
-If you define a fourth method that is more specialized for integers:
+这就意味着调用`f()`等于调用`f(1,2)`。在这个情况下结果是`5`，因为`f(1,2)`使用的是上面`f`的第一个方法。但是，不总是需要是这种情况。如果你定义了第四个对于整数更加专用的方法：
 
 ```julia
 f(a::Int,b::Int) = a-2b
 ```
 
-then the result of both `f()` and `f(1,2)` is `-3`. In other words, optional arguments are tied
-to a function, not to any specific method of that function. It depends on the types of the optional
-arguments which method is invoked. When optional arguments are defined in terms of a global variable,
-the type of the optional argument may even change at run-time.
+此时`f()`和`f(1,2)`的结果都是`-3`。换句话说，可选参数只与函数捆绑，而不是函数的任意一个特定的方法。这个决定于使用的方法的可选参数的类型。当可选参数是用全局变量的形式定义时，可选参数的类型甚至会在运行时改变。
 
-Keyword arguments behave quite differently from ordinary positional arguments. In particular,
-they do not participate in method dispatch. Methods are dispatched based only on positional arguments,
-with keyword arguments processed after the matching method is identified.
+关键字参数与普通的位置参数的行为很不一样。特别地，他们不参与到方法分派中。方法只基于位置参数分派，在匹配得方法确定之后关键字参数才会被处理。
 
-## Function-like objects
+## 类函数对象
 
-Methods are associated with types, so it is possible to make any arbitrary Julia object "callable"
-by adding methods to its type. (Such "callable" objects are sometimes called "functors.")
+方法与类型相关，所以可以通过给类型加方法使得任意一个Julia类型变得"可被调用"。（这个"可调用"的对象有时称为"函子"。）
 
-For example, you can define a type that stores the coefficients of a polynomial, but behaves like
-a function evaluating the polynomial:
+例如，你可以定义一个类型，存储着多项式的系数，但是行为像是一个函数，可以为多项式求值：
 
 ```jldoctest polynomial
 julia> struct Polynomial{R}
@@ -784,9 +665,7 @@ julia> function (p::Polynomial)(x)
 julia> (p::Polynomial)() = p(5)
 ```
 
-Notice that the function is specified by type instead of by name. As with normal functions
-there is a terse syntax form. In the function body, `p` will refer to the object that was
-called. A `Polynomial` can be used as follows:
+注意函数是通过类型而非名字来指定的。如同普通函数一样这里有一个简洁的语法形式。在函数体内，`p`会指向被调用的对象。`Polynomial`会按如下方式使用：
 
 ```jldoctest polynomial
 julia> p = Polynomial([1,10,100])
@@ -799,81 +678,63 @@ julia> p()
 2551
 ```
 
-This mechanism is also the key to how type constructors and closures (inner functions that refer
-to their surrounding environment) work in Julia.
+这个机制也是Julia中类型构造函数和闭包（指向其环境的内部函数）的工作原理。
 
-## Empty generic functions
+## 空范用函数
 
-Occasionally it is useful to introduce a generic function without yet adding methods. This can
-be used to separate interface definitions from implementations. It might also be done for the
-purpose of documentation or code readability. The syntax for this is an empty `function` block
-without a tuple of arguments:
+有时引入一个没有添加方法的范用函数是有用的。这会用于分离实现与接口定义。这也可为了文档或者代码可读性。为了这个的语法是没有参数组的一个空`函数`块：
 
 ```julia
 function emptyfunc
 end
 ```
 
-## [Method design and the avoidance of ambiguities](@id man-method-design-ambiguities)
+## [方法设计与避免歧义](@id man-method-design-ambiguities)
 
-Julia's method polymorphism is one of its most powerful features, yet
-exploiting this power can pose design challenges.  In particular, in
-more complex method hierarchies it is not uncommon for
-[ambiguities](@ref man-ambiguities) to arise.
+Julia的方法多态性是其最有力的特性之一，利用这个功能会带来设计上的挑战。特别地，在更加复杂的方法层级中出现[歧义](@ref man-ambiguities)不能说不常见。
 
-Above, it was pointed out that one can resolve ambiguities like
+在上面我们曾经指出我们可以像这样解决歧义
 
 ```julia
 f(x, y::Int) = 1
 f(x::Int, y) = 2
 ```
 
-by defining a method
+靠定义一个方法
 
 ```julia
 f(x::Int, y::Int) = 3
 ```
 
-This is often the right strategy; however, there are circumstances
-where following this advice blindly can be counterproductive. In
-particular, the more methods a generic function has, the more
-possibilities there are for ambiguities. When your method hierarchies
-get more complicated than this simple example, it can be worth your
-while to think carefully about alternative strategies.
+这是经常使用的对的方案；但是有些环境下盲目地遵从这个建议会适得其反。特别地，范用函数有的方法越多，出现歧义的可能性越高。当你的方法层级比这下简单的例子更加复杂时，就值得你花时间去仔细想想其他的方案。
 
-Below we discuss particular challenges and some alternative ways to resolve such issues.
+下面我们会讨论特别的一些挑战和解决这些挑战的一些可选方法。
 
-### Tuple and NTuple arguments
+### 元组和N元组参数
 
-`Tuple` (and `NTuple`) arguments present special challenges. For example,
+`元组`（和`N元组`）参数会带来特别的挑战。例如，
 
 ```julia
 f(x::NTuple{N,Int}) where {N} = 1
 f(x::NTuple{N,Float64}) where {N} = 2
 ```
 
-are ambiguous because of the possibility that `N == 0`: there are no
-elements to determine whether the `Int` or `Float64` variant should be
-called. To resolve the ambiguity, one approach is define a method for
-the empty tuple:
+是有歧义的，因为存在`N == 0`的可能性：没有元素去确定`Int`还是`Float64`变体应该被调用。为了解决歧义，一个方法是为空元组定义方法：
 
 ```julia
 f(x::Tuple{}) = 3
 ```
 
-Alternatively, for all methods but one you can insist that there is at
-least one element in the tuple:
+作为一种选择，对于其中一个方法之外的所有的方法可以坚持元组中至少有一个元素：
 
 ```julia
 f(x::NTuple{N,Int}) where {N} = 1           # this is the fallback
 f(x::Tuple{Float64, Vararg{Float64}}) = 2   # this requires at least one Float64
 ```
 
-### [Orthogonalize your design](@id man-methods-orthogonalize)
+### [正交化你的设计](@id man-methods-orthogonalize)
 
-When you might be tempted to dispatch on two or more arguments,
-consider whether a "wrapper" function might make for a simpler
-design. For example, instead of writing multiple variants:
+当你禁不住要根据两个或更多的参数进行分派时，考虑一下是否一个"包裹"函数会让设计简单一些。举个例子，与其编写多变量：
 
 ```julia
 f(x::A, y::A) = ...
@@ -882,102 +743,68 @@ f(x::B, y::A) = ...
 f(x::B, y::B) = ...
 ```
 
-you might consider defining
+不如考虑定义
 
 ```julia
 f(x::A, y::A) = ...
 f(x, y) = f(g(x), g(y))
 ```
 
-where `g` converts the argument to type `A`. This is a very specific
-example of the more general principle of
-[orthogonal design](https://en.wikipedia.org/wiki/Orthogonality_(programming)),
-in which separate concepts are assigned to separate methods. Here, `g`
-will most likely need a fallback definition
+这里`g`把参数转变为类型`A`。这是更加普遍的[正交设计](https://en.wikipedia.org/wiki/Orthogonality_(programming))原理的一个特别特殊的例子，在正交设计中不同的概念被分配到不同的方法中去。这里`g`最可能需要一个fallback定义
 
 ```julia
 g(x::A) = x
 ```
 
-A related strategy exploits `promote` to bring `x` and `y` to a common
-type:
+一个相关的方案使用`promote`来把`x`和`y`变成常见的类型：
 
 ```julia
 f(x::T, y::T) where {T} = ...
 f(x, y) = f(promote(x, y)...)
 ```
 
-One risk with this design is the possibility that if there is no
-suitable promotion method converting `x` and `y` to the same type, the
-second method will recurse on itself infinitely and trigger a stack
-overflow. The non-exported function `Base.promote_noncircular` can be
-used as an alternative; when promotion fails it will still throw an
-error, but one that fails faster with a more specific error message.
+这个设计的一个隐患是如果没有合适的把`x`和`y`转换到同样类型的类型提升方法，第二个方法就可能无限自递归然后引发堆溢出。非输出函数`Base.promote_noncircular`可以用作一个替代方案；当类型提升失败它依旧会扔出一个错误，但是有更加特定的错误信息时会失败更快。
 
-### Dispatch on one argument at a time
+### 一次只根据一个参数分派
 
-If you need to dispatch on multiple arguments, and there are many
-fallbacks with too many combinations to make it practical to define
-all possible variants, then consider introducing a "name cascade"
-where (for example) you dispatch on the first argument and then call
-an internal method:
+如果你你需要根据多个参数进行分派，并且有太多的为了能定义所有可能的变量而存在的组合，而存在很多回退函数，你可以考虑引入"名字级联"，这里（例如）你根据第一个参数分配然后调用一个内部的方法：
 
 ```julia
 f(x::A, y) = _fA(x, y)
 f(x::B, y) = _fB(x, y)
 ```
 
-Then the internal methods `_fA` and `_fB` can dispatch on `y` without
-concern about ambiguities with each other with respect to `x`.
+接着内部方法`_fA`和`_fB`可以根据`y`进行分派，而不考虑有关`x`的歧义存在。
 
-Be aware that this strategy has at least one major disadvantage: in
-many cases, it is not possible for users to further customize the
-behavior of `f` by defining further specializations of your exported
-function `f`. Instead, they have to define specializations for your
-internal methods `_fA` and `_fB`, and this blurs the lines between
-exported and internal methods.
+需要意识到这个方案至少有一个主要的缺点：在很多情况下，用户没有办法通过进一步定义你的输出函数`f`的具体行为来进一步定制`f`的行为。相反，他们需要去定义你的内部方法`_fA`和`_fB`的具体行为，这会模糊输出方法和内部方法之间的界线。
 
-### Abstract containers and element types
+### 抽象容器与元素类型
 
-Where possible, try to avoid defining methods that dispatch on
-specific element types of abstract containers. For example,
+在可能的情况下要试图避免定义根据抽象容器的具体元素类型来分派的方法。举个例子，
 
 ```julia
 -(A::AbstractArray{T}, b::Date) where {T<:Date}
 ```
 
-generates ambiguities for anyone who defines a method
+会引起歧义，当定义了这个方法：
 
 ```julia
 -(A::MyArrayType{T}, b::T) where {T}
 ```
 
-The best approach is to avoid defining *either* of these methods:
-instead, rely on a generic method `-(A::AbstractArray, b)` and make
-sure this method is implemented with generic calls (like `similar` and
-`-`) that do the right thing for each container type and element type
-*separately*. This is just a more complex variant of the advice to
-[orthogonalize](@ref man-methods-orthogonalize) your methods.
+最好的方法是不要定义这些方法中的*任何一个*。相反，使用范用方法`-(A::AbstractArray, b)`并确认这个方法是使用*分别*对于每个容器类型和元素类型都是适用的通用调用(像`similar`和`-`)实现的。这只是建议[正交化](@ref man-methods-orthogonalize)你的方法的一个更加复杂的变种而已。
 
-When this approach is not possible, it may be worth starting a
-discussion with other developers about resolving the ambiguity; just
-because one method was defined first does not necessarily mean that it
-can't be modified or eliminated.  As a last resort, one developer can
-define the "band-aid" method
+当这个方法不可行时，这就值得与其他开发者开始讨论如果解决歧义；只是因为一个函数先定义并不总是意味着他不能改变或者被移除。作为最后一个手段，开发者可以定义"创可贴"方法
 
 ```julia
 -(A::MyArrayType{T}, b::Date) where {T<:Date} = ...
 ```
 
-that resolves the ambiguity by brute force.
+可以暴力解决歧义。
 
-### Complex method "cascades" with default arguments
+### 与默认参数的复杂方法"级联"
 
-If you are defining a method "cascade" that supplies defaults, be
-careful about dropping any arguments that correspond to potential
-defaults. For example, suppose you're writing a digital filtering
-algorithm and you have a method that handles the edges of the signal
-by applying padding:
+如果你定义了提供默认的方法"级联"，要小心去掉对应着潜在默认的任何参数。例如，假设你在写一个数字过滤算法，你有一个通过应用padding来出来信号的边的方法：
 
 ```julia
 function myfilter(A, kernel, ::Replicate)
@@ -986,37 +813,33 @@ function myfilter(A, kernel, ::Replicate)
 end
 ```
 
-This will run afoul of a method that supplies default padding:
+这会与提供默认padding的方法产生冲突：
 
 ```julia
 myfilter(A, kernel) = myfilter(A, kernel, Replicate()) # replicate the edge by default
 ```
 
-Together, these two methods generate an infinite recursion with `A` constantly growing bigger.
+这两个方法一起会生成无限的递归，`A`会不断变大。
 
-The better design would be to define your call hierarchy like this:
+更好的设计是像这样定义你的调用层级：
 
 ```julia
-struct NoPad end  # indicate that no padding is desired, or that it's already applied
+struct NoPad end # indicate that no padding is desired, or that it's already applied
 
-myfilter(A, kernel) = myfilter(A, kernel, Replicate())  # default boundary conditions
+myfilter(A, kernel) = myfilter(A, kernel, Replicate()) # default boundary conditions
 
 function myfilter(A, kernel, ::Replicate)
-    Apadded = replicate_edges(A, size(kernel))
-    myfilter(Apadded, kernel, NoPad())  # indicate the new boundary conditions
+ Apadded = replicate_edges(A, size(kernel))
+ myfilter(Apadded, kernel, NoPad()) # indicate the new boundary conditions
 end
 
 # other padding methods go here
 
 function myfilter(A, kernel, ::NoPad)
-    # Here's the "real" implementation of the core computation
+ # Here's the "real" implementation of the core computation
 end
 ```
 
-`NoPad` is supplied in the same argument position as any other kind of
-padding, so it keeps the dispatch hierarchy well organized and with
-reduced likelihood of ambiguities. Moreover, it extends the "public"
-`myfilter` interface: a user who wants to control the padding
-explicitly can call the `NoPad` variant directly.
+`NoPad`会被用到其他padding类型的同样的参数位置上，所以这保持了分派层级是有很好组织的，却降低了歧义的可能性。而且，它扩展了"公开"的`myfilter`接口：想要显式空值padding的用户可以直接调用`NoPad`变量。
 
 [^Clarke61]: Arthur C. Clarke, *Profiles of the Future* (1961): Clarke's Third Law.
