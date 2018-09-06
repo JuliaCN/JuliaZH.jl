@@ -39,7 +39,7 @@ end
 
 一旦一个变量通过 `using` 或 `import` 引入，当前模块就不能创建同名的变量了。而且导入的变量是只读的，给全局变量赋值只能影响当前模块的变量，否则会报错。
 
-## Summary of module usage
+## 模块用法摘要
 
 要导入一个模块，可以用 `using` 或 `import` 关键字。为了更好地理解它们的区别，看看下面的例子：
 
@@ -67,7 +67,7 @@ end
 
 ### 模块和文件
 
-文件和文件名与模块无关；模块只与模块表达式有关。一个模块可以有多个文件，一个文件也可以有多个模块。
+模块与文件和文件名无关；模块只与模块表达式有关。一个模块可以有多个文件，一个文件也可以有多个模块。
 
 ```julia
 module Foo
@@ -122,14 +122,9 @@ end
 
 ### 模块的绝对路径和相对路径
 
-Given the statement `using Foo`, the system consults an internal table of top-level modules
-to look for one named `Foo`. If the module does not exist, the system attempts to `require(:Foo)`,
-which typically results in loading code from an installed package.
+给定语句 `using Foo`，系统在顶层模块的内部表中查找名为 `Foo` 的包。 如果模块不存在，系统会尝试 `require(:Foo)`，这通常会从已安装的包中加载代码。
 
-However, some modules contain submodules, which means you sometimes need to access a non-top-level
-module. There are two ways to do this. The first is to use an absolute path, for example
-`using Base.Sort`. The second is to use a relative path, which makes it easier to import submodules
-of the current module or any of its enclosing modules:
+但是，某些模块包含子模块，这意味着您有时需要访问非顶层模块。 有两种方法可以做到这一点。 第一种是使用绝对路径，例如 `using Base.Sort`。 第二种是使用相对路径，这样可以更容易地导入当前模块或其任何封闭模块的子模块：
 
 ```
 module Parent
@@ -144,49 +139,33 @@ using .Utils
 end
 ```
 
-Here module `Parent` contains a submodule `Utils`, and code in `Parent` wants the contents of
-`Utils` to be visible. This is done by starting the `using` path with a period. Adding more leading
-periods moves up additional levels in the module hierarchy. For example `using ..Utils` would
-look for `Utils` in `Parent`'s enclosing module rather than in `Parent` itself.
+这里的模块 `Parent` 包含一个子模块 `Utils`，而` Parent` 中的代码希望 `Utils` 的内容可见。 这是通过使用句号启动 `using` 路径来完成的。 添加更多前导句号会移动到模块层次结构中的更上级别。 例如 `using ..Utils` 会在 `Parent` 的封闭模块中查找 `Utils` 而不是 `Parent` 本身。
 
-Note that relative-import qualifiers are only valid in `using` and `import` statements.
+请注意，相对导入修饰符仅在 `using` 和 `import` 语句中有效。
 
-### Module file paths
+### 模块文件路径
 
-The global variable [`LOAD_PATH`](@ref) contains the directories Julia searches for modules when calling
-`require`. It can be extended using [`push!`](@ref):
+全局变量 [`LOAD_PATH`](@ref) 包含 Julia 在调用 `require` 时搜索模块的目录。 可以使用[`push!`](@ref) 对它进行扩展：
 
 ```julia
 push!(LOAD_PATH, "/Path/To/My/Module/")
 ```
 
-Putting this statement in the file `~/.julia/config/startup.jl` will extend [`LOAD_PATH`](@ref) on
-every Julia startup. Alternatively, the module load path can be extended by defining the environment
-variable `JULIA_LOAD_PATH`.
+将此语句放在文件 `~/.julia/config/startup.jl` 中将在每次 Julia 启动时扩展 [`LOAD_PATH`](@ref)。 或者，可以通过定义环境变量`JULIA_LOAD_PATH` 来扩展模块加载路径。
 
-### Namespace miscellanea
+### 命名空间杂记
 
-If a name is qualified (e.g. `Base.sin`), then it can be accessed even if it is not exported.
-This is often useful when debugging. It can also have methods added to it by using the qualified
-name as the function name. However, due to syntactic ambiguities that arise, if you wish to add
-methods to a function in a different module whose name contains only symbols, such as an operator,
-`Base.+` for example, you must use `Base.:+` to refer to it. If the operator is more than one
-character in length you must surround it in brackets, such as: `Base.:(==)`.
+如果名称是限定的（例如 `Base.sin`），那么即使它没有被导出也可以访问它。 这通常在调试时很有用。 还可以通过使用限定名称作为函数名称来添加方法。 但是，如果您希望将方法添加到其他模块中的函数，函数名仅包含符号，例如一个运算符，`Base.+`，由于出现语法歧义，则必须使用 `Base.:+` 引用它。 如果运算符的长度不止一个，则必须用括号括起来，例如：`Base.:(==)`。
 
-Macro names are written with `@` in import and export statements, e.g. `import Mod.@mac`. Macros
-in other modules can be invoked as `Mod.@mac` or `@Mod.mac`.
+宏名称在导入和导出语句中用 `@` 编写，例如：`import Mod.@mac`。 其他模块中的宏可以调用为 `Mod.@mac` 或 `@Mod.mac`。
 
-The syntax `M.x = y` does not work to assign a global in another module; global assignment is
-always module-local.
+语法 `M.x = y` 不能在另一个模块中的全局变量赋值；全局变量的赋值始终是模块内部的。
 
-A variable name can be "reserved" without assigning to it by declaring it as `global x`.
-This prevents name conflicts for globals initialized after load time.
+将变量名称声明为 `global x` 可以“保留”名称而无需赋值。这可以防止加载初始化后全局变量的名称冲突。
 
-### Module initialization and precompilation
+### 模块初始化和预编译
 
-Large modules can take several seconds to load because executing all of the statements in a module
-often involves compiling a large amount of code.
-Julia creates precompiled caches of the module to reduce this time.
+因为执行模块中的所有语句通常需要编译大量代码，大型模块可能需要几秒钟才能加载。Julia 会创建模块的预编译缓存以减少这个时间。
 
 The incremental precompiled module file are created and used automatically when using `import`
 or `using` to load a module.  This will cause it to be automatically compiled the first time
