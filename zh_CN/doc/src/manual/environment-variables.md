@@ -62,16 +62,13 @@ $HOME/.julia/logs/repl_history.jl
 
 ### `JULIA_PKGRESOLVE_ACCURACY`
 
-A positive `Int` that determines how much time the max-sum subroutine
-`MaxSum.maxsum()` of the package dependency resolver
-will devote to attempting satisfying constraints before giving up: this value is
-by default `1`, and larger values correspond to larger amounts of time.
+一个正的 `Int`，用于确定包依赖性解析器的 max-sum 子例程 `MaxSum.maxsum()` 在放弃之前将试图满足约束的时间：此变量默认为 `1`，更大的值对应更大的时间量。
 
-Suppose the value of `$JULIA_PKGRESOLVE_ACCURACY` is `n`. Then
+假设 `$JULIA_PKGRESOLVE_ACCURACY` 的值是 `n`。那么
 
-*   the number of pre-decimation iterations is `20*n`,
-*   the number of iterations between decimation steps is `10*n`, and
-*   at decimation steps, at most one in every `20*n` packages is decimated.
+*   预抽取迭代次数为 `20*n`，
+*   抽取步骤间的迭代次数是 `10*n`，并且
+*   在抽取步骤中，每 `20*n` 包中至多有一个被抽取
 
 ## 外部应用
 
@@ -89,40 +86,27 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 `$JULIA_EDITOR` 优先于 `$VISUAL`，而后者优先于 `$EDITOR`。如果这些环境变量都没有设置，那么编辑器在 Windows 和 OS X 上设置为 `open`，或者 `/etc/alternatives/editor` 如果其存在，否则为 `emacs`。
 
-## Parallelization
+## 并行
 
 ### `JULIA_CPU_THREADS`
 
-Overrides the global variable [`Base.Sys.CPU_THREADS`](@ref), the number of
-logical CPU cores available.
+改写全局变量 [`Base.Sys.CPU_THREADS`](@ref)，逻辑 CPU 核心数。
 
 ### `JULIA_WORKER_TIMEOUT`
 
-A [`Float64`](@ref) that sets the value of `Base.worker_timeout()` (default: `60.0`).
-This function gives the number of seconds a worker process will wait for
-a master process to establish a connection before dying.
+一个 [`Float64`](@ref)，用来确定 `Base.worker_timeout()` 的值（默认：`60.0`）。此函数提供 worker 进程在死亡之前等待主进程建立链接的秒数。
 
 ### `JULIA_NUM_THREADS`
 
-An unsigned 64-bit integer (`uint64_t`) that sets the maximum number of threads
-available to Julia. If `$JULIA_NUM_THREADS` exceeds the number of available
-physical CPU cores, then the number of threads is set to the number of cores. If
-`$JULIA_NUM_THREADS` is not positive or is not set, or if the number of CPU
-cores cannot be determined through system calls, then the number of threads is
-set to `1`.
+Julia一个无符号 64 位整数（`uint64_t`），用来设置 Julia 可用线程的最大数。如果 `$JULIA_NUM_THREADS` 超过可用的物理 CPU 核心数，那么线程数设置为核心数。如果 `$JULIA_NUM_THREADS` 不是正数或没有设置，或者无法通过系统调用确定 CPU 核心数，那么线程数就设置为 `1`。
 
 ### `JULIA_THREAD_SLEEP_THRESHOLD`
 
-If set to a string that starts with the case-insensitive substring `"infinite"`,
-then spinning threads never sleep. Otherwise, `$JULIA_THREAD_SLEEP_THRESHOLD` is
-interpreted as an unsigned 64-bit integer (`uint64_t`) and gives, in
-nanoseconds, the amount of time after which spinning threads should sleep.
+如果被设置为字符串且以大小写敏感的子字符串 `"infinite"` 开头，那么旋转线程从不睡眠。否则，`$JULIA_THREAD_SLEEP_THRESHOLD` 被解释为一个无符号 64 位整数（`uint64_t`），并且提供以纳秒为单位的旋转线程睡眠的时间量。
 
 ### `JULIA_EXCLUSIVE`
 
-If set to anything besides `0`, then Julia's thread policy is consistent with
-running on a dedicated machine: the master thread is on proc 0, and threads are
-affinitized. Otherwise, Julia lets the operating system handle thread policy.
+如果设置为 `0` 以外的任何值，那么 Julia 的线程策略与在专用计算机上一致：主线程在 proc 0 上且线程间是关联的。否则，Julia 让操作系统处理线程策略。
 
 ## REPL 格式化
 
@@ -156,78 +140,63 @@ affinitized. Otherwise, Julia lets the operating system handle thread policy.
 
 `Base.stackframe_function_color()`（默认值：粗体，`"\033[1m"`），堆栈跟踪期间函数调用在终端中的形式。
 
-## Debugging and profiling
+## 调试和性能分析
 
 ### `JULIA_GC_ALLOC_POOL`, `JULIA_GC_ALLOC_OTHER`, `JULIA_GC_ALLOC_PRINT`
 
-If set, these environment variables take strings that optionally start with the
-character `'r'`, followed by a string interpolation of a colon-separated list of
-three signed 64-bit integers (`int64_t`). This triple of integers `a:b:c`
-represents the arithmetic sequence `a`, `a + b`, `a + 2*b`, ... `c`.
+这些环境变量取值为字符串，可以以字符 `‘r’` 开头，后接一个由三个带符号 64 位整数（`int64_t`）组成的、以冒号分割的列表的插值字符串。这个整数的三元组 `a:b:c` 代表算术序列 `a`, `a + b`, `a + 2*b`, ... `c`。
 
-*   If it's the `n`th time that `jl_gc_pool_alloc()` has been called, and `n`
-    belongs to the arithmetic sequence represented by `$JULIA_GC_ALLOC_POOL`,
-    then garbage collection is forced.
-*   If it's the `n`th time that `maybe_collect()` has been called, and `n` belongs
-    to the arithmetic sequence represented by `$JULIA_GC_ALLOC_OTHER`, then garbage
-    collection is forced.
-*   If it's the `n`th time that `jl_gc_collect()` has been called, and `n` belongs
-    to the arithmetic sequence represented by `$JULIA_GC_ALLOC_PRINT`, then counts
-    for the number of calls to `jl_gc_pool_alloc()` and `maybe_collect()` are
-    printed.
+*   如果是第 `n` 次调用 `jl_gc_pool_alloc()`，并且 `n`
+    属于 `$JULIA_GC_ALLOC_POOL` 代表的算术序列，
+    那么垃圾收集是强制的。
+*   如果是第 `n` 次调用 `maybe_collect()`，并且 `n` 属于
+    `$JULIA_GC_ALLOC_OTHER` 代表的算术序列，那么垃圾
+    收集是强制的。
+*   如果是第 `n` 次调用 `jl_gc_alloc()`，并且 `n` 属于
+    `$JULIA_GC_ALLOC_PRINT` 代表的算术序列，那么
+    调用 `jl_gc_pool_alloc()` 和 `maybe_collect()` 的次数会
+    被打印。
 
-If the value of the environment variable begins with the character `'r'`, then
-the interval between garbage collection events is randomized.
+如果这些环境变量的值以字符 `‘r'` 开头，那么垃圾收集事件间的间隔是随机的。
 
 !!! note
 
-    These environment variables only have an effect if Julia was compiled with
-    garbage-collection debugging (that is, if `WITH_GC_DEBUG_ENV` is set to `1`
-    in the build configuration).
+    这些环境变量生效要求 Julia 在编译时带有垃圾收集调试支持（也就是，在构建配置中 `WITH_GC_DEBUG_ENV` 设置为 `1`）。
 
 ### `JULIA_GC_NO_GENERATIONAL`
 
-If set to anything besides `0`, then the Julia garbage collector never performs
-"quick sweeps" of memory.
+如果设置为 `0` 以外的任何值，那么 Julia 的垃圾收集器将从不执行「快速扫描」内存。
 
 !!! note
 
-    This environment variable only has an effect if Julia was compiled with
-    garbage-collection debugging (that is, if `WITH_GC_DEBUG_ENV` is set to `1`
-    in the build configuration).
+    此环境变量生效要求 Julia 在编译时带有垃圾收集调试支持（也就是，在构建配置中 `WITH_GC_DEBUG_ENV` 设置为 `1`）。
 
 ### `JULIA_GC_WAIT_FOR_DEBUGGER`
 
-If set to anything besides `0`, then the Julia garbage collector will wait for
-a debugger to attach instead of aborting whenever there's a critical error.
+如果设置为 `0` 以外的任何值，Julia 的垃圾收集器每当出现严重错误时将等待调试器连接而不是中止。
 
 !!! note
 
-    This environment variable only has an effect if Julia was compiled with
-    garbage-collection debugging (that is, if `WITH_GC_DEBUG_ENV` is set to `1`
-    in the build configuration).
+    此环境变量生效要求 Julia 在编译时带有垃圾收集调试支持（也就是，在构建配置中 `WITH_GC_DEBUG_ENV` 设置为 `1`）。
 
 ### `ENABLE_JITPROFILING`
 
-If set to anything besides `0`, then the compiler will create and register an
-event listener for just-in-time (JIT) profiling.
+如果设置为 `0` 以外的任何值，那么编译器将为 just-in-time（JIT）性能分析创建并注册一个事件监听器。
 
 !!! note
 
-    This environment variable only has an effect if Julia was compiled with JIT
-    profiling support, using either
+    此变量生效要求 Julia 编译时带有 JIT 性能分析支持，使用
 
-*   Intel's [VTune™ Amplifier](https://software.intel.com/en-us/intel-vtune-amplifier-xe)
-    (`USE_INTEL_JITEVENTS` set to `1` in the build configuration), or
-*   [OProfile](http://oprofile.sourceforge.net/news/) (`USE_OPROFILE_JITEVENTS` set to `1`
-    in the build configuration).
+*   英特尔的 [VTune™ Amplifier](https://software.intel.com/en-us/intel-vtune-amplifier-xe)
+    （在构建配置中将 `USE_INTEL_JITEVENTS` 设置为 `1`），或
+*   [OProfile](http://oprofile.sourceforge.net/news/)（`USE_OPROFILE_JITEVENTS` 设置为 `1`
+    在构建配置中）。
 
 ### `JULIA_LLVM_ARGS`
 
-Arguments to be passed to the LLVM backend.
+要被传递给 LLVM 后端的参数。
 
 ### `JULIA_DEBUG_LOADING`
 
-If set, then Julia prints detailed information about the cache in the loading
-process of [`Base.require`](@ref).
+如果设置，那么Julia 打印在 [`Base.require`](@ref) 加载过程中缓存的详细信息。
 

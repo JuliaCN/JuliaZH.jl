@@ -297,6 +297,8 @@ julia> range(minmax(10, 2))
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
 bar (generic function with 1 method)
+```
+
 变量 `a` 和 `b` 和以前一样被绑定给前两个参数，后面的参数整个做为迭代集合被绑定到变量 `x` 上 :
 
 ```jldoctest barfunc
@@ -363,6 +365,8 @@ julia> x = [1,2,3,4]
 
 julia> bar(x...)
 (1, 2, (3, 4))
+```
+
 另外，参数可拆解的函数也不一定就是变参函数 —— 尽管一般都是：
 
 ```jldoctest
@@ -390,13 +394,9 @@ baz(::Any, ::Any) at none:1
 
 正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。
 
-## Optional Arguments
+## 可选参数
 
-In many cases, function arguments have sensible default values and therefore might not need to
-be passed explicitly in every call. For example, the function [`Date(y, [m, d])`](@ref)
-from `Dates` module constructs a `Date` type for a given year `y`, month `m` and day `d`.
-However, `m` and `d` arguments are optional and their default value is `1`.
-This behavior can be expressed concisely as:
+在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，`Dates` 模块中的 [`Date(y, [m, d])`](@ref) 函数对于给定的年（year）`y`、月（mouth）`m`、日（data）`d` 构造了 `Date` 类型。但是，`m` 和 `d` 参数都是可选的，默认值都是 `1`。这行为可以简述为：
 
 ```julia
 function Date(y::Int64, m::Int64=1, d::Int64=1)
@@ -406,11 +406,9 @@ function Date(y::Int64, m::Int64=1, d::Int64=1)
 end
 ```
 
-Observe, that this definition calls another method of `Date` function that takes one argument
-of `UTInstant{Day}` type.
+注意到，这定义调用了 `Date` 函数的另一个方法，该方法带有一个 `UTInstant{Day}` 类型的参数。
 
-With this definition, the function can be called with either one, two or three arguments, and
-`1` is automatically passed when any of the arguments is not specified:
+在此定义下，函数调用时可以带有一个、两个或三个参数，并且在没有指定参数时，自动传递 `1`：
 
 ```jldoctest
 julia> using Dates
@@ -425,24 +423,15 @@ julia> Date(2000)
 2000-01-01
 ```
 
-Optional arguments are actually just a convenient syntax for writing multiple method definitions
-with different numbers of arguments (see [Note on Optional and keyword Arguments](@ref)).
-This can be checked for our `Date` function example by calling `methods` function.
+可选参数实际上只是一种方便的语法，用于编写多种具有不同数量参数的方法定义（请参阅 [Note on Optional and keyword Arguments](@ref)）。这可通过调用 `methods` 函数来检查我们的 `Date` 函数示例。
 
-## Keyword Arguments
+## 关键字参数
 
-Some functions need a large number of arguments, or have a large number of behaviors. Remembering
-how to call such functions can be difficult. Keyword arguments can make these complex interfaces
-easier to use and extend by allowing arguments to be identified by name instead of only by position.
+某些函数需要大量参数，或者具有大量行为。记住如何调用这样的函数可能很困难。关键字参数允许通过名称而不是仅通过位置来识别参数，使得这些复杂接口易于使用和扩展。
 
-For example, consider a function `plot` that plots a line. This function might have many options,
-for controlling line style, width, color, and so on. If it accepts keyword arguments, a possible
-call might look like `plot(x, y, width=2)`, where we have chosen to specify only line width. Notice
-that this serves two purposes. The call is easier to read, since we can label an argument with
-its meaning. It also becomes possible to pass any subset of a large number of arguments, in any
-order.
+例如，考虑绘制一条线的函数 `plot`。这个函数可能有很多选项，用来控制线条的样式、宽度、颜色等。如果它接受关键字参数，一个可行的调用可能看起来像 `plot(x, y, width=2)`，这里我们仅指定线的宽度。请注意，这样做有两个目的。调用更可读，因为我们能以其意义标记参数。也使得大量参数的任意子集都能以任意次序传递。
 
-Functions with keyword arguments are defined using a semicolon in the signature:
+具有关键字参数的函数在签名中使用分号定义：
 
 ```julia
 function plot(x, y; style="solid", width=1, color="black")
@@ -450,15 +439,11 @@ function plot(x, y; style="solid", width=1, color="black")
 end
 ```
 
-When the function is called, the semicolon is optional: one can either call `plot(x, y, width=2)`
-or `plot(x, y; width=2)`, but the former style is more common. An explicit semicolon is required
-only for passing varargs or computed keywords as described below.
+在函数调用时，分号是可选的：可以调用 `plot(x, y, width=2)` 或 `plot(x, y; width=2)`，但前者的风格更为常见。显式的分号只有在传递可变参数或下文中描述的需计算的关键字时是必要的。
 
-Keyword argument default values are evaluated only when necessary (when a corresponding keyword
-argument is not passed), and in left-to-right order. Therefore default expressions may refer to
-prior keyword arguments.
+关键字参数的默认值只在必须时求值（当相应的关键字参数没有被传入），并且按从左到右的顺序求值，因为默认值的表达式可能会参照先前的关键字参数。
 
-The types of keyword arguments can be made explicit as follows:
+关键字参数的类型可以通过如下的方式显式指定：
 
 ```julia
 function f(;x::Int=1)
@@ -466,7 +451,7 @@ function f(;x::Int=1)
 end
 ```
 
-Extra keyword arguments can be collected using `...`, as in varargs functions:
+附加的关键字参数可用 `...` 收集，正如在变参函数中：
 
 ```julia
 function f(x; y=0, kwargs...)
@@ -474,9 +459,7 @@ function f(x; y=0, kwargs...)
 end
 ```
 
-If a keyword argument is not assigned a default value in the method definition,
-then it is *required*: an [`UndefKeywordError`](@ref) exception will be thrown
-if the caller does not assign it a value:
+如果一个关键字参数在方法定义中未指定默认值，那么它就是*必须的*：如果调用者没有为其赋值，那么将会抛出一个 [`UndefKeywordError`](@ref) 异常：
 ```julia
 function f(x; y)
     ###
@@ -485,25 +468,15 @@ f(3, y=5) # ok, y is assigned
 f(3)      # throws UndefKeywordError(:y)
 ```
 
-Inside `f`, `kwargs` will be a named tuple. Named tuples (as well as dictionaries) can be passed as
-keyword arguments using a semicolon in a call, e.g. `f(x, z=1; kwargs...)`.
+在 `f` 内部，`kwargs` 会是一个具名元组。具名元组（以及字典）可作为关键字参数传递，通过在调用中使用分号，例如 `f(x, z=1; kwargs...)`。
 
-One can also pass `key => value` expressions after a semicolon. For example, `plot(x, y; :width => 2)`
-is equivalent to `plot(x, y, width=2)`. This is useful in situations where the keyword name is computed
-at runtime.
+在分号后也可传递 `key => value` 表达式。例如，`plot(x, y; :width => 2)` 等价于 `plot(x, y, width=2)`。当关键字名称需要在运行时被计算时，这就很实用了。
 
-The nature of keyword arguments makes it possible to specify the same argument more than once.
-For example, in the call `plot(x, y; options..., width=2)` it is possible that the `options` structure
-also contains a value for `width`. In such a case the rightmost occurrence takes precedence; in
-this example, `width` is certain to have the value `2`. However, explicitly specifying the same keyword
-argument multiple times, for example `plot(x, y, width=2, width=3)`, is not allowed and results in
-a syntax error.
+可选参数的性质使得可以多次指定同一参数的值。例如，在调用 `plot(x, y; options..., width=2)` 的过程中，`options` 结构也能包含一个 `width` 的值。在这种情况下，最右边的值优先级最高；在此例中，`width` 的值可以确定是 `2`。但是，显式地多次指定同一参数的值是不允许的，例如 `plot(x, y, width=2, width=3)`，这会导致语法错误。
 
-## Evaluation Scope of Default Values
+## 默认值作用域的计算
 
-When optional and keyword argument default expressions are evaluated, only *previous* arguments are in
-scope.
-For example, given this definition:
+当计算可选和关键字参数的默认值表达式时，只有*先前*的参数才在作用域内。例如，给出以下定义：
 
 ```julia
 function f(x, a=b, b=1)
@@ -511,14 +484,11 @@ function f(x, a=b, b=1)
 end
 ```
 
-the `b` in `a=b` refers to a `b` in an outer scope, not the subsequent argument `b`.
+`a=b` 中的 `b` 指的是外部作用域内的 `b`，而不是后续参数中的 `b`。
 
-## Do-Block Syntax for Function Arguments
+## 函数参数中的 Do 结构
 
-Passing functions as arguments to other functions is a powerful technique, but the syntax for
-it is not always convenient. Such calls are especially awkward to write when the function argument
-requires multiple lines. As an example, consider calling [`map`](@ref) on a function with several
-cases:
+把函数作为参数传递给其他函数是一种强大的技术，但它的语法并不总是很方便。当函数参数占据多行时，这样的调用便特别难以编写。例如，考虑在具有多种情况的函数上调用 [`map`](@ref)：
 
 ```julia
 map(x->begin
@@ -533,7 +503,7 @@ map(x->begin
     [A, B, C])
 ```
 
-Julia provides a reserved word `do` for rewriting this code more clearly:
+Julia 提供了一个保留字 `do`，用于更清楚地重写此代码：
 
 ```julia
 map([A, B, C]) do x
@@ -547,18 +517,11 @@ map([A, B, C]) do x
 end
 ```
 
-The `do x` syntax creates an anonymous function with argument `x` and passes it as the first argument
-to [`map`](@ref). Similarly, `do a,b` would create a two-argument anonymous function, and a
-plain `do` would declare that what follows is an anonymous function of the form `() -> ...`.
+`do x` 语法创建一个带有参数 `x` 的匿名函数，并将其作为第一个参数传递 [`map`](@ref)。类似地，`do a，b` 会创建一个双参数匿名函数，而一个简单的 `do` 会声明一个满足形式 `() -> ...` 的匿名函数。
 
-How these arguments are initialized depends on the "outer" function; here, [`map`](@ref) will
-sequentially set `x` to `A`, `B`, `C`, calling the anonymous function on each, just as would happen
-in the syntax `map(func, [A, B, C])`.
+这些参数如何初始化取决于「外部」函数；在这里，[`map`](@ref) 将会依次将 `x` 设置为 `A`、`B`、`C`，再分别调用调用匿名函数，正如在 `map(func, [A, B, C])` 语法中所发生的。
 
-This syntax makes it easier to use functions to effectively extend the language, since calls look
-like normal code blocks. There are many possible uses quite different from [`map`](@ref), such
-as managing system state. For example, there is a version of [`open`](@ref) that runs code ensuring
-that the opened file is eventually closed:
+这种语法使得更容易使用函数来有效地扩展语言，因为调用看起来就像普通代码块。有许多可能的用法与 [`map`](@ref) 完全不同，比如管理系统状态。例如，有一个版本的 [`open`](@ref) 可以通过运行代码来确保已经打开的文件最终会被关闭：
 
 ```julia
 open("outfile", "w") do io
@@ -566,7 +529,7 @@ open("outfile", "w") do io
 end
 ```
 
-This is accomplished by the following definition:
+这是通过以下定义实现的：
 
 ```julia
 function open(f::Function, args...)

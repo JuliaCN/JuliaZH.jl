@@ -1,4 +1,4 @@
-# 元编程
+# Metaprogramming
 
 The strongest legacy of Lisp in the Julia language is its metaprogramming support. Like Lisp,
 Julia represents its own code as a data structure of the language itself. Since code is represented
@@ -462,9 +462,9 @@ a tuple of arguments to a returned *expression*, and the resulting expression is
 rather than requiring a runtime [`eval`](@ref) call. Macro arguments may include expressions,
 literal values, and symbols.
 
-### Basics
+### 基础
 
-Here is an extraordinarily simple macro:
+这是一个非常简单的宏：
 
 ```jldoctest sayhello
 julia> macro sayhello()
@@ -472,42 +472,37 @@ julia> macro sayhello()
        end
 @sayhello (macro with 1 method)
 ```
-
-Macros have a dedicated character in Julia's syntax: the `@` (at-sign), followed by the unique
-name declared in a `macro NAME ... end` block. In this example, the compiler will replace all
-instances of `@sayhello` with:
+宏在Julia的语法中有一个专门的字符 `@` (at-sign)，紧接着是其使用`macro NAME ... end` 形式来声明的唯一的宏名。在这个例子中，编译器会把所有的`@sayhello` 替换成：
 
 ```julia
 :( println("Hello, world!") )
 ```
 
-When `@sayhello` is entered in the REPL, the expression executes immediately, thus we only see the
-evaluation result:
+当 `@sayhello` 在REPL中被输入时，解释器立即执行，因此我们只会看到计算后的结果：
 
 ```jldoctest sayhello
 julia> @sayhello()
 Hello, world!
 ```
 
-Now, consider a slightly more complex macro:
+现在，考虑一个稍微复杂一点的宏：
 
 ```jldoctest sayhello2
 julia> macro sayhello(name)
-           return :( println("Hello, ", $name) )
-       end
+ return :( println("Hello, ", $name) )
+ end
 @sayhello (macro with 1 method)
 ```
 
-This macro takes one argument: `name`. When `@sayhello` is encountered, the quoted expression
-is *expanded* to interpolate the value of the argument into the final expression:
+这个宏接受一个参数`name`。当遇到`@sayhello`时，quoted 表达式会被*展开*并将参数中的值插入到最终的表达式中：
 
 ```jldoctest sayhello2
 julia> @sayhello("human")
 Hello, human
 ```
 
-We can view the quoted return expression using the function [`macroexpand`](@ref) (**important note:**
-this is an extremely useful tool for debugging macros):
+我们可使用 [`macroexpand`](@ref)看到返回的quoted 表达式。(**important note:**
+在调试宏的时候这是一个非常有用的工具):
 
 ```julia-repl sayhello2
 julia> ex = macroexpand(Main, :(@sayhello("human")) )
@@ -517,9 +512,9 @@ julia> typeof(ex)
 Expr
 ```
 
-We can see that the `"human"` literal has been interpolated into the expression.
+我们可以看到字面值“人类”已被插入到表达式中。
 
-There also exists a macro [`@macroexpand`](@ref) that is perhaps a bit more convenient than the `macroexpand` function:
+还有一个宏[`@ macroexpand`]（@ ref），它可能比`macroexpand`函数更方便：
 
 
 ```jldoctest sayhello2

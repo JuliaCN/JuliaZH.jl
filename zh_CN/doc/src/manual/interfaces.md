@@ -115,9 +115,7 @@ julia> collect(Squares(4))
  16
 ```
 
-While we can rely upon generic implementations, we can also extend specific methods where we know
-there is a simpler algorithm. For example, there's a formula to compute the sum of squares, so
-we can override the generic iterative version with a more performant solution:
+尽管大多时候我们都可以依赖于一些通用的实现，某些时候如果我们知道有一个更简单的算法的话，可以扩展出更具体的实现。例如，计算平方和有一个公式，因此可以扩展出一个更高效的实现：
 
 ```jldoctest squaretype
 julia> Base.sum(S::Squares) = (n = S.count; return n*(n+1)*(2n+1)÷6)
@@ -126,10 +124,7 @@ julia> sum(Squares(1803))
 1955361914
 ```
 
-This is a very common pattern throughout Julia Base: a small set of required methods
-define an informal interface that enable many fancier behaviors. In some cases, types will want
-to additionally specialize those extra behaviors when they know a more efficient algorithm can
-be used in their specific case.
+这种模式在Julia Base中很常见，一些必须实现的方法构成了一个小的集合，从而定义出一个非正式的接口，用于实现一些非常炫酷的操作。某些时候，类型本身知道在其应用场景中有一些更高效的算法，因而可以扩展出额外方法。
 
 It is also often useful to allow iteration over a collection in *reverse order*
 by iterating over [`Iterators.reverse(iterator)`](@ref).  To actually support
@@ -149,18 +144,16 @@ julia> collect(Iterators.reverse(Squares(4)))
   1
 ```
 
-## Indexing
+## 索引
 
-| Methods to implement | Brief description                |
+| 需要实现的方法 | 简介                |
 |:-------------------- |:-------------------------------- |
 | `getindex(X, i)`     | `X[i]`, indexed element access   |
 | `setindex!(X, v, i)` | `X[i] = v`, indexed assignment   |
 | `firstindex(X)`      | The first index                  |
 | `lastindex(X)`        | The last index, used in `X[end]` |
 
-For the `Squares` iterable above, we can easily compute the `i`th element of the sequence by squaring
-it.  We can expose this as an indexing expression `S[i]`. To opt into this behavior, `Squares`
-simply needs to define [`getindex`](@ref):
+对于 `Squares` 类型而言，可以通过对第 `i` 个元素求平方计算出其中的第 `i` 个元素，可以用 `S[i]` 的索引表达式形式暴露该接口。为了支持该行为， `Squares` 只需要简单地定义 [`getindex`](@ref):
 
 ```jldoctest squaretype
 julia> function Base.getindex(S::Squares, i::Int)

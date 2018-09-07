@@ -158,9 +158,9 @@ the operator in such cases.
 
 ## 数值比较
 
-Standard comparison operations are defined for all the primitive numeric types:
+标准的比较操作对所有原始数值类型有定义：
 
-| Operator                     | 名称                     |
+| 操作符                     | 名称                     |
 |:---------------------------- |:------------------------ |
 | [`==`](@ref)                 | 相等                 |
 | [`!=`](@ref), [`≠`](@ref !=) | 不等               |
@@ -206,13 +206,12 @@ julia> 3 < -0.5
 false
 ```
 
-Integers are compared in the standard manner -- by comparison of bits. Floating-point numbers
-are compared according to the [IEEE 754 standard](https://en.wikipedia.org/wiki/IEEE_754-2008):
+整数的比较以标准方式——按位比较，而浮点数的比较以 [IEEE 754 标准](https://en.wikipedia.org/wiki/IEEE_754-2008)。
 
-  * Finite numbers are ordered in the usual manner.
-  * Positive zero is equal but not greater than negative zero.
-  * `Inf` is equal to itself and greater than everything else except `NaN`.
-  * `-Inf` is equal to itself and less then everything else except `NaN`.
+  * 有限数以通常的方式排序。
+  * 正零等于但不大于负零。
+  * `Inf` 等于自身并且大于除了 `NaN` 外的所有数。
+  * `-Inf` 等于自身并且小于除了 `NaN` 外的所有数。
   * `NaN` is not equal to, not less than, and not greater than anything, including itself.
 
 The last point is potentially surprising and thus worth noting:

@@ -194,9 +194,9 @@ For users coming to Julia from R, these are some noteworthy differences:
 
 ## 与 Python 的显著差异
 
-  * Julia requires `end` to end a block. Unlike Python, Julia has no `pass` keyword.
+  * Julia 需要用 `end` 来结束代码块。与 Python 不同，Julia 没有 `pass` 关键字。
   * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
-  * Julia's slice indexing includes the last element, unlike in Python. `a[2:3]` in Julia is `a[1:3]`
+  * Julia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 `a[2:3]` 就是 Python 中的 `a[1:3]`。
     in Python.
   * Julia does not support negative indices. In particular, the last element of a list or array is
     indexed with `end` in Julia, not `-1` as in Python.

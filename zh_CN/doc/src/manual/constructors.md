@@ -132,17 +132,11 @@ julia> T2(1.0)
 T2(1)
 ```
 
-It is considered good form to provide as few inner constructor methods as possible: only those
-taking all arguments explicitly and enforcing essential error checking and transformation. Additional
-convenience constructor methods, supplying default values or auxiliary transformations, should
-be provided as outer constructors that call the inner constructors to do the heavy lifting. This
-separation is typically quite natural.
+提供尽可能少的内部构造方法是很好的形式：只显式地处理所有参数，并强制执行必要的错误检查和转换。 其他便利的构造方法，提供默认值或辅助转换时，应该作为外部构造函数，通过调用内部构造函数来执行繁重的工作。 这种解耦是很自然的。
 
-## Incomplete Initialization
+## 不完整初始化
 
-The final problem which has still not been addressed is construction of self-referential objects,
-or more generally, recursive data structures. Since the fundamental difficulty may not be immediately
-obvious, let us briefly explain it. Consider the following recursive type declaration:
+最后一个还没提到的问题是，如何构造具有自引用的对象，更具体地来说，递归的数据结构。因为这一根本的困难不是那么显而易见，我们来简单解释一下。考虑如下的循环类型声明：
 
 ```jldoctest selfrefer
 julia> mutable struct SelfReferential
@@ -150,25 +144,16 @@ julia> mutable struct SelfReferential
        end
 
 ```
-
-This type may appear innocuous enough, until one considers how to construct an instance of it.
-If `a` is an instance of `SelfReferential`, then a second instance can be created by the call:
+这种类型可能看起来没什么大不了，直到我们考虑如何来构造它的实例。
+如果 `a` 是 `SelfReferential` 的一个实例，则第二个实例可以如下的调用创建：
 
 ```julia-repl
 julia> b = SelfReferential(a)
 ```
 
-But how does one construct the first instance when no instance exists to provide as a valid value
-for its `obj` field? The only solution is to allow creating an incompletely initialized instance
-of `SelfReferential` with an unassigned `obj` field, and using that incomplete instance as a valid
-value for the `obj` field of another instance, such as, for example, itself.
+但是，当没有实例存在作为其`obj`字段的有效值时，如何构造第一个实例？ 唯一的解决方案是允许使用未分配的`obj`字段创建一个未完全初始化的“SelfReferential”实例，并使用该不完整的实例作为另一个实例的`obj`字段的有效值，例如它本身。
 
-To allow for the creation of incompletely initialized objects, Julia allows the [`new`](@ref) function
-to be called with fewer than the number of fields that the type has, returning an object with
-the unspecified fields uninitialized. The inner constructor method can then use the incomplete
-object, finishing its initialization before returning it. Here, for example, we take another crack
-at defining the `SelfReferential` type, with a zero-argument inner constructor returning instances
-having `obj` fields pointing to themselves:
+为了允许创建未完全初始化的对象，Julia允许使用少于该类型的字段数来调用[`new`]（@ ref）函数，并返回未初始化未指定字段的对象。 然后，内部构造函数方法可以使用不完整的对象，在返回之前完成初始化。 例如，我们在定义`SelfReferential`类型时采用了另一个方法，使用零参数内部构造函数返回具有指向自身的`obj`字段的实例：
 
 ```jldoctest selfrefer2
 julia> mutable struct SelfReferential
@@ -177,8 +162,7 @@ julia> mutable struct SelfReferential
        end
 
 ```
-
-We can verify that this constructor works and constructs objects that are, in fact, self-referential:
+我们可以验证这一构造函数有效，且由其构造的对象的确是自引用的：
 
 ```jldoctest selfrefer2
 julia> x = SelfReferential();
@@ -193,8 +177,7 @@ julia> x === x.obj.obj
 true
 ```
 
-Although it is generally a good idea to return a fully initialized object from an inner constructor,
-incompletely initialized objects can be returned:
+虽然从一个内部构造器中返回一个完全初始化的对象是很好的，但是不完全初始化的对象也能够返回：
 
 ```jldoctest incomplete
 julia> mutable struct Incomplete
@@ -204,20 +187,14 @@ julia> mutable struct Incomplete
 
 julia> z = Incomplete();
 ```
-
-While you are allowed to create objects with uninitialized fields, any access to an uninitialized
-reference is an immediate error:
+当你被允许创建含有未初始化字段的对象时，任何对未初始化引用的访问都会立即报错：
 
 ```jldoctest incomplete
 julia> z.xx
 ERROR: UndefRefError: access to undefined reference
 ```
 
-This avoids the need to continually check for `null` values. However, not all object fields are
-references. Julia considers some types to be "plain data", meaning all of their data is self-contained
-and does not reference other objects. The plain data types consist of primitive types (e.g. `Int`)
-and immutable structs of other plain data types. The initial contents of a plain data type is
-undefined:
+这避免了不断地检测`null`值的需要，不是所有的对象字段都是引用。Julia认为一些类型为纯数据（"plain data"），意味着他们的数据是自包含的，而且没有引用其他对象。这些纯数据包含了基本类型（比如`Int`）和由其他纯数据类型构成的不可变结构体。这些纯数据类型的初始值是未定义的：
 
 ```julia-repl
 julia> struct HasPlain
@@ -229,9 +206,9 @@ julia> HasPlain()
 HasPlain(438103441441)
 ```
 
-Arrays of plain data types exhibit the same behavior.
+由纯数据组成的数组也具有一样的行为。
 
-You can pass incomplete objects to other functions from inner constructors to delegate their completion:
+你可以从内部构造器将不完整的对象传递给其他函数来委托其构造：
 
 ```jldoctest
 julia> mutable struct Lazy
@@ -240,11 +217,9 @@ julia> mutable struct Lazy
        end
 ```
 
-As with incomplete objects returned from constructors, if `complete_me` or any of its callees
-try to access the `xx` field of the `Lazy` object before it has been initialized, an error will
-be thrown immediately.
+与构造函数返回的不完整对象一样，如果`complete_me`或其任何被调用者尝试在初始化之前访问`Lazy`对象的`xx`字段，错误就会立刻被抛出。
 
-## Parametric Constructors
+## 参数化构造
 
 Parametric types add a few wrinkles to the constructor story. Recall from [Parametric Types](@ref)
 that, by default, instances of parametric composite types can be constructed either with explicitly
@@ -339,7 +314,7 @@ julia> typeof(ans)
 Point{Float64}
 ```
 
-However, other similar calls still don't work:
+然而，其他类似的调用依然有问题：
 
 ```jldoctest parametric2
 julia> Point(1.5,2)
