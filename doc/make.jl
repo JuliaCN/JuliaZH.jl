@@ -5,7 +5,6 @@ push!(LOAD_PATH, @__DIR__, "@stdlib")
 empty!(DEPOT_PATH)
 pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
 using Pkg
-Pkg.activate(@__DIR__)
 Pkg.instantiate()
 
 using Documenter
