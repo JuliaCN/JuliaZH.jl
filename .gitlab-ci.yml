@@ -12,7 +12,7 @@ pages:
   stage: deploy
   script:
     - cp -r zh_CN/* ./
-    - julia --project --check-bounds=yes --color=yes -e 'include("doc/make.jl")'
+    - julia --project=doc --check-bounds=yes --color=yes -e 'include("doc/make.jl")'
     - mv doc/build public
   artifacts:
     paths:
