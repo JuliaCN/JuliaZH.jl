@@ -13,11 +13,11 @@
 我们相信在科学计算领域，有很多好的理由使专家们偏爱动态语言， 因此我们不会舍弃这样的特性。幸运的是，现代语言设计和编译器技术可以大大消除性能折衷（trade-off），并提供足够的单一环境来进行原型设计，而且足够高效地部署性能密集型应用程序。Julia 语言在这其中扮演了这样一个角色：它是一门灵活的动态语言，适合用于科学计算和数值计算，并且性能可与传统的静态类型语言媲美。
 
 
-Julia 的编译器不同于 R 或 Python 这样的语言所使用的解释器，一开始您可能会觉得 Julia 的性能并不很直观。
+由于 Julia 被设计为 JIT 友好，Julia 和其它语言比如 Python 或者 R 有所不同，一开始您可能会觉得用 julia 编写高性能的代码并不是一件容易的事。
 如果您发现您的某部分代码有些慢，我们非常建议您在尝试其它功能前读一下[提高性能的窍门](@ref man-performance-tips) 。理解了 Julia 的运作方式后，写出和 C 一样快的代码对您而言就是小菜一碟。
 
 
-Julia 拥有可选类型标注 和 多重派发这两个特性，同时还拥有很棒的性能。这些都得归功于使用 [LLVM](https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine) 实现的类型推导和[即时编译（JIT）](https://en.wikipedia.org/wiki/Just-in-time_compilation)技术。Julia 是一门支持过程式，函数式和面向对象（object-oriented）的多范式语言。
+Julia 拥有可选类型标注 和 多重派发这两个特性，同时还拥有很棒的性能。这些都得归功于（使用 [LLVM](https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine) 实现的）类型推导和[即时编译（JIT）](https://en.wikipedia.org/wiki/Just-in-time_compilation)技术。Julia 是一门支持过程式，函数式和面向对象（object-oriented）的多范式语言。
 它像 R 、 MATLAB 和 Python 一样简单，在高级数值计算方面有丰富的表现力，而且支持通用编程。为了实现这个目标，
 Julia 以数学编程语言（mathematical programming languages）为基础，同时也参考了不少流行的动态语言，例如 [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)), [Perl](https://en.wikipedia.org/wiki/Perl_(programming_language)),
 [Python](https://en.wikipedia.org/wiki/Python_(programming_language)), [Lua](https://en.wikipedia.org/wiki/Lua_(programming_language)),
