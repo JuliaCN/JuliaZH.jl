@@ -2,6 +2,8 @@
 
 欢迎来到 Julia 1.0 中文文档。
 
+请先阅读[v1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn)以获取一个对这门语言的总体概观，其中也介绍了 julia 自 v0.6 以来所做出的诸多改进。另外与 v1.0 同时发布的还有 v0.7，该版本是 v0.6 与 v1.0 之间的过渡版本，它能够兼容大部分还没来得及更新到 v1.0 的包，也能够正常运行已经不再提供 v0.6 支持的包。v0.7 和 v1.0 的差别只是 v0.7 会告诉你哪些过去 v0.6 的函数和接口已经被废弃了，或者改动成了别的。参见 [v0.7 更新说明](https://docs.julialang.org/en/v0.7.0/NEWS/)
+
 !!! note "关于中文文档"
     Julia 语言相关的本地化工作是一个由社区驱动的开源项目[JuliaZH.jl](https://github.com/JuliaCN/JuliaZH.jl)，旨在方便 Julia 的中文用户。我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
 
