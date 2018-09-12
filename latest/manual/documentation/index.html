@@ -158,7 +158,7 @@ const a = 1
 b = 2
 
 &quot;...&quot;
-global c = 3</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了<code>绑定</code> <code>a</code>，<code>b</code>和<code>c</code>。</p><p><code>绑定</code>是用来在<code>模块</code>中存储对于特定<code>符号</code>的引用而非存储被引用的值本身。</p><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"></div></div><p>  当一个<code>不变</code>定义只是用作定义另外一个定义的别名时，比如函数<code>div</code>和其在<code>Base</code>中的别名<code>÷</code>，并不要为别名写文档，转而去为实际的函数写文档。</p><p>如果给别名写了文档而非实际的函数，当寻找实际的函数时，文档系统(<code>?</code>模式)不会返回别名中对的文档。 比如你应该写</p><pre><code class="language-julia"> &quot;...&quot;
+global c = 3</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了<code>绑定</code> <code>a</code>，<code>b</code>和<code>c</code>。</p><p><code>绑定</code>是用来在<code>模块</code>中存储对于特定<code>符号</code>的引用而非存储被引用的值本身。</p><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>当一个 <code>const</code> 定义只是用作定义另外一个定义的别名时，比如函数 <code>div</code> 和其在 <code>Base</code> 中的别名 <code>÷</code>，并不要为别名写文档，转而去为实际的函数写文档。</p></div></div><p>如果给别名写了文档而非实际的函数，当寻找实际的函数时，文档系统(<code>?</code>模式)不会返回别名中对的文档。 比如你应该写</p><pre><code class="language-julia"> &quot;...&quot;
  f(x) = x + 1
  const alias = f
  ```
