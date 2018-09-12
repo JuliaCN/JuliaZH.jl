@@ -1421,9 +1421,9 @@ The following examples may help you interpret expressions marked as containing n
       * Suggestion: use concrete types like `Array{T,3}` or `Array{T,N}`, where `N` is now a parameter
         of `ArrayContainer`
 
-## [Performance of captured variable](@id man-performance-captured)
+## [被捕获变量的性能](@id man-performance-captured)
 
-Consider the following example that defines an inner function:
+请考虑以下定义内部函数的示例：
 ```julia
 function abmult(r::Int)
     if r < 0
@@ -1434,40 +1434,15 @@ function abmult(r::Int)
 end
 ```
 
-Function `abmult` returns a function `f` that multiplies its argument by
-the absolute value of `r`. The inner function assigned to `f` is called a
-"closure". Inner functions are also used by the
-language for `do`-blocks and for generator expressions.
+函数 `abmult` 返回一个函数 `f`，它将其参数乘以 `r` 的绝对值。赋值给 `f` 的函数称为「闭包」。内部函数还被语言用于 `do` 代码块和生成器表达式。
 
-This style of code presents performance challenges for the language.
-The parser, when translating it into lower-level instructions,
-substantially reorganizes the above code by extracting the
-inner function to a separate code block.  "Captured" variables such as `r`
-that are shared by inner functions and their enclosing scope are
-also extracted into a heap-allocated "box" accessible to both inner and
-outer functions because the language specifies that `r` in the
-inner scope must be identical to `r` in the outer scope even after the
-outer scope (or another inner function) modifies `r`.
+这种代码风格为语言带来了性能挑战。解析器在将其转换为较低级别的指令时，基本上通过将内部函数提取到单独的代码块来重新组织上述代码。「被捕获的」变量，比如 `r`，被内部函数共享，且包含它们的作用域会被提取到内部函数和外部函数皆可访问的堆分配「box」中，这是因为语言指定内部作用域中的 `r` 必须与外部作用域中的 `r` 相同，就算在外部作用域（或另一个内部函数）修改 `r` 后也需如此。
 
-The discussion in the preceding paragraph referred to the "parser", that is, the phase
-of compilation that takes place when the module containing `abmult` is first loaded,
-as opposed to the later phase when it is first invoked. The parser does not "know" that
-`Int` is a fixed type, or that the statement `r = -r` transforms an `Int` to another `Int`.
-The magic of type inference takes place in the later phase of compilation.
+前一段的讨论中提到了「解析器」，也就是，包含 `abmult` 的模块被首次加载时发生的编译前期，而不是首次调用它的编译后期。解析器不「知道」`Int` 是固定类型，也不知道语句 `r = -r` 将一个 `Int` 转换为另一个 `Int`。类型推断的魔力在编译后期生效。
 
-Thus, the parser does not know that `r` has a fixed type (`Int`).
-nor that `r` does not change value once the inner function is created (so that
-the box is unneeded).  Therefore, the parser emits code for
-box that holds an object with an abstract type such as `Any`, which
-requires run-time type dispatch for each occurrence of `r`.  This can be
-verified by applying `@code_warntype` to the above function.  Both the boxing
-and the run-time type dispatch can cause loss of performance.
+因此，解析器不知道 `r` 具有固定类型（`Int`）。一旦内部函数被创建，`r` 的值也不会改变（因此也不需要 box）。因此，解析器向包含具有抽象类型（比如 `Any`）的对象的 box 发出代码，这对于每次出现的 `r` 都需要运行时类型派发。这可以通过在上述函数中使用 `@code_warntype` 来验证。装箱和运行时的类型派发都有可能导致性能损失。
 
-If captured variables are used in a performance-critical section of the code,
-then the following tips help ensure that their use is performant. First, if
-it is known that a captured variable does not change its type, then this can
-be declared explicitly with a type annotation (on the variable, not the
-right-hand side):
+如果捕获的变量用于代码的性能关键部分，那么以下提示有助于确保它们的使用具有高效性。首先，如果已经知道被捕获的变量不会改变类型，则可以使用类型注释来显式声明类型（在变量上，而不是在右侧）：
 ```julia
 function abmult2(r0::Int)
     r::Int = r0
@@ -1478,11 +1453,7 @@ function abmult2(r0::Int)
     return f
 end
 ```
-The type annotation partially recovers lost performance due to capturing because
-the parser can associate a concrete type to the object in the box.
-Going further, if the captured variable does not need to be boxed at all (because it
-will not be reassigned after the closure is created), this can be indicated
-with `let` blocks as follows.
+类型注释部分恢复由于捕获而导致的丢失性能，因为解析器可以将具体类型与 box 中的对象相关联。更进一步，如果被捕获的变量不再需要 box（因为它不会在闭包创建后被重新分配），就可以用 `let` 代码块表示，如下所示。
 ```julia
 function abmult3(r::Int)
     if r < 0
@@ -1494,11 +1465,4 @@ function abmult3(r::Int)
     return f
 end
 ```
-The `let` block creates a new variable `r` whose scope is only the
-inner function. The second technique recovers full language performance
-in the presence of captured variables. Note that this is a rapidly
-evolving aspect of the compiler, and it is likely that future releases
-will not require this degree of programmer annotation to attain performance.
-In the mean time, some user-contributed packages like
-[FastClosures](https://github.com/c42f/FastClosures.jl) automate the
-insertion of `let` statements as in `abmult3`.
+`let` 代码块创建了一个新的变量 `r`，它的作用域只是内部函数。第二种技术在捕获变量存在时完全恢复了语言性能。请注意，这是编译器的一个快速发展的方面，未来的版本可能不需要依靠这种程度的程序员注释来获得性能。与此同时，一些用户提供的包（如 [FastClosures](https://github.com/c42f/FastClosures.jl)）会自动插入像在 `abmult3` 中那样的 `let` 语句。

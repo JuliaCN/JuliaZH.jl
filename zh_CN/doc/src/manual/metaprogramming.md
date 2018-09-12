@@ -1,15 +1,7 @@
 # Metaprogramming
 
-The strongest legacy of Lisp in the Julia language is its metaprogramming support. Like Lisp,
-Julia represents its own code as a data structure of the language itself. Since code is represented
-by objects that can be created and manipulated from within the language, it is possible for a
-program to transform and generate its own code. This allows sophisticated code generation without
-extra build steps, and also allows true Lisp-style macros operating at the level of [abstract syntax trees](https://en.wikipedia.org/wiki/Abstract_syntax_tree).
-In contrast, preprocessor "macro" systems, like that of C and C++, perform textual manipulation
-and substitution before any actual parsing or interpretation occurs. Because all data types and
-code in Julia are represented by Julia data structures, powerful [reflection](https://en.wikipedia.org/wiki/Reflection_%28computer_programming%29)
-capabilities are available to explore the internals of a program and its types just like any other
-data.
+Lisp 留给 Julia 最大的遗产就是它的元编程支持。和 Lisp 一样，Julia 把自己的代码表示为语言中的数据结构。既然代码被表示为了可以在语言中创建和操作的对象，程序就可以变换和生成自己的代码。这允许在没有额外构建步骤的情况下生成复杂的代码，并且还允许在 [abstract syntax trees](https://en.wikipedia.org/wiki/Abstract_syntax_tree) 级别上运行的真正的 Lisp 风格的宏。与之相对的是预处理器“宏”系统，比如 C 和 C++ 中的，它们在解析和解释代码之前进行文本操作和变换。由于 Julia 中的所有数据类型和代码都被表示为 Julia 的 数据结构，强大的 [reflection](https://en.wikipedia.org/wiki/Reflection_omputer_%28cprogramming%29)
+功能可用于探索程序的内部及其类型，就像任何其他数据一样。
 
 ## 程序表示
 
@@ -20,10 +12,9 @@ julia> prog = "1 + 1"
 "1 + 1"
 ```
 
-**What happens next?**
+**接下来会发生什么？**
 
-The next step is to [parse](https://en.wikipedia.org/wiki/Parsing#Computer_languages) each string
-into an object called an expression, represented by the Julia type `Expr`:
+下一步是 [parse](https://en.wikipedia.org/wiki/Parsing#Computer_languages) 每个字符串到一个称为表达式的对象，由 Julia 的类型 `Expr` 表示：
 
 ```jldoctest prog
 julia> ex1 = Meta.parse(prog)
@@ -33,44 +24,43 @@ julia> typeof(ex1)
 Expr
 ```
 
-`Expr` objects contain two parts:
+`Expr`  对象包含两个部分：
 
-  * a `Symbol` identifying the kind of expression. A symbol is an [interned string](https://en.wikipedia.org/wiki/String_interning)
-    identifier (more discussion below).
+  * 一个标识表达式类型的 `Symbol`。Symbol 就是一个 [interned string](https://en.wikipedia.org/wiki/String_interning)
+    标识符（下面会有更多讨论）
 
 ```jldoctest prog
 julia> ex1.head
 :call
 ```
 
-  * the expression arguments, which may be symbols, other expressions, or literal values:
+ * 表达式的参数，可能是符号，其他表达式，或者字面值：
 
 ```jldoctest prog
 julia> ex1.args
 3-element Array{Any,1}:
-  :+
+ :+
  1
  1
 ```
 
-Expressions may also be constructed directly in [prefix notation](https://en.wikipedia.org/wiki/Polish_notation):
+表达式也可能直接用 [prefix notation](https://en.wikipedia.org/wiki/Polish_notation) 构造：
 
 ```jldoctest prog
 julia> ex2 = Expr(:call, :+, 1, 1)
 :(1 + 1)
 ```
 
-The two expressions constructed above – by parsing and by direct construction – are equivalent:
+上面构造的两个表达式 – 一个通过解析构造一个通过直接构造 – 是等价的：
 
 ```jldoctest prog
 julia> ex1 == ex2
 true
 ```
 
-**The key point here is that Julia code is internally represented as a data structure that is accessible
-from the language itself.**
+**这里的关键点是 Julia 的代码在内部表示为可以从语言本身访问的数据结构**
 
-The [`dump`](@ref) function provides indented and annotated display of `Expr` objects:
+函数 [`dump`](@ref) 可以带有缩进和注释地显示 `Expr` 对象：
 
 ```jldoctest prog
 julia> dump(ex2)
@@ -89,20 +79,16 @@ julia> ex3 = Meta.parse("(4 + 4) / 2")
 :((4 + 4) / 2)
 ```
 
-Another way to view expressions is with Meta.show_sexpr, which displays the [S-expression](https://en.wikipedia.org/wiki/S-expression)
-form of a given `Expr`, which may look very familiar to users of Lisp. Here's an example illustrating
-the display on a nested `Expr`:
+另外一个查看表达式的方法是使用 Meta.show_sexor，它能显示给定 `Expr` 的 [S-expression](https://en.wikipedia.org/wiki/S-expression)，对 Lisp 用户来说，这看着很熟悉。下面是一个示例，阐释了如何显示嵌套的 `Expr`：
 
 ```jldoctest ex3
 julia> Meta.show_sexpr(ex3)
 (:call, :/, (:call, :+, 4, 4), 2)
 ```
 
-### Symbols
+### 符号
 
-The `:` character has two syntactic purposes in Julia. The first form creates a [`Symbol`](@ref),
-an [interned string](https://en.wikipedia.org/wiki/String_interning) used as one building-block
-of expressions:
+字符 `:` 在 Julia 中有两个作用。第一种形式构造一个  [`Symbol`](@ref)，这是作为表达式组成部分的一个 [interned string](https://en.wikipedia.org/wiki/String_interning)：
 
 ```jldoctest
 julia> :foo
@@ -112,8 +98,7 @@ julia> typeof(ans)
 Symbol
 ```
 
-The [`Symbol`](@ref) constructor takes any number of arguments and creates a new symbol by concatenating
-their string representations together:
+构造器 [`Symbol`](@ref) 接受任意数量的参数并通过把它们的字符串表示连在一起创建一个新的符号。
 
 ```jldoctest
 julia> :foo == Symbol("foo")

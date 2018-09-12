@@ -2,18 +2,9 @@
 
 通常，我们把程序语言中的类型系统划分成两类：静态类型和动态类型。对于静态类型系统，在程序运行之前，我们就知道每一个表达式的类型。而对于动态类型系统，我们只有通过运行那个程序，得到表达式具体的值，才能确定其具体的类型。在静态类型语言中，通常我们可以在不知道具体类型的情况下写一些代码，这种将一段代码用在多个类型的能力被称为多态性。在经典的动态类型语言中，所有的代码都是多态的，这意味着这些代码对于其中值的类型没有约束，除非在代码中去具体的判断一个值的类型，或者对对象做一些它不支持的操作。
 
-Julia's type system is dynamic, but gains some of the advantages of static type systems by making
-it possible to indicate that certain values are of specific types. This can be of great assistance
-in generating efficient code, but even more significantly, it allows method dispatch on the types
-of function arguments to be deeply integrated with the language. Method dispatch is explored in
-detail in [Methods](@ref), but is rooted in the type system presented here.
+Julia 类型系统是动态的，但通过指出某些变量是特定类型的，可以获得静态类型系统的一些优点。这对于生成高效的代码非常有帮助，但更重要的是，它允许对函数参数类型的方法派发与语言深度集成。方法派发将在 [Methods](@ref) 中详细探讨，但它根植于此处提供的类型系统。
 
-The default behavior in Julia when types are omitted is to allow values to be of any type. Thus,
-one can write many useful Julia functions without ever explicitly using types. When additional
-expressiveness is needed, however, it is easy to gradually introduce explicit type annotations
-into previously "untyped" code. Adding annotations serves three primary purposes: to take advantage
-of Julia's powerful multiple-dispatch mechanism,  to improve human readability, and to catch
-programmer errors.
+在类型被省略时，Julia 的默认行为是允许变量为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加注释主要有三个目的：利用 Julia 强大的多重派发机制、提高代码可读性和捕获程序错误。
 
 Describing Julia in the lingo of [type systems](https://en.wikipedia.org/wiki/Type_system), it
 is: dynamic, nominative and parametric. Generic types can be parameterized, and the hierarchical
@@ -30,7 +21,7 @@ up front are:
   * There is no division between object and non-object values: all values in Julia are true objects
     having a type that belongs to a single, fully connected type graph, all nodes of which are equally
     first-class as types.
-  * There is no meaningful concept of a "compile-time type": the only type a value has is its actual
+  * 「编译时类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际
     type when the program is running. This is called a "run-time type" in object-oriented languages
     where the combination of static compilation with polymorphism makes this distinction significant.
   * 值有类型，变量没有类型——变量仅仅是绑定了值的名字而已。

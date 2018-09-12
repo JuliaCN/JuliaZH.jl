@@ -196,28 +196,28 @@ For users coming to Julia from R, these are some noteworthy differences:
 
   * Julia 需要用 `end` 来结束代码块。与 Python 不同，Julia 没有 `pass` 关键字。
   * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
-  * Julia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 `a[2:3]` 就是 Python 中的 `a[1:3]`。
-    in Python.
-  * Julia does not support negative indices. In particular, the last element of a list or array is
-    indexed with `end` in Julia, not `-1` as in Python.
-  * Julia's `for`, `if`, `while`, etc. blocks are terminated by the `end` keyword. Indentation level
-    is not significant as it is in Python.
-  * Julia has no line continuation syntax: if, at the end of a line, the input so far is a complete
-    expression, it is considered done; otherwise the input continues. One way to force an expression
-    to continue is to wrap it in parentheses.
-  * Julia arrays are column major (Fortran ordered) whereas NumPy arrays are row major (C-ordered)
-    by default. To get optimal performance when looping over arrays, the order of the loops should
-    be reversed in Julia relative to NumPy (see relevant section of [Performance Tips](@ref man-performance-tips)).
-  * Julia's updating operators (e.g. `+=`, `-=`, ...) are *not in-place* whereas NumPy's are. This
-    means `A = [1, 1]; B = A; B += [3, 3]` doesn't change values in `A`, it rather rebinds the name `B`
-    to the result of the right-hand side `B = B + 3`, which is a new array. For in-place operation, use `B .+= 3`
-    (see also [dot operators](@ref man-dot-operators)), explicit loops, or `InplaceOps.jl`.
-  * Julia evaluates default values of function arguments every time the method is invoked, unlike
-    in Python where the default values are evaluated only once when the function is defined. For example,
+  * Julia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 `a[2:3]` 就是 Python 中的 `a[1:3]`
+    。
+  * Julia 不支持负数索引。特别地，列表或数组的最后一个元素
+    在 Julia 中使用 `end` 索引，而不像在 Python 中使用 `-1`。
+  * Julia 的 `for`、`if`、`while`等代码块由`end`关键字终止。缩进级别
+    并不像在 Python 中那么重要。
+  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的
+    表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是
+    将其包含在括号中。
+  * 默认情况下，Julia 数组是 column major (Fortran ordered)，而 NumPy 数组是 ow major (C-ordered)。
+    为了在循环数组时获得最佳性能，循环顺序应该
+    在 Julia 中相对于 NumPy 反转（请参阅 [Performance Tips](@ref man-performance-tips) 中的对应章节）。
+  * Julia 的更新运算符（例如 `+=`，`-=`，···）是 *not in-place*，而 Numpy 的是。这
+    意味着 `A = [1, 1]; B = A; B += [3, 3]` 不会改变 `A` 中的值，而将名称 `B` 重新绑定
+    到右侧表达式 `B = B + 3` 的结果，这是一个新的数组。对于 in-place 操作，使用 `B .+= 3`
+    （另请参阅 [dot operators](@ref man-dot-operators)），显式的循环，或者 `InplaceOps.jl`。
+  * 每次调用方法时，Julia 都会计算函数参数的默认值，不像
+    在 Python 中，默认值只会在函数定义时被计算一次。例如，
     每次无输入参数调用时，函数`f(x=rand()) = x`都返回一个新的随机数
-    On the other hand, the function `g(x=[1,2]) = push!(x,3)` returns `[1,2,3]` every time it is called
-    as `g()`.
-  * In Julia `%` is the remainder operator, whereas in Python it is the modulus.
+    在另一方面，函数 `g(x=[1,2]) = push!(x,3)` 在每次以 `g()` 调用时返回 `[1,2,3]`
+    。
+  * 在 Julia 中，`%` 是余数运算符，而在 Python 中是模运算符。
 
 ## 与 C/C++ 的显著差异
 
@@ -285,9 +285,9 @@ For users coming to Julia from R, these are some noteworthy differences:
     of the form `if cond; statement; end`, `cond && statement` and `!cond || statement`. Assignment
     statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. `cond && (x = value)`,
     because of the operator precedence.
-  * Julia has no line continuation syntax: if, at the end of a line, the input so far is a complete
-    expression, it is considered done; otherwise the input continues. One way to force an expression
-    to continue is to wrap it in parentheses.
+  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的
+    表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是
+    将其包含在括号中。
   * Julia macros operate on parsed expressions, rather than the text of the program, which allows
     them to perform sophisticated transformations of Julia code. Macro names start with the `@` character,
     and have both a function-like syntax, `@mymacro(arg1, arg2, arg3)`, and a statement-like syntax,
