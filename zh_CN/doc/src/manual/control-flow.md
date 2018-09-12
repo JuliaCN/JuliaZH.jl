@@ -9,7 +9,7 @@ Julia 提供了大量的流程控制组件：
   * [异常处理](@ref): `try`-`catch`, [`error`](@ref) 和 [`throw`](@ref).
   * [`Task`（又名协程）](@ref man-tasks): [`yieldto`](@ref).
 
-前五个流程控制机制是标准的高级编程语言通用的。[`Task`](@ref) 不是那么通用：它们提供了非局部的流程控制，这使在暂时挂起的计算之间进行切换成为可能。这是一个强大的组件：Julia 中的异常处理和协同多任务都是使用 `Task` 实现的。虽然日常编程并不需要直接使用 `Task`，但是某些问题可以用 `Task` 更简单地处理。
+前五个流程控制机制是高级编程语言的标准。[`Task`](@ref) 不是那么的标准：它提供了非局部的流程控制，这使得在暂时挂起的计算任务之间进行切换成为可能。这是一个功能强大的组件：Julia 中的异常处理和协同多任务都是通过 `Task` 实现的。虽然日常编程并不需要直接使用 `Task`，但某些问题用 `Task` 处理会更加简单。
 
 ## [复合表达式](@id man-compound-expressions)
 
@@ -345,8 +345,8 @@ julia> while i <= 5
 
 `while` 循环会执行条件表达式（例子中为 `i <= 5`），只要它为 `true`，就一直执行`while` 循环的主体部分。当 `while` 循环第一次执行时，如果条件表达式为 `false`，那么主体代码就一次也不会被执行。
 
-`for` 循环使得常见的重复计算语句更容易写。
-因为类似之前 `while` 循环中的向上和向下计数如此常见，可以用`for` 循环更简明地表达：
+`for` 循环使得常见的重复执行代码写起来更容易。
+像之前 `while` 循环中用到的向上和向下计数是可以用 `for` 循环更简明地表达：
 
 ```jldoctest
 julia> for i = 1:5
@@ -428,9 +428,9 @@ julia> for j = 1:1000
 5
 ```
 
-没有关键字 `break` 的话，上面的 `while` 循环永远不会自己结束，`for` 循环会迭代到1000。使用`break` 的话，这些循环都会提前结束。
+没有关键字 `break` 的话，上面的 `while` 循环永远不会自己结束，而 `for` 循环会迭代到 1000，这些循环都可以使用 `break` 来提前结束。
 
-在其他的环境下，能够结束迭代，立刻进入下一步会更灵活。`continue` 关键字可以完成这个：
+在某些场景下，需要直接结束此次迭代，并立刻进入下次迭代，`continue` 关键字可以用来完成此功能：
 
 ```jldoctest
 julia> for i = 1:10
@@ -444,9 +444,9 @@ julia> for i = 1:10
 9
 ```
 
-这是一个有点做作的例子，因为我们可以通过否定这个条件，把 `println` 调用放到 `if` 代码块里，更清晰地得到同样的结果。在更实际的应用中，在 `continue` 后面还会有更多的代码要运行，从调用`continue` 开始还有多个。
+这是一个有点做作的例子，因为我们可以通过否定这个条件，把 `println` 调用放到 `if` 代码块里来更简洁的实现同样的功能。在实际应用中，在 `continue` 后面还会有更多的代码要运行，并且调用 `continue` 的地方可能会有多个。
 
-多个嵌套的 `for` 循环可以合并到一个外部循环，形成它的迭代对象的笛卡尔积：
+多个嵌套的 `for` 循环可以合并到一个外部循环，可以用来创建其迭代对象的笛卡尔积：
 
 ```jldoctest
 julia> for i = 1:2, j = 3:4
@@ -458,7 +458,7 @@ julia> for i = 1:2, j = 3:4
 (2, 4)
 ```
 
-有了这个语法，迭代变量依然参考外部循环变量； 例如 `for i = 1:n, j = 1:i` 是合法的。但是在一个循环里面的 `break` 语句会推出整个嵌套循环，不仅仅是内层循环。每次内层循环运行的时候， 变量 (`i` 和 `j`) 会被赋值为他们当前的迭代变量值。所以对 `i` 的赋值对于接下来的迭代是不可见的：
+有了这个语法，迭代变量依然可以正常使用循环变量来进行索引，例如 `for i = 1:n, j = 1:i` 是合法的，但是在一个循环里面使用 `break` 语句则会跳出整个嵌套循环，不仅仅是内层循环。每次内层循环运行的时候，变量（`i` 和 `j`）会被赋值为他们当前的迭代变量值。所以对 `i` 的赋值对于接下来的迭代是不可见的：
 
 ```jldoctest
 julia> for i = 1:2, j = 3:4
@@ -508,7 +508,7 @@ julia> for i = 1:2, j = 3:4
 | [`UndefVarError`](@ref)       |
 | [`StringIndexError`](@ref)    |
 
-例如，  [`sqrt`](@ref) 函数抛出 [`DomainError`](@ref) 如果参数为负实数：
+例如，当输入参数为负实数时，[`sqrt`](@ref) 函数会抛出一个 [`DomainError`](@ref) ：
 
 ```jldoctest
 julia> sqrt(-1)
@@ -518,7 +518,7 @@ Stacktrace:
 [...]
 ```
 
-你可以用下面的方式定义自己的异常：
+你可能需要根据下面的方式来定义你自己的异常：
 
 ```jldoctest
 julia> struct MyCustomException <: Exception end
@@ -526,7 +526,7 @@ julia> struct MyCustomException <: Exception end
 
 ### [`throw`](@ref) 函数
 
-可以用[`throw`](@ref)显式地创建异常。例如，一个函数只对非负数有定义，如果参数是负数地时候，可以写[`throw`](@ref) 一个 [`DomainError`](@ref)。
+我们可以用 [`throw`](@ref) 显式地创建异常。例如，若一个函数只对非负数有定义，当输入参数是负数的时候，可以用 [`throw`](@ref) 抛出一个 [`DomainError`](@ref)。
 
 ```jldoctest; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> f(x) = x>=0 ? exp(-x) : throw(DomainError(x, "argument must be nonnegative"))
@@ -542,8 +542,7 @@ Stacktrace:
  [1] f(::Int64) at ./none:1
 ```
 
-注意 [`DomainError`](@ref) 没有括号的时候不是一个异常，而是一个异常的类型。
-它需要被调用来获得一个`Exception` 对象：
+注意 [`DomainError`](@ref) 后面不接括号的话不是一个异常，而是一个异常类型。我们需要调用它来获得一个 `Exception` 对象：
 
 ```jldoctest
 julia> typeof(DomainError(nothing)) <: Exception
@@ -553,14 +552,14 @@ julia> typeof(DomainError) <: Exception
 false
 ```
 
-另外，一些用于错误报告的异常类型接受一个或者多个参数：
+另外，一些异常类型会接受一个或多个参数来进行错误报告：
 
 ```jldoctest
 julia> throw(UndefVarError(:x))
 ERROR: UndefVarError: x not defined
 ```
 
-这个机制可以很轻易地依据 [`UndefVarError`](@ref) 的写法，用来自定义异常类型：
+我们可以仿照 [`UndefVarError`](@ref) 的写法，用自定义异常类型来轻松实现这个机制：
 
 ```jldoctest
 julia> struct MyUndefVarError <: Exception
@@ -570,7 +569,9 @@ julia> struct MyUndefVarError <: Exception
 julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defined")
 ```
 
-!!! 注意：当写一个错误信息的时候，把第一个单词小写更好。例如，`size(A) == size(B) || throw(DimensionMismatch("size of A not equal to size of B"))`
+!!! note
+    错误信息的第一个单词最好用小写. 例如,
+    `size(A) == size(B) || throw(DimensionMismatch("size of A not equal to size of B"))`
 
    优于
 
@@ -581,9 +582,9 @@ julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defin
 
 ### 错误
 
-[`error`](@ref) 函数用来产生一个 [`ErrorException`](@ref) 来中断正常的控制流程。
+我们可以用 [`error`](@ref) 函数生成一个 [`ErrorException`](@ref) 来中断正常的控制流程。
 
-假设我们希望当计算一个负数的平方根的时候，停止执行。为了实现它，我们可以定义一个挑剔的 [`sqrt`](@ref) 函数，当它的参数是负数时，产生一个错误：
+假设我们希望在计算负数的平方根时让程序立即停止执行。为了实现它，我们可以定义一个挑剔的 [`sqrt`](@ref) 函数，当它的参数是负数时，产生一个错误：
 
 ```jldoctest fussy_sqrt; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> fussy_sqrt(x) = x >= 0 ? sqrt(x) : error("negative x not allowed")
@@ -629,7 +630,7 @@ Stacktrace:
 
 ### `try/catch` 语句
 
-`try/catch` 语句允许测试 `Exception`s。 例如，一个自定义的平方根函数可以使用`Exception`s，按照需要自动调用实数或者复数平方根：
+`try/catch` 语句可以用来捕获 `Exception`，并进行异常处理。例如，一个自定义的平方根函数可以通过 `Exception` 来实现自动按需调用求解实数或者复数平方根的方法：
 
 ```jldoctest
 julia> f(x) = try
@@ -646,8 +647,7 @@ julia> f(-1)
 0.0 + 1.0im
 ```
 
-值得注意的时在实际计算这个函数的时候，需要比较 `x` 与0，而不是捕获一个异常。
-这个异常比简单地比较和分支慢得多。
+值得注意的是，在实际用这个函数的时候，应该比较 `x` 与 0 的大小，而不是捕获一个异常，异常比直接使用判断分支慢得多。
 
 `try/catch` 语句允许保存 `Exception` 到一个变量中。下面的做作的例子中，如果 `x` 是可索引的，计算`x` 的第二项的平方根，否则假设 `x` 是一个实数，并返回它的平方根：
 

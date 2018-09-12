@@ -119,7 +119,7 @@ julia> x
 
 ## [矢量化 "dot" 运算符](@id man-dot-operators)
 
-对于每一个二元运算符，比如 `^` ，都有一个“dot”运算符 `.^` 与之对应，它会对数组元素一一执行 `^` 运算。比如 `[1,2,3] ^ 3` 是非法的，因为数学上没有给（长宽不一样的）数组的立方下过定义。但是 `[1,2,3] .^ 3` 在 Julia 里是合法的，它会逐个元素（“矢量式的”）计算，得到 `[1^3, 2^3, 3^3]`。类似地，像 `!` 和 `√` 这种一元运算符也会依次针对每个元素运算。
+对于 *每个* 二元运算符，比如 `^` ，都有一个 "dot" 运算符 `.^` 与之对应，它 *自动地* 被定义为对数组元素一一执行 `^` 运算。比如 `[1,2,3] ^ 3` 是非法的，因为数学上没有给（长宽不一样的）数组的立方下过定义。但是 `[1,2,3] .^ 3` 在 Julia 里是合法的，它会逐个元素（“向量化”）计算，得到 `[1^3, 2^3, 3^3]`。类似地，对于像 `!` 或 `√` 这种一元运算符，都有一个应用于元素的运算符 `.√` 与之对应。
 
 ```jldoctest
 julia> [1,2,3] .^ 3
@@ -129,18 +129,16 @@ julia> [1,2,3] .^ 3
  27
 ```
 
-具体来说，`a .^ b` 被解析为 ["dot" call](@ref man-vectorized)
-`(^).(a,b)`，进而会执行 [broadcast](@ref Broadcasting) 操作：
-it can combine arrays and scalars, arrays of the same size (performing
-the operation elementwise), and even arrays of different shapes (e.g.
-combining row and column vectors to produce a matrix). Moreover, like
-all vectorized "dot calls," these "dot operators" are
-*fusing*. For example, if you compute `2 .* A.^2 .+ sin.(A)` (or
-equivalently `@. 2A^2 + sin(A)`, using the [`@.`](@ref @__dot__) macro) for
-an array `A`, it performs a *single* loop over `A`, computing `2a^2 + sin(a)`
-for each element of `A`. In particular, nested dot calls like `f.(g.(x))`
-are fused, and "adjacent" binary operators like `x .+ 3 .* x.^2` are
-equivalent to nested dot calls `(+).(x, (*).(3, (^).(x, 2)))`.
+具体来说，`a .^ b` 被解析为 ["dot" call](@ref man-向量化)
+`(^).(a,b)`，进而会执行 [broadcast](@ref #二级标题) 操作：
+结合数组和标量、相同大小的数组（元素之间的运算）、
+甚至不同形状的数组（例如行、列向量结合生成矩阵）。 进一步来说, 
+类似所有向量化 "dot calls"， 这些 "dot 运算符" 是一种 *融合* 方式。
+比如， 要计算含数组 `A` 的表达式 `2 .* A.^2 .+ sin.(A)` （ 等价于 `@. 2A^2 + sin(A)`，
+采用 [`@.`](@ref @__dot__) 宏指令），将在 `A` 中进行一次 *单* 循环，遍历 `A` 中
+的每个元素 a 并计算 `2a^2 + sin(a)`。特别地，类似 `f.(g.(x))` 的嵌套 dot calls 
+是融合的，并且 "邻接式" 的二元运算符表达式 `x .+ 3 .* x.^2` 可以等价转换为
+嵌套 dot calls 表达式 `(+).(x, (*).(3, (^).(x, 2)))`。
 
 Furthermore, "dotted" updating operators like `a .+= b` (or `@. a += b`) are parsed
 as `a .= a .+ b`, where `.=` is a fused *in-place* assignment operation
