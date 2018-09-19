@@ -119,7 +119,7 @@ julia> x
 
 ## [矢量化 "dot" 运算符](@id man-dot-operators)
 
-对于 *每个* 二元运算符，比如 `^` ，都有一个 "dot" 运算符 `.^` 与之对应，它 *自动地* 被定义为对数组元素一一执行 `^` 运算。比如 `[1,2,3] ^ 3` 是非法的，因为数学上没有给（长宽不一样的）数组的立方下过定义。但是 `[1,2,3] .^ 3` 在 Julia 里是合法的，它会逐个元素（“向量化”）计算，得到 `[1^3, 2^3, 3^3]`。类似地，对于像 `!` 或 `√` 这种一元运算符，都有一个应用于元素的运算符 `.√` 与之对应。
+Julia 中，*每个* 二元运算符都有一个 "dot" 运算符与之对应，例如 `^` 就有对应的 `.^` 存在。这个对应的 `.^` 被 Julia *自动地* 定义为逐元素地执行 `^` 运算。比如 `[1,2,3] ^ 3` 是非法的，因为数学上没有给（长宽不一样的）数组的立方下过定义。但是 `[1,2,3] .^ 3` 在 Julia 里是合法的，它会逐元素地执行 `^` 运算（或称 向量化运算），得到 `[1^3, 2^3, 3^3]`。类似地，`!` 或 `√` 这样的一元运算符，也都有一个对应的 `.√` 用于执行逐元素运算。
 
 ```jldoctest
 julia> [1,2,3] .^ 3
@@ -130,29 +130,21 @@ julia> [1,2,3] .^ 3
 ```
 
 具体来说，`a .^ b` 被解析为 ["dot" call](@ref man-向量化)
-`(^).(a,b)`，进而会执行 [broadcast](@ref #二级标题) 操作：
-结合数组和标量、相同大小的数组（元素之间的运算）、
-甚至不同形状的数组（例如行、列向量结合生成矩阵）。 进一步来说, 
-类似所有向量化 "dot calls"， 这些 "dot 运算符" 是一种 *融合* 方式。
-比如， 要计算含数组 `A` 的表达式 `2 .* A.^2 .+ sin.(A)` （ 等价于 `@. 2A^2 + sin(A)`，
+`(^).(a,b)`，这会执行 [broadcast](@ref #二级标题) 操作：
+该操作能结合数组和标量、相同大小的数组（元素之间的运算）、
+甚至不同形状的数组（例如行、列向量结合生成矩阵）。 更进一步， 
+就像所有向量化的（vectorized） "dot calls" 一样， 这些 "dot 运算符" 是 *融合* 的。
+举个例子来说明 *融合* 这个概念， 计算含数组 `A` 的表达式 `2 .* A.^2 .+ sin.(A)` （ 等价于 `@. 2A^2 + sin(A)`
 采用 [`@.`](@ref @__dot__) 宏指令），将在 `A` 中进行一次 *单* 循环，遍历 `A` 中
-的每个元素 a 并计算 `2a^2 + sin(a)`。特别地，类似 `f.(g.(x))` 的嵌套 dot calls 
-是融合的，并且 "邻接式" 的二元运算符表达式 `x .+ 3 .* x.^2` 可以等价转换为
+的每个元素 a 并计算 `2a^2 + sin(a)`。*融合* 还有更大的功用，类似 `f.(g.(x))` 的嵌套 dot calls 
+也是 *融合* 的，并且 "相邻的" 二元运算符表达式 `x .+ 3 .* x.^2` 可以等价转换为
 嵌套 dot calls 表达式 `(+).(x, (*).(3, (^).(x, 2)))`。
 
-Furthermore, "dotted" updating operators like `a .+= b` (or `@. a += b`) are parsed
-as `a .= a .+ b`, where `.=` is a fused *in-place* assignment operation
-(see the [dot syntax documentation](@ref man-vectorized)).
+除了 "dot" 运算符，我们还有 "加点的" 更新运算符，举个例子，`a .+= b`  （或者 `@. a += b`），会被解析成 `a .= a .+ b`，这里的 `.=` 是一个 *融合* 的 *原地* 运算。（查看 [`点` 的语法文档](@ref man-vectorized)）。
 
-Note the dot syntax is also applicable to user-defined operators.
-For example, if you define `⊗(A,B) = kron(A,B)` to give a convenient
-infix syntax `A ⊗ B` for Kronecker products ([`kron`](@ref)), then
-`[A,B] .⊗ [C,D]` will compute `[A⊗C, B⊗D]` with no additional coding.
+这个加点的语法，也能用在用户自定义的运算符上。
 
-Combining dot operators with numeric literals can be ambiguous.
-For example, it is not clear whether `1.+x` means `1. + x` or `1 .+ x`.
-Therefore this syntax is disallowed, and spaces must be used around
-the operator in such cases.
+将点运算符用于数值字面量可能会导致歧义。`1.+x` 是表示 `1. + x` 呢还是  `1 .+ x` ？这叫人疑惑。因此不允许使用这种语法，遇到这种情况时，必须明确地用空格消除歧义。
 
 ## 数值比较
 
@@ -206,13 +198,13 @@ false
 
 整数的比较以标准方式——按位比较，而浮点数的比较以 [IEEE 754 标准](https://en.wikipedia.org/wiki/IEEE_754-2008)。
 
-  * 有限数以通常的方式排序。
-  * 正零等于但不大于负零。
-  * `Inf` 等于自身并且大于除了 `NaN` 外的所有数。
-  * `-Inf` 等于自身并且小于除了 `NaN` 外的所有数。
-  * `NaN` is not equal to, not less than, and not greater than anything, including itself.
+  * 有限数的大小顺序，和我们所熟知的相同。
+  * `+0` 等于但不大于 `-0`.
+  * `Inf` 等于自身，并且大于除了 `NaN` 外的所有数。
+  * `-Inf` 等于自身，并且小于除了 `NaN` 外的所有数。
+  * `NaN` “不具有可比性”，它与任何数值（甚至包括它自己）做大小比较，结果都是 false；并且与任何数值（包括它自己）做不等比较，结果都为 true.
 
-The last point is potentially surprising and thus worth noting:
+`NaN` 的“不可比性”可能有点奇特，这里举例说明一下：
 
 ```jldoctest
 julia> NaN == NaN
@@ -228,15 +220,14 @@ julia> NaN > NaN
 false
 ```
 
-and can cause especial headaches with [arrays](@ref man-multi-dim-arrays):
+在做[数组](@ref man-multi-dim-arrays)比较时，`NaN` 的存在，会使比较结果变得很奇怪：
 
 ```jldoctest
 julia> [1 NaN] == [1 NaN]
 false
 ```
 
-Julia provides additional functions to test numbers for special values, which can be useful in
-situations like hash key comparisons:
+为此，Julia 给这些 *非有限数* 提供了下面几个额外的测试函数。这些函数在有些情况下很有用处，比如在做 hash 比较时。
 
 | 函数                | 测试是否满足如下性质                  |
 |:----------------------- |:------------------------- |
