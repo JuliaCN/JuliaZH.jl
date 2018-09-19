@@ -21,9 +21,9 @@ up front are:
   * There is no division between object and non-object values: all values in Julia are true objects
     having a type that belongs to a single, fully connected type graph, all nodes of which are equally
     first-class as types.
-  * 「编译时类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际
-    type when the program is running. This is called a "run-time type" in object-oriented languages
-    where the combination of static compilation with polymorphism makes this distinction significant.
+  * 「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际
+    类型。这在面向对象被称为「运行时类型」
+    ，其中静态编译和多态的组合使得这种区别变得显著。
   * 值有类型，变量没有类型——变量仅仅是绑定了值的名字而已。
   * Both abstract and concrete types can be parameterized by other types. They can also be parameterized
     by symbols, by values of any type for which [`isbits`](@ref) returns true (essentially, things
@@ -43,13 +43,7 @@ kinds of programming, however, become clearer, simpler, faster and more robust w
 2. 给编译器提供额外的类型信息，这可能帮助程序提升性能
    ，在某些情况下
 
-When appended to an expression computing a value, the `::` operator is read as "is an instance
-of". It can be used anywhere to assert that the value of the expression on the left is an instance
-of the type on the right. When the type on the right is concrete, the value on the left must have
-that type as its implementation -- recall that all concrete types are final, so no implementation
-is a subtype of any other. When the type is abstract, it suffices for the value to be implemented
-by a concrete type that is a subtype of the abstract type. If the type assertion is not true,
-an exception is thrown, otherwise, the left-hand value is returned:
+当被附加到一个计算值的表达式时，`::` 操作符读作「一个 ··· 的实例」。它在任何地方都可以被用于断言左侧表达式的值是右侧类型的实例。当右侧类型是具体类型时，左侧的值必须能够以该类型作为其实现——回想一下，所有具体类型都是最终的，因此没有任何实现是任何其它具体类型的子类型。当右侧类型是抽象类型时，值是由该抽象类型子类型中的某个具体类型实现的才能满足该断言。如果类型断言非真，抛出一个异常，否则返回左侧的值：
 
 ```jldoctest
 julia> (1+2)::AbstractFloat
@@ -61,10 +55,7 @@ julia> (1+2)::Int
 
 可以在任何表达式的所在位置做类型断言。
 
-When appended to a variable on the left-hand side of an assignment, or as part of a `local` declaration,
-the `::` operator means something a bit different: it declares the variable to always have the
-specified type, like a type declaration in a statically-typed language such as C. Every value
-assigned to the variable will be converted to the declared type using [`convert`](@ref):
+当被附加到赋值左侧的变量或作为 `local` 声明的一部分时，`::` 操作符的意义有所不同：它声明变量始终具有指定的类型，就像静态类型语言（如 C）中的类型声明。每个被赋给该变量的值都将使用 [`convert`](@ref) 转换为被声明的类型：
 
 ```jldoctest
 julia> function foo()
@@ -106,26 +97,9 @@ end
 
 ## 抽象类型
 
-Abstract types cannot be instantiated, and serve only as nodes in the type graph, thereby describing
-sets of related concrete types: those concrete types which are their descendants. We begin with
-abstract types even though they have no instantiation because they are the backbone of the type
-system: they form the conceptual hierarchy which makes Julia's type system more than just a collection
-of object implementations.
+抽象类型不能实例化，只能作为类型图中的节点使用，从而描述由相关具体类型组成的集合：那些作为其后代的具体类型。我们从抽象类型开始，即使它们没有实例，因为它们是类型系统的主干：它们形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。
 
-Recall that in [Integers and Floating-Point Numbers](@ref), we introduced a variety of concrete
-types of numeric values: [`Int8`](@ref), [`UInt8`](@ref), [`Int16`](@ref), [`UInt16`](@ref),
-[`Int32`](@ref), [`UInt32`](@ref), [`Int64`](@ref), [`UInt64`](@ref), [`Int128`](@ref),
-[`UInt128`](@ref), [`Float16`](@ref), [`Float32`](@ref), and [`Float64`](@ref). Although
-they have different representation sizes, `Int8`, `Int16`, `Int32`, `Int64` and `Int128`
-all have in common that they are signed integer types. Likewise `UInt8`, `UInt16`, `UInt32`,
-`UInt64` and `UInt128` are all unsigned integer types, while `Float16`, `Float32` and
-`Float64` are distinct in being floating-point types rather than integers. It is common for
-a piece of code to make sense, for example, only if its arguments are some kind of integer,
-but not really depend on what particular *kind* of integer. For example, the greatest common
-denominator algorithm works for all kinds of integers, but will not work for floating-point
-numbers. Abstract types allow the construction of a hierarchy of types, providing a context
-into which concrete types can fit. This allows you, for example, to easily program to any type
-that is an integer, without restricting an algorithm to a specific type of integer.
+回想一下，在 [Integers and Floating-Point Numbers](@ref) 中，我们介绍了各种数值的具体类型：[`Int8`](@ref)、[`UInt8`](@ref)、[`Int16`](@ref)、[`UInt16`](@ref)、[`Int32`](@ref)、[`UInt32`](@ref)、[`Int64`](@ref)、[`UInt64`](@ref)、[`Int128`](@ref)、[`UInt128`](@ref)、[`Float16`](@ref)、[`Float32`](@ref) 和 [`Float64`](@ref)。尽管 `Int8`、`Int16`、`Int32`、`Int64` 和 `Int128` 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，`UInt8`、`UInt16`、`UInt32`、`UInt64` 和 `UInt128` 都是无符号整数类型，而 `Float16`、`Float32` 和 `Float64` 是不同的浮点数类型而非整数类型。一段代码通常是有意义的，例如，除非它的参数是某种类型的整数，而不是真的取决于特定*类型*的整数。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，提供了具体类型可以适应的上下文。例如，这允许你轻松地为任何类型的整数编程，而不会将算法限制为某种特殊类型的整数。
 
 使用[`abstract type`](@ref)关键词来声明抽象类型。抽象类型的一般语法时：
 
@@ -169,10 +143,7 @@ function myplus(x,y)
 end
 ```
 
-The first thing to note is that the above argument declarations are equivalent to `x::Any` and
-`y::Any`. When this function is invoked, say as `myplus(2,5)`, the dispatcher chooses the most
-specific method named `myplus` that matches the given arguments. (See [Methods](@ref) for more
-information on multiple dispatch.)
+首先需要注意的是上述的参数声明等价于 `x::Any` 和 `y::Any`。当函数被调用时，例如 `myplus(2,5)`，派发器选择与给定参数相匹配的名称为 `myplus` 的最具体方法。（有关多重派发的更多信息，请参阅 [Methods](@ref)。）
 
 Assuming no method more specific than the above is found, Julia next internally defines and compiles
 a method called `myplus` specifically for two `Int` arguments based on the generic function given
@@ -195,7 +166,7 @@ a function whose arguments are abstract types, because it is recompiled for each
 concrete types with which it is invoked. (There may be a performance issue, however, in the case
 of function arguments that are containers of abstract types; see [Performance Tips](@ref man-performance-tips).)
 
-## 位类型
+## 原始类型
 
 位类型是具体类型，其数据是由位构成。位类型的经典示例是整数和浮点数。与大多数语言不同，Julia允许您声明自己的位类型，而不是仅提供一组固定的内置类型。实际上，标准位类型都是在语言本身中定义的：
 
@@ -226,7 +197,7 @@ primitive type «name» «bits» end
 primitive type «name» <: «supertype» «bits» end
 ```
 
-bits表示该类型需要多少存储空间，name为新类型指定名称。可已经一个位类型声明为某个父类型的子类型。如果省略父类型，则默认`Any`为其直接父类型。上述声明中意味着[`Bool`](@ref)类型需要8位来储存，并且直接父类型为[`Integer`](@ref)。目前，仅支持8位倍数的大小。因此，布尔值虽然确实只需要一位，但不能声明为小于八位的值。
+bits 的数值表示该类型需要多少存储空间，name 为新类型指定名称。可以选择将一个原始类型声明为某个超类型的子类型。如果省略超类型，则默认 `Any` 为其直接超类型。上述声明中意味着 [`Bool`](@ref) 类型需要 8 位来储存，并且直接超类型为 [`Integer`](@ref)。目前支持的大小只能是 8 位的倍数。因此，布尔值虽然确实只需要一位，但不能声明为小于 8 位的值。
 
 The types [`Bool`](@ref), [`Int8`](@ref) and [`UInt8`](@ref) all have identical representations:
 they are eight-bit chunks of memory. Since Julia's type system is nominative, however, they
