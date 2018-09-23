@@ -111,10 +111,9 @@ julia> Symbol(:var,'_',"sym")
 :var_sym
 ```
 
-In the context of an expression, symbols are used to indicate access to variables; when an expression
-is evaluated, a symbol is replaced with the value bound to that symbol in the appropriate [scope](@ref scope-of-variables).
+在表达式的上下文中，符号用来表示对变量的访问；当一个表达式被求值时，符号会被替换为这个符号在合适的 [scope](@ref scope-of-variables) 中所绑定的值。
 
-Sometimes extra parentheses around the argument to `:` are needed to avoid ambiguity in parsing.:
+有时需要在 `：` 的参数两边加上额外的括号，以避免在解析时出现歧义：
 
 ```jldoctest
 julia> :(:)
@@ -124,14 +123,11 @@ julia> :(::)
 :(::)
 ```
 
-## Expressions and evaluation
+## 表达式与求值
 
 ### Quoting
 
-The second syntactic purpose of the `:` character is to create expression objects without using
-the explicit `Expr` constructor. This is referred to as *quoting*. The `:` character, followed
-by paired parentheses around a single statement of Julia code, produces an `Expr` object based
-on the enclosed code. Here is example of the short form used to quote an arithmetic expression:
+`:` 的第二个语义是不显式调用 `Expr` 构造器来创建表达式对象。这被称为*引用*。`:` 后面跟着包围着单个 Julia 语句括号，可以基于被包围的代码生成一个 `Expr` 对象。下面是一个引用算数表达式的例子：
 
 ```jldoctest
 julia> ex = :(a+b*c+1)
@@ -141,11 +137,9 @@ julia> typeof(ex)
 Expr
 ```
 
-(to view the structure of this expression, try `ex.head` and `ex.args`, or use [`dump`](@ref)
-as above or [`Meta.@dump`](@ref))
+（为了查看这个表达式的结构，可以试一试 `ex.head` 和 `ex.args`，或者使用 [`dump`](@ref) 同时查看 `ex.head` 和 `ex.args` 或者 [`Meta.@dump`](@ref)）
 
-Note that equivalent expressions may be constructed using [`Meta.parse`](@ref) or the direct `Expr`
-form:
+注意等价的表达式也可以使用 [`Meta.parse`](@ref) 或者直接用 `Expr` 构造：
 
 ```jldoctest
 julia>      :(a + b*c + 1)       ==

@@ -493,30 +493,25 @@ norm(A::Matrix) = maximum(svdvals(A))
 It should however be noted that the compiler is quite efficient at optimizing away the dead branches in code
 written as the `mynorm` example.
 
-## Write "type-stable" functions
+## 编写「类型稳定的」函数
 
-When possible, it helps to ensure that a function always returns a value of the same type. Consider
-the following definition:
+如果可能，确保函数总是返回相同类型的值是有好处的。考虑以下定义：
 
 ```julia
 pos(x) = x < 0 ? 0 : x
 ```
 
-Although this seems innocent enough, the problem is that `0` is an integer (of type `Int`) and
-`x` might be of any type. Thus, depending on the value of `x`, this function might return a value
-of either of two types. This behavior is allowed, and may be desirable in some cases. But it can
-easily be fixed as follows:
+虽然这看起来挺合法的，但问题是 `0` 是一个（`Int` 类型的）整数而 `x` 可能是任何类型。于是，根据 `x` 的值，此函数可能返回两种类型中任何一种的值。这种行为是允许的，并且在某些情况下可能是合乎需要的。但它可以很容易地以如下方式修复：
 
 ```julia
 pos(x) = x < 0 ? zero(x) : x
 ```
 
-There is also a [`oneunit`](@ref) function, and a more general [`oftype(x, y)`](@ref) function, which
-returns `y` converted to the type of `x`.
+还有 [`oneunit`](@ref) 函数，以及更通用的 [`oftype(x, y)`](@ref) 函数，它返回被转换为 `x` 的类型的 `y`。
 
-## Avoid changing the type of a variable
+## 避免更改变量类型
 
-An analogous "type-stability" problem exists for variables used repeatedly within a function:
+类似的「类型稳定性」问题存在于在函数内重复使用的变量：
 
 ```julia
 function foo()
@@ -528,14 +523,12 @@ function foo()
 end
 ```
 
-Local variable `x` starts as an integer, and after one loop iteration becomes a floating-point
-number (the result of [`/`](@ref) operator). This makes it more difficult for the compiler to
-optimize the body of the loop. There are several possible fixes:
+局部变量 `x` 一开始是整数，在一次循环迭代后变为浮点数（[`/`](@ref) 运算符的结果）。这使得编译器更难优化循环体。有几种可能的解决方法：
 
-  * Initialize `x` with `x = 1.0`
-  * Declare the type of `x`: `x::Float64 = 1`
-  * Use an explicit conversion: `x = oneunit(Float64)`
-  * Initialize with the first loop iteration, to `x = 1 / rand()`, then loop `for i = 2:10`
+  * 使用 `x = 1.0` 初始化 `x`
+  * 声明 `x` 的类型：`x::Float64 = 1`
+  * 使用显式的类型转换：`x = oneunit(Float64)`
+  * 使用第一个循环迭代初始化，即 `x = 1 / rand()`，接着循环 `for i = 2:10`
 
 ## [Separate kernel functions (aka, function barriers)](@id kernal-functions)
 
