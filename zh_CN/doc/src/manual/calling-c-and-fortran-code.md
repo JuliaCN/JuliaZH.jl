@@ -1,36 +1,36 @@
 # 调用 C 和 Fortran 代码
 
-在数值计算领域，尽管有很多用 C 语言或 Fortran 写的高质量且成熟的库都可以用 Julia 重写，但为了便捷利用现有的 C 或 Fortran 代码，Julia 提供简洁且高效的调用方式。Julia 的哲学是 "no boilerplate":
-Julia 可以直接调用 C/Fortran 的函数，不需要任何"胶水"代码，代码生成或其它编译过程 -- 即使在交互式会话 (REPL/Jupyter notebook) 中使用也一样. 在 Julia 中，上述特性可以仅仅通过调用[`ccall`](@ref)实现，它的语法看起来就像是普通的函数调用。
+在数值计算领域，尽管有很多用 C 语言或 Fortran 写的高质量且成熟的库都可以用 Julia 重写，但为了便捷利用现有的 C 或 Fortran 代码，Julia 提供简洁且高效的调用方式。Julia 的哲学是 `no boilerplate`：
+Julia 可以直接调用 C/Fortran 的函数，不需要任何"胶水"代码，代码生成或其它编译过程 -- 即使在交互式会话 (REPL/Jupyter notebook) 中使用也一样. 在 Julia 中，上述特性可以仅仅通过调用 [`ccall`](@ref) 实现，它的语法看起来就像是普通的函数调用。
 
-被调用的代码必须是一个 shared library (.so, .dylib, .dll). 大多数 C 和 Fortran 库都已经是以 shared library 发布的，但在用 GCC 或 Clang 编译自己的代码时，需要添加 `-shared` 和 `-fPIC` 编译器选项。由于 Julia 的 JIT 生成的机器码跟原生 C 代码的调用是一样，所以在 Julia 里调用 C/Fortran 库的 overhead 与直接从 C 里调用是一样的。(在 C 和 Julia 中的非库函数调用都能被内联，因此可能会比调用标准库函数花销更少。当库与可执行文件都由 LLVM 生成时，可能会对整个程序执行甚至能跨越这一限制的优化，但是 Julia 现在还不支持这种优化。不过在未来，它可能会这么做，来获得更大的性能提升)
+被调用的代码必须是一个共享库（.so, .dylib, .dll）。大多数 C 和 Fortran 库都已经是以共享库的形式发布的，但在用 GCC 或 Clang 编译自己的代码时，需要添加 `-shared` 和 `-fPIC` 编译器选项。由于 Julia 的 JIT 生成的机器码跟原生 C 代码的调用是一样，所以在 Julia 里调用 C/Fortran 库的额外开销与直接从 C 里调用是一样的。在 C 和 Julia 中的非库函数调用都能被内联，因此可能会比调用标准库函数开销更少。当库与可执行文件都由 LLVM 生成时，对程序整体进行优化从而跨越这一限制是可能的，但是 Julia 现在还不支持这种优化。不过在未来，Julia 可能会支持，从而获得更大的性能提升。
 
 我们可以通过 `(:function, "library")` 或 `("function", "library")` 这两种形式来索引库中的函数，其中 `function` 是函数名，`library` 是库名。对于不同的平台/操作系统，库的载入路径可能会不同，如果库在默认载入路径中，则可以直接将 `library` 设为库名，否则，需要将其设为一个完整的路径。
 
-可以单独使用函数名来代替元组（只用`:function` 或 `"function"`）。 在这种情况下，函数名在当前进程中进行解析。这一调用形式可用于调用 C 库函数、Julia 运行时中的函数或链接到 Julia 的应用程序中的函数。
+可以单独使用函数名来代替元组（只用 `:function` 或 `"function"`）。在这种情况下，函数名在当前进程中进行解析。这一调用形式可用于调用 C 库函数、Julia 运行时中的函数或链接到 Julia 的应用程序中的函数。
 
-默认情况下，Fortran编译器会改变变量名[generate mangled names](https://en.wikipedia.org/wiki/Name_mangling#Fortran)（例如，将函数名转换为小写或大写，通常会添加下划线），要通过 [`ccall`](@ref) 调用 Fortran 函数，必须传递与 Fortran 编译器生成的相对应的标识符。 此外，在调用 Fortran 函数时，所有输入必须以指针形式传递，并已在堆或栈上分配内存。 这不仅适用于通常是堆分配的数组和其他可变对象，而且适用于整数和浮点数等标量值，这些值通常是栈分配的，并且在使用 C 或 Julia 调用约定时通常通过寄存器传递。
+默认情况下，Fortran 编译器会[进行名称修饰](https://en.wikipedia.org/wiki/Name_mangling#Fortran)（例如，将函数名转换为小写或大写，通常会添加下划线），要通过 [`ccall`](@ref) 调用 Fortran 函数，传递的标识符必须与 Fortran 编译器名称修饰之后的一致。此外，在调用 Fortran 函数时，**所有**输入必须以指针形式传递，并已在堆或栈上分配内存。这不仅适用于通常是堆分配的数组及可变对象，而且适用于整数和浮点数等标量值，尽管这些值通常是栈分配的，且在使用 C 或 Julia 调用约定时通常是通过寄存器传递的。
 
-最终，你能使用[`ccall`](@ref)来实际生成一个对库函数的调用。[`ccall`](@ref)的参数如下：
+最终，你能使用 [`ccall`](@ref) 来实际生成一个对库函数的调用。[`ccall`](@ref) 的参数如下：
 
-1. 一个 `(:function, "library")` 对，必须为字面值常量形式，
+1. 一个 `(:function, "library")` 元组，必须为常数字面量的形式，
 
    或
 
-   一个函数指针，（例如，`dlsym`）。
+   一个函数指针（例如，从 `dlsym` 获得的指针）。
 
-2. 返回类型（参见下文，将声明的C类型对应到Julia）
+2. 返回类型（参见下文，将声明的 C 类型对应到 Julia）
 
-     * 当包含的函数已经定义时，参数将会在编译时计算。
+     * 当包含的函数已经定义时，此参数将会在编译期执行。
 
-3. 输入类型的元组。输入类型必须为字面值元组，而非元组
-   变量或表达式。
+3. 输入类型的元组。元组中的类型必须为字面量，而不能是变量或者表达式。
+    
 
-     * 当包含的函数已经定义时，参数将会在编译时计算。
+     * 当包含的函数已经定义时，参数将会在编译期执行。
 
 4. 紧接着的参数，如果有的话，将会以参数的实际值传递给函数。
 
-举一个完整而简单的例子：从标准C库函数中调用 `clock`函数。
+举一个完整而简单的例子：从 C 的标准库函数中调用 `clock` 函数。
 
 ```julia-repl
 julia> t = ccall((:clock, "libc"), Int32, ())
@@ -43,7 +43,7 @@ julia> typeof(ans)
 Int32
 ```
 
-`clock` 不接收任何参数，并返回一个 [`Int32`](@ref) 。一个常见的问题是必须要用逗号尾随来写一个1-元组。例如，要调用 `getenv` 函数来获取指向环境变量值的指针，可以这样来调用：
+`clock` 不接收任何参数，它会返回一个类型为 [`Int32`](@ref) 的值。一个常见的问题是必须要用尾随的逗号来写一个单元组。例如，要通过 `getenv` 函数来获取一个指向环境变量值的指针，可以像这样调用：
 
 ```julia-repl
 julia> path = ccall((:getenv, "libc"), Cstring, (Cstring,), "SHELL")
@@ -53,7 +53,7 @@ julia> unsafe_string(path)
 "/bin/bash"
 ```
 
-请注意，参数类型元组必须是 `(Cstring,)`，而不是 `(Cstring)` 。 这是因为 `(Cstring)` 只是括号括起来的表达式 `Cstring` ，而不是包含 `Cstring` 的1-元组：
+请注意，参数类型元组必须是 `(Cstring,)`，而不是 `(Cstring)` 。这是因为 `(Cstring)` 只是括号括起来的表达式 `Cstring`，而不是包含 `Cstring` 的单元组：
 
 ```jldoctest
 julia> (Cstring)
@@ -63,7 +63,7 @@ julia> (Cstring,)
 (Cstring,)
 ```
 
-在实践中，特别是在提供可重用功能时，通常在Julia函数中封装 [`ccall`](@ref) 用于设置参数的，然后在任何指示错误的 C 或 Fortran 函数中检查错误，作为异常传递给 Julia 调用者。这一点尤其重要，因为C和Fortran的API在如何指示错误条件方面存在众所周知的不一致。 例如，C库函数`getenv` 包含在以下Julia函数中，该函数是[`env.jl`](https://github.com/JuliaLang/julia/blob/master/base/env.jl)实际定义的简化版本：
+在实践中，特别是在提供可重用功能时，通常会将 [`ccall`](@ref) 封装成一个 Julia 函数，此函数负责为 [`ccall`](@ref) 配置参数，且无论 C 或 Fortran 函数以任何方式产生错误，此函数都会对其进行检查并将异常传递给调用者。这一点尤其重要，因为 C 和 Fortran 的 API 在出错时的表现形式和行为极其不一致。例如，C 库函数 `getenv` 在 Julia 中的封装可以在 [`env.jl`](https://github.com/JuliaLang/julia/blob/master/base/env.jl) 里找到，该封装的一个简化版本如下：
 
 ```julia
 function getenv(var::AbstractString)
@@ -76,7 +76,7 @@ function getenv(var::AbstractString)
 end
 ```
 
-C函数 `getenv` 通过返回 `NULL` 指出了一个错误，但是其他标准C函数通过多种不同的方式来指出错误，包括返回-1, 0, 1和其它特殊值。这一层封装能抛出一个清晰地指出问题的异常，即是否调用者尝试获取一个不存在的环境变量：
+C 函数 `getenv` 通过返回 `NULL` 的方式进行报错，但是其他 C 标准库函数也会通过多种不同的方式来报错，这包括返回 -1，0，1 以及其它特殊值。此封装能够明确地抛出异常信息，即是否调用者在尝试获取一个不存在的环境变量：
 
 ```julia-repl
 julia> getenv("SHELL")
@@ -86,7 +86,7 @@ julia> getenv("FOOBAR")
 getenv: undefined variable: FOOBAR
 ```
 
-这有一个稍微复杂一点的例子，它能发现本机的主机名：
+这有一个稍微复杂一点的例子，功能是发现本机的主机名：
 
 ```julia
 function gethostname()
@@ -94,7 +94,7 @@ function gethostname()
     ccall((:gethostname, "libc"), Int32,
           (Ptr{UInt8}, Csize_t),
           hostname, sizeof(hostname))
-    hostname[end] = 0; # ensure null-termination
+    hostname[end] = 0; # 保证以 null 结尾
     return unsafe_string(pointer(hostname))
 end
 ```
@@ -210,20 +210,20 @@ For example, this is used to convert an `Array` of objects (e.g. strings) to an 
 converting an object to a native pointer can hide the object from the garbage collector, causing
 it to be freed prematurely.
 
-### Type Correspondences:
+### 类型对应关系
 
-First, a review of some relevant Julia type terminology:
+首先来复习一下 Julia 类型相关的术语：
 
-| Syntax / Keyword              | 例子                                     | 描述                                                                                                                                                                                                                                                                    |
+| 语法 / 关键字              | 例子                                     | 描述                                                                                                                                                                                                                                                                    |
 |:----------------------------- |:------------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `mutable struct`              | `String`                                    | "Leaf Type" :: A group of related data that includes a type-tag, is managed by the Julia GC, and is defined by object-identity. The type parameters of a leaf type must be fully defined (no `TypeVars` are allowed) in order for the instance to be constructed.              |
-| `abstract type`               | `Any`, `AbstractArray{T, N}`, `Complex{T}`  | "Super Type" :: A super-type (not a leaf-type) that cannot be instantiated, but can be used to describe a group of types.                                                                                                                                                      |
-| `T{A}`                        | `Vector{Int}`                               | "Type Parameter" :: A specialization of a type (typically used for dispatch or storage optimization).                                                                                                                                                                          |
-|                               |                                             | "TypeVar" :: The `T` in the type parameter declaration is referred to as a TypeVar (short for type variable).                                                                                                                                                                  |
-| `primitive type`              | `Int`, `Float64`                            | "Primitive Type" :: A type with no fields, but a size. It is stored and defined by-value.                                                                                                                                                                                           |
+| `mutable struct`              | `String`                                    | `Leaf Type`：包含 `type-tag` 的一组相关数据，由 Julia GC 管理，通过 `object-identity` 来定义。为了保证实例可以被构造，`Leaf Type` 必须是完整定义的，即不允许使用 `TypeVars`。              |
+| `abstract type`               | `Any`, `AbstractArray{T, N}`, `Complex{T}`  | `Super Type`：用于描述一组类型，它不是 `Leaf-Type`，也无法被实例化。                                                                                                                                                      |
+| `T{A}`                        | `Vector{Int}`                               | `Type Parameter`：某种类型的一种具体化，通常用于分派或存储优化。                                                                                                                                                                          |
+|                               |                                             | `TypeVar`：`Type parameter` 声明中的 `T` 是一个 `TypeVar`，它是类型变量的简称。                                                                                                                                                                  |
+| `primitive type`              | `Int`, `Float64`                            | `Primitive Type`：一种没有成员变量的类型，但是它有大小。It is stored and defined by-value.                                                                                                                                                                                           |
 | `struct`                      | `Pair{Int, Int}`                            | "Struct" :: A type with all fields defined to be constant. It is defined by-value, and may be stored with a type-tag.                                                                                                                                                       |
 |                               | `ComplexF64` (`isbits`)                     | "Is-Bits"   :: A `primitive type`, or a `struct` type where all fields are other `isbits` types. It is defined by-value, and is stored without a type-tag.                                                                                                                       |
-| `struct ...; end`             | `nothing`                                   | "Singleton" :: a Leaf Type or Struct with no fields.                                                                                                                                                                                                                        |
+| `struct ...; end`             | `nothing`                                   | `Singleton`：没有成员变量的 `Leaf Type` 或 `Struct`。                                                                                                                                                                                                                        |
 | `(...)` or `tuple(...)`       | `(1, 2, 3)`                                 | "Tuple" :: an immutable data-structure similar to an anonymous struct type, or a constant array. Represented as either an array or a struct.                                                                                                                                |
 
 ### [Bits Types](@id man-bits-types)
@@ -281,9 +281,9 @@ This can help for writing portable code (and remembering that an `int` in C is n
 an `Int` in Julia).
 
 
-**System Independent:**
+**与系统独立的：**
 
-| C name                                                  | Fortran name             | Standard Julia Alias | Julia Base Type                                                                                                |
+| C 类型                                                  | Fortran 类型             | 标准 Julia 别名 | Julia 基本类型                                                                                                |
 |:------------------------------------------------------- |:------------------------ |:-------------------- |:-------------------------------------------------------------------------------------------------------------- |
 | `unsigned char`                                         | `CHARACTER`              | `Cuchar`             | `UInt8`                                                                                                        |
 | `bool` (only in C++)                                    |                          | `Cuchar`             | `UInt8`                                                                                                        |
@@ -322,7 +322,7 @@ to skip the check, you can use `Ptr{UInt8}` as the argument type. `Cstring` can 
 the [`ccall`](@ref) return type, but in that case it obviously does not introduce any extra
 checks and is only meant to improve readability of the call.
 
-**System-dependent:**
+**依赖于系统的：**
 
 | C name          | Standard Julia Alias | Julia Base Type                              |
 |:--------------- |:-------------------- |:-------------------------------------------- |
@@ -478,7 +478,7 @@ is valid, since `Ptr` is always a word-size primitive type.
 But, `g(x::T) where {T} = ccall(:notvalid, T, (T,), x)`
 is not valid, since the type layout of `T` is not known statically.
 
-### SIMD Values
+### SIMD 值
 
 Note: This feature is currently implemented on 64-bit x86 and AArch64 platforms only.
 
@@ -519,7 +519,7 @@ println(call_dist(a,b))
 The host machine must have the requisite SIMD registers.  For example, the code above will not
 work on hosts without AVX support.
 
-### Memory Ownership
+### 内存所有权
 
 **malloc/free**
 
@@ -529,7 +529,7 @@ object received from a C library with [`Libc.free`](@ref) in Julia, as this may 
 being called via the wrong `libc` library and cause Julia to crash. The reverse (passing an object
 allocated in Julia to be freed by an external library) is equally invalid.
 
-### When to use T, Ptr{T} and Ref{T}
+### 何时使用 T、Ptr{T} 以及 Ref{T}
 
 In Julia code wrapping calls to external C routines, ordinary (non-pointer) data should be declared
 to be of type `T` inside the [`ccall`](@ref), as they are passed by value.  For C code accepting
@@ -788,7 +788,7 @@ external C function. As a result, the code may produce a memory leak if `result_
 freed by the garbage collector, or if the garbage collector prematurely frees `result_array`,
 the C function may end up throwing an invalid memory access exception.
 
-## Garbage Collection Safety
+## 垃圾回收安全
 
 When passing data to a [`ccall`](@ref), it is best to avoid using the [`pointer`](@ref) function.
 Instead define a convert method and pass the variables directly to the [`ccall`](@ref). [`ccall`](@ref)
@@ -828,7 +828,7 @@ A similar example can be constructed for [`@cfunction`](@ref).
 However, doing this will also be very slow and leak memory, so you should usually avoid this and instead keep reading.
 The next section discusses how to use indirect calls to efficiently accomplish a similar effect.
 
-## Indirect Calls
+## 非直接调用
 
 The first argument to [`ccall`](@ref) can also be an expression evaluated at run time. In this
 case, the expression must evaluate to a `Ptr`, which will be used as the address of the native
@@ -884,7 +884,7 @@ end
 ```
 
 
-## Closing a Library
+## 关闭库
 
 It is sometimes useful to close (unload) a library so that it can be reloaded.
 For instance, when developing C code for use with Julia, one may need to compile,
@@ -893,17 +893,17 @@ and load in the new changes. One can either restart Julia or use the
 `Libdl` functions to manage the library explicitly, such as:
 
 ```julia
-lib = Libdl.dlopen("./my_lib.so") # Open the library explicitly.
-sym = Libdl.dlsym(lib, :my_fcn)   # Get a symbol for the function to call.
-ccall(sym, ...) # Use the pointer `sym` instead of the (symbol, library) tuple (remaining arguments are the same).
-Libdl.dlclose(lib) # Close the library explicitly.
+lib = Libdl.dlopen("./my_lib.so") # 显式打开库
+sym = Libdl.dlsym(lib, :my_fcn)   # 获得用于调用函数的符号
+ccall(sym, ...) # 直接用指针 `sym` 而不是 (symbol, library) 元组，其余参数保持不变
+Libdl.dlclose(lib) # 显式关闭库
 ```
 
 Note that when using `ccall` with the tuple input
 (e.g., `ccall((:my_fcn, "./my_lib.so"), ...)`), the library is opened implicitly
 and it may not be explicitly closed.
 
-## Calling Convention
+## 调用规约
 
 The second argument to [`ccall`](@ref) can optionally be a calling convention specifier (immediately
 preceding return type). Without any specifier, the platform-default C calling convention is used.
@@ -916,7 +916,7 @@ hn = Vector{UInt8}(256)
 err = ccall(:gethostname, stdcall, Int32, (Ptr{UInt8}, UInt32), hn, length(hn))
 ```
 
-For more information, please see the [LLVM Language Reference](http://llvm.org/docs/LangRef.html#calling-conventions).
+请参阅 [LLVM Language Reference](http://llvm.org/docs/LangRef.html#calling-conventions) 来获得更多信息。
 
 There is one additional special calling convention [`llvmcall`](@ref Base.llvmcall),
 which allows inserting calls to LLVM intrinsics directly.
@@ -932,7 +932,7 @@ Also, note that there is no compatibility layer that ensures the intrinsic makes
 sense and works on the current target,
 unlike the equivalent Julia functions exposed by `Core.Intrinsics`.
 
-## Accessing Global Variables
+## 访问全局变量
 
 Global variables exported by native libraries can be accessed by name using the [`cglobal`](@ref)
 function. The arguments to [`cglobal`](@ref) are a symbol specification identical to that used
@@ -985,7 +985,7 @@ arithmetic. Adding an integer to a `Ptr` in Julia always moves the pointer by so
 *bytes*, not elements. This way, the address values obtained from pointer arithmetic do not depend
 on the element types of pointers.
 
-## Thread-safety
+## 线程安全
 
 Some C libraries execute their callbacks from a different thread, and since Julia isn't thread-safe
 you'll need to take some extra precautions. In particular, you'll need to set up a two-layered
@@ -997,13 +997,13 @@ cond = Base.AsyncCondition()
 wait(cond)
 ```
 
-传递给C的回调应该只执行`:uv_async_send`的[' ccall '](@ref)，传递`cond.handle`参数，注意避免任何分配操作或与Julia运行时的其他交互。
+传递给 C 的回调应该只通过 [' ccall '](@ref) 将 `cond.handle` 作为参数传递给 `:uv_async_send` 并调用，注意避免任何内存分配操作或与 Julia 运行时的其他交互。
 
-注意，事件可能会合并，因此对`uv_async_send` 的多个调用可能会导致对该条件的单个唤醒通知。
+注意，事件可能会合并，因此对 `uv_async_send` 的多个调用可能会导致对该条件的单个唤醒通知。
 
-## 关于Callbacks的更多内容
+## 关于 Callbacks 的更多内容
 
-关于如何传递callback到C库的更多细节，请参考此[博客](https://julialang.org/blog/2013/05/callback).
+关于如何传递 callback 到 C 库的更多细节，请参考此[博客](https://julialang.org/blog/2013/05/callback)。
 
 ## C++
 

@@ -1,10 +1,10 @@
-# 堆栈跟踪
+# 栈跟踪
 
-`StackTraces` 模块提供了简单的堆栈跟踪，这些堆栈跟踪既可读又易于编程使用。
+`StackTraces` 模块提供了简单的栈跟踪功能，这些栈跟踪信息既可读又易于编程使用。
 
-## 查看堆栈跟踪
+## 查看栈跟踪
 
-获取堆栈跟踪的主要函数是[`stacktrace`](@ref)：
+获取栈跟踪信息的主要函数是 [`stacktrace`](@ref)：
 
 ```julia-repl
 6-element Array{Base.StackTraces.StackFrame,1}:
@@ -16,9 +16,7 @@
  (::getfield(REPL, Symbol("##28#29")){REPL.REPLBackend})() at event.jl:92
 ```
 
-Calling [`stacktrace()`](@ref) returns a vector of [`StackTraces.StackFrame`](@ref) s. For ease of use, the
-alias [`StackTraces.StackTrace`](@ref) can be used in place of `Vector{StackFrame}`. (Examples with `[...]`
-indicate that output may vary depending on how the code is run.)
+调用 [`stacktrace()`](@ref) 会返回一个 [`StackTraces.StackFrame`](@ref) 数组。为了使用方便，可以用 [`StackTraces.StackTrace`](@ref) 来代替 `Vector{StackFrame}`。下面例子中 `[...]` 的意思是这部分输出的内容可能会根据代码的实际执行情况而定。
 
 ```julia-repl
 julia> example() = stacktrace()
@@ -48,9 +46,8 @@ julia> grandparent()
 [...]
 ```
 
-Note that when calling [`stacktrace()`](@ref) you'll typically see a frame with `eval at boot.jl`.
-When calling [`stacktrace()`](@ref) from the REPL you'll also have a few extra frames in the stack
-from `REPL.jl`, usually looking something like this:
+注意，在调用 [`stacktrace()`](@ref) 的时，通常会出现 `eval at boot.jl` 这帧。
+当从 REPL 里调用 [`stacktrace()`](@ref) 的时候，还会显示 `REPL.jl` 里的一些额外帧，就像下面一样：
 
 ```julia-repl
 julia> example() = stacktrace()
@@ -67,12 +64,9 @@ julia> example()
  (::getfield(REPL, Symbol("##28#29")){REPL.REPLBackend})() at event.jl:92
 ```
 
-## Extracting useful information
+## 抽取有用信息
 
-Each [`StackTraces.StackFrame`](@ref) contains the function name, file name, line number, lambda info, a flag
-indicating whether the frame has been inlined, a flag indicating whether it is a C function (by
-default C functions do not appear in the stack trace), and an integer representation of the pointer
-returned by [`backtrace`](@ref):
+每个 [`StackTraces.StackFrame`](@ref) 都会包含函数名，文件名，代码行数，lambda 信息，一个用于确认此帧是否被内联的标帜，一个用于确认函数是否为 C 函数的标帜（在默认的情况下 C 函数不会出现在栈跟踪信息中）以及一个用整数表示的指针，它是由 [`backtrace`](@ref) 返回的：
 
 ```julia-repl
 julia> frame = stacktrace()[3]
@@ -102,13 +96,11 @@ julia> top_frame.pointer
 0x00007f92d6293171
 ```
 
-This makes stack trace information available programmatically for logging, error handling, and
-more.
+这使得我们可以通过编程的方式将栈跟踪信息用于打印日志，处理错误以及其它更多用途。
 
-## Error handling
+## 错误处理
 
-While having easy access to information about the current state of the callstack can be helpful
-in many places, the most obvious application is in error handling and debugging.
+能够轻松地获取当前调用栈的状态信息在许多场景下都很有用，但最直接的应用是错误处理和调试。
 
 ```julia-repl
 julia> @noinline bad_function() = undeclared_variable
@@ -129,15 +121,9 @@ julia> example()
 [...]
 ```
 
-You may notice that in the example above the first stack frame points points at line 4, where
-[`stacktrace`](@ref) is called, rather than line 2, where *bad_function* is called, and `bad_function`'s
-frame is missing entirely. This is understandable, given that [`stacktrace`](@ref) is called
-from the context of the *catch*. While in this example it's fairly easy to find the actual source
-of the error, in complex cases tracking down the source of the error becomes nontrivial.
+你可能已经注意到了，上述例子中第一个栈帧指向了 [`stacktrace`](@ref) 被调用的第 4 行，而不是 `bad_function` 被调用的第 2 行，且完全没有出现 `bad_function` 的栈帧。这是也是可以理解的，因为 [`stacktrace`](@ref) 是在 `catch` 的上下文中被调用的。虽然在这个例子中很容易查找到错误的真正源头，但在复杂的情况下查找错误源并不是一件容易的事。
 
-This can be remedied by passing the result of [`catch_backtrace`](@ref) to [`stacktrace`](@ref).
-Instead of returning callstack information for the current context, [`catch_backtrace`](@ref)
-returns stack information for the context of the most recent exception:
+为了补救，我们可以将 [`catch_backtrace`](@ref) 的输出传递给 [`stacktrace`](@ref)。[`catch_backtrace`](@ref) 会返回最近发生异常的上下文中的栈信息，而不是返回当前上下文中的调用栈信息。
 
 ```julia-repl
 julia> @noinline bad_function() = undeclared_variable
@@ -157,7 +143,7 @@ julia> example()
 [...]
 ```
 
-Notice that the stack trace now indicates the appropriate line number and the missing frame.
+可以看到，现在栈跟踪会显示正确的行号以及之前缺失的栈帧。
 
 ```julia-repl
 julia> @noinline child() = error("Whoops!")
@@ -186,10 +172,9 @@ ERROR: Whoops!
 [...]
 ```
 
-## Comparison with [`backtrace`](@ref)
+## [`stacktrace`](@ref) 与 [`backtrace`](@ref) 的比较
 
-A call to [`backtrace`](@ref) returns a vector of `Union{Ptr{Nothing}, Base.InterpreterIP}`, which may then be passed into
-[`stacktrace`](@ref) for translation:
+调用 [`backtrace`](@ref) 会返回一个 `Union{Ptr{Nothing}, Base.InterpreterIP}` 的数组，可以将其传给 [`stacktrace`](@ref) 函数进行转化：
 
 ```julia-repl
 julia> trace = backtrace()
@@ -217,10 +202,7 @@ julia> stacktrace(trace)
  (::getfield(REPL, Symbol("##28#29")){REPL.REPLBackend})() at event.jl:92
 ```
 
-Notice that the vector returned by [`backtrace`](@ref) had 18 elements, while the vector returned
-by [`stacktrace`](@ref) only has 6. This is because, by default, [`stacktrace`](@ref) removes
-any lower-level C functions from the stack. If you want to include stack frames from C calls,
-you can do it like this:
+需要注意的是，[`backtrace`](@ref) 返回的数组有 18 个元素，而经过 [`stacktrace`](@ref) 转化后仅剩 6 个。这是因为 [`stacktrace`](@ref) 在默认情况下会移除所有底层 C 函数的栈信息。如果你想显示 C 函数调用的栈帧，可以这样做：
 
 ```julia-repl
 julia> stacktrace(trace, true)
@@ -248,8 +230,7 @@ julia> stacktrace(trace, true)
  ip:0xffffffffffffffff
 ```
 
-Individual pointers returned by [`backtrace`](@ref) can be translated into [`StackTraces.StackFrame`](@ref)
-s by passing them into [`StackTraces.lookup`](@ref):
+我们也可以将 [`backtrace`](@ref) 返回的单个指针传递给[`StackTraces.lookup`](@ref) 来转化成 [`StackTraces.StackFrame`](@ref)：
 
 ```julia-repl
 julia> pointer = backtrace()[1];

@@ -6,34 +6,22 @@ Julia 类型系统是动态的，但通过指出某些变量是特定类型的�
 
 在类型被省略时，Julia 的默认行为是允许变量为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加注释主要有三个目的：利用 Julia 强大的多重派发机制、提高代码可读性和捕获程序错误。
 
-Describing Julia in the lingo of [type systems](https://en.wikipedia.org/wiki/Type_system), it
-is: dynamic, nominative and parametric. Generic types can be parameterized, and the hierarchical
-relationships between types are [explicitly declared](https://en.wikipedia.org/wiki/Nominal_type_system),
-rather than [implied by compatible structure](https://en.wikipedia.org/wiki/Structural_type_system).
-One particularly distinctive feature of Julia's type system is that concrete types may not subtype
-each other: all concrete types are final and may only have abstract types as their supertypes.
-While this might at first seem unduly restrictive, it has many beneficial consequences with surprisingly
-few drawbacks. It turns out that being able to inherit behavior is much more important than being
-able to inherit structure, and inheriting both causes significant difficulties in traditional
-object-oriented languages. Other high-level aspects of Julia's type system that should be mentioned
-up front are:
+Julia 用[类型系统](https://en.wikipedia.org/wiki/Type_system)的术语描述是动态（dynamic）、主格（nominative）和参数（parametric）的。范型可以被参数化，并且类型之间的层次关系可以被[显式地声明](https://en.wikipedia.org/wiki/Nominal_type_system)，而不是[隐含地通过兼容的结构](https://en.wikipedia.org/wiki/Structural_type_system)。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的类型，并且只有抽象类型可以作为其超类型。虽然起初看起来这可能过于严格，但它有许多有益的结果，但缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：
 
-  * There is no division between object and non-object values: all values in Julia are true objects
-    having a type that belongs to a single, fully connected type graph, all nodes of which are equally
-    first-class as types.
+  * 对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象
+    该类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是
+    头等的。
   * 「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际
     类型。这在面向对象被称为「运行时类型」
     ，其中静态编译和多态的组合使得这种区别变得显著。
   * 值有类型，变量没有类型——变量仅仅是绑定了值的名字而已。
-  * Both abstract and concrete types can be parameterized by other types. They can also be parameterized
-    by symbols, by values of any type for which [`isbits`](@ref) returns true (essentially, things
-    like numbers and bools that are stored like C types or `struct`s with no pointers to other objects),
-    and also by tuples thereof. Type parameters may be omitted when they do not need to be referenced
-    or restricted.
+  * 抽象类型和具体类型都可以通过其它类型进行参数化。它们的参数化还可
+    通过符号、任意使得 [`isbits`](@ref) 返回真的类型的值（实质上，
+    也就是像数字或布尔变量这样的东西，存储方式像 C 类型或不包含指向其它对象的指针的结构体）
+    和其元组。类型参数在不需要被引用或限制时可以省略
+    。
 
-Julia's type system is designed to be powerful and expressive, yet clear, intuitive and unobtrusive.
-Many Julia programmers may never feel the need to write code that explicitly uses types. Some
-kinds of programming, however, become clearer, simpler, faster and more robust with declared types.
+Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从不感觉需要编写明确使用类型的代码。但是，某些类型的编程可通过声明类型变得更加清晰、简单、快速和健壮。
 
 ## 类型断言
 
@@ -112,7 +100,7 @@ abstract type «name» <: «supertype» end
 
 如果没有给出父类型，则默认父类型为`Any`——所有对象和类型都是这个抽象类型的子类型。在类型理论中，`Any`通常称为"top"，因为它位于类型图的顶峰。Julia还有一个预定义的抽象"bottom"类型，在类型图的最低点，写成`Union{}`。这与`Any`完全相反：任何对象都不是`Union{}`的实例，所有的类型都是`Union{}`的父类型。
 
-Let's consider some of the abstract types that make up Julia's numerical hierarchy:
+让我们考虑一些构成 Julia 数值类型层次结构的抽象类型：
 
 ```julia
 abstract type Number end
@@ -145,9 +133,7 @@ end
 
 首先需要注意的是上述的参数声明等价于 `x::Any` 和 `y::Any`。当函数被调用时，例如 `myplus(2,5)`，派发器选择与给定参数相匹配的名称为 `myplus` 的最具体方法。（有关多重派发的更多信息，请参阅 [Methods](@ref)。）
 
-Assuming no method more specific than the above is found, Julia next internally defines and compiles
-a method called `myplus` specifically for two `Int` arguments based on the generic function given
-above, i.e., it implicitly defines and compiles:
+假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 `myplus` 的方法，专门用于基于上面给出的范型函数的两个 `Int` 参数，即，它定义并编译：
 
 ```julia
 function myplus(x::Int,y::Int)
@@ -155,20 +141,15 @@ function myplus(x::Int,y::Int)
 end
 ```
 
-最后，调用这个具体的函数。
+最后，调用这个具体的方法。
 
-Thus, abstract types allow programmers to write generic functions that can later be used as the
-default method by many combinations of concrete types. Thanks to multiple dispatch, the programmer
-has full control over whether the default or more specific method is used.
+因此，抽象类型允许程序员编写范型函数，之后可以通过许多具体类型的组合将其用作默认方法。由于多重派发，程序员可以完全控制是使用默认方法还是更具体的方法。
 
-An important point to note is that there is no loss in performance if the programmer relies on
-a function whose arguments are abstract types, because it is recompiled for each tuple of argument
-concrete types with which it is invoked. (There may be a performance issue, however, in the case
-of function arguments that are containers of abstract types; see [Performance Tips](@ref man-performance-tips).)
+需要注意的重点是，假使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但是，在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅 [Performance Tips](@ref man-performance-tips)。）
 
 ## 原始类型
 
-位类型是具体类型，其数据是由位构成。位类型的经典示例是整数和浮点数。与大多数语言不同，Julia允许您声明自己的位类型，而不是仅提供一组固定的内置类型。实际上，标准位类型都是在语言本身中定义的：
+原始类型是具体类型，其数据是由简单的位组成。原始类型的经典示例是整数和浮点数。与大多数语言不同，Julia 允许你声明自己的原始类型，而不是只提供一组固定的内置原始类型。实际上，标准原始类型都是在语言本身中定义的：
 
 ```julia
 primitive type Float16 <: AbstractFloat 16 end
@@ -190,7 +171,7 @@ primitive type Int128  <: Signed   128 end
 primitive type UInt128 <: Unsigned 128 end
 ```
 
-声明位类型的一般语法是：
+声明原始类型的一般语法是：
 
 ```
 primitive type «name» «bits» end
@@ -199,38 +180,13 @@ primitive type «name» <: «supertype» «bits» end
 
 bits 的数值表示该类型需要多少存储空间，name 为新类型指定名称。可以选择将一个原始类型声明为某个超类型的子类型。如果省略超类型，则默认 `Any` 为其直接超类型。上述声明中意味着 [`Bool`](@ref) 类型需要 8 位来储存，并且直接超类型为 [`Integer`](@ref)。目前支持的大小只能是 8 位的倍数。因此，布尔值虽然确实只需要一位，但不能声明为小于 8 位的值。
 
-The types [`Bool`](@ref), [`Int8`](@ref) and [`UInt8`](@ref) all have identical representations:
-they are eight-bit chunks of memory. Since Julia's type system is nominative, however, they
-are not interchangeable despite having identical structure. A fundamental difference between
-them is that they have different supertypes: [`Bool`](@ref)'s direct supertype is [`Integer`](@ref),
-[`Int8`](@ref)'s is [`Signed`](@ref), and [`UInt8`](@ref)'s is [`Unsigned`](@ref). All other
-differences between [`Bool`](@ref), [`Int8`](@ref), and [`UInt8`](@ref) are matters of
-behavior -- the way functions are defined to act when given objects of these types as
-arguments. This is why a nominative type system is necessary: if structure determined type,
-which in turn dictates behavior, then it would be impossible to make [`Bool`](@ref) behave
-any differently than [`Int8`](@ref) or [`UInt8`](@ref).
+[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 类型都具有相同的表现形式：它们都是 8 位内存块。然而，由于 Julia 的类型系统是主格的，它们尽管具有相同的结构，但不是通用的。它们之间的一个根本区别是它们具有不同的超类型：[`Bool`](@ref) 的直接超类型是 [`Integer`](@ref)、[`Int8`](@ref) 的是 [`Signed`](@ref) 而  [`UInt8`](@ref) 的是 [`Unsigned`](@ref)。[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 的所有其它差异是行为上的——定义函数的方式在这些类型的对象作为参数给定时起作用。这也是为什么主格的类型系统是必须的：如果结构确定类型，类型决定行为，就不可能使 [`Bool`](@ref) 的行为与 [`Int8`](@ref) 或 [`UInt8`](@ref) 有任何不同。
 
 ## 复合类型
 
-[Composite types](https://en.wikipedia.org/wiki/Composite_data_type) are called records, structs,
-or objects in various languages. A composite type is a collection of named fields,
-an instance of which can be treated as a single value. In many languages, composite types are
-the only kind of user-definable type, and they are by far the most commonly used user-defined
-type in Julia as well.
+[复合类型](https://en.wikipedia.org/wiki/Composite_data_type)在各种语言中被称为 record、struct 和 object。复合类型是命名字段的集合，其实例可以视为单个值。复合类型在许多语言中是唯一一种用户可定义的类型，也是 Julia 中最常用的用户定义类型。
 
-In mainstream object oriented languages, such as C++, Java, Python and Ruby, composite types also
-have named functions associated with them, and the combination is called an "object". In purer
-object-oriented languages, such as Ruby or Smalltalk, all values are objects whether they are
-composites or not. In less pure object oriented languages, including C++ and Java, some values,
-such as integers and floating-point values, are not objects, while instances of user-defined composite
-types are true objects with associated methods. In Julia, all values are objects, but functions
-are not bundled with the objects they operate on. This is necessary since Julia chooses which
-method of a function to use by multiple dispatch, meaning that the types of *all* of a function's
-arguments are considered when selecting a method, rather than just the first one (see [Methods](@ref)
-for more information on methods and dispatch). Thus, it would be inappropriate for functions to
-"belong" to only their first argument. Organizing methods into function objects rather than having
-named bags of methods "inside" each object ends up being a highly beneficial aspect of the language
-design.
+在主流的面向对象语言中，比如 C++、Java、Python 和 Ruby，复合类型也具有与它们相关的命名函数，并且该组合称为「对象」。在纯粹的面向对象语言中，例如 Ruby 或 Smalltalk，所有值都是对象，无论它们是否为复合类型。在不太纯粹的面向对象语言中，包括 C++ 和 Java，一些值，比如整数和浮点值，不是对象，而用户定义的复合类型是具有相关方法的真实对象。在 Julia 中，所有值都是对象，但函数不与它们操作的对象捆绑在一起。这是必要的，因为 Julia 通过多重派发选择使函数使用的方法，这意味着在选择方法时考虑*所有*函数参数的类型，而不仅仅是第一个（有关方法和派发的更多信息，请参阅 [Methods](@ref)）。因此，函数仅仅「属于」它们的第一个参数是不合适的。将方法组织到函数对象中而不是在每个对象「内部」命名方法最终成为语言设计中一个非常有益的方面。
 
 [`struct`](@ref)关键词用于构造复合类型，后跟一个字段的名称，可选择使用`::`运算符注释类型：
 
@@ -254,11 +210,7 @@ julia> typeof(foo)
 Foo
 ```
 
-When a type is applied like a function it is called a *constructor*. Two constructors are generated
-automatically (these are called *default constructors*). One accepts any arguments and calls
-[`convert`](@ref) to convert them to the types of the fields, and the other accepts arguments
-that match the field types exactly. The reason both of these are generated is that this makes
-it easier to add new definitions without inadvertently replacing a default constructor.
+当用类似于使用函数方式使用类型时，类型被称为构造函数。有两个构造函数会自动生成，并被称为默认构造函数。第一种构造函数接收任意的参数，并调用[covert]函数来把这些参数的类转换成类型中每个对应域所规定的类；另一种
 
 由于`bar`字段在类型上不受限制，因此任何值都可以。但是`baz`的值必须可转换为`Int`类型：
 

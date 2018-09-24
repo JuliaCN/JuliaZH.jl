@@ -1,6 +1,6 @@
 # [构造函数](@id man-constructors)
 
-构造函数 [^1] 是用来创建新对象 -- 确切地说，是创建 [Composite Type](@ref) 的实例，的函数。在 Julia 中，类型对象也同时充当构造函数的角色：它们可以被当作函数应用到参数元组上来创建自己的新实例。这一点在介绍复合类型（Composite Types）时已经大致谈过了。例如：
+构造函数 [^1] 是用来创建新对象的函数 -- 确切地说，它创建的是[复合类型](@ref)的实例。在 Julia 中，类型对象也同时充当构造函数的角色：可以用类名加参数元组的方式像函数调用一样来创建新实例。这一点在介绍复合类型（Composite Types）时已经大致谈过了。例如：
 
 ```jldoctest footype
 julia> struct Foo
@@ -18,17 +18,14 @@ julia> foo.baz
 2
 ```
 
-对很多类型来说，创建新对象时只需要为它们的所有字段绑定上值就足够产生新实例了。然而，在某些情形下，创建复合对象需要更多的功能。有时必须通过检查或改变参数来确保不变性。[Recursive data structures](https://en.wikipedia.org/wiki/Recursion_omputer_science%29#Recursive_data_structures_.28structural_recursion.29)，
-特别是那些可能引用自身的数据结构，它们需要首先被不完整地构造，然后作为创建对象的单独步骤，
-通过编程的方式完成补全，否则它们不能被干净地构造。这时，能够用比字段少的参数或者
-不同类型的参数来创建对象就很方便。Julia 的对象构造系统解决了所有这些问题。
+对很多类型来说，通过给所有成员赋值来创建新对象的这种方式就足以用于产生新实例了。然而，在某些情形下，创建复合对象需要更多的功能。有时必须通过检查或转化参数来确保固有属性不变。[递归数据结构](https://en.wikipedia.org/wiki/Recursion_(computer_science)#Recursive_data_structures_(structural_recursion))，特别是那些可能引用自身的数据结构，它们通常不能被干净地构造，而是需要首先被不完整地构造，然后再通过编程的方式完成补全。为了方便，有时需要用较少的参数或者不同类型的参数来创建对象，Julia 的对象构造系统解决了所有这些问题。
 
 [^1]:
-命名法：虽然术语“构造函数”通常是指构造一个类型的对象的整个函数，但通常会略微滥用术语将特定的构造方法称为“构造函数”。这种情况下，通常可以从上下文中清楚地看出术语是用于表示“构造方法”而不是“构造函数”，因为它通常用于从所有构造方法中挑出构造函数的特定方法的场合。
+命名法：虽然术语“构造函数”通常是指用于构造类型对象的函数全体，但通常会略微滥用术语将特定的构造方法称为“构造函数”。在这种情况下，通常可以从上下文中清楚地辨别出术语表示的是“构造方法”而不是“构造函数”，尤其是在讨论某个特别的“构造方法”的时候。
 
 ## 外部构造方法
 
-构造函数与 Julia 中的其他任何函数一样，其整体行为由其各个方法的组合行为定义。因此，你可以通过简单地定义新方法来向构造函数添加功能。例如，假设你想为 `Foo` 对象添加一个构造方法，该方法只接受一个参数并用该参数同时绑定为 `bar` 和 `baz`  字段的值。这很简单：
+构造函数与 Julia 中的其他任何函数一样，其整体行为由其各个方法的组合行为定义。因此，只要定义新方法就可以向构造函数添加功能。例如，假设你想为 `Foo` 对象添加一个构造方法，该方法只接受一个参数并其作为 `bar` 和 `baz` 的值。这很简单：
 
 ```jldoctest footype
 julia> Foo(x) = Foo(x,x)
@@ -38,7 +35,7 @@ julia> Foo(1)
 Foo(1, 1)
 ```
 
-你也可以为 `Foo` 添加新的零参数构造方法，它为字段 `bar` 和 `baz` 提供默认值：
+你也可以为 `Foo` 添加新的零参数构造方法，它为 `bar` 和 `baz` 提供默认值：
 
 ```jldoctest footype
 julia> Foo() = Foo(0)
@@ -48,20 +45,16 @@ julia> Foo()
 Foo(0, 0)
 ```
 
-这里零参数构造方法调用的单参数方法，单参数构造方法又调用了自动提供的双参数构造方法。
-像这样附加的以普通函数形式声明的构造方法被称为 *外部* 构造方法，这样称呼的原因马上就会清楚。
-外部构造方法只能通过调用其他构造方法来创建新实例，比如自动提供的默认构造方法。
+这里零参数构造方法会调用单参数构造方法，单参数构造方法又调用了自动提供默认值的双参数构造方法。上面附加的这类构造方法，它们的声明方式与普通的方法一样，像这样的构造方法被称为**外部**构造方法，下文很快就会揭示这样称呼的原因。外部构造方法只能通过调用其他构造方法来创建新实例，比如自动提供默认值的构造方法。
 
 ## 内部构造方法
 
-尽管外部构造方法成功地为构造对象提供了额外的便利，它无法解决另外两个在本章导言里提到的另外
-两种用例：确保不变性和允许创建引用自身的对象。因此，我们需要 *内部* 构造方法。内部构造方法
-和外部构造方法很相像，但有两点不同：
+尽管外部构造方法可以成功地为构造对象提供了额外的便利，但它无法解决另外两个在本章导言里提到的问题：确保固有属性不变和允许创建自引用对象。因此，我们需要**内部**构造方法。内部构造方法和外部构造方法很相像，但有两点不同：
 
-1. 内部构造方法在类型声明内部声明，而不是和普通方法一样在外部。
-2. 内部构造方法能够访问一个特殊的局部存在的函数, 称为 [`new`](@ref) ，这个函数能够创建该类型的对象。
+1. 内部构造方法在 `struct`-block 的内部声明，而不是和普通方法一样在外部。
+2. 内部构造方法能够访问一个特殊的局部函数 [`new`](@ref)，此函数能够创建该类型的对象。
 
-例如, 假设你要声明一个保存一对实数的类型，但要约束第一个数不大于第二个数。你可以像这样声明它 ：
+例如，假设你要声明一个保存一对实数的类型，但要约束第一个数不大于第二个数。你可以像这样声明它：
 
 ```jldoctest pairtype
 julia> struct OrderedPair
@@ -71,7 +64,7 @@ julia> struct OrderedPair
        end
 ```
 
-现在 `OrderedPair` 对象只能在 `x <= y` 时构造：
+现在 `OrderedPair` 对象只能在 `x <= y` 时被成功构造：
 
 ```jldoctest pairtype; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> OrderedPair(1, 2)
@@ -85,17 +78,9 @@ Stacktrace:
  [3] top-level scope
 ```
 
-如果类型被声明为 `mutable`，你就能获取并直接修改字段的值来破坏不变性，但不请自来弄乱
-对象内部被认为是不好的形式。你 （或者其他人）可以在以后任何时候提供附加的外部构造方法，
-但一旦一个类型已经被声明了，就没有办法来添加更多的内部构造方法了。因为外部构造方法只能通过
-调用其他的构造方法来构造创建对象，所以最终构造对象的一定是某个内部构造函数。这保证了
-声明过的类型的所有对象必须通过调用随类型提供的内部构造方法之一而存在，从而在某种程度上
-保证了类型的不变性。
+如果类型被声明为 `mutable`，你可以直接更改成员变量的值来打破这个固有属性，然而，在未经允许的情况下，随意摆弄对象的内核一般都是不好的行为。你（或者其他人）可以在以后任何时候提供额外的外部构造方法，但一旦类型被声明了，就没有办法来添加更多的内部构造方法了。由于外部构造方法只能通过调用其它的构造方法来创建对象，所以最终构造对象的一定是某个内部构造函数。这保证了类型的对象必须是经过内部构造才得已存在，从而在某种程度上保证了类型的固有属性。
 
-只要定义了任何一个内部构造方法，就不会再提供默认的构造方法：Julia 假定你已经为自己
-提供了所需的所有内部构造方法。默认构造方法等效于一个你自己编写的内部构造函数方法，
-该方法将所有对象的字段作为参数（如果相应的字段具有类型，则约束为正确的类型），
-并将它们传递给 `new`，返回结果对象：
+只要定义了任何一个内部构造方法，Julia 就不会再提供默认的构造方法：它会假定你已经为自己提供了所需的所有内部构造方法。默认构造方法等效于一个你自己编写的内部构造函数，该函数将所有成员作为参数（如果相应的成员具有类型，则约束为正确的类型），并将它们传递给 `new`，最后返回结果对象：
 
 ```jldoctest
 julia> struct Foo
@@ -132,11 +117,11 @@ julia> T2(1.0)
 T2(1)
 ```
 
-提供尽可能少的内部构造方法是很好的形式：只显式地处理所有参数，并强制执行必要的错误检查和转换。 其他便利的构造方法，提供默认值或辅助转换时，应该作为外部构造函数，通过调用内部构造函数来执行繁重的工作。 这种解耦是很自然的。
+提供尽可能少的内部构造方法是一种良好的形式：仅在需要显式地处理所有参数，以及强制执行必要的错误检查和转换时候才使用内部构造。其它用于提供便利的构造方法，比如提供默认值或辅助转换，应该定义为外部构造函数，然后再通过调用内部构造函数来执行繁重的工作。这种解耦是很自然的。
 
 ## 不完整初始化
 
-最后一个还没提到的问题是，如何构造具有自引用的对象，更具体地来说，递归的数据结构。因为这一根本的困难不是那么显而易见，我们来简单解释一下。考虑如下的循环类型声明：
+最后一个还没提到的问题是，如何构造具有自引用的对象，更广义地来说是构造递归数据结构。由于这其中的困难并不是那么显而易见，这里我们来简单解释一下，考虑如下的递归类型声明：
 
 ```jldoctest selfrefer
 julia> mutable struct SelfReferential
@@ -145,15 +130,15 @@ julia> mutable struct SelfReferential
 
 ```
 这种类型可能看起来没什么大不了，直到我们考虑如何来构造它的实例。
-如果 `a` 是 `SelfReferential` 的一个实例，则第二个实例可以如下的调用创建：
+如果 `a` 是 `SelfReferential` 的一个实例，则第二个实例可以用如下的调用来创建：
 
 ```julia-repl
 julia> b = SelfReferential(a)
 ```
 
-但是，当没有实例存在作为其`obj`字段的有效值时，如何构造第一个实例？ 唯一的解决方案是允许使用未分配的`obj`字段创建一个未完全初始化的“SelfReferential”实例，并使用该不完整的实例作为另一个实例的`obj`字段的有效值，例如它本身。
+但是，当没有实例存在的情况下，即没有可以传递给 `obj` 成员变量的有效值时，如何构造第一个实例？唯一的解决方案是允许使用未初始化的 `obj` 成员来创建一个未完全初始化的 `SelfReferential` 实例，并使用该不完整的实例作为另一个实例的 `obj` 成员的有效值，例如，它本身。
 
-为了允许创建未完全初始化的对象，Julia允许使用少于该类型的字段数来调用[`new`]（@ ref）函数，并返回未初始化未指定字段的对象。 然后，内部构造函数方法可以使用不完整的对象，在返回之前完成初始化。 例如，我们在定义`SelfReferential`类型时采用了另一个方法，使用零参数内部构造函数返回具有指向自身的`obj`字段的实例：
+为了允许创建未完全初始化的对象，Julia 允许使用少于该类型成员数的参数来调用 [`new`](@ ref) 函数，并返回一个具有某个未初始化成员的对象。然后，内部构造函数可以使用不完整的对象，在返回之前完成初始化。例如，我们在定义 `SelfReferential` 类型时采用了另一个方法，使用零参数内部构造函数来返回一个实例，此实例的 `obj` 成员指向其自身：
 
 ```jldoctest selfrefer2
 julia> mutable struct SelfReferential
@@ -162,7 +147,7 @@ julia> mutable struct SelfReferential
        end
 
 ```
-我们可以验证这一构造函数有效，且由其构造的对象的确是自引用的：
+我们可以验证这一构造函数有效性，且由其构造的对象确实是自引用的：
 
 ```jldoctest selfrefer2
 julia> x = SelfReferential();
@@ -177,7 +162,7 @@ julia> x === x.obj.obj
 true
 ```
 
-虽然从一个内部构造器中返回一个完全初始化的对象是很好的，但是不完全初始化的对象也能够返回：
+虽然从一个内部构造函数中返回一个完全初始化的对象是很好的，但是也可以返回未完全初始化的对象：
 
 ```jldoctest incomplete
 julia> mutable struct Incomplete
@@ -187,14 +172,14 @@ julia> mutable struct Incomplete
 
 julia> z = Incomplete();
 ```
-当你被允许创建含有未初始化字段的对象时，任何对未初始化引用的访问都会立即报错：
+尽管允许创建含有未初始化成员的对象，然而任何对未初始化引用的访问都会立即报错：
 
 ```jldoctest incomplete
 julia> z.xx
 ERROR: UndefRefError: access to undefined reference
 ```
 
-这避免了不断地检测`null`值的需要，不是所有的对象字段都是引用。Julia认为一些类型为纯数据（"plain data"），意味着他们的数据是自包含的，而且没有引用其他对象。这些纯数据包含了基本类型（比如`Int`）和由其他纯数据类型构成的不可变结构体。这些纯数据类型的初始值是未定义的：
+这避免了不断地检测 `null` 值的需要。然而，并不是所有的对象成员都是引用。Julia 会将一些类型当作纯数据（"plain data"），这意味着它们的数据是自包含的，并且没有引用其它对象。这些纯数据包括原始类型（比如 `Int` ）和由其它纯数据类型构成的不可变结构体。纯数据类型的初始值是未定义的：
 
 ```julia-repl
 julia> struct HasPlain
@@ -208,7 +193,7 @@ HasPlain(438103441441)
 
 由纯数据组成的数组也具有一样的行为。
 
-你可以从内部构造器将不完整的对象传递给其他函数来委托其构造：
+在内部构造函数中，你可以将不完整的对象传递给其它函数来委托其补全构造：
 
 ```jldoctest
 julia> mutable struct Lazy
@@ -217,14 +202,11 @@ julia> mutable struct Lazy
        end
 ```
 
-与构造函数返回的不完整对象一样，如果`complete_me`或其任何被调用者尝试在初始化之前访问`Lazy`对象的`xx`字段，错误就会立刻被抛出。
+与构造函数返回的不完整对象一样，如果 `complete_me` 或其任何被调用者尝试在初始化之前访问 `Lazy` 对象的 `xx` 成员，就会立刻报错。
 
-## 参数化构造
+## 参数类型的构造函数
 
-Parametric types add a few wrinkles to the constructor story. Recall from [Parametric Types](@ref)
-that, by default, instances of parametric composite types can be constructed either with explicitly
-given type parameters or with type parameters implied by the types of the arguments given to the
-constructor. Here are some examples:
+参数类型的存在为构造函数增加了更多的复杂性。首先，让我们回顾一下[参数类型](@ref)。在默认情况下，我们可以用两种方法来实例化参数复合类型，一种是显式地提供类型参数，另一种是让 Julia 根据构造函数输入参数的类型来隐式地推导类型参数。这里有一些例子：
 
 ```jldoctest parametric; filter = r"Closest candidates.*\n  .*"
 julia> struct Point{T<:Real}
@@ -232,46 +214,35 @@ julia> struct Point{T<:Real}
            y::T
        end
 
-julia> Point(1,2) ## implicit T ##
+julia> Point(1,2) ## 隐式的 T ##
 Point{Int64}(1, 2)
 
-julia> Point(1.0,2.5) ## implicit T ##
+julia> Point(1.0,2.5) ## 隐式的 T ##
 Point{Float64}(1.0, 2.5)
 
-julia> Point(1,2.5) ## implicit T ##
+julia> Point(1,2.5) ## 隐式的 T ##
 ERROR: MethodError: no method matching Point(::Int64, ::Float64)
 Closest candidates are:
   Point(::T<:Real, ::T<:Real) where T<:Real at none:2
 
-julia> Point{Int64}(1, 2) ## explicit T ##
+julia> Point{Int64}(1, 2) ## 显式的 T ##
 Point{Int64}(1, 2)
 
-julia> Point{Int64}(1.0,2.5) ## explicit T ##
+julia> Point{Int64}(1.0,2.5) ## 显式的 T ##
 ERROR: InexactError: Int64(Int64, 2.5)
 Stacktrace:
 [...]
 
-julia> Point{Float64}(1.0, 2.5) ## explicit T ##
+julia> Point{Float64}(1.0, 2.5) ## 显式的 T ##
 Point{Float64}(1.0, 2.5)
 
-julia> Point{Float64}(1,2) ## explicit T ##
+julia> Point{Float64}(1,2) ## 显式的 T ##
 Point{Float64}(1.0, 2.0)
 ```
 
-As you can see, for constructor calls with explicit type parameters, the arguments are converted
-to the implied field types: `Point{Int64}(1,2)` works, but `Point{Int64}(1.0,2.5)` raises an
-[`InexactError`](@ref) when converting `2.5` to [`Int64`](@ref). When the type is implied
-by the arguments to the constructor call, as in `Point(1,2)`, then the types of the
-arguments must agree -- otherwise the `T` cannot be determined -- but any pair of real
-arguments with matching type may be given to the generic `Point` constructor.
+就像你看到的那样，用类型参数显式地调用构造函数，其参数会被转换为指定的类型：`Point{Int64}(1,2)` 可以正常工作，但是 `Point{Int64}(1.0,2.5)` 则会在将 `2.5` 转换为 [`Int64`](@ref) 的时候报一个 [`InexactError`](@ref)。当类型是从构造函数的参数隐式推导出来的时候，比如在例子 `Point(1,2)` 中，输入参数的类型必须一致，否则就无法确定 `T` 是什么，但 `Point` 的构造函数仍可以适配任意同类型的实数对。
 
-What's really going on here is that `Point`, `Point{Float64}` and `Point{Int64}` are all different
-constructor functions. In fact, `Point{T}` is a distinct constructor function for each type `T`.
-Without any explicitly provided inner constructors, the declaration of the composite type `Point{T<:Real}`
-automatically provides an inner constructor, `Point{T}`, for each possible type `T<:Real`, that
-behaves just like non-parametric default inner constructors do. It also provides a single general
-outer `Point` constructor that takes pairs of real arguments, which must be of the same type.
-This automatic provision of constructors is equivalent to the following explicit declaration:
+实际上，这里的 `Point`，`Point{Float64}` 以及 `Point{Int64}` 是不同的构造函数。`Point{T}` 表示对于每个类型 `T` 都存在一个不同的构造函数。如果不显式提供内部构造函数，在声明复合类型 `Point{T<:Real}` 的时候，Julia 会对每个满足 `T<:Real` 条件的类型都提供一个默认的内部构造函数 `Point{T}`，它们的行为与非参数类型的默认内部构造函数一致。Julia 同时也会提供了一个通用的外部构造函数 `Point`，用于适配任意同类型的实数对。Julia 默认提供的构造函数等价于下面这种显式的声明：
 
 ```jldoctest parametric2
 julia> struct Point{T<:Real}
@@ -283,28 +254,15 @@ julia> struct Point{T<:Real}
 julia> Point(x::T, y::T) where {T<:Real} = Point{T}(x,y);
 ```
 
-Notice that each definition looks like the form of constructor call that it handles.
-The call `Point{Int64}(1,2)` will invoke the definition `Point{T}(x,y)` inside the
-`struct` block.
-The outer constructor declaration, on the other hand, defines a
-method for the general `Point` constructor which only applies to pairs of values of the same real
-type. This declaration makes constructor calls without explicit type parameters, like `Point(1,2)`
-and `Point(1.0,2.5)`, work. Since the method declaration restricts the arguments to being of the
-same type, calls like `Point(1,2.5)`, with arguments of different types, result in "no method"
-errors.
+注意，每个构造函数定义的方式与调用它们的方式是一样的。调用 `Point{Int64}(1,2)` 会触发 `struct` 块内部的 `Point{T}(x,y)`。另一方面，外部构造函数声明的 `Point` 构造函数只会被同类型的实数对触发，它使得我们可以直接以 `Point(1,2)` 和 `Point(1.0,2.5)` 这种方式来创建实例，而不需要显示地使用类型参数。由于此方法的声明方式已经对输入参数的类型施加了约束，像 `Point(1,2.5)` 这种调用自然会导致 "no method" 错误。
 
-Suppose we wanted to make the constructor call `Point(1,2.5)` work by "promoting" the integer
-value `1` to the floating-point value `1.0`. The simplest way to achieve this is to define the
-following additional outer constructor method:
+假如我们想让l `Point(1,2.5)` 这种调用方式正常工作，比如，通过将整数 1 自动“提升”为浮点数 `1.0`，最简单的方法是像下面这样定义一个额外的外部构造函数：
 
 ```jldoctest parametric2
 julia> Point(x::Int64, y::Float64) = Point(convert(Float64,x),y);
 ```
 
-This method uses the [`convert`](@ref) function to explicitly convert `x` to [`Float64`](@ref)
-and then delegates construction to the general constructor for the case where both arguments are
-[`Float64`](@ref). With this method definition what was previously a [`MethodError`](@ref) now
-successfully creates a point of type `Point{Float64}`:
+此方法采用了 [`convert`](@ref) 函数，显式地将 `x` 转化成了 [`Float64`](@ref) 类型，之后再委托前面讲到的那个通用的外部构造函数来进行具体的构造工作，经过转化，两个参数的类型都是 [`Float64`](@ref)，所以可以正确构造出一个 `Point{Float64}` 对象，而不会像之前那样触发 [`MethodError`](@ref)。
 
 ```jldoctest parametric2
 julia> Point(1,2.5)
@@ -314,7 +272,7 @@ julia> typeof(ans)
 Point{Float64}
 ```
 
-然而，其他类似的调用依然有问题：
+然而，其它类似的调用依然有问题：
 
 ```jldoctest parametric2
 julia> Point(1.5,2)
@@ -323,17 +281,13 @@ Closest candidates are:
   Point(::T<:Real, !Matched::T<:Real) where T<:Real at none:1
 ```
 
-For a more general way to make all such calls work sensibly, see [Conversion and Promotion](@ref conversion-and-promotion).
-At the risk of spoiling the suspense, we can reveal here that all it takes is the following outer
-method definition to make all calls to the general `Point` constructor work as one would expect:
+如果你想要找到一种方法可以使类似的调用都可以正常工作，请参阅[类型转换与类型提升](@ref conversion-and-promotion)。这里稍稍“剧透”一下，我们可以利用下面的这个外部构造函数来满足需求，无论输入参数的类型如何，它都可以触发通用的 `Point` 构造函数：
 
 ```jldoctest parametric2
 julia> Point(x::Real, y::Real) = Point(promote(x,y)...);
 ```
 
-The `promote` function converts all its arguments to a common type -- in this case [`Float64`](@ref).
-With this method definition, the `Point` constructor promotes its arguments the same way that
-numeric operators like [`+`](@ref) do, and works for all kinds of real numbers:
+这里的 `promote` 函数会将它的输入转化为同一类型，在此例中是 [`Float64`](@ref)。定义了这个方法，`Point` 构造函数会自动提升输入参数的类型，且提升机制与算术运算符相同，比如 [`+`](@ref)，因此对所有的实数输入参数都适用：
 
 ```jldoctest parametric2
 julia> Point(1.5,2)
@@ -346,17 +300,11 @@ julia> Point(1.0,1//2)
 Point{Float64}(1.0, 0.5)
 ```
 
-Thus, while the implicit type parameter constructors provided by default in Julia are fairly strict,
-it is possible to make them behave in a more relaxed but sensible manner quite easily. Moreover,
-since constructors can leverage all of the power of the type system, methods, and multiple dispatch,
-defining sophisticated behavior is typically quite simple.
+所以，即使 Julia 提供的默认内部构造函数对于类型参数的要求非常严格，我们也有方法将其变得更加易用。正因为构造函数可以充分发挥类型系统、方法以及多重分派的作用，定义复杂的行为也会变得非常简单。
 
-## Case Study: Rational
+## 案例分析：分数的实现
 
-Perhaps the best way to tie all these pieces together is to present a real world example of a
-parametric composite type and its constructor methods. To that end, we implement our own rational number type
-`OurRational`, similar to Julia's built-in [`Rational`](@ref) type, defined in
-[`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl):
+上文主要讲了关于参数复合类型及其构造函数的一些零散内容，或许将这些内容结合起来的一个最佳方法是分析一个真实的案例。为此，我们来实现一个我们自己的分数类型 `OurRational`，它与 Julia 内置的分数类型 [`Rational`](@ref) 很相似，它的定义在 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl) 里：
 
 
 ```jldoctest rational
@@ -406,39 +354,13 @@ julia> function ⊘(x::Complex, y::Complex)
 ⊘ (generic function with 6 methods)
 ```
 
-The first line -- `struct OurRational{T<:Integer} <: Real` -- declares that `OurRational` takes one
-type parameter of an integer type, and is itself a real type. The field declarations `num::T`
-and `den::T` indicate that the data held in a `OurRational{T}` object are a pair of integers of type
-`T`, one representing the rational value's numerator and the other representing its denominator.
+第一行 -- `struct OurRational{T<:Integer} <: Real` -- 声明了 `OurRational` 会接收一个整数类型的类型参数，且它自己属于实数类型。它声明了两个成员：`num::T` 和 `den::T`。这表明一个 `OurRational{T}` 的实例中会包含一对整数，且类型为 `T`，其中一个表示分子，另一个表示分母。
 
-Now things get interesting. `OurRational` has a single inner constructor method which checks that
-both of `num` and `den` aren't zero and ensures that every rational is constructed in "lowest
-terms" with a non-negative denominator. This is accomplished by dividing the given numerator and
-denominator values by their greatest common divisor, computed using the `gcd` function. Since
-`gcd` returns the greatest common divisor of its arguments with sign matching the first argument
-(`den` here), after this division the new value of `den` is guaranteed to be non-negative. Because
-this is the only inner constructor for `OurRational`, we can be certain that `OurRational` objects are
-always constructed in this normalized form.
+现在事情开始变得有意思了，`OurRational` 只有一个内部构造函数，它的作用是检查 `num` 和 `den` 是否为 0，并确保构建的每个分数都是经过约分化简的形式，且分母为非负数。这可以令分子和分母同时除以它们的最大公约数来实现，最大公约数可以用 Julia 内置的 `gcd` 函数计算。由于 `gcd` 返回的最大公约数的符号是跟第一个参数 `den` 一致的，所以约分后一定会保证 `den` 的值为非负数。因为这是 `OurRational` 的唯一一个内部构造函数，所以我们可以确保构建出的 `OurRational` 对象一定是这种化简的形式。
 
-`OurRational` also provides several outer constructor methods for convenience. The first is the "standard"
-general constructor that infers the type parameter `T` from the type of the numerator and denominator
-when they have the same type. The second applies when the given numerator and denominator values
-have different types: it promotes them to a common type and then delegates construction to the
-outer constructor for arguments of matching type. The third outer constructor turns integer values
-into rationals by supplying a value of `1` as the denominator.
+为了方便，`OurRational` 也提供了一些其它的外部构造函数。第一个外部构造函数是“标准的”通用构造函数，当分子和分母的类型一致时，它就可以推导出类型参数 `T`。第二个外部构造函数可以用于分子和分母的类型不一致的情景，它会将分子和分母的类型提升至一个共同的类型，然后再委托第一个外部构造函数进行构造。第三个构造函数会将一个整数转化为分数，方法是将 1 当作分母。
 
-Following the outer constructor definitions, we defined a number of methods for the `⊘`
-operator, which provides a syntax for writing rationals (e.g. `1 ⊘ 2`). Julia's `Rational`
-type uses the [`//`](@ref) operator for this purpose. Before these definitions, `⊘`
-is a completely undefined operator with only syntax and no meaning. Afterwards, it behaves just
-as described in [Rational Numbers](@ref) -- its entire behavior is defined in these few lines.
-The first and most basic definition just makes `a ⊘ b` construct a `OurRational` by applying the
-`OurRational` constructor to `a` and `b` when they are integers. When one of the operands of `⊘`
-is already a rational number, we construct a new rational for the resulting ratio slightly differently;
-this behavior is actually identical to division of a rational with an integer.
-Finally, applying
-`⊘` to complex integral values creates an instance of `Complex{OurRational}` -- a complex
-number whose real and imaginary parts are rationals:
+在定义了外部构造函数之后，我们为 `⊘` 算符定义了一系列的方法，之后就可以使用 `⊘` 算符来写分数，比如 `1 ⊘ 2`。Julia 的 `Rational` 类型采用的是 [`//`](@ref) 算符。在做上述定义之前，`⊘` 是一个无意的且未被定义的算符。它的行为与在[分数](@ref)一节中描述的一致，注意它的所有行为都是那短短几行定义的。第一个也是最基础的定义只是将 `a ⊘ b` 中的 `a` 和 `b` 当作参数传递给 `OurRational` 的构造函数来实例化 `OurRational`，当然这要求 `a` 和 `b` 分别都是整数。在 `⊘` 的某个操作数已经是分数的情况下，我们采用了一个有点不一样的方法来构建新的分数，这实际上等价于用分数除以一个整数。最后，我们也可以让 `⊘` 作用于复数，用来创建一个类型为 `Complex{OurRational}` 的对象，即一个实部和虚部都是分数的复数：
 
 ```jldoctest rational
 julia> z = (1 + 2im) ⊘ (1 - 2im);
@@ -450,22 +372,14 @@ julia> typeof(z) <: Complex{OurRational}
 false
 ```
 
-Thus, although the `⊘` operator usually returns an instance of `OurRational`, if either
-of its arguments are complex integers, it will return an instance of `Complex{OurRational}` instead.
-The interested reader should consider perusing the rest of [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl):
-it is short, self-contained, and implements an entire basic Julia type.
+因此，尽管 `⊘` 算符通常会返回一个 `OurRational` 的实例，但倘若其中一个操作数是复整数，那么就会返回 `Complex{OurRational}`。感兴趣的话可以
+读一读 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl)：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自包涵的。
 
 ## Outer-only constructors
 
-As we have seen, a typical parametric type has inner constructors that are called when type parameters
-are known; e.g. they apply to `Point{Int}` but not to `Point`. Optionally, outer constructors
-that determine type parameters automatically can be added, for example constructing a `Point{Int}`
-from the call `Point(1,2)`. Outer constructors call inner constructors to do the core work of
-making an instance. However, in some cases one would rather not provide inner constructors, so
-that specific type parameters cannot be requested manually.
+正如我们所看到的，典型的参数类型都有一个内部构造函数，它仅在全部的类型参数都已知的情况下才会被调用。例如，可以用 `Point{Int}` 调用，但`Point` 就不行。我们可以选择性的添加外部构造函数来自动推导并添加类型参数，比如，调用 `Point(1,2)` 来构造 `Point{Int}`。外部构造函数调用内部构造函数来执行创建实例的核心工作。然而，在某些情况下，我们可能并不想要内部构造函数，从而达到禁止手动指定类型参数的目的。
 
-For example, say we define a type that stores a vector along with an accurate representation of
-its sum:
+例如，假设我们要定义一个类型用于存储数组以及其累加和：
 
 ```jldoctest
 julia> struct SummedArray{T<:Number,S<:Number}
@@ -477,12 +391,7 @@ julia> SummedArray(Int32[1; 2; 3], Int32(6))
 SummedArray{Int32,Int32}(Int32[1, 2, 3], 6)
 ```
 
-The problem is that we want `S` to be a larger type than `T`, so that we can sum many elements
-with less information loss. For example, when `T` is [`Int32`](@ref), we would like `S` to
-be [`Int64`](@ref). Therefore we want to avoid an interface that allows the user to construct
-instances of the type `SummedArray{Int32,Int32}`. One way to do this is to provide a
-constructor only for `SummedArray`, but inside the `struct` definition block to suppress
-generation of default constructors:
+问题在于我们想让 `S` 的类型始终比 `T` 大，这样做是为了确保累加过程不会丢失信息。例如，当 `T` 是 [`Int32`](@ref) 时，我们想让 `S` 是 [`Int64`](@ref)。所以我们想要一种接口来禁止用户创建像 `SummedArray{Int32,Int32}` 这种类型的实例。一种实现方式是只提供一个 `SummedArray` 构造函数，当需要将其放入 `struct`-block 中，从而不让 Julia 提供默认的构造函数：
 
 ```jldoctest
 julia> struct SummedArray{T<:Number,S<:Number}
@@ -500,7 +409,4 @@ Closest candidates are:
   SummedArray(::Array{T,1}) where T at none:5
 ```
 
-This constructor will be invoked by the syntax `SummedArray(a)`. The syntax `new{T,S}` allows
-specifying parameters for the type to be constructed, i.e. this call will return a `SummedArray{T,S}`.
-`new{T,S}` can be used in any constructor definition, but for convenience the parameters
-to `new{}` are automatically derived from the type being constructed when possible.
+此构造函数将会被 `SummedArray(a)` 这种写法触发。`new{T,S}` 的这种写法允许指定待构建类型的参数，也就是说调用它会返回一个 `SummedArray{T,S}` 的实例。`new{T,S}` 也可以用于其它构造函数的定义中，但为了方便，Julia 会根据正在构造的类型自动推导出 `new{}` 花括号里的参数（如果可行的话）。
