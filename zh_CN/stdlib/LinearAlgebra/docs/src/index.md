@@ -1,4 +1,4 @@
-# Linear Algebra
+# 线性代数
 
 ```@meta
 DocTestSetup = :(using LinearAlgebra)
@@ -141,7 +141,7 @@ julia> sB\x
 ```
 `\` 操作在这里执行线性求解。左除运算符相当强大，很容易写出紧凑、可读的代码，它足够灵活，可以求解各种线性方程组。
 
-## Special matrices
+## 特殊矩阵
 
 [具有特殊对称性和结构的矩阵](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274)经常在线性代数中出现并且与各种矩阵分解相关。Julia 具有丰富的特殊矩阵类型，可以快速计算专门为特定矩阵类型开发的专用例程。
 
@@ -181,7 +181,7 @@ julia> sB\x
 | V (vector) | 针对矩阵-向量操作的优化方法可用 |
 | S (scalar) | 针对矩阵-标量操作的优化方法可用 |
 
-### Matrix factorizations
+### 矩阵分解
 
 | 矩阵类型               | LAPACK | [`eigen`](@ref) | [`eigvals`](@ref) | [`eigvecs`](@ref) | [`svd`](@ref) | [`svdvals`](@ref) |
 |:------------------------- |:------ |:------------- |:----------------- |:----------------- |:------------- |:----------------- |
@@ -243,7 +243,7 @@ Stacktrace:
 [...]
 ```
 
-## [Matrix factorizations](@id man-linalg-factorizations)
+## [矩阵分解](@id man-linalg-factorizations)
 
 [矩阵分解](https://en.wikipedia.org/wiki/Matrix_decomposition)将矩阵分解成矩阵乘积，是线性代数的中心概念。
 
@@ -404,7 +404,7 @@ LinearAlgebra.ldiv!
 LinearAlgebra.rdiv!
 ```
 
-## BLAS Functions
+## BLAS 函数
 
 在 Julia 中（就像许多科学计算一样），密集线性代数操作是基于 [LAPACK 库](http://www.netlib.org/lapack/)，它反过来建立在被称为 [BLAS](http://www.netlib.org/blas/) 的基本线性代数构建模块之上。高度优化的 BLAS 实现在每个计算机架构上可用，并且有时在高性能线性代数例程中直接调用 BLAS 函数很有用。
 
@@ -484,7 +484,7 @@ LinearAlgebra.BLAS.set_num_threads
 LinearAlgebra.I
 ```
 
-## LAPACK Functions
+## LAPACK 函数
 
 `LinearAlgebra.LAPACK` 提供了一些针对线性代数的 LAPACK 函数的封装。那些改写了输入数组的函数的名称以 `'!'` 结尾。
 

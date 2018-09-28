@@ -1,10 +1,6 @@
-# The Julia REPL
+# Julia REPL
 
-Julia comes with a full-featured interactive command-line REPL (read-eval-print loop) built into
-the `julia` executable. In addition to allowing quick and easy evaluation of Julia statements,
-it has a searchable history, tab-completion, many helpful keybindings, and dedicated help and
-shell modes. The REPL can be started by simply calling `julia` with no arguments or double-clicking
-on the executable:
+Julia 附带了一个全功能的交互式命令行 REPL（read-eval-print loop），其内置于 `julia` 可执行文件中。它除了允许快速简便地执行 Julia 语句外，还具有可搜索的历史记录，tab 补全，许多有用的按键绑定以及专用的 help 和 shell 模式。只需不附带任何参数地调用 `julia` 或双击可执行文件即可启动 REPL：
 
 ```
 $ julia
@@ -20,27 +16,20 @@ $ julia
 julia>
 ```
 
-To exit the interactive session, type `^D` -- the control key together with the `d` key on a blank
-line -- or type `quit()` followed by the return or enter key. The REPL greets you with a banner
-and a `julia>` prompt.
+要退出交互式会话，在空白行上键入 `^D`——control 键和 `d` 键，或者先键入 `quit()`，然后键入 return 或 enter 键。REPL 用横幅和 `julia>` 提示符欢迎你。
 
-## The different prompt modes
+## 不同提示符模式
 
-### The Julian mode
+### Julian 模式
 
-The REPL has four main modes of operation. The first and most common is the Julian prompt. It
-is the default mode of operation; each new line initially starts with `julia>`. It is here that
-you can enter Julia expressions. Hitting return or enter after a complete expression has been
-entered will evaluate the entry and show the result of the last expression.
+REPL 有四种主要的操作模式。第一个也是最常见的是 Julian 提示符。这是默认的操作模式；每个新行最初都以 `julia>` 开头。就在这里，你可以输入 Julia 表达式。在输入完整表达式后按下 return 或 enter 将执行该表达式，并显示最后一个表达式的结果。
 
 ```jldoctest
 julia> string(1 + 2)
 "3"
 ```
 
-There are a number useful features unique to interactive work. In addition to showing the result,
-the REPL also binds the result to the variable `ans`. A trailing semicolon on the line can be
-used as a flag to suppress showing the result.
+交互式运行有许多独特的实用功能。除了显示结果外，REPL 还将结果绑定到变量 `ans` 上。一行的尾随分号可用作禁止显示结果的标志。
 
 ```jldoctest
 julia> string(3 * 4);
@@ -49,19 +38,11 @@ julia> ans
 "12"
 ```
 
-In Julia mode, the REPL supports something called *prompt pasting*. This activates when pasting
-text that starts with `julia> ` into the REPL. In that case, only expressions starting with
-`julia> ` are parsed, others are removed. This makes it is possible to paste a chunk of code
-that has been copied from a REPL session without having to scrub away prompts and outputs. This
-feature is enabled by default but can be disabled or enabled at will with `Base.REPL.enable_promptpaste(::Bool)`.
-If it is enabled, you can try it out by pasting the code block above this paragraph straight into
-the REPL. This feature does not work on the standard Windows command prompt due to its limitation
-at detecting when a paste occurs.
+Julia 模式中，REPL 支持称为 *prompt pasting* 的功能。当粘贴以 `julia> ` 文本到 REPL 中时才会激活此功能。在这种情况下，只有以 `julia> ` 开头的表达式才被解析，其它的表达式则被删除。这使得可以粘贴从 REPL 会话中复制的一大块代码，而无需擦除提示和输出。默认情况下启用此功能，但可以使用`Base.REPL.enable_promptpaste(::Bool)` 任意禁用或启用此功能。如果它已启用，您可以通过将本段上方的代码块直接粘贴到 REPL 中来尝试。此功能在标准的 Windows 命令提示符下不起作用，由于它在检测粘贴何时发生上的限制。
 
-### Help mode
+### 帮助模式
 
-When the cursor is at the beginning of the line, the prompt can be changed to a help mode by typing
-`?`. Julia will attempt to print help or documentation for anything entered in help mode:
+当光标在行首时，提示符可以通过键入 `?` 改变为帮助模式。Julia 将尝试打印在帮助模式中输入的任何内容的帮助或文档：
 
 ```julia-repl
 julia> ? # upon typing ?, the prompt changes (in place) to: help?>
@@ -74,7 +55,7 @@ search: string String Cstring Cwstring RevString randstring bytestring SubString
   Create a string from any values using the print function.
 ```
 
-Macros, types and variables can also be queried:
+还可以查询宏，类型和变量：
 
 ```
 help?> @time
@@ -94,14 +75,11 @@ search: Int32 UInt32
   32-bit signed integer type.
 ```
 
-Help mode can be exited by pressing backspace at the beginning of the line.
+通过在行的开头按退格键可以退出帮助模式。
 
-### [Shell mode](@id man-shell-mode)
+### [Shell 模式](@id man-shell-mode)
 
-Just as help mode is useful for quick access to documentation, another common task is to use the
-system shell to execute system commands. Just as `?` entered help mode when at the beginning
-of the line, a semicolon (`;`) will enter the shell mode. And it can be exited by pressing backspace
-at the beginning of the line.
+正如帮助模式对快速访问文档很有用，另一个常见任务是使用系统 shell 执行系统命令。就像 `?` 进入帮助模式，在行的开头，分号（`;`）将进入 shell 模式。并且通过在行的开头按退格键可以退出 shell 模式。
 
 ```julia-repl
 julia> ; # upon typing ;, the prompt changes (in place) to: shell>
@@ -110,57 +88,46 @@ shell> echo hello
 hello
 ```
 
-### Search modes
+### 搜索模式
 
-In all of the above modes, the executed lines get saved to a history file, which can be searched.
- To initiate an incremental search through the previous history, type `^R` -- the control key
-together with the `r` key. The prompt will change to ```(reverse-i-search)`':```, and as you
-type the search query will appear in the quotes. The most recent result that matches the query
-will dynamically update to the right of the colon as more is typed. To find an older result using
-the same query, simply type `^R` again.
+在所有上述模式中，执行过的行被保存到历史文件中，该文件可以被搜索。要通过之前的历史记录启动增量搜索，请键入 `^R`——control 键和 `r` 键。提示符会变为 ```(reverse-i-search)`':```，搜索查询在你输入时出现在引号中。匹配查询的最近结果会在输入更多内容时动态更新到冒号右侧。要使用相同的查询查找更旧的结果，只需再次键入 `^R`。
 
-Just as `^R` is a reverse search, `^S` is a forward search, with the prompt ```(i-search)`':```.
- The two may be used in conjunction with each other to move through the previous or next matching
-results, respectively.
+正如 `^R` 是反向搜索，`^S` 是前向搜索，带有提示符 ```(i-search)`':```。这两者可以彼此结合使用以分别移动至前一个或下一个匹配结果。
 
-## Key bindings
+## 按键绑定
 
-The Julia REPL makes great use of key bindings. Several control-key bindings were already introduced
-above (`^D` to exit, `^R` and `^S` for searching), but there are many more. In addition to the
-control-key, there are also meta-key bindings. These vary more by platform, but most terminals
-default to using alt- or option- held down with a key to send the meta-key (or can be configured
-to do so).
+Julia REPL 充分利用了按键绑定。上面已经介绍了几个 control 键绑定（`^D` 退出，`^R` 和 `^S`用于搜索），但还有更多按键绑定。除 control 键之外，还有 meta 键绑定。这些因平台而异，但大多数终端默认使用按住 alt- 或 option- 和一个键发送 meta 键（或者可以配置为执行此操作）。
 
-| Keybinding          | Description                                                                                                |
+| 按键绑定          | 描述                                                                                                |
 |:------------------- |:---------------------------------------------------------------------------------------------------------- |
-| **Program control** |                                                                                                            |
-| `^D`                | Exit (when buffer is empty)                                                                                |
-| `^C`                | Interrupt or cancel                                                                                        |
-| `^L`                | Clear console screen                                                                                       |
-| Return/Enter, `^J`  | New line, executing if it is complete                                                                      |
-| meta-Return/Enter   | Insert new line without executing it                                                                       |
-| `?` or `;`          | Enter help or shell mode (when at start of a line)                                                         |
-| `^R`, `^S`          | Incremental history search, described above                                                                |
-| **Cursor movement** |                                                                                                            |
-| Right arrow, `^F`   | Move right one character                                                                                   |
-| Left arrow, `^B`    | Move left one character                                                                                    |
-| ctrl-Right, `meta-F`| Move right one word                                                                                        |
-| ctrl-Left, `meta-B` | Move left one word                                                                                         |
-| Home, `^A`          | Move to beginning of line                                                                                  |
-| End, `^E`           | Move to end of line                                                                                        |
-| Up arrow, `^P`      | Move up one line (or change to the previous history entry that matches the text before the cursor)         |
-| Down arrow, `^N`    | Move down one line (or change to the next history entry that matches the text before the cursor)           |
+| **程序控制** |                                                                                                            |
+| `^D`                | 退出（当缓冲区为空）                                                                                |
+| `^C`                | 中断或取消                                                                                        |
+| `^L`                | 清空控制台屏幕                                                                                       |
+| Return/Enter, `^J`  | 插入新行，如果行是完整的则执行之                                                                      |
+| meta-Return/Enter   | 插入新行而不执行它                                                                       |
+| `?` 或 `;`          | 进入帮助或 shell 模式（当在行首时）                                                         |
+| `^R`, `^S`          | 增量历史搜索，如上所述                                                                |
+| **光标移动** |                                                                                                            |
+| Right arrow, `^F`   | 向右移动一个字符                                                                                   |
+| Left arrow, `^B`    | 向左移动一个字符                                                                                    |
+| ctrl-Right, `meta-F`| 向右移动一个单词                                                                                        |
+| ctrl-Left, `meta-B` | 向左移动一个单词                                                                                         |
+| Home, `^A`          | 移动至行首                                                                                  |
+| End, `^E`           | 移动至行尾                                                                                        |
+| Up arrow, `^P`      | 向上移动一行（或更改为与光标前文本相匹配的上一条历史记录）         |
+| Down arrow, `^N`    | 向下移动一行（或更改为与光标前文本相匹配的下一条历史记录）           |
 | Shift-Arrow Key     | Move cursor according to the direction of the Arrow key, while activating the region ("shift selection")   |
-| Page-up, `meta-P`   | Change to the previous history entry                                                                       |
-| Page-down, `meta-N` | Change to the next history entry                                                                           |
-| `meta-<`            | Change to the first history entry (of the current session if it is before the current position in history) |
-| `meta->`            | Change to the last history entry                                                                           |
+| Page-up, `meta-P`   | 更改为上一条历史记录                                                                       |
+| Page-down, `meta-N` | 更改为下一条历史记录                                                                           |
+| `meta-<`            | 更改为（当前会话的）第一条历史记录（如果其在历史记录中位于当前位置之前） |
+| `meta->`            | 更改为最后一条历史记录                                                                           |
 | `^-Space`           | Set the "mark" in the editing region (and de-activate the region if it's active)                           |
 | `^-Space ^-Space`   | Set the "mark" in the editing region and make the region "active", i.e. highlighted                        |
 | `^G`                | De-activate the region (i.e. make it not highlighted)                                                      |
 | `^X^X`              | Exchange the current position with the mark                                                                |
-| **Editing**         |                                                                                                            |
-| Backspace, `^H`     | Delete the previous character, or the whole region when it's active                                        |
+| **编辑**         |                                                                                                            |
+| Backspace, `^H`     | 删除前一个字符，或者整个区域，当它是 active 时                                        |
 | Delete, `^D`        | Forward delete one character (when buffer has text)                                                        |
 | meta-Backspace      | Delete the previous word                                                                                   |
 | `meta-d`            | Forward delete the next word                                                                               |
@@ -171,27 +138,20 @@ to do so).
 | `^Y`                | "Yank" insert the text from the kill ring                                                                  |
 | `meta-y`            | Replace a previously yanked text with an older entry from the kill ring                                    |
 | `^T`                | Transpose the characters about the cursor                                                                  |
-| `meta-Up arrow`     | Transpose current line with line above                                                                     |
-| `meta-Down arrow`   | Transpose current line with line below                                                                     |
+| `meta-Up arrow`     | 颠倒当前行和上一行                                                                     |
+| `meta-Down arrow`   | 颠倒当前行和下一行                                                                     |
 | `meta-u`            | Change the next word to uppercase                                                                          |
 | `meta-c`            | Change the next word to titlecase                                                                          |
 | `meta-l`            | Change the next word to lowercase                                                                          |
-| `^/`, `^_`          | Undo previous editing action                                                                               |
+| `^/`, `^_`          | 撤消上一个编辑操作                                                                               |
 | `^Q`                | Write a number in REPL and press `^Q` to open editor at corresponding stackframe or method                 |
 | `meta-Left Arrow`   | indent the current line on the left                                                                        |
 | `meta-Right Arrow`  | indent the current line on the right                                                                       |
 
 
-### Customizing keybindings
+### 自定义按键绑定
 
-Julia's REPL keybindings may be fully customized to a user's preferences by passing a dictionary
-to `REPL.setup_interface`. The keys of this dictionary may be characters or strings. The key
-`'*'` refers to the default action. Control plus character `x` bindings are indicated with `"^x"`.
-Meta plus `x` can be written `"\\Mx"`. The values of the custom keymap must be `nothing` (indicating
-that the input should be ignored) or functions that accept the signature `(PromptState, AbstractREPL, Char)`.
-The `REPL.setup_interface` function must be called before the REPL is initialized, by registering
-the operation with [`atreplinit`](@ref) . For example, to bind the up and down arrow keys to move through
-history without prefix search, one could put the following code in `~/.julia/config/startup.jl`:
+通过将字典传递给 `REPL.setup_interface`，Julia 的 REPL 按键绑定可以完全根据用户的喜好进行自定义。该字典的键可以是字符或字符串。键 `'*'` 表示默认操作。Control 键加字符 `x` 的绑定用 `"^x"` 表示。Meta 加 `x` 可以写成 `"\\Mx"`。自定义按键映射必须为 `nothing`（表示输入应被忽略）或接受签名的函数  `(PromptState, AbstractREPL, Char)`。必须在 REPL 初始化前调用 `REPL.setup_interface` 函数，方法是通过 [`atreplinit`](@ref) 注册操作。例如，要绑定上和下方向键在没有前缀搜索的情况下浏览历史记录，可以将以下代码放在 `~/.julia/config/startup.jl` 中：
 
 ```julia
 import REPL
@@ -211,12 +171,11 @@ end
 atreplinit(customize_keys)
 ```
 
-Users should refer to `LineEdit.jl` to discover the available actions on key input.
+用户应该参考 `LineEdit.jl` 来发现输入按键的可用操作。
 
-## Tab completion
+## Tab 补全
 
-In both the Julian and help modes of the REPL, one can enter the first few characters of a function
-or type and then press the tab key to get a list all matches:
+在 REPL 的 Julian 和帮助模式中，可以函数或类型的前几个字符，接着按 tab 键来获取所有匹配组成的列表：
 
 ```julia-repl
 julia> stri[TAB]
@@ -226,8 +185,7 @@ julia> Stri[TAB]
 StridedArray    StridedMatrix    StridedVecOrMat  StridedVector    String
 ```
 
-The tab key can also be used to substitute LaTeX math symbols with their Unicode equivalents,
-and get a list of LaTeX matches as well:
+Tab 键也可用于将 LaTeX 数学符号替换为其 Unicode 等价字符，也可用于获取 LaTeX 匹配组成的列表：
 
 ```julia-repl
 julia> \pi[TAB]
@@ -263,9 +221,9 @@ julia> α="\alpha[TAB]"   # LaTeX completion also works in strings
 julia> α="α"
 ```
 
-A full list of tab-completions can be found in the [Unicode Input](@ref) section of the manual.
+Tab 补全的完整列表可以在手册的 [Unicode 输入表](@ref)章节中找到。
 
-Completion of paths works for strings and julia's shell mode:
+路径补全适用于字符串和 julia 的 shell 模式：
 
 ```julia-repl
 julia> path="/[TAB]"
@@ -276,7 +234,7 @@ shell> /[TAB]
 .dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/
 ```
 
-Tab completion can help with investigation of the available methods matching the input arguments:
+Tab 补全可以帮助查找与输入参数相匹配的可用方法：
 
 ```julia-repl
 julia> max([TAB] # All methods are displayed, not shown here due to size of the list

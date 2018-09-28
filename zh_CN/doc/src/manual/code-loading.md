@@ -326,6 +326,6 @@ The subscripted `rootsᵢ`, `graphᵢ` and `pathsᵢ` variables correspond to th
 
 Since the primary environment is typically the environment of a project you're working on, while environments later in the stack contain additional tools, this is the right tradeoff: it's better to break your dev tools but keep the project working. When such incompatibilities occur, you'll typically want to upgrade your dev tools to versions that are compatible with the main project.
 
-## Conclusion
+## 总结
 
 Federated package management and precise software reproducibility are difficult but worthy goals in a package system. In combination, these goals lead to a more complex package loading mechanism than most dynamic languages have, but it also yields scalability and reproducibility that is more commonly associated with static languages. Fortunately, most Julia users can remain oblivious to the technical details of code loading and simply use the built-in package manager to add a package `X` to the appropriate project and manifest files and then write `import X` to load `X` without a further thought.
