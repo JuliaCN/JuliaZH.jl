@@ -249,18 +249,13 @@ julia> isequal(-0.0, 0.0)
 false
 ```
 
-Mixed-type comparisons between signed integers, unsigned integers, and floats can be tricky. A
-great deal of care has been taken to ensure that Julia does them correctly.
+有符号整数、无符号整数以及浮点数之间的混合类型比较是很棘手的。开发者费了很大精力来确保 Julia 在这个问题上做的是正确的。
 
-For other types, `isequal` defaults to calling [`==`](@ref), so if you want to define
-equality for your own types then you only need to add a [`==`](@ref) method.  If you define
-your own equality function, you should probably define a corresponding [`hash`](@ref) method
-to ensure that `isequal(x,y)` implies `hash(x) == hash(y)`.
+对于其它类型，`isequal` 会默认调用 [`==`](@ref)，所以如果你想给自己的类型定义相等，那么就只需要为 [`==`](@ref) 增加一个方法。如果你想自己定义一个相等函数，你可能需要定义一个对应的 [`hash`](@ref) 方法，用于确保 `isequal(x,y)` 隐含着 `hash(x) == hash(y)`。
 
 ### 链式比较
 
-Unlike most languages, with the [notable exception of Python](https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators),
-comparisons can be arbitrarily chained:
+与其它语言不通，with the [notable exception of Python](https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators)，Julia 允许链式比较：
 
 ```jldoctest
 julia> 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5
@@ -272,7 +267,7 @@ Chaining comparisons is often quite convenient in numerical code. Chained compar
 which allows them to work on arrays. For example, `0 .< A .< 1` gives a boolean array whose entries
 are true where the corresponding elements of `A` are between 0 and 1.
 
-Note the evaluation behavior of chained comparisons:
+注意链式比较的执行顺序：
 
 ```jldoctest
 julia> v(x) = (println(x); x)
@@ -309,7 +304,7 @@ e.g. `sin.(A)` will compute the sine of each element of an array `A`.
 
 ## 运算符的优先级与结合性
 
-Julia applies the following order and associativity of operations, from highest precedence to lowest:
+从高到低，Julia 运算符的优先级与结合性为：
 
 | 分类       | 运算符                                                                                         | 结合性              |
 |:-------------- |:------------------------------------------------------------------------------------------------- |:-------------------------- |
@@ -376,7 +371,7 @@ conversions.
   * The [Rounding functions](@ref) take a type `T` as an optional argument. For example, `round(Int,x)`
     is a shorthand for `Int(round(x))`.
 
-The following examples show the different forms.
+下面的例子展示了不同的形式
 
 ```jldoctest
 julia> Int8(127)
@@ -415,7 +410,7 @@ Stacktrace:
 [...]
 ```
 
-See [Conversion and Promotion](@ref conversion-and-promotion) for how to define your own conversions and promotions.
+请参考[类型转换与类型提升](@ref conversion-and-promotion)一节来定义你自己的类型转换和提升规则。
 
 ### 舍入函数
 
@@ -434,44 +429,44 @@ See [Conversion and Promotion](@ref conversion-and-promotion) for how to define 
 
 | 函数                  | 描述                                                                                               |
 |:------------------------- |:--------------------------------------------------------------------------------------------------------- |
-| [`div(x,y)`](@ref), `x÷y` | truncated division; quotient rounded towards zero                                                         |
-| [`fld(x,y)`](@ref)        | floored division; quotient rounded towards `-Inf`                                                         |
-| [`cld(x,y)`](@ref)        | ceiling division; quotient rounded towards `+Inf`                                                         |
-| [`rem(x,y)`](@ref)        | remainder; satisfies `x == div(x,y)*y + rem(x,y)`; sign matches `x`                                       |
-| [`mod(x,y)`](@ref)        | modulus; satisfies `x == fld(x,y)*y + mod(x,y)`; sign matches `y`                                         |
-| [`mod1(x,y)`](@ref)       | `mod` with offset 1; returns `r∈(0,y]` for `y>0` or `r∈[y,0)` for `y<0`, where `mod(r, y) == mod(x, y)`   |
-| [`mod2pi(x)`](@ref)       | modulus with respect to 2pi;  `0 <= mod2pi(x)    < 2pi`                                                   |
-| [`divrem(x,y)`](@ref)     | returns `(div(x,y),rem(x,y))`                                                                             |
-| [`fldmod(x,y)`](@ref)     | returns `(fld(x,y),mod(x,y))`                                                                             |
-| [`gcd(x,y...)`](@ref)     | greatest positive common divisor of `x`, `y`,...                                                          |
-| [`lcm(x,y...)`](@ref)     | least positive common multiple of `x`, `y`,...                                                            |
+| [`div(x,y)`](@ref), `x÷y` | 截断除法；商向零近似                                                         |
+| [`fld(x,y)`](@ref)        | 向下取整除法；商向 `-Inf` 近似                                                         |
+| [`cld(x,y)`](@ref)        | 向上取整除法；商向 `+Inf` 近似                                                         |
+| [`rem(x,y)`](@ref)        | 取余；满足 `x == div(x,y)*y + rem(x,y)`；符号与 `x` 一致                                       |
+| [`mod(x,y)`](@ref)        | 取模；满足 `x == fld(x,y)*y + mod(x,y)`；符号与 `y` 一致                                         |
+| [`mod1(x,y)`](@ref)       | 偏移 1 的 `mod`；若 `y>0`，则返回 `r∈(0,y]`，若 `y<0`，则 `r∈[y,0)` 且满足 `mod(r, y) == mod(x, y)`   |
+| [`mod2pi(x)`](@ref)       | 以 2pi 为基取模；`0 <= mod2pi(x) < 2pi`                                                   |
+| [`divrem(x,y)`](@ref)     | 返回 `(div(x,y),rem(x,y))`                                                                             |
+| [`fldmod(x,y)`](@ref)     | 返回 `(fld(x,y),mod(x,y))`                                                                             |
+| [`gcd(x,y...)`](@ref)     | `x`, `y`,... 的最大公约数                                                          |
+| [`lcm(x,y...)`](@ref)     | `x`, `y`,... 的最小公倍数                                                            |
 
 ### 符号和绝对值函数
 
 | 函数                | 描述                                                |
 |:----------------------- |:---------------------------------------------------------- |
-| [`abs(x)`](@ref)        | a positive value with the magnitude of `x`                 |
-| [`abs2(x)`](@ref)       | the squared magnitude of `x`                               |
-| [`sign(x)`](@ref)       | indicates the sign of `x`, returning -1, 0, or +1          |
-| [`signbit(x)`](@ref)    | indicates whether the sign bit is on (true) or off (false) |
-| [`copysign(x,y)`](@ref) | a value with the magnitude of `x` and the sign of `y`      |
-| [`flipsign(x,y)`](@ref) | a value with the magnitude of `x` and the sign of `x*y`    |
+| [`abs(x)`](@ref)        | `x` 的模                 |
+| [`abs2(x)`](@ref)       | `x` 的模的平方                               |
+| [`sign(x)`](@ref)       | 表示 `x` 的符号，返回 -1，0，或 +1          |
+| [`signbit(x)`](@ref)    | 表示符号位是开启的(true)或关闭的(false) |
+| [`copysign(x,y)`](@ref) | 返回一个数，其值等于 `x` 的模，符号与 `y` 一致      |
+| [`flipsign(x,y)`](@ref) | 返回一个数，其值等于 `x` 的模，符号与 `x*y` 一致    |
 
 ### 幂、对数与平方根
 
 | 函数                 | 描述                                                                |
 |:------------------------ |:-------------------------------------------------------------------------- |
-| [`sqrt(x)`](@ref), `√x`  | square root of `x`                                                         |
-| [`cbrt(x)`](@ref), `∛x`  | cube root of `x`                                                           |
-| [`hypot(x,y)`](@ref)     | hypotenuse of right-angled triangle with other sides of length `x` and `y` |
-| [`exp(x)`](@ref)         | natural exponential function at `x`                                        |
-| [`expm1(x)`](@ref)       | accurate `exp(x)-1` for `x` near zero                                      |
-| [`ldexp(x,n)`](@ref)     | `x*2^n` computed efficiently for integer values of `n`                     |
-| [`log(x)`](@ref)         | natural logarithm of `x`                                                   |
-| [`log(b,x)`](@ref)       | base `b` logarithm of `x`                                                  |
-| [`log2(x)`](@ref)        | base 2 logarithm of `x`                                                    |
-| [`log10(x)`](@ref)       | base 10 logarithm of `x`                                                   |
-| [`log1p(x)`](@ref)       | accurate `log(1+x)` for `x` near zero                                      |
+| [`sqrt(x)`](@ref), `√x`  | `x` 的平方根                                                         |
+| [`cbrt(x)`](@ref), `∛x`  | `x` 的立方根                                                           |
+| [`hypot(x,y)`](@ref)     | 当直角边的长度为 `x` 和 `y`时，直角三角形斜边的长度 |
+| [`exp(x)`](@ref)         | 自然指数函数在 `x` 处的值                                        |
+| [`expm1(x)`](@ref)       | 当 `x` 接近 0 时的 `exp(x)-1` 的精确值                                      |
+| [`ldexp(x,n)`](@ref)     | `x*2^n` 的高效算法，`n` 为整数                     |
+| [`log(x)`](@ref)         | `x` 的自然对数                                                   |
+| [`log(b,x)`](@ref)       | 以 `b` 为底 `x` 的对数                                                  |
+| [`log2(x)`](@ref)        | 以 2 为底 `x` 的对数                                                    |
+| [`log10(x)`](@ref)       | 以 10 为底 `x` 的对数                                                   |
+| [`log1p(x)`](@ref)       | 当 `x`接近 0 时的 `log(1+x)` 的精确值                                      |
 | [`exponent(x)`](@ref)    | binary exponent of `x`                                                     |
 | [`significand(x)`](@ref) | binary significand (a.k.a. mantissa) of a floating-point number `x`        |
 

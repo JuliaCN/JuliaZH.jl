@@ -5,7 +5,7 @@ Julia的很多能力和扩展性都来自于一些非正式的接口。
 可以不但获得它们的功能，
 而且使它们能够被用到其它的基于它们的行为而定义的通用方法中。
 
-## [Iteration](@id man-interface-iteration)
+## [迭代](@id man-interface-iteration)
 
 | 必须方法               |                        | 简短描述                                                                     |
 |:------------------------------ |:---------------------- |:------------------------------------------------------------------------------------- |
@@ -198,7 +198,7 @@ there's still quite a number of behaviors missing. This `Squares` sequence is st
 more and more like a vector as we've added behaviors to it. Instead of defining all these behaviors
 ourselves, we can officially define it as a subtype of an [`AbstractArray`](@ref).
 
-## [Abstract Arrays](@id man-interface-array)
+## [抽象数组](@id man-interface-array)
 
 | Methods to implement                            |                                        | 简短描述                                                                     |
 |:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |
@@ -207,7 +207,7 @@ ourselves, we can officially define it as a subtype of an [`AbstractArray`](@ref
 | `getindex(A, I::Vararg{Int, N})`                |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexing             |
 | `setindex!(A, v, i::Int)`                       |                                        | (if `IndexLinear`) Scalar indexed assignment                                          |
 | `setindex!(A, v, I::Vararg{Int, N})`            |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexed assignment   |
-| **Optional methods**                            | **默认定义**                 | **简短描述**                                                                 |
+| **可选方法**                            | **默认定义**                 | **简短描述**                                                                 |
 | `IndexStyle(::Type)`                            | `IndexCartesian()`                     | Returns either `IndexLinear()` or `IndexCartesian()`. See the description below.      |
 | `getindex(A, I...)`                             | defined in terms of scalar `getindex`  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |
 | `setindex!(A, I...)`                            | defined in terms of scalar `setindex!` | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |
@@ -422,7 +422,7 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 |:-------------------- |:----------------- |
 | `Base.BroadcastStyle(::Type{SrcType}) = SrcStyle()` | Broadcasting behavior of `SrcType` |
 | `Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})` | Allocation of output container |
-| **Optional methods** | | |
+| **可选方法** | | |
 | `Base.BroadcastStyle(::Style1, ::Style2) = Style12()` | Precedence rules for mixing styles |
 | `Base.broadcast_axes(x)` | Declaration of the indices of `x` for broadcasting purposes (defaults to [`axes(x)`](@ref)) |
 | `Base.broadcastable(x)` | Convert `x` to an object that has `axes` and supports indexing |

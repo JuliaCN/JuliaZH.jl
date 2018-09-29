@@ -44,20 +44,20 @@
   * Julia 脚本可以包含任意数量的函数，并且在加载文件时，所有定义都将在外部可见。
     可以从当前工作目录之外的文件加载函数定义。
     directory.
-  * In Julia, reductions such as [`sum`](@ref), [`prod`](@ref), and [`max`](@ref) are performed
+  * 在Julia中，例如 [`sum`](@ref)、[`prod`](@ref)和[`max`](@ref)的归约操作会作用到数组的每一个元素上，当调用时只有一个函数，例如`sum(A)`，即使`A`并不只有一个维度。
     over every element of an array when called with a single argument, as in `sum(A)`, even if `A`
     has more than one dimension.
-  * In Julia, parentheses must be used to call a function with zero arguments, like in [`rand()`](@ref).
-  * Julia discourages the used of semicolons to end statements. The results of statements are not
-    automatically printed (except at the interactive prompt), and lines of code do not need to end
-    with semicolons. [`println`](@ref) or [`@printf`](@ref) can be used to print specific output.
-  * In Julia, if `A` and `B` are arrays, logical comparison operations like `A == B` do not return
-    an array of booleans. Instead, use `A .== B`, and similarly for the other boolean operators like
+  * 在Julia中，调用无参数的函数时必须使用小括号，例如 [`rand()`](@ref)。
+  * Julia不鼓励使用分号来结束语句。
+    语句的结果不会自动打印（除了在REPL中），并且代码的一行不必使用分号结尾。
+    [`println`](@ref) 或者 [`@printf`](@ref) 能用来打印特定输出。
+  * 在Julia中，如果`A`和`B`是数组，像`A == B`这样的逻辑比较运算符不会返回布尔值数组。
+    相反地，请使用`A .== B`。对于其他的像是[`<`](@ref)、[`>`](@ref) 和 `=` 的布尔运算符同理。
     [`<`](@ref), [`>`](@ref) and `=`.
-  * In Julia, the operators [`&`](@ref), [`|`](@ref), and [`⊻`](@ref xor) ([`xor`](@ref)) perform the
-    bitwise operations equivalent to `and`, `or`, and `xor` respectively in MATLAB, and have precedence
-    similar to Python's bitwise operators (unlike C). They can operate on scalars or element-wise
-    across arrays and can be used to combine logical arrays, but note the difference in order of operations:
+  * 在Julia中，运算符[`&`](@ref)、 [`|`](@ref) 和 [`⊻`](@ref xor) ([`xor`](@ref))进行按位操作，
+    分别与MATLAB中的`and`、`or` 和 `xor` 等价，并且优先级
+    与Python的按位运算符相似（不像C）。他们可以对标量运算
+    或者数组中逐元素运算，可以用来合并逻辑数组，但是注意运算顺序的区别：
     parentheses may be required (e.g., to select elements of `A` equal to 1 or 2 use `(A .== 1) .| (A .== 2)`).
   * In Julia, the elements of a collection can be passed as arguments to a function using the splat
     operator `...`, as in `xs=[1,2]; f(xs...)`.
@@ -205,13 +205,13 @@ For users coming to Julia from R, these are some noteworthy differences:
   * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的
     表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是
     将其包含在括号中。
-  * 默认情况下，Julia 数组是 column major (Fortran ordered)，而 NumPy 数组是 ow major (C-ordered)。
+  * 默认情况下，Julia 数组是列优先的（Fortran 顺序），而 NumPy 数组是行优先（C 顺序）。
     为了在循环数组时获得最佳性能，循环顺序应该
     在 Julia 中相对于 NumPy 反转（请参阅 [Performance Tips](@ref man-performance-tips) 中的对应章节）。
   * Julia 的更新运算符（例如 `+=`，`-=`，···）是 *not in-place*，而 Numpy 的是。这
     意味着 `A = [1, 1]; B = A; B += [3, 3]` 不会改变 `A` 中的值，而将名称 `B` 重新绑定
     到右侧表达式 `B = B + 3` 的结果，这是一个新的数组。对于 in-place 操作，使用 `B .+= 3`
-    （另请参阅 [dot operators](@ref man-dot-operators)），显式的循环，或者 `InplaceOps.jl`。
+    （另请参阅 [dot operators](@ref man-dot-operators)）、显式的循环或者 `InplaceOps.jl`。
   * 每次调用方法时，Julia 都会计算函数参数的默认值，不像
     在 Python 中，默认值只会在函数定义时被计算一次。例如，
     每次无输入参数调用时，函数`f(x=rand()) = x`都返回一个新的随机数
