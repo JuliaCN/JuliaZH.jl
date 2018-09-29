@@ -253,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "数值比较",
     "category": "section",
-    "text": "标准的比较操作对所有原始数值类型有定义：操作符 名称\n== 相等\n!=, ≠ 不等\n< 小于\n<=, ≤ 小于等于\n> 大于\n>=, ≥ 大于等于下面是一些简单的例子：julia> 1 == 1\ntrue\n\njulia> 1 == 2\nfalse\n\njulia> 1 != 2\ntrue\n\njulia> 1 == 1.0\ntrue\n\njulia> 1 < 2\ntrue\n\njulia> 1.0 > 3\nfalse\n\njulia> 1 >= 1.0\ntrue\n\njulia> -1 <= 1\ntrue\n\njulia> -1 <= -1\ntrue\n\njulia> -1 <= -2\nfalse\n\njulia> 3 < -0.5\nfalse整数的比较以标准方式——按位比较，而浮点数的比较以 IEEE 754 标准。有限数的大小顺序，和我们所熟知的相同。\n+0 等于但不大于 -0.\nInf 等于自身，并且大于除了 NaN 外的所有数。\n-Inf 等于自身，并且小于除了 NaN 外的所有数。\nNaN “不具有可比性”，它与任何数值（甚至包括它自己）做大小比较，结果都是 false；并且与任何数值（包括它自己）做不等比较，结果都为 true.NaN 的“不可比性”可能有点奇特，这里举例说明一下：julia> NaN == NaN\nfalse\n\njulia> NaN != NaN\ntrue\n\njulia> NaN < NaN\nfalse\n\njulia> NaN > NaN\nfalse在做数组比较时，NaN 的存在，会使比较结果变得很奇怪：julia> [1 NaN] == [1 NaN]\nfalse为此，Julia 给这些 非有限数 提供了下面几个额外的测试函数。这些函数在有些情况下很有用处，比如在做 hash 比较时。函数 测试是否满足如下性质\nisequal(x, y) x 与 y 是完全相同的\nisfinite(x) x 是有限大的数字\nisinf(x) x 是（正/负）无穷大\nisnan(x) x 是 NaNisequal 认为 NaN 之间是相等的：julia> isequal(NaN, NaN)\ntrue\n\njulia> isequal([1 NaN], [1 NaN])\ntrue\n\njulia> isequal(NaN, NaN32)\ntrueisequal 也能用来区分带符号的零：julia> -0.0 == 0.0\ntrue\n\njulia> isequal(-0.0, 0.0)\nfalseMixed-type comparisons between signed integers, unsigned integers, and floats can be tricky. A great deal of care has been taken to ensure that Julia does them correctly.For other types, isequal defaults to calling ==, so if you want to define equality for your own types then you only need to add a == method.  If you define your own equality function, you should probably define a corresponding hash method to ensure that isequal(x,y) implies hash(x) == hash(y)."
+    "text": "标准的比较操作对所有原始数值类型有定义：操作符 名称\n== 相等\n!=, ≠ 不等\n< 小于\n<=, ≤ 小于等于\n> 大于\n>=, ≥ 大于等于下面是一些简单的例子：julia> 1 == 1\ntrue\n\njulia> 1 == 2\nfalse\n\njulia> 1 != 2\ntrue\n\njulia> 1 == 1.0\ntrue\n\njulia> 1 < 2\ntrue\n\njulia> 1.0 > 3\nfalse\n\njulia> 1 >= 1.0\ntrue\n\njulia> -1 <= 1\ntrue\n\njulia> -1 <= -1\ntrue\n\njulia> -1 <= -2\nfalse\n\njulia> 3 < -0.5\nfalse整数的比较以标准方式——按位比较，而浮点数的比较以 IEEE 754 标准。有限数的大小顺序，和我们所熟知的相同。\n+0 等于但不大于 -0.\nInf 等于自身，并且大于除了 NaN 外的所有数。\n-Inf 等于自身，并且小于除了 NaN 外的所有数。\nNaN “不具有可比性”，它与任何数值（甚至包括它自己）做大小比较，结果都是 false；并且与任何数值（包括它自己）做不等比较，结果都为 true.NaN 的“不可比性”可能有点奇特，这里举例说明一下：julia> NaN == NaN\nfalse\n\njulia> NaN != NaN\ntrue\n\njulia> NaN < NaN\nfalse\n\njulia> NaN > NaN\nfalse在做数组比较时，NaN 的存在，会使比较结果变得很奇怪：julia> [1 NaN] == [1 NaN]\nfalse为此，Julia 给这些 非有限数 提供了下面几个额外的测试函数。这些函数在有些情况下很有用处，比如在做 hash 比较时。函数 测试是否满足如下性质\nisequal(x, y) x 与 y 是完全相同的\nisfinite(x) x 是有限大的数字\nisinf(x) x 是（正/负）无穷大\nisnan(x) x 是 NaNisequal 认为 NaN 之间是相等的：julia> isequal(NaN, NaN)\ntrue\n\njulia> isequal([1 NaN], [1 NaN])\ntrue\n\njulia> isequal(NaN, NaN32)\ntrueisequal 也能用来区分带符号的零：julia> -0.0 == 0.0\ntrue\n\njulia> isequal(-0.0, 0.0)\nfalse有符号整数、无符号整数以及浮点数之间的混合类型比较是很棘手的。开发者费了很大精力来确保 Julia 在这个问题上做的是正确的。对于其它类型，isequal 会默认调用 ==，所以如果你想给自己的类型定义相等，那么就只需要为 == 增加一个方法。如果你想自己定义一个相等函数，你可能需要定义一个对应的 hash 方法，用于确保 isequal(x,y) 隐含着 hash(x) == hash(y)。"
 },
 
 {
@@ -261,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "链式比较",
     "category": "section",
-    "text": "Unlike most languages, with the notable exception of Python, comparisons can be arbitrarily chained:julia> 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5\ntrueChaining comparisons is often quite convenient in numerical code. Chained comparisons use the && operator for scalar comparisons, and the & operator for elementwise comparisons, which allows them to work on arrays. For example, 0 .< A .< 1 gives a boolean array whose entries are true where the corresponding elements of A are between 0 and 1.Note the evaluation behavior of chained comparisons:julia> v(x) = (println(x); x)\nv (generic function with 1 method)\n\njulia> v(1) < v(2) <= v(3)\n2\n1\n3\ntrue\n\njulia> v(1) > v(2) <= v(3)\n2\n1\nfalseThe middle expression is only evaluated once, rather than twice as it would be if the expression were written as v(1) < v(2) && v(2) <= v(3). However, the order of evaluations in a chained comparison is undefined. It is strongly recommended not to use expressions with side effects (such as printing) in chained comparisons. If side effects are required, the short-circuit && operator should be used explicitly (see Short-Circuit Evaluation)."
+    "text": "与其它语言不通，with the notable exception of Python，Julia 允许链式比较：julia> 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5\ntrueChaining comparisons is often quite convenient in numerical code. Chained comparisons use the && operator for scalar comparisons, and the & operator for elementwise comparisons, which allows them to work on arrays. For example, 0 .< A .< 1 gives a boolean array whose entries are true where the corresponding elements of A are between 0 and 1.注意链式比较的执行顺序：julia> v(x) = (println(x); x)\nv (generic function with 1 method)\n\njulia> v(1) < v(2) <= v(3)\n2\n1\n3\ntrue\n\njulia> v(1) > v(2) <= v(3)\n2\n1\nfalseThe middle expression is only evaluated once, rather than twice as it would be if the expression were written as v(1) < v(2) && v(2) <= v(3). However, the order of evaluations in a chained comparison is undefined. It is strongly recommended not to use expressions with side effects (such as printing) in chained comparisons. If side effects are required, the short-circuit && operator should be used explicitly (see Short-Circuit Evaluation)."
 },
 
 {
@@ -277,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "运算符的优先级与结合性",
     "category": "section",
-    "text": "Julia applies the following order and associativity of operations, from highest precedence to lowest:分类 运算符 结合性\n语法 . followed by :: 左结合\n幂运算 ^ 右结合\n一元运算符 + - √ 右结合[1]\n移位运算 << >> >>> 左结合\n除法 // 左结合\n乘法 * / % & \\ ÷ 左结合[2]\n加法 + - | ⊻ 左结合[2]\n语法 : .. 左结合\n语法 |> 左结合\n语法 <| 右结合\n比较 > < >= <= == === != !== <: 无结合性\n控制流程 && followed by || followed by ? 右结合\nPair 操作 => 右结合\n赋值 = += -= *= /= //= \\= ^= ÷= %= |= &= ⊻= <<= >>= >>>= 右结合[1]: The unary operators + and - require explicit parentheses around their argument to disambiguate them from the operator ++, etc. Other compositions of unary operators are parsed with right-associativity, e. g., √√-a as √(√(-a)).[2]: The operators +, ++ and * are non-associative. a + b + c is parsed as +(a, b, c) not +(+(a, b), c). However, the fallback methods for +(a, b, c, d...) and *(a, b, c, d...) both default to left-associative evaluation.For a complete list of every Julia operator\'s precedence, see the top of this file: src/julia-parser.scmYou can also find the numerical precedence for any given operator via the built-in function Base.operator_precedence, where higher numbers take precedence:julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)\n(11, 13, 17)\n\njulia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)\n(0, 1, 1)A symbol representing the operator associativity can also be found by calling the built-in function Base.operator_associativity:julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)\n(:left, :none, :right)\n\njulia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Base.operator_associativity(:→)\n(:left, :none, :right)Note that symbols such as :sin return precedence 0. This value represents invalid operators and not operators of lowest precedence. Similarly, such operators are assigned associativity :none."
+    "text": "从高到低，Julia 运算符的优先级与结合性为：分类 运算符 结合性\n语法 . followed by :: 左结合\n幂运算 ^ 右结合\n一元运算符 + - √ 右结合[1]\n移位运算 << >> >>> 左结合\n除法 // 左结合\n乘法 * / % & \\ ÷ 左结合[2]\n加法 + - | ⊻ 左结合[2]\n语法 : .. 左结合\n语法 |> 左结合\n语法 <| 右结合\n比较 > < >= <= == === != !== <: 无结合性\n控制流程 && followed by || followed by ? 右结合\nPair 操作 => 右结合\n赋值 = += -= *= /= //= \\= ^= ÷= %= |= &= ⊻= <<= >>= >>>= 右结合[1]: The unary operators + and - require explicit parentheses around their argument to disambiguate them from the operator ++, etc. Other compositions of unary operators are parsed with right-associativity, e. g., √√-a as √(√(-a)).[2]: The operators +, ++ and * are non-associative. a + b + c is parsed as +(a, b, c) not +(+(a, b), c). However, the fallback methods for +(a, b, c, d...) and *(a, b, c, d...) both default to left-associative evaluation.For a complete list of every Julia operator\'s precedence, see the top of this file: src/julia-parser.scmYou can also find the numerical precedence for any given operator via the built-in function Base.operator_precedence, where higher numbers take precedence:julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)\n(11, 13, 17)\n\njulia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)\n(0, 1, 1)A symbol representing the operator associativity can also be found by calling the built-in function Base.operator_associativity:julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)\n(:left, :none, :right)\n\njulia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Base.operator_associativity(:→)\n(:left, :none, :right)Note that symbols such as :sin return precedence 0. This value represents invalid operators and not operators of lowest precedence. Similarly, such operators are assigned associativity :none."
 },
 
 {
@@ -285,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "数值转换",
     "category": "section",
-    "text": "Julia supports three forms of numerical conversion, which differ in their handling of inexact conversions.The notation T(x) or convert(T,x) converts x to a value of type T.\nIf T is a floating-point type, the result is the nearest representable value, which could be positive or negative infinity.\n如果 T 为整数类型，当 x 不为 T 类型时，会触发 InexactError\nx % T converts an integer x to a value of integer type T congruent to x modulo 2^n, where n is the number of bits in T. In other words, the binary representation is truncated to fit.\nThe Rounding functions take a type T as an optional argument. For example, round(Int,x) is a shorthand for Int(round(x)).The following examples show the different forms.julia> Int8(127)\n127\n\njulia> Int8(128)\nERROR: InexactError: trunc(Int8, 128)\nStacktrace:\n[...]\n\njulia> Int8(127.0)\n127\n\njulia> Int8(3.14)\nERROR: InexactError: Int8(Int8, 3.14)\nStacktrace:\n[...]\n\njulia> Int8(128.0)\nERROR: InexactError: Int8(Int8, 128.0)\nStacktrace:\n[...]\n\njulia> 127 % Int8\n127\n\njulia> 128 % Int8\n-128\n\njulia> round(Int8,127.4)\n127\n\njulia> round(Int8,127.6)\nERROR: InexactError: trunc(Int8, 128.0)\nStacktrace:\n[...]See Conversion and Promotion for how to define your own conversions and promotions."
+    "text": "Julia supports three forms of numerical conversion, which differ in their handling of inexact conversions.The notation T(x) or convert(T,x) converts x to a value of type T.\nIf T is a floating-point type, the result is the nearest representable value, which could be positive or negative infinity.\n如果 T 为整数类型，当 x 不为 T 类型时，会触发 InexactError\nx % T converts an integer x to a value of integer type T congruent to x modulo 2^n, where n is the number of bits in T. In other words, the binary representation is truncated to fit.\nThe Rounding functions take a type T as an optional argument. For example, round(Int,x) is a shorthand for Int(round(x)).下面的例子展示了不同的形式julia> Int8(127)\n127\n\njulia> Int8(128)\nERROR: InexactError: trunc(Int8, 128)\nStacktrace:\n[...]\n\njulia> Int8(127.0)\n127\n\njulia> Int8(3.14)\nERROR: InexactError: Int8(Int8, 3.14)\nStacktrace:\n[...]\n\njulia> Int8(128.0)\nERROR: InexactError: Int8(Int8, 128.0)\nStacktrace:\n[...]\n\njulia> 127 % Int8\n127\n\njulia> 128 % Int8\n-128\n\njulia> round(Int8,127.4)\n127\n\njulia> round(Int8,127.6)\nERROR: InexactError: trunc(Int8, 128.0)\nStacktrace:\n[...]请参考类型转换与类型提升一节来定义你自己的类型转换和提升规则。"
 },
 
 {
@@ -301,7 +301,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "除法函数",
     "category": "section",
-    "text": "函数 描述\ndiv(x,y), x÷y truncated division; quotient rounded towards zero\nfld(x,y) floored division; quotient rounded towards -Inf\ncld(x,y) ceiling division; quotient rounded towards +Inf\nrem(x,y) remainder; satisfies x == div(x,y)*y + rem(x,y); sign matches x\nmod(x,y) modulus; satisfies x == fld(x,y)*y + mod(x,y); sign matches y\nmod1(x,y) mod with offset 1; returns r∈(0,y] for y>0 or r∈[y,0) for y<0, where mod(r, y) == mod(x, y)\nmod2pi(x) modulus with respect to 2pi;  0 <= mod2pi(x)    < 2pi\ndivrem(x,y) returns (div(x,y),rem(x,y))\nfldmod(x,y) returns (fld(x,y),mod(x,y))\ngcd(x,y...) greatest positive common divisor of x, y,...\nlcm(x,y...) least positive common multiple of x, y,..."
+    "text": "函数 描述\ndiv(x,y), x÷y 截断除法；商向零近似\nfld(x,y) 向下取整除法；商向 -Inf 近似\ncld(x,y) 向上取整除法；商向 +Inf 近似\nrem(x,y) 取余；满足 x == div(x,y)*y + rem(x,y)；符号与 x 一致\nmod(x,y) 取模；满足 x == fld(x,y)*y + mod(x,y)；符号与 y 一致\nmod1(x,y) 偏移 1 的 mod；若 y>0，则返回 r∈(0,y]，若 y<0，则 r∈[y,0) 且满足 mod(r, y) == mod(x, y)\nmod2pi(x) 以 2pi 为基取模；0 <= mod2pi(x) < 2pi\ndivrem(x,y) 返回 (div(x,y),rem(x,y))\nfldmod(x,y) 返回 (fld(x,y),mod(x,y))\ngcd(x,y...) x, y,... 的最大公约数\nlcm(x,y...) x, y,... 的最小公倍数"
 },
 
 {
@@ -309,7 +309,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "符号和绝对值函数",
     "category": "section",
-    "text": "函数 描述\nabs(x) a positive value with the magnitude of x\nabs2(x) the squared magnitude of x\nsign(x) indicates the sign of x, returning -1, 0, or +1\nsignbit(x) indicates whether the sign bit is on (true) or off (false)\ncopysign(x,y) a value with the magnitude of x and the sign of y\nflipsign(x,y) a value with the magnitude of x and the sign of x*y"
+    "text": "函数 描述\nabs(x) x 的模\nabs2(x) x 的模的平方\nsign(x) 表示 x 的符号，返回 -1，0，或 +1\nsignbit(x) 表示符号位是开启的(true)或关闭的(false)\ncopysign(x,y) 返回一个数，其值等于 x 的模，符号与 y 一致\nflipsign(x,y) 返回一个数，其值等于 x 的模，符号与 x*y 一致"
 },
 
 {
@@ -317,7 +317,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "幂、对数与平方根",
     "category": "section",
-    "text": "函数 描述\nsqrt(x), √x square root of x\ncbrt(x), ∛x cube root of x\nhypot(x,y) hypotenuse of right-angled triangle with other sides of length x and y\nexp(x) natural exponential function at x\nexpm1(x) accurate exp(x)-1 for x near zero\nldexp(x,n) x*2^n computed efficiently for integer values of n\nlog(x) natural logarithm of x\nlog(b,x) base b logarithm of x\nlog2(x) base 2 logarithm of x\nlog10(x) base 10 logarithm of x\nlog1p(x) accurate log(1+x) for x near zero\nexponent(x) binary exponent of x\nsignificand(x) binary significand (a.k.a. mantissa) of a floating-point number xFor an overview of why functions like hypot, expm1, and log1p are necessary and useful, see John D. Cook\'s excellent pair of blog posts on the subject: expm1, log1p, erfc, and hypot."
+    "text": "函数 描述\nsqrt(x), √x x 的平方根\ncbrt(x), ∛x x 的立方根\nhypot(x,y) 当直角边的长度为 x 和 y时，直角三角形斜边的长度\nexp(x) 自然指数函数在 x 处的值\nexpm1(x) 当 x 接近 0 时的 exp(x)-1 的精确值\nldexp(x,n) x*2^n 的高效算法，n 为整数\nlog(x) x 的自然对数\nlog(b,x) 以 b 为底 x 的对数\nlog2(x) 以 2 为底 x 的对数\nlog10(x) 以 10 为底 x 的对数\nlog1p(x) 当 x接近 0 时的 log(1+x) 的精确值\nexponent(x) binary exponent of x\nsignificand(x) binary significand (a.k.a. mantissa) of a floating-point number xFor an overview of why functions like hypot, expm1, and log1p are necessary and useful, see John D. Cook\'s excellent pair of blog posts on the subject: expm1, log1p, erfc, and hypot."
 },
 
 {
@@ -621,7 +621,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "更多阅读",
     "category": "section",
-    "text": "我们应该在这里提到，这远不是定义函数的完整图景。Julia 拥有一个复杂的类型系统并且允许对参数类型进行多重派发。这里给出的示例都没有为它们的参数提供任何类型注释，意味着它们可以作用于任何类型的参数。类型系统在 Types 中描述，而 Methods 则描述了根据运行时参数类型上的多重派发所选择的方法定义函数。"
+    "text": "我们应该在这里提到，这远不是定义函数的完整图景。Julia 拥有一个复杂的类型系统并且允许对参数类型进行多重分派。这里给出的示例都没有为它们的参数提供任何类型注释，意味着它们可以作用于任何类型的参数。类型系统在类型中描述，而方法则描述了根据运行时参数类型上的多重分派所选择的方法定义函数。"
 },
 
 {
@@ -709,7 +709,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "try/catch 语句",
     "category": "section",
-    "text": "try/catch 语句可以用来捕获 Exception，并进行异常处理。例如，一个自定义的平方根函数可以通过 Exception 来实现自动按需调用求解实数或者复数平方根的方法：julia> f(x) = try\n           sqrt(x)\n       catch\n           sqrt(complex(x, 0))\n       end\nf (generic function with 1 method)\n\njulia> f(1)\n1.0\n\njulia> f(-1)\n0.0 + 1.0im值得注意的是，在实际用这个函数的时候，应该比较 x 与 0 的大小，而不是捕获一个异常，异常比直接使用判断分支慢得多。try/catch 语句允许保存 Exception 到一个变量中。下面的做作的例子中，如果 x 是可索引的，计算x 的第二项的平方根，否则假设 x 是一个实数，并返回它的平方根：julia> sqrt_second(x) = try\n           sqrt(x[2])\n       catch y\n           if isa(y, DomainError)\n               sqrt(complex(x[2], 0))\n           elseif isa(y, BoundsError)\n               sqrt(x)\n           end\n       end\nsqrt_second (generic function with 1 method)\n\njulia> sqrt_second([1 4])\n2.0\n\njulia> sqrt_second([1 -4])\n0.0 + 2.0im\n\njulia> sqrt_second(9)\n3.0\n\njulia> sqrt_second(-9)\nERROR: DomainError with -9.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]注意 catch 后面的字符会被一直认为是异常的名字，所以在写 try/catch 单行表达式时，需要特别小心。下面的代码不会 在错误的情况下，返回 x 的值：try bad() catch x end正确的是在catch后使用一个分号或者插入一个换行：try bad() catch; x end\n\ntry bad()\ncatch\n    x\nendtry/catch 组件的强大之处在于能够将高度嵌套的计算立刻解耦成更高层次地调用函数。有时没有错误产生，但需要能够解耦堆栈，并传值到上层。Julia 提供了 rethrow, backtrace 和 catch_backtrace 函数进行更高级的错误处理。"
+    "text": "try/catch 语句可以用来捕获 Exception，并进行异常处理。例如，一个自定义的平方根函数可以通过 Exception 来实现自动按需调用求解实数或者复数平方根的方法：julia> f(x) = try\n           sqrt(x)\n       catch\n           sqrt(complex(x, 0))\n       end\nf (generic function with 1 method)\n\njulia> f(1)\n1.0\n\njulia> f(-1)\n0.0 + 1.0im值得注意的是，在实际用这个函数的时候，应该比较 x 与 0 的大小，而不是捕获一个异常，异常比直接使用判断分支慢得多。try/catch 语句允许保存 Exception 到一个变量中。在下面这个做作的例子中，如果 x 是可索引的，则计算 x 的第二项的平方根，否则就假设 x 是一个实数，并返回它的平方根：julia> sqrt_second(x) = try\n           sqrt(x[2])\n       catch y\n           if isa(y, DomainError)\n               sqrt(complex(x[2], 0))\n           elseif isa(y, BoundsError)\n               sqrt(x)\n           end\n       end\nsqrt_second (generic function with 1 method)\n\njulia> sqrt_second([1 4])\n2.0\n\njulia> sqrt_second([1 -4])\n0.0 + 2.0im\n\njulia> sqrt_second(9)\n3.0\n\njulia> sqrt_second(-9)\nERROR: DomainError with -9.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]注意 catch 后面的字符会被一直认为是异常的名字，所以在写 try/catch 单行表达式时，需要特别小心。下面的代码不会在错误的情况下返回 x 的值：try bad() catch x end正确的做法是在 catch 后添加一个分号或者直接换行：try bad() catch; x end\n\ntry bad()\ncatch\n    x\nendtry/catch 组件的强大之处在于能够将高度嵌套的计算立刻解耦成更高层次地调用函数。有时没有错误产生，但需要能够解耦堆栈，并传值到上层。Julia 提供了 rethrow, backtrace 和 catch_backtrace 函数进行更高级的错误处理。"
 },
 
 {
@@ -717,15 +717,15 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "finally 子句",
     "category": "section",
-    "text": "在进行状态改变或者使用类似文件的资源的编程时，经常需要在代码结束的时候进行必要的清理工作（比如关闭文件）。由于异常会使得部分代码块在正常结束之前退出，可能使得工作变得复杂。finally关键字提供了一种方式，使得无论特定代码块如何退出，代码块中的部分代码都能运行。例如，这里是我们如何确保一个打开的文件被关闭：f = open(\"file\")\ntry\n    # operate on file f\nfinally\n    close(f)\nend当控制流离开 try 代码块（例如，遇到 return，或者正常结束），close(f) 就会被执行。如果 try 代码块由于异常退出，这个异常会继续传递。catch 代码块可以和 try 还有 finally 配合使用。这时 finally 代码块会在 catch 处理错误之后才运行。"
+    "text": "在进行状态改变或者使用类似文件的资源的编程时，经常需要在代码结束的时候进行必要的清理工作（比如关闭文件）。由于异常会使得部分代码块在正常结束之前退出，所以可能会让上述工作变得复杂。finally 关键字提供了一种方式，无论代码块是如何退出的，都能够让代码块在退出时运行某段代码。这里是一个确保一个打开的文件被关闭的例子：f = open(\"file\")\ntry\n    # operate on file f\nfinally\n    close(f)\nend当控制流离开 try 代码块（例如，遇到 return，或者正常结束），close(f) 就会被执行。如果 try 代码块由于异常退出，这个异常会继续传递。catch 代码块可以和 try 还有 finally 配合使用。这时 finally 代码块会在 catch 处理错误之后才运行。"
 },
 
 {
     "location": "manual/control-flow/#man-tasks-1",
     "page": "流程控制",
-    "title": "Task (又名 协程)",
+    "title": "Task（协程）",
     "category": "section",
-    "text": "Task 是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。这个特性有时被叫做其它名字，例如 对称协程（symmetric coroutines），轻量级线程（lightweight threads），合作多任务处理（cooperative multitasking），或者单次续延（one-shot continuations）。当一部分计算任务（在实际中，执行一个特定的函数）可以被设计成一个 Task 时，就可以中断它，并切换到另一个 Task。原本的 Task 可以恢复到它上次中断的地方，并继续执行。第一眼感觉，这个跟函数调用很类似。但是有两个关键的区别。首先，是切换 Task 并不使用任何空间，所以任意数量的 Task 切换都不会使用调用堆栈（call stack）。其次，Task 可以以任意次序切换，而不像函数调用那样，被调用函数必须在返回主调用函数之前结束执行。这种流程控制的方式使得解决一个特定问题更简便。在一些问题中，多个需求并不是有函数调用来自然连接的；在需要完成的工作之间并没有明确的“调用者”或者“被调用者”。一个例子是生产-消费问题，一个复杂的流程产生数据，另一个复杂的流程消费他们。消费者不能简单的调用生产函数来获得一个值，因为生产者可能有更多的值需要创建，还没有准备好返回。用 Task 的话，生产者和消费者能同时运行他们所需要的任意时间，根据需要传递值回来或者过去。Julia 提供了 Channel 机制来解决这个问题。 一个Channel 是一个先进先出的队列，允许多个 Task 对它可以进行读和写。让我们定义一个生产者任务，调用 put! 来生产数值。为了消费数值，我们需要对生产者开始新任务进行排班。可以使用一个特殊的 Channel 组件来运行一个与其绑定的 Task，它能接受单参数函数作为其参数，然后可以用 take! 从 Channel 对象里不断地提取值：julia> function producer(c::Channel)\n           put!(c, \"start\")\n           for n=1:4\n               put!(c, 2n)\n           end\n           put!(c, \"stop\")\n       end;\n\njulia> chnl = Channel(producer);\n\njulia> take!(chnl)\n\"start\"\n\njulia> take!(chnl)\n2\n\njulia> take!(chnl)\n4\n\njulia> take!(chnl)\n6\n\njulia> take!(chnl)\n8\n\njulia> take!(chnl)\n\"stop\"一种思考这种行为地方式是，生产者能够多次返回。在两次调用 put! 之间，生产者的执行是被中断的，消费者接管控制。返回的 Channel 可以被用作一个 for 循环的迭代对象，循环变量可以是所有产生的值。当 Channel 关闭时，循环被终止。julia> for x in Channel(producer)\n           println(x)\n       end\nstart\n2\n4\n6\n8\nstop注意我们并不需要显式地在生产者中关闭 Channel。这是因为 Channel 对 Task 的绑定同时也意味着 Channel 的生命周期与绑定的 Task 一致。当 Task 结束时，Channel 对象会自动关闭。多个 Channel 可以绑定到一个 Task，反之亦然。尽管 Task 的构造函数只能接受一个“无参函数”，但 Channel 方法会创建一个与 Channel 绑定的 Task，并令其可以接受 Channel 类型的单参数函数。一个通用模式是对生产者参数化，此时需要一个部分函数应用来创建一个无参，或者单参的匿名函数。对于 Task 对象，可以直接用，也可以为了方便用宏。function mytask(myarg)\n    ...\nend\n\ntaskHdl = Task(() -> mytask(7))\n# or, equivalently\ntaskHdl = @task mytask(7)为了安排更高级的工作分配模式，bind 和 schedule 可以与 Task 和 Channel构造函数配合使用，显式地连接一些 Channel 和生产者或消费者 Task。注意目前 Julia 的 Task 并不分配到或者运行在不同的 CPU 核心上。真正的内核进程将在 分布式计算 进行讨论。"
+    "text": "Task 是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。这个特性有时被叫做其它名字，例如，对称协程（symmetric coroutines），轻量级线程（lightweight threads），合作多任务处理（cooperative multitasking），或者单次续延（one-shot continuations）。当一部分计算任务（在实际中，执行一个特定的函数）可以被设计成一个 Task 时，就可以中断它，并切换到另一个 Task。原本的 Task 可以恢复到它上次中断的地方，并继续执行。第一眼感觉，这个跟函数调用很类似。但是有两个关键的区别。首先，是切换 Task 并不使用任何空间，所以任意数量的 Task 切换都不会使用调用栈（call stack）。其次，Task 可以以任意次序切换，而不像函数调用那样，被调用函数必须在返回主调用函数之前结束执行。这种流程控制的方式使得解决一个特定问题更简便。在一些问题中，多个需求并不是有函数调用来自然连接的；在需要完成的工作之间并没有明确的“调用者”或者“被调用者”。一个例子是生产-消费问题，一个复杂的流程产生数据，另一个复杂的流程消费他们。消费者不能简单的调用生产函数来获得一个值，因为生产者可能有更多的值需要创建，还没有准备好返回。用 Task 的话，生产者和消费者能同时运行他们所需要的任意时间，根据需要传递值回来或者过去。Julia 提供了 Channel 机制来解决这个问题。一个 Channel 是一个先进先出的队列，允许多个 Task 对它可以进行读和写。让我们定义一个生产者任务，调用 put! 来生产数值。为了消费数值，我们需要对生产者开始新任务进行排班。可以使用一个特殊的 Channel 组件来运行一个与其绑定的 Task，它能接受单参数函数作为其参数，然后可以用 take! 从 Channel 对象里不断地提取值：julia> function producer(c::Channel)\n           put!(c, \"start\")\n           for n=1:4\n               put!(c, 2n)\n           end\n           put!(c, \"stop\")\n       end;\n\njulia> chnl = Channel(producer);\n\njulia> take!(chnl)\n\"start\"\n\njulia> take!(chnl)\n2\n\njulia> take!(chnl)\n4\n\njulia> take!(chnl)\n6\n\njulia> take!(chnl)\n8\n\njulia> take!(chnl)\n\"stop\"一种思考这种行为地方式是，“生产者”能够多次返回。在两次调用 put! 之间，生产者的执行是被中断的，消费者接管控制。返回的 Channel 可以被用作一个 for 循环的迭代对象，循环变量可以是所有产生的值。当 Channel 关闭时，循环被终止。julia> for x in Channel(producer)\n           println(x)\n       end\nstart\n2\n4\n6\n8\nstop注意我们并不需要显式地在生产者中关闭 Channel。这是因为 Channel 对 Task 的绑定同时也意味着 Channel 的生命周期与绑定的 Task 一致。当 Task 结束时，Channel 对象会自动关闭。多个 Channel 可以绑定到一个 Task，反之亦然。尽管 Task 的构造函数只能接受一个“无参函数”，但 Channel 方法会创建一个与 Channel 绑定的 Task，并令其可以接受 Channel 类型的单参数函数。一个通用模式是对生产者参数化，此时需要一个部分函数应用来创建一个无参，或者单参的匿名函数。对于 Task 对象，可以直接用，也可以为了方便用宏。function mytask(myarg)\n    ...\nend\n\ntaskHdl = Task(() -> mytask(7))\n# or, equivalently\ntaskHdl = @task mytask(7)为了安排更高级的工作分配模式，bind 和 schedule 可以与 Task 和 Channel 构造函数配合使用，显式地连接一些 Channel 和生产者或消费者 Task。注意目前 Julia 的 Task 并不分配到或者运行在不同的 CPU 核心上。真正的内核进程将在分布式计算进行讨论。"
 },
 
 {
@@ -741,7 +741,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "Task 和事件",
     "category": "section",
-    "text": "多数 Task 切换是在等待如 I/O 请求的事件，由 Julia Base 里的调度器执行。调度器维持一个可运行 Task 的队列，并执行一个事件循环，来根据例如收到消息等外部事件来重启 Task。等待一个事件的基本函数是 wait。很多对象都实现了 wait 函数；例如，给定一个 Process 对象，wait 将等待它退出。wait 通常是隐式的，例如，wait 可能发生在调用 read 时等待数据可用。在所有这些情况下，wait 最终会操作一个 Condition 对象，由它负责排队和重启 Task。当 Task 在一个 Condition 上调用 wait 时，该 Task 就被标记为不可执行，加到条件的队列中，并切回调度器。调度器将选择另一个 Task 来运行，或者阻止外部事件的等待。如果所有运行良好，最终一个事件处理器将在这个条件下调用 notify，使得等待该条件的 Task 又变成可运行。调用 Task 显式创建的 Task 对于调度器时来说一开始时不知道的。如果你希望的话，你可以使用 yieldto 来人为管理 Task。但是当这种 Task 等待一个事件时，正如期待的那样，当事件发生时，它将自动重启。也能由调度器在任何可能的时候运行一个 Task，而无需等待任何事件。这可以调用 schedule，或者使用 @async 宏（见 并行计算中的详细说明）。"
+    "text": "多数 Task 切换是在等待如 I/O 请求的事件，由 Julia Base 里的调度器执行。调度器维持一个可运行 Task 的队列，并执行一个事件循环，来根据例如收到消息等外部事件来重启 Task。等待一个事件的基本函数是 wait。很多对象都实现了 wait 函数；例如，给定一个 Process 对象，wait 将等待它退出。wait 通常是隐式的，例如，wait 可能发生在调用 read 时等待数据可用。在所有这些情况下，wait 最终会操作一个 Condition 对象，由它负责排队和重启 Task。当 Task 在一个 Condition 上调用 wait 时，该 Task 就被标记为不可执行，加到条件的队列中，并切回调度器。调度器将选择另一个 Task 来运行，或者阻止外部事件的等待。如果所有运行良好，最终一个事件处理器将在这个条件下调用 notify，使得等待该条件的 Task 又变成可运行。调用 Task 显式创建的 Task 对于调度器时来说一开始时不知道的。如果你希望的话，你可以使用 yieldto 来人为管理 Task。但是当这种 Task 等待一个事件时，正如期待的那样，当事件发生时，它将自动重启。也能由调度器在任何可能的时候运行一个 Task，而无需等待任何事件。这可以调用 schedule，或者使用 @async 宏（见并行计算中的详细说明）。"
 },
 
 {
@@ -749,7 +749,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "Task 的状态",
     "category": "section",
-    "text": "Task 由 state 属性来描述他们的执行状态。Task state 的属性有：符号 含义\n:runnable 正在运行，或者可以被切换到\n:waiting 被阻塞，等待一个特定事件\n:queued 处在调度器中的运行队列中，即将被重启\n:done 成功结束执行\n:failed 以一个没被捕获的异常结束"
+    "text": "Task 由 state 属性来描述他们的执行状态。Task state 有：符号 含义\n:runnable 正在运行，或者可以被切换到\n:waiting 被阻塞，等待一个特定事件\n:queued 处在调度器中的运行队列中，即将被重启\n:done 成功结束执行\n:failed 以一个没被捕获的异常结束"
 },
 
 {
@@ -829,7 +829,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "类型",
     "category": "section",
-    "text": "通常，我们把程序语言中的类型系统划分成两类：静态类型和动态类型。对于静态类型系统，在程序运行之前，我们就知道每一个表达式的类型。而对于动态类型系统，我们只有通过运行那个程序，得到表达式具体的值，才能确定其具体的类型。在静态类型语言中，通常我们可以在不知道具体类型的情况下写一些代码，这种将一段代码用在多个类型的能力被称为多态性。在经典的动态类型语言中，所有的代码都是多态的，这意味着这些代码对于其中值的类型没有约束，除非在代码中去具体的判断一个值的类型，或者对对象做一些它不支持的操作。Julia 类型系统是动态的，但通过指出某些变量是特定类型的，可以获得静态类型系统的一些优点。这对于生成高效的代码非常有帮助，但更重要的是，它允许对函数参数类型的方法派发与语言深度集成。方法派发将在 Methods 中详细探讨，但它根植于此处提供的类型系统。在类型被省略时，Julia 的默认行为是允许变量为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加注释主要有三个目的：利用 Julia 强大的多重派发机制、提高代码可读性和捕获程序错误。Julia 用类型系统的术语描述是动态（dynamic）、主格（nominative）和参数（parametric）的。范型可以被参数化，并且类型之间的层次关系可以被显式地声明，而不是隐含地通过兼容的结构。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的类型，并且只有抽象类型可以作为其超类型。虽然起初看起来这可能过于严格，但它有许多有益的结果，但缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象 该类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是 头等的。\n「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际 类型。这在面向对象被称为「运行时类型」 ，其中静态编译和多态的组合使得这种区别变得显著。\n值有类型，变量没有类型——变量仅仅是绑定了值的名字而已。\n抽象类型和具体类型都可以通过其它类型进行参数化。它们的参数化还可 通过符号、任意使得 isbits 返回真的类型的值（实质上， 也就是像数字或布尔变量这样的东西，存储方式像 C 类型或不包含指向其它对象的指针的结构体） 和其元组。类型参数在不需要被引用或限制时可以省略 。Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从不感觉需要编写明确使用类型的代码。但是，某些类型的编程可通过声明类型变得更加清晰、简单、快速和健壮。"
+    "text": "通常，我们把程序语言中的类型系统划分成两类：静态类型和动态类型。对于静态类型系统，在程序运行之前，我们就知道每一个表达式的类型。而对于动态类型系统，我们只有通过运行那个程序，得到表达式具体的值，才能确定其具体的类型。在静态类型语言中，通常我们可以在不知道具体类型的情况下写一些代码，这种将一段代码用在多个类型的能力被称为多态性。在经典的动态类型语言中，所有的代码都是多态的，这意味着这些代码对于其中值的类型没有约束，除非在代码中去具体的判断一个值的类型，或者对对象做一些它不支持的操作。Julia 类型系统是动态的，但通过指出某些变量是特定类型的，可以获得静态类型系统的一些优点。这对于生成高效的代码非常有帮助，但更重要的是，它允许对函数参数类型的分派派发与语言深度集成。方法分派将在方法中详细探讨，但它根植于此处提供的类型系统。在类型被省略时，Julia 的默认行为是允许变量为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加注释主要有三个目的：利用 Julia 强大的多重分派机制、提高代码可读性和捕获程序错误。Julia 用类型系统的术语描述是动态（dynamic）、主格（nominative）和参数（parametric）的。范型可以被参数化，并且类型之间的层次关系可以被显式地声明，而不是隐含地通过兼容的结构。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的类型，并且只有抽象类型可以作为其超类型。虽然起初看起来这可能过于严格，但它有许多有益的结果，但缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象 其类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是 头等的。\n「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际 类型。这在面向对象被称为「运行时类型」 ，其中静态编译和多态的组合使得这种区别变得显著。\n值有类型，变量没有类型——变量仅仅是绑定给值的名字而已。\n抽象类型和具体类型都可以通过其他类型进行参数化。它们的参数化还可 通过符号、任意使得 isbits 返回真的类型的值（实质上， 也就是像数字或布尔变量这样的东西，存储方式像 C 类型或不包含指向其它对象的指针的结构体） 和其元组。类型参数在不需要被引用或限制时可以省略 。Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从未感觉需要编写明确使用类型的代码。但是，某些场景的编程可通过声明类型变得更加清晰、简单、快速和健壮。"
 },
 
 {
@@ -845,7 +845,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "抽象类型",
     "category": "section",
-    "text": "抽象类型不能实例化，只能作为类型图中的节点使用，从而描述由相关具体类型组成的集合：那些作为其后代的具体类型。我们从抽象类型开始，即使它们没有实例，因为它们是类型系统的主干：它们形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。回想一下，在 Integers and Floating-Point Numbers 中，我们介绍了各种数值的具体类型：Int8、UInt8、Int16、UInt16、Int32、UInt32、Int64、UInt64、Int128、UInt128、Float16、Float32 和 Float64。尽管 Int8、Int16、Int32、Int64 和 Int128 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，UInt8、UInt16、UInt32、UInt64 和 UInt128 都是无符号整数类型，而 Float16、Float32 和 Float64 是不同的浮点数类型而非整数类型。一段代码通常是有意义的，例如，除非它的参数是某种类型的整数，而不是真的取决于特定类型的整数。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，提供了具体类型可以适应的上下文。例如，这允许你轻松地为任何类型的整数编程，而不会将算法限制为某种特殊类型的整数。使用abstract type关键词来声明抽象类型。抽象类型的一般语法时：abstract type «name» end\nabstract type «name» <: «supertype» end该abstract type 关键字引入了一个新的抽象类型，«name»为其名称。此名称后面可以跟<:和一个已存在的类型，表示新声明的抽象类型是此“父”类型的子类型。如果没有给出父类型，则默认父类型为Any——所有对象和类型都是这个抽象类型的子类型。在类型理论中，Any通常称为\"top\"，因为它位于类型图的顶峰。Julia还有一个预定义的抽象\"bottom\"类型，在类型图的最低点，写成Union{}。这与Any完全相反：任何对象都不是Union{}的实例，所有的类型都是Union{}的父类型。让我们考虑一些构成 Julia 数值类型层次结构的抽象类型：abstract type Number end\nabstract type Real     <: Number end\nabstract type AbstractFloat <: Real end\nabstract type Integer  <: Real end\nabstract type Signed   <: Integer end\nabstract type Unsigned <: Integer endNumber类型为Any类型的直接子类型，并且Real为它的子类型。反过来，Real有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到更多的类型）： Integer 和AbstractFloat，将”数字世界“分为整数和实数的两部分。实数当然还包括浮点类型和其他类型，例如有理数。因此，AbstractFloat是一个Real的子类型，仅包括实数的浮点表示。整数被进一步细分为Signed和Unsigned 两类。<:运算符的含义是”前者是后者的子类型“，被用于声明类型，它声明右侧是左侧新声明类型的直接父类型。也可以用来判断左侧是不是右侧的子类型，当其左侧是右侧的子类型时返回truejulia> Integer <: Number\ntrue\n\njulia> Integer <: AbstractFloat\nfalse抽象类型的一个重要用途是为具体类型提供默认实现。举一个简单的例子：function myplus(x,y)\n    x+y\nend首先需要注意的是上述的参数声明等价于 x::Any 和 y::Any。当函数被调用时，例如 myplus(2,5)，派发器选择与给定参数相匹配的名称为 myplus 的最具体方法。（有关多重派发的更多信息，请参阅 Methods。）假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 myplus 的方法，专门用于基于上面给出的范型函数的两个 Int 参数，即，它定义并编译：function myplus(x::Int,y::Int)\n    x+y\nend最后，调用这个具体的方法。因此，抽象类型允许程序员编写范型函数，之后可以通过许多具体类型的组合将其用作默认方法。由于多重派发，程序员可以完全控制是使用默认方法还是更具体的方法。需要注意的重点是，假使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但是，在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅 Performance Tips。）"
+    "text": "抽象类型不能实例化，只能作为类型图中的节点使用，从而描述由相关具体类型组成的集合：那些作为其后代的具体类型。我们从抽象类型开始，即使它们没有实例，因为它们是类型系统的主干：它们形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。回想一下，在 Integers and Floating-Point Numbers 中，我们介绍了各种数值的具体类型：Int8、UInt8、Int16、UInt16、Int32、UInt32、Int64、UInt64、Int128、UInt128、Float16、Float32 和 Float64。尽管 Int8、Int16、Int32、Int64 和 Int128 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，UInt8、UInt16、UInt32、UInt64 和 UInt128 都是无符号整数类型，而 Float16、Float32 和 Float64 是不同的浮点数类型而非整数类型。一段代码通常是有意义的，例如，除非它的参数是某种类型的整数，而不是真的取决于特定类型的整数。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，提供了具体类型可以适应的上下文。例如，这允许你轻松地为任何类型的整数编程，而不会将算法限制为某种特殊类型的整数。使用 abstract type 关键字来声明抽象类型。声明抽象类型的一般语法是：abstract type «name» end\nabstract type «name» <: «supertype» end该 abstract type 关键字引入了一个新的抽象类型，«name» 为其名称。此名称后面可以跟 <: 和一个已存在的类型，表示新声明的抽象类型是此「父」类型的子类型。如果没有给出超类型，则默认超类型为 Any——一个预定义的抽象类型，所有对象都是它的实例并且所有类型都是它的子类型。在类型理论中，Any 通常称为\"「top」，因为它位于类型图的顶点。Julia还有一个预定义的抽象「bottom」类型，在类型图的最低点，写成 Union{}。这与 Any 完全相反：任何对象都不是 Union{} 的实例，所有的类型都是 Union{} 的超类型。让我们考虑一些构成 Julia 数值类型层次结构的抽象类型：abstract type Number end\nabstract type Real     <: Number end\nabstract type AbstractFloat <: Real end\nabstract type Integer  <: Real end\nabstract type Signed   <: Integer end\nabstract type Unsigned <: Integer endNumber 类型为 Any 类型的直接子类型，并且 Real 为它的子类型。反过来，Real 有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到其它的子类型）： Integer 和 AbstractFloat，将世界分为整数的表示和实数的表示。实数的表示当然包括浮点类型，但也包括其他类型，例如有理数。因此，AbstractFloat 是一个 Real 的子类型，仅包括实数的浮点表示。整数被进一步细分为 Signed 和 Unsigned 两类。<: 运算符的通常意义为「是···的子类型」，被用于像这样的声明中，即声明右侧类型是新声明类型的直接超类型。它也可以在表达式中用作子类型运算符，在其左操作数为其右操作数的子类型时返回 true：julia> Integer <: Number\ntrue\n\njulia> Integer <: AbstractFloat\nfalse抽象类型的一个重要用途是为具体类型提供默认实现。举个简单的例子，考虑：function myplus(x,y)\n    x+y\nend首先需要注意的是上述的参数声明等价于 x::Any 和 y::Any。当函数被调用时，例如 myplus(2,5)，分派器选择与给定参数相匹配的名称为 myplus 的最具体方法。（有关多重派发的更多信息，请参阅方法。）假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 myplus 的方法，专门用于基于上面给出的范型函数的两个 Int 参数，即，它定义并编译：function myplus(x::Int,y::Int)\n    x+y\nend最后，调用这个具体的方法。因此，抽象类型允许程序员编写范型函数，之后可以通过许多具体类型的组合将其用作默认方法。多亏了多重分派，程序员可以完全控制是使用默认方法还是更具体的方法。需要注意的重点是，假使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但是，在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅 Performance Tips。）"
 },
 
 {
@@ -861,7 +861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "复合类型",
     "category": "section",
-    "text": "复合类型在各种语言中被称为 record、struct 和 object。复合类型是命名字段的集合，其实例可以视为单个值。复合类型在许多语言中是唯一一种用户可定义的类型，也是 Julia 中最常用的用户定义类型。在主流的面向对象语言中，比如 C++、Java、Python 和 Ruby，复合类型也具有与它们相关的命名函数，并且该组合称为「对象」。在纯粹的面向对象语言中，例如 Ruby 或 Smalltalk，所有值都是对象，无论它们是否为复合类型。在不太纯粹的面向对象语言中，包括 C++ 和 Java，一些值，比如整数和浮点值，不是对象，而用户定义的复合类型是具有相关方法的真实对象。在 Julia 中，所有值都是对象，但函数不与它们操作的对象捆绑在一起。这是必要的，因为 Julia 通过多重派发选择使函数使用的方法，这意味着在选择方法时考虑所有函数参数的类型，而不仅仅是第一个（有关方法和派发的更多信息，请参阅 Methods）。因此，函数仅仅「属于」它们的第一个参数是不合适的。将方法组织到函数对象中而不是在每个对象「内部」命名方法最终成为语言设计中一个非常有益的方面。struct关键词用于构造复合类型，后跟一个字段的名称，可选择使用::运算符注释类型：julia> struct Foo\n           bar\n           baz::Int\n           qux::Float64\n       end没有类型注释的字段默认位Any类型，所以可以保存任何类型的值。类型为Foo的新对象是通过将Foo类型对象（如函数）应用于其字段的值来创建的：julia> foo = Foo(\"Hello, world.\", 23, 1.5)\nFoo(\"Hello, world.\", 23, 1.5)\n\njulia> typeof(foo)\nFoo当用类似于使用函数方式使用类型时，类型被称为构造函数。有两个构造函数会自动生成，并被称为默认构造函数。第一种构造函数接收任意的参数，并调用[covert]函数来把这些参数的类转换成类型中每个对应域所规定的类；另一种由于bar字段在类型上不受限制，因此任何值都可以。但是baz的值必须可转换为Int类型：julia> Foo((), 23.5, 1)\nERROR: InexactError: Int64(Int64, 23.5)\nStacktrace:\n[...]可以使用fieldnames 函数找到字段名称列表.julia> fieldnames(Foo)\n(:bar, :baz, :qux)可以使用传统的foo.bar表示法访问复合对象的字段值：julia> foo.bar\n\"Hello, world.\"\n\njulia> foo.baz\n23\n\njulia> foo.qux\n1.5Composite objects declared with struct are immutable; they cannot be modified after construction. This may seem odd at first, but it has several advantages:It can be more efficient. Some structs can be packed efficiently into arrays, and in some cases the compiler is able to avoid allocating immutable objects entirely.\nIt is not possible to violate the invariants provided by the type\'s constructors.\nCode using immutable objects can be easier to reason about.An immutable object might contain mutable objects, such as arrays, as fields. Those contained objects will remain mutable; only the fields of the immutable object itself cannot be changed to point to different objects.Where required, mutable composite objects can be declared with the keyword mutable struct, to be discussed in the next section.Immutable composite types with no fields are singletons; there can be only one instance of such types:julia> struct NoFields\n       end\n\njulia> NoFields() === NoFields()\ntrue===函数用来确认”两个“构造的实例NoFields实际上是同一个。单态类型将在下面进一步详细描述。There is much more to say about how instances of composite types are created, but that discussion depends on both Parametric Types and on Methods, and is sufficiently important to be addressed in its own section: Constructors."
+    "text": "复合类型在各种语言中被称为 record、struct 和 object。复合类型是命名字段的集合，其实例可以视为单个值。复合类型在许多语言中是唯一一种用户可定义的类型，也是 Julia 中最常用的用户定义类型。在主流的面向对象语言中，比如 C++、Java、Python 和 Ruby，复合类型也具有与它们相关的命名函数，并且该组合称为「对象」。在纯粹的面向对象语言中，例如 Ruby 或 Smalltalk，所有值都是对象，无论它们是否为复合类型。在不太纯粹的面向对象语言中，包括 C++ 和 Java，一些值，比如整数和浮点值，不是对象，而用户定义的复合类型是具有相关方法的真实对象。在 Julia 中，所有值都是对象，但函数不与它们操作的对象捆绑在一起。这是必要的，因为 Julia 通过多重分派选择函数使用的方法，这意味着在选择方法时考虑所有函数参数的类型，而不仅仅是第一个（有关方法和分派的更多信息，请参阅方法）。因此，函数仅仅「属于」它们的第一个参数是不合适的。将方法组织到函数对象中而不是在每个对象「内部」命名方法最终成为语言设计中一个非常有益的方面。struct 关键字与复合类型一起引入，后跟一个字段名称的块，可选择使用::运算符注释类型：julia> struct Foo\n           bar\n           baz::Int\n           qux::Float64\n       end没有类型注释的字段默认为 Any 类型，所以可以包含任何类型的值。类型为 Foo 的新对象通过将 Foo 类型对象像函数一样应用于其字段的值来创建：julia> foo = Foo(\"Hello, world.\", 23, 1.5)\nFoo(\"Hello, world.\", 23, 1.5)\n\njulia> typeof(foo)\nFoo当像函数一样使用类型时，它被称为构造函数。有两个构造函数会被自动生成（这些构造函数称为默认构造函数）。一个接受任何参数并通过调用 convert 函数将它们转换为字段的类型，另一个接受与字段类型完全匹配的参数。两者都生成的原因是，这使得更容易添加新定义而不会在无意中替换默认构造函数。由于 bar 字段在类型上不受限制，因此任何值都可以。但是 baz 的值必须可转换为 Int 类型：julia> Foo((), 23.5, 1)\nERROR: InexactError: Int64(Int64, 23.5)\nStacktrace:\n[...]可以使用 fieldnames 函数找到字段名称列表。julia> fieldnames(Foo)\n(:bar, :baz, :qux)可以使用传统的 foo.bar 表示法访问复合对象的字段值：julia> foo.bar\n\"Hello, world.\"\n\njulia> foo.baz\n23\n\njulia> foo.qux\n1.5使用 struct 声明的对象都是不可变的，它们在构造后无法修改。一开始看来这很奇怪，但它有几个优点：它可以更高效。某些 struct 可以被高效地打包到数组中，并且在某些情况下，编译器可以完全避免分配不可变对象。\n不可能违反由类型的构造函数提供的不变性。\n使用不可变对象的代码更容易推理。不可变对象可以包含可变对象（比如数组）作为字段。那些被包含的对象将保持可变；只是不可变对象本身的字段不能更改为指向不同的对象。如果需要，可以使用关键字 mutable struct 声明可变复合对象，这将在下一节中讨论没有字段的不可变复合类型是单态类型；这种类型只能有一个实例：julia> struct NoFields\n       end\n\njulia> NoFields() === NoFields()\ntrue=== 函数用来确认构造出来的「两个」NoFields 实例实际上是同一个。单态类型将在下面进一步详细描述。关于如何构造复合类型的实例还有很多要说的，但这种讨论依赖于参数类型和方法，并且这是非常重要的，应该在专门的章节中讨论：构造函数。"
 },
 
 {
@@ -869,15 +869,15 @@ var documenterSearchIndex = {"docs": [
     "page": "类型",
     "title": "可变复合类型",
     "category": "section",
-    "text": "如果使用mutable struct而不是声明复合类型struct，则可以修改它的实例：julia> mutable struct Bar\n           baz\n           qux::Float64\n       end\n\njulia> bar = Bar(\"Hello\", 1.5);\n\njulia> bar.qux = 2.0\n2.0\n\njulia> bar.baz = 1//2\n1//2In order to support mutation, such objects are generally allocated on the heap, and have stable memory addresses. A mutable object is like a little container that might hold different values over time, and so can only be reliably identified with its address. In contrast, an instance of an immutable type is associated with specific field values –- the field values alone tell you everything about the object. In deciding whether to make a type mutable, ask whether two instances with the same field values would be considered identical, or if they might need to change independently over time. If they would be considered identical, the type should probably be immutable.To recap, two essential properties define immutability in Julia:It is not permitted to modify the value of an immutable type.\nFor bits types this means that the bit pattern of a value once set will never change and that value is the identity of a bits type.\nFor composite  types, this means that the identity of the values of its fields will never change. When the fields are bits types, that means their bits will never change, for fields whose values are mutable types like arrays, that means the fields will always refer to the same mutable value even though that mutable value\'s content may itself be modified.\nAn object with an immutable type may be copied freely by the compiler since its immutability makes it impossible to programmatically distinguish between the original object and a copy.\nIn particular, this means that small enough immutable values like integers and floats are typically passed to functions in registers (or stack allocated).\nMutable values, on the other hand are heap-allocated and passed to functions as pointers to heap-allocated values except in cases where the compiler is sure that there\'s no way to tell that this is not what is happening."
+    "text": "如果使用 mutable struct 而不是 struct 声明复合类型，则它的实例可以被修改：julia> mutable struct Bar\n           baz\n           qux::Float64\n       end\n\njulia> bar = Bar(\"Hello\", 1.5);\n\njulia> bar.qux = 2.0\n2.0\n\njulia> bar.baz = 1//2\n1//2为了支持修改，这种对象通常分配在堆上，并且具有稳定的内存地址。可变对象就像一个小容器，随着时间的推移，可能保持不同的值，因此只能通过其地址可靠地识别。相反地，不可变类型的实例与特定字段值相关——仅字段值就告诉你该对象的所有内容。在决定是否使类型为可变类型时，请询问具有相同字段值的两个实例是否被视为相同，或者它们是否可能需要随时间独立更改。如果它们被认为是相同的，该类型就应该是不可变的。总结一下，Julia 的两个基本属性定义了不变性：不允许修改不可变类型的值。\n对于位类型，这意味着值的位模式一旦设置将不再改变，并且该值是位类型的标识。\n对于复合类型，这意味着其字段值的标识将不再改变。当字段是位类型时，这意味着它们的位将不再改变，对于其值是可变类型（如数组）的字段，这意味着字段将始终引用相同的可变值，尽管该可变值的内容本身可能被修改。\n具有不可变类型的对象可以被编译器自由复制，因为其不可变性使得不可能以编程方式区分原始对象和副本。\n特别地，这意味着足够小的不可变值（如整数和浮点数）通常在寄存器（或栈分配）中传递给函数。\n另一方面，可变值是堆分配的，并作为指向堆分配值的指针传递给函数，除非编译器确定没有办法知道这不是正在发生的事情。"
 },
 
 {
-    "location": "manual/types/#Declared-Types-1",
+    "location": "manual/types/#已声明的类型-1",
     "page": "类型",
-    "title": "Declared Types",
+    "title": "已声明的类型",
     "category": "section",
-    "text": "The three kinds of types (abstract, primitive, composite) discussed in the previous sections are actually all closely related. They share the same key properties:They are explicitly declared.\nThey have names.\nThey have explicitly declared supertypes.\nThey may have parameters.Because of these shared properties, these types are internally represented as instances of the same concept, DataType, which is the type of any of these types:julia> typeof(Real)\nDataType\n\njulia> typeof(Int)\nDataTypeA DataType may be abstract or concrete. If it is concrete, it has a specified size, storage layout, and (optionally) field names. Thus a primitive type is a DataType with nonzero size, but no field names. A composite type is a DataType that has field names or is empty (zero size).在这个系统里的每一个具体的值都是某个DataType的实例。"
+    "text": "前面章节中讨论的三种类型（抽象、原始、复合）实际上都是密切相关的。它们共有相同的关键属性：它们都是显式声明的。\n它们都具有名称。\n它们都已经显式声明超类型。\n它们可以有参数。由于这些共有属性，它们在内部表现为相同概念 DataType 的实例，其是任何这些类型的类型：julia> typeof(Real)\nDataType\n\njulia> typeof(Int)\nDataTypeDataType 可以是抽象的或具体的。它如果是具体的，就具有指定的大小、存储布局和字段名称（可选）。因此，原始类型是具有非零大小的 DataType，但没有字段名称。复合类型是具有字段名称或者为空（大小为零）的 DataType。每一个具体的值在系统里都是某个 DataType 的实例。"
 },
 
 {
@@ -961,19 +961,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/types/#Type-Aliases-1",
+    "location": "manual/types/#类型别名-1",
     "page": "类型",
-    "title": "Type Aliases",
+    "title": "类型别名",
     "category": "section",
-    "text": "Sometimes it is convenient to introduce a new name for an already expressible type. This can be done with a simple assignment statement. For example, UInt is aliased to either UInt32 or UInt64 as is appropriate for the size of pointers on the system:# 32-bit system:\njulia> UInt\nUInt32\n\n# 64-bit system:\njulia> UInt\nUInt64在base/boot.jl中，通过以下代码实现:if Int === Int64\n    const UInt = UInt64\nelse\n    const UInt = UInt32\nendOf course, this depends on what Int is aliased to – but that is predefined to be the correct type – either Int32 or Int64.(Note that unlike Int, Float does not exist as a type alias for a specific sized AbstractFloat. Unlike with integer registers, the floating point register sizes are specified by the IEEE-754 standard. Whereas the size of Int reflects the size of a native pointer on that machine.)"
+    "text": "有时为一个已经可表达的类型引入新名称是很方便的。这可通过一个简单的赋值语句完成。例如，UInt 是 UInt32 或 UInt64 的别名，因为它与系统上的指针大小是相适应的。# 32-bit system:\njulia> UInt\nUInt32\n\n# 64-bit system:\njulia> UInt\nUInt64在base/boot.jl中，通过以下代码实现:if Int === Int64\n    const UInt = UInt64\nelse\n    const UInt = UInt32\nend当然，这依赖于 Int 的别名，但它被预定义成正确的类型—— Int32 或 Int64。（注意，与 Int 不同，Float 不作为特定大小的 AbstractFloat 类型的别名而存在。与整数寄存器不同，浮点数寄存器大小由 IEEE-754 标准指定。而 Int 的大小反映了该机器上本地指针的大小。）"
 },
 
 {
-    "location": "manual/types/#Operations-on-Types-1",
+    "location": "manual/types/#类型操作-1",
     "page": "类型",
-    "title": "Operations on Types",
+    "title": "类型操作",
     "category": "section",
-    "text": "Since types in Julia are themselves objects, ordinary functions can operate on them. Some functions that are particularly useful for working with or exploring types have already been introduced, such as the <: operator, which indicates whether its left hand operand is a subtype of its right hand operand.The isa function tests if an object is of a given type and returns true or false:julia> isa(1, Int)\ntrue\n\njulia> isa(1, AbstractFloat)\nfalseThe typeof function, already used throughout the manual in examples, returns the type of its argument. Since, as noted above, types are objects, they also have types, and we can ask what their types are:julia> typeof(Rational{Int})\nDataType\n\njulia> typeof(Union{Real,Float64,Rational})\nDataType\n\njulia> typeof(Union{Real,String})\nUnionWhat if we repeat the process? What is the type of a type of a type? As it happens, types are all composite values and thus all have a type of DataType:julia> typeof(DataType)\nDataType\n\njulia> typeof(Union)\nDataTypeDataType is its own type.Another operation that applies to some types is supertype, which reveals a type\'s supertype. Only declared types (DataType) have unambiguous supertypes:julia> supertype(Float64)\nAbstractFloat\n\njulia> supertype(Number)\nAny\n\njulia> supertype(AbstractString)\nAny\n\njulia> supertype(Any)\nAnyIf you apply supertype to other type objects (or non-type objects), a MethodError is raised:julia> supertype(Union{Float64,Int64})\nERROR: MethodError: no method matching supertype(::Type{Union{Float64, Int64}})\nClosest candidates are:\n  supertype(!Matched::DataType) at operators.jl:42\n  supertype(!Matched::UnionAll) at operators.jl:47"
+    "text": "因为 Julia 中的类型本身就是对象，所以普通函数可以对它们进行操作。已经引入了一些对于使用或探索类型特别有用的函数，例如 <: 运算符，它表示其左操作数是否为其右操作数的子类型。isa 函数测试对象是否具有给定类型并返回 true 或 false：julia> isa(1, Int)\ntrue\n\njulia> isa(1, AbstractFloat)\nfalse已经在手册各处的示例中使用的 typeof 函数返回其参数的类型。如上所述，因为类型都是对象，所以它们也有类型，我们可以询问它们的类型：julia> typeof(Rational{Int})\nDataType\n\njulia> typeof(Union{Real,Float64,Rational})\nDataType\n\njulia> typeof(Union{Real,String})\nUnion如果我们重复这个过程会怎样？一个类型的类型是什么？碰巧，每个类型都是复合值，因此都具有 DataType 类型：julia> typeof(DataType)\nDataType\n\njulia> typeof(Union)\nDataTypeDataType 是它自己的类型。另一个适用于某些类型的操作是 supertype，它显示了类型的超类型。只有已声明的类型（DataType）才有明确的超类型：julia> supertype(Float64)\nAbstractFloat\n\njulia> supertype(Number)\nAny\n\njulia> supertype(AbstractString)\nAny\n\njulia> supertype(Any)\nAny如果将 supertype 应用于其它类型对象（或非类型对象），则会引发 MethodError：julia> supertype(Union{Float64,Int64})\nERROR: MethodError: no method matching supertype(::Type{Union{Float64, Int64}})\nClosest candidates are:\n  supertype(!Matched::DataType) at operators.jl:42\n  supertype(!Matched::UnionAll) at operators.jl:47"
 },
 
 {
@@ -1363,9 +1363,9 @@ var documenterSearchIndex = {"docs": [
 {
     "location": "manual/interfaces/#man-interface-iteration-1",
     "page": "接口",
-    "title": "Iteration",
+    "title": "迭代",
     "category": "section",
-    "text": "必须方法  简短描述\niterate(iter)  通常返回由第一项及其其初始状态组成的元组，但如果是空，则要么返回nothing\niterate(iter, state)  通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回nothing。\n重要可选方法 默认定义 简短描述\nIteratorSize(IterType) HasLength() HasLength() ， HasShape{N}() ，  IsInfinite() ， 或者 SizeUnknown() 作为合适的\nIteratorEltype(IterType) HasEltype() EltypeUnknown()  和 HasEltype()  都是可接受的\neltype(IterType) Any 元组中第一个条目的类型由 iterate() 返回。\nlength(iter) (未定义) The number of items, if known\nsize(iter, [dim...]) (未定义) 在各个维度上条目的数量，如果知道IteratorSize(IterType) 返回的值。 必须方法\nHasLength() length(iter)\nHasShape{N}() length(iter)  and size(iter, [dim...])\nIsInfinite() (none)\nSizeUnknown() (none)由 IteratorEltype(IterType) 返回的值 必须方法\nHasEltype() eltype(IterType)\nEltypeUnknown() (none)顺序迭代由  iterate 函数实现.  Julia的迭代器可以从目标外部跟踪迭代状态，而不是在迭代过程中改变目标本身。 迭代过程中的返回一个包含了当前迭代值及其状态的元组，或者在没有元素存在的情况下返回  nothing  。 状态对象将在下一次迭代时传递回迭代函数 并且通常被认为是可迭代对象的私有实现细节。任何定义了这个函数的兑现个都是可迭代的，并且可以被应用到  many functions that rely upon iteration 。 也可以直接被应用到  for 循环中，因为根据语法：for i in iter   # or  \"for i = iter\"\n    # body\nend被解释为：next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nend一个简单的例子是一组定长数据的平方数迭代序列：julia> struct Squares\n           count::Int\n       end\n\njulia> Base.iterate(S::Squares, state=1) = state > S.count ? nothing : (state*state, state+1)仅仅定义了  iterate 函数的 Squares 类型就已经很强大了。 我们现在可以迭代所有的元素了：julia> for i in Squares(7)\n           println(i)\n       end\n1\n4\n9\n16\n25\n36\n49我们可以利用许多内置方法来处理迭代，比如标准库 Statistics  中的  in ， mean 和 std 。julia> 25 in Squares(10)\ntrue\n\njulia> using Statistics\n\njulia> mean(Squares(100))\n3383.5\n\njulia> std(Squares(100))\n3024.355854282583\n我们可以扩展一些其它的方法，为Julia提供有关此可迭代集合的更多信息。\n我们知道 `Squares`  序列中的元素总是  `Int` 型的。\n通过扩展  [`eltype`](@ref)  方法，  我们可以给Julia过多的信息来帮助其在更复杂的方法中产生更加具体的代码。\n我们同时也知道我们序列中的元素数目，所以我们也同样可以扩展  [`length`](@ref) ：\njldoctest squaretype julia> Base.eltype(::Type{Squares}) = Int # Note that this is defined for the typejulia> Base.length(S::Squares) = S.count\n现在，当我们让Julia去  [`collect`](@ref) 所有元素到一个array中时，Julia可以预分配一个 适当大小的  `Vector{Int}` ，而不是盲目地  [`push!`](@ref) 每一个元素到 `Vector{Any}` ：\njldoctest squaretype julia> collect(Squares(4)) 4-element Array{Int64,1}:   1   4   9  16\n尽管大多时候我们都可以依赖于一些通用的实现，某些时候如果我们知道有一个更简单的算法的话，可以扩展出更具体的实现。例如，计算平方和有一个公式，因此可以扩展出一个更高效的实现：\njldoctest squaretype julia> Base.sum(S::Squares) = (n = S.count; return n(n+1)(2n+1)÷6)julia> sum(Squares(1803)) 1955361914\n这种模式在Julia Base中很常见，一些必须实现的方法构成了一个小的集合，从而定义出一个非正式的接口，用于实现一些非常炫酷的操作。某些时候，类型本身知道在其应用场景中有一些更高效的算法，因而可以扩展出额外方法。\n\nIt is also often useful to allow iteration over a collection in *reverse order*\nby iterating over [`Iterators.reverse(iterator)`](@ref).  To actually support\nreverse-order iteration, however, an iterator\ntype `T` needs to implement `iterate` for `Iterators.Reverse{T}`.\n(Given `r::Iterators.Reverse{T}`, the underling iterator of type `T` is `r.itr`.)\nIn our `Squares` example, we would implement `Iterators.Reverse{Squares}` methods:\njldoctest squaretype julia> Base.iterate(rS::Iterators.Reverse{Squares}, state=rS.itr.count) = state < 1 ? nothing : (state*state, state-1)julia> collect(Iterators.reverse(Squares(4))) 4-element Array{Int64,1}:  16   9   4   1\n## 索引\n\n| 需要实现的方法 | 简介                |\n|:-------------------- |:-------------------------------- |\n| `getindex(X, i)`     | `X[i]`, indexed element access   |\n| `setindex!(X, v, i)` | `X[i] = v`, indexed assignment   |\n| `firstindex(X)`      | The first index                  |\n| `lastindex(X)`        | The last index, used in `X[end]` |\n\n对于 `Squares` 类型而言，可以通过对第 `i` 个元素求平方计算出其中的第 `i` 个元素，可以用 `S[i]` 的索引表达式形式暴露该接口。为了支持该行为， `Squares` 只需要简单地定义 [`getindex`](@ref):\njldoctest squaretype julia> function Base.getindex(S::Squares, i::Int)            1 <= i <= S.count || throw(BoundsError(S, i))            return i*i        endjulia> Squares(100)[23] 529\nAdditionally, to support the syntax `S[end]`, we must define [`lastindex`](@ref) to specify the last\nvalid index. It is recommended to also define [`firstindex`](@ref) to specify the first valid index:\njldoctest squaretype julia> Base.firstindex(S::Squares) = 1julia> Base.lastindex(S::Squares) = length(S)julia> Squares(23)[end] 529\nNote, though, that the above *only* defines [`getindex`](@ref) with one integer index. Indexing with\nanything other than an `Int` will throw a [`MethodError`](@ref) saying that there was no matching method.\nIn order to support indexing with ranges or vectors of `Int`s, separate methods must be written:\njldoctest squaretype julia> Base.getindex(S::Squares, i::Number) = S[convert(Int, i)]julia> Base.getindex(S::Squares, I) = [S[i] for i in I]julia> Squares(10)[[3,4.,5]] 3-element Array{Int64,1}:   9  16  25\nWhile this is starting to support more of the [indexing operations supported by some of the builtin types](@ref man-array-indexing),\nthere\'s still quite a number of behaviors missing. This `Squares` sequence is starting to look\nmore and more like a vector as we\'ve added behaviors to it. Instead of defining all these behaviors\nourselves, we can officially define it as a subtype of an [`AbstractArray`](@ref).\n\n## [Abstract Arrays](@id man-interface-array)\n\n| Methods to implement                            |                                        | 简短描述                                                                     |\n|:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |\n| `size(A)`                                       |                                        | Returns a tuple containing the dimensions of `A`                                      |\n| `getindex(A, i::Int)`                           |                                        | (if `IndexLinear`) Linear scalar indexing                                             |\n| `getindex(A, I::Vararg{Int, N})`                |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexing             |\n| `setindex!(A, v, i::Int)`                       |                                        | (if `IndexLinear`) Scalar indexed assignment                                          |\n| `setindex!(A, v, I::Vararg{Int, N})`            |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexed assignment   |\n| **Optional methods**                            | **默认定义**                 | **简短描述**                                                                 |\n| `IndexStyle(::Type)`                            | `IndexCartesian()`                     | Returns either `IndexLinear()` or `IndexCartesian()`. See the description below.      |\n| `getindex(A, I...)`                             | defined in terms of scalar `getindex`  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |\n| `setindex!(A, I...)`                            | defined in terms of scalar `setindex!` | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |\n| `iterate`                                       | defined in terms of scalar `getindex`  | Iteration                                                                             |\n| `length(A)`                                     | `prod(size(A))`                        | Number of elements                                                                    |\n| `similar(A)`                                    | `similar(A, eltype(A), size(A))`       | Return a mutable array with the same shape and element type                           |\n| `similar(A, ::Type{S})`                         | `similar(A, S, size(A))`               | Return a mutable array with the same shape and the specified element type             |\n| `similar(A, dims::NTuple{Int})`                 | `similar(A, eltype(A), dims)`          | Return a mutable array with the same element type and size *dims*                     |\n| `similar(A, ::Type{S}, dims::NTuple{Int})`      | `Array{S}(undef, dims)`               | Return a mutable array with the specified element type and size                       |\n| **Non-traditional indices**                     | **默认定义**                 | **简短描述**                                                                 |\n| `axes(A)`                                    | `map(OneTo, size(A))`                  | Return the `AbstractUnitRange` of valid indices                                       |\n| `Base.similar(A, ::Type{S}, inds::NTuple{Ind})` | `similar(A, S, Base.to_shape(inds))`   | Return a mutable array with the specified indices `inds` (see below)                  |\n| `Base.similar(T::Union{Type,Function}, inds)`   | `T(Base.to_shape(inds))`               | Return an array similar to `T` with the specified indices `inds` (see below)          |\n\nIf a type is defined as a subtype of `AbstractArray`, it inherits a very large set of rich behaviors\nincluding iteration and multidimensional indexing built on top of single-element access.  See\nthe [arrays manual page](@ref man-multi-dim-arrays) and the [Julia Base section](@ref lib-arrays) for more supported methods.\n\nA key part in defining an `AbstractArray` subtype is [`IndexStyle`](@ref). Since indexing is\nsuch an important part of an array and often occurs in hot loops, it\'s important to make both\nindexing and indexed assignment as efficient as possible.  Array data structures are typically\ndefined in one of two ways: either it most efficiently accesses its elements using just one index\n(linear indexing) or it intrinsically accesses the elements with indices specified for every dimension.\n These two modalities are identified by Julia as `IndexLinear()` and `IndexCartesian()`.\n Converting a linear index to multiple indexing subscripts is typically very expensive, so this\nprovides a traits-based mechanism to enable efficient generic code for all array types.\n\nThis distinction determines which scalar indexing methods the type must define. `IndexLinear()`\narrays are simple: just define `getindex(A::ArrayType, i::Int)`.  When the array is subsequently\nindexed with a multidimensional set of indices, the fallback `getindex(A::AbstractArray, I...)()`\nefficiently converts the indices into one linear index and then calls the above method. `IndexCartesian()`\narrays, on the other hand, require methods to be defined for each supported dimensionality with\n`ndims(A)` `Int` indices. For example, [`SparseMatrixCSC`](@ref) from the `SparseArrays` standard\nlibrary module, only supports two dimensions, so it just defines\n`getindex(A::SparseMatrixCSC, i::Int, j::Int)`. The same holds for [`setindex!`](@ref).\n\nReturning to the sequence of squares from above, we could instead define it as a subtype of an\n`AbstractArray{Int, 1}`:\njldoctest squarevectype julia> struct SquaresVector <: AbstractArray{Int, 1}            count::Int        endjulia> Base.size(S::SquaresVector) = (S.count,)julia> Base.IndexStyle(::Type{<:SquaresVector}) = IndexLinear()julia> Base.getindex(S::SquaresVector, i::Int) = i*i\nNote that it\'s very important to specify the two parameters of the `AbstractArray`; the first\ndefines the [`eltype`](@ref), and the second defines the [`ndims`](@ref). That supertype and those three\nmethods are all it takes for `SquaresVector` to be an iterable, indexable, and completely functional\narray:\njldoctest squarevectype julia> s = SquaresVector(4) 4-element SquaresVector:   1   4   9  16julia> s[s .> 8] 2-element Array{Int64,1}:   9  16julia> s + s 4-element Array{Int64,1}:   2   8  18  32julia> sin.(s) 4-element Array{Float64,1}:   0.8414709848078965  -0.7568024953079282   0.4121184852417566  -0.2879033166650653\nAs a more complicated example, let\'s define our own toy N-dimensional sparse-like array type built\non top of [`Dict`](@ref):\njldoctest squarevectype julia> struct SparseArray{T,N} <: AbstractArray{T,N}            data::Dict{NTuple{N,Int}, T}            dims::NTuple{N,Int}        endjulia> SparseArray(::Type{T}, dims::Int...) where {T} = SparseArray(T, dims);julia> SparseArray(::Type{T}, dims::NTuple{N,Int}) where {T,N} = SparseArray{T,N}(Dict{NTuple{N,Int}, T}(), dims);julia> Base.size(A::SparseArray) = A.dimsjulia> Base.similar(A::SparseArray, ::Type{T}, dims::Dims) where {T} = SparseArray(T, dims)julia> Base.getindex(A::SparseArray{T,N}, I::Vararg{Int,N}) where {T,N} = get(A.data, I, zero(T))julia> Base.setindex!(A::SparseArray{T,N}, v, I::Vararg{Int,N}) where {T,N} = (A.data[I] = v)\nNotice that this is an `IndexCartesian` array, so we must manually define [`getindex`](@ref) and [`setindex!`](@ref)\nat the dimensionality of the array. Unlike the `SquaresVector`, we are able to define [`setindex!`](@ref),\nand so we can mutate the array:\njldoctest squarevectype julia> A = SparseArray(Float64, 3, 3) 3×3 SparseArray{Float64,2}:  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0julia> fill!(A, 2) 3×3 SparseArray{Float64,2}:  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0julia> A[:] = 1:length(A); A 3×3 SparseArray{Float64,2}:  1.0  4.0  7.0  2.0  5.0  8.0  3.0  6.0  9.0\nThe result of indexing an `AbstractArray` can itself be an array (for instance when indexing by\nan `AbstractRange`). The `AbstractArray` fallback methods use [`similar`](@ref) to allocate an `Array`\nof the appropriate size and element type, which is filled in using the basic indexing method described\nabove. However, when implementing an array wrapper you often want the result to be wrapped as\nwell:\njldoctest squarevectype julia> A[1:2,:] 2×3 SparseArray{Float64,2}:  1.0  4.0  7.0  2.0  5.0  8.0\nIn this example it is accomplished by defining `Base.similar{T}(A::SparseArray, ::Type{T}, dims::Dims)`\nto create the appropriate wrapped array. (Note that while `similar` supports 1- and 2-argument\nforms, in most case you only need to specialize the 3-argument form.) For this to work it\'s important\nthat `SparseArray` is mutable (supports `setindex!`). Defining `similar`, `getindex` and\n`setindex!` for `SparseArray` also makes it possible to [`copy`](@ref) the array:\njldoctest squarevectype julia> copy(A) 3×3 SparseArray{Float64,2}:  1.0  4.0  7.0  2.0  5.0  8.0  3.0  6.0  9.0\nIn addition to all the iterable and indexable methods from above, these types can also interact\nwith each other and use most of the methods defined in Julia Base for `AbstractArrays`:\njldoctest squarevectype julia> A[SquaresVector(3)] 3-element SparseArray{Float64,1}:  1.0  4.0  9.0julia> sum(A) 45.0\nIf you are defining an array type that allows non-traditional indexing (indices that start at\nsomething other than 1), you should specialize [`axes`](@ref). You should also specialize [`similar`](@ref)\nso that the `dims` argument (ordinarily a `Dims` size-tuple) can accept `AbstractUnitRange` objects,\nperhaps range-types `Ind` of your own design. For more information, see\n[Arrays with custom indices](@ref man-custom-indices).\n\n## [Strided Arrays](@id man-interface-strided-arrays)\n\n| Methods to implement                            |                                        | Brief description                                                                     |\n|:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |\n| `strides(A)`                             |                                        | Return the distance in memory (in number of elements) between adjacent elements in each dimension as a tuple. If `A` is an `AbstractArray{T,0}`, this should return an empty tuple.    |\n| `Base.unsafe_convert(::Type{Ptr{T}}, A)`        |                                        | Return the native address of an array.                                            |\n| **Optional methods**                            | **Default definition**                 | **Brief description**                                                                 |\n| `stride(A, i::Int)`                             |     `strides(A)[i]`                                   | Return the distance in memory (in number of elements) between adjacent elements in dimension k.    |\n\nA strided array is a subtype of `AbstractArray` whose entries are stored in memory with fixed strides.\nProvided the element type of the array is compatible with BLAS, a strided array can utilize BLAS and LAPACK routines\nfor more efficient linear algebra routines.  A typical example of a user-defined strided array is one\nthat wraps a standard `Array` with additional structure.\n\nWarning: do not implement these methods if the underlying storage is not actually strided, as it\nmay lead to incorrect results or segmentation faults.\n\nHere are some examples to demonstrate which type of arrays are strided and which are not:julia 1:5   # not strided (there is no storage associated with this array.) Vector(1:5)  # is strided with strides (1,) A = [1 5; 2 6; 3 7; 4 8]  # is strided with strides (1,4) V = view(A, 1:2, :)   # is strided with strides (1,4) V = view(A, 1:2:3, 1:2)   # is strided with strides (2,4) V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not fixed.\n\n\n\n\n## [Customizing broadcasting](@id man-interfaces-broadcasting)\n\n| Methods to implement | 简短描述 |\n|:-------------------- |:----------------- |\n| `Base.BroadcastStyle(::Type{SrcType}) = SrcStyle()` | Broadcasting behavior of `SrcType` |\n| `Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})` | Allocation of output container |\n| **Optional methods** | | |\n| `Base.BroadcastStyle(::Style1, ::Style2) = Style12()` | Precedence rules for mixing styles |\n| `Base.broadcast_axes(x)` | Declaration of the indices of `x` for broadcasting purposes (defaults to [`axes(x)`](@ref)) |\n| `Base.broadcastable(x)` | Convert `x` to an object that has `axes` and supports indexing |\n| **Bypassing default machinery** | |\n| `Base.copy(bc::Broadcasted{DestStyle})` | Custom implementation of `broadcast` |\n| `Base.copyto!(dest, bc::Broadcasted{DestStyle})` | Custom implementation of `broadcast!`, specializing on `DestStyle` |\n| `Base.copyto!(dest::DestType, bc::Broadcasted{Nothing})` | Custom implementation of `broadcast!`, specializing on `DestType` |\n| `Base.Broadcast.broadcasted(f, args...)` | Override the default lazy behavior within a fused expression |\n| `Base.Broadcast.instantiate(bc::Broadcasted{DestStyle})` | Override the computation of the lazy broadcast\'s axes |\n\n[Broadcasting](@ref) is triggered by an explicit call to `broadcast` or `broadcast!`, or implicitly by\n\"dot\" operations like `A .+ b` or `f.(x, y)`. Any object that has [`axes`](@ref) and supports\nindexing can participate as an argument in broadcasting, and by default the result is stored\nin an `Array`. This basic framework is extensible in three major ways:\n\n* Ensuring that all arguments support broadcast\n* Selecting an appropriate output array for the given set of arguments\n* Selecting an efficient implementation for the given set of arguments\n\nNot all types support `axes` and indexing, but many are convenient to allow in broadcast.\nThe [`Base.broadcastable`](@ref) function is called on each argument to broadcast, allowing\nit to return something different that supports `axes` and indexing. By\ndefault, this is the identity function for all `AbstractArray`s and `Number`s — they already\nsupport `axes` and indexing. For a handful of other types (including but not limited to\ntypes themselves, functions, special singletons like [`missing`](@ref) and [`nothing`](@ref), and dates),\n`Base.broadcastable` returns the argument wrapped in a `Ref` to act as a 0-dimensional\n\"scalar\" for the purposes of broadcasting. Custom types can similarly specialize\n`Base.broadcastable` to define their shape, but they should follow the convention that\n`collect(Base.broadcastable(x)) == collect(x)`. A notable exception is `AbstractString`;\nstrings are special-cased to behave as scalars for the purposes of broadcast even though\nthey are iterable collections of their characters (see [Strings](@ref) for more).\n\nThe next two steps (selecting the output array and implementation) are dependent upon\ndetermining a single answer for a given set of arguments. Broadcast must take all the varied\ntypes of its arguments and collapse them down to just one output array and one\nimplementation. Broadcast calls this single answer a \"style.\" Every broadcastable object\neach has its own preferred style, and a promotion-like system is used to combine these\nstyles into a single answer — the \"destination style\".\n\n### Broadcast Styles\n\n`Base.BroadcastStyle` is the abstract type from which all broadcast styles are derived. When used as a\nfunction it has two possible forms, unary (single-argument) and binary. The unary variant states\nthat you intend to implement specific broadcasting behavior and/or output type, and do not wish to\nrely on the default fallback [`Broadcast.DefaultArrayStyle`](@ref).\n\nTo override these defaults, you can define a custom `BroadcastStyle` for your object:\njulia struct MyStyle <: Broadcast.BroadcastStyle end Base.BroadcastStyle(::Type{<:MyType}) = MyStyle()\nIn some cases it might be convenient not to have to define `MyStyle`, in which case you can\nleverage one of the general broadcast wrappers:\n\n  - `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.Style{MyType}()` can be\n    used for arbitrary types.\n  - `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.ArrayStyle{MyType}()` is preferred\n    if `MyType` is an `AbstractArray`.\n  - For `AbstractArrays` that only support a certain dimensionality, create a subtype of `Broadcast.AbstractArrayStyle{N}` (see below).\n\nWhen your broadcast operation involves several arguments, individual argument styles get\ncombined to determine a single `DestStyle` that controls the type of the output container.\nFor more details, see [below](@ref writing-binary-broadcasting-rules).\n\n### 选择合适的输出数组\n\nThe broadcast style is computed for every broadcasting operation to allow for\ndispatch and specialization. The actual allocation of the result array is\nhandled by `similar`, using the Broadcasted object as its first argument.\njulia Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})\nThe fallback definition is\njulia similar(bc::Broadcasted{DefaultArrayStyle{N}}, ::Type{ElType}) where {N,ElType} =     similar(Array{ElType}, axes(bc))\nHowever, if needed you can specialize on any or all of these arguments. The final argument\n`bc` is a lazy representation of a (potentially fused) broadcast operation, a `Broadcasted`\nobject.  For these purposes, the most important fields of the wrapper are\n`f` and `args`, describing the function and argument list, respectively.  Note that the argument\nlist can — and often does — include other nested `Broadcasted` wrappers.\n\nFor a complete example, let\'s say you have created a type, `ArrayAndChar`, that stores an\narray and a single character:\njldoctest ArrayAndChar; output = false struct ArrayAndChar{T,N} <: AbstractArray{T,N}     data::Array{T,N}     char::Char end Base.size(A::ArrayAndChar) = size(A.data) Base.getindex(A::ArrayAndChar{T,N}, inds::Vararg{Int,N}) where {T,N} = A.data[inds...] Base.setindex!(A::ArrayAndChar{T,N}, val, inds::Vararg{Int,N}) where {T,N} = A.data[inds...] = val Base.showarg(io::IO, A::ArrayAndChar, toplevel) = print(io, typeof(A), \" with char \'\", A.char, \"\'\")"
+    "text": "必须方法  简短描述\niterate(iter)  通常返回由第一项及其其初始状态组成的元组，但如果是空，则要么返回nothing\niterate(iter, state)  通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回nothing。\n重要可选方法 默认定义 简短描述\nIteratorSize(IterType) HasLength() HasLength() ， HasShape{N}() ，  IsInfinite() ， 或者 SizeUnknown() 作为合适的\nIteratorEltype(IterType) HasEltype() EltypeUnknown()  和 HasEltype()  都是可接受的\neltype(IterType) Any 元组中第一个条目的类型由 iterate() 返回。\nlength(iter) (未定义) The number of items, if known\nsize(iter, [dim...]) (未定义) 在各个维度上条目的数量，如果知道IteratorSize(IterType) 返回的值。 必须方法\nHasLength() length(iter)\nHasShape{N}() length(iter)  and size(iter, [dim...])\nIsInfinite() (none)\nSizeUnknown() (none)由 IteratorEltype(IterType) 返回的值 必须方法\nHasEltype() eltype(IterType)\nEltypeUnknown() (none)顺序迭代由  iterate 函数实现.  Julia的迭代器可以从目标外部跟踪迭代状态，而不是在迭代过程中改变目标本身。 迭代过程中的返回一个包含了当前迭代值及其状态的元组，或者在没有元素存在的情况下返回  nothing  。 状态对象将在下一次迭代时传递回迭代函数 并且通常被认为是可迭代对象的私有实现细节。任何定义了这个函数的兑现个都是可迭代的，并且可以被应用到  many functions that rely upon iteration 。 也可以直接被应用到  for 循环中，因为根据语法：for i in iter   # or  \"for i = iter\"\n    # body\nend被解释为：next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nend一个简单的例子是一组定长数据的平方数迭代序列：julia> struct Squares\n           count::Int\n       end\n\njulia> Base.iterate(S::Squares, state=1) = state > S.count ? nothing : (state*state, state+1)仅仅定义了  iterate 函数的 Squares 类型就已经很强大了。 我们现在可以迭代所有的元素了：julia> for i in Squares(7)\n           println(i)\n       end\n1\n4\n9\n16\n25\n36\n49我们可以利用许多内置方法来处理迭代，比如标准库 Statistics  中的  in ， mean 和 std 。julia> 25 in Squares(10)\ntrue\n\njulia> using Statistics\n\njulia> mean(Squares(100))\n3383.5\n\njulia> std(Squares(100))\n3024.355854282583\n我们可以扩展一些其它的方法，为Julia提供有关此可迭代集合的更多信息。\n我们知道 `Squares`  序列中的元素总是  `Int` 型的。\n通过扩展  [`eltype`](@ref)  方法，  我们可以给Julia过多的信息来帮助其在更复杂的方法中产生更加具体的代码。\n我们同时也知道我们序列中的元素数目，所以我们也同样可以扩展  [`length`](@ref) ：\njldoctest squaretype julia> Base.eltype(::Type{Squares}) = Int # Note that this is defined for the typejulia> Base.length(S::Squares) = S.count\n现在，当我们让Julia去  [`collect`](@ref) 所有元素到一个array中时，Julia可以预分配一个 适当大小的  `Vector{Int}` ，而不是盲目地  [`push!`](@ref) 每一个元素到 `Vector{Any}` ：\njldoctest squaretype julia> collect(Squares(4)) 4-element Array{Int64,1}:   1   4   9  16\n尽管大多时候我们都可以依赖于一些通用的实现，某些时候如果我们知道有一个更简单的算法的话，可以扩展出更具体的实现。例如，计算平方和有一个公式，因此可以扩展出一个更高效的实现：\njldoctest squaretype julia> Base.sum(S::Squares) = (n = S.count; return n(n+1)(2n+1)÷6)julia> sum(Squares(1803)) 1955361914\n这种模式在Julia Base中很常见，一些必须实现的方法构成了一个小的集合，从而定义出一个非正式的接口，用于实现一些非常炫酷的操作。某些时候，类型本身知道在其应用场景中有一些更高效的算法，因而可以扩展出额外方法。\n\nIt is also often useful to allow iteration over a collection in *reverse order*\nby iterating over [`Iterators.reverse(iterator)`](@ref).  To actually support\nreverse-order iteration, however, an iterator\ntype `T` needs to implement `iterate` for `Iterators.Reverse{T}`.\n(Given `r::Iterators.Reverse{T}`, the underling iterator of type `T` is `r.itr`.)\nIn our `Squares` example, we would implement `Iterators.Reverse{Squares}` methods:\njldoctest squaretype julia> Base.iterate(rS::Iterators.Reverse{Squares}, state=rS.itr.count) = state < 1 ? nothing : (state*state, state-1)julia> collect(Iterators.reverse(Squares(4))) 4-element Array{Int64,1}:  16   9   4   1\n## 索引\n\n| 需要实现的方法 | 简介                |\n|:-------------------- |:-------------------------------- |\n| `getindex(X, i)`     | `X[i]`, indexed element access   |\n| `setindex!(X, v, i)` | `X[i] = v`, indexed assignment   |\n| `firstindex(X)`      | The first index                  |\n| `lastindex(X)`        | The last index, used in `X[end]` |\n\n对于 `Squares` 类型而言，可以通过对第 `i` 个元素求平方计算出其中的第 `i` 个元素，可以用 `S[i]` 的索引表达式形式暴露该接口。为了支持该行为， `Squares` 只需要简单地定义 [`getindex`](@ref):\njldoctest squaretype julia> function Base.getindex(S::Squares, i::Int)            1 <= i <= S.count || throw(BoundsError(S, i))            return i*i        endjulia> Squares(100)[23] 529\nAdditionally, to support the syntax `S[end]`, we must define [`lastindex`](@ref) to specify the last\nvalid index. It is recommended to also define [`firstindex`](@ref) to specify the first valid index:\njldoctest squaretype julia> Base.firstindex(S::Squares) = 1julia> Base.lastindex(S::Squares) = length(S)julia> Squares(23)[end] 529\nNote, though, that the above *only* defines [`getindex`](@ref) with one integer index. Indexing with\nanything other than an `Int` will throw a [`MethodError`](@ref) saying that there was no matching method.\nIn order to support indexing with ranges or vectors of `Int`s, separate methods must be written:\njldoctest squaretype julia> Base.getindex(S::Squares, i::Number) = S[convert(Int, i)]julia> Base.getindex(S::Squares, I) = [S[i] for i in I]julia> Squares(10)[[3,4.,5]] 3-element Array{Int64,1}:   9  16  25\nWhile this is starting to support more of the [indexing operations supported by some of the builtin types](@ref man-array-indexing),\nthere\'s still quite a number of behaviors missing. This `Squares` sequence is starting to look\nmore and more like a vector as we\'ve added behaviors to it. Instead of defining all these behaviors\nourselves, we can officially define it as a subtype of an [`AbstractArray`](@ref).\n\n## [抽象数组](@id man-interface-array)\n\n| Methods to implement                            |                                        | 简短描述                                                                     |\n|:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |\n| `size(A)`                                       |                                        | Returns a tuple containing the dimensions of `A`                                      |\n| `getindex(A, i::Int)`                           |                                        | (if `IndexLinear`) Linear scalar indexing                                             |\n| `getindex(A, I::Vararg{Int, N})`                |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexing             |\n| `setindex!(A, v, i::Int)`                       |                                        | (if `IndexLinear`) Scalar indexed assignment                                          |\n| `setindex!(A, v, I::Vararg{Int, N})`            |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexed assignment   |\n| **可选方法**                            | **默认定义**                 | **简短描述**                                                                 |\n| `IndexStyle(::Type)`                            | `IndexCartesian()`                     | Returns either `IndexLinear()` or `IndexCartesian()`. See the description below.      |\n| `getindex(A, I...)`                             | defined in terms of scalar `getindex`  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |\n| `setindex!(A, I...)`                            | defined in terms of scalar `setindex!` | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |\n| `iterate`                                       | defined in terms of scalar `getindex`  | Iteration                                                                             |\n| `length(A)`                                     | `prod(size(A))`                        | Number of elements                                                                    |\n| `similar(A)`                                    | `similar(A, eltype(A), size(A))`       | Return a mutable array with the same shape and element type                           |\n| `similar(A, ::Type{S})`                         | `similar(A, S, size(A))`               | Return a mutable array with the same shape and the specified element type             |\n| `similar(A, dims::NTuple{Int})`                 | `similar(A, eltype(A), dims)`          | Return a mutable array with the same element type and size *dims*                     |\n| `similar(A, ::Type{S}, dims::NTuple{Int})`      | `Array{S}(undef, dims)`               | Return a mutable array with the specified element type and size                       |\n| **Non-traditional indices**                     | **默认定义**                 | **简短描述**                                                                 |\n| `axes(A)`                                    | `map(OneTo, size(A))`                  | Return the `AbstractUnitRange` of valid indices                                       |\n| `Base.similar(A, ::Type{S}, inds::NTuple{Ind})` | `similar(A, S, Base.to_shape(inds))`   | Return a mutable array with the specified indices `inds` (see below)                  |\n| `Base.similar(T::Union{Type,Function}, inds)`   | `T(Base.to_shape(inds))`               | Return an array similar to `T` with the specified indices `inds` (see below)          |\n\nIf a type is defined as a subtype of `AbstractArray`, it inherits a very large set of rich behaviors\nincluding iteration and multidimensional indexing built on top of single-element access.  See\nthe [arrays manual page](@ref man-multi-dim-arrays) and the [Julia Base section](@ref lib-arrays) for more supported methods.\n\nA key part in defining an `AbstractArray` subtype is [`IndexStyle`](@ref). Since indexing is\nsuch an important part of an array and often occurs in hot loops, it\'s important to make both\nindexing and indexed assignment as efficient as possible.  Array data structures are typically\ndefined in one of two ways: either it most efficiently accesses its elements using just one index\n(linear indexing) or it intrinsically accesses the elements with indices specified for every dimension.\n These two modalities are identified by Julia as `IndexLinear()` and `IndexCartesian()`.\n Converting a linear index to multiple indexing subscripts is typically very expensive, so this\nprovides a traits-based mechanism to enable efficient generic code for all array types.\n\nThis distinction determines which scalar indexing methods the type must define. `IndexLinear()`\narrays are simple: just define `getindex(A::ArrayType, i::Int)`.  When the array is subsequently\nindexed with a multidimensional set of indices, the fallback `getindex(A::AbstractArray, I...)()`\nefficiently converts the indices into one linear index and then calls the above method. `IndexCartesian()`\narrays, on the other hand, require methods to be defined for each supported dimensionality with\n`ndims(A)` `Int` indices. For example, [`SparseMatrixCSC`](@ref) from the `SparseArrays` standard\nlibrary module, only supports two dimensions, so it just defines\n`getindex(A::SparseMatrixCSC, i::Int, j::Int)`. The same holds for [`setindex!`](@ref).\n\nReturning to the sequence of squares from above, we could instead define it as a subtype of an\n`AbstractArray{Int, 1}`:\njldoctest squarevectype julia> struct SquaresVector <: AbstractArray{Int, 1}            count::Int        endjulia> Base.size(S::SquaresVector) = (S.count,)julia> Base.IndexStyle(::Type{<:SquaresVector}) = IndexLinear()julia> Base.getindex(S::SquaresVector, i::Int) = i*i\nNote that it\'s very important to specify the two parameters of the `AbstractArray`; the first\ndefines the [`eltype`](@ref), and the second defines the [`ndims`](@ref). That supertype and those three\nmethods are all it takes for `SquaresVector` to be an iterable, indexable, and completely functional\narray:\njldoctest squarevectype julia> s = SquaresVector(4) 4-element SquaresVector:   1   4   9  16julia> s[s .> 8] 2-element Array{Int64,1}:   9  16julia> s + s 4-element Array{Int64,1}:   2   8  18  32julia> sin.(s) 4-element Array{Float64,1}:   0.8414709848078965  -0.7568024953079282   0.4121184852417566  -0.2879033166650653\nAs a more complicated example, let\'s define our own toy N-dimensional sparse-like array type built\non top of [`Dict`](@ref):\njldoctest squarevectype julia> struct SparseArray{T,N} <: AbstractArray{T,N}            data::Dict{NTuple{N,Int}, T}            dims::NTuple{N,Int}        endjulia> SparseArray(::Type{T}, dims::Int...) where {T} = SparseArray(T, dims);julia> SparseArray(::Type{T}, dims::NTuple{N,Int}) where {T,N} = SparseArray{T,N}(Dict{NTuple{N,Int}, T}(), dims);julia> Base.size(A::SparseArray) = A.dimsjulia> Base.similar(A::SparseArray, ::Type{T}, dims::Dims) where {T} = SparseArray(T, dims)julia> Base.getindex(A::SparseArray{T,N}, I::Vararg{Int,N}) where {T,N} = get(A.data, I, zero(T))julia> Base.setindex!(A::SparseArray{T,N}, v, I::Vararg{Int,N}) where {T,N} = (A.data[I] = v)\nNotice that this is an `IndexCartesian` array, so we must manually define [`getindex`](@ref) and [`setindex!`](@ref)\nat the dimensionality of the array. Unlike the `SquaresVector`, we are able to define [`setindex!`](@ref),\nand so we can mutate the array:\njldoctest squarevectype julia> A = SparseArray(Float64, 3, 3) 3×3 SparseArray{Float64,2}:  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0julia> fill!(A, 2) 3×3 SparseArray{Float64,2}:  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0julia> A[:] = 1:length(A); A 3×3 SparseArray{Float64,2}:  1.0  4.0  7.0  2.0  5.0  8.0  3.0  6.0  9.0\nThe result of indexing an `AbstractArray` can itself be an array (for instance when indexing by\nan `AbstractRange`). The `AbstractArray` fallback methods use [`similar`](@ref) to allocate an `Array`\nof the appropriate size and element type, which is filled in using the basic indexing method described\nabove. However, when implementing an array wrapper you often want the result to be wrapped as\nwell:\njldoctest squarevectype julia> A[1:2,:] 2×3 SparseArray{Float64,2}:  1.0  4.0  7.0  2.0  5.0  8.0\nIn this example it is accomplished by defining `Base.similar{T}(A::SparseArray, ::Type{T}, dims::Dims)`\nto create the appropriate wrapped array. (Note that while `similar` supports 1- and 2-argument\nforms, in most case you only need to specialize the 3-argument form.) For this to work it\'s important\nthat `SparseArray` is mutable (supports `setindex!`). Defining `similar`, `getindex` and\n`setindex!` for `SparseArray` also makes it possible to [`copy`](@ref) the array:\njldoctest squarevectype julia> copy(A) 3×3 SparseArray{Float64,2}:  1.0  4.0  7.0  2.0  5.0  8.0  3.0  6.0  9.0\nIn addition to all the iterable and indexable methods from above, these types can also interact\nwith each other and use most of the methods defined in Julia Base for `AbstractArrays`:\njldoctest squarevectype julia> A[SquaresVector(3)] 3-element SparseArray{Float64,1}:  1.0  4.0  9.0julia> sum(A) 45.0\nIf you are defining an array type that allows non-traditional indexing (indices that start at\nsomething other than 1), you should specialize [`axes`](@ref). You should also specialize [`similar`](@ref)\nso that the `dims` argument (ordinarily a `Dims` size-tuple) can accept `AbstractUnitRange` objects,\nperhaps range-types `Ind` of your own design. For more information, see\n[Arrays with custom indices](@ref man-custom-indices).\n\n## [Strided Arrays](@id man-interface-strided-arrays)\n\n| Methods to implement                            |                                        | Brief description                                                                     |\n|:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |\n| `strides(A)`                             |                                        | Return the distance in memory (in number of elements) between adjacent elements in each dimension as a tuple. If `A` is an `AbstractArray{T,0}`, this should return an empty tuple.    |\n| `Base.unsafe_convert(::Type{Ptr{T}}, A)`        |                                        | Return the native address of an array.                                            |\n| **Optional methods**                            | **Default definition**                 | **Brief description**                                                                 |\n| `stride(A, i::Int)`                             |     `strides(A)[i]`                                   | Return the distance in memory (in number of elements) between adjacent elements in dimension k.    |\n\nA strided array is a subtype of `AbstractArray` whose entries are stored in memory with fixed strides.\nProvided the element type of the array is compatible with BLAS, a strided array can utilize BLAS and LAPACK routines\nfor more efficient linear algebra routines.  A typical example of a user-defined strided array is one\nthat wraps a standard `Array` with additional structure.\n\nWarning: do not implement these methods if the underlying storage is not actually strided, as it\nmay lead to incorrect results or segmentation faults.\n\nHere are some examples to demonstrate which type of arrays are strided and which are not:julia 1:5   # not strided (there is no storage associated with this array.) Vector(1:5)  # is strided with strides (1,) A = [1 5; 2 6; 3 7; 4 8]  # is strided with strides (1,4) V = view(A, 1:2, :)   # is strided with strides (1,4) V = view(A, 1:2:3, 1:2)   # is strided with strides (2,4) V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not fixed.\n\n\n\n\n## [Customizing broadcasting](@id man-interfaces-broadcasting)\n\n| Methods to implement | 简短描述 |\n|:-------------------- |:----------------- |\n| `Base.BroadcastStyle(::Type{SrcType}) = SrcStyle()` | Broadcasting behavior of `SrcType` |\n| `Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})` | Allocation of output container |\n| **可选方法** | | |\n| `Base.BroadcastStyle(::Style1, ::Style2) = Style12()` | Precedence rules for mixing styles |\n| `Base.broadcast_axes(x)` | Declaration of the indices of `x` for broadcasting purposes (defaults to [`axes(x)`](@ref)) |\n| `Base.broadcastable(x)` | Convert `x` to an object that has `axes` and supports indexing |\n| **Bypassing default machinery** | |\n| `Base.copy(bc::Broadcasted{DestStyle})` | Custom implementation of `broadcast` |\n| `Base.copyto!(dest, bc::Broadcasted{DestStyle})` | Custom implementation of `broadcast!`, specializing on `DestStyle` |\n| `Base.copyto!(dest::DestType, bc::Broadcasted{Nothing})` | Custom implementation of `broadcast!`, specializing on `DestType` |\n| `Base.Broadcast.broadcasted(f, args...)` | Override the default lazy behavior within a fused expression |\n| `Base.Broadcast.instantiate(bc::Broadcasted{DestStyle})` | Override the computation of the lazy broadcast\'s axes |\n\n[Broadcasting](@ref) is triggered by an explicit call to `broadcast` or `broadcast!`, or implicitly by\n\"dot\" operations like `A .+ b` or `f.(x, y)`. Any object that has [`axes`](@ref) and supports\nindexing can participate as an argument in broadcasting, and by default the result is stored\nin an `Array`. This basic framework is extensible in three major ways:\n\n* Ensuring that all arguments support broadcast\n* Selecting an appropriate output array for the given set of arguments\n* Selecting an efficient implementation for the given set of arguments\n\nNot all types support `axes` and indexing, but many are convenient to allow in broadcast.\nThe [`Base.broadcastable`](@ref) function is called on each argument to broadcast, allowing\nit to return something different that supports `axes` and indexing. By\ndefault, this is the identity function for all `AbstractArray`s and `Number`s — they already\nsupport `axes` and indexing. For a handful of other types (including but not limited to\ntypes themselves, functions, special singletons like [`missing`](@ref) and [`nothing`](@ref), and dates),\n`Base.broadcastable` returns the argument wrapped in a `Ref` to act as a 0-dimensional\n\"scalar\" for the purposes of broadcasting. Custom types can similarly specialize\n`Base.broadcastable` to define their shape, but they should follow the convention that\n`collect(Base.broadcastable(x)) == collect(x)`. A notable exception is `AbstractString`;\nstrings are special-cased to behave as scalars for the purposes of broadcast even though\nthey are iterable collections of their characters (see [Strings](@ref) for more).\n\nThe next two steps (selecting the output array and implementation) are dependent upon\ndetermining a single answer for a given set of arguments. Broadcast must take all the varied\ntypes of its arguments and collapse them down to just one output array and one\nimplementation. Broadcast calls this single answer a \"style.\" Every broadcastable object\neach has its own preferred style, and a promotion-like system is used to combine these\nstyles into a single answer — the \"destination style\".\n\n### Broadcast Styles\n\n`Base.BroadcastStyle` is the abstract type from which all broadcast styles are derived. When used as a\nfunction it has two possible forms, unary (single-argument) and binary. The unary variant states\nthat you intend to implement specific broadcasting behavior and/or output type, and do not wish to\nrely on the default fallback [`Broadcast.DefaultArrayStyle`](@ref).\n\nTo override these defaults, you can define a custom `BroadcastStyle` for your object:\njulia struct MyStyle <: Broadcast.BroadcastStyle end Base.BroadcastStyle(::Type{<:MyType}) = MyStyle()\nIn some cases it might be convenient not to have to define `MyStyle`, in which case you can\nleverage one of the general broadcast wrappers:\n\n  - `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.Style{MyType}()` can be\n    used for arbitrary types.\n  - `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.ArrayStyle{MyType}()` is preferred\n    if `MyType` is an `AbstractArray`.\n  - For `AbstractArrays` that only support a certain dimensionality, create a subtype of `Broadcast.AbstractArrayStyle{N}` (see below).\n\nWhen your broadcast operation involves several arguments, individual argument styles get\ncombined to determine a single `DestStyle` that controls the type of the output container.\nFor more details, see [below](@ref writing-binary-broadcasting-rules).\n\n### 选择合适的输出数组\n\nThe broadcast style is computed for every broadcasting operation to allow for\ndispatch and specialization. The actual allocation of the result array is\nhandled by `similar`, using the Broadcasted object as its first argument.\njulia Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})\nThe fallback definition is\njulia similar(bc::Broadcasted{DefaultArrayStyle{N}}, ::Type{ElType}) where {N,ElType} =     similar(Array{ElType}, axes(bc))\nHowever, if needed you can specialize on any or all of these arguments. The final argument\n`bc` is a lazy representation of a (potentially fused) broadcast operation, a `Broadcasted`\nobject.  For these purposes, the most important fields of the wrapper are\n`f` and `args`, describing the function and argument list, respectively.  Note that the argument\nlist can — and often does — include other nested `Broadcasted` wrappers.\n\nFor a complete example, let\'s say you have created a type, `ArrayAndChar`, that stores an\narray and a single character:\njldoctest ArrayAndChar; output = false struct ArrayAndChar{T,N} <: AbstractArray{T,N}     data::Array{T,N}     char::Char end Base.size(A::ArrayAndChar) = size(A.data) Base.getindex(A::ArrayAndChar{T,N}, inds::Vararg{Int,N}) where {T,N} = A.data[inds...] Base.setindex!(A::ArrayAndChar{T,N}, val, inds::Vararg{Int,N}) where {T,N} = A.data[inds...] = val Base.showarg(io::IO, A::ArrayAndChar, toplevel) = print(io, typeof(A), \" with char \'\", A.char, \"\'\")"
 },
 
 {
@@ -1405,7 +1405,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "模块",
     "category": "section",
-    "text": "Julia 中的模块（module）是单独的变量工作空间，即它们引入了新的全局作用域。 它们在语法上以 module Name ... end 界定。 模块允许你创建顶层定义（也称为全局变量），而无需担心在你的代码与其他人的代码一起使用时产生名字冲突。 在模块中，你可以控制其他模块中的哪些名称可用（通过导入），并指定哪些你的名称是公开的（通过导出）。下面的示例演示了模块的主要功能。它不需要运行，只是为了说明目的：module MyModule\nusing Lib\n\nusing BigLib: thing1, thing2\n\nimport Base.show\n\nexport MyType, foo\n\nstruct MyType\n    x\nend\n\nbar(x) = 2x\nfoo(a::MyType) = bar(a.x) + 1\n\nshow(io::IO, a::MyType) = print(io, \"MyType $(a.x)\")\nend注意，模块中的代码样式不需要缩进，否则的话，会导致整个文件缩进。上面的模块定义了一个 MyType 类型，以及两个函数，其中，函数 foo 和类型 MyType 被导出了，因而可以被导入到其它模块，而函数 bar 是模块 MyModule 的私有函数。using Lib 意味着一个名称为 Lib 的模块会在需要的时候用于解释变量名。当一个全局变量在当前模块中没有定义时，系统就会从 Lib 中导出的变量中搜索该变量，如果找到了的话，就导入进来。也就是说，当前模块中，所有使用该全局变量的地方都会解释为 Lib 中对应的变量。代码 using BigLib: thing1, thing2 显式地将标识符 thing1 和 thing2 从模块 BigLib 中引入到当前作用域。 如果这两个变量是函数的话，那么是允许给他们增加实现方法的，毕竟代码里写的是 \"using\" （使用）它们，而不是扩展它们。import 关键字所支持的语法与 using 一致，不过一次只作用于一个名字。此外它并不会像 using 那样将模块添加到搜索空间中，与 using 不同的，import 引入的函数可以为其增加新的方法。前面的 MyModule 模块中，我们希望给 show 函数增加一个方法，于是需要写成 import Base.show，这里如果写成 using 的话，就不能给 show 函数增加一个实现了。一旦一个变量通过 using 或 import 引入，当前模块就不能创建同名的变量了。而且导入的变量是只读的，给全局变量赋值只能影响当前模块的变量，否则会报错。"
+    "text": "Julia 中的模块（module）是一些互相隔离的工作空间，即它们会引入新的全局作用域。它们在语法上以 module Name ... end 界定。模块允许你创建顶层定义（也称为全局变量），而无需担心命名冲突。在模块中，利用导入（importing），你可以控制其它模块中的哪些名称是可见的；利用导出（exporting），你可以控制你自己的模块中的哪些名称是公开的。下面的示例演示了模块的主要功能。它不是为了运行，只是为了方便说明：module MyModule\nusing Lib\n\nusing BigLib: thing1, thing2\n\nimport Base.show\n\nexport MyType, foo\n\nstruct MyType\n    x\nend\n\nbar(x) = 2x\nfoo(a::MyType) = bar(a.x) + 1\n\nshow(io::IO, a::MyType) = print(io, \"MyType $(a.x)\")\nend注意，模块中的代码样式不需要缩进，否则的话，会导致整个文件缩进。上面的模块定义了一个 MyType 类型，以及两个函数，其中，函数 foo 和类型 MyType 被导出了，因而可以被导入到其它模块，而函数 bar 是模块 MyModule 的私有函数。using Lib 意味着一个名称为 Lib 的模块会在需要的时候用于解释变量名。当一个全局变量在当前模块中没有定义时，系统就会从 Lib 中导出的变量中搜索该变量，如果找到了的话，就导入进来。也就是说，当前模块中，所有使用该全局变量的地方都会解释为 Lib 中对应的变量。代码 using BigLib: thing1, thing2 显式地将标识符 thing1 和 thing2 从模块 BigLib 中引入到当前作用域。如果这两个变量是函数的话，则不允许给它们增加新的方法，毕竟代码里写的是 \"using\"（使用）它们，而不是扩展它们。import 关键字所支持的语法与 using 一致，不过一次只作用于一个名字。此外它并不会像 using 那样将模块添加到搜索空间中，与 using 不同，import 引入的函数可以为其增加新的方法。前面的 MyModule 模块中，我们希望给 show 函数增加一个方法，于是需要写成 import Base.show，这里如果写成 using 的话，就不能扩展 show 函数。一旦一个变量通过 using 或 import 引入，当前模块就不能创建同名的变量了。而且导入的变量是只读的，给全局变量赋值只能影响到所有权为当前模块的变量，否则会报错。"
 },
 
 {
@@ -1413,7 +1413,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "模块用法摘要",
     "category": "section",
-    "text": "要导入一个模块，可以用 using 或 import 关键字。为了更好地理解它们的区别，看看下面的例子：module MyModule\n\nexport x, y\n\nx() = \"x\"\ny() = \"y\"\np() = \"p\"\n\nend这个模块用关键字 export 导出了 x 和 y 函数，此外还有一个没有被导出的函数 p。想要将该模块及其内部的函数导入当前模块有以下方法：import 命令 将哪些变量导入了当前作用域？ Available for method extension\nusing MyModule All exported names (x and y), MyModule.x, MyModule.y and MyModule.p MyModule.x, MyModule.y and MyModule.p\nusing MyModule: x, p x and p \nimport MyModule MyModule.x, MyModule.y and MyModule.p MyModule.x, MyModule.y and MyModule.p\nimport MyModule.x, MyModule.p x and p x and p\nimport MyModule: x, p x and p x and p"
+    "text": "要导入一个模块，可以用 using 或 import 关键字。为了更好地理解它们的区别，请参考下面的例子：module MyModule\n\nexport x, y\n\nx() = \"x\"\ny() = \"y\"\np() = \"p\"\n\nend这个模块用关键字 export 导出了 x 和 y 函数，此外还有一个没有被导出的函数 p。想要将该模块及其内部的函数导入当前模块有以下方法：import 命令 将哪些变量导入了当前作用域？ 如何添加或扩展方法\nusing MyModule All exported names (x and y), MyModule.x, MyModule.y and MyModule.p MyModule.x, MyModule.y and MyModule.p\nusing MyModule: x, p x and p \nimport MyModule MyModule.x, MyModule.y and MyModule.p MyModule.x, MyModule.y and MyModule.p\nimport MyModule.x, MyModule.p x and p x and p\nimport MyModule: x, p x and p x and p"
 },
 
 {
@@ -1421,7 +1421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "模块和文件",
     "category": "section",
-    "text": "模块与文件和文件名无关；模块只与模块表达式有关。一个模块可以有多个文件，一个文件也可以有多个模块。module Foo\n\ninclude(\"file1.jl\")\ninclude(\"file2.jl\")\n\nend在不同的模块中引入同一段代码，提供了一种类似 mixin 的行为。这可以用于给定不同的base执行同一段代码，例如，在测试的时候，可以运行一些相对 安全 的操作符。module Normal\ninclude(\"mycode.jl\")\nend\n\nmodule Testing\ninclude(\"safe_operators.jl\")\ninclude(\"mycode.jl\")\nend"
+    "text": "模块与文件和文件名无关；模块只与模块表达式有关。一个模块可以有多个文件，一个文件也可以有多个模块。module Foo\n\ninclude(\"file1.jl\")\ninclude(\"file2.jl\")\n\nend在不同的模块中引入同一段代码，可以提供一种类似 mixin 的行为。我们可以利用这个特性来观察，在不同的定义下，执行同一段代码会有什么结果。例如，在测试的时候，可以使用某些安全的操作符。module Normal\ninclude(\"mycode.jl\")\nend\n\nmodule Testing\ninclude(\"safe_operators.jl\")\ninclude(\"mycode.jl\")\nend"
 },
 
 {
@@ -1429,7 +1429,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "标准模块",
     "category": "section",
-    "text": "有三个非常重要的标准模块： Main, Core 和 BaseMain 是最顶层的模块，Julia 启动后会将 Main 设置为当前模块。 在提示符下定义的变量会进入到 Main，执行 varinfo() 会列出 Main 中的变量。Core 包含所有语言内置的标识符（语言的核心部分，不是库），每个模块都默认声明了 using Core（否则的话啥也做不了）。Base 模块包含了一些基本的功能 ( 即源码中 base/ 目录下的内容)。 所有模块都默认包含了 using Base ，因为对大多数库来说，都会用到。"
+    "text": "有三个非常重要的标准模块：Main，Core 和 BaseMain 是最顶层的模块，Julia 启动后会将 Main 设置为当前模块。在提示符下定义的变量会进入到 Main，执行 varinfo() 会列出 Main 中的变量。Core 包含所有语言内置的标识符（语言的核心部分，不是库），每个模块都默认声明了 using Core（否则的话啥也做不了）。Base 模块包含了一些基本的功能（即源码中 base/ 目录下的内容）。所有模块都默认包含了 using Base，因为对大多数库来说，都会用到。"
 },
 
 {
@@ -1437,7 +1437,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "默认顶层定义以及裸模块",
     "category": "section",
-    "text": "除了默认包含 using Base 之外，所有模块都还包含 eval 和 include 函数。这两个函数用于将表达式和文件引入到全局作用域中如果这些默认的定义都不需要，那么可以用 baremodule 定义裸模块（不过 Core 模块仍然被引入领导，否则啥也写不了）。与标准的模块定义类似，一个裸模块的定义如下：baremodule Mod\n\nusing Base\n\neval(x) = Core.eval(Mod, x)\ninclude(p) = Base.include(Mod, p)\n\n...\n\nend"
+    "text": "除了默认包含 using Base 之外，所有模块都还包含 eval 和 include 函数。这两个函数用于将表达式和文件引入到全局作用域中。如果这些默认的定义都不需要，那么可以用 baremodule 定义裸模块（不过 Core 模块仍然会被引入，否则啥也干不了）。与标准的模块定义类似，一个裸模块的定义如下：baremodule Mod\n\nusing Base\n\neval(x) = Core.eval(Mod, x)\ninclude(p) = Base.include(Mod, p)\n\n...\n\nend"
 },
 
 {
@@ -1445,7 +1445,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "模块的绝对路径和相对路径",
     "category": "section",
-    "text": "给定语句 using Foo，系统在顶层模块的内部表中查找名为 Foo 的包。 如果模块不存在，系统会尝试 require(:Foo)，这通常会从已安装的包中加载代码。但是，某些模块包含子模块，这意味着您有时需要访问非顶层模块。 有两种方法可以做到这一点。 第一种是使用绝对路径，例如 using Base.Sort。 第二种是使用相对路径，这样可以更容易地导入当前模块或其任何封闭模块的子模块：module Parent\n\nmodule Utils\n...\nend\n\nusing .Utils\n\n...\nend这里的模块 Parent 包含一个子模块 Utils，而Parent 中的代码希望 Utils 的内容可见。 这是通过使用句号启动 using 路径来完成的。 添加更多前导句号会移动到模块层次结构中的更上级别。 例如 using ..Utils 会在 Parent 的封闭模块中查找 Utils 而不是 Parent 本身。请注意，相对导入修饰符仅在 using 和 import 语句中有效。"
+    "text": "给定语句 using Foo，系统在顶层模块的内部表中查找名为 Foo 的包。如果模块不存在，系统会尝试 require(:Foo)，这通常会从已安装的包中加载代码。但是，某些模块包含子模块，这意味着你有时需要访问非顶层模块。有两种方法可以做到这一点。第一种是使用绝对路径，例如 using Base.Sort。第二种是使用相对路径，这样可以更容易地导入当前模块或其任何封闭模块的子模块：module Parent\n\nmodule Utils\n...\nend\n\nusing .Utils\n\n...\nend这里的模块 Parent 包含一个子模块 Utils，而 Parent 中的代码希望 Utils 的内容可见，这是可以使用 using 加点 . 这种相对路径来实现。添加更多的点会移动到模块层次结构中的更上级别。例如，using ..Utils 会在 Parent 的上级模块中查找 Utils 而不是在 Parent 中查找。请注意，相对导入符号 . 仅在 using 和 import 语句中有效。"
 },
 
 {
@@ -1453,15 +1453,15 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "模块文件路径",
     "category": "section",
-    "text": "全局变量 LOAD_PATH 包含 Julia 在调用 require 时搜索模块的目录。 可以使用push! 对它进行扩展：push!(LOAD_PATH, \"/Path/To/My/Module/\")将此语句放在文件 ~/.julia/config/startup.jl 中将在每次 Julia 启动时扩展 LOAD_PATH。 或者，可以通过定义环境变量JULIA_LOAD_PATH 来扩展模块加载路径。"
+    "text": "全局变量 LOAD_PATH 包含了模块的加载目录，Julia 在调用 require 时就会搜索此变量中的目录。我们可以使用 push! 对它进行扩展：push!(LOAD_PATH, \"/Path/To/My/Module/\")若想在每次启动 Julia 时都自动扩展 LOAD_PATH，可以将上述语句放在文件 ~/.julia/config/startup.jl 中。另一种方式是通过定义环境变量 JULIA_LOAD_PATH 来扩展模块的加载路径。"
 },
 
 {
-    "location": "manual/modules/#命名空间杂记-1",
+    "location": "manual/modules/#命名空间的相关话题-1",
     "page": "模块",
-    "title": "命名空间杂记",
+    "title": "命名空间的相关话题",
     "category": "section",
-    "text": "如果名称是限定的（例如 Base.sin），那么即使它没有被导出也可以访问它。 这通常在调试时很有用。 还可以通过使用限定名称作为函数名称来添加方法。 但是，如果您希望将方法添加到其他模块中的函数，函数名仅包含符号，例如一个运算符，Base.+，由于出现语法歧义，则必须使用 Base.:+ 引用它。 如果运算符的长度不止一个，则必须用括号括起来，例如：Base.:(==)。宏名称在导入和导出语句中用 @ 编写，例如：import Mod.@mac。 其他模块中的宏可以调用为 Mod.@mac 或 @Mod.mac。语法 M.x = y 不能在另一个模块中的全局变量赋值；全局变量的赋值始终是模块内部的。将变量名称声明为 global x 可以“保留”名称而无需赋值。这可以防止加载初始化后全局变量的名称冲突。"
+    "text": "如果名称是限定的（例如 Base.sin），那么即使它没有被导出，我们也可以访问它。这通常在调试时很有用。若函数名也使用这种限定的方式，就可以为其添加方法。但是，对于函数名仅包含符号的情况，例如一个运算符，Base.+，由于会出现语法歧义，所以必须使用 Base.:+ 来引用它。如果运算符的字符不止一个，则必须用括号括起来，例如：Base.:(==)。宏名称在导入和导出语句中用 @ 编写，例如：import Mod.@mac。其它模块中的宏可以用 Mod.@mac 或 @Mod.mac 触发。不允许使用 M.x = y 这种写法给另一个模块中的全局变量赋值；必须在模块内部才能进行全局变量的赋值。将变量名称声明为 global x 可以“保留”名称而无需赋值。有些全局变量需要在代码加载后才初始化，这样做可以防止命名冲突。"
 },
 
 {
@@ -1469,7 +1469,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "模块初始化和预编译",
     "category": "section",
-    "text": "因为执行模块中的所有语句通常需要编译大量代码，大型模块可能需要几秒钟才能加载。Julia 会创建模块的预编译缓存以减少这个时间。The incremental precompiled module file are created and used automatically when using import or using to load a module.  This will cause it to be automatically compiled the first time it is imported. Alternatively, you can manually call Base.compilecache(modulename). The resulting cache files will be stored in DEPOT_PATH[1]/compiled/. Subsequently, the module is automatically recompiled upon using or import whenever any of its dependencies change; dependencies are modules it imports, the Julia build, files it includes, or explicit dependencies declared by include_dependency(path) in the module file(s).For file dependencies, a change is determined by examining whether the modification time (mtime) of each file loaded by include or added explicitly by include_dependency is unchanged, or equal to the modification time truncated to the nearest second (to accommodate systems that can\'t copy mtime with sub-second accuracy). It also takes into account whether the path to the file chosen by the search logic in require matches the path that had created the precompile file.It also takes into account the set of dependencies already loaded into the current process and won\'t recompile those modules, even if their files change or disappear, in order to avoid creating incompatibilities between the running system and the precompile cache. If you want to have changes to the source reflected in the running system, you should call reload(\"Module\") on the module you changed, and any module that depended on it in which you want to see the change reflected.If you know that a module is not safe to precompile your module (for example, for one of the reasons described below), you should put __precompile__(false) in the module file (typically placed at the top). This will cause Base.compilecache to throw an error, and will cause using / import to load it directly into the current process and skip the precompile and caching. This also thereby prevents the module from being imported by any other precompiled module.You may need to be aware of certain behaviors inherent in the creation of incremental shared libraries which may require care when writing your module. For example, external state is not preserved. To accommodate this, explicitly separate any initialization steps that must occur at runtime from steps that can occur at compile time. For this purpose, Julia allows you to define an __init__() function in your module that executes any initialization steps that must occur at runtime. This function will not be called during compilation (--output-*). Effectively, you can assume it will be run exactly once in the lifetime of the code. You may, of course, call it manually if necessary, but the default is to assume this function deals with computing state for the local machine, which does not need to be – or even should not be – captured in the compiled image. It will be called after the module is loaded into a process, including if it is being loaded into an incremental compile (--output-incremental=yes), but not if it is being loaded into a full-compilation process.In particular, if you define a function __init__() in a module, then Julia will call __init__() immediately after the module is loaded (e.g., by import, using, or require) at runtime for the first time (i.e., __init__ is only called once, and only after all statements in the module have been executed). Because it is called after the module is fully imported, any submodules or other imported modules have their __init__ functions called before the __init__ of the enclosing module.Two typical uses of __init__ are calling runtime initialization functions of external C libraries and initializing global constants that involve pointers returned by external libraries.  For example, suppose that we are calling a C library libfoo that requires us to call a foo_init() initialization function at runtime. Suppose that we also want to define a global constant foo_data_ptr that holds the return value of a void *foo_data() function defined by libfoo – this constant must be initialized at runtime (not at compile time) because the pointer address will change from run to run.  You could accomplish this by defining the following __init__ function in your module:const foo_data_ptr = Ref{Ptr{Cvoid}}(0)\nfunction __init__()\n    ccall((:foo_init, :libfoo), Cvoid, ())\n    foo_data_ptr[] = ccall((:foo_data, :libfoo), Ptr{Cvoid}, ())\n    nothing\nendNotice that it is perfectly possible to define a global inside a function like __init__; this is one of the advantages of using a dynamic language. But by making it a constant at global scope, we can ensure that the type is known to the compiler and allow it to generate better optimized code. Obviously, any other globals in your module that depends on foo_data_ptr would also have to be initialized in __init__.Constants involving most Julia objects that are not produced by ccall do not need to be placed in __init__: their definitions can be precompiled and loaded from the cached module image. This includes complicated heap-allocated objects like arrays. However, any routine that returns a raw pointer value must be called at runtime for precompilation to work (Ptr objects will turn into null pointers unless they are hidden inside an isbits object). This includes the return values of the Julia functions cfunction and pointer.Dictionary and set types, or in general anything that depends on the output of a hash(key) method, are a trickier case.  In the common case where the keys are numbers, strings, symbols, ranges, Expr, or compositions of these types (via arrays, tuples, sets, pairs, etc.) they are safe to precompile.  However, for a few other key types, such as Function or DataType and generic user-defined types where you haven\'t defined a hash method, the fallback hash method depends on the memory address of the object (via its objectid) and hence may change from run to run. If you have one of these key types, or if you aren\'t sure, to be safe you can initialize this dictionary from within your __init__ function. Alternatively, you can use the IdDict dictionary type, which is specially handled by precompilation so that it is safe to initialize at compile-time.When using precompilation, it is important to keep a clear sense of the distinction between the compilation phase and the execution phase. In this mode, it will often be much more clearly apparent that Julia is a compiler which allows execution of arbitrary Julia code, not a standalone interpreter that also generates compiled code.Other known potential failure scenarios include:Global counters (for example, for attempting to uniquely identify objects) Consider the following code snippet:\nmutable struct UniquedById\n    myid::Int\n    let counter = 0\n        UniquedById() = new(counter += 1)\n    end\nend\nwhile the intent of this code was to give every instance a unique id, the counter value is recorded at the end of compilation. All subsequent usages of this incrementally compiled module will start from that same counter value.\nNote that objectid (which works by hashing the memory pointer) has similar issues (see notes on Dict usage below).\nOne alternative is to use a macro to capture @__MODULE__ and store it alone with the current counter value, however, it may be better to redesign the code to not depend on this global state.\nAssociative collections (such as Dict and Set) need to be re-hashed in __init__. (In the future, a mechanism may be provided to register an initializer function.)\nDepending on compile-time side-effects persisting through load-time. Example include: modifying arrays or other variables in other Julia modules; maintaining handles to open files or devices; storing pointers to other system resources (including memory);\nCreating accidental \"copies\" of global state from another module, by referencing it directly instead of via its lookup path. For example, (in global scope):\n#mystdout = Base.stdout #= will not work correctly, since this will copy Base.stdout into this module =#\n# instead use accessor functions:\ngetstdout() = Base.stdout #= best option =#\n# or move the assignment into the runtime:\n__init__() = global mystdout = Base.stdout #= also works =#Several additional restrictions are placed on the operations that can be done while precompiling code to help the user avoid other wrong-behavior situations:Calling eval to cause a side-effect in another module. This will also cause a warning to be emitted when the incremental precompile flag is set.\nglobal const statements from local scope after __init__() has been started (see issue #12010 for plans to add an error for this)\nReplacing a module is a runtime error while doing an incremental precompile.A few other points to be aware of:No code reload / cache invalidation is performed after changes are made to the source files themselves, (including by [Pkg.update], and no cleanup is done after [Pkg.rm]\nThe memory sharing behavior of a reshaped array is disregarded by precompilation (each view gets its own copy)\nExpecting the filesystem to be unchanged between compile-time and runtime e.g. @__FILE__/source_path() to find resources at runtime, or the BinDeps @checked_lib macro. Sometimes this is unavoidable. However, when possible, it can be good practice to copy resources into the module at compile-time so they won\'t need to be found at runtime.\nWeakRef objects and finalizers are not currently handled properly by the serializer (this will be fixed in an upcoming release).\nIt is usually best to avoid capturing references to instances of internal metadata objects such as Method, MethodInstance, MethodTable, TypeMapLevel, TypeMapEntry and fields of those objects, as this can confuse the serializer and may not lead to the outcome you desire. It is not necessarily an error to do this, but you simply need to be prepared that the system will try to copy some of these and to create a single unique instance of others.It is sometimes helpful during module development to turn off incremental precompilation. The command line flag --compiled-modules={yes|no} enables you to toggle module precompilation on and off. When Julia is started with --compiled-modules=no the serialized modules in the compile cache are ignored when loading modules and module dependencies. Base.compilecache can still be called manually. The state of this command line flag is passed to Pkg.build to disable automatic precompilation triggering when installing, updating, and explicitly building packages."
+    "text": "因为执行模块中的所有语句通常需要编译大量代码，大型模块可能需要几秒钟才能加载。Julia 会创建模块的预编译缓存以减少这个时间。在使用 import 或 using 载入模块时，会自动创建并使用增量预编译的模块文件。模块在第一次导入时会自动编译，也可以手动调用 Base.compilecache(modulename)。编译好的缓存文件会被存储在 DEPOT_PATH[1]/compiled/ 目录下。之后，只要模块的依赖发生了改动，就会在下一次 using 或 import 时自动编译。这里所说的依赖是指：在模块中导入的其它模块，Julia 的系统镜像，模块包含的文件，或者在模块中用 include_dependency(path) 显式声明的依赖。对于文件依赖，判断是否有变动的方法是：在 include 或 include_dependency 的时候检查每个文件的变更时间（mtime）是否没变，或等于截断变更时间。截断变更时间是指将变更时间截断到最近的一秒，这是由于在某些操作系统中，用 mtime 无法获取亚秒级的精度。此外，也会考虑到 require 搜索到的文件路径与之前预编译文件中的是否匹配。对于已经加载到当前进程的依赖，即使它们的文件发成了变更，甚至是丢失，Julia 也不会重新编译这些模块，这是为了避免正在运行的系统与预编译缓存之间的不兼容性。如果你认为预编译自己的模块是不安全的（基于下面所说的各种原因），那么你应该在模块文件中添加 __precompile__(false)，一般会将其写在文件的最上面。这就可以触发 Base.compilecache 报错，并且在直接使用 using / import 加载的时候跳过预编译和缓存。这样做同时也可以防止其它开启预编译的模块加载此模块。在开发模块的时候，你可能需要了解一些与增量编译相关的某些固有行为。例如，外部状态不会被保留。为了解决这个问题，需要显式分离运行时与编译期的部分。Julia 允许你定义一个 __init__() 函数来执行任何需要在运行时发生的初始化。在编译期（--output-*），此函数将不会被调用。你可以假设在代码的生存周期中，此函数只会被运行一次。当然，如果有必要，你也可以手动调用它，但在默认的情况下，请假设此函数是为了处理与本机状态相关的信息，注意这些信息不需要，更不应该存入预编译镜像。此函数会在模块被导入到当前进程之后被调用，这包括在一个增量编译中导入该模块的时候（--output-incremental=yes），but not if it is being loaded into a full-compilation process.In particular, if you define a function __init__() in a module, then Julia will call __init__() immediately after the module is loaded (e.g., by import, using, or require) at runtime for the first time (i.e., __init__ is only called once, and only after all statements in the module have been executed). Because it is called after the module is fully imported, any submodules or other imported modules have their __init__ functions called before the __init__ of the enclosing module.Two typical uses of __init__ are calling runtime initialization functions of external C libraries and initializing global constants that involve pointers returned by external libraries.  For example, suppose that we are calling a C library libfoo that requires us to call a foo_init() initialization function at runtime. Suppose that we also want to define a global constant foo_data_ptr that holds the return value of a void *foo_data() function defined by libfoo – this constant must be initialized at runtime (not at compile time) because the pointer address will change from run to run.  You could accomplish this by defining the following __init__ function in your module:const foo_data_ptr = Ref{Ptr{Cvoid}}(0)\nfunction __init__()\n    ccall((:foo_init, :libfoo), Cvoid, ())\n    foo_data_ptr[] = ccall((:foo_data, :libfoo), Ptr{Cvoid}, ())\n    nothing\nendNotice that it is perfectly possible to define a global inside a function like __init__; this is one of the advantages of using a dynamic language. But by making it a constant at global scope, we can ensure that the type is known to the compiler and allow it to generate better optimized code. Obviously, any other globals in your module that depends on foo_data_ptr would also have to be initialized in __init__.Constants involving most Julia objects that are not produced by ccall do not need to be placed in __init__: their definitions can be precompiled and loaded from the cached module image. This includes complicated heap-allocated objects like arrays. However, any routine that returns a raw pointer value must be called at runtime for precompilation to work (Ptr objects will turn into null pointers unless they are hidden inside an isbits object). This includes the return values of the Julia functions cfunction and pointer.Dictionary and set types, or in general anything that depends on the output of a hash(key) method, are a trickier case.  In the common case where the keys are numbers, strings, symbols, ranges, Expr, or compositions of these types (via arrays, tuples, sets, pairs, etc.) they are safe to precompile.  However, for a few other key types, such as Function or DataType and generic user-defined types where you haven\'t defined a hash method, the fallback hash method depends on the memory address of the object (via its objectid) and hence may change from run to run. If you have one of these key types, or if you aren\'t sure, to be safe you can initialize this dictionary from within your __init__ function. Alternatively, you can use the IdDict dictionary type, which is specially handled by precompilation so that it is safe to initialize at compile-time.当使用预编译时，我们必须要清楚地区分代码的编译阶段和运行阶段。在此模式下，我们会更清楚发现 Julia 的编译器可以执行任何 Julia 代码，而不是一个用于生成编译后代码的独立的解释器。其它已知的潜在失败场景包括：全局计数器（例如，为了生成对象的唯一标识符）考虑下面一段代码：\nmutable struct UniquedById\n    myid::Int\n    let counter = 0\n        UniquedById() = new(counter += 1)\n    end\nend\n尽管这段代码的目标是给每个实例赋一个唯一的 ID，但计数器的值会在代码编译结束时被记录。任何对此增量编译模块的后续使用，计数器都将从同一个值开始计数。\n注意 objectid （工作原理是 hash 内存指针）也有类似的问题，请查阅下面关于 Dict 的用法。\n一种解决方案是用宏捕捉 @__MODULE__，并将它与目前的 counter 值一起保存。 然而，更好的方案是对代码进行重新设计，不要依赖这种全局状态变量。\n像 Dict 和 Set 这种关联集合需要在 __init__ 中 re-hash。Julia 在未来很可能会提供一个机制来注册初始化函数。\n依赖编译期的副作用会在加载时蔓延。例子包括：更改其它 Julia 模块里的数组或变量，操作文件或设备的句柄，保存指向其它系统资源（包括内存）的指针。\n无意中从其它模块中“拷贝”了全局状态：通过直接引用的方式而不是通过查找的方式。例如，在全局作用域下：\n#mystdout = Base.stdout #= will not work correctly, since this will copy Base.stdout into this module =#\n# instead use accessor functions:\ngetstdout() = Base.stdout #= best option =#\n# or move the assignment into the runtime:\n__init__() = global mystdout = Base.stdout #= also works =#Several additional restrictions are placed on the operations that can be done while precompiling code to help the user avoid other wrong-behavior situations:Calling eval to cause a side-effect in another module. This will also cause a warning to be emitted when the incremental precompile flag is set.\nglobal const statements from local scope after __init__() has been started (see issue #12010 for plans to add an error for this)\nReplacing a module is a runtime error while doing an incremental precompile.A few other points to be aware of:No code reload / cache invalidation is performed after changes are made to the source files themselves, (including by [Pkg.update], and no cleanup is done after [Pkg.rm]\nThe memory sharing behavior of a reshaped array is disregarded by precompilation (each view gets its own copy)\nExpecting the filesystem to be unchanged between compile-time and runtime e.g. @__FILE__/source_path() to find resources at runtime, or the BinDeps @checked_lib macro. Sometimes this is unavoidable. However, when possible, it can be good practice to copy resources into the module at compile-time so they won\'t need to be found at runtime.\nWeakRef objects and finalizers are not currently handled properly by the serializer (this will be fixed in an upcoming release).\nIt is usually best to avoid capturing references to instances of internal metadata objects such as Method, MethodInstance, MethodTable, TypeMapLevel, TypeMapEntry and fields of those objects, as this can confuse the serializer and may not lead to the outcome you desire. It is not necessarily an error to do this, but you simply need to be prepared that the system will try to copy some of these and to create a single unique instance of others.It is sometimes helpful during module development to turn off incremental precompilation. The command line flag --compiled-modules={yes|no} enables you to toggle module precompilation on and off. When Julia is started with --compiled-modules=no the serialized modules in the compile cache are ignored when loading modules and module dependencies. Base.compilecache can still be called manually. The state of this command line flag is passed to Pkg.build to disable automatic precompilation triggering when installing, updating, and explicitly building packages."
 },
 
 {
@@ -1626,31 +1626,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#",
-    "page": "Metaprogramming",
-    "title": "Metaprogramming",
+    "page": "元编程",
+    "title": "元编程",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "manual/metaprogramming/#Metaprogramming-1",
-    "page": "Metaprogramming",
-    "title": "Metaprogramming",
+    "location": "manual/metaprogramming/#元编程-1",
+    "page": "元编程",
+    "title": "元编程",
     "category": "section",
     "text": "Lisp 留给 Julia 最大的遗产就是它的元编程支持。和 Lisp 一样，Julia 把自己的代码表示为语言中的数据结构。既然代码被表示为了可以在语言中创建和操作的对象，程序就可以变换和生成自己的代码。这允许在没有额外构建步骤的情况下生成复杂的代码，并且还允许在 abstract syntax trees 级别上运行的真正的 Lisp 风格的宏。与之相对的是预处理器“宏”系统，比如 C 和 C++ 中的，它们在解析和解释代码之前进行文本操作和变换。由于 Julia 中的所有数据类型和代码都被表示为 Julia 的 数据结构，强大的 reflection 功能可用于探索程序的内部及其类型，就像任何其他数据一样。"
 },
 
 {
     "location": "manual/metaprogramming/#程序表示-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "程序表示",
     "category": "section",
-    "text": "每个Julia程序均以字符串开始：julia> prog = \"1 + 1\"\n\"1 + 1\"接下来会发生什么？下一步是 parse 每个字符串到一个称为表达式的对象，由 Julia 的类型 Expr 表示：julia> ex1 = Meta.parse(prog)\n:(1 + 1)\n\njulia> typeof(ex1)\nExprExpr  对象包含两个部分：一个标识表达式类型的 Symbol。Symbol 就是一个 interned string 标识符（下面会有更多讨论）julia> ex1.head\n:call表达式的参数，可能是符号，其他表达式，或者字面值：julia> ex1.args\n3-element Array{Any,1}:\n :+\n 1\n 1表达式也可能直接用 prefix notation 构造：julia> ex2 = Expr(:call, :+, 1, 1)\n:(1 + 1)上面构造的两个表达式 – 一个通过解析构造一个通过直接构造 – 是等价的：julia> ex1 == ex2\ntrue这里的关键点是 Julia 的代码在内部表示为可以从语言本身访问的数据结构函数 dump 可以带有缩进和注释地显示 Expr 对象：julia> dump(ex2)\nExpr\n  head: Symbol call\n  args: Array{Any}((3,))\n    1: Symbol +\n    2: Int64 1\n    3: Int64 1Expr objects may also be nested:julia> ex3 = Meta.parse(\"(4 + 4) / 2\")\n:((4 + 4) / 2)另外一个查看表达式的方法是使用 Meta.show_sexor，它能显示给定 Expr 的 S-expression，对 Lisp 用户来说，这看着很熟悉。下面是一个示例，阐释了如何显示嵌套的 Expr：julia> Meta.show_sexpr(ex3)\n(:call, :/, (:call, :+, 4, 4), 2)"
+    "text": "每个 Julia 程序均以字符串开始：julia> prog = \"1 + 1\"\n\"1 + 1\"接下来会发生什么？下一步是 parse 每个字符串到一个称为表达式的对象，由 Julia 的类型 Expr 表示：julia> ex1 = Meta.parse(prog)\n:(1 + 1)\n\njulia> typeof(ex1)\nExprExpr 对象包含两个部分：一个标识表达式类型的 Symbol。Symbol 就是一个 interned string 标识符（下面会有更多讨论）julia> ex1.head\n:call表达式的参数，可能是符号，其他表达式，或者字面值：julia> ex1.args\n3-element Array{Any,1}:\n :+\n 1\n 1表达式也可能直接用 prefix notation 构造：julia> ex2 = Expr(:call, :+, 1, 1)\n:(1 + 1)上面构造的两个表达式 – 一个通过解析构造一个通过直接构造 – 是等价的：julia> ex1 == ex2\ntrue这里的关键点是 Julia 的代码在内部表示为可以从语言本身访问的数据结构函数 dump 可以带有缩进和注释地显示 Expr 对象：julia> dump(ex2)\nExpr\n  head: Symbol call\n  args: Array{Any}((3,))\n    1: Symbol +\n    2: Int64 1\n    3: Int64 1Expr objects may also be nested:julia> ex3 = Meta.parse(\"(4 + 4) / 2\")\n:((4 + 4) / 2)另外一个查看表达式的方法是使用 Meta.show_sexor，它能显示给定 Expr 的 S-expression，对 Lisp 用户来说，这看着很熟悉。下面是一个示例，阐释了如何显示嵌套的 Expr：julia> Meta.show_sexpr(ex3)\n(:call, :/, (:call, :+, 4, 4), 2)"
 },
 
 {
     "location": "manual/metaprogramming/#符号-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "符号",
     "category": "section",
     "text": "字符 : 在 Julia 中有两个作用。第一种形式构造一个  Symbol，这是作为表达式组成部分的一个 interned string：julia> :foo\n:foo\n\njulia> typeof(ans)\nSymbol构造器 Symbol 接受任意数量的参数并通过把它们的字符串表示连在一起创建一个新的符号。julia> :foo == Symbol(\"foo\")\ntrue\n\njulia> Symbol(\"func\",10)\n:func10\n\njulia> Symbol(:var,\'_\',\"sym\")\n:var_sym在表达式的上下文中，符号用来表示对变量的访问；当一个表达式被求值时，符号会被替换为这个符号在合适的 scope 中所绑定的值。有时需要在 ： 的参数两边加上额外的括号，以避免在解析时出现歧义：julia> :(:)\n:(:)\n\njulia> :(::)\n:(::)"
@@ -1658,7 +1658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#表达式与求值-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "表达式与求值",
     "category": "section",
     "text": ""
@@ -1666,7 +1666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Quoting-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Quoting",
     "category": "section",
     "text": ": 的第二个语义是不显式调用 Expr 构造器来创建表达式对象。这被称为引用。: 后面跟着包围着单个 Julia 语句括号，可以基于被包围的代码生成一个 Expr 对象。下面是一个引用算数表达式的例子：julia> ex = :(a+b*c+1)\n:(a + b * c + 1)\n\njulia> typeof(ex)\nExpr（为了查看这个表达式的结构，可以试一试 ex.head 和 ex.args，或者使用 dump 同时查看 ex.head 和 ex.args 或者 Meta.@dump）注意等价的表达式也可以使用 Meta.parse 或者直接用 Expr 构造：julia>      :(a + b*c + 1)       ==\n       Meta.parse(\"a + b*c + 1\") ==\n       Expr(:call, :+, :a, Expr(:call, :*, :b, :c), 1)\ntrueExpressions provided by the parser generally only have symbols, other expressions, and literal values as their args, whereas expressions constructed by Julia code can have arbitrary run-time values without literal forms as args. In this specific example, + and a are symbols, *(b,c) is a subexpression, and 1 is a literal 64-bit signed integer.There is a second syntactic form of quoting for multiple expressions: blocks of code enclosed in quote ... end.julia> ex = quote\n           x = 1\n           y = 2\n           x + y\n       end\nquote\n    #= none:2 =#\n    x = 1\n    #= none:3 =#\n    y = 2\n    #= none:4 =#\n    x + y\nend\n\njulia> typeof(ex)\nExpr"
@@ -1674,7 +1674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#插值-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "插值",
     "category": "section",
     "text": "Direct construction of Expr objects with value arguments is powerful, but Expr constructors can be tedious compared to \"normal\" Julia syntax. As an alternative, Julia allows interpolation of literals or expressions into quoted expressions. Interpolation is indicated by a prefix $.In this example, the value of variable a is interpolated:julia> a = 1;\n\njulia> ex = :($a + b)\n:(1 + b)Interpolating into an unquoted expression is not supported and will cause a compile-time error:julia> $a + b\nERROR: syntax: \"$\" expression outside quoteIn this example, the tuple (1,2,3) is interpolated as an expression into a conditional test:julia> ex = :(a in $:((1,2,3)) )\n:(a in (1, 2, 3))The use of $ for expression interpolation is intentionally reminiscent of string interpolation and command interpolation. Expression interpolation allows convenient, readable programmatic construction of complex Julia expressions."
@@ -1682,7 +1682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Splatting-interpolation-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Splatting interpolation",
     "category": "section",
     "text": "Notice that the $ interpolation syntax allows inserting only a single expression into an enclosing expression. Occasionally, you have an array of expressions and need them all to become arguments of the surrounding expression. This can be done with the syntax $(xs...). For example, the following code generates a function call where the number of arguments is determined programmatically:julia> args = [:x, :y, :z];\n\njulia> :(f(1, $(args...)))\n:(f(1, x, y, z))"
@@ -1690,7 +1690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Nested-quote-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Nested quote",
     "category": "section",
     "text": "Naturally, it is possible for quote expressions to contain other quote expressions. Understanding how interpolation works in these cases can be a bit tricky. Consider this example:julia> x = :(1 + 2);\n\njulia> e = quote quote $x end end\nquote\n    #= none:1 =#\n    $(Expr(:quote, quote\n    #= none:1 =#\n    $(Expr(:$, :x))\nend))\nendNotice that the result contains Expr(:$, :x), which means that x has not been evaluated yet. In other words, the $ expression \"belongs to\" the inner quote expression, and so its argument is only evaluated when the inner quote expression is:julia> eval(e)\nquote\n    #= none:1 =#\n    1 + 2\nendHowever, the outer quote expression is able to interpolate values inside the $ in the inner quote. This is done with multiple $s:julia> e = quote quote $$x end end\nquote\n    #= none:1 =#\n    $(Expr(:quote, quote\n    #= none:1 =#\n    $(Expr(:$, :(1 + 2)))\nend))\nendNotice that :(1 + 2) now appears in the result instead of the symbol :x. Evaluating this expression yields an interpolated 3:julia> eval(e)\nquote\n    #= none:1 =#\n    3\nendThe intuition behind this behavior is that x is evaluated once for each $: one $ works similarly to eval(:x), giving x\'s value, while two $s do the equivalent of eval(eval(:x))."
@@ -1698,7 +1698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#QuoteNode-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "QuoteNode",
     "category": "section",
     "text": "The usual representation of a quote form in an AST is an Expr with head :quote:julia> dump(Meta.parse(\":(1+2)\"))\nExpr\n  head: Symbol quote\n  args: Array{Any}((1,))\n    1: Expr\n      head: Symbol call\n      args: Array{Any}((3,))\n        1: Symbol +\n        2: Int64 1\n        3: Int64 2As we have seen, such expressions support interpolation with $. However, in some situations it is necessary to quote code without performing interpolation. This kind of quoting does not yet have syntax, but is represented internally as an object of type QuoteNode. The parser yields QuoteNodes for simple quoted items like symbols:julia> dump(Meta.parse(\":x\"))\nQuoteNode\n  value: Symbol xQuoteNode can also be used for certain advanced metaprogramming tasks."
@@ -1706,7 +1706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#[eval](@ref)-and-effects-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "eval and effects",
     "category": "section",
     "text": "Given an expression object, one can cause Julia to evaluate (execute) it at global scope using eval:julia> :(1 + 2)\n:(1 + 2)\n\njulia> eval(ans)\n3\n\njulia> ex = :(a + b)\n:(a + b)\n\njulia> eval(ex)\nERROR: UndefVarError: b not defined\n[...]\n\njulia> a = 1; b = 2;\n\njulia> eval(ex)\n3Every module has its own eval function that evaluates expressions in its global scope. Expressions passed to eval are not limited to returning values – they can also have side-effects that alter the state of the enclosing module\'s environment:julia> ex = :(x = 1)\n:(x = 1)\n\njulia> x\nERROR: UndefVarError: x not defined\n\njulia> eval(ex)\n1\n\njulia> x\n1Here, the evaluation of an expression object causes a value to be assigned to the global variable x.Since expressions are just Expr objects which can be constructed programmatically and then evaluated, it is possible to dynamically generate arbitrary code which can then be run using eval. Here is a simple example:julia> a = 1;\n\njulia> ex = Expr(:call, :+, a, :b)\n:(1 + b)\n\njulia> a = 0; b = 2;\n\njulia> eval(ex)\n3The value of a is used to construct the expression ex which applies the + function to the value 1 and the variable b. Note the important distinction between the way a and b are used:The value of the variable a at expression construction time is used as an immediate value in the expression. Thus, the value of a when the expression is evaluated no longer matters: the value in the expression is already 1, independent of whatever the value of a might be.\nOn the other hand, the symbol :b is used in the expression construction, so the value of the variable b at that time is irrelevant – :b is just a symbol and the variable b need not even be defined. At expression evaluation time, however, the value of the symbol :b is resolved by looking up the value of the variable b."
@@ -1714,7 +1714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Functions-on-Expressions-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Functions on Expressions",
     "category": "section",
     "text": "As hinted above, one extremely useful feature of Julia is the capability to generate and manipulate Julia code within Julia itself. We have already seen one example of a function returning Expr objects: the parse function, which takes a string of Julia code and returns the corresponding Expr. A function can also take one or more Expr objects as arguments, and return another Expr. Here is a simple, motivating example:julia> function math_expr(op, op1, op2)\n           expr = Expr(:call, op, op1, op2)\n           return expr\n       end\nmath_expr (generic function with 1 method)\n\njulia>  ex = math_expr(:+, 1, Expr(:call, :*, 4, 5))\n:(1 + 4 * 5)\n\njulia> eval(ex)\n21As another example, here is a function that doubles any numeric argument, but leaves expressions alone:julia> function make_expr2(op, opr1, opr2)\n           opr1f, opr2f = map(x -> isa(x, Number) ? 2*x : x, (opr1, opr2))\n           retexpr = Expr(:call, op, opr1f, opr2f)\n           return retexpr\n       end\nmake_expr2 (generic function with 1 method)\n\njulia> make_expr2(:+, 1, 2)\n:(2 + 4)\n\njulia> ex = make_expr2(:+, 1, Expr(:call, :*, 5, 8))\n:(2 + 5 * 8)\n\njulia> eval(ex)\n42"
@@ -1722,7 +1722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#man-macros-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Macros",
     "category": "section",
     "text": "Macros provide a method to include generated code in the final body of a program. A macro maps a tuple of arguments to a returned expression, and the resulting expression is compiled directly rather than requiring a runtime eval call. Macro arguments may include expressions, literal values, and symbols."
@@ -1730,15 +1730,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#基础-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "基础",
     "category": "section",
-    "text": "这是一个非常简单的宏：julia> macro sayhello()\n           return :( println(\"Hello, world!\") )\n       end\n@sayhello (macro with 1 method)宏在Julia的语法中有一个专门的字符 @ (at-sign)，紧接着是其使用macro NAME ... end 形式来声明的唯一的宏名。在这个例子中，编译器会把所有的@sayhello 替换成：:( println(\"Hello, world!\") )当 @sayhello 在REPL中被输入时，解释器立即执行，因此我们只会看到计算后的结果：julia> @sayhello()\nHello, world!现在，考虑一个稍微复杂一点的宏：julia> macro sayhello(name)\n return :( println(\"Hello, \", $name) )\n end\n@sayhello (macro with 1 method)这个宏接受一个参数name。当遇到@sayhello时，quoted 表达式会被展开并将参数中的值插入到最终的表达式中：julia> @sayhello(\"human\")\nHello, human我们可使用 macroexpand看到返回的quoted 表达式。(important note: 在调试宏的时候这是一个非常有用的工具):julia> ex = macroexpand(Main, :(@sayhello(\"human\")) )\n:((Main.println)(\"Hello, \", \"human\"))\n\njulia> typeof(ex)\nExpr我们可以看到字面值“人类”已被插入到表达式中。还有一个宏[@ macroexpand]（@ ref），它可能比macroexpand函数更方便：julia> @macroexpand @sayhello \"human\"\n:((println)(\"Hello, \", \"human\"))"
+    "text": "这是一个非常简单的宏：julia> macro sayhello()\n           return :( println(\"Hello, world!\") )\n       end\n@sayhello (macro with 1 method)宏在Julia的语法中有一个专门的字符 @ (at-sign)，紧接着是其使用macro NAME ... end 形式来声明的唯一的宏名。在这个例子中，编译器会把所有的@sayhello 替换成：:( println(\"Hello, world!\") )当 @sayhello 在REPL中被输入时，解释器立即执行，因此我们只会看到计算后的结果：julia> @sayhello()\nHello, world!现在，考虑一个稍微复杂一点的宏：julia> macro sayhello(name)\n return :( println(\"Hello, \", $name) )\n end\n@sayhello (macro with 1 method)这个宏接受一个参数name。当遇到@sayhello时，quoted 表达式会被展开并将参数中的值插入到最终的表达式中：julia> @sayhello(\"human\")\nHello, human我们可使用 macroexpand看到返回的quoted 表达式。(important note: 在调试宏的时候这是一个非常有用的工具):julia> ex = macroexpand(Main, :(@sayhello(\"human\")) )\n:((Main.println)(\"Hello, \", \"human\"))\n\njulia> typeof(ex)\nExpr我们可以看到 \"human\" 字面量已被插入到表达式中了。还有一个宏[@ macroexpand]（@ ref），它可能比macroexpand函数更方便：julia> @macroexpand @sayhello \"human\"\n:((println)(\"Hello, \", \"human\"))"
 },
 
 {
     "location": "manual/metaprogramming/#Hold-up:-why-macros?-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Hold up: why macros?",
     "category": "section",
     "text": "We have already seen a function f(::Expr...) -> Expr in a previous section. In fact, macroexpand is also such a function. So, why do macros exist?Macros are necessary because they execute when code is parsed, therefore, macros allow the programmer to generate and include fragments of customized code before the full program is run. To illustrate the difference, consider the following example:julia> macro twostep(arg)\n           println(\"I execute at parse time. The argument is: \", arg)\n           return :(println(\"I execute at runtime. The argument is: \", $arg))\n       end\n@twostep (macro with 1 method)\n\njulia> ex = macroexpand(Main, :(@twostep :(1, 2, 3)) );\nI execute at parse time. The argument is: $(Expr(:quote, :((1, 2, 3))))The first call to println is executed when macroexpand is called. The resulting expression contains only the second println:julia> typeof(ex)\nExpr\n\njulia> ex\n:((println)(\"I execute at runtime. The argument is: \", $(Expr(:copyast, :($(QuoteNode(:((1, 2, 3)))))))))\n\njulia> eval(ex)\nI execute at runtime. The argument is: (1, 2, 3)"
@@ -1746,7 +1746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Macro-invocation-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Macro invocation",
     "category": "section",
     "text": "Macros are invoked with the following general syntax:@name expr1 expr2 ...\n@name(expr1, expr2, ...)Note the distinguishing @ before the macro name and the lack of commas between the argument expressions in the first form, and the lack of whitespace after @name in the second form. The two styles should not be mixed. For example, the following syntax is different from the examples above; it passes the tuple (expr1, expr2, ...) as one argument to the macro:@name (expr1, expr2, ...)An alternative way to invoke a macro over an array literal (or comprehension) is to juxtapose both without using parentheses. In this case, the array will be the only expression fed to the macro. The following syntax is equivalent (and different from @name [a b] * v):@name[a b] * v\n@name([a b]) * vIt is important to emphasize that macros receive their arguments as expressions, literals, or symbols. One way to explore macro arguments is to call the show function within the macro body:julia> macro showarg(x)\n           show(x)\n           # ... remainder of macro, returning an expression\n       end\n@showarg (macro with 1 method)\n\njulia> @showarg(a)\n:a\n\njulia> @showarg(1+1)\n:(1 + 1)\n\njulia> @showarg(println(\"Yo!\"))\n:(println(\"Yo!\"))In addition to the given argument list, every macro is passed extra arguments named __source__ and __module__.The argument __source__ provides information (in the form of a LineNumberNode object) about the parser location of the @ sign from the macro invocation. This allows macros to include better error diagnostic information, and is commonly used by logging, string-parser macros, and docs, for example, as well as to implement the @__LINE__, @__FILE__, and @__DIR__ macros.The location information can be accessed by referencing __source__.line and __source__.file:julia> macro __LOCATION__(); return QuoteNode(__source__); end\n@__LOCATION__ (macro with 1 method)\n\njulia> dump(\n            @__LOCATION__(\n       ))\nLineNumberNode\n  line: Int64 2\n  file: Symbol noneThe argument __module__ provides information (in the form of a Module object) about the expansion context of the macro invocation. This allows macros to look up contextual information, such as existing bindings, or to insert the value as an extra argument to a runtime function call doing self-reflection in the current module."
@@ -1754,7 +1754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Building-an-advanced-macro-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Building an advanced macro",
     "category": "section",
     "text": "Here is a simplified definition of Julia\'s @assert macro:julia> macro assert(ex)\n           return :( $ex ? nothing : throw(AssertionError($(string(ex)))) )\n       end\n@assert (macro with 1 method)This macro can be used like this:julia> @assert 1 == 1.0\n\njulia> @assert 1 == 0\nERROR: AssertionError: 1 == 0In place of the written syntax, the macro call is expanded at parse time to its returned result. This is equivalent to writing:1 == 1.0 ? nothing : throw(AssertionError(\"1 == 1.0\"))\n1 == 0 ? nothing : throw(AssertionError(\"1 == 0\"))That is, in the first call, the expression :(1 == 1.0) is spliced into the test condition slot, while the value of string(:(1 == 1.0)) is spliced into the assertion message slot. The entire expression, thus constructed, is placed into the syntax tree where the @assert macro call occurs. Then at execution time, if the test expression evaluates to true, then nothing is returned, whereas if the test is false, an error is raised indicating the asserted expression that was false. Notice that it would not be possible to write this as a function, since only the value of the condition is available and it would be impossible to display the expression that computed it in the error message.The actual definition of @assert in Julia Base is more complicated. It allows the user to optionally specify their own error message, instead of just printing the failed expression. Just like in functions with a variable number of arguments, this is specified with an ellipses following the last argument:julia> macro assert(ex, msgs...)\n           msg_body = isempty(msgs) ? ex : msgs[1]\n           msg = string(msg_body)\n           return :($ex ? nothing : throw(AssertionError($msg)))\n       end\n@assert (macro with 1 method)Now @assert has two modes of operation, depending upon the number of arguments it receives! If there\'s only one argument, the tuple of expressions captured by msgs will be empty and it will behave the same as the simpler definition above. But now if the user specifies a second argument, it is printed in the message body instead of the failing expression. You can inspect the result of a macro expansion with the aptly named @macroexpand macro:julia> @macroexpand @assert a == b\n:(if Main.a == Main.b\n        Main.nothing\n    else\n        (Main.throw)((Main.AssertionError)(\"a == b\"))\n    end)\n\njulia> @macroexpand @assert a==b \"a should equal b!\"\n:(if Main.a == Main.b\n        Main.nothing\n    else\n        (Main.throw)((Main.AssertionError)(\"a should equal b!\"))\n    end)There is yet another case that the actual @assert macro handles: what if, in addition to printing \"a should equal b,\" we wanted to print their values? One might naively try to use string interpolation in the custom message, e.g., @assert a==b \"a ($a) should equal b ($b)!\", but this won\'t work as expected with the above macro. Can you see why? Recall from string interpolation that an interpolated string is rewritten to a call to string. Compare:julia> typeof(:(\"a should equal b\"))\nString\n\njulia> typeof(:(\"a ($a) should equal b ($b)!\"))\nExpr\n\njulia> dump(:(\"a ($a) should equal b ($b)!\"))\nExpr\n  head: Symbol string\n  args: Array{Any}((5,))\n    1: String \"a (\"\n    2: Symbol a\n    3: String \") should equal b (\"\n    4: Symbol b\n    5: String \")!\"So now instead of getting a plain string in msg_body, the macro is receiving a full expression that will need to be evaluated in order to display as expected. This can be spliced directly into the returned expression as an argument to the string call; see error.jl for the complete implementation.The @assert macro makes great use of splicing into quoted expressions to simplify the manipulation of expressions inside the macro body."
@@ -1762,7 +1762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Hygiene-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Hygiene",
     "category": "section",
     "text": "An issue that arises in more complex macros is that of hygiene. In short, macros must ensure that the variables they introduce in their returned expressions do not accidentally clash with existing variables in the surrounding code they expand into. Conversely, the expressions that are passed into a macro as arguments are often expected to evaluate in the context of the surrounding code, interacting with and modifying the existing variables. Another concern arises from the fact that a macro may be called in a different module from where it was defined. In this case we need to ensure that all global variables are resolved to the correct module. Julia already has a major advantage over languages with textual macro expansion (like C) in that it only needs to consider the returned expression. All the other variables (such as msg in @assert above) follow the normal scoping block behavior.To demonstrate these issues, let us consider writing a @time macro that takes an expression as its argument, records the time, evaluates the expression, records the time again, prints the difference between the before and after times, and then has the value of the expression as its final value. The macro might look like this:macro time(ex)\n    return quote\n        local t0 = time()\n        local val = $ex\n        local t1 = time()\n        println(\"elapsed time: \", t1-t0, \" seconds\")\n        val\n    end\nendHere, we want t0, t1, and val to be private temporary variables, and we want time to refer to the time function in Julia Base, not to any time variable the user might have (the same applies to println). Imagine the problems that could occur if the user expression ex also contained assignments to a variable called t0, or defined its own time variable. We might get errors, or mysteriously incorrect behavior.Julia\'s macro expander solves these problems in the following way. First, variables within a macro result are classified as either local or global. A variable is considered local if it is assigned to (and not declared global), declared local, or used as a function argument name. Otherwise, it is considered global. Local variables are then renamed to be unique (using the gensym function, which generates new symbols), and global variables are resolved within the macro definition environment. Therefore both of the above concerns are handled; the macro\'s locals will not conflict with any user variables, and time and println will refer to the Julia Base definitions.One problem remains however. Consider the following use of this macro:module MyModule\nimport Base.@time\n\ntime() = ... # compute something\n\n@time time()\nendHere the user expression ex is a call to time, but not the same time function that the macro uses. It clearly refers to MyModule.time. Therefore we must arrange for the code in ex to be resolved in the macro call environment. This is done by \"escaping\" the expression with esc:macro time(ex)\n    ...\n    local val = $(esc(ex))\n    ...\nendAn expression wrapped in this manner is left alone by the macro expander and simply pasted into the output verbatim. Therefore it will be resolved in the macro call environment.This escaping mechanism can be used to \"violate\" hygiene when necessary, in order to introduce or manipulate user variables. For example, the following macro sets x to zero in the call environment:julia> macro zerox()\n           return esc(:(x = 0))\n       end\n@zerox (macro with 1 method)\n\njulia> function foo()\n           x = 1\n           @zerox\n           return x # is zero\n       end\nfoo (generic function with 1 method)\n\njulia> foo()\n0This kind of manipulation of variables should be used judiciously, but is occasionally quite handy.Getting the hygiene rules correct can be a formidable challenge. Before using a macro, you might want to consider whether a function closure would be sufficient. Another useful strategy is to defer as much work as possible to runtime. For example, many macros simply wrap their arguments in a QuoteNode or other similar Expr. Some examples of this include @task body which simply returns schedule(Task(() -> $body)), and @eval expr, which simply returns eval(QuoteNode(expr)).To demonstrate, we might rewrite the @time example above as:macro time(expr)\n    return :(timeit(() -> $(esc(expr))))\nend\nfunction timeit(f)\n    t0 = time()\n    val = f()\n    t1 = time()\n    println(\"elapsed time: \", t1-t0, \" seconds\")\n    return val\nendHowever, we don\'t do this for a good reason: wrapping the expr in a new scope block (the anonymous function) also slightly changes the meaning of the expression (the scope of any variables in it), while we want @time to be usable with minimum impact on the wrapped code."
@@ -1770,7 +1770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Macros-and-dispatch-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Macros and dispatch",
     "category": "section",
     "text": "Macros, just like Julia functions, are generic. This means they can also have multiple method definitions, thanks to multiple dispatch:julia> macro m end\n@m (macro with 0 methods)\n\njulia> macro m(args...)\n           println(\"$(length(args)) arguments\")\n       end\n@m (macro with 1 method)\n\njulia> macro m(x,y)\n           println(\"Two arguments\")\n       end\n@m (macro with 2 methods)\n\njulia> @m \"asd\"\n1 arguments\n\njulia> @m 1 2\nTwo argumentsHowever one should keep in mind, that macro dispatch is based on the types of AST that are handed to the macro, not the types that the AST evaluates to at runtime:julia> macro m(::Int)\n           println(\"An Integer\")\n       end\n@m (macro with 3 methods)\n\njulia> @m 2\nAn Integer\n\njulia> x = 2\n2\n\njulia> @m x\n1 arguments"
@@ -1778,7 +1778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Code-Generation-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Code Generation",
     "category": "section",
     "text": "When a significant amount of repetitive boilerplate code is required, it is common to generate it programmatically to avoid redundancy. In most languages, this requires an extra build step, and a separate program to generate the repetitive code. In Julia, expression interpolation and eval allow such code generation to take place in the normal course of program execution. For example, consider the following custom typestruct MyNumber\n    x::Float64\nend\n# output\nfor which we want to add a number of methods to. We can do this programmatically in the following loop:for op = (:sin, :cos, :tan, :log, :exp)\n    eval(quote\n        Base.$op(a::MyNumber) = MyNumber($op(a.x))\n    end)\nend\n# output\nand we can now use those functions with our custom type:julia> x = MyNumber(π)\nMyNumber(3.141592653589793)\n\njulia> sin(x)\nMyNumber(1.2246467991473532e-16)\n\njulia> cos(x)\nMyNumber(-1.0)In this manner, Julia acts as its own preprocessor, and allows code generation from inside the language. The above code could be written slightly more tersely using the : prefix quoting form:for op = (:sin, :cos, :tan, :log, :exp)\n    eval(:(Base.$op(a::MyNumber) = MyNumber($op(a.x))))\nendThis sort of in-language code generation, however, using the eval(quote(...)) pattern, is common enough that Julia comes with a macro to abbreviate this pattern:for op = (:sin, :cos, :tan, :log, :exp)\n    @eval Base.$op(a::MyNumber) = MyNumber($op(a.x))\nendThe @eval macro rewrites this call to be precisely equivalent to the above longer versions. For longer blocks of generated code, the expression argument given to @eval can be a block:@eval begin\n    # multiple lines\nend"
@@ -1786,7 +1786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Non-Standard-String-Literals-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Non-Standard String Literals",
     "category": "section",
     "text": "Recall from Strings that string literals prefixed by an identifier are called non-standard string literals, and can have different semantics than un-prefixed string literals. For example:r\"^\\s*(?:#|$)\" produces a regular expression object rather than a string\nb\"DATA\\xff\\u2200\" is a byte array literal for [68,65,84,65,255,226,136,128].Perhaps surprisingly, these behaviors are not hard-coded into the Julia parser or compiler. Instead, they are custom behaviors provided by a general mechanism that anyone can use: prefixed string literals are parsed as calls to specially-named macros. For example, the regular expression macro is just the following:macro r_str(p)\n    Regex(p)\nendThat\'s all. This macro says that the literal contents of the string literal r\"^\\s*(?:#|$)\" should be passed to the @r_str macro and the result of that expansion should be placed in the syntax tree where the string literal occurs. In other words, the expression r\"^\\s*(?:#|$)\" is equivalent to placing the following object directly into the syntax tree:Regex(\"^\\\\s*(?:#|\\$)\")Not only is the string literal form shorter and far more convenient, but it is also more efficient: since the regular expression is compiled and the Regex object is actually created when the code is compiled, the compilation occurs only once, rather than every time the code is executed. Consider if the regular expression occurs in a loop:for line = lines\n    m = match(r\"^\\s*(?:#|$)\", line)\n    if m === nothing\n        # non-comment\n    else\n        # comment\n    end\nendSince the regular expression r\"^\\s*(?:#|$)\" is compiled and inserted into the syntax tree when this code is parsed, the expression is only compiled once instead of each time the loop is executed. In order to accomplish this without macros, one would have to write this loop like this:re = Regex(\"^\\\\s*(?:#|\\$)\")\nfor line = lines\n    m = match(re, line)\n    if m === nothing\n        # non-comment\n    else\n        # comment\n    end\nendMoreover, if the compiler could not determine that the regex object was constant over all loops, certain optimizations might not be possible, making this version still less efficient than the more convenient literal form above. Of course, there are still situations where the non-literal form is more convenient: if one needs to interpolate a variable into the regular expression, one must take this more verbose approach; in cases where the regular expression pattern itself is dynamic, potentially changing upon each loop iteration, a new regular expression object must be constructed on each iteration. In the vast majority of use cases, however, regular expressions are not constructed based on run-time data. In this majority of cases, the ability to write regular expressions as compile-time values is invaluable.Like non-standard string literals, non-standard command literals exist using a prefixed variant of the command literal syntax. The command literal custom`literal` is parsed as @custom_cmd \"literal\". Julia itself does not contain any non-standard command literals, but packages can make use of this syntax. Aside from the different syntax and the _cmd suffix instead of the _str suffix, non-standard command literals behave exactly like non-standard string literals.In the event that two modules provide non-standard string or command literals with the same name, it is possible to qualify the string or command literal with a module name. For instance, if both Foo and Bar provide non-standard string literal @x_str, then one can write Foo.x\"literal\" or Bar.x\"literal\" to disambiguate between the two.The mechanism for user-defined string literals is deeply, profoundly powerful. Not only are Julia\'s non-standard literals implemented using it, but also the command literal syntax (`echo \"Hello, $person\"`) is implemented with the following innocuous-looking macro:macro cmd(str)\n    :(cmd_gen($(shell_parse(str)[1])))\nendOf course, a large amount of complexity is hidden in the functions used in this macro definition, but they are just functions, written entirely in Julia. You can read their source and see precisely what they do – and all they do is construct expression objects to be inserted into your program\'s syntax tree."
@@ -1794,7 +1794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Generated-functions-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Generated functions",
     "category": "section",
     "text": "A very special macro is @generated, which allows you to define so-called generated functions. These have the capability to generate specialized code depending on the types of their arguments with more flexibility and/or less code than what can be achieved with multiple dispatch. While macros work with expressions at parse time and cannot access the types of their inputs, a generated function gets expanded at a time when the types of the arguments are known, but the function is not yet compiled.Instead of performing some calculation or action, a generated function declaration returns a quoted expression which then forms the body for the method corresponding to the types of the arguments. When a generated function is called, the expression it returns is compiled and then run. To make this efficient, the result is usually cached. And to make this inferable, only a limited subset of the language is usable. Thus, generated functions provide a flexible way to move work from run time to compile time, at the expense of greater restrictions on allowed constructs.When defining generated functions, there are four main differences to ordinary functions:You annotate the function declaration with the @generated macro. This adds some information to the AST that lets the compiler know that this is a generated function.\nIn the body of the generated function you only have access to the types of the arguments – not their values – and any function that was defined before the definition of the generated function.\nInstead of calculating something or performing some action, you return a quoted expression which, when evaluated, does what you want.\nGenerated functions must not mutate or observe any non-constant global state (including, 例如，IO、锁、非本地词典或者使用hasmethod） 即它们只能读取全局常量，且没有任何副作用。 In other words, they must be completely pure. Due to an implementation limitation, this also means that they currently cannot define a closure or generator.It\'s easiest to illustrate this with an example. We can declare a generated function foo asjulia> @generated function foo(x)\n           Core.println(x)\n           return :(x * x)\n       end\nfoo (generic function with 1 method)Note that the body returns a quoted expression, namely :(x * x), rather than just the value of x * x.From the caller\'s perspective, this is identical to a regular function; in fact, you don\'t have to know whether you\'re calling a regular or generated function. Let\'s see how foo behaves:julia> x = foo(2); # note: output is from println() statement in the body\nInt64\n\njulia> x           # now we print x\n4\n\njulia> y = foo(\"bar\");\nString\n\njulia> y\n\"barbar\"So, we see that in the body of the generated function, x is the type of the passed argument, and the value returned by the generated function, is the result of evaluating the quoted expression we returned from the definition, now with the value of x.What happens if we evaluate foo again with a type that we have already used?julia> foo(4)\n16Note that there is no printout of Int64. We can see that the body of the generated function was only executed once here, for the specific set of argument types, and the result was cached. After that, for this example, the expression returned from the generated function on the first invocation was re-used as the method body. However, the actual caching behavior is an implementation-defined performance optimization, so it is invalid to depend too closely on this behavior.The number of times a generated function is generated might be only once, but it might also be more often, or appear to not happen at all. As a consequence, you should never write a generated function with side effects - when, and how often, the side effects occur is undefined. (This is true for macros too - and just like for macros, the use of eval in a generated function is a sign that you\'re doing something the wrong way.) However, unlike macros, the runtime system cannot correctly handle a call to eval, so it is disallowed.It is also important to see how @generated functions interact with method redefinition. Following the principle that a correct @generated function must not observe any mutable state or cause any mutation of global state, we see the following behavior. Observe that the generated function cannot call any method that was not defined prior to the definition of the generated function itself.Initially f(x) has one definitionjulia> f(x) = \"original definition\";Define other operations that use f(x):julia> g(x) = f(x);\n\njulia> @generated gen1(x) = f(x);\n\njulia> @generated gen2(x) = :(f(x));We now add some new definitions for f(x):julia> f(x::Int) = \"definition for Int\";\n\njulia> f(x::Type{Int}) = \"definition for Type{Int}\";and compare how these results differ:julia> f(1)\n\"definition for Int\"\n\njulia> g(1)\n\"definition for Int\"\n\njulia> gen1(1)\n\"original definition\"\n\njulia> gen2(1)\n\"definition for Int\"Each method of a generated function has its own view of defined functions:julia> @generated gen1(x::Real) = f(x);\n\njulia> gen1(1)\n\"definition for Type{Int}\"The example generated function foo above did not do anything a normal function foo(x) = x * x could not do (except printing the type on the first invocation, and incurring higher overhead). However, the power of a generated function lies in its ability to compute different quoted expressions depending on the types passed to it:julia> @generated function bar(x)\n           if x <: Integer\n               return :(x ^ 2)\n           else\n               return :(x)\n           end\n       end\nbar (generic function with 1 method)\n\njulia> bar(4)\n16\n\njulia> bar(\"baz\")\n\"baz\"(although of course this contrived example would be more easily implemented using multiple dispatch...)Abusing this will corrupt the runtime system and cause undefined behavior:julia> @generated function baz(x)\n           if rand() < .9\n               return :(x^2)\n           else\n               return :(\"boo!\")\n           end\n       end\nbaz (generic function with 1 method)Since the body of the generated function is non-deterministic, its behavior, and the behavior of all subsequent code is undefined.Don\'t copy these examples!These examples are hopefully helpful to illustrate how generated functions work, both in the definition end and at the call site; however, don\'t copy them, for the following reasons:the foo function has side-effects (the call to Core.println), and it is undefined exactly when, how often or how many times these side-effects will occur\nthe bar function solves a problem that is better solved with multiple dispatch - defining bar(x) = x and bar(x::Integer) = x ^ 2 will do the same thing, but it is both simpler and faster.\nthe baz function is pathologicalNote that the set of operations that should not be attempted in a generated function is unbounded, and the runtime system can currently only detect a subset of the invalid operations. There are many other operations that will simply corrupt the runtime system without notification, usually in subtle ways not obviously connected to the bad definition. Because the function generator is run during inference, it must respect all of the limitations of that code.Some operations that should not be attempted include:Caching of native pointers.\nInteracting with the contents or methods of Core.Compiler in any way.\nObserving any mutable state.\nInference on the generated function may be run at any time, including while your code is attempting to observe or mutate this state.\nTaking any locks: C code you call out to may use locks internally, (for example, it is not problematic to call malloc, even though most implementations require locks internally) but don\'t attempt to hold or acquire any while executing Julia code.\nCalling any function that is defined after the body of the generated function. This condition is relaxed for incrementally-loaded precompiled modules to allow calling any function in the module.Alright, now that we have a better understanding of how generated functions work, let\'s use them to build some more advanced (and valid) functionality..."
@@ -1802,7 +1802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#An-advanced-example-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "An advanced example",
     "category": "section",
     "text": "Julia\'s base library has a an internal sub2ind function to calculate a linear index into an n-dimensional array, based on a set of n multilinear indices - in other words, to calculate the index i that can be used to index into an array A using A[i], instead of A[x,y,z,...]. One possible implementation is the following:julia> function sub2ind_loop(dims::NTuple{N}, I::Integer...) where N\n           ind = I[N] - 1\n           for i = N-1:-1:1\n               ind = I[i]-1 + dims[i]*ind\n           end\n           return ind + 1\n       end\nsub2ind_loop (generic function with 1 method)\n\njulia> sub2ind_loop((3, 5), 1, 2)\n4The same thing can be done using recursion:julia> sub2ind_rec(dims::Tuple{}) = 1;\n\njulia> sub2ind_rec(dims::Tuple{}, i1::Integer, I::Integer...) =\n           i1 == 1 ? sub2ind_rec(dims, I...) : throw(BoundsError());\n\njulia> sub2ind_rec(dims::Tuple{Integer, Vararg{Integer}}, i1::Integer) = i1;\n\njulia> sub2ind_rec(dims::Tuple{Integer, Vararg{Integer}}, i1::Integer, I::Integer...) =\n           i1 + dims[1] * (sub2ind_rec(Base.tail(dims), I...) - 1);\n\njulia> sub2ind_rec((3, 5), 1, 2)\n4Both these implementations, although different, do essentially the same thing: a runtime loop over the dimensions of the array, collecting the offset in each dimension into the final index.However, all the information we need for the loop is embedded in the type information of the arguments. Thus, we can utilize generated functions to move the iteration to compile-time; in compiler parlance, we use generated functions to manually unroll the loop. The body becomes almost identical, but instead of calculating the linear index, we build up an expression that calculates the index:julia> @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N\n           ex = :(I[$N] - 1)\n           for i = (N - 1):-1:1\n               ex = :(I[$i] - 1 + dims[$i] * $ex)\n           end\n           return :($ex + 1)\n       end\nsub2ind_gen (generic function with 1 method)\n\njulia> sub2ind_gen((3, 5), 1, 2)\n4What code will this generate?An easy way to find out is to extract the body into another (regular) function:julia> @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N\n           return sub2ind_gen_impl(dims, I...)\n       end\nsub2ind_gen (generic function with 1 method)\n\njulia> function sub2ind_gen_impl(dims::Type{T}, I...) where T <: NTuple{N,Any} where N\n           length(I) == N || return :(error(\"partial indexing is unsupported\"))\n           ex = :(I[$N] - 1)\n           for i = (N - 1):-1:1\n               ex = :(I[$i] - 1 + dims[$i] * $ex)\n           end\n           return :($ex + 1)\n       end\nsub2ind_gen_impl (generic function with 1 method)We can now execute sub2ind_gen_impl and examine the expression it returns:julia> sub2ind_gen_impl(Tuple{Int,Int}, Int, Int)\n:(((I[1] - 1) + dims[1] * (I[2] - 1)) + 1)So, the method body that will be used here doesn\'t include a loop at all - just indexing into the two tuples, multiplication and addition/subtraction. All the looping is performed compile-time, and we avoid looping during execution entirely. Thus, we only loop once per type, in this case once per N (except in edge cases where the function is generated more than once - see disclaimer above)."
@@ -1810,7 +1810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/metaprogramming/#Optionally-generated-functions-1",
-    "page": "Metaprogramming",
+    "page": "元编程",
     "title": "Optionally-generated functions",
     "category": "section",
     "text": "Generated functions can achieve high efficiency at run time, but come with a compile time cost: a new function body must be generated for every combination of concrete argument types. Typically, Julia is able to compile \"generic\" versions of functions that will work for any arguments, but with generated functions this is impossible. This means that programs making heavy use of generated functions might be impossible to statically compile.To solve this problem, the language provides syntax for writing normal, non-generated alternative implementations of generated functions. Applied to the sub2ind example above, it would look like this:function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N\n    if N != length(I)\n        throw(ArgumentError(\"Number of dimensions must match number of indices.\"))\n    end\n    if @generated\n        ex = :(I[$N] - 1)\n        for i = (N - 1):-1:1\n            ex = :(I[$i] - 1 + dims[$i] * $ex)\n        end\n        return :($ex + 1)\n    else\n        ind = I[N] - 1\n        for i = (N - 1):-1:1\n            ind = I[i] - 1 + dims[i]*ind\n        end\n        return ind + 1\n    end\nendInternally, this code creates two implementations of the function: a generated one where the first block in if @generated is used, and a normal one where the else block is used. Inside the then part of the if @generated block, code has the same semantics as other generated functions: argument names refer to types, and the code should return an expression. Multiple if @generated blocks may occur, in which case the generated implementation uses all of the then blocks and the alternate implementation uses all of the else blocks.Notice that we added an error check to the top of the function. This code will be common to both versions, and is run-time code in both versions (it will be quoted and returned as an expression from the generated version). That means that the values and types of local variables are not available at code generation time –- the code-generation code can only see the types of arguments.In this style of definition, the code generation feature is essentially an optional optimization. The compiler will use it if convenient, but otherwise may choose to use the normal implementation instead. This style is preferred, since it allows the compiler to make more decisions and compile programs in more ways, and since normal code is more readable than code-generating code. However, which implementation is used depends on compiler implementation details, so it is essential for the two implementations to behave identically."
@@ -3049,9 +3049,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/code-loading/#Conclusion-1",
+    "location": "manual/code-loading/#总结-1",
     "page": "代码加载",
-    "title": "Conclusion",
+    "title": "总结",
     "category": "section",
     "text": "Federated package management and precise software reproducibility are difficult but worthy goals in a package system. In combination, these goals lead to a more complex package loading mechanism than most dynamic languages have, but it also yields scalability and reproducibility that is more commonly associated with static languages. Fortunately, most Julia users can remain oblivious to the technical details of code loading and simply use the built-in package manager to add a package X to the appropriate project and manifest files and then write import X to load X without a further thought."
 },
@@ -3397,7 +3397,7 @@ var documenterSearchIndex = {"docs": [
     "page": "性能建议",
     "title": "被捕获变量的性能",
     "category": "section",
-    "text": "请考虑以下定义内部函数的示例：function abmult(r::Int)\n    if r < 0\n        r = -r\n    end\n    f = x -> x * r\n    return f\nend函数 abmult 返回一个函数 f，它将其参数乘以 r 的绝对值。赋值给 f 的函数称为「闭包」。内部函数还被语言用于 do 代码块和生成器表达式。这种代码风格为语言带来了性能挑战。解析器在将其转换为较低级别的指令时，基本上通过将内部函数提取到单独的代码块来重新组织上述代码。「被捕获的」变量，比如 r，被内部函数共享，且包含它们的作用域会被提取到内部函数和外部函数皆可访问的堆分配「box」中，这是因为语言指定内部作用域中的 r 必须与外部作用域中的 r 相同，就算在外部作用域（或另一个内部函数）修改 r 后也需如此。前一段的讨论中提到了「解析器」，也就是，包含 abmult 的模块被首次加载时发生的编译前期，而不是首次调用它的编译后期。解析器不「知道」Int 是固定类型，也不知道语句 r = -r 将一个 Int 转换为另一个 Int。类型推断的魔力在编译后期生效。因此，解析器不知道 r 具有固定类型（Int）。一旦内部函数被创建，r 的值也不会改变（因此也不需要 box）。因此，解析器向包含具有抽象类型（比如 Any）的对象的 box 发出代码，这对于每次出现的 r 都需要运行时类型派发。这可以通过在上述函数中使用 @code_warntype 来验证。装箱和运行时的类型派发都有可能导致性能损失。如果捕获的变量用于代码的性能关键部分，那么以下提示有助于确保它们的使用具有高效性。首先，如果已经知道被捕获的变量不会改变类型，则可以使用类型注释来显式声明类型（在变量上，而不是在右侧）：function abmult2(r0::Int)\n    r::Int = r0\n    if r < 0\n        r = -r\n    end\n    f = x -> x * r\n    return f\nend类型注释部分恢复由于捕获而导致的丢失性能，因为解析器可以将具体类型与 box 中的对象相关联。更进一步，如果被捕获的变量不再需要 box（因为它不会在闭包创建后被重新分配），就可以用 let 代码块表示，如下所示。function abmult3(r::Int)\n    if r < 0\n        r = -r\n    end\n    f = let r = r\n            x -> x * r\n    end\n    return f\nendlet 代码块创建了一个新的变量 r，它的作用域只是内部函数。第二种技术在捕获变量存在时完全恢复了语言性能。请注意，这是编译器的一个快速发展的方面，未来的版本可能不需要依靠这种程度的程序员注释来获得性能。与此同时，一些用户提供的包（如 FastClosures）会自动插入像在 abmult3 中那样的 let 语句。"
+    "text": "请考虑以下定义内部函数的示例：function abmult(r::Int)\n    if r < 0\n        r = -r\n    end\n    f = x -> x * r\n    return f\nend函数 abmult 返回一个函数 f，它将其参数乘以 r 的绝对值。赋值给 f 的函数称为「闭包」。内部函数还被语言用于 do 代码块和生成器表达式。这种代码风格为语言带来了性能挑战。解析器在将其转换为较低级别的指令时，基本上通过将内部函数提取到单独的代码块来重新组织上述代码。「被捕获的」变量，比如 r，被内部函数共享，且包含它们的作用域会被提取到内部函数和外部函数皆可访问的堆分配「box」中，这是因为语言指定内部作用域中的 r 必须与外部作用域中的 r 相同，就算在外部作用域（或另一个内部函数）修改 r 后也需如此。前一段的讨论中提到了「解析器」，也就是，包含 abmult 的模块被首次加载时发生的编译前期，而不是首次调用它的编译后期。解析器不「知道」Int 是固定类型，也不知道语句 r = -r 将一个 Int 转换为另一个 Int。类型推断的魔力在编译后期生效。因此，解析器不知道 r 具有固定类型（Int）。一旦内部函数被创建，r 的值也不会改变（因此也不需要 box）。因此，解析器向包含具有抽象类型（比如 Any）的对象的 box 发出代码，这对于每次出现的 r 都需要运行时类型分派。这可以通过在上述函数中使用 @code_warntype 来验证。装箱和运行时的类型分派都有可能导致性能损失。如果捕获的变量用于代码的性能关键部分，那么以下提示有助于确保它们的使用具有高效性。首先，如果已经知道被捕获的变量不会改变类型，则可以使用类型注释来显式声明类型（在变量上，而不是在右侧）：function abmult2(r0::Int)\n    r::Int = r0\n    if r < 0\n        r = -r\n    end\n    f = x -> x * r\n    return f\nend类型注释部分恢复由于捕获而导致的丢失性能，因为解析器可以将具体类型与 box 中的对象相关联。更进一步，如果被捕获的变量不再需要 box（因为它不会在闭包创建后被重新分配），就可以用 let 代码块表示，如下所示。function abmult3(r::Int)\n    if r < 0\n        r = -r\n    end\n    f = let r = r\n            x -> x * r\n    end\n    return f\nendlet 代码块创建了一个新的变量 r，它的作用域只是内部函数。第二种技术在捕获变量存在时完全恢复了语言性能。请注意，这是编译器的一个快速发展的方面，未来的版本可能不需要依靠这种程度的程序员注释来获得性能。与此同时，一些用户提供的包（如 FastClosures）会自动插入像在 abmult3 中那样的 let 语句。"
 },
 
 {
@@ -3901,7 +3901,7 @@ var documenterSearchIndex = {"docs": [
     "page": "与其他语言的显著差异",
     "title": "与 MATLAB 的显著差异",
     "category": "section",
-    "text": "虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的Julia用户感到困扰的显著差异：Julia 数组使用方括号 A[i,j] 进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。 as well.\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改 对调用者是可见的。\nJulia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 a(4) = 3.2 可以创建数组 a = [0 0 0 3.2] 和 a(5) = 7 可以将它增长为 a = [0 0 0 3.2 7]。 如果 a 的长度小于 5 或者这个语句是第一次使用标识符 a，则相应的 Julia 语句 a[5] = 7 会抛出错误。 Julia 使用 push! 和 append! 实现比 MATLAB 的 a(end+1) = val 更高效地增长 Vector。 which grow Vectors much more efficiently than MATLAB\'s a(end+1) = val.\n虚数单位 sqrt(-1) 在Julia中表示为 im，而不是在 MATLAB 中的 i 或 j。\n在 Julia 中，没有小数点的字面数字（例如 42）会创建整数而不是浮点数。 也支持任意大整数。 因此，某些操作（如 2^-1）将抛出domain error，因为结果不是整数（有关详细信息，请参阅 the FAQ entry on domain errors）。 for details).\n在 Julia 中，能返回多个值并将其赋值为元组，例如 (a, b) = (1, 2) 或 a, b = 1, 2。 在 Julia 中不存在 MATLAB 的 nargout，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。 取而代之的是，用户可以使用可选参数（optional arguments）和关键字参数（keyword arguments）来实现类似的功能。 similar capabilities.\nJulia 拥有真正的一维数组。 列向量的大小为 N，而不是 Nx1。 例如，rand(N) 创建一个一维数组。\n在 Julia 中，[x,y,z] 将始终构造一个包含x，y 和 z 的3元素数组。\n要在第一个维度（“垂直列”）中连接元素，请使用 vcat(x,y,z) 或用分号分隔（[x; y; z]）。 with semicolons ([x; y; z]).\n要在第二个维度（“水平行”）中连接元素，请使用 hcat(x,y,z) 或用空格分隔（[x y z]）。 with spaces ([x y z]).\n要构造块矩阵（在前两个维度中连接元素），请使用 hvcat或组合空格和分号（[a b; c d]）。 or combine spaces and semicolons ([a b; c d]).\n在 Julia 中，a:b 和 a:b:c 构造 AbstractRange 对象。使用 collect(a:b) 构造一个类似 MATLAB 中完整的向量。 通常，不需要调用 collect。 在大多数情况下，AbstractRange 对象将像普通数组一样运行，但效率更高，因为它是懒惰求值。 这种创建专用对象而不是完整数组的模式经常被使用，并且 也可以在诸如 range 之类的函数中看到，或者在诸如 enumerate 和 zip 之类的迭代器中看到。 特殊对象大多可以像正常数组一样使用。\nJulia 中的函数返回其最后一个表达式或 return 关键字的值而无需 在函数定义中列出要返回的变量的名称（有关详细信息，请参阅 The return Keyword）。 for details).\nJulia 脚本可以包含任意数量的函数，并且在加载文件时，所有定义都将在外部可见。 可以从当前工作目录之外的文件加载函数定义。 directory.\nIn Julia, reductions such as sum, prod, and max are performed over every element of an array when called with a single argument, as in sum(A), even if A has more than one dimension.\nIn Julia, parentheses must be used to call a function with zero arguments, like in rand().\nJulia discourages the used of semicolons to end statements. The results of statements are not automatically printed (except at the interactive prompt), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output.\nIn Julia, if A and B are arrays, logical comparison operations like A == B do not return an array of booleans. Instead, use A .== B, and similarly for the other boolean operators like <, > and =.\nIn Julia, the operators &, |, and ⊻ (xor) perform the bitwise operations equivalent to and, or, and xor respectively in MATLAB, and have precedence similar to Python\'s bitwise operators (unlike C). They can operate on scalars or element-wise across arrays and can be used to combine logical arrays, but note the difference in order of operations: parentheses may be required (e.g., to select elements of A equal to 1 or 2 use (A .== 1) .| (A .== 2)).\nIn Julia, the elements of a collection can be passed as arguments to a function using the splat operator ..., as in xs=[1,2]; f(xs...).\nJulia\'s svd returns singular values as a vector instead of as a dense diagonal matrix.\nIn Julia, ... is not used to continue lines of code. Instead, incomplete expressions automatically continue onto the next line.\nIn both Julia and MATLAB, the variable ans is set to the value of the last expression issued in an interactive session. In Julia, unlike MATLAB, ans is not set when Julia code is run in non-interactive mode.\nJulia\'s structs do not support dynamically adding fields at runtime, unlike MATLAB\'s classes. Instead, use a Dict.\nIn Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.\nIn MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x(x>3) or in the statement x(x>3) = [] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays.\nThe analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in vertcat(A{:}) in MATLAB, is written using the splat operator in Julia, e.g. as vcat(A...)."
+    "text": "虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的Julia用户感到困扰的显著差异：Julia 数组使用方括号 A[i,j] 进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。 as well.\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改 对调用者是可见的。\nJulia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 a(4) = 3.2 可以创建数组 a = [0 0 0 3.2] 和 a(5) = 7 可以将它增长为 a = [0 0 0 3.2 7]。 如果 a 的长度小于 5 或者这个语句是第一次使用标识符 a，则相应的 Julia 语句 a[5] = 7 会抛出错误。 Julia 使用 push! 和 append! 实现比 MATLAB 的 a(end+1) = val 更高效地增长 Vector。 which grow Vectors much more efficiently than MATLAB\'s a(end+1) = val.\n虚数单位 sqrt(-1) 在Julia中表示为 im，而不是在 MATLAB 中的 i 或 j。\n在 Julia 中，没有小数点的字面数字（例如 42）会创建整数而不是浮点数。 也支持任意大整数。 因此，某些操作（如 2^-1）将抛出domain error，因为结果不是整数（有关详细信息，请参阅 the FAQ entry on domain errors）。 for details).\n在 Julia 中，能返回多个值并将其赋值为元组，例如 (a, b) = (1, 2) 或 a, b = 1, 2。 在 Julia 中不存在 MATLAB 的 nargout，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。 取而代之的是，用户可以使用可选参数（optional arguments）和关键字参数（keyword arguments）来实现类似的功能。 similar capabilities.\nJulia 拥有真正的一维数组。 列向量的大小为 N，而不是 Nx1。 例如，rand(N) 创建一个一维数组。\n在 Julia 中，[x,y,z] 将始终构造一个包含x，y 和 z 的3元素数组。\n要在第一个维度（“垂直列”）中连接元素，请使用 vcat(x,y,z) 或用分号分隔（[x; y; z]）。 with semicolons ([x; y; z]).\n要在第二个维度（“水平行”）中连接元素，请使用 hcat(x,y,z) 或用空格分隔（[x y z]）。 with spaces ([x y z]).\n要构造块矩阵（在前两个维度中连接元素），请使用 hvcat或组合空格和分号（[a b; c d]）。 or combine spaces and semicolons ([a b; c d]).\n在 Julia 中，a:b 和 a:b:c 构造 AbstractRange 对象。使用 collect(a:b) 构造一个类似 MATLAB 中完整的向量。 通常，不需要调用 collect。 在大多数情况下，AbstractRange 对象将像普通数组一样运行，但效率更高，因为它是懒惰求值。 这种创建专用对象而不是完整数组的模式经常被使用，并且 也可以在诸如 range 之类的函数中看到，或者在诸如 enumerate 和 zip 之类的迭代器中看到。 特殊对象大多可以像正常数组一样使用。\nJulia 中的函数返回其最后一个表达式或 return 关键字的值而无需 在函数定义中列出要返回的变量的名称（有关详细信息，请参阅 The return Keyword）。 for details).\nJulia 脚本可以包含任意数量的函数，并且在加载文件时，所有定义都将在外部可见。 可以从当前工作目录之外的文件加载函数定义。 directory.\n在Julia中，例如 sum、prod和max的归约操作会作用到数组的每一个元素上，当调用时只有一个函数，例如sum(A)，即使A并不只有一个维度。 over every element of an array when called with a single argument, as in sum(A), even if A has more than one dimension.\n在Julia中，调用无参数的函数时必须使用小括号，例如 rand()。\nJulia不鼓励使用分号来结束语句。 语句的结果不会自动打印（除了在REPL中），并且代码的一行不必使用分号结尾。 println 或者 @printf 能用来打印特定输出。\n在Julia中，如果A和B是数组，像A == B这样的逻辑比较运算符不会返回布尔值数组。 相反地，请使用A .== B。对于其他的像是<、> 和 = 的布尔运算符同理。 <, > and =.\n在Julia中，运算符&、 | 和 ⊻ (xor)进行按位操作， 分别与MATLAB中的and、or 和 xor 等价，并且优先级 与Python的按位运算符相似（不像C）。他们可以对标量运算 或者数组中逐元素运算，可以用来合并逻辑数组，但是注意运算顺序的区别： parentheses may be required (e.g., to select elements of A equal to 1 or 2 use (A .== 1) .| (A .== 2)).\nIn Julia, the elements of a collection can be passed as arguments to a function using the splat operator ..., as in xs=[1,2]; f(xs...).\nJulia\'s svd returns singular values as a vector instead of as a dense diagonal matrix.\nIn Julia, ... is not used to continue lines of code. Instead, incomplete expressions automatically continue onto the next line.\nIn both Julia and MATLAB, the variable ans is set to the value of the last expression issued in an interactive session. In Julia, unlike MATLAB, ans is not set when Julia code is run in non-interactive mode.\nJulia\'s structs do not support dynamically adding fields at runtime, unlike MATLAB\'s classes. Instead, use a Dict.\nIn Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.\nIn MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x(x>3) or in the statement x(x>3) = [] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays.\nThe analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in vertcat(A{:}) in MATLAB, is written using the splat operator in Julia, e.g. as vcat(A...)."
 },
 
 {
@@ -3917,7 +3917,7 @@ var documenterSearchIndex = {"docs": [
     "page": "与其他语言的显著差异",
     "title": "与 Python 的显著差异",
     "category": "section",
-    "text": "Julia 需要用 end 来结束代码块。与 Python 不同，Julia 没有 pass 关键字。\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 a[2:3] 就是 Python 中的 a[1:3] 。\nJulia 不支持负数索引。特别地，列表或数组的最后一个元素 在 Julia 中使用 end 索引，而不像在 Python 中使用 -1。\nJulia 的 for、if、while等代码块由end关键字终止。缩进级别 并不像在 Python 中那么重要。\nJulia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的 表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是 将其包含在括号中。\n默认情况下，Julia 数组是 column major (Fortran ordered)，而 NumPy 数组是 ow major (C-ordered)。 为了在循环数组时获得最佳性能，循环顺序应该 在 Julia 中相对于 NumPy 反转（请参阅 Performance Tips 中的对应章节）。\nJulia 的更新运算符（例如 +=，-=，···）是 not in-place，而 Numpy 的是。这 意味着 A = [1, 1]; B = A; B += [3, 3] 不会改变 A 中的值，而将名称 B 重新绑定 到右侧表达式 B = B + 3 的结果，这是一个新的数组。对于 in-place 操作，使用 B .+= 3 （另请参阅 dot operators），显式的循环，或者 InplaceOps.jl。\n每次调用方法时，Julia 都会计算函数参数的默认值，不像 在 Python 中，默认值只会在函数定义时被计算一次。例如， 每次无输入参数调用时，函数f(x=rand()) = x都返回一个新的随机数 在另一方面，函数 g(x=[1,2]) = push!(x,3) 在每次以 g() 调用时返回 [1,2,3] 。\n在 Julia 中，% 是余数运算符，而在 Python 中是模运算符。"
+    "text": "Julia 需要用 end 来结束代码块。与 Python 不同，Julia 没有 pass 关键字。\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 a[2:3] 就是 Python 中的 a[1:3] 。\nJulia 不支持负数索引。特别地，列表或数组的最后一个元素 在 Julia 中使用 end 索引，而不像在 Python 中使用 -1。\nJulia 的 for、if、while等代码块由end关键字终止。缩进级别 并不像在 Python 中那么重要。\nJulia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的 表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是 将其包含在括号中。\n默认情况下，Julia 数组是列优先的（Fortran 顺序），而 NumPy 数组是行优先（C 顺序）。 为了在循环数组时获得最佳性能，循环顺序应该 在 Julia 中相对于 NumPy 反转（请参阅 Performance Tips 中的对应章节）。\nJulia 的更新运算符（例如 +=，-=，···）是 not in-place，而 Numpy 的是。这 意味着 A = [1, 1]; B = A; B += [3, 3] 不会改变 A 中的值，而将名称 B 重新绑定 到右侧表达式 B = B + 3 的结果，这是一个新的数组。对于 in-place 操作，使用 B .+= 3 （另请参阅 dot operators）、显式的循环或者 InplaceOps.jl。\n每次调用方法时，Julia 都会计算函数参数的默认值，不像 在 Python 中，默认值只会在函数定义时被计算一次。例如， 每次无输入参数调用时，函数f(x=rand()) = x都返回一个新的随机数 在另一方面，函数 g(x=[1,2]) = push!(x,3) 在每次以 g() 调用时返回 [1,2,3] 。\n在 Julia 中，% 是余数运算符，而在 Python 中是模运算符。"
 },
 
 {
@@ -6877,7 +6877,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "Base.pairs",
     "category": "function",
-    "text": "pairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\npairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\n"
+    "text": "pairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\npairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\n"
 },
 
 {
@@ -14861,7 +14861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Base.wait",
     "category": "function",
-    "text": "wait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\nwait(r::Future)\n\nWait for a value to become available for the specified future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified remote channel.\n\n\n\n\n\n"
+    "text": "wait(r::Future)\n\nWait for a value to become available for the specified future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified remote channel.\n\n\n\n\n\nwait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\n"
 },
 
 {
@@ -16738,47 +16738,47 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#",
-    "page": "Linear Algebra",
-    "title": "Linear Algebra",
+    "page": "线性代数",
+    "title": "线性代数",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Linear-Algebra-1",
-    "page": "Linear Algebra",
-    "title": "Linear Algebra",
+    "location": "stdlib/LinearAlgebra/#线性代数-1",
+    "page": "线性代数",
+    "title": "线性代数",
     "category": "section",
     "text": "DocTestSetup = :(using LinearAlgebra)除了（且作为一部分）对多维数组的支持，Julia 还提供了许多常见和实用的线性代数操作的本地实现。基础的操作，比如 tr，det 和 inv 都是支持的：julia> A = [1 2 3; 4 1 6; 7 8 1]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  1  6\n 7  8  1\n\njulia> tr(A)\n3\n\njulia> det(A)\n104.0\n\njulia> inv(A)\n3×3 Array{Float64,2}:\n -0.451923   0.211538    0.0865385\n  0.365385  -0.192308    0.0576923\n  0.240385   0.0576923  -0.0673077还有其它实用的操作，比如寻找特征值或特征向量：julia> A = [-4. -17.; 2. 2.]\n2×2 Array{Float64,2}:\n -4.0  -17.0\n  2.0    2.0\n\njulia> eigvals(A)\n2-element Array{Complex{Float64},1}:\n -1.0 + 5.0im\n -1.0 - 5.0im\n\njulia> eigvecs(A)\n2×2 Array{Complex{Float64},2}:\n  0.945905+0.0im        0.945905-0.0im\n -0.166924-0.278207im  -0.166924+0.278207im此外，Julia 提供了许多 factorizations，它们可用于加快问题的求解，比如线性求解或矩阵或矩阵求幂，这通过将矩阵预先分解成更适合问题的形式（出于性能或内存上的原因）。有关的更多信息，请参阅文档 factorize。举个例子：julia> A = [1.5 2 -4; 3 -1 -6; -10 2.3 4]\n3×3 Array{Float64,2}:\n   1.5   2.0  -4.0\n   3.0  -1.0  -6.0\n -10.0   2.3   4.0\n\njulia> factorize(A)\nLU{Float64,Array{Float64,2}}\nL factor:\n3×3 Array{Float64,2}:\n  1.0    0.0       0.0\n -0.15   1.0       0.0\n -0.3   -0.132196  1.0\nU factor:\n3×3 Array{Float64,2}:\n -10.0  2.3     4.0\n   0.0  2.345  -3.4\n   0.0  0.0    -5.24947因为 A 不是埃尔米特、对称、三角、三对角或双对角矩阵，LU 分解也许是我们能做的最好分解。与之相比：julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]\n3×3 Array{Float64,2}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> factorize(B)\nBunchKaufman{Float64,Array{Float64,2}}\nD factor:\n3×3 Tridiagonal{Float64,Array{Float64,1}}:\n -1.64286   0.0   ⋅\n  0.0      -2.8  0.0\n   ⋅        0.0  5.0\nU factor:\n3×3 UnitUpperTriangular{Float64,Array{Float64,2}}:\n 1.0  0.142857  -0.8\n  ⋅   1.0       -0.6\n  ⋅    ⋅         1.0\npermutation:\n3-element Array{Int64,1}:\n 1\n 2\n 3在这里，Julia 能够发现 B 确实是对称矩阵，并且使用一种更适当的分解。针对一个具有某些属性的矩阵，比如一个对称或三对角矩阵，往往有可能写出更高效的代码。Julia 提供了一些特殊的类型好让你可以根据矩阵所具有的属性「标记」它们。例如：julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]\n3×3 Array{Float64,2}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> sB = Symmetric(B)\n3×3 Symmetric{Float64,Array{Float64,2}}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0sB 已经被标记成（实）对称矩阵，所以对于之后可能在它上面执行的操作，例如特征因子化或矩阵-向量乘积，只引用矩阵的一半可以提高效率。举个例子：julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]\n3×3 Array{Float64,2}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> sB = Symmetric(B)\n3×3 Symmetric{Float64,Array{Float64,2}}:\n  1.5   2.0  -4.0\n  2.0  -1.0  -3.0\n -4.0  -3.0   5.0\n\njulia> x = [1; 2; 3]\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> sB\\x\n3-element Array{Float64,1}:\n -1.7391304347826084\n -1.1086956521739126\n -1.4565217391304346\\ 操作在这里执行线性求解。左除运算符相当强大，很容易写出紧凑、可读的代码，它足够灵活，可以求解各种线性方程组。"
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Special-matrices-1",
-    "page": "Linear Algebra",
-    "title": "Special matrices",
+    "location": "stdlib/LinearAlgebra/#特殊矩阵-1",
+    "page": "线性代数",
+    "title": "特殊矩阵",
     "category": "section",
     "text": "具有特殊对称性和结构的矩阵经常在线性代数中出现并且与各种矩阵分解相关。Julia 具有丰富的特殊矩阵类型，可以快速计算专门为特定矩阵类型开发的专用例程。下表总结了在 Julia 中已经实现的特殊矩阵类型，以及为它们提供各种优化方法的钩子在 LAPACK 中是否可用。类型 描述\nSymmetric 对称矩阵\nHermitian 埃尔米特矩阵\nUpperTriangular 上三角矩阵\nLowerTriangular 下三角矩阵\nTridiagonal 三对角矩阵\nSymTridiagonal 对称三对角矩阵\nBidiagonal 上/下双对角矩阵\nDiagonal 对角矩阵\nUniformScaling 等比缩放运算符"
 },
 
 {
     "location": "stdlib/LinearAlgebra/#Elementary-operations-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Elementary operations",
     "category": "section",
     "text": "矩阵类型 + - * \\ 其它具有优化方法的函数\nSymmetric    MV inv, sqrt, exp\nHermitian    MV inv, sqrt, exp\nUpperTriangular   MV MV inv, det\nLowerTriangular   MV MV inv, det\nSymTridiagonal M M MS MV eigmax, eigmin\nTridiagonal M M MS MV \nBidiagonal M M MS MV \nDiagonal M M MV MV inv, det, logdet, /\nUniformScaling M M MVS MVS /图例：键 描述\nM (matrix) 针对矩阵-矩阵操作的优化方法可用\nV (vector) 针对矩阵-向量操作的优化方法可用\nS (scalar) 针对矩阵-标量操作的优化方法可用"
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Matrix-factorizations-1",
-    "page": "Linear Algebra",
-    "title": "Matrix factorizations",
+    "location": "stdlib/LinearAlgebra/#矩阵分解-1",
+    "page": "线性代数",
+    "title": "矩阵分解",
     "category": "section",
     "text": "矩阵类型 LAPACK eigen eigvals eigvecs svd svdvals\nSymmetric SY  ARI   \nHermitian HE  ARI   \nUpperTriangular TR A A A  \nLowerTriangular TR A A A  \nSymTridiagonal ST A ARI AV  \nTridiagonal GT     \nBidiagonal BD    A A\nDiagonal DI  A   图例：键 描述 例子\nA (all) 找到所有特征值和/或特征向量的优化方法可用 例如，eigvals(M)\nR (range) 通过第 ih 个特征值寻找第 il 个特征值的优化方法可用 eigvals(M, il, ih)\nI (interval) 寻找在区间 [vl, vh] 内的特征值的优化方法可用 eigvals(M, vl, vh)\nV (vectors) 寻找对应于特征值 x=[x1, x2,...] 的特征向量的优化方法可用 eigvecs(M, x)"
 },
 
 {
     "location": "stdlib/LinearAlgebra/#The-uniform-scaling-operator-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "The uniform scaling operator",
     "category": "section",
     "text": "UniformScaling 运算符代表一个标量乘以恒同运算符，λ*I。恒同运算符 I 定义为常量和 UniformScaling 的实例。这些运算符是通用的，并且会在二元运算符 +，-，* 和 \\ 中与另一个矩阵相匹配。对于 A+I 和 A-I ，这意味着 A 必须是个方阵。与恒同运算符 I 相乘是一个空操作（除了检查比例因子是一），因此几乎没有开销。查看 UniformScaling 运算符的操作：julia> U = UniformScaling(2);\n\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> a + U\n2×2 Array{Int64,2}:\n 3  2\n 3  6\n\njulia> a * U\n2×2 Array{Int64,2}:\n 2  4\n 6  8\n\njulia> [a U]\n2×4 Array{Int64,2}:\n 1  2  2  0\n 3  4  0  2\n\njulia> b = [1 2 3; 4 5 6]\n2×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n\njulia> b - U\nERROR: DimensionMismatch(\"matrix is not square: dimensions are (2, 3)\")\nStacktrace:\n[...]"
@@ -16786,15 +16786,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#man-linalg-factorizations-1",
-    "page": "Linear Algebra",
-    "title": "Matrix factorizations",
+    "page": "线性代数",
+    "title": "矩阵分解",
     "category": "section",
     "text": "矩阵分解将矩阵分解成矩阵乘积，是线性代数的中心概念。下表总结了在 Julia 中已经实现了的矩阵分解的类型。其相关方法的细节可以在线性代数文档中的 Standard Functions 这一节中找到。类型 描述\nCholesky Cholesky 分解\nCholeskyPivoted Pivoted Cholesky 分解\nLU LU 分解\nLUTridiagonal 针对 Tridiagonal 矩阵的 LU 分解\nQR QR 分解\nQRCompactWY QR 分解的紧凑 WY 形式\nQRPivoted Pivoted QR 分解\nHessenberg Hessenberg 分解\nEigen 谱分解\nSVD 奇异值分解\nGeneralizedSVD 广义 SVD"
 },
 
 {
     "location": "stdlib/LinearAlgebra/#Base.:*-Tuple{AbstractArray{T,2} where T,AbstractArray{T,2} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.:*",
     "category": "method",
     "text": "*(A::AbstractMatrix, B::AbstractMatrix)\n\nMatrix multiplication.\n\nExamples\n\njulia> [1 1; 0 1] * [1 0; 1 1]\n2×2 Array{Int64,2}:\n 2  1\n 1  1\n\n\n\n\n\n"
@@ -16802,7 +16802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.:\\-Tuple{AbstractArray{T,2} where T,Union{AbstractArray{T,1}, AbstractArray{T,2}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.:\\",
     "category": "method",
     "text": "\\(A, B)\n\nMatrix division using a polyalgorithm. For input matrices A and B, the result X is such that A*X == B when A is square. The solver that is used depends upon the structure of A.  If A is upper or lower triangular (or diagonal), no factorization of A is required and the system is solved with either forward or backward substitution. For non-triangular square matrices, an LU factorization is used.\n\nFor rectangular A the result is the minimum-norm least squares solution computed by a pivoted QR factorization of A and a rank estimate of A based on the R factor.\n\nWhen A is sparse, a similar polyalgorithm is used. For indefinite matrices, the LDLt factorization does not use pivoting during the numerical factorization and therefore the procedure can fail even for invertible matrices.\n\nExamples\n\njulia> A = [1 0; 1 -2]; B = [32; -4];\n\njulia> X = A \\ B\n2-element Array{Float64,1}:\n 32.0\n 18.0\n\njulia> A * X == B\ntrue\n\n\n\n\n\n"
@@ -16810,7 +16810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.dot",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.dot",
     "category": "function",
     "text": "dot(x, y)\nx ⋅ y\n\nFor any iterable containers x and y (including arrays of any dimension) of numbers (or any element type for which dot is defined), compute the dot product (or inner product or scalar product), i.e. the sum of dot(x[i],y[i]), as if they were vectors.\n\nx ⋅ y (where ⋅ can be typed by tab-completing \\cdot in the REPL) is a synonym for dot(x, y).\n\nExamples\n\njulia> dot(1:5, 2:6)\n70\n\njulia> x = fill(2., (5,5));\n\njulia> y = fill(3., (5,5));\n\njulia> dot(x, y)\n150.0\n\n\n\n\n\ndot(x, y)\nx ⋅ y\n\nCompute the dot product between two vectors. For complex vectors, the first vector is conjugated. When the vectors have equal lengths, calling dot is semantically equivalent to sum(dot(vx,vy) for (vx,vy) in zip(x, y)).\n\nExamples\n\njulia> dot([1; 1], [2; 3])\n5\n\njulia> dot([im; im], [1; 1])\n0 - 2im\n\n\n\n\n\n"
@@ -16818,7 +16818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.cross",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.cross",
     "category": "function",
     "text": "cross(x, y)\n×(x,y)\n\nCompute the cross product of two 3-vectors.\n\nExamples\n\njulia> a = [0;1;0]\n3-element Array{Int64,1}:\n 0\n 1\n 0\n\njulia> b = [0;0;1]\n3-element Array{Int64,1}:\n 0\n 0\n 1\n\njulia> cross(a,b)\n3-element Array{Int64,1}:\n 1\n 0\n 0\n\n\n\n\n\n"
@@ -16826,7 +16826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.factorize",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.factorize",
     "category": "function",
     "text": "factorize(A)\n\nCompute a convenient factorization of A, based upon the type of the input matrix. factorize checks A to see if it is symmetric/triangular/etc. if A is passed as a generic matrix. factorize checks every element of A to verify/rule out each property. It will short-circuit as soon as it can rule out symmetry/triangular structure. The return value can be reused for efficient solving of multiple systems. For example: A=factorize(A); x=A\\b; y=A\\C.\n\nProperties of A type of factorization\nPositive-definite Cholesky (see cholesky)\nDense Symmetric/Hermitian Bunch-Kaufman (see bunchkaufman)\nSparse Symmetric/Hermitian LDLt (see ldlt)\nTriangular Triangular\nDiagonal Diagonal\nBidiagonal Bidiagonal\nTridiagonal LU (see lu)\nSymmetric real tridiagonal LDLt (see ldlt)\nGeneral square LU (see lu)\nGeneral non-square QR (see qr)\n\nIf factorize is called on a Hermitian positive-definite matrix, for instance, then factorize will return a Cholesky factorization.\n\nExamples\n\njulia> A = Array(Bidiagonal(fill(1.0, (5, 5)), :U))\n5×5 Array{Float64,2}:\n 1.0  1.0  0.0  0.0  0.0\n 0.0  1.0  1.0  0.0  0.0\n 0.0  0.0  1.0  1.0  0.0\n 0.0  0.0  0.0  1.0  1.0\n 0.0  0.0  0.0  0.0  1.0\n\njulia> factorize(A) # factorize will check to see that A is already factorized\n5×5 Bidiagonal{Float64,Array{Float64,1}}:\n 1.0  1.0   ⋅    ⋅    ⋅\n  ⋅   1.0  1.0   ⋅    ⋅\n  ⋅    ⋅   1.0  1.0   ⋅\n  ⋅    ⋅    ⋅   1.0  1.0\n  ⋅    ⋅    ⋅    ⋅   1.0\n\nThis returns a 5×5 Bidiagonal{Float64}, which can now be passed to other linear algebra functions (e.g. eigensolvers) which will use specialized methods for Bidiagonal types.\n\n\n\n\n\n"
@@ -16834,7 +16834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.Diagonal",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.Diagonal",
     "category": "type",
     "text": "Diagonal(A::AbstractMatrix)\n\nConstruct a matrix from the diagonal of A.\n\nExamples\n\njulia> A = [1 2 3; 4 5 6; 7 8 9]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n 7  8  9\n\njulia> Diagonal(A)\n3×3 Diagonal{Int64,Array{Int64,1}}:\n 1  ⋅  ⋅\n ⋅  5  ⋅\n ⋅  ⋅  9\n\n\n\n\n\nDiagonal(V::AbstractVector)\n\nConstruct a matrix with V as its diagonal.\n\nExamples\n\njulia> V = [1, 2]\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> Diagonal(V)\n2×2 Diagonal{Int64,Array{Int64,1}}:\n 1  ⋅\n ⋅  2\n\n\n\n\n\n"
@@ -16842,7 +16842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.Bidiagonal",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.Bidiagonal",
     "category": "type",
     "text": "Bidiagonal(dv::V, ev::V, uplo::Symbol) where V <: AbstractVector\n\nConstructs an upper (uplo=:U) or lower (uplo=:L) bidiagonal matrix using the given diagonal (dv) and off-diagonal (ev) vectors. The result is of type Bidiagonal and provides efficient specialized linear solvers, but may be converted into a regular matrix with convert(Array, _) (or Array(_) for short). The length of ev must be one less than the length of dv.\n\nExamples\n\njulia> dv = [1, 2, 3, 4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> ev = [7, 8, 9]\n3-element Array{Int64,1}:\n 7\n 8\n 9\n\njulia> Bu = Bidiagonal(dv, ev, :U) # ev is on the first superdiagonal\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  7  ⋅  ⋅\n ⋅  2  8  ⋅\n ⋅  ⋅  3  9\n ⋅  ⋅  ⋅  4\n\njulia> Bl = Bidiagonal(dv, ev, :L) # ev is on the first subdiagonal\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  ⋅  ⋅  ⋅\n 7  2  ⋅  ⋅\n ⋅  8  3  ⋅\n ⋅  ⋅  9  4\n\n\n\n\n\nBidiagonal(A, uplo::Symbol)\n\nConstruct a Bidiagonal matrix from the main diagonal of A and its first super- (if uplo=:U) or sub-diagonal (if uplo=:L).\n\nExamples\n\njulia> A = [1 1 1 1; 2 2 2 2; 3 3 3 3; 4 4 4 4]\n4×4 Array{Int64,2}:\n 1  1  1  1\n 2  2  2  2\n 3  3  3  3\n 4  4  4  4\n\njulia> Bidiagonal(A, :U) # contains the main diagonal and first superdiagonal of A\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  1  ⋅  ⋅\n ⋅  2  2  ⋅\n ⋅  ⋅  3  3\n ⋅  ⋅  ⋅  4\n\njulia> Bidiagonal(A, :L) # contains the main diagonal and first subdiagonal of A\n4×4 Bidiagonal{Int64,Array{Int64,1}}:\n 1  ⋅  ⋅  ⋅\n 2  2  ⋅  ⋅\n ⋅  3  3  ⋅\n ⋅  ⋅  4  4\n\n\n\n\n\n"
@@ -16850,7 +16850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.SymTridiagonal",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.SymTridiagonal",
     "category": "type",
     "text": "SymTridiagonal(dv::V, ev::V) where V <: AbstractVector\n\nConstruct a symmetric tridiagonal matrix from the diagonal (dv) and first sub/super-diagonal (ev), respectively. The result is of type SymTridiagonal and provides efficient specialized eigensolvers, but may be converted into a regular matrix with convert(Array, _) (or Array(_) for short).\n\nExamples\n\njulia> dv = [1, 2, 3, 4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> ev = [7, 8, 9]\n3-element Array{Int64,1}:\n 7\n 8\n 9\n\njulia> SymTridiagonal(dv, ev)\n4×4 SymTridiagonal{Int64,Array{Int64,1}}:\n 1  7  ⋅  ⋅\n 7  2  8  ⋅\n ⋅  8  3  9\n ⋅  ⋅  9  4\n\n\n\n\n\nSymTridiagonal(A::AbstractMatrix)\n\nConstruct a symmetric tridiagonal matrix from the diagonal and first sub/super-diagonal, of the symmetric matrix A.\n\nExamples\n\njulia> A = [1 2 3; 2 4 5; 3 5 6]\n3×3 Array{Int64,2}:\n 1  2  3\n 2  4  5\n 3  5  6\n\njulia> SymTridiagonal(A)\n3×3 SymTridiagonal{Int64,Array{Int64,1}}:\n 1  2  ⋅\n 2  4  5\n ⋅  5  6\n\n\n\n\n\n"
@@ -16858,7 +16858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.Tridiagonal",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.Tridiagonal",
     "category": "type",
     "text": "Tridiagonal(dl::V, d::V, du::V) where V <: AbstractVector\n\nConstruct a tridiagonal matrix from the first subdiagonal, diagonal, and first superdiagonal, respectively. The result is of type Tridiagonal and provides efficient specialized linear solvers, but may be converted into a regular matrix with convert(Array, _) (or Array(_) for short). The lengths of dl and du must be one less than the length of d.\n\nExamples\n\njulia> dl = [1, 2, 3];\n\njulia> du = [4, 5, 6];\n\njulia> d = [7, 8, 9, 0];\n\njulia> Tridiagonal(dl, d, du)\n4×4 Tridiagonal{Int64,Array{Int64,1}}:\n 7  4  ⋅  ⋅\n 1  8  5  ⋅\n ⋅  2  9  6\n ⋅  ⋅  3  0\n\n\n\n\n\nTridiagonal(A)\n\nConstruct a tridiagonal matrix from the first sub-diagonal, diagonal and first super-diagonal of the matrix A.\n\nExamples\n\njulia> A = [1 2 3 4; 1 2 3 4; 1 2 3 4; 1 2 3 4]\n4×4 Array{Int64,2}:\n 1  2  3  4\n 1  2  3  4\n 1  2  3  4\n 1  2  3  4\n\njulia> Tridiagonal(A)\n4×4 Tridiagonal{Int64,Array{Int64,1}}:\n 1  2  ⋅  ⋅\n 1  2  3  ⋅\n ⋅  2  3  4\n ⋅  ⋅  3  4\n\n\n\n\n\n"
@@ -16866,7 +16866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.Symmetric",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.Symmetric",
     "category": "type",
     "text": "Symmetric(A, uplo=:U)\n\nConstruct a Symmetric view of the upper (if uplo = :U) or lower (if uplo = :L) triangle of the matrix A.\n\nExamples\n\njulia> A = [1 0 2 0 3; 0 4 0 5 0; 6 0 7 0 8; 0 9 0 1 0; 2 0 3 0 4]\n5×5 Array{Int64,2}:\n 1  0  2  0  3\n 0  4  0  5  0\n 6  0  7  0  8\n 0  9  0  1  0\n 2  0  3  0  4\n\njulia> Supper = Symmetric(A)\n5×5 Symmetric{Int64,Array{Int64,2}}:\n 1  0  2  0  3\n 0  4  0  5  0\n 2  0  7  0  8\n 0  5  0  1  0\n 3  0  8  0  4\n\njulia> Slower = Symmetric(A, :L)\n5×5 Symmetric{Int64,Array{Int64,2}}:\n 1  0  6  0  2\n 0  4  0  9  0\n 6  0  7  0  3\n 0  9  0  1  0\n 2  0  3  0  4\n\nNote that Supper will not be equal to Slower unless A is itself symmetric (e.g. if A == transpose(A)).\n\n\n\n\n\n"
@@ -16874,7 +16874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.Hermitian",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.Hermitian",
     "category": "type",
     "text": "Hermitian(A, uplo=:U)\n\nConstruct a Hermitian view of the upper (if uplo = :U) or lower (if uplo = :L) triangle of the matrix A.\n\nExamples\n\njulia> A = [1 0 2+2im 0 3-3im; 0 4 0 5 0; 6-6im 0 7 0 8+8im; 0 9 0 1 0; 2+2im 0 3-3im 0 4];\n\njulia> Hupper = Hermitian(A)\n5×5 Hermitian{Complex{Int64},Array{Complex{Int64},2}}:\n 1+0im  0+0im  2+2im  0+0im  3-3im\n 0+0im  4+0im  0+0im  5+0im  0+0im\n 2-2im  0+0im  7+0im  0+0im  8+8im\n 0+0im  5+0im  0+0im  1+0im  0+0im\n 3+3im  0+0im  8-8im  0+0im  4+0im\n\njulia> Hlower = Hermitian(A, :L)\n5×5 Hermitian{Complex{Int64},Array{Complex{Int64},2}}:\n 1+0im  0+0im  6+6im  0+0im  2-2im\n 0+0im  4+0im  0+0im  9+0im  0+0im\n 6-6im  0+0im  7+0im  0+0im  3+3im\n 0+0im  9+0im  0+0im  1+0im  0+0im\n 2+2im  0+0im  3-3im  0+0im  4+0im\n\nNote that Hupper will not be equal to Hlower unless A is itself Hermitian (e.g. if A == adjoint(A)).\n\nAll non-real parts of the diagonal will be ignored.\n\nHermitian(fill(complex(1,1), 1, 1)) == fill(1, 1, 1)\n\n\n\n\n\n"
@@ -16882,7 +16882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LowerTriangular",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LowerTriangular",
     "category": "type",
     "text": "LowerTriangular(A::AbstractMatrix)\n\nConstruct a LowerTriangular view of the the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> LowerTriangular(A)\n3×3 LowerTriangular{Float64,Array{Float64,2}}:\n 1.0   ⋅    ⋅\n 4.0  5.0   ⋅\n 7.0  8.0  9.0\n\n\n\n\n\n"
@@ -16890,7 +16890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.UpperTriangular",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.UpperTriangular",
     "category": "type",
     "text": "UpperTriangular(A::AbstractMatrix)\n\nConstruct an UpperTriangular view of the the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> UpperTriangular(A)\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 1.0  2.0  3.0\n  ⋅   5.0  6.0\n  ⋅    ⋅   9.0\n\n\n\n\n\n"
@@ -16898,7 +16898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.UniformScaling",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.UniformScaling",
     "category": "type",
     "text": "UniformScaling{T<:Number}\n\nGenerically sized uniform scaling operator defined as a scalar times the identity operator, λ*I. See also I.\n\nExamples\n\njulia> J = UniformScaling(2.)\nUniformScaling{Float64}\n2.0*I\n\njulia> A = [1. 2.; 3. 4.]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> J*A\n2×2 Array{Float64,2}:\n 2.0  4.0\n 6.0  8.0\n\n\n\n\n\n"
@@ -16906,7 +16906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lu",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lu",
     "category": "function",
     "text": "lu(A, pivot=Val(true); check = true) -> F::LU\n\nCompute the LU factorization of A.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\nIn most cases, if A is a subtype S of AbstractMatrix{T} with an element type T supporting +, -, * and /, the return type is LU{T,S{T}}. If pivoting is chosen (default) the element type should also support abs and <.\n\nThe individual components of the factorization F can be accessed via getproperty:\n\nComponent Description\nF.L L (lower triangular) part of LU\nF.U U (upper triangular) part of LU\nF.p (right) permutation Vector\nF.P (right) permutation Matrix\n\nIterating the factorization produces the components F.L, F.U, and F.p.\n\nThe relationship between F and A is\n\nF.L*F.U == A[F.p, :]\n\nF further supports the following functions:\n\nSupported function LU LU{T,Tridiagonal{T}}\n/ ✓ \n\\ ✓ ✓\ninv ✓ ✓\ndet ✓ ✓\nlogdet ✓ ✓\nlogabsdet ✓ ✓\nsize ✓ ✓\n\nExamples\n\njulia> A = [4 3; 6 3]\n2×2 Array{Int64,2}:\n 4  3\n 6  3\n\njulia> F = lu(A)\nLU{Float64,Array{Float64,2}}\nL factor:\n2×2 Array{Float64,2}:\n 1.0  0.0\n 1.5  1.0\nU factor:\n2×2 Array{Float64,2}:\n 4.0   3.0\n 0.0  -1.5\n\njulia> F.L * F.U == A[F.p, :]\ntrue\n\njulia> l, u, p = lu(A); # destructuring via iteration\n\njulia> l == F.L && u == F.U && p == F.p\ntrue\n\n\n\n\n\n"
@@ -16914,7 +16914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lu!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lu!",
     "category": "function",
     "text": "lu!(A, pivot=Val(true); check = true) -> LU\n\nlu! is the same as lu, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\nExamples\n\njulia> A = [4. 3.; 6. 3.]\n2×2 Array{Float64,2}:\n 4.0  3.0\n 6.0  3.0\n\njulia> F = lu!(A)\nLU{Float64,Array{Float64,2}}\nL factor:\n2×2 Array{Float64,2}:\n 1.0       0.0\n 0.666667  1.0\nU factor:\n2×2 Array{Float64,2}:\n 6.0  3.0\n 0.0  1.0\n\njulia> iA = [4 3; 6 3]\n2×2 Array{Int64,2}:\n 4  3\n 6  3\n\njulia> lu!(iA)\nERROR: InexactError: Int64(Int64, 0.6666666666666666)\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -16922,7 +16922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.cholesky",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.cholesky",
     "category": "function",
     "text": "cholesky(A, Val(false); check = true) -> Cholesky\n\nCompute the Cholesky factorization of a dense symmetric positive definite matrix A and return a Cholesky factorization. The matrix A can either be a Symmetric or Hermitian StridedMatrix or a perfectly symmetric or Hermitian StridedMatrix. The triangular Cholesky factor can be obtained from the factorization F with: F.L and F.U. The following functions are available for Cholesky objects: size, \\, inv, det, logdet and isposdef.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\nExamples\n\njulia> A = [4. 12. -16.; 12. 37. -43.; -16. -43. 98.]\n3×3 Array{Float64,2}:\n   4.0   12.0  -16.0\n  12.0   37.0  -43.0\n -16.0  -43.0   98.0\n\njulia> C = cholesky(A)\nCholesky{Float64,Array{Float64,2}}\nU factor:\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 2.0  6.0  -8.0\n  ⋅   1.0   5.0\n  ⋅    ⋅    3.0\n\njulia> C.U\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 2.0  6.0  -8.0\n  ⋅   1.0   5.0\n  ⋅    ⋅    3.0\n\njulia> C.L\n3×3 LowerTriangular{Float64,Array{Float64,2}}:\n  2.0   ⋅    ⋅\n  6.0  1.0   ⋅\n -8.0  5.0  3.0\n\njulia> C.L * C.U == A\ntrue\n\n\n\n\n\ncholesky(A, Val(true); tol = 0.0, check = true) -> CholeskyPivoted\n\nCompute the pivoted Cholesky factorization of a dense symmetric positive semi-definite matrix A and return a CholeskyPivoted factorization. The matrix A can either be a Symmetric or Hermitian StridedMatrix or a perfectly symmetric or Hermitian StridedMatrix. The triangular Cholesky factor can be obtained from the factorization F with: F.L and F.U. The following functions are available for PivotedCholesky objects: size, \\, inv, det, and rank. The argument tol determines the tolerance for determining the rank. For negative values, the tolerance is the machine precision.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\n\n\n\n\n"
@@ -16930,7 +16930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.cholesky!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.cholesky!",
     "category": "function",
     "text": "cholesky!(A, Val(false); check = true) -> Cholesky\n\nThe same as cholesky, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\nExamples\n\njulia> A = [1 2; 2 50]\n2×2 Array{Int64,2}:\n 1   2\n 2  50\n\njulia> cholesky!(A)\nERROR: InexactError: Int64(Int64, 6.782329983125268)\nStacktrace:\n[...]\n\n\n\n\n\ncholesky!(A, Val(true); tol = 0.0, check = true) -> CholeskyPivoted\n\nThe same as cholesky, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\n\n\n\n\n"
@@ -16938,7 +16938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankupdate",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lowrankupdate",
     "category": "function",
     "text": "lowrankupdate(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nUpdate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U + v*v\') but the computation of CC only uses O(n^2) operations.\n\n\n\n\n\n"
@@ -16946,7 +16946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankdowndate",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lowrankdowndate",
     "category": "function",
     "text": "lowrankdowndate(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nDowndate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U - v*v\') but the computation of CC only uses O(n^2) operations.\n\n\n\n\n\n"
@@ -16954,7 +16954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankupdate!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lowrankupdate!",
     "category": "function",
     "text": "lowrankupdate!(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nUpdate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U + v*v\') but the computation of CC only uses O(n^2) operations. The input factorization C is updated in place such that on exit C == CC. The vector v is destroyed during the computation.\n\n\n\n\n\n"
@@ -16962,7 +16962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lowrankdowndate!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lowrankdowndate!",
     "category": "function",
     "text": "lowrankdowndate!(C::Cholesky, v::StridedVector) -> CC::Cholesky\n\nDowndate a Cholesky factorization C with the vector v. If A = C.U\'C.U then CC = cholesky(C.U\'C.U - v*v\') but the computation of CC only uses O(n^2) operations. The input factorization C is updated in place such that on exit C == CC. The vector v is destroyed during the computation.\n\n\n\n\n\n"
@@ -16970,7 +16970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.ldlt",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.ldlt",
     "category": "function",
     "text": "ldlt(S::SymTridiagonal) -> LDLt\n\nCompute an LDLt factorization of the real symmetric tridiagonal matrix S such that S = L*Diagonal(d)*L\' where L is a unit lower triangular matrix and d is a vector. The main use of an LDLt factorization F = ldlt(S) is to solve the linear system of equations Sx = b with F\\b.\n\nExamples\n\njulia> S = SymTridiagonal([3., 4., 5.], [1., 2.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 3.0  1.0   ⋅\n 1.0  4.0  2.0\n  ⋅   2.0  5.0\n\njulia> ldltS = ldlt(S);\n\njulia> b = [6., 7., 8.];\n\njulia> ldltS \\ b\n3-element Array{Float64,1}:\n 1.7906976744186047\n 0.627906976744186\n 1.3488372093023255\n\njulia> S \\ b\n3-element Array{Float64,1}:\n 1.7906976744186047\n 0.627906976744186\n 1.3488372093023255\n\n\n\n\n\n"
@@ -16978,7 +16978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.ldlt!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.ldlt!",
     "category": "function",
     "text": "ldlt!(S::SymTridiagonal) -> LDLt\n\nSame as ldlt, but saves space by overwriting the input S, instead of creating a copy.\n\nExamples\n\njulia> S = SymTridiagonal([3., 4., 5.], [1., 2.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 3.0  1.0   ⋅\n 1.0  4.0  2.0\n  ⋅   2.0  5.0\n\njulia> ldltS = ldlt!(S);\n\njulia> ldltS === S\nfalse\n\njulia> S\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 3.0       0.333333   ⋅\n 0.333333  3.66667   0.545455\n  ⋅        0.545455  3.90909\n\n\n\n\n\n"
@@ -16986,7 +16986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.qr",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.qr",
     "category": "function",
     "text": "qr(A, pivot=Val(false)) -> F\n\nCompute the QR factorization of the matrix A: an orthogonal (or unitary if A is complex-valued) matrix Q, and an upper triangular matrix R such that\n\nA = Q R\n\nThe returned object F stores the factorization in a packed format:\n\nif pivot == Val(true) then F is a QRPivoted object,\notherwise if the element type of A is a BLAS type (Float32, Float64, ComplexF32 or ComplexF64), then F is a QRCompactWY object,\notherwise F is a QR object.\n\nThe individual components of the decomposition F can be retrieved via property accessors:\n\nF.Q: the orthogonal/unitary matrix Q\nF.R: the upper triangular matrix R\nF.p: the permutation vector of the pivot (QRPivoted only)\nF.P: the permutation matrix of the pivot (QRPivoted only)\n\nIterating the decomposition produces the components Q, R, and if extant p.\n\nThe following functions are available for the QR objects: inv, size, and \\. When A is rectangular, \\ will return a least squares solution and if the solution is not unique, the one with smallest norm is returned.\n\nMultiplication with respect to either full/square or non-full/square Q is allowed, i.e. both F.Q*F.R and F.Q*A are supported. A Q matrix can be converted into a regular matrix with Matrix.  This operation returns the \"thin\" Q factor, i.e., if A is m×n with m>=n, then Matrix(F.Q) yields an m×n matrix with orthonormal columns.  To retrieve the \"full\" Q factor, an m×m orthogonal matrix, use F.Q*Matrix(I,m,m).  If m<=n, then Matrix(F.Q) yields an m×m orthogonal matrix.\n\nExamples\n\njulia> A = [3.0 -6.0; 4.0 -8.0; 0.0 1.0]\n3×2 Array{Float64,2}:\n 3.0  -6.0\n 4.0  -8.0\n 0.0   1.0\n\njulia> F = qr(A)\nLinearAlgebra.QRCompactWY{Float64,Array{Float64,2}}\nQ factor:\n3×3 LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}:\n -0.6   0.0   0.8\n -0.8   0.0  -0.6\n  0.0  -1.0   0.0\nR factor:\n2×2 Array{Float64,2}:\n -5.0  10.0\n  0.0  -1.0\n\njulia> F.Q * F.R == A\ntrue\n\nnote: Note\nqr returns multiple types because LAPACK uses several representations that minimize the memory storage requirements of products of Householder elementary reflectors, so that the Q and R matrices can be stored compactly rather as two separate dense matrices.\n\n\n\n\n\n"
@@ -16994,7 +16994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.qr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.qr!",
     "category": "function",
     "text": "qr!(A, pivot=Val(false))\n\nqr! is the same as qr when A is a subtype of StridedMatrix, but saves space by overwriting the input A, instead of creating a copy. An InexactError exception is thrown if the factorization produces a number not representable by the element type of A, e.g. for integer types.\n\nExamples\n\njulia> a = [1. 2.; 3. 4.]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> qr!(a)\nLinearAlgebra.QRCompactWY{Float64,Array{Float64,2}}\nQ factor:\n2×2 LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}:\n -0.316228  -0.948683\n -0.948683   0.316228\nR factor:\n2×2 Array{Float64,2}:\n -3.16228  -4.42719\n  0.0      -0.632456\n\njulia> a = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> qr!(a)\nERROR: InexactError: Int64(Int64, -3.1622776601683795)\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -17002,7 +17002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.QR",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.QR",
     "category": "type",
     "text": "QR <: Factorization\n\nA QR matrix factorization stored in a packed format, typically obtained from qr. If A is an m×n matrix, then\n\nA = Q R\n\nwhere Q is an orthogonal/unitary matrix and R is upper triangular. The matrix Q is stored as a sequence of Householder reflectors v_i and coefficients tau_i where:\n\nQ = prod_i=1^min(mn) (I - tau_i v_i v_i^T)\n\nIterating the decomposition produces the components Q and R.\n\nThe object has two fields:\n\nfactors is an m×n matrix.\nThe upper triangular part contains the elements of R, that is R = triu(F.factors) for a QR object F.\nThe subdiagonal part contains the reflectors v_i stored in a packed format where v_i is the ith column of the matrix V = I + tril(F.factors, -1).\nτ is a vector  of length min(m,n) containing the coefficients au_i.\n\n\n\n\n\n"
@@ -17010,7 +17010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.QRCompactWY",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.QRCompactWY",
     "category": "type",
     "text": "QRCompactWY <: Factorization\n\nA QR matrix factorization stored in a compact blocked format, typically obtained from qr. If A is an m×n matrix, then\n\nA = Q R\n\nwhere Q is an orthogonal/unitary matrix and R is upper triangular. It is similar to the QR format except that the orthogonal/unitary matrix Q is stored in Compact WY format [Schreiber1989], as a lower trapezoidal matrix V and an upper triangular matrix T where\n\nQ = prod_i=1^min(mn) (I - tau_i v_i v_i^T) = I - V T V^T\n\nsuch that v_i is the ith column of V, and au_i is the ith diagonal element of T.\n\nIterating the decomposition produces the components Q and R.\n\nThe object has two fields:\n\nfactors, as in the QR type, is an m×n matrix.\nThe upper triangular part contains the elements of R, that is R = triu(F.factors) for a QR object F.\nThe subdiagonal part contains the reflectors v_i stored in a packed format such that V = I + tril(F.factors, -1).\nT is a square matrix with min(m,n) columns, whose upper triangular part gives the matrix T above (the subdiagonal elements are ignored).\n\nnote: Note\nThis format should not to be confused with the older WY representation [Bischof1987].\n\n[Bischof1987]: C Bischof and C Van Loan, \"The WY representation for products of Householder matrices\", SIAM J Sci Stat Comput 8 (1987), s2-s13. doi:10.1137/0908009\n\n[Schreiber1989]: R Schreiber and C Van Loan, \"A storage-efficient WY representation for products of Householder transformations\", SIAM J Sci Stat Comput 10 (1989), 53-57. doi:10.1137/0910005\n\n\n\n\n\n"
@@ -17018,7 +17018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.QRPivoted",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.QRPivoted",
     "category": "type",
     "text": "QRPivoted <: Factorization\n\nA QR matrix factorization with column pivoting in a packed format, typically obtained from qr. If A is an m×n matrix, then\n\nA P = Q R\n\nwhere P is a permutation matrix, Q is an orthogonal/unitary matrix and R is upper triangular. The matrix Q is stored as a sequence of Householder reflectors:\n\nQ = prod_i=1^min(mn) (I - tau_i v_i v_i^T)\n\nIterating the decomposition produces the components Q, R, and p.\n\nThe object has three fields:\n\nfactors is an m×n matrix.\nThe upper triangular part contains the elements of R, that is R = triu(F.factors) for a QR object F.\nThe subdiagonal part contains the reflectors v_i stored in a packed format where v_i is the ith column of the matrix V = I + tril(F.factors, -1).\nτ is a vector of length min(m,n) containing the coefficients au_i.\njpvt is an integer vector of length n corresponding to the permutation P.\n\n\n\n\n\n"
@@ -17026,7 +17026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lq!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lq!",
     "category": "function",
     "text": "lq!(A) -> LQ\n\nCompute the LQ factorization of A, using the input matrix as a workspace. See also lq.\n\n\n\n\n\n"
@@ -17034,7 +17034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lq",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lq",
     "category": "function",
     "text": "lq(A) -> S::LQ\n\nCompute the LQ decomposition of A. The decomposition\'s lower triangular component can be obtained from the LQ object S via S.L, and the orthogonal/unitary component via S.Q, such that A ≈ S.L*S.Q.\n\nIterating the decomposition produces the components S.L and S.Q.\n\nThe LQ decomposition is the QR decomposition of transpose(A).\n\nExamples\n\njulia> A = [5. 7.; -2. -4.]\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> S = lq(A)\nLQ{Float64,Array{Float64,2}} with factors L and Q:\n[-8.60233 0.0; 4.41741 -0.697486]\n[-0.581238 -0.813733; -0.813733 0.581238]\n\njulia> S.L * S.Q\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> l, q = S; # destructuring via iteration\n\njulia> l == S.L &&  q == S.Q\ntrue\n\n\n\n\n\n"
@@ -17042,7 +17042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.bunchkaufman",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.bunchkaufman",
     "category": "function",
     "text": "bunchkaufman(A, rook::Bool=false; check = true) -> S::BunchKaufman\n\nCompute the Bunch-Kaufman [Bunch1977] factorization of a Symmetric or Hermitian matrix A as P*U*D*U*P or P*L*D*L*P, depending on which triangle is stored in A, and return a BunchKaufman object. Note that if A is complex symmetric then U\' and L\' denote the unconjugated transposes, i.e. transpose(U) and transpose(L).\n\nIterating the decomposition produces the components S.D, S.U or S.L as appropriate given S.uplo, and S.p.\n\nIf rook is true, rook pivoting is used. If rook is false, rook pivoting is not used.\n\nWhen check = true, an error is thrown if the decomposition fails. When check = false, responsibility for checking the decomposition\'s validity (via issuccess) lies with the user.\n\nThe following functions are available for BunchKaufman objects: size, \\, inv, issymmetric, ishermitian, getindex.\n\n[Bunch1977]: J R Bunch and L Kaufman, Some stable methods for calculating inertia\n\nand solving symmetric linear systems, Mathematics of Computation 31:137 (1977), 163-179. url.\n\nExamples\n\njulia> A = [1 2; 2 3]\n2×2 Array{Int64,2}:\n 1  2\n 2  3\n\njulia> S = bunchkaufman(A)\nBunchKaufman{Float64,Array{Float64,2}}\nD factor:\n2×2 Tridiagonal{Float64,Array{Float64,1}}:\n -0.333333  0.0\n  0.0       3.0\nU factor:\n2×2 UnitUpperTriangular{Float64,Array{Float64,2}}:\n 1.0  0.666667\n  ⋅   1.0\npermutation:\n2-element Array{Int64,1}:\n 1\n 2\n\njulia> d, u, p = S; # destructuring via iteration\n\njulia> d == S.D && u == S.U && p == S.p\ntrue\n\n\n\n\n\n"
@@ -17050,7 +17050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.bunchkaufman!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.bunchkaufman!",
     "category": "function",
     "text": "bunchkaufman!(A, rook::Bool=false; check = true) -> BunchKaufman\n\nbunchkaufman! is the same as bunchkaufman, but saves space by overwriting the input A, instead of creating a copy.\n\n\n\n\n\n"
@@ -17058,7 +17058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigvals",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.eigvals",
     "category": "function",
     "text": "eigvals(A; permute::Bool=true, scale::Bool=true) -> values\n\nReturn the eigenvalues of A.\n\nFor general non-symmetric matrices it is possible to specify how the matrix is balanced before the eigenvalue calculation. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. The default is true for both options.\n\nExamples\n\njulia> diag_matrix = [1 0; 0 4]\n2×2 Array{Int64,2}:\n 1  0\n 0  4\n\njulia> eigvals(diag_matrix)\n2-element Array{Float64,1}:\n 1.0\n 4.0\n\n\n\n\n\nFor a scalar input, eigvals will return a scalar.\n\nExample\n\njulia> eigvals(-2)\n-2\n\n\n\n\n\neigvals(A, B) -> values\n\nComputes the generalized eigenvalues of A and B.\n\nExamples\n\njulia> A = [1 0; 0 -1]\n2×2 Array{Int64,2}:\n 1   0\n 0  -1\n\njulia> B = [0 1; 1 0]\n2×2 Array{Int64,2}:\n 0  1\n 1  0\n\njulia> eigvals(A,B)\n2-element Array{Complex{Float64},1}:\n 0.0 + 1.0im\n 0.0 - 1.0im\n\n\n\n\n\neigvals(A::Union{SymTridiagonal, Hermitian, Symmetric}, irange::UnitRange) -> values\n\nReturns the eigenvalues of A. It is possible to calculate only a subset of the eigenvalues by specifying a UnitRange irange covering indices of the sorted eigenvalues, e.g. the 2nd to 8th eigenvalues.\n\njulia> A = SymTridiagonal([1.; 2.; 1.], [2.; 3.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 1.0  2.0   ⋅\n 2.0  2.0  3.0\n  ⋅   3.0  1.0\n\njulia> eigvals(A, 2:2)\n1-element Array{Float64,1}:\n 0.9999999999999996\n\njulia> eigvals(A)\n3-element Array{Float64,1}:\n -2.1400549446402604\n  1.0000000000000002\n  5.140054944640259\n\n\n\n\n\neigvals(A::Union{SymTridiagonal, Hermitian, Symmetric}, vl::Real, vu::Real) -> values\n\nReturns the eigenvalues of A. It is possible to calculate only a subset of the eigenvalues by specifying a pair vl and vu for the lower and upper boundaries of the eigenvalues.\n\njulia> A = SymTridiagonal([1.; 2.; 1.], [2.; 3.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 1.0  2.0   ⋅\n 2.0  2.0  3.0\n  ⋅   3.0  1.0\n\njulia> eigvals(A, -1, 2)\n1-element Array{Float64,1}:\n 1.0000000000000009\n\njulia> eigvals(A)\n3-element Array{Float64,1}:\n -2.1400549446402604\n  1.0000000000000002\n  5.140054944640259\n\n\n\n\n\n"
@@ -17066,7 +17066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigvals!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.eigvals!",
     "category": "function",
     "text": "eigvals!(A; permute::Bool=true, scale::Bool=true) -> values\n\nSame as eigvals, but saves space by overwriting the input A, instead of creating a copy. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm.\n\nnote: Note\nThe input matrix A will not contain its eigenvalues after eigvals! is called on it - A is used as a workspace.\n\nExamples\n\njulia> A = [1. 2.; 3. 4.]\n2×2 Array{Float64,2}:\n 1.0  2.0\n 3.0  4.0\n\njulia> eigvals!(A)\n2-element Array{Float64,1}:\n -0.3722813232690143\n  5.372281323269014\n\njulia> A\n2×2 Array{Float64,2}:\n -0.372281  -1.0\n  0.0        5.37228\n\n\n\n\n\neigvals!(A, B) -> values\n\nSame as eigvals, but saves space by overwriting the input A (and B), instead of creating copies.\n\nnote: Note\nThe input matrices A and B will not contain their eigenvalues after eigvals! is called. They are used as workspaces.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> eigvals!(A, B)\n2-element Array{Complex{Float64},1}:\n 0.0 + 1.0im\n 0.0 - 1.0im\n\njulia> A\n2×2 Array{Float64,2}:\n -0.0  -1.0\n  1.0  -0.0\n\njulia> B\n2×2 Array{Float64,2}:\n 1.0  0.0\n 0.0  1.0\n\n\n\n\n\neigvals!(A::Union{SymTridiagonal, Hermitian, Symmetric}, irange::UnitRange) -> values\n\nSame as eigvals, but saves space by overwriting the input A, instead of creating a copy. irange is a range of eigenvalue indices to search for - for instance, the 2nd to 8th eigenvalues.\n\n\n\n\n\neigvals!(A::Union{SymTridiagonal, Hermitian, Symmetric}, vl::Real, vu::Real) -> values\n\nSame as eigvals, but saves space by overwriting the input A, instead of creating a copy. vl is the lower bound of the interval to search for eigenvalues, and vu is the upper bound.\n\n\n\n\n\n"
@@ -17074,7 +17074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigmax",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.eigmax",
     "category": "function",
     "text": "eigmax(A; permute::Bool=true, scale::Bool=true)\n\nReturn the largest eigenvalue of A. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. Note that if the eigenvalues of A are complex, this method will fail, since complex numbers cannot be sorted.\n\nExamples\n\njulia> A = [0 im; -im 0]\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+1im\n 0-1im  0+0im\n\njulia> eigmax(A)\n1.0\n\njulia> A = [0 im; -1 0]\n2×2 Array{Complex{Int64},2}:\n  0+0im  0+1im\n -1+0im  0+0im\n\njulia> eigmax(A)\nERROR: DomainError with Complex{Int64}[0+0im 0+1im; -1+0im 0+0im]:\n`A` cannot have complex eigenvalues.\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -17082,7 +17082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigmin",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.eigmin",
     "category": "function",
     "text": "eigmin(A; permute::Bool=true, scale::Bool=true)\n\nReturn the smallest eigenvalue of A. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. Note that if the eigenvalues of A are complex, this method will fail, since complex numbers cannot be sorted.\n\nExamples\n\njulia> A = [0 im; -im 0]\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+1im\n 0-1im  0+0im\n\njulia> eigmin(A)\n-1.0\n\njulia> A = [0 im; -1 0]\n2×2 Array{Complex{Int64},2}:\n  0+0im  0+1im\n -1+0im  0+0im\n\njulia> eigmin(A)\nERROR: DomainError with Complex{Int64}[0+0im 0+1im; -1+0im 0+0im]:\n`A` cannot have complex eigenvalues.\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -17090,7 +17090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigvecs",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.eigvecs",
     "category": "function",
     "text": "eigvecs(A::SymTridiagonal[, eigvals]) -> Matrix\n\nReturn a matrix M whose columns are the eigenvectors of A. (The kth eigenvector can be obtained from the slice M[:, k].)\n\nIf the optional vector of eigenvalues eigvals is specified, eigvecs returns the specific corresponding eigenvectors.\n\nExamples\n\njulia> A = SymTridiagonal([1.; 2.; 1.], [2.; 3.])\n3×3 SymTridiagonal{Float64,Array{Float64,1}}:\n 1.0  2.0   ⋅\n 2.0  2.0  3.0\n  ⋅   3.0  1.0\n\njulia> eigvals(A)\n3-element Array{Float64,1}:\n -2.1400549446402604\n  1.0000000000000002\n  5.140054944640259\n\njulia> eigvecs(A)\n3×3 Array{Float64,2}:\n  0.418304  -0.83205      0.364299\n -0.656749  -7.39009e-16  0.754109\n  0.627457   0.5547       0.546448\n\njulia> eigvecs(A, [1.])\n3×1 Array{Float64,2}:\n  0.8320502943378438\n  4.263514128092366e-17\n -0.5547001962252291\n\n\n\n\n\neigvecs(A; permute::Bool=true, scale::Bool=true) -> Matrix\n\nReturn a matrix M whose columns are the eigenvectors of A. (The kth eigenvector can be obtained from the slice M[:, k].) The permute and scale keywords are the same as for eigen.\n\nExamples\n\njulia> eigvecs([1.0 0.0 0.0; 0.0 3.0 0.0; 0.0 0.0 18.0])\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\n\n\n\n\neigvecs(A, B) -> Matrix\n\nReturn a matrix M whose columns are the generalized eigenvectors of A and B. (The kth eigenvector can be obtained from the slice M[:, k].)\n\nExamples\n\njulia> A = [1 0; 0 -1]\n2×2 Array{Int64,2}:\n 1   0\n 0  -1\n\njulia> B = [0 1; 1 0]\n2×2 Array{Int64,2}:\n 0  1\n 1  0\n\njulia> eigvecs(A, B)\n2×2 Array{Complex{Float64},2}:\n  0.0-1.0im   0.0+1.0im\n -1.0-0.0im  -1.0+0.0im\n\n\n\n\n\n"
@@ -17098,7 +17098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigen",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.eigen",
     "category": "function",
     "text": "eigen(A; permute::Bool=true, scale::Bool=true) -> Eigen\n\nComputes the eigenvalue decomposition of A, returning an Eigen factorization object F which contains the eigenvalues in F.values and the eigenvectors in the columns of the matrix F.vectors. (The kth eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nThe following functions are available for Eigen objects: inv, det, and isposdef.\n\nFor general nonsymmetric matrices it is possible to specify how the matrix is balanced before the eigenvector calculation. The option permute=true permutes the matrix to become closer to upper triangular, and scale=true scales the matrix by its diagonal elements to make rows and columns more equal in norm. The default is true for both options.\n\nExamples\n\njulia> F = eigen([1.0 0.0 0.0; 0.0 3.0 0.0; 0.0 0.0 18.0])\nEigen{Float64,Float64,Array{Float64,2},Array{Float64,1}}\neigenvalues:\n3-element Array{Float64,1}:\n  1.0\n  3.0\n 18.0\neigenvectors:\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\njulia> F.values\n3-element Array{Float64,1}:\n  1.0\n  3.0\n 18.0\n\njulia> F.vectors\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\njulia> vals, vecs = F; # destructuring via iteration\n\njulia> vals == F.values && vecs == F.vectors\ntrue\n\n\n\n\n\neigen(A, B) -> GeneralizedEigen\n\nComputes the generalized eigenvalue decomposition of A and B, returning a GeneralizedEigen factorization object F which contains the generalized eigenvalues in F.values and the generalized eigenvectors in the columns of the matrix F.vectors. (The kth generalized eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nExamples\n\njulia> A = [1 0; 0 -1]\n2×2 Array{Int64,2}:\n 1   0\n 0  -1\n\njulia> B = [0 1; 1 0]\n2×2 Array{Int64,2}:\n 0  1\n 1  0\n\njulia> F = eigen(A, B);\n\njulia> F.values\n2-element Array{Complex{Float64},1}:\n 0.0 + 1.0im\n 0.0 - 1.0im\n\njulia> F.vectors\n2×2 Array{Complex{Float64},2}:\n  0.0-1.0im   0.0+1.0im\n -1.0-0.0im  -1.0+0.0im\n\njulia> vals, vecs = F; # destructuring via iteration\n\njulia> vals == F.values && vecs == F.vectors\ntrue\n\n\n\n\n\neigen(A::Union{SymTridiagonal, Hermitian, Symmetric}, irange::UnitRange) -> Eigen\n\nComputes the eigenvalue decomposition of A, returning an Eigen factorization object F which contains the eigenvalues in F.values and the eigenvectors in the columns of the matrix F.vectors. (The kth eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nThe following functions are available for Eigen objects: inv, det, and isposdef.\n\nThe UnitRange irange specifies indices of the sorted eigenvalues to search for.\n\nnote: Note\nIf irange is not 1:n, where n is the dimension of A, then the returned factorization will be a truncated factorization.\n\n\n\n\n\neigen(A::Union{SymTridiagonal, Hermitian, Symmetric}, vl::Real, vu::Real) -> Eigen\n\nComputes the eigenvalue decomposition of A, returning an Eigen factorization object F which contains the eigenvalues in F.values and the eigenvectors in the columns of the matrix F.vectors. (The kth eigenvector can be obtained from the slice F.vectors[:, k].)\n\nIterating the decomposition produces the components F.values and F.vectors.\n\nThe following functions are available for Eigen objects: inv, det, and isposdef.\n\nvl is the lower bound of the window of eigenvalues to search for, and vu is the upper bound.\n\nnote: Note\nIf [vl, vu] does not contain all eigenvalues of A, then the returned factorization will be a truncated factorization.\n\n\n\n\n\n"
@@ -17106,7 +17106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.eigen!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.eigen!",
     "category": "function",
     "text": "eigen!(A, [B])\n\nSame as eigen, but saves space by overwriting the input A (and B), instead of creating a copy.\n\n\n\n\n\n"
@@ -17114,7 +17114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.hessenberg",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.hessenberg",
     "category": "function",
     "text": "hessenberg(A) -> Hessenberg\n\nCompute the Hessenberg decomposition of A and return a Hessenberg object. If F is the factorization object, the unitary matrix can be accessed with F.Q and the Hessenberg matrix with F.H. When Q is extracted, the resulting type is the HessenbergQ object, and may be converted to a regular matrix with convert(Array, _)  (or Array(_) for short).\n\nIterating the decomposition produces the factors F.Q and F.H.\n\nExamples\n\njulia> A = [4. 9. 7.; 4. 4. 1.; 4. 3. 2.]\n3×3 Array{Float64,2}:\n 4.0  9.0  7.0\n 4.0  4.0  1.0\n 4.0  3.0  2.0\n\njulia> F = hessenberg(A);\n\njulia> F.Q * F.H * F.Q\'\n3×3 Array{Float64,2}:\n 4.0  9.0  7.0\n 4.0  4.0  1.0\n 4.0  3.0  2.0\n\njulia> q, h = F; # destructuring via iteration\n\njulia> q == F.Q && h == F.H\ntrue\n\n\n\n\n\n"
@@ -17122,7 +17122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.hessenberg!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.hessenberg!",
     "category": "function",
     "text": "hessenberg!(A) -> Hessenberg\n\nhessenberg! is the same as hessenberg, but saves space by overwriting the input A, instead of creating a copy.\n\n\n\n\n\n"
@@ -17130,7 +17130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.schur!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.schur!",
     "category": "function",
     "text": "schur!(A::StridedMatrix) -> F::Schur\n\nSame as schur but uses the input argument A as workspace.\n\nExamples\n\njulia> A = [5. 7.; -2. -4.]\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> F = schur!(A)\nSchur{Float64,Array{Float64,2}}\nT factor:\n2×2 Array{Float64,2}:\n 3.0   9.0\n 0.0  -2.0\nZ factor:\n2×2 Array{Float64,2}:\n  0.961524  0.274721\n -0.274721  0.961524\neigenvalues:\n2-element Array{Float64,1}:\n  3.0\n -2.0\n\njulia> A\n2×2 Array{Float64,2}:\n 3.0   9.0\n 0.0  -2.0\n\n\n\n\n\nschur!(A::StridedMatrix, B::StridedMatrix) -> F::GeneralizedSchur\n\nSame as schur but uses the input matrices A and B as workspace.\n\n\n\n\n\n"
@@ -17138,7 +17138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.schur",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.schur",
     "category": "function",
     "text": "schur(A::StridedMatrix) -> F::Schur\n\nComputes the Schur factorization of the matrix A. The (quasi) triangular Schur factor can be obtained from the Schur object F with either F.Schur or F.T and the orthogonal/unitary Schur vectors can be obtained with F.vectors or F.Z such that A = F.vectors * F.Schur * F.vectors\'. The eigenvalues of A can be obtained with F.values.\n\nIterating the decomposition produces the components F.T, F.Z, and F.values.\n\nExamples\n\njulia> A = [5. 7.; -2. -4.]\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> F = schur(A)\nSchur{Float64,Array{Float64,2}}\nT factor:\n2×2 Array{Float64,2}:\n 3.0   9.0\n 0.0  -2.0\nZ factor:\n2×2 Array{Float64,2}:\n  0.961524  0.274721\n -0.274721  0.961524\neigenvalues:\n2-element Array{Float64,1}:\n  3.0\n -2.0\n\njulia> F.vectors * F.Schur * F.vectors\'\n2×2 Array{Float64,2}:\n  5.0   7.0\n -2.0  -4.0\n\njulia> t, z, vals = F; # destructuring via iteration\n\njulia> t == F.T && z == F.Z && vals == F.values\ntrue\n\n\n\n\n\nschur(A::StridedMatrix, B::StridedMatrix) -> F::GeneralizedSchur\n\nComputes the Generalized Schur (or QZ) factorization of the matrices A and B. The (quasi) triangular Schur factors can be obtained from the Schur object F with F.S and F.T, the left unitary/orthogonal Schur vectors can be obtained with F.left or F.Q and the right unitary/orthogonal Schur vectors can be obtained with F.right or F.Z such that A=F.left*F.S*F.right\' and B=F.left*F.T*F.right\'. The generalized eigenvalues of A and B can be obtained with F.α./F.β.\n\nIterating the decomposition produces the components F.S, F.T, F.Q, F.Z, F.α, and F.β.\n\n\n\n\n\n"
@@ -17146,7 +17146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.ordschur",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.ordschur",
     "category": "function",
     "text": "ordschur(F::Schur, select::Union{Vector{Bool},BitVector}) -> F::Schur\n\nReorders the Schur factorization F of a matrix A = Z*T*Z\' according to the logical array select returning the reordered factorization F object. The selected eigenvalues appear in the leading diagonal of F.Schur and the corresponding leading columns of F.vectors form an orthogonal/unitary basis of the corresponding right invariant subspace. In the real case, a complex conjugate pair of eigenvalues must be either both included or both excluded via select.\n\n\n\n\n\nordschur(F::GeneralizedSchur, select::Union{Vector{Bool},BitVector}) -> F::GeneralizedSchur\n\nReorders the Generalized Schur factorization F of a matrix pair (A, B) = (Q*S*Z\', Q*T*Z\') according to the logical array select and returns a GeneralizedSchur object F. The selected eigenvalues appear in the leading diagonal of both F.S and F.T, and the left and right orthogonal/unitary Schur vectors are also reordered such that (A, B) = F.Q*(F.S, F.T)*F.Z\' still holds and the generalized eigenvalues of A and B can still be obtained with F.α./F.β.\n\n\n\n\n\n"
@@ -17154,7 +17154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.ordschur!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.ordschur!",
     "category": "function",
     "text": "ordschur!(F::Schur, select::Union{Vector{Bool},BitVector}) -> F::Schur\n\nSame as ordschur but overwrites the factorization F.\n\n\n\n\n\nordschur!(F::GeneralizedSchur, select::Union{Vector{Bool},BitVector}) -> F::GeneralizedSchur\n\nSame as ordschur but overwrites the factorization F.\n\n\n\n\n\n"
@@ -17162,7 +17162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.svd",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.svd",
     "category": "function",
     "text": "svd(A; full::Bool = false) -> SVD\n\nCompute the singular value decomposition (SVD) of A and return an SVD object.\n\nU, S, V and Vt can be obtained from the factorization F with F.U, F.S, F.V and F.Vt, such that A = U * Diagonal(S) * Vt. The algorithm produces Vt and hence Vt is more efficient to extract than V. The singular values in S are sorted in descending order.\n\nIterating the decomposition produces the components U, S, and V.\n\nIf full = false (default), a \"thin\" SVD is returned. For a M times N matrix A, in the full factorization U is M \\times M and V is N \\times N, while in the thin factorization U is M \\times K and V is N \\times K, where K = \\min(M,N) is the number of singular values.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> F = svd(A);\n\njulia> F.U * Diagonal(F.S) * F.Vt\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\n\n\n\n\nsvd(A, B) -> GeneralizedSVD\n\nCompute the generalized SVD of A and B, returning a GeneralizedSVD factorization object F, such that A = F.U*F.D1*F.R0*F.Q\' and B = F.V*F.D2*F.R0*F.Q\'.\n\nFor an M-by-N matrix A and P-by-N matrix B,\n\nU is a M-by-M orthogonal matrix,\nV is a P-by-P orthogonal matrix,\nQ is a N-by-N orthogonal matrix,\nD1 is a M-by-(K+L) diagonal matrix with 1s in the first K entries,\nD2 is a P-by-(K+L) matrix whose top right L-by-L block is diagonal,\nR0 is a (K+L)-by-N matrix whose rightmost (K+L)-by-(K+L) block is          nonsingular upper block triangular,\n\nK+L is the effective numerical rank of the matrix [A; B].\n\nIterating the decomposition produces the components U, V, Q, D1, D2, and R0.\n\nThe entries of F.D1 and F.D2 are related, as explained in the LAPACK documentation for the generalized SVD and the xGGSVD3 routine which is called underneath (in LAPACK 3.6.0 and newer).\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> F = svd(A, B);\n\njulia> F.U*F.D1*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> F.V*F.D2*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\n\n\n\n\n"
@@ -17170,7 +17170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.svd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.svd!",
     "category": "function",
     "text": "svd!(A; full::Bool = false) -> SVD\n\nsvd! is the same as svd, but saves space by overwriting the input A, instead of creating a copy.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> F = svd!(A);\n\njulia> F.U * Diagonal(F.S) * F.Vt\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> A\n4×5 Array{Float64,2}:\n -2.23607   0.0   0.0  0.0  0.618034\n  0.0      -3.0   1.0  0.0  0.0\n  0.0       0.0   0.0  0.0  0.0\n  0.0       0.0  -2.0  0.0  0.0\n\n\n\n\n\nsvd!(A, B) -> GeneralizedSVD\n\nsvd! is the same as svd, but modifies the arguments A and B in-place, instead of making copies.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> F = svd!(A, B);\n\njulia> F.U*F.D1*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> F.V*F.D2*F.R0*F.Q\'\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> A\n2×2 Array{Float64,2}:\n 1.41421   0.0\n 0.0      -1.41421\n\njulia> B\n2×2 Array{Float64,2}:\n 1.0  -0.0\n 0.0  -1.0\n\n\n\n\n\n"
@@ -17178,7 +17178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.svdvals",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.svdvals",
     "category": "function",
     "text": "svdvals(A)\n\nReturn the singular values of A in descending order.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> svdvals(A)\n4-element Array{Float64,1}:\n 3.0\n 2.23606797749979\n 2.0\n 0.0\n\n\n\n\n\nsvdvals(A, B)\n\nReturn the generalized singular values from the generalized singular value decomposition of A and B. See also svd.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> svdvals(A, B)\n2-element Array{Float64,1}:\n 1.0\n 1.0\n\n\n\n\n\n"
@@ -17186,7 +17186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.svdvals!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.svdvals!",
     "category": "function",
     "text": "svdvals!(A)\n\nReturn the singular values of A, saving space by overwriting the input. See also svdvals and svd.\n\nExamples\n\njulia> A = [1. 0. 0. 0. 2.; 0. 0. 3. 0. 0.; 0. 0. 0. 0. 0.; 0. 2. 0. 0. 0.]\n4×5 Array{Float64,2}:\n 1.0  0.0  0.0  0.0  2.0\n 0.0  0.0  3.0  0.0  0.0\n 0.0  0.0  0.0  0.0  0.0\n 0.0  2.0  0.0  0.0  0.0\n\njulia> svdvals!(A)\n4-element Array{Float64,1}:\n 3.0\n 2.23606797749979\n 2.0\n 0.0\n\njulia> A\n4×5 Array{Float64,2}:\n -2.23607   0.0   0.0  0.0  0.618034\n  0.0      -3.0   1.0  0.0  0.0\n  0.0       0.0   0.0  0.0  0.0\n  0.0       0.0  -2.0  0.0  0.0\n\n\n\n\n\nsvdvals!(A, B)\n\nReturn the generalized singular values from the generalized singular value decomposition of A and B, saving space by overwriting A and B. See also svd and svdvals.\n\nExamples\n\njulia> A = [1. 0.; 0. -1.]\n2×2 Array{Float64,2}:\n 1.0   0.0\n 0.0  -1.0\n\njulia> B = [0. 1.; 1. 0.]\n2×2 Array{Float64,2}:\n 0.0  1.0\n 1.0  0.0\n\njulia> svdvals!(A, B)\n2-element Array{Float64,1}:\n 1.0\n 1.0\n\njulia> A\n2×2 Array{Float64,2}:\n 1.41421   0.0\n 0.0      -1.41421\n\njulia> B\n2×2 Array{Float64,2}:\n 1.0  -0.0\n 0.0  -1.0\n\n\n\n\n\n"
@@ -17194,7 +17194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.Givens",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.Givens",
     "category": "type",
     "text": "LinearAlgebra.Givens(i1,i2,c,s) -> G\n\nA Givens rotation linear operator. The fields c and s represent the cosine and sine of the rotation angle, respectively. The Givens type supports left multiplication G*A and conjugated transpose right multiplication A*G\'. The type doesn\'t have a size and can therefore be multiplied with matrices of arbitrary size as long as i2<=size(A,2) for G*A or i2<=size(A,1) for A*G\'.\n\nSee also: givens\n\n\n\n\n\n"
@@ -17202,7 +17202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.givens",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.givens",
     "category": "function",
     "text": "givens(f::T, g::T, i1::Integer, i2::Integer) where {T} -> (G::Givens, r::T)\n\nComputes the Givens rotation G and scalar r such that for any vector x where\n\nx[i1] = f\nx[i2] = g\n\nthe result of the multiplication\n\ny = G*x\n\nhas the property that\n\ny[i1] = r\ny[i2] = 0\n\nSee also: LinearAlgebra.Givens\n\n\n\n\n\ngivens(A::AbstractArray, i1::Integer, i2::Integer, j::Integer) -> (G::Givens, r)\n\nComputes the Givens rotation G and scalar r such that the result of the multiplication\n\nB = G*A\n\nhas the property that\n\nB[i1,j] = r\nB[i2,j] = 0\n\nSee also: LinearAlgebra.Givens\n\n\n\n\n\ngivens(x::AbstractVector, i1::Integer, i2::Integer) -> (G::Givens, r)\n\nComputes the Givens rotation G and scalar r such that the result of the multiplication\n\nB = G*x\n\nhas the property that\n\nB[i1] = r\nB[i2] = 0\n\nSee also: LinearAlgebra.Givens\n\n\n\n\n\n"
@@ -17210,7 +17210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.triu",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.triu",
     "category": "function",
     "text": "triu(M)\n\nUpper triangle of a matrix.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> triu(a)\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 0.0  1.0  1.0  1.0\n 0.0  0.0  1.0  1.0\n 0.0  0.0  0.0  1.0\n\n\n\n\n\ntriu(M, k::Integer)\n\nReturns the upper triangle of M starting from the kth superdiagonal.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> triu(a,3)\n4×4 Array{Float64,2}:\n 0.0  0.0  0.0  1.0\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n\njulia> triu(a,-3)\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\n\n\n\n\n"
@@ -17218,7 +17218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.triu!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.triu!",
     "category": "function",
     "text": "triu!(M)\n\nUpper triangle of a matrix, overwriting M in the process. See also triu.\n\n\n\n\n\ntriu!(M, k::Integer)\n\nReturn the upper triangle of M starting from the kth superdiagonal, overwriting M in the process.\n\nExamples\n\njulia> M = [1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5]\n5×5 Array{Int64,2}:\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n\njulia> triu!(M, 1)\n5×5 Array{Int64,2}:\n 0  2  3  4  5\n 0  0  3  4  5\n 0  0  0  4  5\n 0  0  0  0  5\n 0  0  0  0  0\n\n\n\n\n\n"
@@ -17226,7 +17226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.tril",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.tril",
     "category": "function",
     "text": "tril(M)\n\nLower triangle of a matrix.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> tril(a)\n4×4 Array{Float64,2}:\n 1.0  0.0  0.0  0.0\n 1.0  1.0  0.0  0.0\n 1.0  1.0  1.0  0.0\n 1.0  1.0  1.0  1.0\n\n\n\n\n\ntril(M, k::Integer)\n\nReturns the lower triangle of M starting from the kth superdiagonal.\n\nExamples\n\njulia> a = fill(1.0, (4,4))\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> tril(a,3)\n4×4 Array{Float64,2}:\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n 1.0  1.0  1.0  1.0\n\njulia> tril(a,-3)\n4×4 Array{Float64,2}:\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n 0.0  0.0  0.0  0.0\n 1.0  0.0  0.0  0.0\n\n\n\n\n\n"
@@ -17234,7 +17234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.tril!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.tril!",
     "category": "function",
     "text": "tril!(M)\n\nLower triangle of a matrix, overwriting M in the process. See also tril.\n\n\n\n\n\ntril!(M, k::Integer)\n\nReturn the lower triangle of M starting from the kth superdiagonal, overwriting M in the process.\n\nExamples\n\njulia> M = [1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5; 1 2 3 4 5]\n5×5 Array{Int64,2}:\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n\njulia> tril!(M, 2)\n5×5 Array{Int64,2}:\n 1  2  3  0  0\n 1  2  3  4  0\n 1  2  3  4  5\n 1  2  3  4  5\n 1  2  3  4  5\n\n\n\n\n\n"
@@ -17242,7 +17242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.diagind",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.diagind",
     "category": "function",
     "text": "diagind(M, k::Integer=0)\n\nAn AbstractRange giving the indices of the kth diagonal of the matrix M.\n\nExamples\n\njulia> A = [1 2 3; 4 5 6; 7 8 9]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n 7  8  9\n\njulia> diagind(A,-1)\n2:4:6\n\n\n\n\n\n"
@@ -17250,7 +17250,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.diag",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.diag",
     "category": "function",
     "text": "diag(M, k::Integer=0)\n\nThe kth diagonal of a matrix, as a vector.\n\nSee also: diagm\n\nExamples\n\njulia> A = [1 2 3; 4 5 6; 7 8 9]\n3×3 Array{Int64,2}:\n 1  2  3\n 4  5  6\n 7  8  9\n\njulia> diag(A,1)\n2-element Array{Int64,1}:\n 2\n 6\n\n\n\n\n\n"
@@ -17258,7 +17258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.diagm",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.diagm",
     "category": "function",
     "text": "diagm(kv::Pair{<:Integer,<:AbstractVector}...)\n\nConstruct a square matrix from Pairs of diagonals and vectors. Vector kv.second will be placed on the kv.first diagonal. diagm constructs a full matrix; if you want storage-efficient versions with fast arithmetic, see Diagonal, Bidiagonal Tridiagonal and SymTridiagonal.\n\nExamples\n\njulia> diagm(1 => [1,2,3])\n4×4 Array{Int64,2}:\n 0  1  0  0\n 0  0  2  0\n 0  0  0  3\n 0  0  0  0\n\njulia> diagm(1 => [1,2,3], -1 => [4,5])\n4×4 Array{Int64,2}:\n 0  1  0  0\n 4  0  2  0\n 0  5  0  3\n 0  0  0  0\n\n\n\n\n\n"
@@ -17266,7 +17266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.rank",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.rank",
     "category": "function",
     "text": "rank(A[, tol::Real])\n\nCompute the rank of a matrix by counting how many singular values of A have magnitude greater than tol*σ₁ where σ₁ is A\'s largest singular values. By default, the value of tol is the smallest dimension of A multiplied by the eps of the eltype of A.\n\nExamples\n\njulia> rank(Matrix(I, 3, 3))\n3\n\njulia> rank(diagm(0 => [1, 0, 2]))\n2\n\njulia> rank(diagm(0 => [1, 0.001, 2]), 0.1)\n2\n\njulia> rank(diagm(0 => [1, 0.001, 2]), 0.00001)\n3\n\n\n\n\n\n"
@@ -17274,7 +17274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.norm",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.norm",
     "category": "function",
     "text": "norm(A, p::Real=2)\n\nFor any iterable container A (including arrays of any dimension) of numbers (or any element type for which norm is defined), compute the p-norm (defaulting to p=2) as if A were a vector of the corresponding length.\n\nThe p-norm is defined as\n\nA_p = left( sum_i=1^n  a_i  ^p right)^1p\n\nwith a_i the entries of A,  a_i  the norm of a_i, and n the length of A. Since the p-norm is computed using the norms of the entries of A, the p-norm of a vector of vectors is not compatible with the interpretation of it as a block vector in general if p != 2.\n\np can assume any numeric value (even though not all values produce a mathematically valid vector norm). In particular, norm(A, Inf) returns the largest value in abs.(A), whereas norm(A, -Inf) returns the smallest. If A is a matrix and p=2, then this is equivalent to the Frobenius norm.\n\nThe second argument p is not necessarily a part of the interface for norm, i.e. a custom type may only implement norm(A) without second argument.\n\nUse opnorm to compute the operator norm of a matrix.\n\nExamples\n\njulia> v = [3, -2, 6]\n3-element Array{Int64,1}:\n  3\n -2\n  6\n\njulia> norm(v)\n7.0\n\njulia> norm(v, 1)\n11.0\n\njulia> norm(v, Inf)\n6.0\n\njulia> norm([1 2 3; 4 5 6; 7 8 9])\n16.881943016134134\n\njulia> norm([1 2 3 4 5 6 7 8 9])\n16.881943016134134\n\njulia> norm(1:9)\n16.881943016134134\n\njulia> norm(hcat(v,v), 1) == norm(vcat(v,v), 1) != norm([v,v], 1)\ntrue\n\njulia> norm(hcat(v,v), 2) == norm(vcat(v,v), 2) == norm([v,v], 2)\ntrue\n\njulia> norm(hcat(v,v), Inf) == norm(vcat(v,v), Inf) != norm([v,v], Inf)\ntrue\n\n\n\n\n\nnorm(x::Number, p::Real=2)\n\nFor numbers, return left( x^p right)^1p.\n\nExamples\n\njulia> norm(2, 1)\n2\n\njulia> norm(-2, 1)\n2\n\njulia> norm(2, 2)\n2\n\njulia> norm(-2, 2)\n2\n\njulia> norm(2, Inf)\n2\n\njulia> norm(-2, Inf)\n2\n\n\n\n\n\n"
@@ -17282,7 +17282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.opnorm",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.opnorm",
     "category": "function",
     "text": "opnorm(A::AbstractMatrix, p::Real=2)\n\nCompute the operator norm (or matrix norm) induced by the vector p-norm, where valid values of p are 1, 2, or Inf. (Note that for sparse matrices, p=2 is currently not implemented.) Use norm to compute the Frobenius norm.\n\nWhen p=1, the operator norm is the maximum absolute column sum of A:\n\nA_1 = max_1  j  n sum_i=1^m  a_ij \n\nwith a_ij the entries of A, and m and n its dimensions.\n\nWhen p=2, the operator norm is the spectral norm, equal to the largest singular value of A.\n\nWhen p=Inf, the operator norm is the maximum absolute row sum of A:\n\nA_infty = max_1  i  m sum _j=1^n  a_ij \n\nExamples\n\njulia> A = [1 -2 -3; 2 3 -1]\n2×3 Array{Int64,2}:\n 1  -2  -3\n 2   3  -1\n\njulia> opnorm(A, Inf)\n6.0\n\njulia> opnorm(A, 1)\n5.0\n\n\n\n\n\nopnorm(x::Number, p::Real=2)\n\nFor numbers, return left( x^p right)^1p. This is equivalent to norm.\n\n\n\n\n\nopnorm(A::Adjoint{<:Any,<:AbstracVector}, q::Real=2)\nopnorm(A::Transpose{<:Any,<:AbstracVector}, q::Real=2)\n\nFor Adjoint/Transpose-wrapped vectors, return the operator q-norm of A, which is equivalent to the p-norm with value p = q/(q-1). They coincide at p = q = 2. Use norm to compute the p norm of A as a vector.\n\nThe difference in norm between a vector space and its dual arises to preserve the relationship between duality and the dot product, and the result is consistent with the operator p-norm of a 1 × n matrix.\n\nExamples\n\njulia> v = [1; im];\n\njulia> vc = v\';\n\njulia> opnorm(vc, 1)\n1.0\n\njulia> norm(vc, 1)\n2.0\n\njulia> norm(v, 1)\n2.0\n\njulia> opnorm(vc, 2)\n1.4142135623730951\n\njulia> norm(vc, 2)\n1.4142135623730951\n\njulia> norm(v, 2)\n1.4142135623730951\n\njulia> opnorm(vc, Inf)\n2.0\n\njulia> norm(vc, Inf)\n1.0\n\njulia> norm(v, Inf)\n1.0\n\n\n\n\n\n"
@@ -17290,7 +17290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.normalize!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.normalize!",
     "category": "function",
     "text": "normalize!(v::AbstractVector, p::Real=2)\n\nNormalize the vector v in-place so that its p-norm equals unity, i.e. norm(v, p) == 1. See also normalize and norm.\n\n\n\n\n\n"
@@ -17298,7 +17298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.normalize",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.normalize",
     "category": "function",
     "text": "normalize(v::AbstractVector, p::Real=2)\n\nNormalize the vector v so that its p-norm equals unity, i.e. norm(v, p) == vecnorm(v, p) == 1. See also normalize! and norm.\n\nExamples\n\njulia> a = [1,2,4];\n\njulia> b = normalize(a)\n3-element Array{Float64,1}:\n 0.2182178902359924\n 0.4364357804719848\n 0.8728715609439696\n\njulia> norm(b)\n1.0\n\njulia> c = normalize(a, 1)\n3-element Array{Float64,1}:\n 0.14285714285714285\n 0.2857142857142857\n 0.5714285714285714\n\njulia> norm(c, 1)\n1.0\n\n\n\n\n\n"
@@ -17306,7 +17306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.cond",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.cond",
     "category": "function",
     "text": "cond(M, p::Real=2)\n\nCondition number of the matrix M, computed using the operator p-norm. Valid values for p are 1, 2 (default), or Inf.\n\n\n\n\n\n"
@@ -17314,7 +17314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.condskeel",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.condskeel",
     "category": "function",
     "text": "condskeel(M, [x, p::Real=Inf])\n\nkappa_S(M p) = leftVert leftvert M rightvert leftvert M^-1 rightvert rightVert_p \nkappa_S(M x p) = leftVert leftvert M rightvert leftvert M^-1 rightvert leftvert x rightvert rightVert_p\n\nSkeel condition number kappa_S of the matrix M, optionally with respect to the vector x, as computed using the operator p-norm. leftvert M rightvert denotes the matrix of (entry wise) absolute values of M; leftvert M rightvert_ij = leftvert M_ij rightvert. Valid values for p are 1, 2 and Inf (default).\n\nThis quantity is also known in the literature as the Bauer condition number, relative condition number, or componentwise relative condition number.\n\n\n\n\n\n"
@@ -17322,7 +17322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.tr",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.tr",
     "category": "function",
     "text": "tr(M)\n\nMatrix trace. Sums the diagonal elements of M.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> tr(A)\n5\n\n\n\n\n\n"
@@ -17330,7 +17330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.det",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.det",
     "category": "function",
     "text": "det(M)\n\nMatrix determinant.\n\nExamples\n\njulia> M = [1 0; 2 2]\n2×2 Array{Int64,2}:\n 1  0\n 2  2\n\njulia> det(M)\n2.0\n\n\n\n\n\n"
@@ -17338,7 +17338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.logdet",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.logdet",
     "category": "function",
     "text": "logdet(M)\n\nLog of matrix determinant. Equivalent to log(det(M)), but may provide increased accuracy and/or speed.\n\nExamples\n\njulia> M = [1 0; 2 2]\n2×2 Array{Int64,2}:\n 1  0\n 2  2\n\njulia> logdet(M)\n0.6931471805599453\n\njulia> logdet(Matrix(I, 3, 3))\n0.0\n\n\n\n\n\n"
@@ -17346,7 +17346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.logabsdet",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.logabsdet",
     "category": "function",
     "text": "logabsdet(M)\n\nLog of absolute value of matrix determinant. Equivalent to (log(abs(det(M))), sign(det(M))), but may provide increased accuracy and/or speed.\n\nExamples\n\njulia> A = [-1. 0.; 0. 1.]\n2×2 Array{Float64,2}:\n -1.0  0.0\n  0.0  1.0\n\njulia> det(A)\n-1.0\n\njulia> logabsdet(A)\n(0.0, -1.0)\n\njulia> B = [2. 0.; 0. 1.]\n2×2 Array{Float64,2}:\n 2.0  0.0\n 0.0  1.0\n\njulia> det(B)\n2.0\n\njulia> logabsdet(B)\n(0.6931471805599453, 1.0)\n\n\n\n\n\n"
@@ -17354,7 +17354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.inv-Tuple{AbstractArray{T,2} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.inv",
     "category": "method",
     "text": "inv(M)\n\nMatrix inverse. Computes matrix N such that M * N = I, where I is the identity matrix. Computed by solving the left-division N = M \\ I.\n\nExamples\n\njulia> M = [2 5; 1 3]\n2×2 Array{Int64,2}:\n 2  5\n 1  3\n\njulia> N = inv(M)\n2×2 Array{Float64,2}:\n  3.0  -5.0\n -1.0   2.0\n\njulia> M*N == N*M == Matrix(I, 2, 2)\ntrue\n\n\n\n\n\n"
@@ -17362,7 +17362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.pinv",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.pinv",
     "category": "function",
     "text": "pinv(M[, tol::Real])\n\nComputes the Moore-Penrose pseudoinverse.\n\nFor matrices M with floating point elements, it is convenient to compute the pseudoinverse by inverting only singular values above a given threshold, tol.\n\nThe optimal choice of tol varies both with the value of M and the intended application of the pseudoinverse. The default value of tol is eps(real(float(one(eltype(M)))))*minimum(size(M)), which is essentially machine epsilon for the real part of a matrix element multiplied by the larger matrix dimension. For inverting dense ill-conditioned matrices in a least-squares sense, tol = sqrt(eps(real(float(one(eltype(M)))))) is recommended.\n\nFor more information, see [issue8859], [B96], [S84], [KY88].\n\nExamples\n\njulia> M = [1.5 1.3; 1.2 1.9]\n2×2 Array{Float64,2}:\n 1.5  1.3\n 1.2  1.9\n\njulia> N = pinv(M)\n2×2 Array{Float64,2}:\n  1.47287   -1.00775\n -0.930233   1.16279\n\njulia> M * N\n2×2 Array{Float64,2}:\n 1.0          -2.22045e-16\n 4.44089e-16   1.0\n\n[issue8859]: Issue 8859, \"Fix least squares\", https://github.com/JuliaLang/julia/pull/8859\n\n[B96]: Åke Björck, \"Numerical Methods for Least Squares Problems\",  SIAM Press, Philadelphia, 1996, \"Other Titles in Applied Mathematics\", Vol. 51. doi:10.1137/1.9781611971484\n\n[S84]: G. W. Stewart, \"Rank Degeneracy\", SIAM Journal on Scientific and Statistical Computing, 5(2), 1984, 403-413. doi:10.1137/0905030\n\n[KY88]: Konstantinos Konstantinides and Kung Yao, \"Statistical analysis of effective singular values in matrix rank determination\", IEEE Transactions on Acoustics, Speech and Signal Processing, 36(5), 1988, 757-763. doi:10.1109/29.1585\n\n\n\n\n\n"
@@ -17370,7 +17370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.nullspace",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.nullspace",
     "category": "function",
     "text": "nullspace(M[, tol::Real])\n\nComputes a basis for the nullspace of M by including the singular vectors of A whose singular have magnitude are greater than tol*σ₁, where σ₁ is A\'s largest singular values. By default, the value of tol is the smallest dimension of A multiplied by the eps of the eltype of A.\n\nExamples\n\njulia> M = [1 0 0; 0 1 0; 0 0 0]\n3×3 Array{Int64,2}:\n 1  0  0\n 0  1  0\n 0  0  0\n\njulia> nullspace(M)\n3×1 Array{Float64,2}:\n 0.0\n 0.0\n 1.0\n\njulia> nullspace(M, 2)\n3×3 Array{Float64,2}:\n 0.0  1.0  0.0\n 1.0  0.0  0.0\n 0.0  0.0  1.0\n\n\n\n\n\n"
@@ -17378,7 +17378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.kron",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.kron",
     "category": "function",
     "text": "kron(A, B)\n\nKronecker tensor product of two vectors or two matrices.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> B = [im 1; 1 -im]\n2×2 Array{Complex{Int64},2}:\n 0+1im  1+0im\n 1+0im  0-1im\n\njulia> kron(A, B)\n4×4 Array{Complex{Int64},2}:\n 0+1im  1+0im  0+2im  2+0im\n 1+0im  0-1im  2+0im  0-2im\n 0+3im  3+0im  0+4im  4+0im\n 3+0im  0-3im  4+0im  0-4im\n\n\n\n\n\n"
@@ -17386,7 +17386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.exp-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Union{Complex{Float32}, Complex{Float64}, Float32, Float64}}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.exp",
     "category": "method",
     "text": "exp(A::AbstractMatrix)\n\nCompute the matrix exponential of A, defined by\n\ne^A = sum_n=0^infty fracA^nn\n\nFor symmetric or Hermitian A, an eigendecomposition (eigen) is used, otherwise the scaling and squaring algorithm (see [H05]) is chosen.\n\n[H05]: Nicholas J. Higham, \"The squaring and scaling method for the matrix exponential revisited\", SIAM Journal on Matrix Analysis and Applications, 26(4), 2005, 1179-1193. doi:10.1137/090768539\n\nExamples\n\njulia> A = Matrix(1.0I, 2, 2)\n2×2 Array{Float64,2}:\n 1.0  0.0\n 0.0  1.0\n\njulia> exp(A)\n2×2 Array{Float64,2}:\n 2.71828  0.0\n 0.0      2.71828\n\n\n\n\n\n"
@@ -17394,7 +17394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.log-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.log",
     "category": "method",
     "text": "log(A{T}::StridedMatrix{T})\n\nIf A has no negative real eigenvalue, compute the principal matrix logarithm of A, i.e. the unique matrix X such that e^X = A and -pi  Im(lambda)  pi for all the eigenvalues lambda of X. If A has nonpositive eigenvalues, a nonprincipal matrix function is returned whenever possible.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used, if A is triangular an improved version of the inverse scaling and squaring method is employed (see [AH12] and [AHR13]). For general matrices, the complex Schur form (schur) is computed and the triangular algorithm is used on the triangular factor.\n\n[AH12]: Awad H. Al-Mohy and Nicholas J. Higham, \"Improved inverse  scaling and squaring algorithms for the matrix logarithm\", SIAM Journal on Scientific Computing, 34(4), 2012, C153-C169. doi:10.1137/110852553\n\n[AHR13]: Awad H. Al-Mohy, Nicholas J. Higham and Samuel D. Relton, \"Computing the Fréchet derivative of the matrix logarithm and estimating the condition number\", SIAM Journal on Scientific Computing, 35(4), 2013, C394-C410. doi:10.1137/120885991\n\nExamples\n\njulia> A = Matrix(2.7182818*I, 2, 2)\n2×2 Array{Float64,2}:\n 2.71828  0.0\n 0.0      2.71828\n\njulia> log(A)\n2×2 Array{Float64,2}:\n 1.0  0.0\n 0.0  1.0\n\n\n\n\n\n"
@@ -17402,7 +17402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.sqrt-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.sqrt",
     "category": "method",
     "text": "sqrt(A::AbstractMatrix)\n\nIf A has no negative real eigenvalues, compute the principal matrix square root of A, that is the unique matrix X with eigenvalues having positive real part such that X^2 = A. Otherwise, a nonprincipal square root is returned.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the square root. Otherwise, the square root is determined by means of the Björck-Hammarling method [BH83], which computes the complex Schur form (schur) and then the complex square root of the triangular factor.\n\n[BH83]: Åke Björck and Sven Hammarling, \"A Schur method for the square root of a matrix\", Linear Algebra and its Applications, 52-53, 1983, 127-140. doi:10.1016/0024-3795(83)80010-X\n\nExamples\n\njulia> A = [4 0; 0 4]\n2×2 Array{Int64,2}:\n 4  0\n 0  4\n\njulia> sqrt(A)\n2×2 Array{Float64,2}:\n 2.0  0.0\n 0.0  2.0\n\n\n\n\n\n"
@@ -17410,7 +17410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.cos-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.cos",
     "category": "method",
     "text": "cos(A::AbstractMatrix)\n\nCompute the matrix cosine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the cosine. Otherwise, the cosine is determined by calling exp.\n\nExamples\n\njulia> cos(fill(1.0, (2,2)))\n2×2 Array{Float64,2}:\n  0.291927  -0.708073\n -0.708073   0.291927\n\n\n\n\n\n"
@@ -17418,7 +17418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.sin-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.sin",
     "category": "method",
     "text": "sin(A::AbstractMatrix)\n\nCompute the matrix sine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the sine. Otherwise, the sine is determined by calling exp.\n\nExamples\n\njulia> sin(fill(1.0, (2,2)))\n2×2 Array{Float64,2}:\n 0.454649  0.454649\n 0.454649  0.454649\n\n\n\n\n\n"
@@ -17426,7 +17426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.sincos-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.sincos",
     "category": "method",
     "text": "sincos(A::AbstractMatrix)\n\nCompute the matrix sine and cosine of a square matrix A.\n\nExamples\n\njulia> S, C = sincos(fill(1.0, (2,2)));\n\njulia> S\n2×2 Array{Float64,2}:\n 0.454649  0.454649\n 0.454649  0.454649\n\njulia> C\n2×2 Array{Float64,2}:\n  0.291927  -0.708073\n -0.708073   0.291927\n\n\n\n\n\n"
@@ -17434,7 +17434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.tan-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.tan",
     "category": "method",
     "text": "tan(A::AbstractMatrix)\n\nCompute the matrix tangent of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the tangent. Otherwise, the tangent is determined by calling exp.\n\nExamples\n\njulia> tan(fill(1.0, (2,2)))\n2×2 Array{Float64,2}:\n -1.09252  -1.09252\n -1.09252  -1.09252\n\n\n\n\n\n"
@@ -17442,7 +17442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.sec-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.sec",
     "category": "method",
     "text": "sec(A::AbstractMatrix)\n\nCompute the matrix secant of a square matrix A.\n\n\n\n\n\n"
@@ -17450,7 +17450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.csc-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.csc",
     "category": "method",
     "text": "csc(A::AbstractMatrix)\n\nCompute the matrix cosecant of a square matrix A.\n\n\n\n\n\n"
@@ -17458,7 +17458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.cot-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.cot",
     "category": "method",
     "text": "cot(A::AbstractMatrix)\n\nCompute the matrix cotangent of a square matrix A.\n\n\n\n\n\n"
@@ -17466,7 +17466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.cosh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.cosh",
     "category": "method",
     "text": "cosh(A::AbstractMatrix)\n\nCompute the matrix hyperbolic cosine of a square matrix A.\n\n\n\n\n\n"
@@ -17474,7 +17474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.sinh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.sinh",
     "category": "method",
     "text": "sinh(A::AbstractMatrix)\n\nCompute the matrix hyperbolic sine of a square matrix A.\n\n\n\n\n\n"
@@ -17482,7 +17482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.tanh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.tanh",
     "category": "method",
     "text": "tanh(A::AbstractMatrix)\n\nCompute the matrix hyperbolic tangent of a square matrix A.\n\n\n\n\n\n"
@@ -17490,7 +17490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.sech-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.sech",
     "category": "method",
     "text": "sech(A::AbstractMatrix)\n\nCompute the matrix hyperbolic secant of square matrix A.\n\n\n\n\n\n"
@@ -17498,7 +17498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.csch-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.csch",
     "category": "method",
     "text": "csch(A::AbstractMatrix)\n\nCompute the matrix hyperbolic cosecant of square matrix A.\n\n\n\n\n\n"
@@ -17506,7 +17506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.coth-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.coth",
     "category": "method",
     "text": "coth(A::AbstractMatrix)\n\nCompute the matrix hyperbolic cotangent of square matrix A.\n\n\n\n\n\n"
@@ -17514,7 +17514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.acos-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.acos",
     "category": "method",
     "text": "acos(A::AbstractMatrix)\n\nCompute the inverse matrix cosine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the inverse cosine. Otherwise, the inverse cosine is determined by using log and sqrt.  For the theory and logarithmic formulas used to compute this function, see [AH16_1].\n\n[AH16_1]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\nExamples\n\njulia> acos(cos([0.5 0.1; -0.2 0.3]))\n2×2 Array{Complex{Float64},2}:\n  0.5-5.55112e-17im  0.1-2.77556e-17im\n -0.2+2.498e-16im    0.3-3.46945e-16im\n\n\n\n\n\n"
@@ -17522,7 +17522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.asin-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.asin",
     "category": "method",
     "text": "asin(A::AbstractMatrix)\n\nCompute the inverse matrix sine of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the inverse sine. Otherwise, the inverse sine is determined by using log and sqrt.  For the theory and logarithmic formulas used to compute this function, see [AH16_2].\n\n[AH16_2]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\nExamples\n\njulia> asin(sin([0.5 0.1; -0.2 0.3]))\n2×2 Array{Complex{Float64},2}:\n  0.5-4.16334e-17im  0.1-5.55112e-17im\n -0.2+9.71445e-17im  0.3-1.249e-16im\n\n\n\n\n\n"
@@ -17530,7 +17530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.atan-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.atan",
     "category": "method",
     "text": "atan(A::AbstractMatrix)\n\nCompute the inverse matrix tangent of a square matrix A.\n\nIf A is symmetric or Hermitian, its eigendecomposition (eigen) is used to compute the inverse tangent. Otherwise, the inverse tangent is determined by using log.  For the theory and logarithmic formulas used to compute this function, see [AH16_3].\n\n[AH16_3]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\nExamples\n\njulia> atan(tan([0.5 0.1; -0.2 0.3]))\n2×2 Array{Complex{Float64},2}:\n  0.5+1.38778e-17im  0.1-2.77556e-17im\n -0.2+6.93889e-17im  0.3-4.16334e-17im\n\n\n\n\n\n"
@@ -17538,7 +17538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.asec-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.asec",
     "category": "method",
     "text": "asec(A::AbstractMatrix)\n\nCompute the inverse matrix secant of A. \n\n\n\n\n\n"
@@ -17546,7 +17546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.acsc-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.acsc",
     "category": "method",
     "text": "acsc(A::AbstractMatrix)\n\nCompute the inverse matrix cosecant of A. \n\n\n\n\n\n"
@@ -17554,7 +17554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.acot-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.acot",
     "category": "method",
     "text": "acot(A::AbstractMatrix)\n\nCompute the inverse matrix cotangent of A. \n\n\n\n\n\n"
@@ -17562,7 +17562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.acosh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.acosh",
     "category": "method",
     "text": "acosh(A::AbstractMatrix)\n\nCompute the inverse hyperbolic matrix cosine of a square matrix A.  For the theory and logarithmic formulas used to compute this function, see [AH16_4].\n\n[AH16_4]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\n\n\n\n\n"
@@ -17570,7 +17570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.asinh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.asinh",
     "category": "method",
     "text": "asinh(A::AbstractMatrix)\n\nCompute the inverse hyperbolic matrix sine of a square matrix A.  For the theory and logarithmic formulas used to compute this function, see [AH16_5].\n\n[AH16_5]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\n\n\n\n\n"
@@ -17578,7 +17578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.atanh-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.atanh",
     "category": "method",
     "text": "atanh(A::AbstractMatrix)\n\nCompute the inverse hyperbolic matrix tangent of a square matrix A.  For the theory and logarithmic formulas used to compute this function, see [AH16_6].\n\n[AH16_6]: Mary Aprahamian and Nicholas J. Higham, \"Matrix Inverse Trigonometric and Inverse Hyperbolic Functions: Theory and Algorithms\", MIMS EPrint: 2016.4. https://doi.org/10.1137/16M1057577\n\n\n\n\n\n"
@@ -17586,7 +17586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.asech-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.asech",
     "category": "method",
     "text": "asech(A::AbstractMatrix)\n\nCompute the inverse matrix hyperbolic secant of A. \n\n\n\n\n\n"
@@ -17594,7 +17594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.acsch-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.acsch",
     "category": "method",
     "text": "acsch(A::AbstractMatrix)\n\nCompute the inverse matrix hyperbolic cosecant of A. \n\n\n\n\n\n"
@@ -17602,7 +17602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.Math.acoth-Tuple{Union{DenseArray{T,2}, ReinterpretArray{T,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{T,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{T,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where T}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.Math.acoth",
     "category": "method",
     "text": "acoth(A::AbstractMatrix)\n\nCompute the inverse matrix hyperbolic cotangent of A. \n\n\n\n\n\n"
@@ -17610,7 +17610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lyap",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lyap",
     "category": "function",
     "text": "lyap(A, C)\n\nComputes the solution X to the continuous Lyapunov equation AX + XA\' + C = 0, where no eigenvalue of A has a zero real part and no two eigenvalues are negative complex conjugates of each other.\n\nExamples\n\njulia> A = [3. 4.; 5. 6]\n2×2 Array{Float64,2}:\n 3.0  4.0\n 5.0  6.0\n\njulia> B = [1. 1.; 1. 2.]\n2×2 Array{Float64,2}:\n 1.0  1.0\n 1.0  2.0\n\njulia> X = lyap(A, B)\n2×2 Array{Float64,2}:\n  0.5  -0.5\n -0.5   0.25\n\njulia> A*X + X*A\' + B\n2×2 Array{Float64,2}:\n 0.0          6.66134e-16\n 6.66134e-16  8.88178e-16\n\n\n\n\n\n"
@@ -17618,7 +17618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.sylvester",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.sylvester",
     "category": "function",
     "text": "sylvester(A, B, C)\n\nComputes the solution X to the Sylvester equation AX + XB + C = 0, where A, B and C have compatible dimensions and A and -B have no eigenvalues with equal real part.\n\nExamples\n\njulia> A = [3. 4.; 5. 6]\n2×2 Array{Float64,2}:\n 3.0  4.0\n 5.0  6.0\n\njulia> B = [1. 1.; 1. 2.]\n2×2 Array{Float64,2}:\n 1.0  1.0\n 1.0  2.0\n\njulia> C = [1. 2.; -2. 1]\n2×2 Array{Float64,2}:\n  1.0  2.0\n -2.0  1.0\n\njulia> X = sylvester(A, B, C)\n2×2 Array{Float64,2}:\n -4.46667   1.93333\n  3.73333  -1.8\n\njulia> A*X + X*B + C\n2×2 Array{Float64,2}:\n  2.66454e-15  1.77636e-15\n -3.77476e-15  4.44089e-16\n\n\n\n\n\n"
@@ -17626,7 +17626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.issuccess",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.issuccess",
     "category": "function",
     "text": "issuccess(F::Factorization)\n\nTest that a factorization of a matrix succeeded.\n\njulia> F = cholesky([1 0; 0 1]);\n\njulia> LinearAlgebra.issuccess(F)\ntrue\n\njulia> F = lu([1 0; 0 0]; check = false);\n\njulia> LinearAlgebra.issuccess(F)\nfalse\n\n\n\n\n\n"
@@ -17634,7 +17634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.issymmetric",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.issymmetric",
     "category": "function",
     "text": "issymmetric(A) -> Bool\n\nTest whether a matrix is symmetric.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> issymmetric(a)\ntrue\n\njulia> b = [1 im; -im 1]\n2×2 Array{Complex{Int64},2}:\n 1+0im  0+1im\n 0-1im  1+0im\n\njulia> issymmetric(b)\nfalse\n\n\n\n\n\n"
@@ -17642,7 +17642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.isposdef",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.isposdef",
     "category": "function",
     "text": "isposdef(A) -> Bool\n\nTest whether a matrix is positive definite (and Hermitian) by trying to perform a Cholesky factorization of A. See also isposdef!\n\nExamples\n\njulia> A = [1 2; 2 50]\n2×2 Array{Int64,2}:\n 1   2\n 2  50\n\njulia> isposdef(A)\ntrue\n\n\n\n\n\n"
@@ -17650,7 +17650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.isposdef!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.isposdef!",
     "category": "function",
     "text": "isposdef!(A) -> Bool\n\nTest whether a matrix is positive definite (and Hermitian) by trying to perform a Cholesky factorization of A, overwriting A in the process. See also isposdef.\n\nExamples\n\njulia> A = [1. 2.; 2. 50.];\n\njulia> isposdef!(A)\ntrue\n\njulia> A\n2×2 Array{Float64,2}:\n 1.0  2.0\n 2.0  6.78233\n\n\n\n\n\n"
@@ -17658,7 +17658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.istril",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.istril",
     "category": "function",
     "text": "istril(A::AbstractMatrix, k::Integer = 0) -> Bool\n\nTest whether A is lower triangular starting from the kth superdiagonal.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> istril(a)\nfalse\n\njulia> istril(a, 1)\ntrue\n\njulia> b = [1 0; -im -1]\n2×2 Array{Complex{Int64},2}:\n 1+0im   0+0im\n 0-1im  -1+0im\n\njulia> istril(b)\ntrue\n\njulia> istril(b, -1)\nfalse\n\n\n\n\n\n"
@@ -17666,7 +17666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.istriu",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.istriu",
     "category": "function",
     "text": "istriu(A::AbstractMatrix, k::Integer = 0) -> Bool\n\nTest whether A is upper triangular starting from the kth superdiagonal.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> istriu(a)\nfalse\n\njulia> istriu(a, -1)\ntrue\n\njulia> b = [1 im; 0 -1]\n2×2 Array{Complex{Int64},2}:\n 1+0im   0+1im\n 0+0im  -1+0im\n\njulia> istriu(b)\ntrue\n\njulia> istriu(b, 1)\nfalse\n\n\n\n\n\n"
@@ -17674,7 +17674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.isdiag",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.isdiag",
     "category": "function",
     "text": "isdiag(A) -> Bool\n\nTest whether a matrix is diagonal.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> isdiag(a)\nfalse\n\njulia> b = [im 0; 0 -im]\n2×2 Array{Complex{Int64},2}:\n 0+1im  0+0im\n 0+0im  0-1im\n\njulia> isdiag(b)\ntrue\n\n\n\n\n\n"
@@ -17682,7 +17682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.ishermitian",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.ishermitian",
     "category": "function",
     "text": "ishermitian(A) -> Bool\n\nTest whether a matrix is Hermitian.\n\nExamples\n\njulia> a = [1 2; 2 -1]\n2×2 Array{Int64,2}:\n 1   2\n 2  -1\n\njulia> ishermitian(a)\ntrue\n\njulia> b = [1 im; -im 1]\n2×2 Array{Complex{Int64},2}:\n 1+0im  0+1im\n 0-1im  1+0im\n\njulia> ishermitian(b)\ntrue\n\n\n\n\n\n"
@@ -17690,7 +17690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.transpose",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.transpose",
     "category": "function",
     "text": "transpose(A)\n\nLazy transpose. Mutating the returned object should appropriately mutate A. Often, but not always, yields Transpose(A), where Transpose is a lazy transpose wrapper. Note that this operation is recursive.\n\nThis operation is intended for linear algebra usage - for general data manipulation see permutedims, which is non-recursive.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> transpose(A)\n2×2 Transpose{Complex{Int64},Array{Complex{Int64},2}}:\n 3+2im  8+7im\n 9+2im  4+6im\n\n\n\n\n\n"
@@ -17698,7 +17698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.transpose!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.transpose!",
     "category": "function",
     "text": "transpose!(dest,src)\n\nTranspose array src and store the result in the preallocated array dest, which should have a size corresponding to (size(src,2),size(src,1)). No in-place transposition is supported and unexpected results will happen if src and dest have overlapping memory regions.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> B = zeros(Complex{Int64}, 2, 2)\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+0im\n 0+0im  0+0im\n\njulia> transpose!(B, A);\n\njulia> B\n2×2 Array{Complex{Int64},2}:\n 3+2im  8+7im\n 9+2im  4+6im\n\njulia> A\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\n\n\n\n\n"
@@ -17706,7 +17706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.adjoint",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.adjoint",
     "category": "function",
     "text": "adjoint(A)\n\nLazy adjoint (conjugate transposition) (also postfix \'). Note that adjoint is applied recursively to elements.\n\nThis operation is intended for linear algebra usage - for general data manipulation see permutedims.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> adjoint(A)\n2×2 Adjoint{Complex{Int64},Array{Complex{Int64},2}}:\n 3-2im  8-7im\n 9-2im  4-6im\n\n\n\n\n\n"
@@ -17714,7 +17714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.adjoint!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.adjoint!",
     "category": "function",
     "text": "adjoint!(dest,src)\n\nConjugate transpose array src and store the result in the preallocated array dest, which should have a size corresponding to (size(src,2),size(src,1)). No in-place transposition is supported and unexpected results will happen if src and dest have overlapping memory regions.\n\nExamples\n\njulia> A = [3+2im 9+2im; 8+7im  4+6im]\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\njulia> B = zeros(Complex{Int64}, 2, 2)\n2×2 Array{Complex{Int64},2}:\n 0+0im  0+0im\n 0+0im  0+0im\n\njulia> adjoint!(B, A);\n\njulia> B\n2×2 Array{Complex{Int64},2}:\n 3-2im  8-7im\n 9-2im  4-6im\n\njulia> A\n2×2 Array{Complex{Int64},2}:\n 3+2im  9+2im\n 8+7im  4+6im\n\n\n\n\n\n"
@@ -17722,7 +17722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Base.copy-Tuple{Union{Adjoint, Transpose}}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Base.copy",
     "category": "method",
     "text": "copy(A::Transpose)\ncopy(A::Adjoint)\n\nEagerly evaluate the lazy matrix transpose/adjoint. Note that the transposition is applied recursively to elements.\n\nThis operation is intended for linear algebra usage - for general data manipulation see permutedims, which is non-recursive.\n\nExamples\n\njulia> A = [1 2im; -3im 4]\n2×2 Array{Complex{Int64},2}:\n 1+0im  0+2im\n 0-3im  4+0im\n\njulia> T = transpose(A)\n2×2 Transpose{Complex{Int64},Array{Complex{Int64},2}}:\n 1+0im  0-3im\n 0+2im  4+0im\n\njulia> copy(T)\n2×2 Array{Complex{Int64},2}:\n 1+0im  0-3im\n 0+2im  4+0im\n\n\n\n\n\n"
@@ -17730,7 +17730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.stride1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.stride1",
     "category": "function",
     "text": "stride1(A) -> Int\n\nReturn the distance between successive array elements in dimension 1 in units of element size.\n\nExamples\n\njulia> A = [1,2,3,4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> LinearAlgebra.stride1(A)\n1\n\njulia> B = view(A, 2:2:4)\n2-element view(::Array{Int64,1}, 2:2:4) with eltype Int64:\n 2\n 4\n\njulia> LinearAlgebra.stride1(B)\n2\n\n\n\n\n\n"
@@ -17738,7 +17738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.checksquare",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.checksquare",
     "category": "function",
     "text": "LinearAlgebra.checksquare(A)\n\nCheck that a matrix is square, then return its common dimension. For multiple arguments, return a vector.\n\nExamples\n\njulia> A = fill(1, (4,4)); B = fill(1, (5,5));\n\njulia> LinearAlgebra.checksquare(A, B)\n2-element Array{Int64,1}:\n 4\n 5\n\n\n\n\n\n"
@@ -17746,7 +17746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Standard-Functions-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Standard Functions",
     "category": "section",
     "text": "Julia 中的线性代数函数主要通过调用 LAPACK 中的函数来实现。稀疏分解则调用 SuiteSparse 中的函数。Base.:*(::AbstractMatrix, ::AbstractMatrix)\nBase.:\\(::AbstractMatrix, ::AbstractVecOrMat)\nLinearAlgebra.dot\nLinearAlgebra.cross\nLinearAlgebra.factorize\nLinearAlgebra.Diagonal\nLinearAlgebra.Bidiagonal\nLinearAlgebra.SymTridiagonal\nLinearAlgebra.Tridiagonal\nLinearAlgebra.Symmetric\nLinearAlgebra.Hermitian\nLinearAlgebra.LowerTriangular\nLinearAlgebra.UpperTriangular\nLinearAlgebra.UniformScaling\nLinearAlgebra.lu\nLinearAlgebra.lu!\nLinearAlgebra.cholesky\nLinearAlgebra.cholesky!\nLinearAlgebra.lowrankupdate\nLinearAlgebra.lowrankdowndate\nLinearAlgebra.lowrankupdate!\nLinearAlgebra.lowrankdowndate!\nLinearAlgebra.ldlt\nLinearAlgebra.ldlt!\nLinearAlgebra.qr\nLinearAlgebra.qr!\nLinearAlgebra.QR\nLinearAlgebra.QRCompactWY\nLinearAlgebra.QRPivoted\nLinearAlgebra.lq!\nLinearAlgebra.lq\nLinearAlgebra.bunchkaufman\nLinearAlgebra.bunchkaufman!\nLinearAlgebra.eigvals\nLinearAlgebra.eigvals!\nLinearAlgebra.eigmax\nLinearAlgebra.eigmin\nLinearAlgebra.eigvecs\nLinearAlgebra.eigen\nLinearAlgebra.eigen!\nLinearAlgebra.hessenberg\nLinearAlgebra.hessenberg!\nLinearAlgebra.schur!\nLinearAlgebra.schur\nLinearAlgebra.ordschur\nLinearAlgebra.ordschur!\nLinearAlgebra.svd\nLinearAlgebra.svd!\nLinearAlgebra.svdvals\nLinearAlgebra.svdvals!\nLinearAlgebra.Givens\nLinearAlgebra.givens\nLinearAlgebra.triu\nLinearAlgebra.triu!\nLinearAlgebra.tril\nLinearAlgebra.tril!\nLinearAlgebra.diagind\nLinearAlgebra.diag\nLinearAlgebra.diagm\nLinearAlgebra.rank\nLinearAlgebra.norm\nLinearAlgebra.opnorm\nLinearAlgebra.normalize!\nLinearAlgebra.normalize\nLinearAlgebra.cond\nLinearAlgebra.condskeel\nLinearAlgebra.tr\nLinearAlgebra.det\nLinearAlgebra.logdet\nLinearAlgebra.logabsdet\nBase.inv(::AbstractMatrix)\nLinearAlgebra.pinv\nLinearAlgebra.nullspace\nBase.kron\nLinearAlgebra.exp(::StridedMatrix{<:LinearAlgebra.BlasFloat})\nLinearAlgebra.log(::StridedMatrix)\nLinearAlgebra.sqrt(::StridedMatrix{<:Real})\nLinearAlgebra.cos(::StridedMatrix{<:Real})\nLinearAlgebra.sin(::StridedMatrix{<:Real})\nLinearAlgebra.sincos(::StridedMatrix{<:Real})\nLinearAlgebra.tan(::StridedMatrix{<:Real})\nLinearAlgebra.sec(::StridedMatrix)\nLinearAlgebra.csc(::StridedMatrix)\nLinearAlgebra.cot(::StridedMatrix)\nLinearAlgebra.cosh(::StridedMatrix)\nLinearAlgebra.sinh(::StridedMatrix)\nLinearAlgebra.tanh(::StridedMatrix)\nLinearAlgebra.sech(::StridedMatrix)\nLinearAlgebra.csch(::StridedMatrix)\nLinearAlgebra.coth(::StridedMatrix)\nLinearAlgebra.acos(::StridedMatrix)\nLinearAlgebra.asin(::StridedMatrix)\nLinearAlgebra.atan(::StridedMatrix)\nLinearAlgebra.asec(::StridedMatrix)\nLinearAlgebra.acsc(::StridedMatrix)\nLinearAlgebra.acot(::StridedMatrix)\nLinearAlgebra.acosh(::StridedMatrix)\nLinearAlgebra.asinh(::StridedMatrix)\nLinearAlgebra.atanh(::StridedMatrix)\nLinearAlgebra.asech(::StridedMatrix)\nLinearAlgebra.acsch(::StridedMatrix)\nLinearAlgebra.acoth(::StridedMatrix)\nLinearAlgebra.lyap\nLinearAlgebra.sylvester\nLinearAlgebra.issuccess\nLinearAlgebra.issymmetric\nLinearAlgebra.isposdef\nLinearAlgebra.isposdef!\nLinearAlgebra.istril\nLinearAlgebra.istriu\nLinearAlgebra.isdiag\nLinearAlgebra.ishermitian\nBase.transpose\nLinearAlgebra.transpose!\nBase.adjoint\nLinearAlgebra.adjoint!\nBase.copy(::Union{Transpose,Adjoint})\nLinearAlgebra.stride1\nLinearAlgebra.checksquare"
@@ -17754,7 +17754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.mul!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.mul!",
     "category": "function",
     "text": "mul!(Y, A, B) -> Y\n\nCalculates the matrix-matrix or matrix-vector product AB and stores the result in Y, overwriting the existing value of Y. Note that Y must not be aliased with either A or B.\n\nExamples\n\njulia> A=[1.0 2.0; 3.0 4.0]; B=[1.0 1.0; 1.0 1.0]; Y = similar(B); mul!(Y, A, B);\n\njulia> Y\n2×2 Array{Float64,2}:\n 3.0  3.0\n 7.0  7.0\n\n\n\n\n\n"
@@ -17762,7 +17762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.lmul!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.lmul!",
     "category": "function",
     "text": "lmul!(a::Number, B::AbstractArray)\n\nScale an array B by a scalar a overwriting B in-place.\n\nExamples\n\njulia> B = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> lmul!(2, B)\n2×2 Array{Int64,2}:\n 2  4\n 6  8\n\n\n\n\n\nlmul!(A, B)\n\nCalculate the matrix-matrix product AB, overwriting B, and return the result.\n\nExamples\n\njulia> B = [0 1; 1 0];\n\njulia> A = LinearAlgebra.UpperTriangular([1 2; 0 3]);\n\njulia> LinearAlgebra.lmul!(A, B);\n\njulia> B\n2×2 Array{Int64,2}:\n 2  1\n 3  0\n\n\n\n\n\n"
@@ -17770,7 +17770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.rmul!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.rmul!",
     "category": "function",
     "text": "rmul!(A::AbstractArray, b::Number)\n\nScale an array A by a scalar b overwriting A in-place.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> rmul!(A, 2)\n2×2 Array{Int64,2}:\n 2  4\n 6  8\n\n\n\n\n\nrmul!(A, B)\n\nCalculate the matrix-matrix product AB, overwriting A, and return the result.\n\nExamples\n\njulia> A = [0 1; 1 0];\n\njulia> B = LinearAlgebra.UpperTriangular([1 2; 0 3]);\n\njulia> LinearAlgebra.rmul!(A, B);\n\njulia> A\n2×2 Array{Int64,2}:\n 0  3\n 1  2\n\n\n\n\n\n"
@@ -17778,7 +17778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.ldiv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.ldiv!",
     "category": "function",
     "text": "ldiv!(Y, A, B) -> Y\n\nCompute A \\ B in-place and store the result in Y, returning the result.\n\nThe argument A should not be a matrix.  Rather, instead of matrices it should be a factorization object (e.g. produced by factorize or cholesky). The reason for this is that factorization itself is both expensive and typically allocates memory (although it can also be done in-place via, e.g., lu!), and performance-critical situations requiring ldiv! usually also require fine-grained control over the factorization of A.\n\nExamples\n\njulia> A = [1 2.2 4; 3.1 0.2 3; 4 1 2];\n\njulia> X = [1; 2.5; 3];\n\njulia> Y = zero(X);\n\njulia> ldiv!(Y, qr(A), X);\n\njulia> Y\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.051652892561983674\n  0.10020661157024757\n\njulia> A\\X\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.05165289256198333\n  0.10020661157024785\n\n\n\n\n\nldiv!(A, B)\n\nCompute A \\ B in-place and overwriting B to store the result.\n\nThe argument A should not be a matrix.  Rather, instead of matrices it should be a factorization object (e.g. produced by factorize or cholesky). The reason for this is that factorization itself is both expensive and typically allocates memory (although it can also be done in-place via, e.g., lu!), and performance-critical situations requiring ldiv! usually also require fine-grained control over the factorization of A.\n\nExamples\n\njulia> A = [1 2.2 4; 3.1 0.2 3; 4 1 2];\n\njulia> X = [1; 2.5; 3];\n\njulia> Y = copy(X);\n\njulia> ldiv!(qr(A), X);\n\njulia> X\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.051652892561983674\n  0.10020661157024757\n\njulia> A\\Y\n3-element Array{Float64,1}:\n  0.7128099173553719\n -0.05165289256198333\n  0.10020661157024785\n\n\n\n\n\n"
@@ -17786,7 +17786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.rdiv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.rdiv!",
     "category": "function",
     "text": "rdiv!(A, B)\n\nCompute A / B in-place and overwriting A to store the result.\n\nThe argument B should not be a matrix.  Rather, instead of matrices it should be a factorization object (e.g. produced by factorize or cholesky). The reason for this is that factorization itself is both expensive and typically allocates memory (although it can also be done in-place via, e.g., lu!), and performance-critical situations requiring rdiv! usually also require fine-grained control over the factorization of B.\n\n\n\n\n\n"
@@ -17794,23 +17794,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#Low-level-matrix-operations-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Low-level matrix operations",
     "category": "section",
     "text": "在许多情况下，矩阵操作存在 in-place 版本，这允许你使用预先分配的输出向量或矩阵。在优化关键代码是这很实用，可以避免重复分配的开销。根据 Julia 的通常惯例，这些 in-place 操作后面带有 !（例如，mul!）。LinearAlgebra.mul!\nLinearAlgebra.lmul!\nLinearAlgebra.rmul!\nLinearAlgebra.ldiv!\nLinearAlgebra.rdiv!"
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#BLAS-Functions-1",
-    "page": "Linear Algebra",
-    "title": "BLAS Functions",
+    "location": "stdlib/LinearAlgebra/#BLAS-函数-1",
+    "page": "线性代数",
+    "title": "BLAS 函数",
     "category": "section",
     "text": "在 Julia 中（就像许多科学计算一样），密集线性代数操作是基于 LAPACK 库，它反过来建立在被称为 BLAS 的基本线性代数构建模块之上。高度优化的 BLAS 实现在每个计算机架构上可用，并且有时在高性能线性代数例程中直接调用 BLAS 函数很有用。LinearAlgebra.BLAS 提供了一些 BLAS 函数的封装。那些改写了某个输入数组的 BLAS 函数的名称以 \'!\' 结尾。通常，一个 BLAS 函数定义了四个方法，分别针对 Float64，Float32，ComplexF64 和 ComplexF32 数组。"
 },
 
 {
     "location": "stdlib/LinearAlgebra/#stdlib-blas-chars-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "BLAS Character Arguments",
     "category": "section",
     "text": "许多 BLAS 函数接受的参数可以决定是否转置某个参数的（trans），要引用矩阵的哪一个三角（uplo 或 ul），是否可以假设三角矩阵的对角线上全为一（dA），或者输入参数属于矩阵乘法中的哪一边（side）。可能是："
@@ -17818,7 +17818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#stdlib-blas-side-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Multplication Order",
     "category": "section",
     "text": "side 含义\n\'L\' 参数位于矩阵-矩阵操作的左边。\n\'R\' 参数位于矩阵-矩阵操作的右边。"
@@ -17826,7 +17826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#stdlib-blas-uplo-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Triangle Referencing",
     "category": "section",
     "text": "uplo/ul 含义\n\'U\' 只会使用矩阵的上三角部分。\n\'L\' 只会使用矩阵的下三角部分。"
@@ -17834,7 +17834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#stdlib-blas-trans-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Transposition Operation",
     "category": "section",
     "text": "trans/tX 含义\n\'N\' 输入矩阵 X 不被转置或共轭。\n\'T\' 输入矩阵 X 会被转置。\n\'C\' 输入矩阵 X 会被共轭转置。"
@@ -17842,7 +17842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS",
     "category": "module",
     "text": "Interface to BLAS subroutines.\n\n\n\n\n\n"
@@ -17850,7 +17850,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.dotu",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.dotu",
     "category": "function",
     "text": "dotu(n, X, incx, Y, incy)\n\nDot function for two complex vectors consisting of n elements of array X with stride incx and n elements of array Y with stride incy.\n\nExamples\n\njulia> BLAS.dotu(10, fill(1.0im, 10), 1, fill(1.0+im, 20), 2)\n-10.0 + 10.0im\n\n\n\n\n\n"
@@ -17858,7 +17858,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.dotc",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.dotc",
     "category": "function",
     "text": "dotc(n, X, incx, U, incy)\n\nDot function for two complex vectors, consisting of n elements of array X with stride incx and n elements of array U with stride incy, conjugating the first vector.\n\nExamples\n\njulia> BLAS.dotc(10, fill(1.0im, 10), 1, fill(1.0+im, 20), 2)\n10.0 - 10.0im\n\n\n\n\n\n"
@@ -17866,7 +17866,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.blascopy!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.blascopy!",
     "category": "function",
     "text": "blascopy!(n, X, incx, Y, incy)\n\nCopy n elements of array X with stride incx to array Y with stride incy. Returns Y.\n\n\n\n\n\n"
@@ -17874,7 +17874,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.nrm2",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.nrm2",
     "category": "function",
     "text": "nrm2(n, X, incx)\n\n2-norm of a vector consisting of n elements of array X with stride incx.\n\nExamples\n\njulia> BLAS.nrm2(4, fill(1.0, 8), 2)\n2.0\n\njulia> BLAS.nrm2(1, fill(1.0, 8), 2)\n1.0\n\n\n\n\n\n"
@@ -17882,7 +17882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.asum",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.asum",
     "category": "function",
     "text": "asum(n, X, incx)\n\nSum of the absolute values of the first n elements of array X with stride incx.\n\nExamples\n\njulia> BLAS.asum(5, fill(1.0im, 10), 2)\n5.0\n\njulia> BLAS.asum(2, fill(1.0im, 10), 5)\n2.0\n\n\n\n\n\n"
@@ -17890,7 +17890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.axpy!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.axpy!",
     "category": "function",
     "text": "axpy!(a, X, Y)\n\nOverwrite Y with a*X + Y, where a is a scalar. Return Y.\n\nExamples\n\njulia> x = [1; 2; 3];\n\njulia> y = [4; 5; 6];\n\njulia> BLAS.axpy!(2, x, y)\n3-element Array{Int64,1}:\n  6\n  9\n 12\n\n\n\n\n\n"
@@ -17898,7 +17898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.scal!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.scal!",
     "category": "function",
     "text": "scal!(n, a, X, incx)\n\nOverwrite X with a*X for the first n elements of array X with stride incx. Returns X.\n\n\n\n\n\n"
@@ -17906,7 +17906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.scal",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.scal",
     "category": "function",
     "text": "scal(n, a, X, incx)\n\nReturn X scaled by a for the first n elements of array X with stride incx.\n\n\n\n\n\n"
@@ -17914,7 +17914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.ger!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.ger!",
     "category": "function",
     "text": "ger!(alpha, x, y, A)\n\nRank-1 update of the matrix A with vectors x and y as alpha*x*y\' + A.\n\n\n\n\n\n"
@@ -17922,7 +17922,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.syr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.syr!",
     "category": "function",
     "text": "syr!(uplo, alpha, x, A)\n\nRank-1 update of the symmetric matrix A with vector x as alpha*x*transpose(x) + A. uplo controls which triangle of A is updated. Returns A.\n\n\n\n\n\n"
@@ -17930,7 +17930,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.syrk!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.syrk!",
     "category": "function",
     "text": "syrk!(uplo, trans, alpha, A, beta, C)\n\nRank-k update of the symmetric matrix C as alpha*A*transpose(A) + beta*C or alpha*transpose(A)*A + beta*C according to trans. Only the uplo triangle of C is used. Returns C.\n\n\n\n\n\n"
@@ -17938,7 +17938,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.syrk",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.syrk",
     "category": "function",
     "text": "syrk(uplo, trans, alpha, A)\n\nReturns either the upper triangle or the lower triangle of A, according to uplo, of alpha*A*transpose(A) or alpha*transpose(A)*A, according to trans.\n\n\n\n\n\n"
@@ -17946,7 +17946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.her!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.her!",
     "category": "function",
     "text": "her!(uplo, alpha, x, A)\n\nMethods for complex arrays only. Rank-1 update of the Hermitian matrix A with vector x as alpha*x*x\' + A. uplo controls which triangle of A is updated. Returns A.\n\n\n\n\n\n"
@@ -17954,7 +17954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.herk!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.herk!",
     "category": "function",
     "text": "herk!(uplo, trans, alpha, A, beta, C)\n\nMethods for complex arrays only. Rank-k update of the Hermitian matrix C as alpha*A*A\' + beta*C or alpha*A\'*A + beta*C according to trans. Only the uplo triangle of C is updated. Returns C.\n\n\n\n\n\n"
@@ -17962,7 +17962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.herk",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.herk",
     "category": "function",
     "text": "herk(uplo, trans, alpha, A)\n\nMethods for complex arrays only. Returns the uplo triangle of alpha*A*A\' or alpha*A\'*A, according to trans.\n\n\n\n\n\n"
@@ -17970,7 +17970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gbmv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gbmv!",
     "category": "function",
     "text": "gbmv!(trans, m, kl, ku, alpha, A, x, beta, y)\n\nUpdate vector y as alpha*A*x + beta*y or alpha*A\'*x + beta*y according to trans. The matrix A is a general band matrix of dimension m by size(A,2) with kl sub-diagonals and ku super-diagonals. alpha and beta are scalars. Return the updated y.\n\n\n\n\n\n"
@@ -17978,7 +17978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gbmv",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gbmv",
     "category": "function",
     "text": "gbmv(trans, m, kl, ku, alpha, A, x)\n\nReturn alpha*A*x or alpha*A\'*x according to trans. The matrix A is a general band matrix of dimension m by size(A,2) with kl sub-diagonals and ku super-diagonals, and alpha is a scalar.\n\n\n\n\n\n"
@@ -17986,7 +17986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.sbmv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.sbmv!",
     "category": "function",
     "text": "sbmv!(uplo, k, alpha, A, x, beta, y)\n\nUpdate vector y as alpha*A*x + beta*y where A is a a symmetric band matrix of order size(A,2) with k super-diagonals stored in the argument A. The storage layout for A is described the reference BLAS module, level-2 BLAS at http://www.netlib.org/lapack/explore-html/. Only the uplo triangle of A is used.\n\nReturn the updated y.\n\n\n\n\n\n"
@@ -17994,7 +17994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.sbmv-NTuple{5,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.sbmv",
     "category": "method",
     "text": "sbmv(uplo, k, alpha, A, x)\n\nReturn alpha*A*x where A is a symmetric band matrix of order size(A,2) with k super-diagonals stored in the argument A. Only the uplo triangle of A is used.\n\n\n\n\n\n"
@@ -18002,7 +18002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.sbmv-NTuple{4,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.sbmv",
     "category": "method",
     "text": "sbmv(uplo, k, A, x)\n\nReturn A*x where A is a symmetric band matrix of order size(A,2) with k super-diagonals stored in the argument A. Only the uplo triangle of A is used.\n\n\n\n\n\n"
@@ -18010,7 +18010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemm!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gemm!",
     "category": "function",
     "text": "gemm!(tA, tB, alpha, A, B, beta, C)\n\nUpdate C as alpha*A*B + beta*C or the other three variants according to tA and tB. Return the updated C.\n\n\n\n\n\n"
@@ -18018,7 +18018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemm-NTuple{5,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gemm",
     "category": "method",
     "text": "gemm(tA, tB, alpha, A, B)\n\nReturn alpha*A*B or the other three variants according to tA and tB.\n\n\n\n\n\n"
@@ -18026,7 +18026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemm-NTuple{4,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gemm",
     "category": "method",
     "text": "gemm(tA, tB, A, B)\n\nReturn A*B or the other three variants according to tA and tB.\n\n\n\n\n\n"
@@ -18034,7 +18034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gemv!",
     "category": "function",
     "text": "gemv!(tA, alpha, A, x, beta, y)\n\nUpdate the vector y as alpha*A*x + beta*y or alpha*A\'x + beta*y according to tA. alpha and beta are scalars. Return the updated y.\n\n\n\n\n\n"
@@ -18042,7 +18042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemv-NTuple{4,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gemv",
     "category": "method",
     "text": "gemv(tA, alpha, A, x)\n\nReturn alpha*A*x or alpha*A\'x according to tA. alpha is a scalar.\n\n\n\n\n\n"
@@ -18050,7 +18050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.gemv-Tuple{Any,Any,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.gemv",
     "category": "method",
     "text": "gemv(tA, A, x)\n\nReturn A*x or A\'x according to tA.\n\n\n\n\n\n"
@@ -18058,7 +18058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symm!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.symm!",
     "category": "function",
     "text": "symm!(side, ul, alpha, A, B, beta, C)\n\nUpdate C as alpha*A*B + beta*C or alpha*B*A + beta*C according to side. A is assumed to be symmetric. Only the ul triangle of A is used. Return the updated C.\n\n\n\n\n\n"
@@ -18066,7 +18066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symm-NTuple{5,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.symm",
     "category": "method",
     "text": "symm(side, ul, alpha, A, B)\n\nReturn alpha*A*B or alpha*B*A according to side. A is assumed to be symmetric. Only the ul triangle of A is used.\n\n\n\n\n\n"
@@ -18074,7 +18074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symm-NTuple{4,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.symm",
     "category": "method",
     "text": "symm(side, ul, A, B)\n\nReturn A*B or B*A according to side. A is assumed to be symmetric. Only the ul triangle of A is used.\n\n\n\n\n\n"
@@ -18082,7 +18082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.symv!",
     "category": "function",
     "text": "symv!(ul, alpha, A, x, beta, y)\n\nUpdate the vector y as alpha*A*x + beta*y. A is assumed to be symmetric. Only the ul triangle of A is used. alpha and beta are scalars. Return the updated y.\n\n\n\n\n\n"
@@ -18090,7 +18090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symv-NTuple{4,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.symv",
     "category": "method",
     "text": "symv(ul, alpha, A, x)\n\nReturn alpha*A*x. A is assumed to be symmetric. Only the ul triangle of A is used. alpha is a scalar.\n\n\n\n\n\n"
@@ -18098,7 +18098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.symv-Tuple{Any,Any,Any}",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.symv",
     "category": "method",
     "text": "symv(ul, A, x)\n\nReturn A*x. A is assumed to be symmetric. Only the ul triangle of A is used.\n\n\n\n\n\n"
@@ -18106,7 +18106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmm!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trmm!",
     "category": "function",
     "text": "trmm!(side, ul, tA, dA, alpha, A, B)\n\nUpdate B as alpha*A*B or one of the other three variants determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones. Returns the updated B.\n\n\n\n\n\n"
@@ -18114,7 +18114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmm",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trmm",
     "category": "function",
     "text": "trmm(side, ul, tA, dA, alpha, A, B)\n\nReturns alpha*A*B or one of the other three variants determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
@@ -18122,7 +18122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsm!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trsm!",
     "category": "function",
     "text": "trsm!(side, ul, tA, dA, alpha, A, B)\n\nOverwrite B with the solution to A*X = alpha*B or one of the other three variants determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones. Returns the updated B.\n\n\n\n\n\n"
@@ -18130,7 +18130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsm",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trsm",
     "category": "function",
     "text": "trsm(side, ul, tA, dA, alpha, A, B)\n\nReturn the solution to A*X = alpha*B or one of the other three variants determined by determined by side and tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
@@ -18138,7 +18138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trmv!",
     "category": "function",
     "text": "trmv!(ul, tA, dA, A, b)\n\nReturn op(A)*b, where op is determined by tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones. The multiplication occurs in-place on b.\n\n\n\n\n\n"
@@ -18146,7 +18146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trmv",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trmv",
     "category": "function",
     "text": "trmv(ul, tA, dA, A, b)\n\nReturn op(A)*b, where op is determined by tA. Only the ul triangle of A is used. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
@@ -18154,7 +18154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trsv!",
     "category": "function",
     "text": "trsv!(ul, tA, dA, A, b)\n\nOverwrite b with the solution to A*x = b or one of the other two variants determined by tA and ul. dA determines if the diagonal values are read or are assumed to be all ones. Return the updated b.\n\n\n\n\n\n"
@@ -18162,7 +18162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.trsv",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.trsv",
     "category": "function",
     "text": "trsv(ul, tA, dA, A, b)\n\nReturn the solution to A*x = b or one of the other two variants determined by tA and ul. dA determines if the diagonal values are read or are assumed to be all ones.\n\n\n\n\n\n"
@@ -18170,7 +18170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.BLAS.set_num_threads",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.BLAS.set_num_threads",
     "category": "function",
     "text": "set_num_threads(n)\n\nSet the number of threads the BLAS library should use.\n\n\n\n\n\n"
@@ -18178,7 +18178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.I",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.I",
     "category": "constant",
     "text": "I\n\nAn object of type UniformScaling, representing an identity matrix of any size.\n\nExamples\n\njulia> fill(1, (5,6)) * I == fill(1, (5,6))\ntrue\n\njulia> [1 2im 3; 1im 2 3] * I\n2×3 Array{Complex{Int64},2}:\n 1+0im  0+2im  3+0im\n 0+1im  2+0im  3+0im\n\n\n\n\n\n"
@@ -18186,7 +18186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#stdlib-blas-diag-1",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "Unit Diagonal",
     "category": "section",
     "text": "diag/dX 含义\n\'N\' 矩阵 X 对角线上的值会被读取。\n\'U\' 矩阵 X 对角线上假设全为一。LinearAlgebra.BLAS\nLinearAlgebra.BLAS.dotu\nLinearAlgebra.BLAS.dotc\nLinearAlgebra.BLAS.blascopy!\nLinearAlgebra.BLAS.nrm2\nLinearAlgebra.BLAS.asum\nLinearAlgebra.axpy!\nLinearAlgebra.BLAS.scal!\nLinearAlgebra.BLAS.scal\nLinearAlgebra.BLAS.ger!\nLinearAlgebra.BLAS.syr!\nLinearAlgebra.BLAS.syrk!\nLinearAlgebra.BLAS.syrk\nLinearAlgebra.BLAS.her!\nLinearAlgebra.BLAS.herk!\nLinearAlgebra.BLAS.herk\nLinearAlgebra.BLAS.gbmv!\nLinearAlgebra.BLAS.gbmv\nLinearAlgebra.BLAS.sbmv!\nLinearAlgebra.BLAS.sbmv(::Any, ::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.sbmv(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemm!\nLinearAlgebra.BLAS.gemm(::Any, ::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemm(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemv!\nLinearAlgebra.BLAS.gemv(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.gemv(::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symm!\nLinearAlgebra.BLAS.symm(::Any, ::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symm(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symv!\nLinearAlgebra.BLAS.symv(::Any, ::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.symv(::Any, ::Any, ::Any)\nLinearAlgebra.BLAS.trmm!\nLinearAlgebra.BLAS.trmm\nLinearAlgebra.BLAS.trsm!\nLinearAlgebra.BLAS.trsm\nLinearAlgebra.BLAS.trmv!\nLinearAlgebra.BLAS.trmv\nLinearAlgebra.BLAS.trsv!\nLinearAlgebra.BLAS.trsv\nLinearAlgebra.BLAS.set_num_threads\nLinearAlgebra.I"
@@ -18194,7 +18194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK",
     "category": "module",
     "text": "Interfaces to LAPACK subroutines.\n\n\n\n\n\n"
@@ -18202,7 +18202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gbtrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gbtrf!",
     "category": "function",
     "text": "gbtrf!(kl, ku, m, AB) -> (AB, ipiv)\n\nCompute the LU factorization of a banded matrix AB. kl is the first subdiagonal containing a nonzero band, ku is the last superdiagonal containing one, and m is the first dimension of the matrix AB. Returns the LU factorization in-place and ipiv, the vector of pivots used.\n\n\n\n\n\n"
@@ -18210,7 +18210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gbtrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gbtrs!",
     "category": "function",
     "text": "gbtrs!(trans, kl, ku, m, AB, ipiv, B)\n\nSolve the equation AB * X = B. trans determines the orientation of AB. It may be N (no transpose), T (transpose), or C (conjugate transpose). kl is the first subdiagonal containing a nonzero band, ku is the last superdiagonal containing one, and m is the first dimension of the matrix AB. ipiv is the vector of pivots returned from gbtrf!. Returns the vector or matrix X, overwriting B in-place.\n\n\n\n\n\n"
@@ -18218,7 +18218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gebal!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gebal!",
     "category": "function",
     "text": "gebal!(job, A) -> (ilo, ihi, scale)\n\nBalance the matrix A before computing its eigensystem or Schur factorization. job can be one of N (A will not be permuted or scaled), P (A will only be permuted), S (A will only be scaled), or B (A will be both permuted and scaled). Modifies A in-place and returns ilo, ihi, and scale. If permuting was turned on, A[i,j] = 0 if j > i and 1 < j < ilo or j > ihi. scale contains information about the scaling/permutations performed.\n\n\n\n\n\n"
@@ -18226,7 +18226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gebak!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gebak!",
     "category": "function",
     "text": "gebak!(job, side, ilo, ihi, scale, V)\n\nTransform the eigenvectors V of a matrix balanced using gebal! to the unscaled/unpermuted eigenvectors of the original matrix. Modifies V in-place. side can be L (left eigenvectors are transformed) or R (right eigenvectors are transformed).\n\n\n\n\n\n"
@@ -18234,7 +18234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gebrd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gebrd!",
     "category": "function",
     "text": "gebrd!(A) -> (A, d, e, tauq, taup)\n\nReduce A in-place to bidiagonal form A = QBP\'. Returns A, containing the bidiagonal matrix B; d, containing the diagonal elements of B; e, containing the off-diagonal elements of B; tauq, containing the elementary reflectors representing Q; and taup, containing the elementary reflectors representing P.\n\n\n\n\n\n"
@@ -18242,7 +18242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gelqf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gelqf!",
     "category": "function",
     "text": "gelqf!(A, tau)\n\nCompute the LQ factorization of A, A = LQ. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngelqf!(A) -> (A, tau)\n\nCompute the LQ factorization of A, A = LQ.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
@@ -18250,7 +18250,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqlf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.geqlf!",
     "category": "function",
     "text": "geqlf!(A, tau)\n\nCompute the QL factorization of A, A = QL. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngeqlf!(A) -> (A, tau)\n\nCompute the QL factorization of A, A = QL.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
@@ -18258,7 +18258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.geqrf!",
     "category": "function",
     "text": "geqrf!(A, tau)\n\nCompute the QR factorization of A, A = QR. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngeqrf!(A) -> (A, tau)\n\nCompute the QR factorization of A, A = QR.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
@@ -18266,7 +18266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqp3!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.geqp3!",
     "category": "function",
     "text": "geqp3!(A, jpvt, tau)\n\nCompute the pivoted QR factorization of A, AP = QR using BLAS level 3. P is a pivoting matrix, represented by jpvt. tau stores the elementary reflectors. jpvt must have length length greater than or equal to n if A is an (m x n) matrix. tau must have length greater than or equal to the smallest dimension of A.\n\nA, jpvt, and tau are modified in-place.\n\n\n\n\n\ngeqp3!(A, jpvt) -> (A, jpvt, tau)\n\nCompute the pivoted QR factorization of A, AP = QR using BLAS level 3. P is a pivoting matrix, represented by jpvt. jpvt must have length greater than or equal to n if A is an (m x n) matrix.\n\nReturns A and jpvt, modified in-place, and tau, which stores the elementary reflectors.\n\n\n\n\n\ngeqp3!(A) -> (A, jpvt, tau)\n\nCompute the pivoted QR factorization of A, AP = QR using BLAS level 3.\n\nReturns A, modified in-place, jpvt, which represents the pivoting matrix P, and tau, which stores the elementary reflectors.\n\n\n\n\n\n"
@@ -18274,7 +18274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gerqf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gerqf!",
     "category": "function",
     "text": "gerqf!(A, tau)\n\nCompute the RQ factorization of A, A = RQ. tau contains scalars which parameterize the elementary reflectors of the factorization. tau must have length greater than or equal to the smallest dimension of A.\n\nReturns A and tau modified in-place.\n\n\n\n\n\ngerqf!(A) -> (A, tau)\n\nCompute the RQ factorization of A, A = RQ.\n\nReturns A, modified in-place, and tau, which contains scalars which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
@@ -18282,7 +18282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqrt!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.geqrt!",
     "category": "function",
     "text": "geqrt!(A, T)\n\nCompute the blocked QR factorization of A, A = QR. T contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization. The first dimension of T sets the block size and it must be between 1 and n. The second dimension of T must equal the smallest dimension of A.\n\nReturns A and T modified in-place.\n\n\n\n\n\ngeqrt!(A, nb) -> (A, T)\n\nCompute the blocked QR factorization of A, A = QR. nb sets the block size and it must be between 1 and n, the second dimension of A.\n\nReturns A, modified in-place, and T, which contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
@@ -18290,7 +18290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geqrt3!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.geqrt3!",
     "category": "function",
     "text": "geqrt3!(A, T)\n\nRecursively computes the blocked QR factorization of A, A = QR. T contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization.  The first dimension of T sets the block size and it must be between 1 and n. The second dimension of T must equal the smallest dimension of A.\n\nReturns A and T modified in-place.\n\n\n\n\n\ngeqrt3!(A) -> (A, T)\n\nRecursively computes the blocked QR factorization of A, A = QR.\n\nReturns A, modified in-place, and T, which contains upper triangular block reflectors which parameterize the elementary reflectors of the factorization.\n\n\n\n\n\n"
@@ -18298,7 +18298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.getrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.getrf!",
     "category": "function",
     "text": "getrf!(A) -> (A, ipiv, info)\n\nCompute the pivoted LU factorization of A, A = LU.\n\nReturns A, modified in-place, ipiv, the pivoting information, and an info code which indicates success (info = 0), a singular value in U (info = i, in which case U[i,i] is singular), or an error code (info < 0).\n\n\n\n\n\n"
@@ -18306,7 +18306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.tzrzf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.tzrzf!",
     "category": "function",
     "text": "tzrzf!(A) -> (A, tau)\n\nTransforms the upper trapezoidal matrix A to upper triangular form in-place. Returns A and tau, the scalar parameters for the elementary reflectors of the transformation.\n\n\n\n\n\n"
@@ -18314,7 +18314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormrz!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ormrz!",
     "category": "function",
     "text": "ormrz!(side, trans, A, tau, C)\n\nMultiplies the matrix C by Q from the transformation supplied by tzrzf!. Depending on side or trans the multiplication can be left-sided (side = L, Q*C) or right-sided (side = R, C*Q) and Q can be unmodified (trans = N), transposed (trans = T), or conjugate transposed (trans = C). Returns matrix C which is modified in-place with the result of the multiplication.\n\n\n\n\n\n"
@@ -18322,7 +18322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gels!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gels!",
     "category": "function",
     "text": "gels!(trans, A, B) -> (F, B, ssr)\n\nSolves the linear equation A * X = B, transpose(A) * X = B, or adjoint(A) * X = B using a QR or LQ factorization. Modifies the matrix/vector B in place with the solution. A is overwritten with its QR or LQ factorization. trans may be one of N (no modification), T (transpose), or C (conjugate transpose). gels! searches for the minimum norm/least squares solution. A may be under or over determined. The solution is returned in B.\n\n\n\n\n\n"
@@ -18330,7 +18330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gesv!",
     "category": "function",
     "text": "gesv!(A, B) -> (B, A, ipiv)\n\nSolves the linear equation A * X = B where A is a square matrix using the LU factorization of A. A is overwritten with its LU factorization and B is overwritten with the solution X. ipiv contains the pivoting information for the LU factorization of A.\n\n\n\n\n\n"
@@ -18338,7 +18338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.getrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.getrs!",
     "category": "function",
     "text": "getrs!(trans, A, ipiv, B)\n\nSolves the linear equation A * X = B, transpose(A) * X = B, or adjoint(A) * X = B for square A. Modifies the matrix/vector B in place with the solution. A is the LU factorization from getrf!, with ipiv the pivoting information. trans may be one of N (no modification), T (transpose), or C (conjugate transpose).\n\n\n\n\n\n"
@@ -18346,7 +18346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.getri!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.getri!",
     "category": "function",
     "text": "getri!(A, ipiv)\n\nComputes the inverse of A, using its LU factorization found by getrf!. ipiv is the pivot information output and A contains the LU factorization of getrf!. A is overwritten with its inverse.\n\n\n\n\n\n"
@@ -18354,7 +18354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesvx!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gesvx!",
     "category": "function",
     "text": "gesvx!(fact, trans, A, AF, ipiv, equed, R, C, B) -> (X, equed, R, C, B, rcond, ferr, berr, work)\n\nSolves the linear equation A * X = B (trans = N), transpose(A) * X = B (trans = T), or adjoint(A) * X = B (trans = C) using the LU factorization of A. fact may be E, in which case A will be equilibrated and copied to AF; F, in which case AF and ipiv from a previous LU factorization are inputs; or N, in which case A will be copied to AF and then factored. If fact = F, equed may be N, meaning A has not been equilibrated; R, meaning A was multiplied by Diagonal(R) from the left; C, meaning A was multiplied by Diagonal(C) from the right; or B, meaning A was multiplied by Diagonal(R) from the left and Diagonal(C) from the right. If fact = F and equed = R or B the elements of R must all be positive. If fact = F and equed = C or B the elements of C must all be positive.\n\nReturns the solution X; equed, which is an output if fact is not N, and describes the equilibration that was performed; R, the row equilibration diagonal; C, the column equilibration diagonal; B, which may be overwritten with its equilibrated form Diagonal(R)*B (if trans = N and equed = R,B) or Diagonal(C)*B (if trans = T,C and equed = C,B); rcond, the reciprocal condition number of A after equilbrating; ferr, the forward error bound for each solution vector in X; berr, the forward error bound for each solution vector in X; and work, the reciprocal pivot growth factor.\n\n\n\n\n\ngesvx!(A, B)\n\nThe no-equilibration, no-transpose simplification of gesvx!.\n\n\n\n\n\n"
@@ -18362,7 +18362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gelsd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gelsd!",
     "category": "function",
     "text": "gelsd!(A, B, rcond) -> (B, rnk)\n\nComputes the least norm solution of A * X = B by finding the SVD factorization of A, then dividing-and-conquering the problem. B is overwritten with the solution X. Singular values below rcond will be treated as zero. Returns the solution in B and the effective rank of A in rnk.\n\n\n\n\n\n"
@@ -18370,7 +18370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gelsy!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gelsy!",
     "category": "function",
     "text": "gelsy!(A, B, rcond) -> (B, rnk)\n\nComputes the least norm solution of A * X = B by finding the full QR factorization of A, then dividing-and-conquering the problem. B is overwritten with the solution X. Singular values below rcond will be treated as zero. Returns the solution in B and the effective rank of A in rnk.\n\n\n\n\n\n"
@@ -18378,7 +18378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gglse!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gglse!",
     "category": "function",
     "text": "gglse!(A, c, B, d) -> (X,res)\n\nSolves the equation A * x = c where x is subject to the equality constraint B * x = d. Uses the formula ||c - A*x||^2 = 0 to solve. Returns X and the residual sum-of-squares.\n\n\n\n\n\n"
@@ -18386,7 +18386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geev!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.geev!",
     "category": "function",
     "text": "geev!(jobvl, jobvr, A) -> (W, VL, VR)\n\nFinds the eigensystem of A. If jobvl = N, the left eigenvectors of A aren\'t computed. If jobvr = N, the right eigenvectors of A aren\'t computed. If jobvl = V or jobvr = V, the corresponding eigenvectors are computed. Returns the eigenvalues in W, the right eigenvectors in VR, and the left eigenvectors in VL.\n\n\n\n\n\n"
@@ -18394,7 +18394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesdd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gesdd!",
     "category": "function",
     "text": "gesdd!(job, A) -> (U, S, VT)\n\nFinds the singular value decomposition of A, A = U * S * V\', using a divide and conquer approach. If job = A, all the columns of U and the rows of V\' are computed. If job = N, no columns of U or rows of V\' are computed. If job = O, A is overwritten with the columns of (thin) U and the rows of (thin) V\'. If job = S, the columns of (thin) U and the rows of (thin) V\' are computed and returned separately.\n\n\n\n\n\n"
@@ -18402,7 +18402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gesvd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gesvd!",
     "category": "function",
     "text": "gesvd!(jobu, jobvt, A) -> (U, S, VT)\n\nFinds the singular value decomposition of A, A = U * S * V\'. If jobu = A, all the columns of U are computed. If jobvt = A all the rows of V\' are computed. If jobu = N, no columns of U are computed. If jobvt = N no rows of V\' are computed. If jobu = O, A is overwritten with the columns of (thin) U. If jobvt = O, A is overwritten with the rows of (thin) V\'. If jobu = S, the columns of (thin) U are computed and returned separately. If jobvt = S the rows of (thin) V\' are computed and returned separately. jobu and jobvt can\'t both be O.\n\nReturns U, S, and Vt, where S are the singular values of A.\n\n\n\n\n\n"
@@ -18410,7 +18410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ggsvd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ggsvd!",
     "category": "function",
     "text": "ggsvd!(jobu, jobv, jobq, A, B) -> (U, V, Q, alpha, beta, k, l, R)\n\nFinds the generalized singular value decomposition of A and B, U\'*A*Q = D1*R and V\'*B*Q = D2*R. D1 has alpha on its diagonal and D2 has beta on its diagonal. If jobu = U, the orthogonal/unitary matrix U is computed. If jobv = V the orthogonal/unitary matrix V is computed. If jobq = Q, the orthogonal/unitary matrix Q is computed. If jobu, jobv or jobq is N, that matrix is not computed. This function is only available in LAPACK versions prior to 3.6.0.\n\n\n\n\n\n"
@@ -18418,7 +18418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ggsvd3!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ggsvd3!",
     "category": "function",
     "text": "ggsvd3!(jobu, jobv, jobq, A, B) -> (U, V, Q, alpha, beta, k, l, R)\n\nFinds the generalized singular value decomposition of A and B, U\'*A*Q = D1*R and V\'*B*Q = D2*R. D1 has alpha on its diagonal and D2 has beta on its diagonal. If jobu = U, the orthogonal/unitary matrix U is computed. If jobv = V the orthogonal/unitary matrix V is computed. If jobq = Q, the orthogonal/unitary matrix Q is computed. If jobu, jobv, or jobq is N, that matrix is not computed. This function requires LAPACK 3.6.0.\n\n\n\n\n\n"
@@ -18426,7 +18426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.geevx!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.geevx!",
     "category": "function",
     "text": "geevx!(balanc, jobvl, jobvr, sense, A) -> (A, w, VL, VR, ilo, ihi, scale, abnrm, rconde, rcondv)\n\nFinds the eigensystem of A with matrix balancing. If jobvl = N, the left eigenvectors of A aren\'t computed. If jobvr = N, the right eigenvectors of A aren\'t computed. If jobvl = V or jobvr = V, the corresponding eigenvectors are computed. If balanc = N, no balancing is performed. If balanc = P, A is permuted but not scaled. If balanc = S, A is scaled but not permuted. If balanc = B, A is permuted and scaled. If sense = N, no reciprocal condition numbers are computed. If sense = E, reciprocal condition numbers are computed for the eigenvalues only. If sense = V, reciprocal condition numbers are computed for the right eigenvectors only. If sense = B, reciprocal condition numbers are computed for the right eigenvectors and the eigenvectors. If sense = E,B, the right and left eigenvectors must be computed.\n\n\n\n\n\n"
@@ -18434,7 +18434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ggev!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ggev!",
     "category": "function",
     "text": "ggev!(jobvl, jobvr, A, B) -> (alpha, beta, vl, vr)\n\nFinds the generalized eigendecomposition of A and B. If jobvl = N, the left eigenvectors aren\'t computed. If jobvr = N, the right eigenvectors aren\'t computed. If jobvl = V or jobvr = V, the corresponding eigenvectors are computed.\n\n\n\n\n\n"
@@ -18442,7 +18442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gtsv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gtsv!",
     "category": "function",
     "text": "gtsv!(dl, d, du, B)\n\nSolves the equation A * X = B where A is a tridiagonal matrix with dl on the subdiagonal, d on the diagonal, and du on the superdiagonal.\n\nOverwrites B with the solution X and returns it.\n\n\n\n\n\n"
@@ -18450,7 +18450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gttrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gttrf!",
     "category": "function",
     "text": "gttrf!(dl, d, du) -> (dl, d, du, du2, ipiv)\n\nFinds the LU factorization of a tridiagonal matrix with dl on the subdiagonal, d on the diagonal, and du on the superdiagonal.\n\nModifies dl, d, and du in-place and returns them and the second superdiagonal du2 and the pivoting vector ipiv.\n\n\n\n\n\n"
@@ -18458,7 +18458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gttrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gttrs!",
     "category": "function",
     "text": "gttrs!(trans, dl, d, du, du2, ipiv, B)\n\nSolves the equation A * X = B (trans = N), transpose(A) * X = B (trans = T), or adjoint(A) * X = B (trans = C) using the LU factorization computed by gttrf!. B is overwritten with the solution X.\n\n\n\n\n\n"
@@ -18466,7 +18466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orglq!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.orglq!",
     "category": "function",
     "text": "orglq!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a LQ factorization after calling gelqf! on A. Uses the output of gelqf!. A is overwritten by Q.\n\n\n\n\n\n"
@@ -18474,7 +18474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orgqr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.orgqr!",
     "category": "function",
     "text": "orgqr!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a QR factorization after calling geqrf! on A. Uses the output of geqrf!. A is overwritten by Q.\n\n\n\n\n\n"
@@ -18482,7 +18482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orgql!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.orgql!",
     "category": "function",
     "text": "orgql!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a QL factorization after calling geqlf! on A. Uses the output of geqlf!. A is overwritten by Q.\n\n\n\n\n\n"
@@ -18490,7 +18490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orgrq!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.orgrq!",
     "category": "function",
     "text": "orgrq!(A, tau, k = length(tau))\n\nExplicitly finds the matrix Q of a RQ factorization after calling gerqf! on A. Uses the output of gerqf!. A is overwritten by Q.\n\n\n\n\n\n"
@@ -18498,7 +18498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormlq!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ormlq!",
     "category": "function",
     "text": "ormlq!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a LQ factorization of A computed using gelqf!. C is overwritten.\n\n\n\n\n\n"
@@ -18506,7 +18506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormqr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ormqr!",
     "category": "function",
     "text": "ormqr!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a QR factorization of A computed using geqrf!. C is overwritten.\n\n\n\n\n\n"
@@ -18514,7 +18514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormql!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ormql!",
     "category": "function",
     "text": "ormql!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a QL factorization of A computed using geqlf!. C is overwritten.\n\n\n\n\n\n"
@@ -18522,7 +18522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ormrq!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ormrq!",
     "category": "function",
     "text": "ormrq!(side, trans, A, tau, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a RQ factorization of A computed using gerqf!. C is overwritten.\n\n\n\n\n\n"
@@ -18530,7 +18530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gemqrt!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gemqrt!",
     "category": "function",
     "text": "gemqrt!(side, trans, V, T, C)\n\nComputes Q * C (trans = N), transpose(Q) * C (trans = T), adjoint(Q) * C (trans = C) for side = L or the equivalent right-sided multiplication for side = R using Q from a QR factorization of A computed using geqrt!. C is overwritten.\n\n\n\n\n\n"
@@ -18538,7 +18538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.posv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.posv!",
     "category": "function",
     "text": "posv!(uplo, A, B) -> (A, B)\n\nFinds the solution to A * X = B where A is a symmetric or Hermitian positive definite matrix. If uplo = U the upper Cholesky decomposition of A is computed. If uplo = L the lower Cholesky decomposition of A is computed. A is overwritten by its Cholesky decomposition. B is overwritten with the solution X.\n\n\n\n\n\n"
@@ -18546,7 +18546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.potrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.potrf!",
     "category": "function",
     "text": "potrf!(uplo, A)\n\nComputes the Cholesky (upper if uplo = U, lower if uplo = L) decomposition of positive-definite matrix A. A is overwritten and returned with an info code.\n\n\n\n\n\n"
@@ -18554,7 +18554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.potri!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.potri!",
     "category": "function",
     "text": "potri!(uplo, A)\n\nComputes the inverse of positive-definite matrix A after calling potrf! to find its (upper if uplo = U, lower if uplo = L) Cholesky decomposition.\n\nA is overwritten by its inverse and returned.\n\n\n\n\n\n"
@@ -18562,7 +18562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.potrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.potrs!",
     "category": "function",
     "text": "potrs!(uplo, A, B)\n\nFinds the solution to A * X = B where A is a symmetric or Hermitian positive definite matrix whose Cholesky decomposition was computed by potrf!. If uplo = U the upper Cholesky decomposition of A was computed. If uplo = L the lower Cholesky decomposition of A was computed. B is overwritten with the solution X.\n\n\n\n\n\n"
@@ -18570,7 +18570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.pstrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.pstrf!",
     "category": "function",
     "text": "pstrf!(uplo, A, tol) -> (A, piv, rank, info)\n\nComputes the (upper if uplo = U, lower if uplo = L) pivoted Cholesky decomposition of positive-definite matrix A with a user-set tolerance tol. A is overwritten by its Cholesky decomposition.\n\nReturns A, the pivots piv, the rank of A, and an info code. If info = 0, the factorization succeeded. If info = i > 0, then A is indefinite or rank-deficient.\n\n\n\n\n\n"
@@ -18578,7 +18578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.ptsv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.ptsv!",
     "category": "function",
     "text": "ptsv!(D, E, B)\n\nSolves A * X = B for positive-definite tridiagonal A. D is the diagonal of A and E is the off-diagonal. B is overwritten with the solution X and returned.\n\n\n\n\n\n"
@@ -18586,7 +18586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.pttrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.pttrf!",
     "category": "function",
     "text": "pttrf!(D, E)\n\nComputes the LDLt factorization of a positive-definite tridiagonal matrix with D as diagonal and E as off-diagonal. D and E are overwritten and returned.\n\n\n\n\n\n"
@@ -18594,7 +18594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.pttrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.pttrs!",
     "category": "function",
     "text": "pttrs!(D, E, B)\n\nSolves A * X = B for positive-definite tridiagonal A with diagonal D and off-diagonal E after computing A\'s LDLt factorization using pttrf!. B is overwritten with the solution X.\n\n\n\n\n\n"
@@ -18602,7 +18602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trtri!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trtri!",
     "category": "function",
     "text": "trtri!(uplo, diag, A)\n\nFinds the inverse of (upper if uplo = U, lower if uplo = L) triangular matrix A. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. A is overwritten with its inverse.\n\n\n\n\n\n"
@@ -18610,7 +18610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trtrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trtrs!",
     "category": "function",
     "text": "trtrs!(uplo, trans, diag, A, B)\n\nSolves A * X = B (trans = N), transpose(A) * X = B (trans = T), or adjoint(A) * X = B (trans = C) for (upper if uplo = U, lower if uplo = L) triangular matrix A. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. B is overwritten with the solution X.\n\n\n\n\n\n"
@@ -18618,7 +18618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trcon!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trcon!",
     "category": "function",
     "text": "trcon!(norm, uplo, diag, A)\n\nFinds the reciprocal condition number of (upper if uplo = U, lower if uplo = L) triangular matrix A. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. If norm = I, the condition number is found in the infinity norm. If norm = O or 1, the condition number is found in the one norm.\n\n\n\n\n\n"
@@ -18626,7 +18626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trevc!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trevc!",
     "category": "function",
     "text": "trevc!(side, howmny, select, T, VL = similar(T), VR = similar(T))\n\nFinds the eigensystem of an upper triangular matrix T. If side = R, the right eigenvectors are computed. If side = L, the left eigenvectors are computed. If side = B, both sets are computed. If howmny = A, all eigenvectors are found. If howmny = B, all eigenvectors are found and backtransformed using VL and VR. If howmny = S, only the eigenvectors corresponding to the values in select are computed.\n\n\n\n\n\n"
@@ -18634,7 +18634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trrfs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trrfs!",
     "category": "function",
     "text": "trrfs!(uplo, trans, diag, A, B, X, Ferr, Berr) -> (Ferr, Berr)\n\nEstimates the error in the solution to A * X = B (trans = N), transpose(A) * X = B (trans = T), adjoint(A) * X = B (trans = C) for side = L, or the equivalent equations a right-handed side = R X * A after computing X using trtrs!. If uplo = U, A is upper triangular. If uplo = L, A is lower triangular. If diag = N, A has non-unit diagonal elements. If diag = U, all diagonal elements of A are one. Ferr and Berr are optional inputs. Ferr is the forward error and Berr is the backward error, each component-wise.\n\n\n\n\n\n"
@@ -18642,7 +18642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stev!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.stev!",
     "category": "function",
     "text": "stev!(job, dv, ev) -> (dv, Zmat)\n\nComputes the eigensystem for a symmetric tridiagonal matrix with dv as diagonal and ev as off-diagonal. If job = N only the eigenvalues are found and returned in dv. If job = V then the eigenvectors are also found and returned in Zmat.\n\n\n\n\n\n"
@@ -18650,7 +18650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stebz!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.stebz!",
     "category": "function",
     "text": "stebz!(range, order, vl, vu, il, iu, abstol, dv, ev) -> (dv, iblock, isplit)\n\nComputes the eigenvalues for a symmetric tridiagonal matrix with dv as diagonal and ev as off-diagonal. If range = A, all the eigenvalues are found. If range = V, the eigenvalues in the half-open interval (vl, vu] are found. If range = I, the eigenvalues with indices between il and iu are found. If order = B, eigvalues are ordered within a block. If order = E, they are ordered across all the blocks. abstol can be set as a tolerance for convergence.\n\n\n\n\n\n"
@@ -18658,7 +18658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stegr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.stegr!",
     "category": "function",
     "text": "stegr!(jobz, range, dv, ev, vl, vu, il, iu) -> (w, Z)\n\nComputes the eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) for a symmetric tridiagonal matrix with dv as diagonal and ev as off-diagonal. If range = A, all the eigenvalues are found. If range = V, the eigenvalues in the half-open interval (vl, vu] are found. If range = I, the eigenvalues with indices between il and iu are found. The eigenvalues are returned in w and the eigenvectors in Z.\n\n\n\n\n\n"
@@ -18666,7 +18666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.stein!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.stein!",
     "category": "function",
     "text": "stein!(dv, ev_in, w_in, iblock_in, isplit_in)\n\nComputes the eigenvectors for a symmetric tridiagonal matrix with dv as diagonal and ev_in as off-diagonal. w_in specifies the input eigenvalues for which to find corresponding eigenvectors. iblock_in specifies the submatrices corresponding to the eigenvalues in w_in. isplit_in specifies the splitting points between the submatrix blocks.\n\n\n\n\n\n"
@@ -18674,7 +18674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.syconv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.syconv!",
     "category": "function",
     "text": "syconv!(uplo, A, ipiv) -> (A, work)\n\nConverts a symmetric matrix A (which has been factorized into a triangular matrix) into two matrices L and D. If uplo = U, A is upper triangular. If uplo = L, it is lower triangular. ipiv is the pivot vector from the triangular factorization. A is overwritten by L and D.\n\n\n\n\n\n"
@@ -18682,7 +18682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sysv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.sysv!",
     "category": "function",
     "text": "sysv!(uplo, A, B) -> (B, A, ipiv)\n\nFinds the solution to A * X = B for symmetric matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X. A is overwritten by its Bunch-Kaufman factorization. ipiv contains pivoting information about the factorization.\n\n\n\n\n\n"
@@ -18690,7 +18690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sytrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.sytrf!",
     "category": "function",
     "text": "sytrf!(uplo, A) -> (A, ipiv, info)\n\nComputes the Bunch-Kaufman factorization of a symmetric matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored.\n\nReturns A, overwritten by the factorization, a pivot vector ipiv, and the error code info which is a non-negative integer. If info is positive the matrix is singular and the diagonal part of the factorization is exactly zero at position info.\n\n\n\n\n\n"
@@ -18698,7 +18698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sytri!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.sytri!",
     "category": "function",
     "text": "sytri!(uplo, A, ipiv)\n\nComputes the inverse of a symmetric matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. A is overwritten by its inverse.\n\n\n\n\n\n"
@@ -18706,7 +18706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sytrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.sytrs!",
     "category": "function",
     "text": "sytrs!(uplo, A, ipiv, B)\n\nSolves the equation A * X = B for a symmetric matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X.\n\n\n\n\n\n"
@@ -18714,7 +18714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hesv!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.hesv!",
     "category": "function",
     "text": "hesv!(uplo, A, B) -> (B, A, ipiv)\n\nFinds the solution to A * X = B for Hermitian matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X. A is overwritten by its Bunch-Kaufman factorization. ipiv contains pivoting information about the factorization.\n\n\n\n\n\n"
@@ -18722,7 +18722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hetrf!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.hetrf!",
     "category": "function",
     "text": "hetrf!(uplo, A) -> (A, ipiv, info)\n\nComputes the Bunch-Kaufman factorization of a Hermitian matrix A. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored.\n\nReturns A, overwritten by the factorization, a pivot vector ipiv, and the error code info which is a non-negative integer. If info is positive the matrix is singular and the diagonal part of the factorization is exactly zero at position info.\n\n\n\n\n\n"
@@ -18730,7 +18730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hetri!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.hetri!",
     "category": "function",
     "text": "hetri!(uplo, A, ipiv)\n\nComputes the inverse of a Hermitian matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. A is overwritten by its inverse.\n\n\n\n\n\n"
@@ -18738,7 +18738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.hetrs!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.hetrs!",
     "category": "function",
     "text": "hetrs!(uplo, A, ipiv, B)\n\nSolves the equation A * X = B for a Hermitian matrix A using the results of sytrf!. If uplo = U, the upper half of A is stored. If uplo = L, the lower half is stored. B is overwritten by the solution X.\n\n\n\n\n\n"
@@ -18746,7 +18746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.syev!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.syev!",
     "category": "function",
     "text": "syev!(jobz, uplo, A)\n\nFinds the eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) of a symmetric matrix A. If uplo = U, the upper triangle of A is used. If uplo = L, the lower triangle of A is used.\n\n\n\n\n\n"
@@ -18754,7 +18754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.syevr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.syevr!",
     "category": "function",
     "text": "syevr!(jobz, range, uplo, A, vl, vu, il, iu, abstol) -> (W, Z)\n\nFinds the eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) of a symmetric matrix A. If uplo = U, the upper triangle of A is used. If uplo = L, the lower triangle of A is used. If range = A, all the eigenvalues are found. If range = V, the eigenvalues in the half-open interval (vl, vu] are found. If range = I, the eigenvalues with indices between il and iu are found. abstol can be set as a tolerance for convergence.\n\nThe eigenvalues are returned in W and the eigenvectors in Z.\n\n\n\n\n\n"
@@ -18762,7 +18762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.sygvd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.sygvd!",
     "category": "function",
     "text": "sygvd!(itype, jobz, uplo, A, B) -> (w, A, B)\n\nFinds the generalized eigenvalues (jobz = N) or eigenvalues and eigenvectors (jobz = V) of a symmetric matrix A and symmetric positive-definite matrix B. If uplo = U, the upper triangles of A and B are used. If uplo = L, the lower triangles of A and B are used. If itype = 1, the problem to solve is A * x = lambda * B * x. If itype = 2, the problem to solve is A * B * x = lambda * x. If itype = 3, the problem to solve is B * A * x = lambda * x.\n\n\n\n\n\n"
@@ -18770,7 +18770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.bdsqr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.bdsqr!",
     "category": "function",
     "text": "bdsqr!(uplo, d, e_, Vt, U, C) -> (d, Vt, U, C)\n\nComputes the singular value decomposition of a bidiagonal matrix with d on the diagonal and e_ on the off-diagonal. If uplo = U, e_ is the superdiagonal. If uplo = L, e_ is the subdiagonal. Can optionally also compute the product Q\' * C.\n\nReturns the singular values in d, and the matrix C overwritten with Q\' * C.\n\n\n\n\n\n"
@@ -18778,7 +18778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.bdsdc!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.bdsdc!",
     "category": "function",
     "text": "bdsdc!(uplo, compq, d, e_) -> (d, e, u, vt, q, iq)\n\nComputes the singular value decomposition of a bidiagonal matrix with d on the diagonal and e_ on the off-diagonal using a divide and conqueq method. If uplo = U, e_ is the superdiagonal. If uplo = L, e_ is the subdiagonal. If compq = N, only the singular values are found. If compq = I, the singular values and vectors are found. If compq = P, the singular values and vectors are found in compact form. Only works for real types.\n\nReturns the singular values in d, and if compq = P, the compact singular vectors in iq.\n\n\n\n\n\n"
@@ -18786,7 +18786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gecon!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gecon!",
     "category": "function",
     "text": "gecon!(normtype, A, anorm)\n\nFinds the reciprocal condition number of matrix A. If normtype = I, the condition number is found in the infinity norm. If normtype = O or 1, the condition number is found in the one norm. A must be the result of getrf! and anorm is the norm of A in the relevant norm.\n\n\n\n\n\n"
@@ -18794,7 +18794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gehrd!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gehrd!",
     "category": "function",
     "text": "gehrd!(ilo, ihi, A) -> (A, tau)\n\nConverts a matrix A to Hessenberg form. If A is balanced with gebal! then ilo and ihi are the outputs of gebal!. Otherwise they should be ilo = 1 and ihi = size(A,2). tau contains the elementary reflectors of the factorization.\n\n\n\n\n\n"
@@ -18802,7 +18802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.orghr!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.orghr!",
     "category": "function",
     "text": "orghr!(ilo, ihi, A, tau)\n\nExplicitly finds Q, the orthogonal/unitary matrix from gehrd!. ilo, ihi, A, and tau must correspond to the input/output to gehrd!.\n\n\n\n\n\n"
@@ -18810,7 +18810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gees!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gees!",
     "category": "function",
     "text": "gees!(jobvs, A) -> (A, vs, w)\n\nComputes the eigenvalues (jobvs = N) or the eigenvalues and Schur vectors (jobvs = V) of matrix A. A is overwritten by its Schur form.\n\nReturns A, vs containing the Schur vectors, and w, containing the eigenvalues.\n\n\n\n\n\n"
@@ -18818,7 +18818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.gges!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.gges!",
     "category": "function",
     "text": "gges!(jobvsl, jobvsr, A, B) -> (A, B, alpha, beta, vsl, vsr)\n\nComputes the generalized eigenvalues, generalized Schur form, left Schur vectors (jobsvl = V), or right Schur vectors (jobvsr = V) of A and B.\n\nThe generalized eigenvalues are returned in alpha and beta. The left Schur vectors are returned in vsl and the right Schur vectors are returned in vsr.\n\n\n\n\n\n"
@@ -18826,7 +18826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trexc!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trexc!",
     "category": "function",
     "text": "trexc!(compq, ifst, ilst, T, Q) -> (T, Q)\n\nReorder the Schur factorization of a matrix. If compq = V, the Schur vectors Q are reordered. If compq = N they are not modified. ifst and ilst specify the reordering of the vectors.\n\n\n\n\n\n"
@@ -18834,7 +18834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trsen!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trsen!",
     "category": "function",
     "text": "trsen!(compq, job, select, T, Q) -> (T, Q, w, s, sep)\n\nReorder the Schur factorization of a matrix and optionally finds reciprocal condition numbers. If job = N, no condition numbers are found. If job = E, only the condition number for this cluster of eigenvalues is found. If job = V, only the condition number for the invariant subspace is found. If job = B then the condition numbers for the cluster and subspace are found. If compq = V the Schur vectors Q are updated. If compq = N the Schur vectors are not modified. select determines which eigenvalues are in the cluster.\n\nReturns T, Q, reordered eigenvalues in w, the condition number of the cluster of eigenvalues s, and the condition number of the invariant subspace sep.\n\n\n\n\n\n"
@@ -18842,7 +18842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.tgsen!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.tgsen!",
     "category": "function",
     "text": "tgsen!(select, S, T, Q, Z) -> (S, T, alpha, beta, Q, Z)\n\nReorders the vectors of a generalized Schur decomposition. select specifies the eigenvalues in each cluster.\n\n\n\n\n\n"
@@ -18850,16 +18850,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/LinearAlgebra/#LinearAlgebra.LAPACK.trsyl!",
-    "page": "Linear Algebra",
+    "page": "线性代数",
     "title": "LinearAlgebra.LAPACK.trsyl!",
     "category": "function",
     "text": "trsyl!(transa, transb, A, B, C, isgn=1) -> (C, scale)\n\nSolves the Sylvester matrix equation A * X +/- X * B = scale*C where A and B are both quasi-upper triangular. If transa = N, A is not modified. If transa = T, A is transposed. If transa = C, A is conjugate transposed. Similarly for transb and B. If isgn = 1, the equation A * X + X * B = scale * C is solved. If isgn = -1, the equation A * X - X * B = scale * C is solved.\n\nReturns X (overwriting C) and scale.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#LAPACK-Functions-1",
-    "page": "Linear Algebra",
-    "title": "LAPACK Functions",
+    "location": "stdlib/LinearAlgebra/#LAPACK-函数-1",
+    "page": "线性代数",
+    "title": "LAPACK 函数",
     "category": "section",
     "text": "LinearAlgebra.LAPACK 提供了一些针对线性代数的 LAPACK 函数的封装。那些改写了输入数组的函数的名称以 \'!\' 结尾。一个函数通常定义了 4 个方法，分别针对 Float64，Float32，ComplexF64 和 ComplexF32 数组。请注意，由 Julia 提供的 LAPACK API 可以并且将来会改变。因此，这个 API 不是面向用户的，也没有承诺在将来的版本中支持/弃用这个特殊的函数集。LinearAlgebra.LAPACK\nLinearAlgebra.LAPACK.gbtrf!\nLinearAlgebra.LAPACK.gbtrs!\nLinearAlgebra.LAPACK.gebal!\nLinearAlgebra.LAPACK.gebak!\nLinearAlgebra.LAPACK.gebrd!\nLinearAlgebra.LAPACK.gelqf!\nLinearAlgebra.LAPACK.geqlf!\nLinearAlgebra.LAPACK.geqrf!\nLinearAlgebra.LAPACK.geqp3!\nLinearAlgebra.LAPACK.gerqf!\nLinearAlgebra.LAPACK.geqrt!\nLinearAlgebra.LAPACK.geqrt3!\nLinearAlgebra.LAPACK.getrf!\nLinearAlgebra.LAPACK.tzrzf!\nLinearAlgebra.LAPACK.ormrz!\nLinearAlgebra.LAPACK.gels!\nLinearAlgebra.LAPACK.gesv!\nLinearAlgebra.LAPACK.getrs!\nLinearAlgebra.LAPACK.getri!\nLinearAlgebra.LAPACK.gesvx!\nLinearAlgebra.LAPACK.gelsd!\nLinearAlgebra.LAPACK.gelsy!\nLinearAlgebra.LAPACK.gglse!\nLinearAlgebra.LAPACK.geev!\nLinearAlgebra.LAPACK.gesdd!\nLinearAlgebra.LAPACK.gesvd!\nLinearAlgebra.LAPACK.ggsvd!\nLinearAlgebra.LAPACK.ggsvd3!\nLinearAlgebra.LAPACK.geevx!\nLinearAlgebra.LAPACK.ggev!\nLinearAlgebra.LAPACK.gtsv!\nLinearAlgebra.LAPACK.gttrf!\nLinearAlgebra.LAPACK.gttrs!\nLinearAlgebra.LAPACK.orglq!\nLinearAlgebra.LAPACK.orgqr!\nLinearAlgebra.LAPACK.orgql!\nLinearAlgebra.LAPACK.orgrq!\nLinearAlgebra.LAPACK.ormlq!\nLinearAlgebra.LAPACK.ormqr!\nLinearAlgebra.LAPACK.ormql!\nLinearAlgebra.LAPACK.ormrq!\nLinearAlgebra.LAPACK.gemqrt!\nLinearAlgebra.LAPACK.posv!\nLinearAlgebra.LAPACK.potrf!\nLinearAlgebra.LAPACK.potri!\nLinearAlgebra.LAPACK.potrs!\nLinearAlgebra.LAPACK.pstrf!\nLinearAlgebra.LAPACK.ptsv!\nLinearAlgebra.LAPACK.pttrf!\nLinearAlgebra.LAPACK.pttrs!\nLinearAlgebra.LAPACK.trtri!\nLinearAlgebra.LAPACK.trtrs!\nLinearAlgebra.LAPACK.trcon!\nLinearAlgebra.LAPACK.trevc!\nLinearAlgebra.LAPACK.trrfs!\nLinearAlgebra.LAPACK.stev!\nLinearAlgebra.LAPACK.stebz!\nLinearAlgebra.LAPACK.stegr!\nLinearAlgebra.LAPACK.stein!\nLinearAlgebra.LAPACK.syconv!\nLinearAlgebra.LAPACK.sysv!\nLinearAlgebra.LAPACK.sytrf!\nLinearAlgebra.LAPACK.sytri!\nLinearAlgebra.LAPACK.sytrs!\nLinearAlgebra.LAPACK.hesv!\nLinearAlgebra.LAPACK.hetrf!\nLinearAlgebra.LAPACK.hetri!\nLinearAlgebra.LAPACK.hetrs!\nLinearAlgebra.LAPACK.syev!\nLinearAlgebra.LAPACK.syevr!\nLinearAlgebra.LAPACK.sygvd!\nLinearAlgebra.LAPACK.bdsqr!\nLinearAlgebra.LAPACK.bdsdc!\nLinearAlgebra.LAPACK.gecon!\nLinearAlgebra.LAPACK.gehrd!\nLinearAlgebra.LAPACK.orghr!\nLinearAlgebra.LAPACK.gees!\nLinearAlgebra.LAPACK.gges!\nLinearAlgebra.LAPACK.trexc!\nLinearAlgebra.LAPACK.trsen!\nLinearAlgebra.LAPACK.tgsen!\nLinearAlgebra.LAPACK.trsyl!DocTestSetup = nothing"
 },
@@ -19618,87 +19618,87 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#",
-    "page": "The Julia REPL",
-    "title": "The Julia REPL",
+    "page": "Julia REPL",
+    "title": "Julia REPL",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "stdlib/REPL/#The-Julia-REPL-1",
-    "page": "The Julia REPL",
-    "title": "The Julia REPL",
+    "location": "stdlib/REPL/#Julia-REPL-1",
+    "page": "Julia REPL",
+    "title": "Julia REPL",
     "category": "section",
-    "text": "Julia comes with a full-featured interactive command-line REPL (read-eval-print loop) built into the julia executable. In addition to allowing quick and easy evaluation of Julia statements, it has a searchable history, tab-completion, many helpful keybindings, and dedicated help and shell modes. The REPL can be started by simply calling julia with no arguments or double-clicking on the executable:$ julia\n               _\n   _       _ _(_)_     |  A fresh approach to technical computing\n  (_)     | (_) (_)    |  Documentation: https://docs.julialang.org\n   _ _   _| |_  __ _   |  Type \"?help\" for help.\n  | | | | | | |/ _` |  |\n  | | |_| | | | (_| |  |  Version 0.6.0-dev.2493 (2017-01-31 18:53 UTC)\n _/ |\\__\'_|_|_|\\__\'_|  |  Commit c99e12c* (0 days old master)\n|__/                   |  x86_64-linux-gnu\n\njulia>To exit the interactive session, type ^D – the control key together with the d key on a blank line – or type quit() followed by the return or enter key. The REPL greets you with a banner and a julia> prompt."
+    "text": "Julia 附带了一个全功能的交互式命令行 REPL（read-eval-print loop），其内置于 julia 可执行文件中。它除了允许快速简便地执行 Julia 语句外，还具有可搜索的历史记录，tab 补全，许多有用的按键绑定以及专用的 help 和 shell 模式。只需不附带任何参数地调用 julia 或双击可执行文件即可启动 REPL：$ julia\n               _\n   _       _ _(_)_     |  A fresh approach to technical computing\n  (_)     | (_) (_)    |  Documentation: https://docs.julialang.org\n   _ _   _| |_  __ _   |  Type \"?help\" for help.\n  | | | | | | |/ _` |  |\n  | | |_| | | | (_| |  |  Version 0.6.0-dev.2493 (2017-01-31 18:53 UTC)\n _/ |\\__\'_|_|_|\\__\'_|  |  Commit c99e12c* (0 days old master)\n|__/                   |  x86_64-linux-gnu\n\njulia>要退出交互式会话，在空白行上键入 ^D——control 键和 d 键，或者先键入 quit()，然后键入 return 或 enter 键。REPL 用横幅和 julia> 提示符欢迎你。"
 },
 
 {
-    "location": "stdlib/REPL/#The-different-prompt-modes-1",
-    "page": "The Julia REPL",
-    "title": "The different prompt modes",
+    "location": "stdlib/REPL/#不同提示符模式-1",
+    "page": "Julia REPL",
+    "title": "不同提示符模式",
     "category": "section",
     "text": ""
 },
 
 {
-    "location": "stdlib/REPL/#The-Julian-mode-1",
-    "page": "The Julia REPL",
-    "title": "The Julian mode",
+    "location": "stdlib/REPL/#Julian-模式-1",
+    "page": "Julia REPL",
+    "title": "Julian 模式",
     "category": "section",
-    "text": "The REPL has four main modes of operation. The first and most common is the Julian prompt. It is the default mode of operation; each new line initially starts with julia>. It is here that you can enter Julia expressions. Hitting return or enter after a complete expression has been entered will evaluate the entry and show the result of the last expression.julia> string(1 + 2)\n\"3\"There are a number useful features unique to interactive work. In addition to showing the result, the REPL also binds the result to the variable ans. A trailing semicolon on the line can be used as a flag to suppress showing the result.julia> string(3 * 4);\n\njulia> ans\n\"12\"In Julia mode, the REPL supports something called prompt pasting. This activates when pasting text that starts with julia> into the REPL. In that case, only expressions starting with julia> are parsed, others are removed. This makes it is possible to paste a chunk of code that has been copied from a REPL session without having to scrub away prompts and outputs. This feature is enabled by default but can be disabled or enabled at will with Base.REPL.enable_promptpaste(::Bool). If it is enabled, you can try it out by pasting the code block above this paragraph straight into the REPL. This feature does not work on the standard Windows command prompt due to its limitation at detecting when a paste occurs."
+    "text": "REPL 有四种主要的操作模式。第一个也是最常见的是 Julian 提示符。这是默认的操作模式；每个新行最初都以 julia> 开头。就在这里，你可以输入 Julia 表达式。在输入完整表达式后按下 return 或 enter 将执行该表达式，并显示最后一个表达式的结果。julia> string(1 + 2)\n\"3\"交互式运行有许多独特的实用功能。除了显示结果外，REPL 还将结果绑定到变量 ans 上。一行的尾随分号可用作禁止显示结果的标志。julia> string(3 * 4);\n\njulia> ans\n\"12\"Julia 模式中，REPL 支持称为 prompt pasting 的功能。当粘贴以 julia> 文本到 REPL 中时才会激活此功能。在这种情况下，只有以 julia> 开头的表达式才被解析，其它的表达式则被删除。这使得可以粘贴从 REPL 会话中复制的一大块代码，而无需擦除提示和输出。默认情况下启用此功能，但可以使用Base.REPL.enable_promptpaste(::Bool) 任意禁用或启用此功能。如果它已启用，您可以通过将本段上方的代码块直接粘贴到 REPL 中来尝试。此功能在标准的 Windows 命令提示符下不起作用，由于它在检测粘贴何时发生上的限制。"
 },
 
 {
-    "location": "stdlib/REPL/#Help-mode-1",
-    "page": "The Julia REPL",
-    "title": "Help mode",
+    "location": "stdlib/REPL/#帮助模式-1",
+    "page": "Julia REPL",
+    "title": "帮助模式",
     "category": "section",
-    "text": "When the cursor is at the beginning of the line, the prompt can be changed to a help mode by typing ?. Julia will attempt to print help or documentation for anything entered in help mode:julia> ? # upon typing ?, the prompt changes (in place) to: help?>\n\nhelp?> string\nsearch: string String Cstring Cwstring RevString randstring bytestring SubString\n\n  string(xs...)\n\n  Create a string from any values using the print function.Macros, types and variables can also be queried:help?> @time\n  @time\n\n  A macro to execute an expression, printing the time it took to execute, the number of allocations,\n  and the total number of bytes its execution caused to be allocated, before returning the value of the\n  expression.\n\n  See also @timev, @timed, @elapsed, and @allocated.\n\nhelp?> Int32\nsearch: Int32 UInt32\n\n  Int32 <: Signed\n\n  32-bit signed integer type.Help mode can be exited by pressing backspace at the beginning of the line."
+    "text": "当光标在行首时，提示符可以通过键入 ? 改变为帮助模式。Julia 将尝试打印在帮助模式中输入的任何内容的帮助或文档：julia> ? # upon typing ?, the prompt changes (in place) to: help?>\n\nhelp?> string\nsearch: string String Cstring Cwstring RevString randstring bytestring SubString\n\n  string(xs...)\n\n  Create a string from any values using the print function.还可以查询宏，类型和变量：help?> @time\n  @time\n\n  A macro to execute an expression, printing the time it took to execute, the number of allocations,\n  and the total number of bytes its execution caused to be allocated, before returning the value of the\n  expression.\n\n  See also @timev, @timed, @elapsed, and @allocated.\n\nhelp?> Int32\nsearch: Int32 UInt32\n\n  Int32 <: Signed\n\n  32-bit signed integer type.通过在行的开头按退格键可以退出帮助模式。"
 },
 
 {
     "location": "stdlib/REPL/#man-shell-mode-1",
-    "page": "The Julia REPL",
-    "title": "Shell mode",
+    "page": "Julia REPL",
+    "title": "Shell 模式",
     "category": "section",
-    "text": "Just as help mode is useful for quick access to documentation, another common task is to use the system shell to execute system commands. Just as ? entered help mode when at the beginning of the line, a semicolon (;) will enter the shell mode. And it can be exited by pressing backspace at the beginning of the line.julia> ; # upon typing ;, the prompt changes (in place) to: shell>\n\nshell> echo hello\nhello"
+    "text": "正如帮助模式对快速访问文档很有用，另一个常见任务是使用系统 shell 执行系统命令。就像 ? 进入帮助模式，在行的开头，分号（;）将进入 shell 模式。并且通过在行的开头按退格键可以退出 shell 模式。julia> ; # upon typing ;, the prompt changes (in place) to: shell>\n\nshell> echo hello\nhello"
 },
 
 {
-    "location": "stdlib/REPL/#Search-modes-1",
-    "page": "The Julia REPL",
-    "title": "Search modes",
+    "location": "stdlib/REPL/#搜索模式-1",
+    "page": "Julia REPL",
+    "title": "搜索模式",
     "category": "section",
-    "text": "In all of the above modes, the executed lines get saved to a history file, which can be searched.  To initiate an incremental search through the previous history, type ^R – the control key together with the r key. The prompt will change to (reverse-i-search)`\':, and as you type the search query will appear in the quotes. The most recent result that matches the query will dynamically update to the right of the colon as more is typed. To find an older result using the same query, simply type ^R again.Just as ^R is a reverse search, ^S is a forward search, with the prompt (i-search)`\':.  The two may be used in conjunction with each other to move through the previous or next matching results, respectively."
+    "text": "在所有上述模式中，执行过的行被保存到历史文件中，该文件可以被搜索。要通过之前的历史记录启动增量搜索，请键入 ^R——control 键和 r 键。提示符会变为 (reverse-i-search)`\':，搜索查询在你输入时出现在引号中。匹配查询的最近结果会在输入更多内容时动态更新到冒号右侧。要使用相同的查询查找更旧的结果，只需再次键入 ^R。正如 ^R 是反向搜索，^S 是前向搜索，带有提示符 (i-search)`\':。这两者可以彼此结合使用以分别移动至前一个或下一个匹配结果。"
 },
 
 {
-    "location": "stdlib/REPL/#Key-bindings-1",
-    "page": "The Julia REPL",
-    "title": "Key bindings",
+    "location": "stdlib/REPL/#按键绑定-1",
+    "page": "Julia REPL",
+    "title": "按键绑定",
     "category": "section",
-    "text": "The Julia REPL makes great use of key bindings. Several control-key bindings were already introduced above (^D to exit, ^R and ^S for searching), but there are many more. In addition to the control-key, there are also meta-key bindings. These vary more by platform, but most terminals default to using alt- or option- held down with a key to send the meta-key (or can be configured to do so).Keybinding Description\nProgram control \n^D Exit (when buffer is empty)\n^C Interrupt or cancel\n^L Clear console screen\nReturn/Enter, ^J New line, executing if it is complete\nmeta-Return/Enter Insert new line without executing it\n? or ; Enter help or shell mode (when at start of a line)\n^R, ^S Incremental history search, described above\nCursor movement \nRight arrow, ^F Move right one character\nLeft arrow, ^B Move left one character\nctrl-Right, meta-F Move right one word\nctrl-Left, meta-B Move left one word\nHome, ^A Move to beginning of line\nEnd, ^E Move to end of line\nUp arrow, ^P Move up one line (or change to the previous history entry that matches the text before the cursor)\nDown arrow, ^N Move down one line (or change to the next history entry that matches the text before the cursor)\nShift-Arrow Key Move cursor according to the direction of the Arrow key, while activating the region (\"shift selection\")\nPage-up, meta-P Change to the previous history entry\nPage-down, meta-N Change to the next history entry\nmeta-< Change to the first history entry (of the current session if it is before the current position in history)\nmeta-> Change to the last history entry\n^-Space Set the \"mark\" in the editing region (and de-activate the region if it\'s active)\n^-Space ^-Space Set the \"mark\" in the editing region and make the region \"active\", i.e. highlighted\n^G De-activate the region (i.e. make it not highlighted)\n^X^X Exchange the current position with the mark\nEditing \nBackspace, ^H Delete the previous character, or the whole region when it\'s active\nDelete, ^D Forward delete one character (when buffer has text)\nmeta-Backspace Delete the previous word\nmeta-d Forward delete the next word\n^W Delete previous text up to the nearest whitespace\nmeta-w Copy the current region in the kill ring\nmeta-W \"Kill\" the current region, placing the text in the kill ring\n^K \"Kill\" to end of line, placing the text in the kill ring\n^Y \"Yank\" insert the text from the kill ring\nmeta-y Replace a previously yanked text with an older entry from the kill ring\n^T Transpose the characters about the cursor\nmeta-Up arrow Transpose current line with line above\nmeta-Down arrow Transpose current line with line below\nmeta-u Change the next word to uppercase\nmeta-c Change the next word to titlecase\nmeta-l Change the next word to lowercase\n^/, ^_ Undo previous editing action\n^Q Write a number in REPL and press ^Q to open editor at corresponding stackframe or method\nmeta-Left Arrow indent the current line on the left\nmeta-Right Arrow indent the current line on the right"
+    "text": "Julia REPL 充分利用了按键绑定。上面已经介绍了几个 control 键绑定（^D 退出，^R 和 ^S用于搜索），但还有更多按键绑定。除 control 键之外，还有 meta 键绑定。这些因平台而异，但大多数终端默认使用按住 alt- 或 option- 和一个键发送 meta 键（或者可以配置为执行此操作）。按键绑定 描述\n程序控制 \n^D 退出（当缓冲区为空）\n^C 中断或取消\n^L 清空控制台屏幕\nReturn/Enter, ^J 插入新行，如果行是完整的则执行之\nmeta-Return/Enter 插入新行而不执行它\n? 或 ; 进入帮助或 shell 模式（当在行首时）\n^R, ^S 增量历史搜索，如上所述\n光标移动 \nRight arrow, ^F 向右移动一个字符\nLeft arrow, ^B 向左移动一个字符\nctrl-Right, meta-F 向右移动一个单词\nctrl-Left, meta-B 向左移动一个单词\nHome, ^A 移动至行首\nEnd, ^E 移动至行尾\nUp arrow, ^P 向上移动一行（或更改为与光标前文本相匹配的上一条历史记录）\nDown arrow, ^N 向下移动一行（或更改为与光标前文本相匹配的下一条历史记录）\nShift-Arrow Key Move cursor according to the direction of the Arrow key, while activating the region (\"shift selection\")\nPage-up, meta-P 更改为上一条历史记录\nPage-down, meta-N 更改为下一条历史记录\nmeta-< 更改为（当前会话的）第一条历史记录（如果其在历史记录中位于当前位置之前）\nmeta-> 更改为最后一条历史记录\n^-Space Set the \"mark\" in the editing region (and de-activate the region if it\'s active)\n^-Space ^-Space Set the \"mark\" in the editing region and make the region \"active\", i.e. highlighted\n^G De-activate the region (i.e. make it not highlighted)\n^X^X Exchange the current position with the mark\n编辑 \nBackspace, ^H 删除前一个字符，或者整个区域，当它是 active 时\nDelete, ^D Forward delete one character (when buffer has text)\nmeta-Backspace Delete the previous word\nmeta-d Forward delete the next word\n^W Delete previous text up to the nearest whitespace\nmeta-w Copy the current region in the kill ring\nmeta-W \"Kill\" the current region, placing the text in the kill ring\n^K \"Kill\" to end of line, placing the text in the kill ring\n^Y \"Yank\" insert the text from the kill ring\nmeta-y Replace a previously yanked text with an older entry from the kill ring\n^T Transpose the characters about the cursor\nmeta-Up arrow 颠倒当前行和上一行\nmeta-Down arrow 颠倒当前行和下一行\nmeta-u Change the next word to uppercase\nmeta-c Change the next word to titlecase\nmeta-l Change the next word to lowercase\n^/, ^_ 撤消上一个编辑操作\n^Q Write a number in REPL and press ^Q to open editor at corresponding stackframe or method\nmeta-Left Arrow indent the current line on the left\nmeta-Right Arrow indent the current line on the right"
 },
 
 {
-    "location": "stdlib/REPL/#Customizing-keybindings-1",
-    "page": "The Julia REPL",
-    "title": "Customizing keybindings",
+    "location": "stdlib/REPL/#自定义按键绑定-1",
+    "page": "Julia REPL",
+    "title": "自定义按键绑定",
     "category": "section",
-    "text": "Julia\'s REPL keybindings may be fully customized to a user\'s preferences by passing a dictionary to REPL.setup_interface. The keys of this dictionary may be characters or strings. The key \'*\' refers to the default action. Control plus character x bindings are indicated with \"^x\". Meta plus x can be written \"\\\\Mx\". The values of the custom keymap must be nothing (indicating that the input should be ignored) or functions that accept the signature (PromptState, AbstractREPL, Char). The REPL.setup_interface function must be called before the REPL is initialized, by registering the operation with atreplinit . For example, to bind the up and down arrow keys to move through history without prefix search, one could put the following code in ~/.julia/config/startup.jl:import REPL\nimport REPL.LineEdit\n\nconst mykeys = Dict{Any,Any}(\n    # Up Arrow\n    \"\\e[A\" => (s,o...)->(LineEdit.edit_move_up(s) || LineEdit.history_prev(s, LineEdit.mode(s).hist)),\n    # Down Arrow\n    \"\\e[B\" => (s,o...)->(LineEdit.edit_move_up(s) || LineEdit.history_next(s, LineEdit.mode(s).hist))\n)\n\nfunction customize_keys(repl)\n    repl.interface = REPL.setup_interface(repl; extra_repl_keymap = mykeys)\nend\n\natreplinit(customize_keys)Users should refer to LineEdit.jl to discover the available actions on key input."
+    "text": "通过将字典传递给 REPL.setup_interface，Julia 的 REPL 按键绑定可以完全根据用户的喜好进行自定义。该字典的键可以是字符或字符串。键 \'*\' 表示默认操作。Control 键加字符 x 的绑定用 \"^x\" 表示。Meta 加 x 可以写成 \"\\\\Mx\"。自定义按键映射必须为 nothing（表示输入应被忽略）或接受签名的函数  (PromptState, AbstractREPL, Char)。必须在 REPL 初始化前调用 REPL.setup_interface 函数，方法是通过 atreplinit 注册操作。例如，要绑定上和下方向键在没有前缀搜索的情况下浏览历史记录，可以将以下代码放在 ~/.julia/config/startup.jl 中：import REPL\nimport REPL.LineEdit\n\nconst mykeys = Dict{Any,Any}(\n    # Up Arrow\n    \"\\e[A\" => (s,o...)->(LineEdit.edit_move_up(s) || LineEdit.history_prev(s, LineEdit.mode(s).hist)),\n    # Down Arrow\n    \"\\e[B\" => (s,o...)->(LineEdit.edit_move_up(s) || LineEdit.history_next(s, LineEdit.mode(s).hist))\n)\n\nfunction customize_keys(repl)\n    repl.interface = REPL.setup_interface(repl; extra_repl_keymap = mykeys)\nend\n\natreplinit(customize_keys)用户应该参考 LineEdit.jl 来发现输入按键的可用操作。"
 },
 
 {
-    "location": "stdlib/REPL/#Tab-completion-1",
-    "page": "The Julia REPL",
-    "title": "Tab completion",
+    "location": "stdlib/REPL/#Tab-补全-1",
+    "page": "Julia REPL",
+    "title": "Tab 补全",
     "category": "section",
-    "text": "In both the Julian and help modes of the REPL, one can enter the first few characters of a function or type and then press the tab key to get a list all matches:julia> stri[TAB]\nstride     strides     string      strip\n\njulia> Stri[TAB]\nStridedArray    StridedMatrix    StridedVecOrMat  StridedVector    StringThe tab key can also be used to substitute LaTeX math symbols with their Unicode equivalents, and get a list of LaTeX matches as well:julia> \\pi[TAB]\njulia> π\nπ = 3.1415926535897...\n\njulia> e\\_1[TAB] = [1,0]\njulia> e₁ = [1,0]\n2-element Array{Int64,1}:\n 1\n 0\n\njulia> e\\^1[TAB] = [1 0]\njulia> e¹ = [1 0]\n1×2 Array{Int64,2}:\n 1  0\n\njulia> \\sqrt[TAB]2     # √ is equivalent to the sqrt function\njulia> √2\n1.4142135623730951\n\njulia> \\hbar[TAB](h) = h / 2\\pi[TAB]\njulia> ħ(h) = h / 2π\nħ (generic function with 1 method)\n\njulia> \\h[TAB]\n\\hat              \\hermitconjmatrix  \\hkswarow          \\hrectangle\n\\hatapprox        \\hexagon           \\hookleftarrow     \\hrectangleblack\n\\hbar             \\hexagonblack      \\hookrightarrow    \\hslash\n\\heartsuit        \\hksearow          \\house             \\hspace\n\njulia> α=\"\\alpha[TAB]\"   # LaTeX completion also works in strings\njulia> α=\"α\"A full list of tab-completions can be found in the Unicode Input section of the manual.Completion of paths works for strings and julia\'s shell mode:julia> path=\"/[TAB]\"\n.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/\n.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/\nshell> /[TAB]\n.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/\n.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/Tab completion can help with investigation of the available methods matching the input arguments:julia> max([TAB] # All methods are displayed, not shown here due to size of the list\n\njulia> max([1, 2], [TAB] # All methods where `Vector{Int}` matches as first argument\nmax(x, y) in Base at operators.jl:215\nmax(a, b, c, xs...) in Base at operators.jl:281\n\njulia> max([1, 2], max(1, 2), [TAB] # All methods matching the arguments.\nmax(x, y) in Base at operators.jl:215\nmax(a, b, c, xs...) in Base at operators.jl:281Keywords are also displayed in the suggested methods after ;, see below line where limit and keepempty are keyword arguments:julia> split(\"1 1 1\", [TAB]\nsplit(str::AbstractString; limit, keepempty) in Base at strings/util.jl:302\nsplit(str::T, splitter; limit, keepempty) where T<:AbstractString in Base at strings/util.jl:277The completion of the methods uses type inference and can therefore see if the arguments match even if the arguments are output from functions. The function needs to be type stable for the completion to be able to remove non-matching methods.Tab completion can also help completing fields:julia> import UUIDs\n\njulia> UUIDs.uuid[TAB]\nuuid1        uuid4         uuid_versionFields for output from functions can also be completed:julia> split(\"\",\"\")[1].[TAB]\nlastindex  offset  stringThe completion of fields for output from functions uses type inference, and it can only suggest fields if the function is type stable."
+    "text": "在 REPL 的 Julian 和帮助模式中，可以函数或类型的前几个字符，接着按 tab 键来获取所有匹配组成的列表：julia> stri[TAB]\nstride     strides     string      strip\n\njulia> Stri[TAB]\nStridedArray    StridedMatrix    StridedVecOrMat  StridedVector    StringTab 键也可用于将 LaTeX 数学符号替换为其 Unicode 等价字符，也可用于获取 LaTeX 匹配组成的列表：julia> \\pi[TAB]\njulia> π\nπ = 3.1415926535897...\n\njulia> e\\_1[TAB] = [1,0]\njulia> e₁ = [1,0]\n2-element Array{Int64,1}:\n 1\n 0\n\njulia> e\\^1[TAB] = [1 0]\njulia> e¹ = [1 0]\n1×2 Array{Int64,2}:\n 1  0\n\njulia> \\sqrt[TAB]2     # √ is equivalent to the sqrt function\njulia> √2\n1.4142135623730951\n\njulia> \\hbar[TAB](h) = h / 2\\pi[TAB]\njulia> ħ(h) = h / 2π\nħ (generic function with 1 method)\n\njulia> \\h[TAB]\n\\hat              \\hermitconjmatrix  \\hkswarow          \\hrectangle\n\\hatapprox        \\hexagon           \\hookleftarrow     \\hrectangleblack\n\\hbar             \\hexagonblack      \\hookrightarrow    \\hslash\n\\heartsuit        \\hksearow          \\house             \\hspace\n\njulia> α=\"\\alpha[TAB]\"   # LaTeX completion also works in strings\njulia> α=\"α\"Tab 补全的完整列表可以在手册的 Unicode 输入表章节中找到。路径补全适用于字符串和 julia 的 shell 模式：julia> path=\"/[TAB]\"\n.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/\n.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/\nshell> /[TAB]\n.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/\n.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/Tab 补全可以帮助查找与输入参数相匹配的可用方法：julia> max([TAB] # All methods are displayed, not shown here due to size of the list\n\njulia> max([1, 2], [TAB] # All methods where `Vector{Int}` matches as first argument\nmax(x, y) in Base at operators.jl:215\nmax(a, b, c, xs...) in Base at operators.jl:281\n\njulia> max([1, 2], max(1, 2), [TAB] # All methods matching the arguments.\nmax(x, y) in Base at operators.jl:215\nmax(a, b, c, xs...) in Base at operators.jl:281Keywords are also displayed in the suggested methods after ;, see below line where limit and keepempty are keyword arguments:julia> split(\"1 1 1\", [TAB]\nsplit(str::AbstractString; limit, keepempty) in Base at strings/util.jl:302\nsplit(str::T, splitter; limit, keepempty) where T<:AbstractString in Base at strings/util.jl:277The completion of the methods uses type inference and can therefore see if the arguments match even if the arguments are output from functions. The function needs to be type stable for the completion to be able to remove non-matching methods.Tab completion can also help completing fields:julia> import UUIDs\n\njulia> UUIDs.uuid[TAB]\nuuid1        uuid4         uuid_versionFields for output from functions can also be completed:julia> split(\"\",\"\")[1].[TAB]\nlastindex  offset  stringThe completion of fields for output from functions uses type inference, and it can only suggest fields if the function is type stable."
 },
 
 {
     "location": "stdlib/REPL/#Customizing-Colors-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "Customizing Colors",
     "category": "section",
     "text": "The colors used by Julia and the REPL can be customized, as well. To change the color of the Julia prompt you can add something like the following to your ~/.julia/config/startup.jl file, which is to be placed inside your home directory:function customize_colors(repl)\n    repl.prompt_color = Base.text_colors[:cyan]\nend\n\natreplinit(customize_colors)The available color keys can be seen by typing Base.text_colors in the help mode of the REPL. In addition, the integers 0 to 255 can be used as color keys for terminals with 256 color support.You can also change the colors for the help and shell prompts and input and answer text by setting the appropriate field of repl in the customize_colors function above (respectively, help_color, shell_color, input_color, and answer_color). For the latter two, be sure that the envcolors field is also set to false.It is also possible to apply boldface formatting by using Base.text_colors[:bold] as a color. For instance, to print answers in boldface font, one can use the following as a ~/.julia/config/startup.jl:function customize_colors(repl)\n    repl.envcolors = false\n    repl.answer_color = Base.text_colors[:bold]\nend\n\natreplinit(customize_colors)You can also customize the color used to render warning and informational messages by setting the appropriate environment variables. For instance, to render error, warning, and informational messages respectively in magenta, yellow, and cyan you can add the following to your ~/.julia/config/startup.jl file:ENV[\"JULIA_ERROR_COLOR\"] = :magenta\nENV[\"JULIA_WARN_COLOR\"] = :yellow\nENV[\"JULIA_INFO_COLOR\"] = :cyan"
@@ -19706,7 +19706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#TerminalMenus-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "TerminalMenus",
     "category": "section",
     "text": "TerminalMenus is a submodule of the Julia REPL and enables small, low-profile interactive menus in the terminal."
@@ -19714,7 +19714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#Examples-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "Examples",
     "category": "section",
     "text": "import REPL\nusing REPL.TerminalMenus\n\noptions = [\"apple\", \"orange\", \"grape\", \"strawberry\",\n            \"blueberry\", \"peach\", \"lemon\", \"lime\"]\n"
@@ -19722,7 +19722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#RadioMenu-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "RadioMenu",
     "category": "section",
     "text": "The RadioMenu allows the user to select one option from the list. The request function displays the interactive menu and returns the index of the selected choice. If a user presses \'q\' or ctrl-c, request will return a -1.# `pagesize` is the number of items to be displayed at a time.\n#  The UI will scroll if the number of options is greater\n#   than the `pagesize`\nmenu = RadioMenu(options, pagesize=4)\n\n# `request` displays the menu and returns the index after the\n#   user has selected a choice\nchoice = request(\"Choose your favorite fruit:\", menu)\n\nif choice != -1\n    println(\"Your favorite fruit is \", options[choice], \"!\")\nelse\n    println(\"Menu canceled.\")\nend\nOutput:Choose your favorite fruit:\n^  grape\n   strawberry\n > blueberry\nv  peach\nYour favorite fruit is blueberry!"
@@ -19730,7 +19730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#MultiSelectMenu-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "MultiSelectMenu",
     "category": "section",
     "text": "The MultiSelectMenu allows users to select many choices from a list.# here we use the default `pagesize` 10\nmenu = MultiSelectMenu(options)\n\n# `request` returns a `Set` of selected indices\n# if the menu us canceled (ctrl-c or q), return an empty set\nchoices = request(\"Select the fruits you like:\", menu)\n\nif length(choices) > 0\n    println(\"You like the following fruits:\")\n    for i in choices\n        println(\"  - \", options[i])\n    end\nelse\n    println(\"Menu canceled.\")\nendOutput:Select the fruits you like:\n[press: d=done, a=all, n=none]\n   [ ] apple\n > [X] orange\n   [X] grape\n   [ ] strawberry\n   [ ] blueberry\n   [X] peach\n   [ ] lemon\n   [ ] lime\nYou like the following fruits:\n  - orange\n  - grape\n  - peach"
@@ -19738,7 +19738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#Customization-/-Configuration-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "Customization / Configuration",
     "category": "section",
     "text": "All interface customization is done through the keyword only TerminalMenus.config() function."
@@ -19746,7 +19746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#Arguments-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "Arguments",
     "category": "section",
     "text": "charset::Symbol=:na: ui characters to use (:ascii or :unicode); overridden by other arguments\ncursor::Char=\'>\'|\'→\': character to use for cursor\nup_arrow::Char=\'^\'|\'↑\': character to use for up arrow\ndown_arrow::Char=\'v\'|\'↓\': character to use for down arrow\nchecked::String=\"[X]\"|\"✓\": string to use for checked\nunchecked::String=\"[ ]\"|\"⬚\"): string to use for unchecked\nscroll::Symbol=:na: If :wrap then wrap the cursor around top and bottom, if :nowrap do not wrap cursor\nsupress_output::Bool=false: For testing. If true, menu will not be printed to console.\nctrl_c_interrupt::Bool=true: If false, return empty on ^C, if true throw InterruptException() on ^C"
@@ -19754,7 +19754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#Examples-2",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "Examples",
     "category": "section",
     "text": "julia> menu = MultiSelectMenu(options, pagesize=5);\n\njulia> request(menu) # ASCII is used by default\n[press: d=done, a=all, n=none]\n   [ ] apple\n   [X] orange\n   [ ] grape\n > [X] strawberry\nv  [ ] blueberry\nSet([4, 2])\n\njulia> TerminalMenus.config(charset=:unicode)\n\njulia> request(menu)\n[press: d=done, a=all, n=none]\n   ⬚ apple\n   ✓ orange\n   ⬚ grape\n → ✓ strawberry\n↓  ⬚ blueberry\nSet([4, 2])\n\njulia> TerminalMenus.config(checked=\"YEP!\", unchecked=\"NOPE\", cursor=\'⧐\')\n\njulia> request(menu)\n[press: d=done, a=all, n=none]\n   NOPE apple\n   YEP! orange\n   NOPE grape\n ⧐ YEP! strawberry\n↓  NOPE blueberry\nSet([4, 2])\n"
@@ -19762,7 +19762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#Base.atreplinit",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "Base.atreplinit",
     "category": "function",
     "text": "atreplinit(f)\n\nRegister a one-argument function to be called before the REPL interface is initialized in interactive sessions; this is useful to customize the interface. The argument of f is the REPL object. This function should be called from within the .julia/config/startup.jl initialization file.\n\n\n\n\n\n"
@@ -19770,7 +19770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/REPL/#References-1",
-    "page": "The Julia REPL",
+    "page": "Julia REPL",
     "title": "References",
     "category": "section",
     "text": "Base.atreplinit"
