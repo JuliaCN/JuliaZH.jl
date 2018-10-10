@@ -21,7 +21,7 @@ var documenterSearchIndex = {"docs": [
     "page": "主页",
     "title": "简介",
     "category": "section",
-    "text": "科学计算对性能一直有着最高的需求， 可现在相关领域的专家却大量使用比较慢的动态语言来完成他们的日常工作。 我们相信在科学计算领域，有很多好的理由使专家们偏爱动态语言， 因此我们不会舍弃这样的特性。幸运的是，现代语言设计和编译器技术可以大大消除性能折衷（trade-off），并提供足够的单一环境来进行原型设计，而且足够高效地部署性能密集型应用程序。Julia 语言在这其中扮演了这样一个角色：它是一门灵活的动态语言，适合用于科学计算和数值计算，并且性能可与传统的静态类型语言媲美。由于 Julia 被设计为 JIT 友好，Julia 和其它语言比如 Python 或者 R 有所不同，一开始您可能会觉得用 julia 编写高性能的代码并不是一件容易的事。 如果您发现您的某部分代码有些慢，我们非常建议您在尝试其它功能前读一下提高性能的窍门 。理解了 Julia 的运作方式后，写出和 C 一样快的代码对您而言就是小菜一碟。Julia 拥有可选类型标注 和 多重派发这两个特性，同时还拥有很棒的性能。这些都得归功于（使用 LLVM 实现的）类型推导和即时编译（JIT）技术。Julia 是一门支持过程式，函数式和面向对象（object-oriented）的多范式语言。 它像 R 、 MATLAB 和 Python 一样简单，在高级数值计算方面有丰富的表现力，而且支持通用编程。为了实现这个目标， Julia 以数学编程语言（mathematical programming languages）为基础，同时也参考了不少流行的动态语言，例如 Lisp, Perl, Python, Lua, 和 Ruby。Julia 与传统动态语言最重要的区别是：核心语言很小；标准库是用 Julia 本身写的，包括整数运算这样的基础运算。\n丰富的基础类型，既可用于定义和描述对象（object），也可用于做类型标注(类型标注是可选的)\n通过多重派发，可以根据类型的不同，来调用同名函数的不同实现。\n为不同的参数类型，自动生成高效、专用的代码\n接近 C 语言的性能尽管，人们有时会说动态语言是“无类型的”，但实际上绝对不是这样的：每一个对象都有一个类型，无论它是基础的（primitive）还是用户自己定义的。 大多数的动态语言都缺乏类型声明，这往往意味着程序员无法告诉编译器值的类型，也就无法显示地讨论类型。另一方面，在静态语言中，虽然可以标记对象的类型 （往往也必须这么做），但是类型只在编译时期才存在，而无法在运行时进行操作和表达。而在 Julia 里，类型是它们自己的动态对象，并且可以用于向编译器传达信息。类型系统和多重派发是 Julia 语言最主要的特征（虽然你也可以不用它们）：函数通过函数名称和不同类型参数的组合进行定义，然后在调用时会派发 到最接近（most specific）的定义上去。这样的编程模型非常适合数学化的编程，尤其是在传统的面向对象派发中，一些函数的第一个变量理论上并不“拥有”这样一个操作时。 而在Julia中运算符只是函数的一个特殊标记——例如，为用户定义的新类型添加加法运算，你只要为 + 函数定义一个新的方法就可以了。 已有的代码就可以无缝接入这个新的类型。Julia 在设计之初就对性能非常看重，再加上它的动态类型推导（可以被可选的类型标注增强），使得 Julia 的计算性能超过了其它的动态语言，甚至能够与静态编译语言竞争。对于大型数值问题，速度一直都是，也一直会是一个重要的关注点：在过去的几十年里，正在处理的数据量很容易与摩尔定律保持同步。Julia 的目标是创建一个前所未有的集易用、强大、高效于一体的语言。除此之外，Julia 的优势还在于：免费开源（MIT 许可证）\n用户定义的类型和内建类型一样快和兼容\n无需特意编写向量化的代码；非向量化的代码就很快\n为并行计算和分布式计算设计\n轻量级的“绿色”线程 (协程)\n低调又牛逼的类型系统\n优雅、可扩展的类型转换和类型提升\n对 Unicode 的有效支持，包括但不限于 UTF-8\n直接调用 C 函数（不需封装或调用特别的 API）\n像 Shell 一样强大的管理其他进程的能力\n像 Lisp 一样的宏和其他元编程工具"
+    "text": "科学计算对性能一直有着最高的需求， 可现在相关领域的专家却大量使用比较慢的动态语言来完成他们的日常工作。 我们相信在科学计算领域，有很多好的理由使专家们偏爱动态语言， 因此我们不会舍弃这样的特性。幸运的是，现代语言设计和编译器技术可以大大消除性能折衷（trade-off），并提供足够的单一环境来进行原型设计，而且足够高效地部署性能密集型应用程序。Julia 语言在这其中扮演了这样一个角色：它是一门灵活的动态语言，适合用于科学计算和数值计算，并且性能可与传统的静态类型语言媲美。由于 Julia 被设计为 JIT 友好，Julia 和其它语言比如 Python 或者 R 有所不同，一开始您可能会觉得用 julia 编写高性能的代码并不是一件容易的事。 如果您发现您的某部分代码有些慢，我们非常建议您在尝试其它功能前读一下提高性能的窍门 。理解了 Julia 的运作方式后，写出和 C 一样快的代码对您而言就是小菜一碟。Julia 拥有可选类型标注 和 多重派发这两个特性，同时还拥有很棒的性能。这些都得归功于（使用 LLVM 实现的）类型推导和即时编译（JIT）技术。Julia 是一门支持过程式，函数式和面向对象（object-oriented）的多范式语言。 它像 R 、 MATLAB 和 Python 一样简单，在高级数值计算方面有丰富的表现力，而且支持通用编程。为了实现这个目标， Julia 以数学编程语言（mathematical programming languages）为基础，同时也参考了不少流行的动态语言，例如 Lisp, Perl, Python, Lua, 和 Ruby。Julia 与传统动态语言最重要的区别是：核心语言很小；标准库是用 Julia 本身写的，包括整数运算这样的基础运算。\n丰富的基础类型，既可用于定义和描述对象（object），也可用于做类型标注(类型标注是可选的)\n通过多重派发，可以根据类型的不同，来调用同名函数的不同实现。\n为不同的参数类型，自动生成高效、专用的代码\n接近 C 语言的性能尽管，人们有时会说动态语言是“无类型的”，但实际上绝对不是这样的：每一个对象都有一个类型，无论它是基础的（primitive）还是用户自己定义的。 大多数的动态语言都缺乏类型声明，这往往意味着程序员无法告诉编译器值的类型，也就无法显式地讨论类型。另一方面，在静态语言中，虽然可以标记对象的类型 （往往也必须这么做），但是类型只在编译时期才存在，而无法在运行时进行操作和表达。而在 Julia 里，类型是它们自己的动态对象，并且可以用于向编译器传达信息。类型系统和多重派发是 Julia 语言最主要的特征（虽然你也可以不用它们）：函数通过函数名称和不同类型参数的组合进行定义，然后在调用时会派发 到最接近（most specific）的定义上去。这样的编程模型非常适合数学化的编程，尤其是在传统的面向对象派发中，一些函数的第一个变量理论上并不“拥有”这样一个操作时。 而在Julia中运算符只是函数的一个特殊标记——例如，为用户定义的新类型添加加法运算，你只要为 + 函数定义一个新的方法就可以了。 已有的代码就可以无缝接入这个新的类型。Julia 在设计之初就对性能非常看重，再加上它的动态类型推导（可以被可选的类型标注增强），使得 Julia 的计算性能超过了其它的动态语言，甚至能够与静态编译语言竞争。对于大型数值问题，速度一直都是，也一直会是一个重要的关注点：在过去的几十年里，正在处理的数据量很容易与摩尔定律保持同步。Julia 的目标是创建一个前所未有的集易用、强大、高效于一体的语言。除此之外，Julia 的优势还在于：免费开源（MIT 许可证）\n用户定义的类型和内建类型一样快和兼容\n无需特意编写向量化的代码；非向量化的代码就很快\n为并行计算和分布式计算设计\n轻量级的“绿色”线程 (协程)\n低调又牛逼的类型系统\n优雅、可扩展的类型转换和类型提升\n对 Unicode 的有效支持，包括但不限于 UTF-8\n直接调用 C 函数（不需封装或调用特别的 API）\n像 Shell 一样强大的管理其他进程的能力\n像 Lisp 一样的宏和其他元编程工具"
 },
 
 {
@@ -4277,7 +4277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "const",
     "category": "keyword",
-    "text": "const\n\nconst is used to declare global variables which are also constant. In almost all code (and particularly performance sensitive code) global variables should be declared constant in this way.\n\nconst x = 5\n\nMultiple variables can be declared within a single const:\n\nconst y, z = 7, 11\n\nNote that const only applies to one = operation, therefore const x = y = 1 declares x to be constant but not y. On the other hand, const x = const y = 1 declares both x and y as constants.\n\nNote that \"constant-ness\" is not enforced inside containers, so if x is an array or dictionary (for example) you can still add and remove elements.\n\nTechnically, you can even redefine const variables, although this will generate a warning from the compiler. The only strict requirement is that the type of the variable does not change, which is why const variables are much faster than regular globals.\n\n\n\n\n\n"
+    "text": "const\n\nconst is used to declare global variables whose values will not change. In almost all code (and particularly performance sensitive code) global variables should be declared constant in this way.\n\nconst x = 5\n\nMultiple variables can be declared within a single const:\n\nconst y, z = 7, 11\n\nNote that const only applies to one = operation, therefore const x = y = 1 declares x to be constant but not y. On the other hand, const x = const y = 1 declares both x and y constant.\n\nNote that \"constant-ness\" does not extend into mutable containers; only the association between a variable and its value is constant. If x is an array or dictionary (for example) you can still modify, add, or remove elements.\n\nIn some cases changing the value of a const variable gives a warning instead of an error. However, this can produce unpredictable behavior or corrupt the state of your program, and so should be avoided. This feature is intended only for convenience during interactive use.\n\n\n\n\n\n"
 },
 
 {
@@ -4921,7 +4921,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/base/#Base.eps-Tuple{Type{#s148} where #s148<:AbstractFloat}",
+    "location": "base/base/#Base.eps-Tuple{Type{#s164} where #s164<:AbstractFloat}",
     "page": "基本功能",
     "title": "Base.eps",
     "category": "method",
@@ -5045,7 +5045,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Base.Enums.@enum",
     "category": "macro",
-    "text": "@enum EnumName[::BaseType] value1[=x] value2[=y]\n\nCreate an Enum{BaseType} subtype with name EnumName and enum member values of value1 and value2 with optional assigned values of x and y, respectively. EnumName can be used just like other types and enum member values as regular values, such as\n\nExamples\n\njulia> @enum Fruit apple=1 orange=2 kiwi=3\n\njulia> f(x::Fruit) = \"I\'m a Fruit with value: $(Int(x))\"\nf (generic function with 1 method)\n\njulia> f(apple)\n\"I\'m a Fruit with value: 1\"\n\nValues can also be specified inside a begin block, e.g.\n\n@enum EnumName begin\n    value1\n    value2\nend\n\nBaseType, which defaults to Int32, must be a primitive subtype of Integer. Member values can be converted between the enum type and BaseType. read and write perform these conversions automatically.\n\nTo list all the instances of an enum use instances, e.g.\n\njulia> instances(Fruit)\n(apple::Fruit = 1, orange::Fruit = 2, kiwi::Fruit = 3)\n\n\n\n\n\n"
+    "text": "@enum EnumName[::BaseType] value1[=x] value2[=y]\n\nCreate an Enum{BaseType} subtype with name EnumName and enum member values of value1 and value2 with optional assigned values of x and y, respectively. EnumName can be used just like other types and enum member values as regular values, such as\n\nExamples\n\njulia> @enum Fruit apple=1 orange=2 kiwi=3\n\njulia> f(x::Fruit) = \"I\'m a Fruit with value: $(Int(x))\"\nf (generic function with 1 method)\n\njulia> f(apple)\n\"I\'m a Fruit with value: 1\"\n\njulia> Fruit(1)\napple::Fruit = 1\n\nValues can also be specified inside a begin block, e.g.\n\n@enum EnumName begin\n    value1\n    value2\nend\n\nBaseType, which defaults to Int32, must be a primitive subtype of Integer. Member values can be converted between the enum type and BaseType. read and write perform these conversions automatically.\n\nTo list all the instances of an enum use instances, e.g.\n\njulia> instances(Fruit)\n(apple::Fruit = 1, orange::Fruit = 2, kiwi::Fruit = 3)\n\n\n\n\n\n"
 },
 
 {
@@ -5069,7 +5069,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Base.hasmethod",
     "category": "function",
-    "text": "hasmethod(f, Tuple type; world = typemax(UInt)) -> Bool\n\nDetermine whether the given generic function has a method matching the given Tuple of argument types with the upper bound of world age given by world.\n\nExamples\n\njulia> hasmethod(length, Tuple{Array})\ntrue\n\n\n\n\n\n"
+    "text": "hasmethod(f, Tuple type; world = typemax(UInt)) -> Bool\n\nDetermine whether the given generic function has a method matching the given Tuple of argument types with the upper bound of world age given by world.\n\nSee also applicable.\n\nExamples\n\njulia> hasmethod(length, Tuple{Array})\ntrue\n\n\n\n\n\n"
 },
 
 {
@@ -5077,7 +5077,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Core.applicable",
     "category": "function",
-    "text": "applicable(f, args...) -> Bool\n\nDetermine whether the given generic function has a method applicable to the given arguments.\n\nExamples\n\njulia> function f(x, y)\n           x + y\n       end;\n\njulia> applicable(f, 1)\nfalse\n\njulia> applicable(f, 1, 2)\ntrue\n\n\n\n\n\n"
+    "text": "applicable(f, args...) -> Bool\n\nDetermine whether the given generic function has a method applicable to the given arguments.\n\nSee also hasmethod.\n\nExamples\n\njulia> function f(x, y)\n           x + y\n       end;\n\njulia> applicable(f, 1)\nfalse\n\njulia> applicable(f, 1, 2)\ntrue\n\n\n\n\n\n"
 },
 
 {
@@ -5213,7 +5213,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Base.@specialize",
     "category": "macro",
-    "text": "@specialize\n\nReset the specialization hint for an argument back to the default. For details, see @specialize.\n\n\n\n\n\n"
+    "text": "@specialize\n\nReset the specialization hint for an argument back to the default. For details, see @nospecialize.\n\n\n\n\n\n"
 },
 
 {
@@ -5973,7 +5973,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Base.pathof",
     "category": "method",
-    "text": "pathof(m::Module)\n\nReturn the path of m.jl file that was used to import module m, or nothing if m was not imported from a package.\n\n\n\n\n\n"
+    "text": "pathof(m::Module)\n\nReturn the path of m.jl file that was used to import module m, or nothing if m was not imported from a package.\n\nUse dirname to get the directory part and basename to get the file name part of the path.\n\n\n\n\n\n"
 },
 
 {
@@ -6613,7 +6613,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "Base.mapreduce",
     "category": "method",
-    "text": "mapreduce(f, op, itr; [init])\n\nApply function f to each element in itr, and then reduce the result using the binary function op. If provided, init must be a neutral element for op that will be returne for empty collections. It is unspecified whether init is used for non-empty collections. In general, it will be necessary to provide init to work with empty collections.\n\nmapreduce is functionally equivalent to calling reduce(op, map(f, itr); init=init), but will in general execute faster since no intermediate collection needs to be created. See documentation for reduce and map.\n\nExamples\n\njulia> mapreduce(x->x^2, +, [1:3;]) # == 1 + 4 + 9\n14\n\nThe associativity of the reduction is implementation-dependent. Additionally, some implementations may reuse the return value of f for elements that appear multiple times in itr. Use mapfoldl or mapfoldr instead for guaranteed left or right associativity and invocation of f for every value.\n\n\n\n\n\n"
+    "text": "mapreduce(f, op, itr; [init])\n\nApply function f to each element in itr, and then reduce the result using the binary function op. If provided, init must be a neutral element for op that will be returned for empty collections. It is unspecified whether init is used for non-empty collections. In general, it will be necessary to provide init to work with empty collections.\n\nmapreduce is functionally equivalent to calling reduce(op, map(f, itr); init=init), but will in general execute faster since no intermediate collection needs to be created. See documentation for reduce and map.\n\nExamples\n\njulia> mapreduce(x->x^2, +, [1:3;]) # == 1 + 4 + 9\n14\n\nThe associativity of the reduction is implementation-dependent. Additionally, some implementations may reuse the return value of f for elements that appear multiple times in itr. Use mapfoldl or mapfoldr instead for guaranteed left or right associativity and invocation of f for every value.\n\n\n\n\n\n"
 },
 
 {
@@ -6877,7 +6877,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "Base.pairs",
     "category": "function",
-    "text": "pairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\npairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\n"
+    "text": "pairs(collection)\n\nReturn an iterator over key => value pairs for any collection that maps a set of keys to a set of values. This includes arrays, where the keys are the array indices.\n\n\n\n\n\npairs(IndexLinear(), A)\npairs(IndexCartesian(), A)\npairs(IndexStyle(A), A)\n\nAn iterator that accesses each element of the array A, returning i => x, where i is the index for the element and x = A[i]. Identical to pairs(A), except that the style of index can be selected. Also similar to enumerate(A), except i will be a valid index for A, while enumerate always counts from 1 regardless of the indices of A.\n\nSpecifying IndexLinear() ensures that i will be an integer; specifying IndexCartesian() ensures that i will be a CartesianIndex; specifying IndexStyle(A) chooses whichever has been defined as the native indexing style for array A.\n\nMutation of the bounds of the underlying array will invalidate this iterator.\n\nExamples\n\njulia> A = [\"a\" \"d\"; \"b\" \"e\"; \"c\" \"f\"];\n\njulia> for (index, value) in pairs(IndexStyle(A), A)\n           println(\"$index $value\")\n       end\n1 a\n2 b\n3 c\n4 d\n5 e\n6 f\n\njulia> S = view(A, 1:2, :);\n\njulia> for (index, value) in pairs(IndexStyle(S), S)\n           println(\"$index $value\")\n       end\nCartesianIndex(1, 1) a\nCartesianIndex(2, 1) b\nCartesianIndex(1, 2) d\nCartesianIndex(2, 2) e\n\nSee also: IndexStyle, axes.\n\n\n\n\n\n"
 },
 
 {
@@ -7125,7 +7125,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "Base.append!",
     "category": "function",
-    "text": "append!(collection, collection2) -> collection.\n\nAdd the elements of collection2 to the end of collection.\n\nExamples\n\njulia> append!([1],[2,3])\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> append!([1, 2, 3], [4, 5, 6])\n6-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n 5\n 6\n\nUse push! to add individual items to collection which are not already themselves in another collection. The result is of the preceding example is equivalent to push!([1, 2, 3], 4, 5, 6).\n\n\n\n\n\n"
+    "text": "append!(collection, collection2) -> collection.\n\nAdd the elements of collection2 to the end of collection.\n\nExamples\n\njulia> append!([1],[2,3])\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> append!([1, 2, 3], [4, 5, 6])\n6-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n 5\n 6\n\nUse push! to add individual items to collection which are not already themselves in another collection. The result of the preceding example is equivalent to push!([1, 2, 3], 4, 5, 6).\n\n\n\n\n\n"
 },
 
 {
@@ -7197,7 +7197,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学相关",
     "title": "Base.:+",
     "category": "function",
-    "text": "dt::Date + t::Time -> DateTime\n\nThe addition of a Date with a Time produces a DateTime. The hour, minute, second, and millisecond parts of the Time are used along with the year, month, and day of the Date to create the new DateTime. Non-zero microseconds or nanoseconds in the Time type will result in an InexactError being thrown.\n\n\n\n\n\n+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\n"
+    "text": "+(x, y...)\n\nAddition operator. x+y+z+... calls this function with all arguments, i.e. +(x, y, z, ...).\n\nExamples\n\njulia> 1 + 20 + 4\n25\n\njulia> +(1, 20, 4)\n25\n\n\n\n\n\ndt::Date + t::Time -> DateTime\n\nThe addition of a Date with a Time produces a DateTime. The hour, minute, second, and millisecond parts of the Time are used along with the year, month, and day of the Date to create the new DateTime. Non-zero microseconds or nanoseconds in the Time type will result in an InexactError being thrown.\n\n\n\n\n\n"
 },
 
 {
@@ -7309,7 +7309,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学相关",
     "title": "Base.Math.rem2pi",
     "category": "function",
-    "text": "rem2pi(x, r::RoundingMode)\n\nCompute the remainder of x after integer division by 2π, with the quotient rounded according to the rounding mode r. In other words, the quantity\n\nx - 2π*round(x/(2π),r)\n\nwithout any intermediate rounding. This internally uses a high precision approximation of 2π, and so will give a more accurate result than rem(x,2π,r)\n\nif r == RoundNearest, then the result is in the interval -π π. This will generally be the most accurate result.\nif r == RoundToZero, then the result is in the interval 0 2π if x is positive,. or -2π 0 otherwise.\nif r == RoundDown, then the result is in the interval 0 2π.\nif r == RoundUp, then the result is in the interval -2π 0.\n\nExamples\n\njulia> rem2pi(7pi/4, RoundNearest)\n-0.7853981633974485\n\njulia> rem2pi(7pi/4, RoundDown)\n5.497787143782138\n\n\n\n\n\n"
+    "text": "rem2pi(x, r::RoundingMode)\n\nCompute the remainder of x after integer division by 2π, with the quotient rounded according to the rounding mode r. In other words, the quantity\n\nx - 2π*round(x/(2π),r)\n\nwithout any intermediate rounding. This internally uses a high precision approximation of 2π, and so will give a more accurate result than rem(x,2π,r)\n\nif r == RoundNearest, then the result is in the interval -π π. This will generally be the most accurate result. See also RoundNearest.\nif r == RoundToZero, then the result is in the interval 0 2π if x is positive,. or -2π 0 otherwise. See also RoundToZero.\nif r == RoundDown, then the result is in the interval 0 2π. See also RoundDown.\nif r == RoundUp, then the result is in the interval -2π 0. See also RoundUp.\n\nExamples\n\njulia> rem2pi(7pi/4, RoundNearest)\n-0.7853981633974485\n\njulia> rem2pi(7pi/4, RoundDown)\n5.497787143782138\n\n\n\n\n\n"
 },
 
 {
@@ -7941,7 +7941,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学相关",
     "title": "Base.log",
     "category": "method",
-    "text": "log(x)\n\nCompute the natural logarithm of x. Throws DomainError for negative Real arguments. Use complex negative arguments to obtain complex results.\n\n\n\n\n\n"
+    "text": "log(x)\n\nCompute the natural logarithm of x. Throws DomainError for negative Real arguments. Use complex negative arguments to obtain complex results.\n\nExamples\n\njulia> log(2)\n0.6931471805599453\n\njulia> log(-3)\nERROR: DomainError with -3.0:\nlog will only return a complex result if called with a complex argument. Try log(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Symbol, ::Float64) at ./math.jl:31\n[...]\n\n\n\n\n\n"
 },
 
 {
@@ -7949,7 +7949,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学相关",
     "title": "Base.log",
     "category": "method",
-    "text": "log(b,x)\n\nCompute the base b logarithm of x. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log(4,8)\n1.5\n\njulia> log(4,2)\n0.5\n\njulia> log(-2, 3)\nERROR: DomainError with log:\n-2.0 will only return a complex result if called with a complex argument. Try -2.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\njulia> log(2, -3)\nERROR: DomainError with log:\n-3.0 will only return a complex result if called with a complex argument. Try -3.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\nnote: Note\nIf b is a power of 2 or 10, log2 or log10 should be used, as these will typically be faster and more accurate. For example,julia> log(100,1000000)\n2.9999999999999996\n\njulia> log10(1000000)/2\n3.0\n\n\n\n\n\n"
+    "text": "log(b,x)\n\nCompute the base b logarithm of x. Throws DomainError for negative Real arguments.\n\nExamples\n\njulia> log(4,8)\n1.5\n\njulia> log(4,2)\n0.5\n\njulia> log(-2, 3)\nERROR: DomainError with -2.0:\nlog will only return a complex result if called with a complex argument. Try log(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Symbol, ::Float64) at ./math.jl:31\n[...]\n\njulia> log(2, -3)\nERROR: DomainError with -3.0:\nlog will only return a complex result if called with a complex argument. Try log(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Symbol, ::Float64) at ./math.jl:31\n[...]\n\nnote: Note\nIf b is a power of 2 or 10, log2 or log10 should be used, as these will typically be faster and more accurate. For example,julia> log(100,1000000)\n2.9999999999999996\n\njulia> log10(1000000)/2\n3.0\n\n\n\n\n\n"
 },
 
 {
@@ -7973,7 +7973,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学相关",
     "title": "Base.log1p",
     "category": "function",
-    "text": "log1p(x)\n\nAccurate natural logarithm of 1+x. Throws DomainError for Real arguments less than -1.\n\nExamples\n\njulia> log1p(-0.5)\n-0.6931471805599453\n\njulia> log1p(0)\n0.0\n\njulia> log1p(-2)\nERROR: DomainError with log1p:\n-2.0 will only return a complex result if called with a complex argument. Try -2.0(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Float64, ::Symbol) at ./math.jl:31\n[...]\n\n\n\n\n\n"
+    "text": "log1p(x)\n\nAccurate natural logarithm of 1+x. Throws DomainError for Real arguments less than -1.\n\nExamples\n\njulia> log1p(-0.5)\n-0.6931471805599453\n\njulia> log1p(0)\n0.0\n\njulia> log1p(-2)\nERROR: DomainError with -2.0:\nlog1p will only return a complex result if called with a complex argument. Try log1p(Complex(x)).\nStacktrace:\n [1] throw_complex_domainerror(::Symbol, ::Float64) at ./math.jl:31\n[...]\n\n\n\n\n\n"
 },
 
 {
@@ -8105,7 +8105,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/math/#Base.round-Tuple{Complex{#s148} where #s148<:AbstractFloat,RoundingMode,RoundingMode}",
+    "location": "base/math/#Base.round-Tuple{Complex{#s164} where #s164<:AbstractFloat,RoundingMode,RoundingMode}",
     "page": "数学相关",
     "title": "Base.round",
     "category": "method",
@@ -9349,7 +9349,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Numbers",
     "title": "Base.@big_str",
     "category": "macro",
-    "text": "@big_str str\n@big_str(str)\n\n@big_str parses a string into a BigInt Throws an ArgumentError if the string is not a valid integer Removes all underscores _ from the string\n\n\n\n\n\n"
+    "text": "@big_str str\n@big_str(str)\n\nParse a string into a BigInt or BigFloat, and throw an ArgumentError if the string is not a valid number. For integers _ is allowed in the string as a separator.\n\nExamples\n\njulia> big\"123_456\"\n123456\n\njulia> big\"7891.5\"\n7.8915e+03\n\n\n\n\n\n"
 },
 
 {
@@ -9429,7 +9429,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "Base.string",
     "category": "function",
-    "text": "string(n::Integer; base::Integer = 10, pad::Integer = 1)\n\nConvert an integer n to a string in the given base, optionally specifying a number of digits to pad to.\n\njulia> string(5, base = 13, pad = 4)\n\"0005\"\n\njulia> string(13, base = 5, pad = 4)\n\"0023\"\n\n\n\n\n\nstring(xs...)\n\nCreate a string from any values using the print function.\n\nExamples\n\njulia> string(\"a\", 1, true)\n\"a1true\"\n\n\n\n\n\n"
+    "text": "string(n::Integer; base::Integer = 10, pad::Integer = 1)\n\nConvert an integer n to a string in the given base, optionally specifying a number of digits to pad to.\n\njulia> string(5, base = 13, pad = 4)\n\"0005\"\n\njulia> string(13, base = 5, pad = 4)\n\"0023\"\n\n\n\n\n\nstring(xs...)\n\nCreate a string from any values, except nothing, using the print function.\n\nExamples\n\njulia> string(\"a\", 1, true)\n\"a1true\"\n\n\n\n\n\n"
 },
 
 {
@@ -9525,7 +9525,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "Base.@r_str",
     "category": "macro",
-    "text": "@r_str -> Regex\n\nConstruct a regex, such as r\"^[a-z]*$\", without interpolation and unescaping (except for quotation mark \" which still has to be escaped). The regex also accepts one or more flags, listed after the ending quote, to change its behaviour:\n\ni enables case-insensitive matching\nm treats the ^ and $ tokens as matching the start and end of individual lines, as opposed to the whole string.\ns allows the . modifier to match newlines.\nx enables \"comment mode\": whitespace is enabled except when escaped with \\, and # is treated as starting a comment.\na disables UCP mode (enables ASCII mode). By default \\B, \\b, \\D, \\d, \\S, \\s, \\W, \\w, etc. match based on Unicode character properties. With this option, these sequences only match ASCII characters.\n\nExamples\n\njulia> match(r\"a+.*b+.*?d$\"ism, \"Goodbye,\\nOh, angry,\\nBad world\\n\")\nRegexMatch(\"angry,\\nBad world\")\n\nThis regex has the first three flags enabled.\n\n\n\n\n\n"
+    "text": "@r_str -> Regex\n\nConstruct a regex, such as r\"^[a-z]*$\", without interpolation and unescaping (except for quotation mark \" which still has to be escaped). The regex also accepts one or more flags, listed after the ending quote, to change its behaviour:\n\ni enables case-insensitive matching\nm treats the ^ and $ tokens as matching the start and end of individual lines, as opposed to the whole string.\ns allows the . modifier to match newlines.\nx enables \"comment mode\": whitespace is enabled except when escaped with \\, and # is treated as starting a comment.\na disables UCP mode (enables ASCII mode). By default \\B, \\b, \\D, \\d, \\S, \\s, \\W, \\w, etc. match based on Unicode character properties. With this option, these sequences only match ASCII characters.\n\nSee Regex if interpolation is needed.\n\nExamples\n\njulia> match(r\"a+.*b+.*?d$\"ism, \"Goodbye,\\nOh, angry,\\nBad world\\n\")\nRegexMatch(\"angry,\\nBad world\")\n\nThis regex has the first three flags enabled.\n\n\n\n\n\n"
 },
 
 {
@@ -9821,7 +9821,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "Base.join",
     "category": "function",
-    "text": "join([io::IO,] strings, delim, [last])\n\nJoin an array of strings into a single string, inserting the given delimiter between adjacent strings. If last is given, it will be used instead of delim between the last two strings. If io is given, the result is written to io rather than returned as as a String.  For example,\n\nExamples\n\njulia> join([\"apples\", \"bananas\", \"pineapples\"], \", \", \" and \")\n\"apples, bananas and pineapples\"\n\nstrings can be any iterable over elements x which are convertible to strings via print(io::IOBuffer, x). strings will be printed to io.\n\n\n\n\n\n"
+    "text": "join([io::IO,] strings, delim, [last])\n\nJoin an array of strings into a single string, inserting the given delimiter between adjacent strings. If last is given, it will be used instead of delim between the last two strings. If io is given, the result is written to io rather than returned as as a String.\n\nExamples\n\njulia> join([\"apples\", \"bananas\", \"pineapples\"], \", \", \" and \")\n\"apples, bananas and pineapples\"\n\nstrings can be any iterable over elements x which are convertible to strings via print(io::IOBuffer, x). strings will be printed to io.\n\n\n\n\n\n"
 },
 
 {
@@ -10373,7 +10373,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays",
     "title": "Base.IndexStyle",
     "category": "type",
-    "text": "IndexStyle(A)\nIndexStyle(typeof(A))\n\nIndexStyle specifies the \"native indexing style\" for array A. When you define a new AbstractArray type, you can choose to implement either linear indexing or cartesian indexing.  If you decide to implement linear indexing, then you must set this trait for your array type:\n\nBase.IndexStyle(::Type{<:MyArray}) = IndexLinear()\n\nThe default is IndexCartesian().\n\nJulia\'s internal indexing machinery will automatically (and invisibly) convert all indexing operations into the preferred style. This allows users to access elements of your array using any indexing style, even when explicit methods have not been provided.\n\nIf you define both styles of indexing for your AbstractArray, this trait can be used to select the most performant indexing style. Some methods check this trait on their inputs, and dispatch to different algorithms depending on the most efficient access pattern. In particular, eachindex creates an iterator whose type depends on the setting of this trait.\n\n\n\n\n\n"
+    "text": "IndexStyle(A)\nIndexStyle(typeof(A))\n\nIndexStyle specifies the \"native indexing style\" for array A. When you define a new AbstractArray type, you can choose to implement either linear indexing (with IndexLinear) or cartesian indexing. If you decide to implement linear indexing, then you must set this trait for your array type:\n\nBase.IndexStyle(::Type{<:MyArray}) = IndexLinear()\n\nThe default is IndexCartesian().\n\nJulia\'s internal indexing machinery will automatically (and invisibly) convert all indexing operations into the preferred style. This allows users to access elements of your array using any indexing style, even when explicit methods have not been provided.\n\nIf you define both styles of indexing for your AbstractArray, this trait can be used to select the most performant indexing style. Some methods check this trait on their inputs, and dispatch to different algorithms depending on the most efficient access pattern. In particular, eachindex creates an iterator whose type depends on the setting of this trait.\n\n\n\n\n\n"
 },
 
 {
@@ -10421,7 +10421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays",
     "title": "Base.Broadcast.broadcast!",
     "category": "function",
-    "text": "broadcast!(f, dest, As...)\n\nLike broadcast, but store the result of broadcast(f, As...) in the dest array. Note that dest is only used to store the result, and does not supply arguments to f unless it is also listed in the As, as in broadcast!(f, A, A, B) to perform A[:] = broadcast(f, A, B).\n\n\n\n\n\n"
+    "text": "broadcast!(f, dest, As...)\n\nLike broadcast, but store the result of broadcast(f, As...) in the dest array. Note that dest is only used to store the result, and does not supply arguments to f unless it is also listed in the As, as in broadcast!(f, A, A, B) to perform A[:] = broadcast(f, A, B).\n\nExamples\n\njulia> A = [1.0; 0.0]; B = [0.0; 0.0];\n\njulia> broadcast!(+, B, A, (0, -2.0));\n\njulia> B\n2-element Array{Float64,1}:\n  1.0\n -2.0\n\njulia> A\n2-element Array{Float64,1}:\n 1.0\n 0.0\n\njulia> broadcast!(+, A, A, (0, -2.0));\n\njulia> A\n2-element Array{Float64,1}:\n  1.0\n -2.0\n\n\n\n\n\n"
 },
 
 {
@@ -10541,7 +10541,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays",
     "title": "Base.IteratorsMD.CartesianIndices",
     "category": "type",
-    "text": "CartesianIndices(sz::Dims) -> R\nCartesianIndices(istart:istop, jstart:jstop, ...) -> R\n\nDefine a region R spanning a multidimensional rectangular range of integer indices. These are most commonly encountered in the context of iteration, where for I in R ... end will return CartesianIndex indices I equivalent to the nested loops\n\nfor j = jstart:jstop\n    for i = istart:istop\n        ...\n    end\nend\n\nConsequently these can be useful for writing algorithms that work in arbitrary dimensions.\n\nCartesianIndices(A::AbstractArray) -> R\n\nAs a convenience, constructing a CartesianIndices from an array makes a range of its indices.\n\nExamples\n\njulia> foreach(println, CartesianIndices((2, 2, 2)))\nCartesianIndex(1, 1, 1)\nCartesianIndex(2, 1, 1)\nCartesianIndex(1, 2, 1)\nCartesianIndex(2, 2, 1)\nCartesianIndex(1, 1, 2)\nCartesianIndex(2, 1, 2)\nCartesianIndex(1, 2, 2)\nCartesianIndex(2, 2, 2)\n\njulia> CartesianIndices(fill(1, (2,3)))\n2×3 CartesianIndices{2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}}}:\n CartesianIndex(1, 1)  CartesianIndex(1, 2)  CartesianIndex(1, 3)\n CartesianIndex(2, 1)  CartesianIndex(2, 2)  CartesianIndex(2, 3)\n\nConversion between linear and cartesian indices\n\nLinear index to cartesian index conversion exploits the fact that a CartesianIndices is an AbstractArray and can be indexed linearly:\n\njulia> cartesian = CartesianIndices((1:3, 1:2))\n3×2 CartesianIndices{2,Tuple{UnitRange{Int64},UnitRange{Int64}}}:\n CartesianIndex(1, 1)  CartesianIndex(1, 2)\n CartesianIndex(2, 1)  CartesianIndex(2, 2)\n CartesianIndex(3, 1)  CartesianIndex(3, 2)\n\njulia> cartesian[4]\nCartesianIndex(1, 2)\n\nFor cartesian to linear index conversion, see LinearIndices.\n\n\n\n\n\n"
+    "text": "CartesianIndices(sz::Dims) -> R\nCartesianIndices((istart:istop, jstart:jstop, ...)) -> R\n\nDefine a region R spanning a multidimensional rectangular range of integer indices. These are most commonly encountered in the context of iteration, where for I in R ... end will return CartesianIndex indices I equivalent to the nested loops\n\nfor j = jstart:jstop\n    for i = istart:istop\n        ...\n    end\nend\n\nConsequently these can be useful for writing algorithms that work in arbitrary dimensions.\n\nCartesianIndices(A::AbstractArray) -> R\n\nAs a convenience, constructing a CartesianIndices from an array makes a range of its indices.\n\nExamples\n\njulia> foreach(println, CartesianIndices((2, 2, 2)))\nCartesianIndex(1, 1, 1)\nCartesianIndex(2, 1, 1)\nCartesianIndex(1, 2, 1)\nCartesianIndex(2, 2, 1)\nCartesianIndex(1, 1, 2)\nCartesianIndex(2, 1, 2)\nCartesianIndex(1, 2, 2)\nCartesianIndex(2, 2, 2)\n\njulia> CartesianIndices(fill(1, (2,3)))\n2×3 CartesianIndices{2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}}}:\n CartesianIndex(1, 1)  CartesianIndex(1, 2)  CartesianIndex(1, 3)\n CartesianIndex(2, 1)  CartesianIndex(2, 2)  CartesianIndex(2, 3)\n\nConversion between linear and cartesian indices\n\nLinear index to cartesian index conversion exploits the fact that a CartesianIndices is an AbstractArray and can be indexed linearly:\n\njulia> cartesian = CartesianIndices((1:3, 1:2))\n3×2 CartesianIndices{2,Tuple{UnitRange{Int64},UnitRange{Int64}}}:\n CartesianIndex(1, 1)  CartesianIndex(1, 2)\n CartesianIndex(2, 1)  CartesianIndex(2, 2)\n CartesianIndex(3, 1)  CartesianIndex(3, 2)\n\njulia> cartesian[4]\nCartesianIndex(1, 2)\n\nFor cartesian to linear index conversion, see LinearIndices.\n\n\n\n\n\n"
 },
 
 {
@@ -10557,7 +10557,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays",
     "title": "Base.LinearIndices",
     "category": "type",
-    "text": "LinearIndices(A::AbstractArray)\n\nReturn a LinearIndices array with the same shape and axes as A, holding the linear index of each entry in A. Indexing this array with cartesian indices allows mapping them to linear indices.\n\nFor arrays with conventional indexing (indices start at 1), or any multidimensional array, linear indices range from 1 to length(A). However, for AbstractVectors linear indices are axes(A, 1), and therefore do not start at 1 for vectors with unconventional indexing.\n\nCalling this function is the \"safe\" way to write algorithms that exploit linear indexing.\n\nExamples\n\njulia> A = fill(1, (5,6,7));\n\njulia> b = LinearIndices(A);\n\njulia> extrema(b)\n(1, 210)\n\nLinearIndices(inds::CartesianIndices) -> R\nLinearIndices(sz::Dims) -> R\nLinearIndices(istart:istop, jstart:jstop, ...) -> R\n\nReturn a LinearIndices array with the specified shape or axes.\n\nExample\n\nThe main purpose of this constructor is intuitive conversion from cartesian to linear indexing:\n\njulia> linear = LinearIndices((1:3, 1:2))\n3×2 LinearIndices{2,Tuple{UnitRange{Int64},UnitRange{Int64}}}:\n 1  4\n 2  5\n 3  6\n\njulia> linear[1,2]\n4\n\n\n\n\n\n"
+    "text": "LinearIndices(A::AbstractArray)\n\nReturn a LinearIndices array with the same shape and axes as A, holding the linear index of each entry in A. Indexing this array with cartesian indices allows mapping them to linear indices.\n\nFor arrays with conventional indexing (indices start at 1), or any multidimensional array, linear indices range from 1 to length(A). However, for AbstractVectors linear indices are axes(A, 1), and therefore do not start at 1 for vectors with unconventional indexing.\n\nCalling this function is the \"safe\" way to write algorithms that exploit linear indexing.\n\nExamples\n\njulia> A = fill(1, (5,6,7));\n\njulia> b = LinearIndices(A);\n\njulia> extrema(b)\n(1, 210)\n\nLinearIndices(inds::CartesianIndices) -> R\nLinearIndices(sz::Dims) -> R\nLinearIndices((istart:istop, jstart:jstop, ...)) -> R\n\nReturn a LinearIndices array with the specified shape or axes.\n\nExample\n\nThe main purpose of this constructor is intuitive conversion from cartesian to linear indexing:\n\njulia> linear = LinearIndices((1:3, 1:2))\n3×2 LinearIndices{2,Tuple{UnitRange{Int64},UnitRange{Int64}}}:\n 1  4\n 2  5\n 3  6\n\njulia> linear[1,2]\n4\n\n\n\n\n\n"
 },
 
 {
@@ -10629,7 +10629,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays",
     "title": "Base.parentindices",
     "category": "function",
-    "text": "parentindices(A)\n\nFrom an array view A, returns the corresponding indices in the parent.\n\n\n\n\n\n"
+    "text": "parentindices(A)\n\nReturn the indices in the parent which correspond to the array view A.\n\nExamples\n\njulia> A = [1 2; 3 4];\n\njulia> V = view(A, 1, :)\n2-element view(::Array{Int64,2}, 1, :) with eltype Int64:\n 1\n 2\n\njulia> parentindices(V)\n(1, Base.Slice(Base.OneTo(2)))\n\n\n\n\n\n"
 },
 
 {
@@ -10869,7 +10869,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays",
     "title": "Base.accumulate",
     "category": "function",
-    "text": "accumulate(op, A; dims::Integer, [init])\n\nCumulative operation op along the dimension dims of A (providing dims is optional for vectors). An inital value init may optionally be privided by a keyword argument. See also accumulate! to use a preallocated output array, both for performance and to control the precision of the output (e.g. to avoid overflow). For common operations there are specialized variants of accumulate, see: cumsum, cumprod\n\nExamples\n\njulia> accumulate(+, [1,2,3])\n3-element Array{Int64,1}:\n 1\n 3\n 6\n\njulia> accumulate(*, [1,2,3])\n3-element Array{Int64,1}:\n 1\n 2\n 6\n\njulia> accumulate(+, [1,2,3]; init=100)\n3-element Array{Int64,1}:\n 101\n 103\n 106\n\njulia> accumulate(min, [1,2,-1]; init=0)\n3-element Array{Int64,1}:\n  0\n  0\n -1\n\njulia> accumulate(+, fill(1, 3, 3), dims=1)\n3×3 Array{Int64,2}:\n 1  1  1\n 2  2  2\n 3  3  3\n\njulia> accumulate(+, fill(1, 3, 3), dims=2)\n3×3 Array{Int64,2}:\n 1  2  3\n 1  2  3\n 1  2  3\n\n\n\n\n\n"
+    "text": "accumulate(op, A; dims::Integer, [init])\n\nCumulative operation op along the dimension dims of A (providing dims is optional for vectors). An initial value init may optionally be provided by a keyword argument. See also accumulate! to use a preallocated output array, both for performance and to control the precision of the output (e.g. to avoid overflow). For common operations there are specialized variants of accumulate, see: cumsum, cumprod\n\nExamples\n\njulia> accumulate(+, [1,2,3])\n3-element Array{Int64,1}:\n 1\n 3\n 6\n\njulia> accumulate(*, [1,2,3])\n3-element Array{Int64,1}:\n 1\n 2\n 6\n\njulia> accumulate(+, [1,2,3]; init=100)\n3-element Array{Int64,1}:\n 101\n 103\n 106\n\njulia> accumulate(min, [1,2,-1]; init=0)\n3-element Array{Int64,1}:\n  0\n  0\n -1\n\njulia> accumulate(+, fill(1, 3, 3), dims=1)\n3×3 Array{Int64,2}:\n 1  1  1\n 2  2  2\n 3  3  3\n\njulia> accumulate(+, fill(1, 3, 3), dims=2)\n3×3 Array{Int64,2}:\n 1  2  3\n 1  2  3\n 1  2  3\n\n\n\n\n\n"
 },
 
 {
@@ -11781,7 +11781,7 @@ var documenterSearchIndex = {"docs": [
     "page": "文件系统",
     "title": "Base.Filesystem.cp",
     "category": "function",
-    "text": "cp(src::AbstractString, dst::AbstractString; force::Bool=false, follow_symlinks::Bool=false)\n\nCopy the file, link, or directory from src to dest. force=true will first remove an existing dst.\n\nIf follow_symlinks=false, and src is a symbolic link, dst will be created as a symbolic link. If follow_symlinks=true and src is a symbolic link, dst will be a copy of the file or directory src refers to. Return dst.\n\n\n\n\n\n"
+    "text": "cp(src::AbstractString, dst::AbstractString; force::Bool=false, follow_symlinks::Bool=false)\n\nCopy the file, link, or directory from src to dst. force=true will first remove an existing dst.\n\nIf follow_symlinks=false, and src is a symbolic link, dst will be created as a symbolic link. If follow_symlinks=true and src is a symbolic link, dst will be a copy of the file or directory src refers to. Return dst.\n\n\n\n\n\n"
 },
 
 {
@@ -12205,7 +12205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "I/O 与网络",
     "title": "Base.read",
     "category": "function",
-    "text": "read(io::IO, T)\n\nRead a single value of type T from io, in canonical binary representation.\n\nread(io::IO, String)\n\nRead the entirety of io, as a String.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> read(io, Char)\n\'J\': ASCII/Unicode U+004a (category Lu: Letter, uppercase)\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> read(io, String)\n\"JuliaLang is a GitHub organization\"\n\n\n\n\n\nread(filename::AbstractString, args...)\n\nOpen a file and read its contents. args is passed to read: this is equivalent to open(io->read(io, args...), filename).\n\nread(filename::AbstractString, String)\n\nRead the entire contents of a file as a string.\n\n\n\n\n\nread(s::IO, nb=typemax(Int))\n\nRead at most nb bytes from s, returning a Vector{UInt8} of the bytes read.\n\n\n\n\n\nread(s::IOStream, nb::Integer; all=true)\n\nRead at most nb bytes from s, returning a Vector{UInt8} of the bytes read.\n\nIf all is true (the default), this function will block repeatedly trying to read all requested bytes, until an error or end-of-file occurs. If all is false, at most one read call is performed, and the amount of data returned is device-dependent. Note that not all stream types support the all option.\n\n\n\n\n\n"
+    "text": "read(io::IO, T)\n\nRead a single value of type T from io, in canonical binary representation.\n\nread(io::IO, String)\n\nRead the entirety of io, as a String.\n\nExamples\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> read(io, Char)\n\'J\': ASCII/Unicode U+004a (category Lu: Letter, uppercase)\n\njulia> io = IOBuffer(\"JuliaLang is a GitHub organization\");\n\njulia> read(io, String)\n\"JuliaLang is a GitHub organization\"\n\n\n\n\n\nread(filename::AbstractString, args...)\n\nOpen a file and read its contents. args is passed to read: this is equivalent to open(io->read(io, args...), filename).\n\nread(filename::AbstractString, String)\n\nRead the entire contents of a file as a string.\n\n\n\n\n\nread(s::IO, nb=typemax(Int))\n\nRead at most nb bytes from s, returning a Vector{UInt8} of the bytes read.\n\n\n\n\n\nread(s::IOStream, nb::Integer; all=true)\n\nRead at most nb bytes from s, returning a Vector{UInt8} of the bytes read.\n\nIf all is true (the default), this function will block repeatedly trying to read all requested bytes, until an error or end-of-file occurs. If all is false, at most one read call is performed, and the amount of data returned is device-dependent. Note that not all stream types support the all option.\n\n\n\n\n\nread(command::Cmd)\n\nRun command and return the resulting output as an array of bytes.\n\n\n\n\n\nread(command::Cmd, String)\n\nRun command and return the resulting output as a String.\n\n\n\n\n\n"
 },
 
 {
@@ -12517,7 +12517,7 @@ var documenterSearchIndex = {"docs": [
     "page": "I/O 与网络",
     "title": "Base.print",
     "category": "function",
-    "text": "print([io::IO], xs...)\n\nWrite to io (or to the default output stream stdout if io is not given) a canonical (un-decorated) text representation of values xs if there is one, otherwise call show. The representation used by print includes minimal formatting and tries to avoid Julia-specific details.\n\nPrinting nothing is deprecated and will throw an error in the future.\n\nExamples\n\njulia> print(\"Hello World!\")\nHello World!\njulia> io = IOBuffer();\n\njulia> print(io, \"Hello\", \' \', :World!)\n\njulia> String(take!(io))\n\"Hello World!\"\n\n\n\n\n\n"
+    "text": "print([io::IO], xs...)\n\nWrite to io (or to the default output stream stdout if io is not given) a canonical (un-decorated) text representation of values xs if there is one, otherwise call show. The representation used by print includes minimal formatting and tries to avoid Julia-specific details.\n\nPrinting nothing is not allowed and throws an error.\n\nExamples\n\njulia> print(\"Hello World!\")\nHello World!\njulia> io = IOBuffer();\n\njulia> print(io, \"Hello\", \' \', :World!)\n\njulia> String(take!(io))\n\"Hello World!\"\n\n\n\n\n\n"
 },
 
 {
@@ -12541,7 +12541,7 @@ var documenterSearchIndex = {"docs": [
     "page": "I/O 与网络",
     "title": "Base.sprint",
     "category": "function",
-    "text": "sprint(f::Function, args...; context=nothing, sizehint=0)\n\nCall the given function with an I/O stream and the supplied extra arguments. Everything written to this I/O stream is returned as a string. context can be either an IOContext whose properties will be used, or a Pair specifying a property and its value. sizehint suggests the capacity of the buffer (in bytes).\n\nThe optional keyword argument context can be set to :key=>value pair or an IO or IOContext object whose attributes are used for the I/O stream passed to f.  The optional sizehint is a suggersted (in bytes) to allocate for the buffer used to write the string.\n\nExamples\n\njulia> sprint(show, 66.66666; context=:compact => true)\n\"66.6667\"\n\njulia> sprint(showerror, BoundsError([1], 100))\n\"BoundsError: attempt to access 1-element Array{Int64,1} at index [100]\"\n\n\n\n\n\n"
+    "text": "sprint(f::Function, args...; context=nothing, sizehint=0)\n\nCall the given function with an I/O stream and the supplied extra arguments. Everything written to this I/O stream is returned as a string. context can be either an IOContext whose properties will be used, or a Pair specifying a property and its value. sizehint suggests the capacity of the buffer (in bytes).\n\nThe optional keyword argument context can be set to :key=>value pair or an IO or IOContext object whose attributes are used for the I/O stream passed to f.  The optional sizehint is a suggested size (in bytes) to allocate for the buffer used to write the string.\n\nExamples\n\njulia> sprint(show, 66.66666; context=:compact => true)\n\"66.6667\"\n\njulia> sprint(showerror, BoundsError([1], 100))\n\"BoundsError: attempt to access 1-element Array{Int64,1} at index [100]\"\n\n\n\n\n\n"
 },
 
 {
@@ -14261,7 +14261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Dates",
     "title": "Dates.dayofweekofmonth",
     "category": "function",
-    "text": "dayofweekofmonth(dt::TimeType) -> Int\n\nFor the day of week of dt, return which number it is in dt\'s month. So if the day of the week of dt is Monday, then 1 = First Monday of the month, 2 = Second Monday of the month, etc. In the range 1:5.\n\nExamples\n\n```jldoctest julia> Dates.dayofweekofmonth(Date(\"2000-02-01\")) 1\n\njulia> Dates.dayofweekofmonth(Date(\"2000-02-08\")) 2\n\njulia> Dates.dayofweekofmonth(Date(\"2000-02-15\")) 3 ````\n\n\n\n\n\n"
+    "text": "dayofweekofmonth(dt::TimeType) -> Int\n\nFor the day of week of dt, return which number it is in dt\'s month. So if the day of the week of dt is Monday, then 1 = First Monday of the month, 2 = Second Monday of the month, etc. In the range 1:5.\n\nExamples\n\njulia> Dates.dayofweekofmonth(Date(\"2000-02-01\"))\n1\n\njulia> Dates.dayofweekofmonth(Date(\"2000-02-08\"))\n2\n\njulia> Dates.dayofweekofmonth(Date(\"2000-02-15\"))\n3\n\n\n\n\n\n"
 },
 
 {
@@ -14481,7 +14481,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/Dates/#Dates.CompoundPeriod-Tuple{Array{#s148,1} where #s148<:Period}",
+    "location": "stdlib/Dates/#Dates.CompoundPeriod-Tuple{Array{#s164,1} where #s164<:Period}",
     "page": "Dates",
     "title": "Dates.CompoundPeriod",
     "category": "method",
@@ -14765,7 +14765,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.nprocs",
     "category": "function",
-    "text": "nprocs()\n\nGet the number of available processes.\n\n\n\n\n\n"
+    "text": "nprocs()\n\nGet the number of available processes.\n\nExamples\n\njulia> nprocs()\n3\n\njulia> workers()\n5-element Array{Int64,1}:\n 2\n 3\n\n\n\n\n\n"
 },
 
 {
@@ -14773,7 +14773,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.nworkers",
     "category": "function",
-    "text": "nworkers()\n\nGet the number of available worker processes. This is one less than nprocs(). Equal to nprocs() if nprocs() == 1.\n\n\n\n\n\n"
+    "text": "nworkers()\n\nGet the number of available worker processes. This is one less than nprocs(). Equal to nprocs() if nprocs() == 1.\n\nExamples\n\n$ julia -p 5\n\njulia> nprocs()\n6\n\njulia> nworkers()\n5\n\n\n\n\n\n"
 },
 
 {
@@ -14781,7 +14781,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.procs",
     "category": "method",
-    "text": "procs()\n\nReturn a list of all process identifiers.\n\n\n\n\n\n"
+    "text": "procs()\n\nReturn a list of all process identifiers, including pid 1 (which is not included by workers()).\n\nExamples\n\n$ julia -p 5\n\njulia> procs()\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\n\n\n\n\n"
 },
 
 {
@@ -14797,7 +14797,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.workers",
     "category": "function",
-    "text": "workers()\n\nReturn a list of all worker process identifiers.\n\n\n\n\n\n"
+    "text": "workers()\n\nReturn a list of all worker process identifiers.\n\nExamples\n\n$ julia -p 5\n\njulia> workers()\n2-element Array{Int64,1}:\n 2\n 3\n\n\n\n\n\n"
 },
 
 {
@@ -14805,7 +14805,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.rmprocs",
     "category": "function",
-    "text": "rmprocs(pids...; waitfor=typemax(Int))\n\nRemove the specified workers. Note that only process 1 can add or remove workers.\n\nArgument waitfor specifies how long to wait for the workers to shut down:     - If unspecified, rmprocs will wait until all requested pids are removed.     - An ErrorException is raised if all workers cannot be terminated before       the requested waitfor seconds.     - With a waitfor value of 0, the call returns immediately with the workers       scheduled for removal in a different task. The scheduled Task object is       returned. The user should call wait on the task before invoking any other       parallel calls.\n\n\n\n\n\n"
+    "text": "rmprocs(pids...; waitfor=typemax(Int))\n\nRemove the specified workers. Note that only process 1 can add or remove workers.\n\nArgument waitfor specifies how long to wait for the workers to shut down:\n\nIf unspecified, rmprocs will wait until all requested pids are removed.\nAn ErrorException is raised if all workers cannot be terminated before the requested waitfor seconds.\nWith a waitfor value of 0, the call returns immediately with the workers scheduled for removal in a different task. The scheduled Task object is returned. The user should call wait on the task before invoking any other parallel calls.\n\nExamples\n\n$ julia -p 5\n\njulia> t = rmprocs(2, 3, waitfor=0)\nTask (runnable) @0x0000000107c718d0\n\njulia> wait(t)\n\njulia> workers()\n3-element Array{Int64,1}:\n 4\n 5\n 6\n\n\n\n\n\n"
 },
 
 {
@@ -14821,7 +14821,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.myid",
     "category": "function",
-    "text": "myid()\n\nGet the id of the current process.\n\n\n\n\n\n"
+    "text": "myid()\n\nGet the id of the current process.\n\nExamples\n\njulia> myid()\n1\n\njulia> remotecall_fetch(() -> myid(), 4)\n4\n\n\n\n\n\n"
 },
 
 {
@@ -14861,7 +14861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Base.wait",
     "category": "function",
-    "text": "wait(r::Future)\n\nWait for a value to become available for the specified future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified remote channel.\n\n\n\n\n\nwait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\n"
+    "text": "wait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\nwait(r::Future)\n\nWait for a value to become available for the specified Future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified RemoteChannel.\n\n\n\n\n\n"
 },
 
 {
@@ -14893,7 +14893,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.remotecall_fetch",
     "category": "method",
-    "text": "remotecall_fetch(f, id::Integer, args...; kwargs...)\n\nPerform fetch(remotecall(...)) in one message. Keyword arguments, if any, are passed through to f. Any remote exceptions are captured in a RemoteException and thrown.\n\nSee also fetch and remotecall.\n\n\n\n\n\n"
+    "text": "remotecall_fetch(f, id::Integer, args...; kwargs...)\n\nPerform fetch(remotecall(...)) in one message. Keyword arguments, if any, are passed through to f. Any remote exceptions are captured in a RemoteException and thrown.\n\nSee also fetch and remotecall.\n\nExamples\n\n$ julia -p 2\n\njulia> remotecall_fetch(sqrt, 2, 4)\n2.0\n\njulia> remotecall_fetch(sqrt, 2, -4)\nERROR: On worker 2:\nDomainError with -4.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\n...\n\n\n\n\n\n"
 },
 
 {
@@ -14949,7 +14949,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.WorkerPool",
     "category": "type",
-    "text": "WorkerPool(workers::Vector{Int})\n\nCreate a WorkerPool from a vector of worker ids.\n\n\n\n\n\n"
+    "text": "WorkerPool(workers::Vector{Int})\n\nCreate a WorkerPool from a vector of worker ids.\n\nExamples\n\n$ julia -p 3\n\njulia> WorkerPool([2, 3])\nWorkerPool(Channel{Int64}(sz_max:9223372036854775807,sz_curr:2), Set([2, 3]), RemoteChannel{Channel{Any}}(1, 1, 6))\n\n\n\n\n\n"
 },
 
 {
@@ -14965,7 +14965,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.default_worker_pool",
     "category": "function",
-    "text": "default_worker_pool()\n\nWorkerPool containing idle workers - used by remote(f) and pmap (by default).\n\n\n\n\n\n"
+    "text": "default_worker_pool()\n\nWorkerPool containing idle workers - used by remote(f) and pmap (by default).\n\nExamples\n\n$ julia -p 3\n\njulia> default_worker_pool()\nWorkerPool(Channel{Int64}(sz_max:9223372036854775807,sz_curr:3), Set([4, 2, 3]), RemoteChannel{Channel{Any}}(1, 1, 4))\n\n\n\n\n\n"
 },
 
 {
@@ -14981,7 +14981,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.remote",
     "category": "function",
-    "text": "remote([::AbstractWorkerPool], f) -> Function\n\nReturn an anonymous function that executes function f on an available worker using remotecall_fetch.\n\n\n\n\n\n"
+    "text": "remote([p::AbstractWorkerPool], f) -> Function\n\nReturn an anonymous function that executes function f on an available worker (drawn from WorkerPool p if provided) using remotecall_fetch.\n\n\n\n\n\n"
 },
 
 {
@@ -14989,7 +14989,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.remotecall",
     "category": "method",
-    "text": "remotecall(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall on it.\n\n\n\n\n\n"
+    "text": "remotecall(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall(f, pid, ....). Wait for and take a free worker from pool and perform a remotecall on it.\n\nExamples\n\n$ julia -p 3\n\njulia> wp = WorkerPool([2, 3]);\n\njulia> A = rand(3000);\n\njulia> f = remotecall(maximum, wp, A)\nFuture(2, 1, 6, nothing)\n\nIn this example, the task ran on pid 2, called from pid 1.\n\n\n\n\n\n"
 },
 
 {
@@ -14997,7 +14997,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.remotecall_wait",
     "category": "method",
-    "text": "remotecall_wait(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall_wait(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall_wait on it.\n\n\n\n\n\n"
+    "text": "remotecall_wait(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall_wait(f, pid, ....). Wait for and take a free worker from pool and perform a remotecall_wait on it.\n\nExamples\n\n$ julia -p 3\n\njulia> wp = WorkerPool([2, 3]);\n\njulia> A = rand(3000);\n\njulia> f = remotecall_wait(maximum, wp, A)\nFuture(3, 1, 9, nothing)\n\njulia> fetch(f)\n0.9995177101692958\n\n\n\n\n\n"
 },
 
 {
@@ -15005,7 +15005,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.remotecall_fetch",
     "category": "method",
-    "text": "remotecall_fetch(f, pool::AbstractWorkerPool, args...; kwargs...) -> result\n\nWorkerPool variant of remotecall_fetch(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall_fetch on it.\n\n\n\n\n\n"
+    "text": "remotecall_fetch(f, pool::AbstractWorkerPool, args...; kwargs...) -> result\n\nWorkerPool variant of remotecall_fetch(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall_fetch on it.\n\nExamples\n\n$ julia -p 3\n\njulia> wp = WorkerPool([2, 3]);\n\njulia> A = rand(3000);\n\njulia> remotecall_fetch(maximum, wp, A)\n0.9995177101692958\n\n\n\n\n\n"
 },
 
 {
@@ -15013,7 +15013,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Distributed.remote_do",
     "category": "method",
-    "text": "remote_do(f, pool::AbstractWorkerPool, args...; kwargs...) -> nothing\n\nWorkerPool variant of remote_do(f, pid, ....). Waits for and takes a free worker from pool and performs a remote_do on it.\n\n\n\n\n\n"
+    "text": "remote_do(f, pool::AbstractWorkerPool, args...; kwargs...) -> nothing\n\nWorkerPool variant of remote_do(f, pid, ....). Wait for and take a free worker from pool and perform a remote_do on it.\n\n\n\n\n\n"
 },
 
 {
@@ -16885,7 +16885,7 @@ var documenterSearchIndex = {"docs": [
     "page": "线性代数",
     "title": "LinearAlgebra.LowerTriangular",
     "category": "type",
-    "text": "LowerTriangular(A::AbstractMatrix)\n\nConstruct a LowerTriangular view of the the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> LowerTriangular(A)\n3×3 LowerTriangular{Float64,Array{Float64,2}}:\n 1.0   ⋅    ⋅\n 4.0  5.0   ⋅\n 7.0  8.0  9.0\n\n\n\n\n\n"
+    "text": "LowerTriangular(A::AbstractMatrix)\n\nConstruct a LowerTriangular view of the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> LowerTriangular(A)\n3×3 LowerTriangular{Float64,Array{Float64,2}}:\n 1.0   ⋅    ⋅\n 4.0  5.0   ⋅\n 7.0  8.0  9.0\n\n\n\n\n\n"
 },
 
 {
@@ -16893,7 +16893,7 @@ var documenterSearchIndex = {"docs": [
     "page": "线性代数",
     "title": "LinearAlgebra.UpperTriangular",
     "category": "type",
-    "text": "UpperTriangular(A::AbstractMatrix)\n\nConstruct an UpperTriangular view of the the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> UpperTriangular(A)\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 1.0  2.0  3.0\n  ⋅   5.0  6.0\n  ⋅    ⋅   9.0\n\n\n\n\n\n"
+    "text": "UpperTriangular(A::AbstractMatrix)\n\nConstruct an UpperTriangular view of the matrix A.\n\nExamples\n\njulia> A = [1.0 2.0 3.0; 4.0 5.0 6.0; 7.0 8.0 9.0]\n3×3 Array{Float64,2}:\n 1.0  2.0  3.0\n 4.0  5.0  6.0\n 7.0  8.0  9.0\n\njulia> UpperTriangular(A)\n3×3 UpperTriangular{Float64,Array{Float64,2}}:\n 1.0  2.0  3.0\n  ⋅   5.0  6.0\n  ⋅    ⋅   9.0\n\n\n\n\n\n"
 },
 
 {
@@ -17385,7 +17385,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Base.exp-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Union{Complex{Float32}, Complex{Float64}, Float32, Float64}}",
+    "location": "stdlib/LinearAlgebra/#Base.exp-Tuple{Union{DenseArray{#s164,2}, ReinterpretArray{#s164,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s164,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s164,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s164<:Union{Complex{Float32}, Complex{Float64}, Float32, Float64}}",
     "page": "线性代数",
     "title": "Base.exp",
     "category": "method",
@@ -17401,7 +17401,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Base.sqrt-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "location": "stdlib/LinearAlgebra/#Base.sqrt-Tuple{Union{DenseArray{#s164,2}, ReinterpretArray{#s164,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s164,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s164,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s164<:Real}",
     "page": "线性代数",
     "title": "Base.sqrt",
     "category": "method",
@@ -17409,7 +17409,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Base.cos-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "location": "stdlib/LinearAlgebra/#Base.cos-Tuple{Union{DenseArray{#s164,2}, ReinterpretArray{#s164,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s164,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s164,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s164<:Real}",
     "page": "线性代数",
     "title": "Base.cos",
     "category": "method",
@@ -17417,7 +17417,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Base.sin-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "location": "stdlib/LinearAlgebra/#Base.sin-Tuple{Union{DenseArray{#s164,2}, ReinterpretArray{#s164,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s164,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s164,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s164<:Real}",
     "page": "线性代数",
     "title": "Base.sin",
     "category": "method",
@@ -17425,7 +17425,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Base.Math.sincos-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "location": "stdlib/LinearAlgebra/#Base.Math.sincos-Tuple{Union{DenseArray{#s164,2}, ReinterpretArray{#s164,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s164,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s164,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s164<:Real}",
     "page": "线性代数",
     "title": "Base.Math.sincos",
     "category": "method",
@@ -17433,7 +17433,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/LinearAlgebra/#Base.tan-Tuple{Union{DenseArray{#s148,2}, ReinterpretArray{#s148,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s148,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s148,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s148<:Real}",
+    "location": "stdlib/LinearAlgebra/#Base.tan-Tuple{Union{DenseArray{#s164,2}, ReinterpretArray{#s164,2,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, ReshapedArray{#s164,2,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray}, SubArray{#s164,2,A,I,L} where L where I<:Tuple{Vararg{Union{Int64, AbstractRange{Int64}, AbstractCartesianIndex},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, ReshapedArray{T,N,A,MI} where MI<:Tuple{Vararg{SignedMultiplicativeInverse{Int64},N} where N} where A<:Union{ReinterpretArray{T,N,S,A} where S where A<:Union{SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, SubArray{T,N,A,I,true} where I<:Tuple{AbstractUnitRange,Vararg{Any,N} where N} where A<:DenseArray where N where T, DenseArray} where N where T, DenseArray}} where #s164<:Real}",
     "page": "线性代数",
     "title": "Base.tan",
     "category": "method",
@@ -19037,7 +19037,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Logging",
     "title": "Base.CoreLogging.current_logger",
     "category": "function",
-    "text": "current_logger()\n\nReturn the logger for the current task, or the global logger if none is is attached to the task.\n\n\n\n\n\n"
+    "text": "current_logger()\n\nReturn the logger for the current task, or the global logger if none is attached to the task.\n\n\n\n\n\n"
 },
 
 {
@@ -19405,7 +19405,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.add",
     "category": "function",
-    "text": "Pkg.add(pkg::Union{String, Vector{String})\nPkg.add(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nAdd a package to the current project. This package will be available using the import and using keywords in the Julia REPL and if the current project is a package, also inside that package.\n\nExamples\n\nPkg.add(\"Example\") # Add a package from registry\nPkg.add(PackageSpec(name=\"Example\", version=\"0.3\")) # Specify version\nPkg.add(PackageSpec(url=\"https://github.com/JuliaLang/Example.jl\", rev=\"master\")) # From url\nPkg.add(PackageSpec(url=\"/remote/mycompany/juliapackages/OurPackage\"))` # From path (has to be a gitrepo)\n\nSee also PackageSpec.\n\n\n\n\n\n"
+    "text": "Pkg.add(pkg::Union{String, Vector{String}})\nPkg.add(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nAdd a package to the current project. This package will be available using the import and using keywords in the Julia REPL and if the current project is a package, also inside that package.\n\nExamples\n\nPkg.add(\"Example\") # Add a package from registry\nPkg.add(PackageSpec(name=\"Example\", version=\"0.3\")) # Specify version\nPkg.add(PackageSpec(url=\"https://github.com/JuliaLang/Example.jl\", rev=\"master\")) # From url\nPkg.add(PackageSpec(url=\"/remote/mycompany/juliapackages/OurPackage\"))` # From path (has to be a gitrepo)\n\nSee also PackageSpec.\n\n\n\n\n\n"
 },
 
 {
@@ -19413,7 +19413,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.develop",
     "category": "function",
-    "text": "Pkg.develop(pkg::Union{String, Vector{String})\nPkg.develop(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nMake a package available for development by tracking it by path. If pkg is given with only a name or by a URL the packages will be downloaded to the location by the environment variable JULIA_PKG_DEVDIR with .julia/dev as the default.\n\nIf pkg is given as a local path, the package at that path will be tracked.\n\nExamples\n\n# By name\nPkg.develop(\"Example\")\n\n# By url\nPkg.develop(PackageSpec(url=\"https://github.com/JuliaLang/Compat.jl\", rev=\"master\"))\n\n# By path (also uses url keyword to PackageSpec)\nPkg.develop(PackageSpec(url=\"MyJuliaPackages/Package.jl\")\n\nSee also PackageSpec\n\n\n\n\n\n"
+    "text": "Pkg.develop(pkg::Union{String, Vector{String}})\nPkg.develop(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nMake a package available for development by tracking it by path. If pkg is given with only a name or by a URL the packages will be downloaded to the location by the environment variable JULIA_PKG_DEVDIR with .julia/dev as the default.\n\nIf pkg is given as a local path, the package at that path will be tracked.\n\nExamples\n\n# By name\nPkg.develop(\"Example\")\n\n# By url\nPkg.develop(PackageSpec(url=\"https://github.com/JuliaLang/Compat.jl\"))\n\n# By path\nPkg.develop(PackageSpec(path=\"MyJuliaPackages/Package.jl\")\n\nSee also PackageSpec\n\n\n\n\n\n"
 },
 
 {
@@ -19421,7 +19421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.activate",
     "category": "function",
-    "text": "Pkg.activate([s::String]; shared::Bool=false)\n\nActivate the environment at s. The active environment is the environment that is modified by executing package commands. The logic for what path is activated is as follows:\n\nIf shared is true, the first existing environment named s from the depots in the depot stack will be activated. If no such environment exists yet, activate it in the first depot.\nIf s is a path that exist, that environment will be activated.\nIf s is a package name in the current project activate that is tracking a path, activate the environment at that path.\nIf s is a non-existing path, activate that path.\n\nIf no argument is given to activate, activate the home project, which is the one specified by either --project command line when starting julia, or JULIA_PROJECT environment variable.\n\nExamples\n\nPkg.activate()\nPkg.activate(\"local/path\")\nPkg.activate(\"MyDependency\")\n\n\n\n\n\n"
+    "text": "Pkg.activate([s::String]; shared::Bool=false)\n\nActivate the environment at s. The active environment is the environment that is modified by executing package commands. The logic for what path is activated is as follows:\n\nIf shared is true, the first existing environment named s from the depots in the depot stack will be activated. If no such environment exists, create and activate that environment in the first depot.\nIf s is an existing path, then activate the environment at that path.\nIf s is a package in the current project and s is tracking a path, then activate the environment at the tracked path.\nElse, s is interpreted as a non-existing path, activate that path.\n\nIf no argument is given to activate, then activate the home project. The home project is specified by either the --project command line option to the julia executable, or the JULIA_PROJECT environment variable.\n\nExamples\n\nPkg.activate()\nPkg.activate(\"local/path\")\nPkg.activate(\"MyDependency\")\n\n\n\n\n\n"
 },
 
 {
@@ -19429,7 +19429,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.rm",
     "category": "function",
-    "text": "Pkg.rm(pkg::Union{String, Vector{String})\nPkg.rm(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nRemove a package from the current project. If the mode of pkg is PKGMODE_MANIFEST also remove it from the manifest including all recursive dependencies of pkg.\n\nSee also PackageSpec, PackageMode.\n\n\n\n\n\n"
+    "text": "Pkg.rm(pkg::Union{String, Vector{String}})\nPkg.rm(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nRemove a package from the current project. If the mode of pkg is PKGMODE_MANIFEST also remove it from the manifest including all recursive dependencies of pkg.\n\nSee also PackageSpec, PackageMode.\n\n\n\n\n\n"
 },
 
 {
@@ -19437,7 +19437,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.update",
     "category": "function",
-    "text": "Pkg.update(; level::UpgradeLevel=UPLEVEL_MAJOR, mode::PackageMode = PKGMODE_PROJECT)\nPkg.update(pkg::Union{String, Vector{String})\nPkg.update(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nUpdate a package pkg. If no posistional argument is given, update all packages in the manifest if mode is PKGMODE_MANIFEST and packages in both manifest and project if mode is PKGMODE_PROJECT. If no positional argument is given level can be used to control what how much packages are allowed to be upgraded (major, minor, patch, fixed).\n\nSee also PackageSpec, PackageMode, UpgradeLevel.\n\n\n\n\n\n"
+    "text": "Pkg.update(; level::UpgradeLevel=UPLEVEL_MAJOR, mode::PackageMode = PKGMODE_PROJECT)\nPkg.update(pkg::Union{String, Vector{String}})\nPkg.update(pkg::Union{PackageSpec, Vector{PackageSpec}})\n\nUpdate a package pkg. If no posistional argument is given, update all packages in the manifest if mode is PKGMODE_MANIFEST and packages in both manifest and project if mode is PKGMODE_PROJECT. If no positional argument is given level can be used to control what how much packages are allowed to be upgraded (major, minor, patch, fixed).\n\nSee also PackageSpec, PackageMode, UpgradeLevel.\n\n\n\n\n\n"
 },
 
 {
@@ -19453,7 +19453,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.build",
     "category": "function",
-    "text": "Pkg.build()\nPkg.build(pkg::Union{String, Vector{String})\nPkg.build(pkgs::Union{PackageSpec, Vector{PackageSpec}})\n\nRun the build script in deps/build.jl for pkg and all of the dependencies in depth-first recursive order. If no argument is given to build, the current project is built, which thus needs to be a package. This function is called automatically one any package that gets installed for the first time.\n\n\n\n\n\n"
+    "text": "Pkg.build()\nPkg.build(pkg::Union{String, Vector{String}})\nPkg.build(pkgs::Union{PackageSpec, Vector{PackageSpec}})\n\nRun the build script in deps/build.jl for pkg and all of the dependencies in depth-first recursive order. If no argument is given to build, the current project is built, which thus needs to be a package. This function is called automatically one any package that gets installed for the first time.\n\n\n\n\n\n"
 },
 
 {
@@ -19461,7 +19461,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.pin",
     "category": "function",
-    "text": "Pkg.pin(pkg::Union{String, Vector{String})\nPkg.pin(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nPin a package to the current version (or the one given in the packagespec or a certain git revision. A pinned package is never updated.\n\n\n\n\n\n"
+    "text": "Pkg.pin(pkg::Union{String, Vector{String}})\nPkg.pin(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nPin a package to the current version (or the one given in the packagespec or a certain git revision. A pinned package is never updated.\n\n\n\n\n\n"
 },
 
 {
@@ -19469,7 +19469,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.free",
     "category": "function",
-    "text": "Pkg.free(pkg::Union{String, Vector{String})\nPkg.free(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nFree a package which removes a pin if it exists, or if the package is tracking a path, e.g. after Pkg.develop, go back to tracking registered versions.\n\nExamples\n\nPkg.free(\"Package\")\nPkg.free(PackageSpec(\"Package\"))\n\n\n\n\n\n"
+    "text": "Pkg.free(pkg::Union{String, Vector{String}})\nPkg.free(pkgs::Union{Packagespec, Vector{Packagespec}})\n\nFree a package which removes a pin if it exists, or if the package is tracking a path, e.g. after Pkg.develop, go back to tracking registered versions.\n\nExamples\n\nPkg.free(\"Package\")\nPkg.free(PackageSpec(\"Package\"))\n\n\n\n\n\n"
 },
 
 {
@@ -19869,7 +19869,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Random Numbers",
     "title": "Random.randsubseq",
     "category": "function",
-    "text": "randsubseq(A, p) -> Vector\n\nReturn a vector consisting of a random subsequence of the given array A, where each element of A is included (in order) with independent probability p. (Complexity is linear in p*length(A), so this function is efficient even if p is small and A is large.) Technically, this process is known as \"Bernoulli sampling\" of A.\n\n\n\n\n\n"
+    "text": "randsubseq([rng=GLOBAL_RNG,] A, p) -> Vector\n\nReturn a vector consisting of a random subsequence of the given array A, where each element of A is included (in order) with independent probability p. (Complexity is linear in p*length(A), so this function is efficient even if p is small and A is large.) Technically, this process is known as \"Bernoulli sampling\" of A.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randsubseq(rng, collect(1:8), 0.3)\n2-element Array{Int64,1}:\n 7\n 8\n\n\n\n\n\n"
 },
 
 {
@@ -19877,7 +19877,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Random Numbers",
     "title": "Random.randsubseq!",
     "category": "function",
-    "text": "randsubseq!(S, A, p)\n\nLike randsubseq, but the results are stored in S (which is resized as needed).\n\n\n\n\n\n"
+    "text": "randsubseq!([rng=GLOBAL_RNG,] S, A, p)\n\nLike randsubseq, but the results are stored in S (which is resized as needed).\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> S = Int64[];\n\njulia> randsubseq!(rng, S, collect(1:8), 0.3);\n\njulia> S\n2-element Array{Int64,1}:\n 7\n 8\n\n\n\n\n\n"
 },
 
 {
@@ -20293,7 +20293,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Sockets",
     "title": "Base.bind",
     "category": "function",
-    "text": "bind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\nbind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\n"
+    "text": "bind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\nbind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\n"
 },
 
 {
@@ -20565,7 +20565,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Statistics",
     "title": "Statistics.std",
     "category": "function",
-    "text": "std(v; corrected::Bool=true, mean=nothing, dims)\n\nCompute the sample standard deviation of a vector or array v, optionally along the given dimensions. The algorithm returns an estimator of the generative distribution\'s standard deviation under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sqrt(sum((v - mean(v)).^2) / (length(v) - 1)). A pre-computed mean may be provided. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
+    "text": "std(v; corrected::Bool=true, mean=nothing, dims)\n\nCompute the sample standard deviation of a vector or array v, optionally along the given dimensions. The algorithm returns an estimator of the generative distribution\'s standard deviation under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sqrt(sum((v - mean(v)).^2) / (length(v) - 1)). A pre-computed mean may be provided. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
 },
 
 {
@@ -20573,7 +20573,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Statistics",
     "title": "Statistics.stdm",
     "category": "function",
-    "text": "stdm(v, m; corrected::Bool=true)\n\nCompute the sample standard deviation of a vector v with known mean m. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
+    "text": "stdm(v, m; corrected::Bool=true)\n\nCompute the sample standard deviation of a vector v with known mean m. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
 },
 
 {
@@ -20581,7 +20581,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Statistics",
     "title": "Statistics.var",
     "category": "function",
-    "text": "var(v; dims, corrected::Bool=true, mean=nothing)\n\nCompute the sample variance of a vector or array v, optionally along the given dimensions. The algorithm will return an estimator of the generative distribution\'s variance under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sum(abs2, v - mean(v)) / (length(v) - 1). If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x). The mean mean over the region may be provided.\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
+    "text": "var(v; dims, corrected::Bool=true, mean=nothing)\n\nCompute the sample variance of a vector or array v, optionally along the given dimensions. The algorithm will return an estimator of the generative distribution\'s variance under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sum(abs2, v - mean(v)) / (length(v) - 1). If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v). The mean mean over the region may be provided.\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
 },
 
 {
@@ -20589,7 +20589,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Statistics",
     "title": "Statistics.varm",
     "category": "function",
-    "text": "varm(v, m; dims, corrected::Bool=true)\n\nCompute the sample variance of a collection v with known mean(s) m, optionally over the given dimensions. m may contain means for each dimension of v. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
+    "text": "varm(v, m; dims, corrected::Bool=true)\n\nCompute the sample variance of a collection v with known mean(s) m, optionally over the given dimensions. m may contain means for each dimension of v. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
 },
 
 {
@@ -20661,7 +20661,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Statistics",
     "title": "Statistics.quantile",
     "category": "function",
-    "text": "quantile(itr, p; sorted=false)\n\nCompute the quantile(s) of a collection itr at a specified probability or vector or tuple of probabilities p on the interval [0,1]. The keyword argument sorted indicates whether itr can be assumed to be sorted.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(v). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if itr contains NaN or missing values. Use the skipmissing function to omit missing entries and compute the quantiles of non-missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\n```jldoctest julia> quantile(0:20, 0.5) 10.0\n\njulia> quantile(0:20, [0.1, 0.5, 0.9]) 3-element Array{Float64,1}:   2.0  10.0  18.0\n\njulia> quantile(skipmissing([1, 10, missing]), 0.5) 5.5  ```\n\n\n\n\n\n"
+    "text": "quantile(itr, p; sorted=false)\n\nCompute the quantile(s) of a collection itr at a specified probability or vector or tuple of probabilities p on the interval [0,1]. The keyword argument sorted indicates whether itr can be assumed to be sorted.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(itr). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if itr contains NaN or missing values. Use the skipmissing function to omit missing entries and compute the quantiles of non-missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\n```jldoctest julia> quantile(0:20, 0.5) 10.0\n\njulia> quantile(0:20, [0.1, 0.5, 0.9]) 3-element Array{Float64,1}:   2.0  10.0  18.0\n\njulia> quantile(skipmissing([1, 10, missing]), 0.5) 5.5  ```\n\n\n\n\n\n"
 },
 
 {
