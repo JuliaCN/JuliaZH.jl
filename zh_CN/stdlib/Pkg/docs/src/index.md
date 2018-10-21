@@ -1,42 +1,12 @@
 # Pkg
 
-## Introduction
+## 介绍
 
-Pkg is the standard package manager for Julia 1.0 and newer. Unlike traditional
-package managers, which install and manage a single global set of packages, Pkg
-is designed around “environments”: independent sets of packages that can be
-local to an individual project or shared and selected by name. The exact set of
-packages and versions in an environment is captured in a _manifest file_ which
-can be checked into a project repository and tracked in version control,
-significantly improving reproducibility of projects. If you’ve ever tried to run
-code you haven’t used in a while only to find that you can’t get anything to
-work because you’ve updated or uninstalled some of the packages your project was
-using, you’ll understand the motivation for this approach. In Pkg, since each
-project maintains its own independent set of package versions, you’ll never have
-this problem again. Moreover, if you check out a project on a new system, you
-can simply materialize the environment described by its manifest file and
-immediately be up and running with a known-good set of dependencies.
+Pkg 是 Julia 1.0 及更新版本的标准包管理器。与那些安装和管理单个全局软件包集的传统包管理器不同，Pkg 是围绕「环境」设计的：独立的软件包集可以是单个项目的本地软件包集，也可按名称共享和选择。 环境中包及其版本的确切信息保存在_清单文件_中，该文件可以检入项目存储库并在版本控制中进行跟踪，从而显着提高项目的可重复性。如果你曾经尝试运行未曾使用过的代码，但发现其完全无法工作，而这只是因为你更新或卸载了一些你的项目所使用的包，那么你会理解这种方法的意图。在 Pkg 中，由于每个项目都维护着各自的独立软件包集，你再也不会遇到此问题了。 此外，如果你签出项目到新系统中，你可以简单地搭建出其清单文件所描述的环境，并立即在具有已知的良好依赖项集的环境下启动并运行该项目。
 
-Since environments are managed and updated independently from each other,
-“dependency hell” is significantly alleviated in Pkg. If you want to use the
-latest and greatest version of some package in a new project but you’re stuck on
-an older version in a different project, that’s no problem – since they have
-separate environments they can just use different versions, which are both
-installed at the same time in different locations on your system. The location
-of each package version is canonical, so when environments use the same versions
-of packages, they can share installations, avoiding unnecessary duplication of
-the package. Old package versions that are no longer used by any environments
-are periodically “garbage collected” by the package manager.
+由于环境是彼此独立地进行安装和管理的，在 Pkg 中显著缓解了「依赖地狱」。你如果想在新项目中使用更新和更好的包，但在不同的项目中使用旧版本包，那也没问题——因为它们的环境是彼此分离的，所以它们可以使用不同版本的包，两个版本的包都同时安装在系统的不同的位置中。每个包版本的位置都是规范的，所以当多个环境使用包的相同版本时，它们可以共享已安装的包，从而避免不必要的包重复。包管理器会定期「垃圾收集」不再被任何环境使用的旧版本包。
 
-Pkg’s approach to local environments may be familiar to people who have used
-Python’s `virtualenv` or Ruby’s `bundler`. In Julia, instead of hacking the
-language’s code loading mechanisms to support environments, we have the benefit
-that Julia natively understands them. In addition, Julia environments are
-“stackable”: you can overlay one environment with another and thereby have
-access to additional packages outside of the primary environment. This makes it
-easy to work on a project, which provides the primary environment, while still
-having access to all your usual dev tools like profilers, debuggers, and so on,
-just by having an environment including these dev tools later in the load path.
+Pkg 对本地环境的处理方法可能让曾经使用过 Python 的 `virtualenv` 或 Ruby 的 `bundler` 的人感到熟悉。在 Julia 中，我们不仅没有通过破解语言的代码加载机制来支持环境，而且还有 Julia 本身就理解它们的好处。此外，Julia 环境是「可堆叠的」：你可以将一个环境叠加在另一个环境上，从而可以访问主环境之外的其它包。这使得更容易在提供主环境的项目上工作，同时依然访问所有你常用的开发工具，如分析器、调试器等，这只需在加载路径中更后地包含具有这些开发环境的路径。
 
 Last but not least, Pkg is designed to support federated package registries.
 This means that it allows multiple registries managed by different parties to
@@ -51,48 +21,32 @@ upstream patch to be accepted and published. Once an official fix is published,
 however, you can just upgrade your dependencies and you'll be back on an
 official release again.
 
-## Glossary
+## 词汇表
 
-**Project:** a source tree with a standard layout, including a `src` directory
-for the main body of Julia code, a `test` directory for testing the project,
-`docs` for documentation files, and optionally a `deps` directory for a build
-script and its outputs. A project will typically also have a project file and
-may optionally have a manifest file:
+**项目（Project）：**一个具有标准布局的源代码树，包括了用来放置主要的 Julia 代码的 `src` 目录、用来放置测试的 `test` 目录、用来放置文档的 `docs` 目录和可选的用来放置构建脚本及其输出的 `deps` 目录。项目通常有一个项目文件和一个可选的清单文件：
 
-- **Project file:** a file in the root directory of a project, named
-  `Project.toml` (or `JuliaProject.toml`) describing metadata about the project,
-  including its name, UUID (for packages), authors, license, and the names and
-  UUIDs of packages and libraries that it depends on.
+- **项目文件（Project file）：**一个在项目根目录下的文件，叫做 `Project.toml`（或 `JuliaProject.toml`），用来描述项目的元数据，包括项目的名称、UUID（针对包）、作者、许可证和它所依赖的包和库的名称及 UUID。
+   
+   
+   
 
-- **Manifest file:** a file in the root directory of a project, named
-  `Manifest.toml` (or `JuliaManifest.toml`) describing a complete dependency graph
-  and exact versions of each package and library used by a project.
+- **清单文件（Manifest file）：**一个在项目根目录下的文件，叫做 `Manifest.toml`（或 `JuliaManifest.toml`），用来描述完整的依赖关系图、每个包的确切版本以及项目使用的库。
+   
+   
 
-**Package:** a project which provides reusable functionality that can be used by
-other Julia projects via `import X` or `using X`. A package should have a
-project file with a `uuid` entry giving its package UUID. This UUID is used to
-identify the package in projects that depend on it.
+**包（Package）：**一个提供可重用功能的项目，其它 Julia 项目可以同 `import X` 或 `using X` 使用它。一个包应该包含一个具有 `uuid` 条目（此条目给出该包 UUID）的项目文件。此 UUID 用于在依赖它的项目中标识该包。
 
 !!! note
-    For legacy reasons it is possible to load a package without a project file or
-    UUID from the REPL or the top-level of a script. It is not possible, however,
-    to load a package without a project file or UUID from a project with them. Once
-    you've loaded from a project file, everything needs a project file and UUID.
+    由于遗留原因，可以在 REPL 或脚本的顶级中加载没有项目文件或 UUID 的包。但是，无法在具有项目文件或 UUID 的项目中加载没有它们的包。一旦你曾从项目文件加载包，所有包就都需要项目文件和 UUID。
 
-**Application:** a project which provides standalone functionality not intended
-to be reused by other Julia projects. For example a web application or a
-commmand-line utility, or simulation/analytics code accompanying a scientific paper.
-An application may have a UUID but does not need one.
-An application may also provide global configuration options for packages it
-depends on. Packages, on the other hand, may not provide global configuration
-since that could conflict with the configuration of the main application.
+**应用（application）：**一个提供独立功能的项目，不打算被其它 Julia 项目重用。例如，Web 应用、命令行工具或者科学论文附带的模拟或分析代码。应用可以有 UUID 但也可以没有。应用还可以为其所依赖的包提供全局配置选项。另一方面，包不可能提供全局配置，因为这可能与主应用的配置相冲突。
 
 !!! note
-    **Projects _vs._ Packages _vs._ Applications:**
+    **项目 _vs._ 包 _vs._ 应用：**
 
-    1. **Project** is an umbrella term: packages and applications are kinds of projects.
-    2. **Packages** should have UUIDs, applications can have a UUIDs but don't need them.
-    3. **Applications** can provide global configuration, whereas packages cannot.
+    1. **项目**是一个总称：包和应用都是一种项目。
+    2. **包**应该有 UUID，而应用可以有也可以没有。
+    3. **应用**可以提供全局的配置，而包不行。
 
 **Library (future work):** a compiled binary dependency (not written in Julia)
 packaged to be used by a Julia project. These are currently typically built in-
@@ -100,23 +54,21 @@ place by a `deps/build.jl` script in a project’s source tree, but in the futur
 we plan to make libraries first-class entities directly installed and upgraded
 by the package manager.
 
-**Environment:** the combination of the top-level name map provided by a project
-file combined with the dependency graph and map from packages to their entry points
-provided by a manifest file. For more detail see the manual section on code loading.
+**环境（Environment）：**项目文件和清单文件的组合，项目文件与依赖关系图相结合后提供了顶级名称映射，而清单文件提供了包到它们入口点的映射。有关的详细信息，请参阅手册中代码加载的相关章节。
 
 - **Explicit environment:** an environment in the form of an explicit project
-  file and an optional corresponding manifest file together in a directory. If the
-  manifest file is absent then the implied dependency graph and location maps are
-  empty.
+   
+   
+   
 
 - **Implicit environment:** an environment provided as a directory (without a
-  project file or manifest file) containing packages with entry points of the form
-  `X.jl`, `X.jl/src/X.jl` or `X/src/X.jl`. The top-level name map is implied by
-  these entry points. The dependency graph is implied by the existence of project
-  files inside of these package directories, e.g. `X.jl/Project.toml` or
-  `X/Project.toml`. The dependencies of the `X` package are the dependencies in
-  the corresponding project file if there is one. The location map is implied by
-  the entry points themselves.
+   
+   
+   
+   
+   
+   
+   
 
 **Registry:** a source tree with a standard layout recording metadata about a
 registered set of packages, the tagged versions of them which are available, and
@@ -124,16 +76,16 @@ which versions of packages are compatible or incompatible with each other. A
 registry is indexed by package name and UUID, and has a directory for each
 registered package providing the following metadata about it:
 
-- name – e.g. `DataFrames`
-- UUID – e.g. `a93c6f00-e57d-5684-b7b6-d8193f3e46c0`
-- authors – e.g. `Jane Q. Developer <jane@example.com>`
-- license – e.g. MIT, BSD3, or GPLv2
-- repository – e.g. `https://github.com/JuliaData/DataFrames.jl.git`
-- description – a block of text summarizing the functionality of a package
-- keywords – e.g. `data`, `tabular`, `analysis`, `statistics`
-- versions – a list of all registered version tags
+- name——例如 `DataFrames`
+- UUID——例如 `a93c6f00-e57d-5684-b7b6-d8193f3e46c0`
+- authors——例如 `Jane Q. Developer <jane@example.com>`
+- license——例如 MIT，BSD3 或 GPLv2
+- repository——例如 `https://github.com/JuliaData/DataFrames.jl.git`
+- description——一个总结包功能的文本块
+- keywords——例如 `data`，`tabular`，`analysis`，`statistics`
+- versions——所有已注册版本的标签列表
 
-For each registered version of a package, the following information is provided:
+每个包的已注册版本都会提供以下信息：
 
 - its semantic version number – e.g. `v1.2.3`
 - its git tree SHA-1 hash – e.g. `7ffb18ea3245ef98e368b02b81e8a86543a11103`
@@ -176,35 +128,27 @@ global configuration data is saved. Later entries in the depot path are treated
 as read-only and are appropriate for registries, packages, etc. installed and
 managed by system administrators.
 
-## Getting Started
+## 入门
 
-The Pkg REPL-mode is entered from the Julia REPL using the key `]`.
+在 Julia REPL 中使用 `]` 键即可进入 Pkg 模式。
 
 ```
 (v0.7) pkg>
 ```
 
-The part inside the parenthesis of the prompt shows the name of the current project.
-Since we haven't created our own project yet, we are in the default project, located at `~/.julia/environments/v0.7`
-(or whatever version of Julia you happen to run).
+提示符括号内的部分显示当前项目的名称。由于我们尚未创建自己的项目，我们正处于默认项目中，其位于 `~/.julia/environments/v0.7`（或任何你恰巧在运行的 Julia 版本）。
 
-To return to the `julia>` prompt, either press backspace when the input line is empty or press Ctrl+C.
-Help is available by calling `pkg> help`.
-If you are in an environment that does not have access to a REPL you can still use the REPL mode commands using
-the string macro `pkg` available after `using Pkg`. The command `pkg"cmd"` would be equivalent to executing `cmd`
-in the REPL mode.
+要返回 `julia>` 提示符，请在输入行为空时按退格键或直接按 Ctrl+C。可通过调用 `pkg>help` 获得帮助。如果你所处的环境无法访问 PEPL，你仍可以通过字符串宏 `pkg`（其在 `using Pkg` 后可用）使用 REPL 模式的命令。命令 `pkg"cms"` 将等价于在 RPEL 模式中执行 `cmd`。
 
-The documentation here describes using Pkg from the REPL mode. Documentation of using
-the Pkg API (by calling `Pkg.` functions) is in progress of being written.
+此处的文档介绍了如何使用 REPL 的 Pkg 模式。使用 Pkg API（通过调用 `Pkg.` 函数）的文档正在编写中。
 
-### Adding packages
+### 添加包
 
-There are two ways of adding packages, either using the `add` command or the `dev` command.
-The most frequently used one is `add` and its usage is described first.
+有两种方法可以添加包，分别是使用 `add` 命令和 `dev` 命令。最常用的是 `add`，我们首先介绍它的用法。
 
-#### Adding registered packages
+#### 添加已注册的包
 
-In the Pkg REPL packages can be added with the `add` command followed by the name of the package, for example:
+在 REPL 的 Pkg 模式中，添加包可以使用 `add` 命令，其后接包的名称，例如：
 
 ```
 (v0.7) pkg> add Example

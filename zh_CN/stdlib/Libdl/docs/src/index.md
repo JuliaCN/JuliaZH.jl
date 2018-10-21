@@ -1,4 +1,4 @@
-# Dynamic Linker
+# 动态链接器
 
 ```@docs
 Libdl.dlopen

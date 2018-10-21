@@ -1,16 +1,13 @@
 # 接口
 
-Julia的很多能力和扩展性都来自于一些非正式的接口。
-通过为自定义的类型及其对象扩展一些特定的方法，
-可以不但获得它们的功能，
-而且使它们能够被用到其它的基于它们的行为而定义的通用方法中。
+Julia 的很多能力和扩展性都来自于一些非正式的接口。通过为自定义的类型扩展一些特定的方法，自定义类型的对象不但获得那些方法的功能，而且也能够用于其它的基于那些行为而定义的通用方法中。
 
 ## [迭代](@id man-interface-iteration)
 
 | 必须方法               |                        | 简短描述                                                                     |
 |:------------------------------ |:---------------------- |:------------------------------------------------------------------------------------- |
 | `iterate(iter)`                |                        | 通常返回由第一项及其其初始状态组成的元组，但如果是空，则要么返回[`nothing`](@ref)         |
-| `iterate(iter, state)`         |                        | 通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回[`nothing`](@ref)。  |
+| `iterate(iter, state)`         |                        | 通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回 `nothing`。  |
 | **重要可选方法** | **默认定义** | **简短描述**                                                                 |
 | `IteratorSize(IterType)`       | `HasLength()`          |  `HasLength()` ， `HasShape{N}()` ，  `IsInfinite()` ， 或者 `SizeUnknown()` 作为合适的 |
 | `IteratorEltype(IterType)`     | `HasEltype()`          | `EltypeUnknown()`  和 `HasEltype()`  都是可接受的                              |
@@ -65,8 +62,8 @@ julia> struct Squares
 julia> Base.iterate(S::Squares, state=1) = state > S.count ? nothing : (state*state, state+1)
 ```
 
-仅仅定义了  [`iterate`](@ref) 函数的 `Squares` 类型就已经很强大了。
-我们现在可以迭代所有的元素了：
+仅仅定义了 [`iterate`](@ref) 函数的 `Squares` 类型就已经很强大了。我们现在可以迭代所有的元素了：
+
 ```jldoctest squaretype
 julia> for i in Squares(7)
            println(i)
@@ -93,10 +90,9 @@ julia> mean(Squares(100))
 
 julia> std(Squares(100))
 3024.355854282583
-我们可以扩展一些其它的方法，为Julia提供有关此可迭代集合的更多信息。
-我们知道 `Squares`  序列中的元素总是  `Int` 型的。
-通过扩展  [`eltype`](@ref)  方法，  我们可以给Julia过多的信息来帮助其在更复杂的方法中产生更加具体的代码。
-我们同时也知道我们序列中的元素数目，所以我们也同样可以扩展  [`length`](@ref) ：
+```
+
+我们可以扩展一些其它的方法，为Julia提供有关此可迭代集合的更多信息。我们知道 `Squares` 序列中的元素总是 `Int` 型的。通过扩展 [`eltype`](@ref) 方法，我们可以给 Julia 过多的信息来帮助其在更复杂的方法中产生更加具体的代码。我们同时也知道我们序列中的元素数目，所以我们也同样可以扩展 [`length`](@ref)：
 
 ```jldoctest squaretype
 julia> Base.eltype(::Type{Squares}) = Int # Note that this is defined for the type
@@ -115,7 +111,7 @@ julia> collect(Squares(4))
  16
 ```
 
-尽管大多时候我们都可以依赖于一些通用的实现，某些时候如果我们知道有一个更简单的算法的话，可以扩展出更具体的实现。例如，计算平方和有一个公式，因此可以扩展出一个更高效的实现：
+尽管大多时候我们都可以依赖于一些通用的实现，某些时候如果我们知道有一个更简单的算法的话，可以扩展出更具体的方法。例如，计算平方和有一个公式，因此可以扩展出一个更高效的解法：
 
 ```jldoctest squaretype
 julia> Base.sum(S::Squares) = (n = S.count; return n*(n+1)*(2n+1)÷6)

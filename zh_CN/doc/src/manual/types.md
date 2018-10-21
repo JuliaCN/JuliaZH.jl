@@ -8,18 +8,18 @@ Julia 类型系统是动态的，但通过指出某些变量是特定类型的�
 
 Julia 用[类型系统](https://en.wikipedia.org/wiki/Type_system)的术语描述是动态（dynamic）、主格（nominative）和参数（parametric）的。范型可以被参数化，并且类型之间的层次关系可以被[显式地声明](https://en.wikipedia.org/wiki/Nominal_type_system)，而不是[隐含地通过兼容的结构](https://en.wikipedia.org/wiki/Structural_type_system)。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的类型，并且只有抽象类型可以作为其超类型。虽然起初看起来这可能过于严格，但它有许多有益的结果，但缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：
 
-  * 对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象
-    其类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是
-    头等的。
-  * 「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际
-    类型。这在面向对象被称为「运行时类型」
-    ，其中静态编译和多态的组合使得这种区别变得显著。
+  * 对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象其类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是头等的。
+     
+     
+  * 「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际类型。这在面向对象被称为「运行时类型」，其中静态编译和多态的组合使得这种区别变得显著。
+     
+     
   * 值有类型，变量没有类型——变量仅仅是绑定给值的名字而已。
-  * 抽象类型和具体类型都可以通过其他类型进行参数化。它们的参数化还可
-    通过符号、任意使得 [`isbits`](@ref) 返回真的类型的值（实质上，
-    也就是像数字或布尔变量这样的东西，存储方式像 C 类型或不包含指向其它对象的指针的`结构体`）
-    和其元组。类型参数在不需要被引用或限制时可以省略
-    。
+  * 抽象类型和具体类型都可以通过其他类型进行参数化。它们的参数化还可通过符号、任意使得 [`isbits`](@ref) 返回 true 的类型的值（实质上，也就是像数字或布尔变量这样的东西，存储方式像 C 类型或不包含指向其它对象的指针的 `struct`）和其元组。类型参数在不需要被引用或限制时可以省略。
+     
+     
+     
+     
 
 Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从未感觉需要编写明确使用类型的代码。但是，某些场景的编程可通过声明类型变得更加清晰、简单、快速和健壮。
 
@@ -28,8 +28,8 @@ Julia 的类型系统设计得强大而富有表现力，却清晰、直观且�
 `::`运算符可以用来在程序中给表达式和变量附加类型注释。这有两个主要原因：
 
 1. 作为断言，帮助程序确认能是否正常运行，
-2. 给编译器提供额外的类型信息，这可能帮助程序提升性能
-   ，在某些情况下
+2. 给编译器提供额外的类型信息，这可能帮助程序提升性能，在某些情况下
+    
 
 当被附加到一个计算值的表达式时，`::` 操作符读作「一个 ··· 的实例」。它在任何地方都可以被用于断言左侧表达式的值是右侧类型的实例。当右侧类型是具体类型时，左侧的值必须能够以该类型作为其实现——回想一下，所有具体类型都是最终的，因此没有任何实现是任何其它具体类型的子类型。当右侧类型是抽象类型时，值是由该抽象类型子类型中的某个具体类型实现的才能满足该断言。如果类型断言非真，抛出一个异常，否则返回左侧的值：
 
@@ -347,30 +347,15 @@ types in other languages. Declaring a function argument or a field as `Union{T, 
 setting it either to a value of type `T`, or to `nothing` to indicate that there is no value.
 See [this FAQ entry](@ref faq-nothing) for more information.
 
-## Parametric Types
+## 参数类型
 
-An important and powerful feature of Julia's type system is that it is parametric: types can take
-parameters, so that type declarations actually introduce a whole family of new types -- one for
-each possible combination of parameter values. There are many languages that support some version
-of [generic programming](https://en.wikipedia.org/wiki/Generic_programming), wherein data structures
-and algorithms to manipulate them may be specified without specifying the exact types involved.
-For example, some form of generic programming exists in ML, Haskell, Ada, Eiffel, C++, Java, C#,
-F#, and Scala, just to name a few. Some of these languages support true parametric polymorphism
-(e.g. ML, Haskell, Scala), while others support ad-hoc, template-based styles of generic programming
-(e.g. C++, Java). With so many different varieties of generic programming and parametric types
-in various languages, we won't even attempt to compare Julia's parametric types to other languages,
-but will instead focus on explaining Julia's system in its own right. We will note, however, that
-because Julia is a dynamically typed language and doesn't need to make all type decisions at compile
-time, many traditional difficulties encountered in static parametric type systems can be relatively
-easily handled.
+Julia 类型系统的一个重要和强大的特征是它是参数的：类型可以接受参数，因此类型声明实际上引入了一整套新类型——每一个参数值的可能组合引入一个新类型。许多语言支持某种版本的[泛型编程](https://en.wikipedia.org/wiki/Generic_programming)，其中，可以指定操作泛型的数据结构和算法，而无需指定所涉及的确切类型。例如，某些形式的泛型编程存在于 ML、Haskell、Ada、Eiffel、C++、Java、C#、F#、和 Scala 中，这只是其中的一些例子。这些语言中的一些支持真正的参数多态（例如 ML、Haskell、Scala），而其它语言基于模板的范型编程风格（例如 C++、Java）。由于在不同语言中有多种不同种类的泛型编程和参数类型，我们甚至不会尝试将 Julia 的参数类型与其它语言的进行比较，而是专注于解释 Julia 系统本身。然而，我们将注意到，因为 Julia 是动态类型语言并且不需要在编译时做出所有类型决定，所以许多在静态参数类型系统中遇到的传统困难可以被相对容易地处理。
 
-All declared types (the `DataType` variety) can be parameterized, with the same syntax in each
-case. We will discuss them in the following order: first, parametric composite types, then parametric
-abstract types, and finally parametric primitive types.
+所有已声明的类型（`DataType` 类型）都可被参数化，在每种情况下都使用一样的语法。我们将按一下顺序讨论它们：首先是参数复合类型，接着是参数抽象类型，最后是参数原始类型。
 
-### Parametric Composite Types
+### 参数复合类型
 
-Type parameters are introduced immediately after the type name, surrounded by curly braces:
+类型参数在类型名称后引入，用大括号扩起来：
 
 ```jldoctest pointtype
 julia> struct Point{T}
@@ -379,13 +364,7 @@ julia> struct Point{T}
        end
 ```
 
-This declaration defines a new parametric type, `Point{T}`, holding two "coordinates" of type
-`T`. What, one may ask, is `T`? Well, that's precisely the point of parametric types: it can be
-any type at all (or a value of any bits type, actually, although here it's clearly used as a type).
-`Point{Float64}` is a concrete type equivalent to the type defined by replacing `T` in the definition
-of `Point` with [`Float64`](@ref). Thus, this single declaration actually declares an unlimited
-number of types: `Point{Float64}`, `Point{AbstractString}`, `Point{Int64}`, etc. Each of these
-is now a usable concrete type:
+此声明定义了一个新的参数类型，`Point{T}`，拥有类型为 `T` 的两个「坐标」。有人可能会问 `T` 是什么？嗯，这恰恰是参数类型的重点：它可以是任何类型（或者任何位类型值，虽然它实际上在这里显然用作类型）。`Point{Float64}` 是一个具体类型，该类型等价于通过用 [`Float64`](@ref) 替换 `Point` 的定义中的 `T` 所定义的类型。因此，单独这一个声明实际上声明了无限个类型：`Point{Float64}`，`Point{AbstractString}`，`Point{Int64}`，等等。这些类型中的每一个类型现在都是可用的具体类型：
 
 ```jldoctest pointtype
 julia> Point{Float64}
@@ -395,11 +374,9 @@ julia> Point{AbstractString}
 Point{AbstractString}
 ```
 
-The type `Point{Float64}` is a point whose coordinates are 64-bit floating-point values, while
-the type `Point{AbstractString}` is a "point" whose "coordinates" are string objects (see [Strings](@ref)).
+`Point{Float64}` 类型是坐标为 64 位浮点值的点，而 `Point{AbstractString}` 类型是「坐标」为字符串对象（请参阅 [Strings](@ref)）的「点」。
 
-`Point` itself is also a valid type object, containing all instances `Point{Float64}`, `Point{AbstractString}`,
-etc. as subtypes:
+`Point` 本身也是一个有效的类型对象，包括所有实例 `Point{Float64}`、`Point{AbstractString}` 等作为子类型：
 
 ```jldoctest pointtype
 julia> Point{Float64} <: Point
@@ -430,30 +407,16 @@ false
 ```
 
 !!! warning
-    This last point is *very* important: even though `Float64 <: Real` we **DO NOT** have `Point{Float64} <: Point{Real}`.
+    最后一点*非常*重要：即使 `Float64 <: Real` 也**没有** `Point{Float64} <: Point{Real}`。
 
-In other words, in the parlance of type theory, Julia's type parameters are *invariant*, rather
-than being [covariant (or even contravariant)](https://en.wikipedia.org/wiki/Covariance_and_contravariance_%28computer_science%29). This is for practical reasons: while any instance
-of `Point{Float64}` may conceptually be like an instance of `Point{Real}` as well, the two types
-have different representations in memory:
+换成类型理论说法，Julia 的类型参数是*不变的*，而不是[协变的（或甚至是逆变的）](https://en.wikipedia.org/wiki/Covariance_and_contravariance_%28computer_science%29)。这是出于实际原因：虽然任何 `Point {Float64}` 的实例在概念上也可能像是 `Point {Real}` 的实例，但这两种类型在内存中有不同的表示：
 
-  * An instance of `Point{Float64}` can be represented compactly and efficiently as an immediate pair
-    of 64-bit values;
-  * An instance of `Point{Real}` must be able to hold any pair of instances of [`Real`](@ref).
-    Since objects that are instances of `Real` can be of arbitrary size and structure, in
-    practice an instance of `Point{Real}` must be represented as a pair of pointers to
-    individually allocated `Real` objects.
+  * `Point{Float64}` 的实例可以紧凑而高效地表示为相近的一对 64 位值；
+  * `Point{Real}` 的实例必须能够保存任何一对 [`Real`](@ref) 的实例。由于 `Real` 实例的对象可以具有任意的大小和结构，`Point{Real}` 的实例实际上必须表示为一对指向单独分配的 `Real` 对象的指针。
 
-The efficiency gained by being able to store `Point{Float64}` objects with immediate values is
-magnified enormously in the case of arrays: an `Array{Float64}` can be stored as a contiguous
-memory block of 64-bit floating-point values, whereas an `Array{Real}` must be an array of pointers
-to individually allocated [`Real`](@ref) objects -- which may well be
-[boxed](https://en.wikipedia.org/wiki/Object_type_%28object-oriented_programming%29#Boxing)
-64-bit floating-point values, but also might be arbitrarily large, complex objects, which are
-declared to be implementations of the `Real` abstract type.
+在数组的情况下，能够以相近值存储 `Point{Float64}` 对象会极大地提高效率：`Array{Float64}` 可以存储为一段 64 位浮点值组成的连续内存块，而 `Array{Real}` 必须是一个由指向单独分配的 [`Real`](@ref) 的指针组成的数组——这可能是 [boxed](https://en.wikipedia.org/wiki/Object_type_%28object-oriented_programming%29#Boxing) 64 位浮点值，但也可能是任意庞大和复杂的对象，且其被声明为 `Real` 抽象类型的表示。
 
-Since `Point{Float64}` is not a subtype of `Point{Real}`, the following method can't be applied
-to arguments of type `Point{Float64}`:
+由于 `Point{Float64}` 不是 `Point{Real}` 的子类型，下面的方法不适用于类型为 `Point{Float64}` 的参数：
 
 ```julia
 function norm(p::Point{Real})
@@ -469,18 +432,13 @@ function norm(p::Point{<:Real})
 end
 ```
 
-(等效地, 另一种定义方法 `function norm(p::Point{T} where T<:Real)` 或`function norm(p::Point{T}) where T<:Real`; 查看[UnionAll Types](@ref).)
+（等效地，另一种定义方法 `function norm(p::Point{T} where T<:Real)` 或 `function norm(p::Point{T}) where T<:Real`；查看 [UnionAll Types](@ref)。）
 
 稍后将在[方法](@ref)中讨论更多示例。
 
-How does one construct a `Point` object? It is possible to define custom constructors for composite
-types, which will be discussed in detail in [Constructors](@ref man-constructors), but in the absence of any special
-constructor declarations, there are two default ways of creating new composite objects, one in
-which the type parameters are explicitly given and the other in which they are implied by the
-arguments to the object constructor.
+如何构造一个 `Point` 对象？可以为复合类型定义自定义的构造函数，这将在[构造函数](@ref man-constructors)中详细讨论，但在没有任何特别的构造函数声明的情况下，有两种默认方式可以创建新的复合对象，一种是显式地给出类型参数，另一种是通过传给对象构造函数的参数隐含地给出。
 
-Since the type `Point{Float64}` is a concrete type equivalent to `Point` declared with [`Float64`](@ref)
-in place of `T`, it can be applied as a constructor accordingly:
+由于 `Point{Float64}` 类型等价于在 `Point` 声明时用 [`Float64`](@ref) 替换 `T` 得到的具体类型，它可以相应地作为构造函数使用：
 
 ```jldoctest pointtype
 julia> Point{Float64}(1.0, 2.0)
@@ -502,13 +460,9 @@ ERROR: MethodError: no method matching Point{Float64}(::Float64, ::Float64, ::Fl
 [...]
 ```
 
-Only one default constructor is generated for parametric types, since overriding it is not possible.
-This constructor accepts any arguments and converts them to the field types.
+参数类型只生成一个默认的构造函数，因为它无法覆盖。这个构造函数接受任何参数并将它们转换为字段的类型。
 
-In many cases, it is redundant to provide the type of `Point` object one wants to construct, since
-the types of arguments to the constructor call already implicitly provide type information. For
-that reason, you can also apply `Point` itself as a constructor, provided that the implied value
-of the parameter type `T` is unambiguous:
+在许多情况下，提供想要构造的 `Point` 对象的类型是多余的，因为构造函数调用参数的类型已经隐式地提供了类型信息。因此，你也可以将 `Point` 本身用作构造函数，前提是参数类型 `T` 的隐含值是确定的：
 
 ```jldoctest pointtype
 julia> Point(1.0,2.0)
@@ -524,7 +478,7 @@ julia> typeof(ans)
 Point{Int64}
 ```
 
-在上例中，当且仅当两个参数类型相同时，`T`的类型才能明确暗示，同时'Point`具有相同的类型。如果不是这种情况，即参数类型不同时，构造函数将失败并显示[`MethodError`](@ref)：
+在 `Point` 的例子中，当且仅当 `Point` 的两个参数类型相同时，`T` 的类型才确实是隐含的。如果不是这种情况，构造函数将失败并出现 [`MethodError`](@ref)：
 
 ```jldoctest pointtype
 julia> Point(1,2.5)
@@ -535,17 +489,15 @@ Closest candidates are:
 
 可以定义适当处理此类混合情况的函数构造方法，将在后面的[构造函数](@ref man-constructors)中讨论。
 
-### Parametric Abstract Types
+### 参数抽象类型
 
-Parametric abstract type declarations declare a collection of abstract types, in much the same
-way:
+参数抽象类型声明以非常相似的方式声明了一族抽象类型：
 
 ```jldoctest pointytype
 julia> abstract type Pointy{T} end
 ```
 
-With this declaration, `Pointy{T}` is a distinct abstract type for each type or integer value
-of `T`. As with parametric composite types, each such instance is a subtype of `Pointy`:
+在此声明中，对于每个类型或整数值 `T`，`Pointy{T}` 都是不同的抽象类型。与参数复合类型一样，每个此类型的实例都是 `Pointy` 的子类型：
 
 ```jldoctest pointytype
 julia> Pointy{Int64} <: Pointy
@@ -555,7 +507,7 @@ julia> Pointy{1} <: Pointy
 true
 ```
 
-Parametric abstract types are invariant, much as parametric composite types are:
+参数抽象类型是不变的，就像参数复合类型：
 
 ```jldoctest pointytype
 julia> Pointy{Float64} <: Pointy{Real}
@@ -587,7 +539,7 @@ julia> struct Point{T} <: Pointy{T}
        end
 ```
 
-鉴于此类声明，对每个`T` ，都有 `Point{T}` 是 `Pointy{T}` 的子类型：
+鉴于此类声明，对每个 `T`，都有 `Point{T}` 是 `Pointy{T}` 的子类型：
 
 ```jldoctest pointytype
 julia> Point{Float64} <: Pointy{Float64}
@@ -600,7 +552,7 @@ julia> Point{AbstractString} <: Pointy{AbstractString}
 true
 ```
 
-它们仍然不互为子类：
+下面的关系依然不变：
 
 ```jldoctest pointytype
 julia> Point{Float64} <: Pointy{Real}
@@ -692,8 +644,8 @@ end
 
   * 元组类型可以具有任意数量的参数。
   * Tuple types are *covariant* in their parameters: `Tuple{Int}` is a subtype of `Tuple{Any}`. Therefore
-    `Tuple{Any}`被认为是一种抽象类型，而元组类型只有它们的参数有时才具体
-    are.
+    `Tuple{Any}` 被认为是一种抽象类型，且元组类型在它们的参数都是具体类型时是具体类型。
+     
   * 元组没有字段名称; 字段只能通过索引访问。
 
 元组值用括号和逗号书写。构造元组时，会根据需要生成适当的元组类型：
@@ -716,12 +668,11 @@ julia> Tuple{Int,AbstractString} <: Tuple{Real,}
 false
 ```
 
-Intuitively, this corresponds to the type of a function's arguments being a subtype of the function's
-signature (when the signature matches).
+直观地，这对应于函数参数的类型是函数签名（当函数签名匹配时）的子类型。
 
-### Vararg Tuple Types
+### 变参元组类型
 
-元组类型的最后一个参数可以是特殊类型[`Vararg`](@ref)，它表示任意数量的尾随参数：
+元组类型的最后一个参数可以是特殊类型 [`Vararg`](@ref)，它表示任意数量的尾随参数：
 
 ```jldoctest
 julia> mytupletype = Tuple{AbstractString,Vararg{Int}}
@@ -740,25 +691,20 @@ julia> isa(("1",1,2,3.0), mytupletype)
 false
 ```
 
-Notice that `Vararg{T}` corresponds to zero or more elements of type `T`. Vararg tuple types are
-used to represent the arguments accepted by varargs methods (see [Varargs Functions](@ref)).
+请注意，`Vararg{T}` 对应于零个或更多的类型为 `T` 的元素。变参元组类型被用来表示变参方法接受的参数（请参阅[变参函数](@ref)）。
 
-The type `Vararg{T,N}` corresponds to exactly `N` elements of type `T`.  `NTuple{N,T}` is a convenient
-alias for `Tuple{Vararg{T,N}}`, i.e. a tuple type containing exactly `N` elements of type `T`.
+类型 `Vararg{T,N}` 对应于正好 `N` 个类型为 `T` 的元素。`NTuple{N,T}` 是 `Tuple{Vararg{T,N}}` 的别名，即包含正好 `N` 个类型为 `T` 元素的元组类型。
 
-### Named Tuple Types
+### 具名元组类型
 
-Named tuples are instances of the [`NamedTuple`](@ref) type, which has two parameters: a tuple of
-symbols giving the field names, and a tuple type giving the field types.
+具名元组是 [`NamedTuple`](@ref) 类型的实例，该类型有两个参数：一个给出字段名称的符号元组，和一个给出字段类型的元组类型。
 
 ```jldoctest
 julia> typeof((a=1,b="hello"))
 NamedTuple{(:a, :b),Tuple{Int64,String}}
 ```
 
-A `NamedTuple` type can be used as a constructor, accepting a single tuple argument.
-The constructed `NamedTuple` type can be either a concrete type, with both parameters specified,
-or a type that specifies only field names:
+`NamedTuple` 类型可以用作构造函数，接受一个单独的元组作为参数。构造出来的 `NamedTuple` 类型可以是具体类型，如果参数都被指定，也可以是只由字段名称所指定的类型：
 
 ```jldoctest
 julia> NamedTuple{(:a, :b),Tuple{Float32, String}}((1,""))
@@ -768,8 +714,7 @@ julia> NamedTuple{(:a, :b)}((1,""))
 (a = 1, b = "")
 ```
 
-If field types are specified, the arguments are converted. Otherwise the types of the arguments
-are used directly.
+如果指定了字段类型，参数会被转换。否则，就直接使用参数的类型。
 
 #### [单态类型](@id man-singleton-types)
 
@@ -927,7 +872,7 @@ element type.
 
 ## 类型别名
 
-有时为一个已经可表达的类型引入新名称是很方便的。这可通过一个简单的赋值语句完成。例如，`UInt` 是 [`UInt32`](@ref) 或 [`UInt64`](@ref) 的别名，因为它与系统上的指针大小是相适应的。
+有时为一个已经可表达的类型引入新名称是很方便的。这可通过一个简单的赋值语句完成。例如，`UInt` 是 [`UInt32`](@ref) 或 [`UInt64`](@ref) 的别名，因为它的大小是与系统上的指针大小是相适应的。
 
 ```julia-repl
 # 32-bit system:
@@ -955,7 +900,7 @@ end
 
 ## 类型操作
 
-因为 Julia 中的类型本身就是对象，所以普通函数可以对它们进行操作。已经引入了一些对于使用或探索类型特别有用的函数，例如 `<:` 运算符，它表示其左操作数是否为其右操作数的子类型。
+因为 Julia 中的类型本身就是对象，所以一般的函数可以对它们进行操作。已经引入了一些对于使用或探索类型特别有用的函数，例如 `<:` 运算符，它表示其左操作数是否为其右操作数的子类型。
 
 [`isa`](@ref) 函数测试对象是否具有给定类型并返回 true 或 false：
 

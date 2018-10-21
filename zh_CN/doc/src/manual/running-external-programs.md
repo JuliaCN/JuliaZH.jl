@@ -1,25 +1,25 @@
 # 运行外部程序
 
-Julia 从 shell、Perl 以及 Ruby 那里借来了使用命令的反引号。
+Julia 中命令的反引号记法借鉴于 shell、Perl 和 Ruby。然而，在 Julia 中编写
 
 ```jldoctest
 julia> `echo hello`
 `echo hello`
 ```
 
-在多个方面与shell、Perl和Ruby不同：
+在多个方面上与 shell、Perl 和 Ruby 中的行为有所不同：
 
-  * 与立即运行命令行不同，backtick创建[`Cmd`](@ref)对象来表示命令。
-    You can use this object to connect the command to others via pipes, [`run`](@ref) it, and [`read`](@ref) or [`write`](@ref)
-    to it.
-  * When the command is run, Julia does not capture its output unless you specifically arrange for
-    it to. Instead, the output of the command by default goes to [`stdout`](@ref) as it would using
-    `libc`'s `system` call.
-  * The command is never run with a shell. Instead, Julia parses the command syntax directly, appropriately
-    interpolating variables and splitting on words as the shell would, respecting shell quoting syntax.
-    The command is run as `julia`'s immediate child process, using `fork` and `exec` calls.
+  * 反引号创建一个 [`Cmd`](@ref) 对象来表示命令，而不是立即运行命令。
+    你可以使用此对象将命令通过管道连接到其它命令、[`run`](@ref) 它以及对它进行 [`read`](@ref) 或 [`write`](@ref)。
+     
+  * 在命令运行时，Julia 不会捕获命令的输出结果，除非你对它专门安排。相反，在默认情况下，命令的输出会被定向到 [`stdout`](@ref)，因为它将使用 `libc` 的 `system` 调用。
+     
+     
+  * 命令一直不会在 shell 中运行。相反地，Julia 直接解析命令语法，适当地插入变量且像 shell 那样拆分单词，也遵从 shell 的引用语法。命令作为 `julia` 的直接子进程运行，使用 `fork` 和 `exec` 调用。
+     
+     
 
-Here's a simple example of running an external program:
+这是运行外部程序的简单示例：
 
 ```jldoctest
 julia> mycommand = `echo hello`
