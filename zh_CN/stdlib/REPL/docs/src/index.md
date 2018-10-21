@@ -18,7 +18,7 @@ julia>
 
 要退出交互式会话，在空白行上键入 `^D`——control 键和 `d` 键，或者先键入 `quit()`，然后键入 return 或 enter 键。REPL 用横幅和 `julia>` 提示符欢迎你。
 
-## 不同提示符模式
+## 不同的提示符模式
 
 ### Julian 模式
 
@@ -127,22 +127,22 @@ Julia REPL 充分利用了按键绑定。上面已经介绍了几个 control 键
 | `^G`                | De-activate the region (i.e. make it not highlighted)                                                      |
 | `^X^X`              | Exchange the current position with the mark                                                                |
 | **编辑**         |                                                                                                            |
-| Backspace, `^H`     | 删除前一个字符，或者整个区域，当它是 active 时                                        |
-| Delete, `^D`        | Forward delete one character (when buffer has text)                                                        |
-| meta-Backspace      | Delete the previous word                                                                                   |
-| `meta-d`            | Forward delete the next word                                                                               |
-| `^W`                | Delete previous text up to the nearest whitespace                                                          |
+| Backspace, `^H`     | Delete the previous character, or the whole region when it's active                                        |
+| Delete, `^D`        | 删除下一个字符（当缓冲区还有文本）                                                        |
+| meta-Backspace      | 删除上一个单词                                                                                   |
+| `meta-d`            | 删除下一个单词                                                                               |
+| `^W`                | 删除前一段文本直到最近的空格                                                          |
 | `meta-w`            | Copy the current region in the kill ring                                                                   |
 | `meta-W`            | "Kill" the current region, placing the text in the kill ring                                               |
 | `^K`                | "Kill" to end of line, placing the text in the kill ring                                                   |
 | `^Y`                | "Yank" insert the text from the kill ring                                                                  |
 | `meta-y`            | Replace a previously yanked text with an older entry from the kill ring                                    |
-| `^T`                | Transpose the characters about the cursor                                                                  |
+| `^T`                | 颠倒光标左右两侧的字符                                                                  |
 | `meta-Up arrow`     | 颠倒当前行和上一行                                                                     |
 | `meta-Down arrow`   | 颠倒当前行和下一行                                                                     |
-| `meta-u`            | Change the next word to uppercase                                                                          |
-| `meta-c`            | Change the next word to titlecase                                                                          |
-| `meta-l`            | Change the next word to lowercase                                                                          |
+| `meta-u`            | 将下一个单词更改为大写                                                                          |
+| `meta-c`            | 将下一个单词更改为首字母大写                                                                          |
+| `meta-l`            | 将下一个单词更改为小写                                                                          |
 | `^/`, `^_`          | 撤消上一个编辑操作                                                                               |
 | `^Q`                | Write a number in REPL and press `^Q` to open editor at corresponding stackframe or method                 |
 | `meta-Left Arrow`   | indent the current line on the left                                                                        |
@@ -175,7 +175,7 @@ atreplinit(customize_keys)
 
 ## Tab 补全
 
-在 REPL 的 Julian 和帮助模式中，可以函数或类型的前几个字符，接着按 tab 键来获取所有匹配组成的列表：
+在 REPL 的 Julian 和帮助模式中，可以先输入函数或类型的前几个字符，接着按 tab 键来获取所有匹配的列表：
 
 ```julia-repl
 julia> stri[TAB]
@@ -185,7 +185,7 @@ julia> Stri[TAB]
 StridedArray    StridedMatrix    StridedVecOrMat  StridedVector    String
 ```
 
-Tab 键也可用于将 LaTeX 数学符号替换为其 Unicode 等价字符，也可用于获取 LaTeX 匹配组成的列表：
+Tab 键也可用于将 LaTeX 数学符号替换为其 Unicode 等价字符，也可用于获取 LaTeX 匹配的列表：
 
 ```julia-repl
 julia> \pi[TAB]
@@ -248,8 +248,7 @@ max(x, y) in Base at operators.jl:215
 max(a, b, c, xs...) in Base at operators.jl:281
 ```
 
-Keywords are also displayed in the suggested methods after `;`, see below line where `limit`
-and `keepempty` are keyword arguments:
+关键字也会在建议的方法中显示在 `;` 之后，请看下面，其中 `limit` 和 `keepempty` 是关键字参数：
 
 ```julia-repl
 julia> split("1 1 1", [TAB]
@@ -257,11 +256,9 @@ split(str::AbstractString; limit, keepempty) in Base at strings/util.jl:302
 split(str::T, splitter; limit, keepempty) where T<:AbstractString in Base at strings/util.jl:277
 ```
 
-The completion of the methods uses type inference and can therefore see if the arguments match
-even if the arguments are output from functions. The function needs to be type stable for the
-completion to be able to remove non-matching methods.
+方法的补全使用类型推断，因此即使参数是函数的输出，也可以查看参数是否匹配。函数需要是类型稳定的，这样补全才能删除不匹配的方法。
 
-Tab completion can also help completing fields:
+Tab 补全也可以帮助补全字段：
 
 ```julia-repl
 julia> import UUIDs
@@ -270,21 +267,18 @@ julia> UUIDs.uuid[TAB]
 uuid1        uuid4         uuid_version
 ```
 
-Fields for output from functions can also be completed:
+函数输出的字段也可以补全：
 
 ```julia-repl
 julia> split("","")[1].[TAB]
 lastindex  offset  string
 ```
 
-The completion of fields for output from functions uses type inference, and it can only suggest
-fields if the function is type stable.
+函数输出的字段补全使用类型推断，它只能在函数是类型稳定时建议字段。
 
-## Customizing Colors
+## 自定义配色
 
-The colors used by Julia and the REPL can be customized, as well. To change the
-color of the Julia prompt you can add something like the following to your
-`~/.julia/config/startup.jl` file, which is to be placed inside your home directory:
+Julia 和 REPL 使用的配色也可以被自定义。为了修改 Julia 提示符的颜色，你可以在你的 `~/.julia/config/startup.jl` 文件中添加以下内容，该文件在你的家目录中：
 
 ```julia
 function customize_colors(repl)
@@ -294,18 +288,11 @@ end
 atreplinit(customize_colors)
 ```
 
-The available color keys can be seen by typing `Base.text_colors` in the help mode of the REPL.
-In addition, the integers 0 to 255 can be used as color keys for terminals
-with 256 color support.
+可用的颜色键通过在 REPL 的帮助模式中输入 `Base.text_colors` 可以看到。此外，从 0 到 255 的整数可用作具有 256 色支持的终端的颜色键。
 
-You can also change the colors for the help and shell prompts and
-input and answer text by setting the appropriate field of `repl` in the `customize_colors` function
-above (respectively, `help_color`, `shell_color`, `input_color`, and `answer_color`). For the
-latter two, be sure that the `envcolors` field is also set to false.
+你也可以改变帮助、shell 提示符、输入和输出的文本颜色，这通过在上面的 `customize_colors` 函数中设置 `repl` 的相应字段（分别为 `help_color`、`shell_color`、`input_color` 和 `answer_color`）。对于后两个字段，请确定 `envcolors` 字段也设置为 false。
 
-It is also possible to apply boldface formatting by using
-`Base.text_colors[:bold]` as a color. For instance, to print answers in
-boldface font, one can use the following as a `~/.julia/config/startup.jl`:
+通过将 `Base.text_colors[:bold]` 用作颜色，也可以使用粗体格式。例如，要以粗体字体打印输出，可以将以下内容作为 `~/.julia/config/startup.jl`：
 
 ```julia
 function customize_colors(repl)
@@ -316,10 +303,7 @@ end
 atreplinit(customize_colors)
 ```
 
-You can also customize the color used to render warning and informational messages by
-setting the appropriate environment variables. For instance, to render error, warning, and informational
-messages respectively in magenta, yellow, and cyan you can add the following to your
-`~/.julia/config/startup.jl` file:
+你还可以自定义用于呈现 warning 和 informational 消息的颜色，这通过设置相应的环境变量。例如，要分别以 magenta、yellow 和 cyan 呈现 error、warning 和 informational 消息，你可以在你的 `~/.julia/config/startup.jl` 文件中添加以下内容：
 
 ```julia
 ENV["JULIA_ERROR_COLOR"] = :magenta

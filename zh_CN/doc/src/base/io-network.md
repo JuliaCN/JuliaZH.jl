@@ -77,7 +77,7 @@ Base.displaysize
 
   * 函数[`display(x)`](@ref)来请求一个Julia对象的最富的可得的多媒体展示
     `x` (with a plain-text fallback).
-  * 重载 [`show`](@ref) 允许指定用户自定义类型的任意多媒体表示（
+  * 过载 [`show`](@ref) 允许指定用户自定义类型的任意多媒体表现形式（以标准MIME类型为键值）
     以标准MIME类型为键）。
   * 支持多媒体显示后端可以被注册，通过子类化通用的`AbstractDisplay`类型
     并通过[`pushdisplay`](@ref)将其压进显示后端的栈中。

@@ -1,16 +1,14 @@
 # 反射 与 自我检查
 
-朱莉娅提供了多种运行时的反射功能。
+Julia 提供了多种运行时的反射功能。
 
 ## 模块绑定
 
-`Module` 导出的名称使用  [`names(m::Module)`](@ref) ，会返回一个由 [`Symbol`](@ref) 元素组成的数组，表示导出的绑定。
-不管导出状态如何，`names(m::Module, all = true)` 返回 `m` 中所有绑定的符号。
+由 `Module` 导出的名称可用 [`names(m::Module)`](@ref) 获得，它会返回一个元素为 [`Symbol`](@ref) 的数组来表示模块导出的绑定。不管导出状态如何，`names(m::Module, all = true)` 返回 `m` 中所有绑定的符号。
 
-## 数据类型字段
+## DateType 字段
 
-`数据类型` 的所有字段名称可以使用 [`fieldnames`](@ref) 来获取。
-例如下面给定一个类型，`fieldnames(Point)` 会返回一个表示字段名称的 关于 [`Symbol`](@ref) 的元组
+`DataType` 的所有字段名称可以使用 [`fieldnames`](@ref) 来获取。例如，对于下面给定的类型，`fieldnames(Point)` 会返回一个表示字段名称的 [`Symbol`](@ref) 元组：
 
 ```jldoctest struct_point
 julia> struct Point
@@ -22,14 +20,14 @@ julia> fieldnames(Point)
 (:x, :y)
 ```
 
-`Point` 对象中的每个字段的类型 存储在 `Point` 本身的 `types` 变量中。
+`Point` 对象中每个字段的类型存储在 `Point` 本身的 `types` 变量中：
 
 ```jldoctest struct_point
 julia> Point.types
 svec(Int64, Any)
 ```
 
-不过`x` 被声明为 `Int`，而 `y` 未声明类型，因此`y` 默认为 `Any` 类型。
+虽然 `x` 被注释为 `Int`，但 `y` 在类型定义里没有注释，因此 `y` 默认为 `Any` 类型。
 
 类型本身表示为一个叫做 `DataType` 的结构：
 
@@ -38,12 +36,12 @@ julia> typeof(Point)
 DataType
 ```
 
-注意 `fieldnames(DataType)` 给出了 `DataType` 本身的每个字段的名称，其中一个字段是上面示例中看到的 `types` 字段。
+注意 `fieldnames(DataType)` 给出了 `DataType` 本身的每个字段的名称，其中的一个字段是上面示例中提到的 `types` 字段。
 
-## Subtypes
+## 子类型
 
-任何 `数据类型` 的 *直接* 子类型 都可以通过使用 [`subtypes`](@ref) 来列出。
-例如 抽象类型 `DataType` [`AbstractFloat`](@ref) 有四个（具体的）子类型：
+任何 `DataType` 的*直接*子类型都可以通过使用 [`subtypes`](@ref) 来列出。
+例如抽象 `DataType` [`AbstractFloat`](@ref) 有四个（具体的）子类型：
 
 ```jldoctest; setup = :(using InteractiveUtils)
 julia> subtypes(AbstractFloat)
@@ -54,11 +52,9 @@ julia> subtypes(AbstractFloat)
  Float64
 ```
 
-Any abstract subtype will also be included in this list, but further subtypes thereof will not;
-任何抽象的子类型也会被包括其中，但不会有更深的子类型。
-[`subtypes`](@ref) 的递归使用可以检查出整个类型树
+任何抽象子类型也包括此列表中，但子类型的子类型不在其中。递归使用 [`subtypes`](@ref) 可以遍历出整个类型树。
 
-## 数据类型布局设计
+## DataType 布局
 
 用 C 代码接口时，`DataType` 的内部表现非常重要。有几个函数可以检查这些细节。
 

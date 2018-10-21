@@ -17,7 +17,7 @@
 
 直到这里，在我们的例子中，我们定义的函数只有一个不限制参数类型的方法。这种函数的行为就与传统动态类型语言中的函数一样。不过，我们已经在没有意识到的情况下已经使用了多重分派和方法：所有 Julia 标准函数和运算符，就像之前提到的 `+` 函数，都根据参数的类型和数量的不同组合而定义了大量方法。
 
-当定义一个函数时，可以根据需要使用在 [Composite Types](@ref) 中介绍的 `::` 类型断言运算符来限制参数类型，
+当定义一个函数时，可以根据需要使用在[复合类型](@ref)中介绍的 `::` 类型断言运算符来限制参数类型，
 
 ```jldoctest fofxy
 julia> f(x::Float64, y::Float64) = 2x + y
@@ -82,18 +82,19 @@ julia> f(2, 3)
 1
 ```
 
-`2x + y`定义只用于第一个情况，`2x - y`定义用于其他的情况。没有使用任何自动的函数参数的指派或者类型转换：Julia中的所有转换都不是magic的，都是完全显式的。然而[类型转换和类型提升](@ref conversion-and-promotion)显示了足够先进的技术的智能应用能够与magic不可分辨到什么程度。[^Clark61]对于非数字值，和比两个参数更多或者更少的情况，函数`f`并没有定义，应用会导致[`MethodError`](@ref)：
+`2x + y` 定义只用于第一个情况，`2x - y` 定义用于其他的情况。没有使用任何自动的函数参数的指派或者类型转换：Julia中的所有转换都不是 magic 的，都是完全显式的。然而[类型转换和类型提升](@ref conversion-and-promotion)显示了足够先进的技术的智能应用能够与 magic 不可分辨到什么程度。[^Clark61] 对于非数字值，和比两个参数更多或者更少的情况，函数 `f` 并没有定义，应用会导致 [`MethodError`](@ref)：
+
 ```jldoctest fofxy
 julia> f("foo", 3)
 ERROR: MethodError: no method matching f(::String, ::Int64)
 Closest candidates are:
- f(!Matched::Number, ::Number) at none:1
+  f(!Matched::Number, ::Number) at none:1
 
 julia> f()
 ERROR: MethodError: no method matching f()
 Closest candidates are:
- f(!Matched::Float64, !Matched::Float64) at none:1
- f(!Matched::Number, !Matched::Number) at none:1
+  f(!Matched::Float64, !Matched::Float64) at none:1
+  f(!Matched::Number, !Matched::Number) at none:1
 ```
 
 可以简单地看到对于函数存在哪些方法，通过在交互式会话中键入函数对象本身：
@@ -588,7 +589,7 @@ matmul(a, b) = matmul(promote(a, b)...)
 
 ## 参数化约束的可变参数方法
 
-函数参数也可以用于约束应用于"可变参数"函数([Varargs Functions](@ref))的参数的数量。`Vararg{T,N}`可用于表明这么一个约束。举个例子：
+函数参数也可以用于约束应用于"可变参数"函数（[变参函数](@ref)）的参数的数量。`Vararg{T,N}` 可用于表明这么一个约束。举个例子：
 
 ```jldoctest
 julia> bar(a,b,x::Vararg{Any,2}) = (a,b,x)

@@ -34,12 +34,12 @@ julia> ex1.head
 :call
 ```
 
- * 表达式的参数，可能是符号，其他表达式，或者字面值：
+  * 表达式的参数，可能是符号、其他表达式或字面值：
 
 ```jldoctest prog
 julia> ex1.args
 3-element Array{Any,1}:
- :+
+  :+
  1
  1
 ```

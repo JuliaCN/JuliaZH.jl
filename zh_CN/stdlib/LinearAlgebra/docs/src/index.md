@@ -4,7 +4,7 @@
 DocTestSetup = :(using LinearAlgebra)
 ```
 
-除了（且作为一部分）对多维数组的支持，Julia 还提供了许多常见和实用的线性代数操作的本地实现。基础的操作，比如 [`tr`](@ref)，[`det`](@ref) 和 [`inv`](@ref) 都是支持的：
+除了（且作为一部分）对多维数组的支持，Julia 还提供了许多常见和实用的线性代数运算的本地实现。基本的运算，比如 [`tr`](@ref)，[`det`](@ref) 和 [`inv`](@ref) 都是支持的：
 
 ```jldoctest
 julia> A = [1 2 3; 4 1 6; 7 8 1]
@@ -26,7 +26,7 @@ julia> inv(A)
   0.240385   0.0576923  -0.0673077
 ```
 
-还有其它实用的操作，比如寻找特征值或特征向量：
+还有其它实用的运算，比如寻找特征值或特征向量：
 
 ```jldoctest
 julia> A = [-4. -17.; 2. 2.]
@@ -45,7 +45,7 @@ julia> eigvecs(A)
  -0.166924-0.278207im  -0.166924+0.278207im
 ```
 
-此外，Julia 提供了许多 [factorizations](@ref man-linalg-factorizations)，它们可用于加快问题的求解，比如线性求解或矩阵或矩阵求幂，这通过将矩阵预先分解成更适合问题的形式（出于性能或内存上的原因）。有关的更多信息，请参阅文档 [`factorize`](@ref)。举个例子：
+此外，Julia 提供了多种[矩阵分解](@ref man-linalg-factorizations)，它们可用于加快问题的求解，比如线性求解或矩阵或矩阵求幂，这通过将矩阵预先分解成更适合问题的形式（出于性能或内存上的原因）。有关的更多信息，请参阅文档 [`factorize`](@ref)。举个例子：
 
 ```jldoctest
 julia> A = [1.5 2 -4; 3 -1 -6; -10 2.3 4]
@@ -139,7 +139,7 @@ julia> sB\x
  -1.1086956521739126
  -1.4565217391304346
 ```
-`\` 操作在这里执行线性求解。左除运算符相当强大，很容易写出紧凑、可读的代码，它足够灵活，可以求解各种线性方程组。
+`\` 运算在这里执行线性求解。左除运算符相当强大，很容易写出紧凑、可读的代码，它足够灵活，可以求解各种线性方程组。
 
 ## 特殊矩阵
 
@@ -159,7 +159,7 @@ julia> sB\x
 | [`Diagonal`](@ref)        | [对角矩阵](https://en.wikipedia.org/wiki/Diagonal_matrix)                 |
 | [`UniformScaling`](@ref)  | [等比缩放运算符](https://en.wikipedia.org/wiki/Uniform_scaling)        |
 
-### Elementary operations
+### 基本运算
 
 | 矩阵类型               | `+` | `-` | `*` | `\` | 其它具有优化方法的函数                      |
 |:------------------------- |:--- |:--- |:--- |:--- |:----------------------------------------------------------- |
@@ -177,9 +177,9 @@ julia> sB\x
 
 | 键        | 描述                                                   |
 |:---------- |:------------------------------------------------------------- |
-| M (matrix) | 针对矩阵-矩阵操作的优化方法可用 |
-| V (vector) | 针对矩阵-向量操作的优化方法可用 |
-| S (scalar) | 针对矩阵-标量操作的优化方法可用 |
+| M (matrix) | 针对矩阵与矩阵运算的优化方法可用 |
+| V (vector) | 针对矩阵与向量运算的优化方法可用 |
+| S (scalar) | 针对矩阵与标量运算的优化方法可用 |
 
 ### 矩阵分解
 
@@ -203,11 +203,11 @@ julia> sB\x
 | I (interval) | 寻找在区间 [`vl`, `vh`] 内的特征值的优化方法可用                                 | `eigvals(M, vl, vh)` |
 | V (vectors)  | 寻找对应于特征值 `x=[x1, x2,...]` 的特征向量的优化方法可用 | `eigvecs(M, x)`      |
 
-### The uniform scaling operator
+### 等比缩放运算符
 
 [`UniformScaling`](@ref) 运算符代表一个标量乘以恒同运算符，`λ*I`。恒同运算符 `I` 定义为常量和 `UniformScaling` 的实例。这些运算符是通用的，并且会在二元运算符 [`+`](@ref)，[`-`](@ref)，[`*`](@ref) 和 [`\`](@ref) 中与另一个矩阵相匹配。对于 `A+I` 和 `A-I` ，这意味着 `A` 必须是个方阵。与恒同运算符 `I` 相乘是一个空操作（除了检查比例因子是一），因此几乎没有开销。
 
-查看 `UniformScaling` 运算符的操作：
+来查看 `UniformScaling` 运算符的运行结果：
 
 ```jldoctest
 julia> U = UniformScaling(2);
@@ -247,7 +247,7 @@ Stacktrace:
 
 [矩阵分解](https://en.wikipedia.org/wiki/Matrix_decomposition)将矩阵分解成矩阵乘积，是线性代数的中心概念。
 
-下表总结了在 Julia 中已经实现了的矩阵分解的类型。其相关方法的细节可以在线性代数文档中的 [Standard Functions](@ref) 这一节中找到。
+下表总结了在 Julia 中已经实现了的矩阵分解的类型。其相关方法的细节可以在线性代数文档中的[标准函数](@ref)这一节中找到。
 
 | 类型              | 描述                                                                                                    |
 |:----------------- |:-------------------------------------------------------------------------------------------------------------- |
@@ -266,7 +266,7 @@ Stacktrace:
 
 
 
-## Standard Functions
+## 标准函数
 
 Julia 中的线性代数函数主要通过调用 [LAPACK](http://www.netlib.org/lapack/) 中的函数来实现。稀疏分解则调用 [SuiteSparse](http://faculty.cse.tamu.edu/davis/suitesparse.html) 中的函数。
 
@@ -392,9 +392,9 @@ LinearAlgebra.stride1
 LinearAlgebra.checksquare
 ```
 
-## Low-level matrix operations
+## 底层矩阵运算
 
-在许多情况下，矩阵操作存在 in-place 版本，这允许你使用预先分配的输出向量或矩阵。在优化关键代码是这很实用，可以避免重复分配的开销。根据 Julia 的通常惯例，这些 in-place 操作后面带有 `!`（例如，`mul!`）。
+在许多情况下，矩阵运算存在 in-place 版本，这允许你使用预先分配的输出向量或矩阵。在优化关键代码是这很实用，可以避免重复分配的开销。根据 Julia 的通常惯例，这些 in-place 运算后面带有 `!`（例如，`mul!`）。
 
 ```@docs
 LinearAlgebra.mul!
@@ -406,33 +406,33 @@ LinearAlgebra.rdiv!
 
 ## BLAS 函数
 
-在 Julia 中（就像许多科学计算一样），密集线性代数操作是基于 [LAPACK 库](http://www.netlib.org/lapack/)，它反过来建立在被称为 [BLAS](http://www.netlib.org/blas/) 的基本线性代数构建模块之上。高度优化的 BLAS 实现在每个计算机架构上可用，并且有时在高性能线性代数例程中直接调用 BLAS 函数很有用。
+在 Julia 中（就像许多科学计算一样），密集线性代数运算是基于 [LAPACK 库](http://www.netlib.org/lapack/)，它反过来建立在被称为 [BLAS](http://www.netlib.org/blas/) 的基本线性代数构建模块之上。高度优化的 BLAS 实现在每个计算机架构上可用，并且有时在高性能线性代数例程中直接调用 BLAS 函数很有用。
 
 `LinearAlgebra.BLAS` 提供了一些 BLAS 函数的封装。那些改写了某个输入数组的 BLAS 函数的名称以 `'!'` 结尾。通常，一个 BLAS 函数定义了四个方法，分别针对 [`Float64`](@ref)，[`Float32`](@ref)，`ComplexF64` 和 `ComplexF32` 数组。
 
-### [BLAS Character Arguments](@id stdlib-blas-chars)
+### [BLAS 字符参数](@id stdlib-blas-chars)
 许多 BLAS 函数接受的参数可以决定是否转置某个参数的（`trans`），要引用矩阵的哪一个三角（`uplo` 或 `ul`），是否可以假设三角矩阵的对角线上全为一（`dA`），或者输入参数属于矩阵乘法中的哪一边（`side`）。可能是：
 
-#### [Multplication Order](@id stdlib-blas-side)
+#### [乘法顺序](@id stdlib-blas-side)
 | `side` | 含义                                                             |
 |:-------|:--------------------------------------------------------------------|
-| `'L'`  | 参数位于矩阵-矩阵操作的*左*边。  |
-| `'R'`  | 参数位于矩阵-矩阵操作的*右*边。 |
+| `'L'`  | 参数位于矩阵与矩阵运算的*左*边。  |
+| `'R'`  | 参数位于矩阵与矩阵运算的*右*边。 |
 
-#### [Triangle Referencing](@id stdlib-blas-uplo)
+#### [三角引用](@id stdlib-blas-uplo)
 | `uplo`/`ul` | 含义                                               |
 |:------------|:------------------------------------------------------|
 | `'U'`       | 只会使用矩阵的*上*三角部分。 |
 | `'L'`       | 只会使用矩阵的*下*三角部分。 |
 
-#### [Transposition Operation](@id stdlib-blas-trans)
+#### [转置运算](@id stdlib-blas-trans)
 | `trans`/`tX` | 含义                                                 |
 |:-------------|:--------------------------------------------------------|
 | `'N'`        | 输入矩阵 `X` 不被转置或共轭。   |
 | `'T'`        | 输入矩阵 `X` 会被转置。                |
 | `'C'`        | 输入矩阵 `X` 会被共轭转置。 |
 
-#### [Unit Diagonal](@id stdlib-blas-diag)
+#### [单位对角线](@id stdlib-blas-diag)
 | `diag`/`dX` | 含义                                                   |
 |:------------|:----------------------------------------------------------|
 | `'N'`       | 矩阵 `X` 对角线上的值会被读取。       |

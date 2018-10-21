@@ -37,7 +37,7 @@ julia> foo(x) = length(x)^2
 foo (generic function with 1 method)
 ```
 
-If the condition is true, a `Pass` is returned:
+如果条件为真，则返回 `Pass`：
 
 ```jldoctest testfoo
 julia> @test foo("bar") == 9

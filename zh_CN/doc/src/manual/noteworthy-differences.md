@@ -2,27 +2,27 @@
 
 ## 与 MATLAB 的显著差异
 
-虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的Julia用户感到困扰的显著差异：
+虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的 Julia 用户感到困扰的显著差异：
 
   * Julia 数组使用方括号 `A[i,j]` 进行索引。
   * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。
-    as well.
-  * Julia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改
-    对调用者是可见的。
-  * Julia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 `a(4) = 3.2`
-    可以创建数组 `a = [0 0 0 3.2]` 和 `a(5) = 7` 可以将它增长为 `a = [0 0 0 3.2 7]`。
-    如果 `a` 的长度小于 5 或者这个语句是第一次使用标识符 `a`，则相应的 Julia 语句 `a[5] = 7` 会抛出错误。
-    Julia 使用 [`push!`](@ref) 和 [`append!`](@ref) 实现比 MATLAB 的 `a(end+1) = val` 更高效地增长 `Vector`。
-    which grow `Vector`s much more efficiently than MATLAB's `a(end+1) = val`.
+     
+  * Julia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
+     
+  * Julia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 `a(4) = 3.2` 可以创建数组 `a = [0 0 0 3.2]`，而 `a(5) = 7` 可以将它增长为 `a = [0 0 0 3.2 7]`。如果 `a` 的长度小于 5 或者这个语句是第一次使用标识符 `a`，则相应的 Julia 语句 `a[5] = 7` 会抛出错误。Julia 使用 [`push!`](@ref) 和 [`append!`](@ref) 来增长 `Vector`，它们比 MATLAB 的 `a(end+1) = val` 更高效。
+     
+     
+     
+     
   * 虚数单位 `sqrt(-1)` 在Julia中表示为 [`im`](@ref)，而不是在 MATLAB 中的 `i` 或 `j`。
-  * 在 Julia 中，没有小数点的字面数字（例如 `42`）会创建整数而不是浮点数。
-    也支持任意大整数。
-    因此，某些操作（如 `2^-1`）将抛出domain error，因为结果不是整数（有关详细信息，请参阅 [the FAQ entry on domain errors](@ref faq-domain-errors)）。
-    for details).
+  * 在 Julia 中，没有小数点的数字字面量（例如 `42`）会创建整数而不是浮点数。也支持任意大整数字面量。因此，某些操作（如 `2^-1`）将抛出 domain error，因为结果不是整数（有关的详细信息，请参阅[常见问题中有关 domain errors 的条目](@ref faq-domain-errors)）。
+     
+     
+     
   * 在 Julia 中，能返回多个值并将其赋值为元组，例如 `(a, b) = (1, 2)` 或 `a, b = 1, 2`。
-    在 Julia 中不存在 MATLAB 的 `nargout`，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。
-    取而代之的是，用户可以使用可选参数（optional arguments）和关键字参数（keyword arguments）来实现类似的功能。
-    similar capabilities.
+    在 Julia 中不存在 MATLAB 的 `nargout`，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。取而代之的是，用户可以使用可选参数和关键字参数来实现类似的功能。
+     
+     
   * Julia 拥有真正的一维数组。 列向量的大小为 `N`，而不是 `Nx1`。
     例如，[`rand(N)`](@ref) 创建一个一维数组。
   * 在 Julia 中，`[x,y,z]` 将始终构造一个包含`x`，`y` 和 `z` 的3元素数组。
@@ -40,7 +40,7 @@
     特殊对象大多可以像正常数组一样使用。
   * Julia 中的函数返回其最后一个表达式或 `return` 关键字的值而无需
     在函数定义中列出要返回的变量的名称（有关详细信息，请参阅 [The return Keyword](@ref)）。
-    for details).
+     
   * Julia 脚本可以包含任意数量的函数，并且在加载文件时，所有定义都将在外部可见。
     可以从当前工作目录之外的文件加载函数定义。
     directory.
@@ -196,27 +196,27 @@ For users coming to Julia from R, these are some noteworthy differences:
 
   * Julia 需要用 `end` 来结束代码块。与 Python 不同，Julia 没有 `pass` 关键字。
   * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
-  * Julia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 `a[2:3]` 就是 Python 中的 `a[1:3]`
-    。
-  * Julia 不支持负数索引。特别地，列表或数组的最后一个元素
-    在 Julia 中使用 `end` 索引，而不像在 Python 中使用 `-1`。
-  * Julia 的 `for`、`if`、`while`等代码块由`end`关键字终止。缩进级别
-    并不像在 Python 中那么重要。
-  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的
-    表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是
-    将其包含在括号中。
-  * 默认情况下，Julia 数组是列优先的（Fortran 顺序），而 NumPy 数组是行优先（C 顺序）。
-    为了在循环数组时获得最佳性能，循环顺序应该
-    在 Julia 中相对于 NumPy 反转（请参阅 [Performance Tips](@ref man-performance-tips) 中的对应章节）。
-  * Julia 的更新运算符（例如 `+=`，`-=`，···）是 *not in-place*，而 Numpy 的是。这
-    意味着 `A = [1, 1]; B = A; B += [3, 3]` 不会改变 `A` 中的值，而将名称 `B` 重新绑定
-    到右侧表达式 `B = B + 3` 的结果，这是一个新的数组。对于 in-place 操作，使用 `B .+= 3`
-    （另请参阅 [dot operators](@ref man-dot-operators)）、显式的循环或者 `InplaceOps.jl`。
-  * 每次调用方法时，Julia 都会计算函数参数的默认值，不像
-    在 Python 中，默认值只会在函数定义时被计算一次。例如，
-    每次无输入参数调用时，函数`f(x=rand()) = x`都返回一个新的随机数
-    在另一方面，函数 `g(x=[1,2]) = push!(x,3)` 在每次以 `g()` 调用时返回 `[1,2,3]`
-    。
+  * Julia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 `a[2:3]` 就是 Python 中的 `a[1:3]`。
+     
+  * Julia 不支持负数索引。特别地，列表或数组的最后一个元素在 Julia 中使用 `end` 索引，而不像在 Python 中使用 `-1`。
+     
+  * Julia 的 `for`、`if`、`while`等代码块由`end`关键字终止。缩进级别并不像在 Python 中那么重要。
+     
+  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是将其包含在括号中。
+     
+     
+  * 默认情况下，Julia 数组是列优先的（Fortran 顺序），而 NumPy 数组是行优先（C 顺序）。为了在循环数组时获得最佳性能，循环顺序应该在 Julia 中相对于 NumPy 反转（请参阅 [Performance Tips](@ref man-performance-tips) 中的对应章节）。
+     
+     
+  * Julia 的更新运算符（例如 `+=`，`-=`，···）是 *not in-place*，而 Numpy 的是。这意味着 `A = [1, 1]; B = A; B += [3, 3]` 不会改变 `A` 中的值，而将名称 `B` 重新绑定到右侧表达式 `B = B + 3` 的结果，这是一个新的数组。对于 in-place 操作，使用 `B .+= 3`（另请参阅 [dot operators](@ref man-dot-operators)）、显式的循环或者 `InplaceOps.jl`。
+     
+     
+     
+  * 每次调用方法时，Julia 都会计算函数参数的默认值，不像在 Python 中，默认值只会在函数定义时被计算一次。例如，每次无输入参数调用时，函数`f(x=rand()) = x`都返回一个新的随机数在另一方面，函数 `g(x=[1,2]) = push!(x,3)` 在每次以 `g()` 调用时返回 `[1,2,3]`。
+     
+     
+     
+     
   * 在 Julia 中，`%` 是余数运算符，而在 Python 中是模运算符。
 
 ## 与 C/C++ 的显著差异
@@ -285,9 +285,9 @@ For users coming to Julia from R, these are some noteworthy differences:
     of the form `if cond; statement; end`, `cond && statement` and `!cond || statement`. Assignment
     statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. `cond && (x = value)`,
     because of the operator precedence.
-  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的
-    表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是
-    将其包含在括号中。
+  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的表达式，则认为其已经结束；否则，认为输入继续。强制表达式继续的一种方式是将其包含在括号中。
+     
+     
   * Julia macros operate on parsed expressions, rather than the text of the program, which allows
     them to perform sophisticated transformations of Julia code. Macro names start with the `@` character,
     and have both a function-like syntax, `@mymacro(arg1, arg2, arg3)`, and a statement-like syntax,

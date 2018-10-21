@@ -177,12 +177,7 @@ push!(LOAD_PATH, "/Path/To/My/Module/")
 
 在开发模块的时候，你可能需要了解一些与增量编译相关的某些固有行为。例如，外部状态不会被保留。为了解决这个问题，需要显式分离运行时与编译期的部分。Julia 允许你定义一个 `__init__()` 函数来执行任何需要在运行时发生的初始化。在编译期（`--output-*`），此函数将不会被调用。你可以假设在代码的生存周期中，此函数只会被运行一次。当然，如果有必要，你也可以手动调用它，但在默认的情况下，请假设此函数是为了处理与本机状态相关的信息，注意这些信息不需要，更不应该存入预编译镜像。此函数会在模块被导入到当前进程之后被调用，这包括在一个增量编译中导入该模块的时候（`--output-incremental=yes`），but not if it is being loaded into a full-compilation process.
 
-In particular, if you define a `function __init__()` in a module, then Julia will call `__init__()`
-immediately *after* the module is loaded (e.g., by `import`, `using`, or `require`) at runtime
-for the *first* time (i.e., `__init__` is only called once, and only after all statements in the
-module have been executed). Because it is called after the module is fully imported, any submodules
-or other imported modules have their `__init__` functions called *before* the `__init__` of the
-enclosing module.
+特别的，如果你在一个模块里定义了一个名为 `__init__()` 的函数，那么Julia在加载这个模块之后会在第一次运行时（runtime）立刻调用这个函数（例如，在使用 `import`，`using`，或者 `require`），也就是说 `__init__` 只会在模块中所有其它命令执行过后调用一次。因为这个函数将在它完全载入后被调用，任何子模块或者已经载入的模块都将在当前模块调用 `__init__` **之前** 调用自己的 `__init__` 函数。
 
 Two typical uses of `__init__` are calling runtime initialization functions of external C libraries
 and initializing global constants that involve pointers returned by external libraries.  For example,
