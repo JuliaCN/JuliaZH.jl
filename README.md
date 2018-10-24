@@ -6,7 +6,6 @@
 |:---:|:---:|:---:|:---:|:---:|
 | 文档 | http://docs.juliacn.com | [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliacn.github.io/JuliaZH.jl/stable) | [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliacn.github.io/JuliaZH.jl/latest) | [Gitlab Pages](https://juliacn.gitlab.io/JuliaZH.jl) |
 
-
 ## 安装
 
 ```
@@ -14,6 +13,7 @@ pkg> add https://github.com/JuliaCN/JuliaZH.jl.git
 ```
 
 ## 使用
+
 在代码中使用这个包，就能够获得中文版本的文档：
 
 ```julia
@@ -40,7 +40,13 @@ search: JuliaZH
 ```
 
 ## 贡献
+
 我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
 
 ## 致谢
+
 所有贡献者都可以在[Transifex上的JuliaCN组织](https://www.transifex.com/juliacn/public/)以及[贡献者列表](https://github.com/JuliaCN/JuliaZH.jl/graphs/contributors)中找到，此外也感谢曾经参与 0.3 版本文档的[贡献者们](https://github.com/JuliaCN/julia_zh_cn/graphs/contributors)。
+
+## License
+
+本项目文档部分采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可，代码部分采用[MIT license](https://github.com/JuliaCN/JuliaZH.jl/blob/master/LICENSE)进行许可。
