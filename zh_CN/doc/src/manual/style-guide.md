@@ -305,7 +305,7 @@ julia> f(1)
 2.0
 ```
 
-而
+而应当被写作：
 
 ```jldoctest
 julia> g(x) = 2 * x

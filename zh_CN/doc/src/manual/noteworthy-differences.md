@@ -23,15 +23,15 @@
     在 Julia 中不存在 MATLAB 的 `nargout`，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。取而代之的是，用户可以使用可选参数和关键字参数来实现类似的功能。
      
      
-  * Julia 拥有真正的一维数组。 列向量的大小为 `N`，而不是 `Nx1`。
-    例如，[`rand(N)`](@ref) 创建一个一维数组。
-  * 在 Julia 中，`[x,y,z]` 将始终构造一个包含`x`，`y` 和 `z` 的3元素数组。
-    - 要在第一个维度（“垂直列”）中连接元素，请使用 [`vcat(x,y,z)`](@ref) 或用分号分隔（`[x; y; z]`）。
-      with semicolons (`[x; y; z]`).
-    - 要在第二个维度（“水平行”）中连接元素，请使用 [`hcat(x,y,z)`](@ref) 或用空格分隔（`[x y z]`）。
-      with spaces (`[x y z]`).
-    - 要构造块矩阵（在前两个维度中连接元素），请使用 [`hvcat`](@ref)或组合空格和分号（`[a b; c d]`）。
-      or combine spaces and semicolons (`[a b; c d]`).
+  * Julia 拥有真正的一维数组。列向量的大小为 `N`，而不是 `Nx1`。例如，[`rand(N)`](@ref) 创建一个一维数组。
+     
+  * 在 Julia 中，`[x,y,z]` 将始终构造一个包含`x`，`y` 和 `z` 的 3 元数组。
+    - 要在第一个维度（「垂直列」）中连接元素，请使用 [`vcat(x,y,z)`](@ref) 或用分号分隔（`[x; y; z]`）。
+       
+    - 要在第二个维度（「水平行」）中连接元素，请使用 [`hcat(x,y,z)`](@ref) 或用空格分隔（`[x y z]`）。
+       
+    - 要构造分块矩阵（在前两个维度中连接元素），请使用 [`hvcat`](@ref) 或组合空格和分号（`[a b; c d]`）。
+       
   * 在 Julia 中，`a:b` 和 `a:b:c` 构造 `AbstractRange` 对象。使用 [`collect(a:b)`](@ref) 构造一个类似 MATLAB 中完整的向量。
     通常，不需要调用 `collect`。
     在大多数情况下，`AbstractRange` 对象将像普通数组一样运行，但效率更高，因为它是懒惰求值。
@@ -226,30 +226,30 @@ For users coming to Julia from R, these are some noteworthy differences:
     Julia 文档数组构造的语法（依版本不同有所变动）。
   * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
   * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。像 `+=` 这样的更新运算符不会以 in-place 的方式执行，而是相当于 `A = A + B`，将左侧绑定到右侧表达式的计算结果上。
-    as well. Updating operators like `+=` do not operate in-place, they are equivalent to `A = A + B`
-    which rebinds the left-hand side to the result of the right-hand side expression.
+     
+     
   * Julia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 [性能建议](@ref man-performance-tips)）。
-    default. To get optimal performance when looping over arrays, the order of the loops should be
-    reversed in Julia relative to C/C++ (see relevant section of [Performance Tips](@ref man-performance-tips)).
-  * Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改
-    对调用者是可见的。
+     
+     
+  * Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
+     
   * 在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。
-    whitespace from a Julia program.
-  * 在 Julia 中，没有小数点的数值字面量（如 `42`）生成有符号整数，类型为 `Int`，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 `Int64`（如果 `Int` 是 `Int32`）、`Int128`，或者任意精度的 `BigInt` 类型。不存在诸如 `L`, `LL`, `U`, `UL`, `ULL` 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 `0x` 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同，
-    `Int`, but literals too large to fit in the machine word size will automatically be promoted to
-    a larger size type, such as `Int64` (if `Int` is `Int32`), `Int128`, or the arbitrarily large
-    也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的**长度**，包括开头的 0。例如，`0x0` 和 `0x00` 的类型是 [`UInt8`](@ref)，`0x000` 和 `0x0000` 的类型是 [`UInt16`](@ref)。同理，字面量的长度在 5-8 之间，类型为 `UInt32`；在 9-16 之间，类型为 `UInt64`；在 17-32 之间，类型为 `UInt128`。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 `~0xf == 0xf0` 与 `~0x000f == 0xfff0` 完全不同。
-    unsigned and/or signed vs. unsigned. Decimal literals are always signed, and hexadecimal literals
-    (which start with `0x` like C/C++), are unsigned. Hexadecimal literals also, unlike C/C++/Java
-    and unlike decimal literals in Julia, have a type based on the *length* of the literal, including
-    leading 0s. For example, `0x0` and `0x00` have type [`UInt8`](@ref), `0x000` and `0x0000` have type
-    [`UInt16`](@ref), then literals with 5 to 8 hex digits have type `UInt32`, 9 to 16 hex digits type
-    `UInt64` and 17 to 32 hex digits type `UInt128`. This needs to be taken into account when defining
-    hexadecimal masks, for example `~0xf == 0xf0` is very different from `~0x000f == 0xfff0`. 64 bit `Float64`
-    and 32 bit [`Float32`](@ref) bit literals are expressed as `1.0` and `1.0f0` respectively. Floating point
-    literals are rounded (and not promoted to the `BigFloat` type) if they can not be exactly represented.
-     Floating point literals are closer in behavior to C/C++. Octal (prefixed with `0o`) and binary
-    (prefixed with `0b`) literals are also treated as unsigned.
+     
+  * 在 Julia 中，没有小数点的数值字面量（如 `42`）生成有符号整数，类型为 `Int`，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 `Int64`（如果 `Int` 是 `Int32`）、`Int128`，或者任意精度的 `BigInt` 类型。不存在诸如 `L`, `LL`, `U`, `UL`, `ULL` 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 `0x` 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同，也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的**长度**，包括开头的 0。例如，`0x0` 和 `0x00` 的类型是 [`UInt8`](@ref)，`0x000` 和 `0x0000` 的类型是 [`UInt16`](@ref)。同理，字面量的长度在 5-8 之间，类型为 `UInt32`；在 9-16 之间，类型为 `UInt64`；在 17-32 之间，类型为 `UInt128`。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 `~0xf == 0xf0` 与 `~0x000f == 0xfff0` 完全不同。64 位 `Float64` 和 32 位 [`Float32`](@ref) 的字面量分别表示为 `1.0` 和 `1.0f0`。浮点字面量在无法被精确表示时舍入（且不会提升为 `BigFloat` 类型）。浮点字面量在行为上与 C/C++ 更接近。八进制（前缀为 `0o`）和二进制（前缀为 `0b`）也被视为无符号的。
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
   * String literals can be delimited with either `"`  or `"""`, `"""` delimited literals can contain
     `"` characters without quoting it like `"\""` String literals can have values of other variables
     or expressions interpolated into them, indicated by `$variablename` or `$(expression)`, which

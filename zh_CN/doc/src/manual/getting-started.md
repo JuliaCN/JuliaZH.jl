@@ -1,7 +1,7 @@
 # [入门](@id man-getting-started)
 
 无论是使用预编译好的二进制程序，还是自己从源码编译，安装 Julia 都是一件很简单的事情。
-请按照 [https://julialang.org/downloads/](https://julialang.org/downloads/) 的提示来下载和安装 Julia。
+请按照 [https://julialang.org/downloads/](https://julialang.org/downloads/) 的提示来下载并安装 Julia。
 
 启动一个交互式会话（也叫 REPL）是学习和尝试 Julia 最简单的方法。双击 Julia 的可执行文件或是从命令行运行 `julia` 就可以启动：
 
