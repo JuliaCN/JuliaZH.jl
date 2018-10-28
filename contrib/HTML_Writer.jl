@@ -59,7 +59,7 @@ const t_Next     = "下一篇"
 # 生成对应文件在 Transifex 上的翻译地址 
 function transifex_url(rel_path)
     # 首页源文件在 GitHub 上
-    if rel_path == "src\\index.md"
+    if splitdir(rel_path) == splitdir("src/index.md")
         return "https://github.com/JuliaCN/JuliaZH.jl/blob/master/doc/src/index.md"
     end
 
