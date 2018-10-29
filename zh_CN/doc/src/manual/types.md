@@ -23,9 +23,9 @@ Julia 用[类型系统](https://en.wikipedia.org/wiki/Type_system)的术语描�
 
 Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从未感觉需要编写明确使用类型的代码。但是，某些场景的编程可通过声明类型变得更加清晰、简单、快速和健壮。
 
-## 类型断言
+## 类型声明
 
-`::`运算符可以用来在程序中给表达式和变量附加类型注释。这有两个主要原因：
+`::` 运算符可以用来在程序中给表达式和变量附加类型注释。这有两个主要原因：
 
 1. 作为断言，帮助程序确认能是否正常运行，
 2. 给编译器提供额外的类型信息，这可能帮助程序提升性能，在某些情况下
@@ -59,9 +59,9 @@ julia> typeof(ans)
 Int8
 ```
 
-这个特性用于避免性能“陷阱”，即给一个变量赋值时意外更改了类型。
+这个特性用于避免性能「陷阱」，即给一个变量赋值时意外更改了类型。
 
-此“声明”行为仅发生在特定上下文中：
+此「声明」行为仅发生在特定上下文中：
 
 ```julia
 local x::Int8  # in a local declaration
@@ -87,7 +87,7 @@ end
 
 抽象类型不能实例化，只能作为类型图中的节点使用，从而描述由相关具体类型组成的集合：那些作为其后代的具体类型。我们从抽象类型开始，即使它们没有实例，因为它们是类型系统的主干：它们形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。
 
-回想一下，在 [Integers and Floating-Point Numbers](@ref) 中，我们介绍了各种数值的具体类型：[`Int8`](@ref)、[`UInt8`](@ref)、[`Int16`](@ref)、[`UInt16`](@ref)、[`Int32`](@ref)、[`UInt32`](@ref)、[`Int64`](@ref)、[`UInt64`](@ref)、[`Int128`](@ref)、[`UInt128`](@ref)、[`Float16`](@ref)、[`Float32`](@ref) 和 [`Float64`](@ref)。尽管 `Int8`、`Int16`、`Int32`、`Int64` 和 `Int128` 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，`UInt8`、`UInt16`、`UInt32`、`UInt64` 和 `UInt128` 都是无符号整数类型，而 `Float16`、`Float32` 和 `Float64` 是不同的浮点数类型而非整数类型。一段代码通常是有意义的，例如，除非它的参数是某种类型的整数，而不是真的取决于特定*类型*的整数。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，提供了具体类型可以适应的上下文。例如，这允许你轻松地为任何类型的整数编程，而不会将算法限制为某种特殊类型的整数。
+回想一下，在[整数和浮点数](@ref)中，我们介绍了各种数值的具体类型：[`Int8`](@ref)、[`UInt8`](@ref)、[`Int16`](@ref)、[`UInt16`](@ref)、[`Int32`](@ref)、[`UInt32`](@ref)、[`Int64`](@ref)、[`UInt64`](@ref)、[`Int128`](@ref)、[`UInt128`](@ref)、[`Float16`](@ref)、[`Float32`](@ref) 和 [`Float64`](@ref)。尽管 `Int8`、`Int16`、`Int32`、`Int64` 和 `Int128` 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，`UInt8`、`UInt16`、`UInt32`、`UInt64` 和 `UInt128` 都是无符号整数类型，而 `Float16`、`Float32` 和 `Float64` 是不同的浮点数类型而非整数类型。一段代码通常是有意义的，例如，除非它的参数是某种类型的整数，而不是真的取决于特定*类型*的整数。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，提供了具体类型可以适应的上下文。例如，这允许你轻松地为任何类型的整数编程，而不会将算法限制为某种特殊类型的整数。
 
 使用 [`abstract type`](@ref) 关键字来声明抽象类型。声明抽象类型的一般语法是：
 
@@ -133,7 +133,7 @@ end
 
 首先需要注意的是上述的参数声明等价于 `x::Any` 和 `y::Any`。当函数被调用时，例如 `myplus(2,5)`，分派器选择与给定参数相匹配的名称为 `myplus` 的最具体方法。（有关多重派发的更多信息，请参阅[方法](@ref)。）
 
-假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 `myplus` 的方法，专门用于基于上面给出的范型函数的两个 `Int` 参数，即，它定义并编译：
+假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 `myplus` 的方法，专门用于基于上面给出的范型函数的两个 `Int` 参数，即它定义并编译：
 
 ```julia
 function myplus(x::Int,y::Int)
@@ -145,7 +145,7 @@ end
 
 因此，抽象类型允许程序员编写范型函数，之后可以通过许多具体类型的组合将其用作默认方法。多亏了多重分派，程序员可以完全控制是使用默认方法还是更具体的方法。
 
-需要注意的重点是，假使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但是，在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅 [Performance Tips](@ref man-performance-tips)。）
+需要注意的重点是，假使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但是，在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅[性能建议](@ref man-performance-tips)。）
 
 ## 原始类型
 
@@ -180,7 +180,7 @@ primitive type «name» <: «supertype» «bits» end
 
 bits 的数值表示该类型需要多少存储空间，name 为新类型指定名称。可以选择将一个原始类型声明为某个超类型的子类型。如果省略超类型，则默认 `Any` 为其直接超类型。上述声明中意味着 [`Bool`](@ref) 类型需要 8 位来储存，并且直接超类型为 [`Integer`](@ref)。目前支持的大小只能是 8 位的倍数。因此，布尔值虽然确实只需要一位，但不能声明为小于 8 位的值。
 
-[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 类型都具有相同的表现形式：它们都是 8 位内存块。然而，由于 Julia 的类型系统是主格的，它们尽管具有相同的结构，但不是通用的。它们之间的一个根本区别是它们具有不同的超类型：[`Bool`](@ref) 的直接超类型是 [`Integer`](@ref)、[`Int8`](@ref) 的是 [`Signed`](@ref) 而  [`UInt8`](@ref) 的是 [`Unsigned`](@ref)。[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 的所有其它差异是行为上的——定义函数的方式在这些类型的对象作为参数给定时起作用。这也是为什么主格的类型系统是必须的：如果结构确定类型，类型决定行为，就不可能使 [`Bool`](@ref) 的行为与 [`Int8`](@ref) 或 [`UInt8`](@ref) 有任何不同。
+[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 类型都具有相同的表现形式：它们都是 8 位内存块。然而，由于 Julia 的类型系统是主格的，它们尽管具有相同的结构，但不是通用的。它们之间的一个根本区别是它们具有不同的超类型：[`Bool`](@ref) 的直接超类型是 [`Integer`](@ref)、[`Int8`](@ref) 的是 [`Signed`](@ref) 而 [`UInt8`](@ref) 的是 [`Unsigned`](@ref)。[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 的所有其它差异是行为上的——定义函数的方式在这些类型的对象作为参数给定时起作用。这也是为什么主格的类型系统是必须的：如果结构确定类型，类型决定行为，就不可能使 [`Bool`](@ref) 的行为与 [`Int8`](@ref) 或 [`UInt8`](@ref) 有任何不同。
 
 ## 复合类型
 
@@ -188,7 +188,7 @@ bits 的数值表示该类型需要多少存储空间，name 为新类型指定�
 
 在主流的面向对象语言中，比如 C++、Java、Python 和 Ruby，复合类型也具有与它们相关的命名函数，并且该组合称为「对象」。在纯粹的面向对象语言中，例如 Ruby 或 Smalltalk，所有值都是对象，无论它们是否为复合类型。在不太纯粹的面向对象语言中，包括 C++ 和 Java，一些值，比如整数和浮点值，不是对象，而用户定义的复合类型是具有相关方法的真实对象。在 Julia 中，所有值都是对象，但函数不与它们操作的对象捆绑在一起。这是必要的，因为 Julia 通过多重分派选择函数使用的方法，这意味着在选择方法时考虑*所有*函数参数的类型，而不仅仅是第一个（有关方法和分派的更多信息，请参阅[方法](@ref)）。因此，函数仅仅「属于」它们的第一个参数是不合适的。将方法组织到函数对象中而不是在每个对象「内部」命名方法最终成为语言设计中一个非常有益的方面。
 
-[`struct`](@ref) 关键字与复合类型一起引入，后跟一个字段名称的块，可选择使用`::`运算符注释类型：
+[`struct`](@ref) 关键字与复合类型一起引入，后跟一个字段名称的块，可选择使用 `::` 运算符注释类型：
 
 ```jldoctest footype
 julia> struct Foo
@@ -317,7 +317,7 @@ DataType
 
 每一个具体的值在系统里都是某个 `DataType` 的实例。
 
-## Type Unions
+## 类型共用体
 
 类型共用体是一种特殊的抽象类型，它包含作为对象的任何参数类型的所有实例，使用特殊[`Union`](@ref)关键字构造：
 
@@ -335,17 +335,9 @@ julia> 1.0 :: IntOrString
 ERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got Float64
 ```
 
-The compilers for many languages have an internal union construct for reasoning about types; Julia
-simply exposes it to the programmer. The Julia compiler is able to generate efficient code in the
-presence of `Union` types with a small number of types [^1], by generating specialized code
-in separate branches for each possible type.
+许多语言都有内建的共用体结构来推导类型；Julia 简单地将它暴露给程序员。Julia 编译器能在 `Union` 类型只具有少量类型[^1]的情况下生成高效的代码，方法是为每个可能类型的不同分支都生成专用代码。
 
-A particularly useful case of a `Union` type is `Union{T, Nothing}`, where `T` can be any type and
-[`Nothing`](@ref) is the singleton type whose only instance is the object [`nothing`](@ref). This pattern
-is the Julia equivalent of [`Nullable`, `Option` or `Maybe`](https://en.wikipedia.org/wiki/Nullable_type)
-types in other languages. Declaring a function argument or a field as `Union{T, Nothing}` allows
-setting it either to a value of type `T`, or to `nothing` to indicate that there is no value.
-See [this FAQ entry](@ref faq-nothing) for more information.
+`Union` 类型的一种特别有用的情况是 `Union{T, Nothing}`，其中 `T` 可以是任何类型，[`Nothing`](@ref) 是单态类型，其唯一实例是对象 [`nothing`](@ref)。此模式是其它语言中 [`Nullable`、`Option` 或 `Maybe`](https://en.wikipedia.org/wiki/Nullable_type) 类型在 Julia 的等价。通过将函数参数或字段声明为 `Union{T, Nothing}`，可以将其设置为类型为 `T` 的值，或者 `nothing` 来表示没有值。有关详细信息，请参阅[常见问题的此条目](@ref faq-nothing)。
 
 ## 参数类型
 
@@ -396,7 +388,7 @@ julia> AbstractString <: Point
 false
 ```
 
-`Point`不同`T`值所声明的具体类型之间，不能互相作为子类型：
+`Point` 不同 `T` 值所声明的具体类型之间，不能互相作为子类型：
 
 ```jldoctest pointtype
 julia> Point{Float64} <: Point{Int64}
@@ -407,9 +399,9 @@ false
 ```
 
 !!! warning
-    最后一点*非常*重要：即使 `Float64 <: Real` 也**没有** `Point{Float64} <: Point{Real}`。
+    最后一点*非常*重要：即使 `Float64 <: Real` 也**没有** `Point{Float64} <: Point{Real}`。
 
-换成类型理论说法，Julia 的类型参数是*不变的*，而不是[协变的（或甚至是逆变的）](https://en.wikipedia.org/wiki/Covariance_and_contravariance_%28computer_science%29)。这是出于实际原因：虽然任何 `Point {Float64}` 的实例在概念上也可能像是 `Point {Real}` 的实例，但这两种类型在内存中有不同的表示：
+换成类型理论说法，Julia 的类型参数是*不变的*，而不是[协变的（或甚至是逆变的）](https://en.wikipedia.org/wiki/Covariance_and_contravariance_%28computer_science%29)。这是出于实际原因：虽然任何 `Point{Float64}` 的实例在概念上也可能像是 `Point{Real}` 的实例，但这两种类型在内存中有不同的表示：
 
   * `Point{Float64}` 的实例可以紧凑而高效地表示为相近的一对 64 位值；
   * `Point{Real}` 的实例必须能够保存任何一对 [`Real`](@ref) 的实例。由于 `Real` 实例的对象可以具有任意的大小和结构，`Point{Real}` 的实例实际上必须表示为一对指向单独分配的 `Real` 对象的指针。
@@ -628,10 +620,7 @@ real number line, so any [`Rational`](@ref) is an instance of the [`Real`](@ref)
 
 ### 元组类型
 
-Tuples are an abstraction of the arguments of a function -- without the function itself. The salient
-aspects of a function's arguments are their order and their types. Therefore a tuple type is similar
-to a parameterized immutable type where each parameter is the type of one field. For example,
-a 2-element tuple type resembles the following immutable type:
+元组类型是函数参数的抽象——不是函数本身的。函数参数的突出特征是它们的顺序和类型。因此，元组类型类似于参数化的不可变类型，其中每个参数都是一个字段的类型。例如，二元元组类型类似于以下不可变类型：
 
 ```julia
 struct Tuple2{A,B}
@@ -643,8 +632,8 @@ end
 然而，有三个主要差异：
 
   * 元组类型可以具有任意数量的参数。
-  * Tuple types are *covariant* in their parameters: `Tuple{Int}` is a subtype of `Tuple{Any}`. Therefore
-    `Tuple{Any}` 被认为是一种抽象类型，且元组类型在它们的参数都是具体类型时是具体类型。
+  * 元组类型的参数是*协变的*：`Tuple{Int}` 是 `Tuple{Any}` 的子类型。因此，`Tuple{Any}` 被认为是一种抽象类型，且元组类型只有在它们的参数都是具体类型时才是具体类型。 
+     
      
   * 元组没有字段名称; 字段只能通过索引访问。
 
@@ -655,7 +644,7 @@ julia> typeof((1,"foo",2.5))
 Tuple{Int64,String,Float64}
 ```
 
-Note the implications of covariance:
+请注意协变性的含义：
 
 ```jldoctest
 julia> Tuple{Int,AbstractString} <: Tuple{Real,Any}
@@ -718,9 +707,7 @@ julia> NamedTuple{(:a, :b)}((1,""))
 
 #### [单态类型](@id man-singleton-types)
 
-There is a special kind of abstract parametric type that must be mentioned here: singleton types.
-For each type, `T`, the "singleton type" `Type{T}` is an abstract type whose only instance is
-the object `T`. Since the definition is a little difficult to parse, let's look at some examples:
+这里必须提到一种特殊的抽象类型：单态类型。对于每个类型 `T`，「单态类型」`Type{T}` 是个抽象类型且唯一的实例就是对象 `T`。由于定义有点难以解释，让我们看一些例子：
 
 ```jldoctest
 julia> isa(Float64, Type{Float64})
@@ -736,9 +723,7 @@ julia> isa(Float64, Type{Real})
 false
 ```
 
-In other words, [`isa(A,Type{B})`](@ref) is true if and only if `A` and `B` are the same object
-and that object is a type. Without the parameter, `Type` is simply an abstract type which has
-all type objects as its instances, including, of course, singleton types:
+换种说法，[`isa(A,Type{B})`](@ref) 为真当且仅当 `A` 与 `B` 是同一对象且该对象是一个类型。不带参数时，`Type` 是个抽象类型，所有类型对象都是它的实例，当然也包括单态类型：
 
 ```jldoctest
 julia> isa(Type{Float64}, Type)
@@ -751,7 +736,7 @@ julia> isa(Real, Type)
 true
 ```
 
-只有对象是类型时，才是 `Type`的实例：
+只有对象是类型时，才是 `Type` 的实例：
 
 ```jldoctest
 julia> isa(1, Type)
@@ -761,21 +746,13 @@ julia> isa("foo", Type)
 false
 ```
 
-Until we discuss [Parametric Methods](@ref) and [conversions](@ref conversion-and-promotion), it is difficult to explain
-the utility of the singleton type construct, but in short, it allows one to specialize function
-behavior on specific type *values*. This is useful for writing methods (especially parametric
-ones) whose behavior depends on a type that is given as an explicit argument rather than implied
-by the type of one of its arguments.
+在我们讨论[参数方法](@ref)和[类型转换](@ref conversion-and-promotion)之前，很难解释单态类型的作用，但简而言之，它允许针对特定类型*值*专门指定函数行为。这对于编写方法（尤其是参数方法）很有用，这些方法的行为取决于作为显式参数给出的类型，而不是隐含在它的某个参数的类型中。
 
-A few popular languages have singleton types, including Haskell, Scala and Ruby. In general usage,
-the term "singleton type" refers to a type whose only instance is a single value. This meaning
-applies to Julia's singleton types, but with that caveat that only type objects have singleton
-types.
+一些流行的语言有单态类型，比如 Haskell、Scala 和 Ruby。在一般用法中，术语「单态类型」指的是唯一实例为单个值的类型。这定义适用于 Julia 的单态类型，但需要注意的是 Julia 里只有类型对象具有对应的单态类型。
 
-### Parametric Primitive Types
+### 参数原始类型
 
-Primitive types can also be declared parametrically. For example, pointers are represented as
-primitive types which would be declared in Julia like this:
+原始类型也可以参数化声明，例如，指针都能表示为原始类型，其在 Julia 中以如下方式声明：
 
 ```julia
 # 32-bit system:
@@ -785,12 +762,7 @@ primitive type Ptr{T} 32 end
 primitive type Ptr{T} 64 end
 ```
 
-The slightly odd feature of these declarations as compared to typical parametric composite types,
-is that the type parameter `T` is not used in the definition of the type itself -- it is just
-an abstract tag, essentially defining an entire family of types with identical structure, differentiated
-only by their type parameter. Thus, `Ptr{Float64}` and `Ptr{Int64}` are distinct types, even though
-they have identical representations. And of course, all specific pointer types are subtypes of
-the umbrella [`Ptr`](@ref) type:
+与典型的参数复合类型相比，此声明中略显奇怪的特点是类型参数 `T` 并未在类型本身的定义里使用——它实际上只是一个抽象的标记，定义了一整族具有相同结构的类型，类型间仅由它们的类型参数来区分。因此，`Ptr{Float64}` 和 `Ptr{Int64}` 是不同的类型，就算它们具有相同的表示。当然，所有特定的指针类型都是总类型 [`Ptr`](@ref) 的子类型：
 
 ```jldoctest
 julia> Ptr{Float64} <: Ptr
@@ -800,47 +772,19 @@ julia> Ptr{Int64} <: Ptr
 true
 ```
 
-## UnionAll Types
+## UnionAll 类型
 
-We have said that a parametric type like `Ptr` acts as a supertype of all its instances
-(`Ptr{Int64}` etc.). How does this work? `Ptr` itself cannot be a normal data type, since without
-knowing the type of the referenced data the type clearly cannot be used for memory operations.
-The answer is that `Ptr` (or other parametric types like `Array`) is a different kind of type called a
-[`UnionAll`](@ref) type. Such a type expresses the *iterated union* of types for all values of some parameter.
+我们已经说过像 `Ptr` 这样的参数类型充当它所有实例（`Ptr{Int64}` 等）的超类型。这是如何工作的？`Ptr` 本身不能是普通的数据类型，因为在不知道引用数据的类型时，该类型显然不能用于存储器操作。答案是 `Ptr`（或其它参数类型像 `Array`）是一种不同种类的类型，称为 [`UnionAll`](@ref) 类型。这种类型表示某些参数的所有值的类型的*迭代并集*。
 
-`UnionAll` types are usually written using the keyword `where`. For example `Ptr` could be more
-accurately written as `Ptr{T} where T`, meaning all values whose type is `Ptr{T}` for some value
-of `T`. In this context, the parameter `T` is also often called a "type variable" since it is
-like a variable that ranges over types.
-Each `where` introduces a single type variable, so these expressions are nested for types with
-multiple parameters, for example `Array{T,N} where N where T`.
+`UnionAll` 类型通常使用关键字 `where` 编写。例如，`Ptr` 可以更精确地写为 `Ptr{T} where T`，也就是对于 `T` 的某些值，所有类型为 `Ptr{T}` 的值。在这种情况下，参数 `T` 也常被称为「类型变量」，因为它就像一个取值范围为类型的变量。每个 `where` 只引入一个类型变量，因此在具有多个参数的类型中这些表达式会被嵌套，例如 `Array{T,N} where N where T`。
 
-The type application syntax `A{B,C}` requires `A` to be a `UnionAll` type, and first substitutes `B`
-for the outermost type variable in `A`.
-The result is expected to be another `UnionAll` type, into which `C` is then substituted.
-So `A{B,C}` is equivalent to `A{B}{C}`.
-This explains why it is possible to partially instantiate a type, as in `Array{Float64}`: the first
-parameter value has been fixed, but the second still ranges over all possible values.
-Using explicit `where` syntax, any subset of parameters can be fixed. For example, the type of all
-1-dimensional arrays can be written as `Array{T,1} where T`.
+类型应用语法 `A{B,C}` 要求 `A` 是个 `UnionAll` 类型，并先把 `B` 替换为 `A` 中最外层的类型变量。结果应该是另一个 `UnionAll` 类型，然后把 `C` 替换为该类型的类型变量。所以 `A{B,C}` 等价于 `A{B}{C}`。这解释了为什么可以部分实例化一个类型，比如 `Array{Float64}`：第一个参数已经被固定，但第二个参数仍取遍所有可能值。通过使用 `where` 语法，任何参数子集都能被固定。例如，所有一维数组的类型可以写为 `Array{T,1} where T`。
 
-Type variables can be restricted with subtype relations.
-`Array{T} where T<:Integer` refers to all arrays whose element type is some kind of
-[`Integer`](@ref).
-The syntax `Array{<:Integer}` is a convenient shorthand for `Array{T} where T<:Integer`.
-Type variables can have both lower and upper bounds.
-`Array{T} where Int<:T<:Number` refers to all arrays of [`Number`](@ref)s that are able to
-contain `Int`s (since `T` must be at least as big as `Int`).
-The syntax `where T>:Int` also works to specify only the lower bound of a type variable,
-and `Array{>:Int}` is equivalent to `Array{T} where T>:Int`.
+类型变量可以用子类型关系来加以限制。`Array{T} where T<:Integer` 指的是元素类型是某种 [`Integer`](@ref) 的所有数组。语法 `Array{<:Integer}` 是 `Array{T} where T<:Integer` 的便捷的缩写。类型变量可同时具有上下界。`Array{T} where Int<:T<:Number` 指的是元素类型为能够包含 `Int` 的 [`Number`](@ref) 的所有数组（因为 `T` 至少和 `Int` 一样大）。语法 `where T>:Int` 也能用来只指定类型变量的下界，且 `Array{>:Int}` 等价于 `Array{T} where T>:Int`。
 
-Since `where` expressions nest, type variable bounds can refer to outer type variables.
-For example `Tuple{T,Array{S}} where S<:AbstractArray{T} where T<:Real` refers to 2-tuples
-whose first element is some [`Real`](@ref), and whose second element is an `Array` of any
-kind of array whose element type contains the type of the first tuple element.
+由于 `where` 表达式可以嵌套，类型变量界可以引用更外层的类型变量。比如 `Tuple{T,Array{S}} where S<:AbstractArray{T} where T<:Real` 指的是二元元组，其第一个元素是某个 [`Real`](@ref)，而第二个元素是任意种类的数组 `Array`，且该数组的元素类型包含于第一个元组元素的类型。
 
-The `where` keyword itself can be nested inside a more complex declaration. For example,
-consider the two types created by the following declarations:
+`where` 关键字本身可以嵌套在更复杂的声明里。例如，考虑由以下声明创建的两个类型：
 
 ```jldoctest
 julia> const T1 = Array{Array{T,1} where T, 1}
@@ -850,29 +794,19 @@ julia> const T2 = Array{Array{T,1}, 1} where T
 Array{Array{T,1},1} where T
 ```
 
-Type `T1` defines a 1-dimensional array of 1-dimensional arrays; each
-of the inner arrays consists of objects of the same type, but this type may vary from one inner array to the next.
-On the other hand, type `T2` defines a 1-dimensional array of 1-dimensional arrays all of whose inner arrays must have the
-same type.  Note that `T2` is an abstract type, e.g., `Array{Array{Int,1},1} <: T2`, whereas `T1` is a concrete type. As a consequence, `T1` can be constructed with a zero-argument constructor `a=T1()` but `T2` cannot.
+类型 `T1` 定义了由一维数组组成的一维数组；每个内部数组由相同类型的对象组成，但此类型对于不同内部数组可以不同。另一方面，类型 `T2` 定义了由一维数组组成的一维数组，其中的每个内部数组必须具有相同的类型。请注意，`T2` 是个抽象类型，比如 `Array{Array{Int,1},1} <: T2`，而 `T1` 是个具体类型。因此，`T1` 可由零参数构造函数 `a=T1()` 构造，但 `T2` 不行。
 
-There is a convenient syntax for naming such types, similar to the short form of function
-definition syntax:
+命名此类型有一种方便的语法，类似于函数定义语法的简短形式：
 
 ```julia
 Vector{T} = Array{T,1}
 ```
 
-This is equivalent to `const Vector = Array{T,1} where T`.
-Writing `Vector{Float64}` is equivalent to writing `Array{Float64,1}`, and the umbrella type
-`Vector` has as instances all `Array` objects where the second parameter -- the number of array
-dimensions -- is 1, regardless of what the element type is. In languages where parametric types
-must always be specified in full, this is not especially helpful, but in Julia, this allows one
-to write just `Vector` for the abstract type including all one-dimensional dense arrays of any
-element type.
+这等价于 `const Vector = Array{T,1} where T`。编写 `Vector{Float64}` 等价于编写 `Array{Float64,1}`，总类型 `Vector` 具有所有 `Array` 对象的实例，其中 `Array` 对象的第二个参数——数组维数——是 1，而不考虑元素类型是什么。在参数类型必须总被完整指定的语言中，这不是特别有用，但在 Julia 中，这允许只编写 `Vector` 来表示包含任何元素类型的所有一维密集数组的抽象类型。
 
 ## 类型别名
 
-有时为一个已经可表达的类型引入新名称是很方便的。这可通过一个简单的赋值语句完成。例如，`UInt` 是 [`UInt32`](@ref) 或 [`UInt64`](@ref) 的别名，因为它的大小是与系统上的指针大小是相适应的。
+有时为一个已经可表达的类型引入新名称是很方便的。这可通过一个简单的赋值语句完成。例如，`UInt` 是 [`UInt32`](@ref) 或 [`UInt64`](@ref) 的别名，因为它的大小与系统上的指针大小是相适应的。
 
 ```julia-repl
 # 32-bit system:
@@ -884,7 +818,7 @@ julia> UInt
 UInt64
 ```
 
-在`base/boot.jl`中，通过以下代码实现:
+在 `base/boot.jl` 中，通过以下代码实现：
 
 ```julia
 if Int === Int64
@@ -963,11 +897,9 @@ Closest candidates are:
   supertype(!Matched::UnionAll) at operators.jl:47
 ```
 
-## [Custom pretty-printing](@id man-custom-pretty-printing)
+## [自定义 pretty-printing](@id man-custom-pretty-printing)
 
-Often, one wants to customize how instances of a type are displayed.  This is accomplished by
-overloading the [`show`](@ref) function.  For example, suppose we define a type to represent
-complex numbers in polar form:
+通常，人们会想要自定义显示类型实例的方式。这可通过重载 [`show`](@ref) 函数来完成。举个例子，假设我们定义一个类型来表示极坐标形式的复数：
 
 ```jldoctest polartype
 julia> struct Polar{T<:Real} <: Number
@@ -979,36 +911,22 @@ julia> Polar(r::Real,Θ::Real) = Polar(promote(r,Θ)...)
 Polar
 ```
 
-Here, we've added a custom constructor function so that it can take arguments of different
-[`Real`](@ref) types and promote them to a common type (see [Constructors](@ref man-constructors)
-and [Conversion and Promotion](@ref conversion-and-promotion)).
-(Of course, we would have to define lots of other methods, too, to make it act like a
-[`Number`](@ref), e.g. `+`, `*`, `one`, `zero`, promotion rules and so on.) By default,
-instances of this type display rather simply, with information about the type name and
-the field values, as e.g. `Polar{Float64}(3.0,4.0)`.
+在这里，我们添加了一个自定义的构造函数，这样就可以接受不同 [`Real`](@ref) 类型的参数并将它们类型提升为共同类型（请参阅[构造函数](@ref man-constructors)和[类型转换和类型提升](@ref conversion-and-promotion)）。（当然，为了让它表现地像个 [`Number`](@ref)，我们需要定义许多其它方法，例如 `+`、`*`、`one`、`zero` 及类型提升规则等。）默认情况下，此类型的实例只是相当简单地显示有关类型名称和字段值的信息，比如，`Polar{Float64}(3.0,4.0)`。
 
-If we want it to display instead as `3.0 * exp(4.0im)`, we would define the following method to
-print the object to a given output object `io` (representing a file, terminal, buffer, etcetera;
-see [Networking and Streams](@ref)):
+如果我们希望它显示为 `3.0 * exp(4.0im)`，我们将定义以下方法来将对象打印到给定的输出对象 `io`（其代表文件、终端、及缓冲区等；请参阅[网络和流](@ref)）：
 
 ```jldoctest polartype
 julia> Base.show(io::IO, z::Polar) = print(io, z.r, " * exp(", z.Θ, "im)")
 ```
 
-More fine-grained control over display of `Polar` objects is possible. In particular, sometimes
-one wants both a verbose multi-line printing format, used for displaying a single object in the
-REPL and other interactive environments, and also a more compact single-line format used for
-[`print`](@ref) or for displaying the object as part of another object (e.g. in an array). Although
-by default the `show(io, z)` function is called in both cases, you can define a *different* multi-line
-format for displaying an object by overloading a three-argument form of `show` that takes the
-`text/plain` MIME type as its second argument (see [Multimedia I/O](@ref)), for example:
+`Polar` 对象的输出可以被更精细地控制。特别是，人们有时想要啰嗦的多行打印格式，用于在 REPL 和其它交互式环境中显示单个对象，以及一个更紧凑的单行格式，用于 [`print`](@ref) 函数或在作为其它对象（比如一个数组）的部分是显示该对象。虽然在两种情况下默认都会调用 `show(io, z)` 函数，你仍可以定义一个*不同*的多行格式来显示单个对象，这通过重载三参数形式的 `show` 函数，该函数接收 `text/plain` MIME 类型（请参阅 [多媒体 I/O](@ref)）作为它的第二个参数，举个例子：
 
 ```jldoctest polartype
 julia> Base.show(io::IO, ::MIME"text/plain", z::Polar{T}) where{T} =
            print(io, "Polar{$T} complex number:\n   ", z)
 ```
 
-(Note that `print(..., z)` here will call the 2-argument `show(io, z)` method.) This results in:
+（请注意 `print(..., z)` 在这里调用的是双参数的 `show(io, z)` 方法。）这导致：
 
 ```jldoctest polartype
 julia> Polar(3, 4.0)
@@ -1021,14 +939,9 @@ julia> [Polar(3, 4.0), Polar(4.0,5.3)]
  4.0 * exp(5.3im)
 ```
 
-where the single-line `show(io, z)` form is still used for an array of `Polar` values.   Technically,
-the REPL calls `display(z)` to display the result of executing a line, which defaults to `show(stdout, MIME("text/plain"), z)`,
-which in turn defaults to `show(stdout, z)`, but you should *not* define new [`display`](@ref)
-methods unless you are defining a new multimedia display handler (see [Multimedia I/O](@ref)).
+其中单行格式的 `show(io, z)` 仍用于由 `Polar` 值组成的数组。从技术上讲，REPL 调用 `display(z)` 来显示单行的执行结果，其默认为 `show(stdout, MIME("text/plain"), z)`，而后者又默认为 `show(stdout, z)`，但是你*不应该*定义新的 [`display`](@ref) 方法，除非你正在定义新的多媒体显示管理器（请参阅[多媒体 I/O](@ref)）。
 
-Moreover, you can also define `show` methods for other MIME types in order to enable richer display
-(HTML, images, etcetera) of objects in environments that support this (e.g. IJulia).   For example,
-we can define formatted HTML display of `Polar` objects, with superscripts and italics, via:
+此外，你还可以为其它 MIME 类型定义 `show` 方法，以便在支持的环境（比如 IJulia）中实现更丰富的对象显示（HTML、图像等）。例如，我们可以定义 `Polar` 对象的 HTML 显示格式，使其带有上标和斜体：
 
 ```jldoctest polartype
 julia> Base.show(io::IO, ::MIME"text/html", z::Polar{T}) where {T} =
@@ -1036,8 +949,7 @@ julia> Base.show(io::IO, ::MIME"text/html", z::Polar{T}) where {T} =
                    z.r, " <i>e</i><sup>", z.Θ, " <i>i</i></sup>")
 ```
 
-A `Polar` object will then display automatically using HTML in an environment that supports HTML
-display, but you can call `show` manually to get HTML output if you want:
+之后会在支持 HTML 显示的环境中自动使用 HTML 显示 `Polar` 对象，但如果你想，也可以手动调用 `show` 来获取 HTML 输出：
 
 ```jldoctest polartype
 julia> show(stdout, "text/html", Polar(3.0,4.0))
@@ -1048,11 +960,7 @@ julia> show(stdout, "text/html", Polar(3.0,4.0))
 <p>An HTML renderer would display this as: <code>Polar{Float64}</code> complex number: 3.0 <i>e</i><sup>4.0 <i>i</i></sup></p>
 ```
 
-As a rule of thumb, the single-line `show` method should print a valid Julia expression for creating
-the shown object.  When this `show` method contains infix operators, such as the multiplication
-operator (`*`) in our single-line `show` method for `Polar` above, it may not parse correctly when
-printed as part of another object.  To see this, consider the expression object (see [Program
-representation](@ref)) which takes the square of a specific instance of our `Polar` type:
+根据经验，单行 `show` 方法应为创建的显示对象打印有效的 Julia 表达式。当这个 `show` 方法包含中缀运算符时，比如上面的 `Polar` 的单行 `show` 方法里的乘法运算符（`*`），在作为另一个对象的部分打印时，它可能无法被正确解析。要查看此问题，请考虑下面的表达式对象（请参阅[程序表示](@ref)），它代表 `Polar` 类型的特定实例的平方：
 
 ```jldoctest polartype
 julia> a = Polar(3, 4.0)
@@ -1063,11 +971,7 @@ julia> print(:($a^2))
 3.0 * exp(4.0im) ^ 2
 ```
 
-Because the operator `^` has higher precedence than `*` (see [Operator Precedence and Associativity](@ref)), this
-output does not faithfully represent the expression `a ^ 2` which should be equal to `(3.0 *
-exp(4.0im)) ^ 2`.  To solve this issue, we must make a custom method for `Base.show_unquoted(io::IO,
-z::Polar, indent::Int, precedence::Int)`, which is called internally by the expression object when
-printing:
+因为运算符 `^` 的优先级高于 `*`（请参阅[运算符的优先级与结合性](@ref)），所以此输出不忠实地表示了表达式 `a ^ 2`，而该表达式等价于 `(3.0 * exp(4.0im)) ^ 2`。为了解决这个问题，我们必须为 `Base.show_unquoted(io::IO, z::Polar, indent::Int, precedence::Int)` 创建一个自定义方法，在打印时，表达式对象会在内部调用它：
 
 ```jldoctest polartype
 julia> function Base.show_unquoted(io::IO, z::Polar, ::Int, precedence::Int)
@@ -1084,10 +988,7 @@ julia> :($a^2)
 :((3.0 * exp(4.0im)) ^ 2)
 ```
 
-The method defined above adds parentheses around the call to `show` when the precedence of the
-calling operator is higher than or equal to the precedence of multiplication.  This check allows
-expressions which parse correctly without the parentheses (such as `:($a + 2)` and `:($a == 2)`) to
-omit them when printing:
+当正在调用的运算符的优先级大于等于乘法的优先级时，上面定义的方法会在 `show` 调用的两侧加上括号。这个检查允许在没有括号的情况下被正确解析的表达式（例如 `:($a + 2)` 和 `:($a == 2)`）在打印时省略括号：
 
 ```jldoctest polartype
 julia> :($a + 2)
@@ -1097,12 +998,7 @@ julia> :($a == 2)
 :(3.0 * exp(4.0im) == 2)
 ```
 
-In some cases, it is useful to adjust the behavior of `show` methods depending
-on the context. This can be achieved via the [`IOContext`](@ref) type, which allows
-passing contextual properties together with a wrapped IO stream.
-For example, we can build a shorter representation in our `show` method
-when the `:compact` property is set to `true`, falling back to the long
-representation if the property is `false` or absent:
+在某些情况下，根据上下文调整 `show` 方法的行为是很有用的。这可通过 [`IOContext`](@ref) 类型实现，它允许一起传递上下文属性和封装后的 IO 流。例如，我们可以在 `:compact` 属性设置为 `true` 时创建一个更短的表示，而在该属性为 `false` 或不存在时返回长的表示：
 ```jldoctest polartype
 julia> function Base.show(io::IO, z::Polar)
            if get(io, :compact, false)
@@ -1113,9 +1009,7 @@ julia> function Base.show(io::IO, z::Polar)
        end
 ```
 
-This new compact representation will be used when the passed IO stream is an `IOContext`
-object with the `:compact` property set. In particular, this is the case when printing
-arrays with multiple columns (where horizontal space is limited):
+当传入的 IO 流是设置了 `:compact`（译注：该属性还应当设置为 `true`）属性的 `IOContext` 对象时，将使用这个新的紧凑表示。特别地，当打印具有多列的数组（由于水平空间有限）时就是这种情况：
 ```jldoctest polartype
 julia> show(IOContext(stdout, :compact=>true), Polar(3, 4.0))
 3.0ℯ4.0im
@@ -1125,22 +1019,15 @@ julia> [Polar(3, 4.0) Polar(4.0,5.3)]
  3.0ℯ4.0im  4.0ℯ5.3im
 ```
 
-See the [`IOContext`](@ref) documentation for a list of common properties which can be used
-to adjust printing.
+有关调整打印效果的常用属性列表，请参阅文档 [`IOContext`](@ref)。
 
-## "Value types"
+## 「值类型」
 
-In Julia, you can't dispatch on a *value* such as `true` or `false`. However, you can dispatch
-on parametric types, and Julia allows you to include "plain bits" values (Types, Symbols, Integers,
-floating-point numbers, tuples, etc.) as type parameters.  A common example is the dimensionality
-parameter in `Array{T,N}`, where `T` is a type (e.g., [`Float64`](@ref)) but `N` is just an `Int`.
+在 Julia 中，你无法根据诸如 `true` 或 `false` 之类的*值*进行分派。然而，你可以根据参数类型进行分派，Julia 允许你包含「plain bits」值（类型、符号、整数、浮点数和元组等）作为类型参数。`Array{T,N}` 里的维度参数就是一个常见的例子，在那里 `T` 是类型（比如 [`Float64`](@ref)），而 `N` 只是个 `Int`。
 
-You can create your own custom types that take values as parameters, and use them to control dispatch
-of custom types. By way of illustration of this idea, let's introduce a parametric type, `Val{x}`,
-and a constructor `Val(x) = Val{x}()`, which serves as a customary way to exploit this technique
-for cases where you don't need a more elaborate hierarchy.
+你可以创建把值作为参数的自定义类型，并使用它们控制自定义类型的分派。为了说明这个想法，让我们引入参数类型 `Val{x}` 和构造函数 `Val(x) = Val{x}()`，它可以作为一种习惯的方式来利用这种技术需要更精细的层次结构。这可以作为利用这种技术的惯用方式，而且不需要更精细的层次结构。
 
-[`Val`](@ref) is defined as:
+[`Val`](@ref) 的定义为：
 
 ```jldoctest valtype
 julia> struct Val{x}
@@ -1150,9 +1037,7 @@ julia> Val(x) = Val{x}()
 Val
 ```
 
-There is no more to the implementation of `Val` than this.  Some functions in Julia's standard
-library accept `Val` instances as arguments, and you can also use it to write your own functions.
- For example:
+`Val` 的实现就只需要这些。一些 Julia 标准库里的函数接收 `Val` 的实例作为参数，你也可以使用它来编写你自己的函数，例如：
 
 ```jldoctest valtype
 julia> firstlast(::Val{true}) = "First"
@@ -1168,12 +1053,8 @@ julia> firstlast(Val(false))
 "Last"
 ```
 
-For consistency across Julia, the call site should always pass a `Val`*instance* rather than using
-a *type*, i.e., use `foo(Val(:bar))` rather than `foo(Val{:bar})`.
+为了保证 Julia 的一致性，调用处应当始终传递 `Val` *实例*而不是*类型*，也就是使用 `foo(Val(:bar))` 而不是 `foo(Val{:bar})`。
 
-It's worth noting that it's extremely easy to mis-use parametric "value" types, including `Val`;
-in unfavorable cases, you can easily end up making the performance of your code much *worse*.
- In particular, you would never want to write actual code as illustrated above.  For more information
-about the proper (and improper) uses of `Val`, please read the more extensive discussion in [the performance tips](@ref man-performance-tips).
+值得注意的是，参数「值」类型非常容易被误用，包括 `Val`；情况不太好时，你很容易使代码性能变得更*糟糕*。特别是，你再也不会编写如上所示的实际代码。有关 `Val` 的正确（和不正确）使用的更多信息，请阅读[性能建议](@ref man-performance-tips)中更广泛的讨论。
 
-[^1]: "Small" is defined by the `MAX_UNION_SPLITTING` constant, which is currently set to 4.
+[^1]: 「少数」由常数 `MAX_UNION_SPLITTING` 定义，目前设置为 4。

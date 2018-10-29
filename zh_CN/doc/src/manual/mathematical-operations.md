@@ -255,17 +255,15 @@ false
 
 ### 链式比较
 
-与其它语言不通，with the [notable exception of Python](https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators)，Julia 允许链式比较：
+与其他多数语言不同，就像 [notable exception of Python](https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators) 一样，Julia 允许链式比较：
 
 ```jldoctest
 julia> 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5
 true
 ```
 
-Chaining comparisons is often quite convenient in numerical code. Chained comparisons use the
-`&&` operator for scalar comparisons, and the [`&`](@ref) operator for elementwise comparisons,
-which allows them to work on arrays. For example, `0 .< A .< 1` gives a boolean array whose entries
-are true where the corresponding elements of `A` are between 0 and 1.
+链式比较在数值代码中特别方便。链式比较使用 `&&` 运算符比较标量，使用 [`&`](@ref) 比较元素类型，
+也就是数组的元素。比如，`0 .< A .< 1` 得到一个 boolean 数组，如果 `A` 的元素都在 0 和 1 之间则数组元素就都是 true。
 
 注意链式比较的执行顺序：
 
@@ -285,22 +283,14 @@ julia> v(1) > v(2) <= v(3)
 false
 ```
 
-The middle expression is only evaluated once, rather than twice as it would be if the expression
-were written as `v(1) < v(2) && v(2) <= v(3)`. However, the order of evaluations in a chained
-comparison is undefined. It is strongly recommended not to use expressions with side effects (such
-as printing) in chained comparisons. If side effects are required, the short-circuit `&&` operator
-should be used explicitly (see [Short-Circuit Evaluation](@ref)).
+中间的表达式只会计算一次，而如果写成 `v(1) < v(2) && v(2) <= v(3)` 是计算了两次的。然而，链式比较中的顺序是不确定的。强烈建议不要在表达式中使用有副作用（比如 printing）的函数。如果的确需要，请使用短路运算符 `&&`（参考 [Short-Circuit Evaluation](@ref)）
 
 ### 初等函数
 
-Julia provides a comprehensive collection of mathematical functions and operators. These mathematical
-operations are defined over as broad a class of numerical values as permit sensible definitions,
-including integers, floating-point numbers, rationals, and complex numbers,
-wherever such definitions make sense.
+Julia 提供了强大的数学函数和运算符集合。这些数学运算定义在各种合理的数值上，包括整型、浮点数、分数、复数，只要有定义就行。
 
-Moreover, these functions (like any Julia function) can be applied in "vectorized" fashion to
-arrays and other collections with the [dot syntax](@ref man-vectorized) `f.(A)`,
-e.g. `sin.(A)` will compute the sine of each element of an array `A`.
+而且，这些函数（和其他 Julia 函数一样）能通过 [点语法](@ref man-vectorized) `f.(A)` 以“向量式”方式用于数组和其他集合上。
+比如，`sin.(A)` 会计算 `A` 中每个元素的 sin 值。
 
 ## 运算符的优先级与结合性
 
@@ -324,15 +314,15 @@ e.g. `sin.(A)` will compute the sine of each element of an array `A`.
 | 赋值    | `= += -= *= /= //= \= ^= ÷= %= \|= &= ⊻= <<= >>= >>>=`                                            | 右结合                      |
 
 [^1]:
-    The unary operators `+` and `-` require explicit parentheses around their argument to disambiguate them from the operator `++`, etc. Other compositions of unary operators are parsed with right-associativity, e. g., `√√-a` as `√(√(-a))`.
+    一元运算符 `+` 和 `-` 需要给它们的参数显式使用括号以免和 `++`` 等运算符混淆。其他一元运算符的混合使用都被解析为右结合的，比如 `√√-a` 解析为 `√(√(-a))`。
 [^2]:
     The operators `+`, `++` and `*` are non-associative. `a + b + c` is parsed as `+(a, b, c)` not `+(+(a, b),
     c)`. However, the fallback methods for `+(a, b, c, d...)` and `*(a, b, c, d...)` both default to left-associative evaluation.
 
-For a complete list of *every* Julia operator's precedence, see the top of this file:
+要看**全部** Julia 运算符的优先级关系，可以看这个文件的最上面部分：
 [`src/julia-parser.scm`](https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm)
 
-You can also find the numerical precedence for any given operator via the built-in function `Base.operator_precedence`, where higher numbers take precedence:
+你也可以通过内置函数 `Base.operator_precedence` 查看任何给定运算符的数值优先级，数值越大优先级越高：
 
 ```jldoctest
 julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)
@@ -342,7 +332,7 @@ julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.opera
 (0, 1, 1)
 ```
 
-A symbol representing the operator associativity can also be found by calling the built-in function `Base.operator_associativity`:
+另外，内置函数 `Base.operator_associativity` 可以返回运算符结合性的符号提示：
 
 ```jldoctest
 julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)
@@ -352,24 +342,22 @@ julia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Bas
 (:left, :none, :right)
 ```
 
-Note that symbols such as `:sin` return precedence `0`. This value represents invalid operators and not
-operators of lowest precedence. Similarly, such operators are assigned associativity `:none`.
+注意诸如 `:sin` 这样的符号返回优先级 0，代表无效的运算符或非最低优先级运算符。类似地，它们的结合性是 `:none`。
 
 ## 数值转换
 
-Julia supports three forms of numerical conversion, which differ in their handling of inexact
-conversions.
+Julia 支持三种数值转换，它们在处理不精确转换上有所不同。
 
-  * The notation `T(x)` or `convert(T,x)` converts `x` to a value of type `T`.
+  *  `T(x)` 和 `convert(T,x)` 都会把 `x` 转换为 `T`类型。
 
-      * If `T` is a floating-point type, the result is the nearest representable value, which could be
-        positive or negative infinity.
+      * 如果 `T` 是浮点类型，转换的结果就是最近的可展示值，
+        可能是正负无穷大。
       * 如果 `T` 为整数类型，当 `x` 不为 `T` 类型时，会触发 `InexactError`
-  * `x % T` converts an integer `x` to a value of integer type `T` congruent to `x` modulo `2^n`,
-    where `n` is the number of bits in `T`. In other words, the binary representation is truncated
-    to fit.
-  * The [Rounding functions](@ref) take a type `T` as an optional argument. For example, `round(Int,x)`
-    is a shorthand for `Int(round(x))`.
+  * `x % T` 将整数 `x` 转换为整型 `T`，全等于 `x` 以 `2^n` 为模的结果，
+    其中 `n` 是 `T` 比特位数。换句话说，如果用二进制表示是被砍掉
+     一部分的。
+  * 近似函数 [Rounding functions](@ref) 接收一个 `T` 类型的可选参数。比如，`round(Int,x)`
+    是 `Int(round(x))` 的简写版。
 
 下面的例子展示了不同的形式
 

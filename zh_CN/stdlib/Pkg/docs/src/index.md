@@ -37,7 +37,7 @@ official release again.
 **包（Package）：**一个提供可重用功能的项目，其它 Julia 项目可以同 `import X` 或 `using X` 使用它。一个包应该包含一个具有 `uuid` 条目（此条目给出该包 UUID）的项目文件。此 UUID 用于在依赖它的项目中标识该包。
 
 !!! note
-    由于遗留原因，可以在 REPL 或脚本的顶级中加载没有项目文件或 UUID 的包。但是，无法在具有项目文件或 UUID 的项目中加载没有它们的包。一旦你曾从项目文件加载包，所有包就都需要项目文件和 UUID。
+    由于历史原因，可以在 REPL 或脚本的顶级中加载没有项目文件或 UUID 的包。但是，无法在具有项目文件或 UUID 的项目中加载没有它们的包。一旦你曾从项目文件加载包，所有包就都需要项目文件和 UUID。
 
 **应用（application）：**一个提供独立功能的项目，不打算被其它 Julia 项目重用。例如，Web 应用、命令行工具或者科学论文附带的模拟或分析代码。应用可以有 UUID 但也可以没有。应用还可以为其所依赖的包提供全局配置选项。另一方面，包不可能提供全局配置，因为这可能与主应用的配置相冲突。
 
@@ -56,12 +56,12 @@ by the package manager.
 
 **环境（Environment）：**项目文件和清单文件的组合，项目文件与依赖关系图相结合后提供了顶级名称映射，而清单文件提供了包到它们入口点的映射。有关的详细信息，请参阅手册中代码加载的相关章节。
 
-- **Explicit environment:** an environment in the form of an explicit project
+- **显式环境（Explicit environment）：**在同一目录下具有显式的项目文件和可选的与其对应的清单文件。如果清单文件不存在，那么隐含的依赖关系图和位置映射为空。
    
    
    
 
-- **Implicit environment:** an environment provided as a directory (without a
+- **隐式环境（Implicit environment）：**作为目录提供的环境（没有项目文件或清单文件），此目录包含包且包含的包具有形式为 `X.jl`、`X.jl/src/X.jl` 或 `X/src/X.jl` 的入口点，这些包的入口点隐含了顶级名称映射。依赖关系图隐含在这些包所在目录的项目文件里，例如 `X.jl/Project.toml` 或 `X/Project.toml`。如果 `X` 存在对应的项目文件，则其依赖关系就是其项目文件的依赖关系。入口点本身就隐含了位置映射。
    
    
    

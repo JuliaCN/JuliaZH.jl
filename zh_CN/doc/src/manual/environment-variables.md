@@ -94,7 +94,7 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 ### `JULIA_WORKER_TIMEOUT`
 
-一个 [`Float64`](@ref) 值，用来确定 `Base.worker_timeout()` 的值（默认：`60.0`）。此函数提供 worker 进程在死亡之前等待主进程建立链接的秒数。
+一个 [`Float64`](@ref) 值，用来确定 `Base.worker_timeout()` 的值（默认：`60.0`）。此函数提供 worker 进程在死亡之前等待主进程建立连接的秒数。
 
 ### `JULIA_NUM_THREADS`
 

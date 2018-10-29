@@ -82,7 +82,7 @@ julia> f(2, 3)
 1
 ```
 
-`2x + y` 定义只用于第一个情况，`2x - y` 定义用于其他的情况。没有使用任何自动的函数参数的指派或者类型转换：Julia中的所有转换都不是 magic 的，都是完全显式的。然而[类型转换和类型提升](@ref conversion-and-promotion)显示了足够先进的技术的智能应用能够与 magic 不可分辨到什么程度。[^Clark61] 对于非数字值，和比两个参数更多或者更少的情况，函数 `f` 并没有定义，应用会导致 [`MethodError`](@ref)：
+`2x + y` 定义只用于第一个情况，`2x - y` 定义用于其他的情况。没有使用任何自动的函数参数的指派或者类型转换：Julia中的所有转换都不是 magic 的，都是完全显式的。然而[类型转换和类型提升](@ref conversion-and-promotion)显示了足够先进的技术的智能应用能够与 magic 不可分辨到什么程度。[^Clarke61] 对于非数字值，和比两个参数更多或者更少的情况，函数 `f` 并没有定义，应用会导致 [`MethodError`](@ref)：
 
 ```jldoctest fofxy
 julia> f("foo", 3)
@@ -280,7 +280,7 @@ julia> mytypeof(1.0)
 Float64
 ```
 
-就像你能在类型声明时通过类型参数对子类型进行约束一样（参见[Parametric Types](@ref)），你也可以约束方法的类型参数：
+就像你能在类型声明时通过类型参数对子类型进行约束一样（参见[参数类型](@ref)），你也可以约束方法的类型参数：
 
 ```jldoctest
 julia> same_type_numeric(x::T, y::T) where {T<:Number} = true
