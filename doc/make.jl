@@ -8,6 +8,7 @@ using Pkg
 Pkg.instantiate()
 
 using Documenter
+include("../contrib/HTML_Writer.jl")
 
 # Include the `build_sysimg` file.
 
