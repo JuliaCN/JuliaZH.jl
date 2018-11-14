@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "主页",
     "title": "Julia 1.0 中文文档",
     "category": "section",
-    "text": "欢迎来到 Julia 1.0 中文文档。请先阅读 v1.0 正式发布博文 以获得对这门语言的总体概观，文章中也介绍了 julia 自 v0.6 以来所做出的诸多改进。另外与 v1.0 同时发布的还有 v0.7，该版本是 v0.6 与 v1.0 之间的过渡版本，它能够兼容大部分还没来得及更新到 v1.0 的包，也能够正常运行已经不再提供 v0.6 支持的包。v0.7 和 v1.0 的差别只是：v0.7 会告诉你哪些 v0.6 的函数和接口已经被废弃、移动或改名了；而 v1.0 则会直接报错。参见 v0.7 更新说明。note: 关于中文文档\nJulia 语言相关的本地化工作是一个由社区驱动的开源项目 JuliaZH.jl，旨在方便 Julia 的中文用户。我们目前使用 Transifex 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到社区论坛文档区反馈。若有意参与翻译工作，请参考翻译指南。"
+    "text": "欢迎来到 Julia 1.0 中文文档。using Markdown, Dates\nMarkdown.parse(\"上次更新时间: $(now())\")请先阅读 v1.0 正式发布博文 以获得对这门语言的总体概观，文章中也介绍了 julia 自 v0.6 以来所做出的诸多改进。另外与 v1.0 同时发布的还有 v0.7，该版本是 v0.6 与 v1.0 之间的过渡版本，它能够兼容大部分还没来得及更新到 v1.0 的包，也能够正常运行已经不再提供 v0.6 支持的包。v0.7 和 v1.0 的差别只是：v0.7 会告诉你哪些 v0.6 的函数和接口已经被废弃、移动或改名了；而 v1.0 则会直接报错。参见 v0.7 更新说明。note: 关于中文文档\nJulia 语言相关的本地化工作是一个由社区驱动的开源项目 JuliaZH.jl，旨在方便 Julia 的中文用户。我们目前使用 Transifex 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到社区论坛文档区反馈。若有意参与翻译工作，请参考翻译指南。"
 },
 
 {
@@ -4741,7 +4741,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Base.getproperty",
     "category": "function",
-    "text": "getproperty(value, name::Symbol)\n\nThe syntax a.b calls getproperty(a, :b).\n\n\n\n\n\n"
+    "text": "getproperty(value, name::Symbol)\n\nThe syntax a.b calls getproperty(a, :b).\n\nSee also propertynames and setproperty!.\n\n\n\n\n\n"
 },
 
 {
@@ -4749,7 +4749,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Base.setproperty!",
     "category": "function",
-    "text": "setproperty!(value, name::Symbol, x)\n\nThe syntax a.b = c calls setproperty!(a, :b, c).\n\n\n\n\n\n"
+    "text": "setproperty!(value, name::Symbol, x)\n\nThe syntax a.b = c calls setproperty!(a, :b, c).\n\nSee also propertynames and getproperty.\n\n\n\n\n\n"
 },
 
 {
@@ -5109,7 +5109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Base.maxintfloat",
     "category": "function",
-    "text": "maxintfloat(T=Float64)\n\nThe largest consecutive integer that is exactly represented in the given floating-point type T (which defaults to Float64).\n\nThat is, maxintfloat returns the smallest positive integer n such that n+1 is not exactly representable in the type T.\n\n\n\n\n\nmaxintfloat(T, S)\n\nThe largest consecutive integer representable in the given floating-point type T that also does not exceed the maximum integer representable by the integer type S.  Equivalently, it is the minimum of maxintfloat(T) and typemax(S).\n\n\n\n\n\n"
+    "text": "maxintfloat(T=Float64)\n\nThe largest consecutive integer-valued floating-point number that is exactly represented in the given floating-point type T (which defaults to Float64).\n\nThat is, maxintfloat returns the smallest positive integer-valued floating-point number n such that n+1 is not exactly representable in the type T.\n\nWhen an Integer-type value is needed, use Integer(maxintfloat(T)).\n\n\n\n\n\nmaxintfloat(T, S)\n\nThe largest consecutive integer representable in the given floating-point type T that also does not exceed the maximum integer representable by the integer type S.  Equivalently, it is the minimum of maxintfloat(T) and typemax(S).\n\n\n\n\n\n"
 },
 
 {
@@ -5213,7 +5213,7 @@ var documenterSearchIndex = {"docs": [
     "page": "基本功能",
     "title": "Core.Nothing",
     "category": "type",
-    "text": "Nothing\n\nA type with no fields that is the type nothing.\n\n\n\n\n\n"
+    "text": "Nothing\n\nA type with no fields that is the type of nothing.\n\n\n\n\n\n"
 },
 
 {
@@ -6797,7 +6797,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "Base.map!",
     "category": "function",
-    "text": "map!(function, destination, collection...)\n\nLike map, but stores the result in destination rather than a new collection. destination must be at least as large as the first collection.\n\nExamples\n\njulia> x = zeros(3);\n\njulia> map!(x -> x * 2, x, [1, 2, 3]);\n\njulia> x\n3-element Array{Float64,1}:\n 2.0\n 4.0\n 6.0\n\n\n\n\n\n"
+    "text": "map!(function, destination, collection...)\n\nLike map, but stores the result in destination rather than a new collection. destination must be at least as large as the first collection.\n\nExamples\n\njulia> a = zeros(3);\n\njulia> map!(x -> x * 2, a, [1, 2, 3]);\n\njulia> a\n3-element Array{Float64,1}:\n 2.0\n 4.0\n 6.0\n\n\n\n\n\n"
 },
 
 {
@@ -7421,7 +7421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学相关",
     "title": "Base.:\\",
     "category": "method",
-    "text": "\\(x, y)\n\nLeft division operator: multiplication of y by the inverse of x on the left. Gives floating-point results for integer arguments.\n\nExamples\n\njulia> 3 \\ 6\n2.0\n\njulia> inv(3) * 6\n2.0\n\njulia> A = [1 2; 3 4]; x = [5, 6];\n\njulia> A \\ x\n2-element Array{Float64,1}:\n -4.0\n  4.5\n\njulia> inv(A) * x\n2-element Array{Float64,1}:\n -4.0\n  4.5\n\n\n\n\n\n"
+    "text": "\\(x, y)\n\nLeft division operator: multiplication of y by the inverse of x on the left. Gives floating-point results for integer arguments.\n\nExamples\n\njulia> 3 \\ 6\n2.0\n\njulia> inv(3) * 6\n2.0\n\njulia> A = [4 3; 2 1]; x = [5, 6];\n\njulia> A \\ x\n2-element Array{Float64,1}:\n  6.5\n -7.0\n\njulia> inv(A) * x\n2-element Array{Float64,1}:\n  6.5\n -7.0\n\n\n\n\n\n"
 },
 
 {
@@ -9597,7 +9597,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "Base.sizeof",
     "category": "method",
-    "text": "sizeof(str::AbstractString)\n\nSize, in bytes, of the string s. Equal to the number of code units in s multiplied by the size, in bytes, of one code unit in s.\n\nExamples\n\njulia> sizeof(\"\")\n0\n\njulia> sizeof(\"∀\")\n3\n\n\n\n\n\n"
+    "text": "sizeof(str::AbstractString)\n\nSize, in bytes, of the string str. Equal to the number of code units in str multiplied by the size, in bytes, of one code unit in str.\n\nExamples\n\njulia> sizeof(\"\")\n0\n\njulia> sizeof(\"∀\")\n3\n\n\n\n\n\n"
 },
 
 {
@@ -9853,7 +9853,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "Base.findnext",
     "category": "method",
-    "text": "findnext(pattern::AbstractString, string::AbstractString, start::Integer)\nfindnext(pattern::Regex, string::String, start::Integer)\n\nFind the next occurrence of pattern in string starting at position start. pattern can be either a string, or a regular expression, in which case string must be of type String.\n\nThe return value is a range of indices where the matching sequence is found, such that s[findnext(x, s, i)] == x:\n\nfindnext(\"substring\", string, i) = start:end such that string[start:end] == \"substring\", or nothing if unmatched.\n\nExamples\n\njulia> findnext(\"z\", \"Hello to the world\", 1) === nothing\ntrue\n\njulia> findnext(\"o\", \"Hello to the world\", 6)\n8:8\n\njulia> findnext(\"Lang\", \"JuliaLang\", 2)\n6:9\n\n\n\n\n\n"
+    "text": "findnext(pattern::AbstractString, string::AbstractString, start::Integer)\nfindnext(pattern::Regex, string::String, start::Integer)\n\nFind the next occurrence of pattern in string starting at position start. pattern can be either a string, or a regular expression, in which case string must be of type String.\n\nThe return value is a range of indices where the matching sequence is found, such that s[findnext(x, s, i)] == x:\n\nfindnext(\"substring\", string, i) == start:stop such that string[start:stop] == \"substring\" and i <= start, or nothing if unmatched.\n\nExamples\n\njulia> findnext(\"z\", \"Hello to the world\", 1) === nothing\ntrue\n\njulia> findnext(\"o\", \"Hello to the world\", 6)\n8:8\n\njulia> findnext(\"Lang\", \"JuliaLang\", 2)\n6:9\n\n\n\n\n\n"
 },
 
 {
@@ -9861,7 +9861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "Base.findlast",
     "category": "method",
-    "text": "findlast(pattern::AbstractString, string::AbstractString)\nfindlast(pattern::Regex, string::String)\n\nFind the last occurrence of pattern in string. Equivalent to findlast(pattern, string, lastindex(s)).\n\nExamples\n\njulia> findlast(\"o\", \"Hello to the world\")\n15:15\n\njulia> findfirst(\"Julia\", \"JuliaLang\")\n1:5\n\n\n\n\n\n"
+    "text": "findlast(pattern::AbstractString, string::AbstractString)\n\nFind the last occurrence of pattern in string. Equivalent to findlast(pattern, string, lastindex(s)).\n\nExamples\n\njulia> findlast(\"o\", \"Hello to the world\")\n15:15\n\njulia> findfirst(\"Julia\", \"JuliaLang\")\n1:5\n\n\n\n\n\n"
 },
 
 {
@@ -9869,7 +9869,7 @@ var documenterSearchIndex = {"docs": [
     "page": "字符串",
     "title": "Base.findprev",
     "category": "method",
-    "text": "findprev(pattern::AbstractString, string::AbstractString, start::Integer)\nfindprev(pattern::Regex, string::String, start::Integer)\n\nFind the previous occurrence of pattern in string starting at position start. pattern can be either a string, or a regular expression, in which case string must be of type String.\n\nThe return value is a range of indices where the matching sequence is found, such that s[findprev(x, s, i)] == x:\n\nfindprev(\"substring\", string, i) = start:end such that string[start:end] == \"substring\", or nothing if unmatched.\n\nExamples\n\njulia> findprev(\"z\", \"Hello to the world\", 18) === nothing\ntrue\n\njulia> findprev(\"o\", \"Hello to the world\", 18)\n15:15\n\njulia> findprev(\"Julia\", \"JuliaLang\", 6)\n1:5\n\n\n\n\n\n"
+    "text": "findprev(pattern::AbstractString, string::AbstractString, start::Integer)\n\nFind the previous occurrence of pattern in string starting at position start.\n\nThe return value is a range of indices where the matching sequence is found, such that s[findprev(x, s, i)] == x:\n\nfindprev(\"substring\", string, i) == start:stop such that string[start:stop] == \"substring\" and stop <= i, or nothing if unmatched.\n\nExamples\n\njulia> findprev(\"z\", \"Hello to the world\", 18) === nothing\ntrue\n\njulia> findprev(\"o\", \"Hello to the world\", 18)\n15:15\n\njulia> findprev(\"Julia\", \"JuliaLang\", 6)\n1:5\n\n\n\n\n\n"
 },
 
 {
@@ -11733,7 +11733,7 @@ var documenterSearchIndex = {"docs": [
     "page": "常量",
     "title": "Base.LOAD_PATH",
     "category": "constant",
-    "text": "LOAD_PATH\n\nAn array of paths for using and import statements to consdier as project environments or package directories when loading code. See Code Loading.\n\n\n\n\n\n"
+    "text": "LOAD_PATH\n\nAn array of paths for using and import statements to consider as project environments or package directories when loading code. See Code Loading.\n\n\n\n\n\n"
 },
 
 {
@@ -15053,7 +15053,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Distributed Computing",
     "title": "Base.wait",
     "category": "function",
-    "text": "wait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\nwait(r::Future)\n\nWait for a value to become available for the specified Future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified RemoteChannel.\n\n\n\n\n\n"
+    "text": "wait(r::Future)\n\nWait for a value to become available for the specified Future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified RemoteChannel.\n\n\n\n\n\nwait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\n"
 },
 
 {
@@ -17557,7 +17557,7 @@ var documenterSearchIndex = {"docs": [
     "page": "线性代数",
     "title": "LinearAlgebra.pinv",
     "category": "function",
-    "text": "pinv(M[, tol::Real])\n\nComputes the Moore-Penrose pseudoinverse.\n\nFor matrices M with floating point elements, it is convenient to compute the pseudoinverse by inverting only singular values above a given threshold, tol.\n\nThe optimal choice of tol varies both with the value of M and the intended application of the pseudoinverse. The default value of tol is eps(real(float(one(eltype(M)))))*minimum(size(M)), which is essentially machine epsilon for the real part of a matrix element multiplied by the larger matrix dimension. For inverting dense ill-conditioned matrices in a least-squares sense, tol = sqrt(eps(real(float(one(eltype(M)))))) is recommended.\n\nFor more information, see [issue8859], [B96], [S84], [KY88].\n\nExamples\n\njulia> M = [1.5 1.3; 1.2 1.9]\n2×2 Array{Float64,2}:\n 1.5  1.3\n 1.2  1.9\n\njulia> N = pinv(M)\n2×2 Array{Float64,2}:\n  1.47287   -1.00775\n -0.930233   1.16279\n\njulia> M * N\n2×2 Array{Float64,2}:\n 1.0          -2.22045e-16\n 4.44089e-16   1.0\n\n[issue8859]: Issue 8859, \"Fix least squares\", https://github.com/JuliaLang/julia/pull/8859\n\n[B96]: Åke Björck, \"Numerical Methods for Least Squares Problems\",  SIAM Press, Philadelphia, 1996, \"Other Titles in Applied Mathematics\", Vol. 51. doi:10.1137/1.9781611971484\n\n[S84]: G. W. Stewart, \"Rank Degeneracy\", SIAM Journal on Scientific and Statistical Computing, 5(2), 1984, 403-413. doi:10.1137/0905030\n\n[KY88]: Konstantinos Konstantinides and Kung Yao, \"Statistical analysis of effective singular values in matrix rank determination\", IEEE Transactions on Acoustics, Speech and Signal Processing, 36(5), 1988, 757-763. doi:10.1109/29.1585\n\n\n\n\n\n"
+    "text": "pinv(M[, rtol::Real])\n\nComputes the Moore-Penrose pseudoinverse.\n\nFor matrices M with floating point elements, it is convenient to compute the pseudoinverse by inverting only singular values greater than rtol * maximum(svdvals(M)).\n\nThe optimal choice of rtol varies both with the value of M and the intended application of the pseudoinverse. The default value of rtol is eps(real(float(one(eltype(M)))))*minimum(size(M)), which is essentially machine epsilon for the real part of a matrix element multiplied by the larger matrix dimension. For inverting dense ill-conditioned matrices in a least-squares sense, rtol = sqrt(eps(real(float(one(eltype(M)))))) is recommended.\n\nFor more information, see [issue8859], [B96], [S84], [KY88].\n\nExamples\n\njulia> M = [1.5 1.3; 1.2 1.9]\n2×2 Array{Float64,2}:\n 1.5  1.3\n 1.2  1.9\n\njulia> N = pinv(M)\n2×2 Array{Float64,2}:\n  1.47287   -1.00775\n -0.930233   1.16279\n\njulia> M * N\n2×2 Array{Float64,2}:\n 1.0          -2.22045e-16\n 4.44089e-16   1.0\n\n[issue8859]: Issue 8859, \"Fix least squares\", https://github.com/JuliaLang/julia/pull/8859\n\n[B96]: Åke Björck, \"Numerical Methods for Least Squares Problems\",  SIAM Press, Philadelphia, 1996, \"Other Titles in Applied Mathematics\", Vol. 51. doi:10.1137/1.9781611971484\n\n[S84]: G. W. Stewart, \"Rank Degeneracy\", SIAM Journal on Scientific and Statistical Computing, 5(2), 1984, 403-413. doi:10.1137/0905030\n\n[KY88]: Konstantinos Konstantinides and Kung Yao, \"Statistical analysis of effective singular values in matrix rank determination\", IEEE Transactions on Acoustics, Speech and Signal Processing, 36(5), 1988, 757-763. doi:10.1109/29.1585\n\n\n\n\n\n"
 },
 
 {
@@ -17565,7 +17565,7 @@ var documenterSearchIndex = {"docs": [
     "page": "线性代数",
     "title": "LinearAlgebra.nullspace",
     "category": "function",
-    "text": "nullspace(M[, tol::Real])\n\nComputes a basis for the nullspace of M by including the singular vectors of A whose singular have magnitude are greater than tol*σ₁, where σ₁ is A\'s largest singular values. By default, the value of tol is the smallest dimension of A multiplied by the eps of the eltype of A.\n\nExamples\n\njulia> M = [1 0 0; 0 1 0; 0 0 0]\n3×3 Array{Int64,2}:\n 1  0  0\n 0  1  0\n 0  0  0\n\njulia> nullspace(M)\n3×1 Array{Float64,2}:\n 0.0\n 0.0\n 1.0\n\njulia> nullspace(M, 2)\n3×3 Array{Float64,2}:\n 0.0  1.0  0.0\n 1.0  0.0  0.0\n 0.0  0.0  1.0\n\n\n\n\n\n"
+    "text": "nullspace(M[, rtol::Real])\n\nComputes a basis for the nullspace of M by including the singular vectors of A whose singular have magnitude are greater than rtol*σ₁, where σ₁ is A\'s largest singular values. By default, the value of rtol is the smallest dimension of A multiplied by the eps of the eltype of A.\n\nExamples\n\njulia> M = [1 0 0; 0 1 0; 0 0 0]\n3×3 Array{Int64,2}:\n 1  0  0\n 0  1  0\n 0  0  0\n\njulia> nullspace(M)\n3×1 Array{Float64,2}:\n 0.0\n 0.0\n 1.0\n\njulia> nullspace(M, 2)\n3×3 Array{Float64,2}:\n 0.0  1.0  0.0\n 1.0  0.0  0.0\n 0.0  0.0  1.0\n\n\n\n\n\n"
 },
 
 {
@@ -19301,7 +19301,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Memory-mapped I/O",
     "title": "Mmap.mmap",
     "category": "function",
-    "text": "Mmap.mmap(io::Union{IOStream,AbstractString,Mmap.AnonymousMmap}[, type::Type{Array{T,N}}, dims, offset]; grow::Bool=true, shared::Bool=true)\n       Mmap.mmap(type::Type{Array{T,N}}, dims)\n\nCreate an Array whose values are linked to a file, using memory-mapping. This provides a convenient way of working with data too large to fit in the computer\'s memory.\n\nThe type is an Array{T,N} with a bits-type element of T and dimension N that determines how the bytes of the array are interpreted. Note that the file must be stored in binary format, and no format conversions are possible (this is a limitation of operating systems, not Julia).\n\ndims is a tuple or single Integer specifying the size or length of the array.\n\nThe file is passed via the stream argument, either as an open IOStream or filename string. When you initialize the stream, use \"r\" for a \"read-only\" array, and \"w+\" to create a new array used to write values to disk.\n\nIf no type argument is specified, the default is Vector{UInt8}.\n\nOptionally, you can specify an offset (in bytes) if, for example, you want to skip over a header in the file. The default value for the offset is the current stream position for an IOStream.\n\nThe grow keyword argument specifies whether the disk file should be grown to accommodate the requested size of array (if the total file size is < requested array size). Write privileges are required to grow the file.\n\nThe shared keyword argument specifies whether the resulting Array and changes made to it will be visible to other processes mapping the same file.\n\nFor example, the following code\n\n# Create a file for mmapping\n# (you could alternatively use mmap to do this step, too)\nA = rand(1:20, 5, 30)\ns = open(\"/tmp/mmap.bin\", \"w+\")\n# We\'ll write the dimensions of the array as the first two Ints in the file\nwrite(s, size(A,1))\nwrite(s, size(A,2))\n# Now write the data\nwrite(s, A)\nclose(s)\n\n# Test by reading it back in\ns = open(\"/tmp/mmap.bin\")   # default is read-only\nm = read(s, Int)\nn = read(s, Int)\nA2 = Mmap.mmap(s, Matrix{Int}, (m,n))\n\ncreates a m-by-n Matrix{Int}, linked to the file associated with stream s.\n\nA more portable file would need to encode the word size – 32 bit or 64 bit – and endianness information in the header. In practice, consider encoding binary data using standard formats like HDF5 (which can be used with memory-mapping).\n\n\n\n\n\nMmap.mmap(io, BitArray, [dims, offset])\n\nCreate a BitArray whose values are linked to a file, using memory-mapping; it has the same purpose, works in the same way, and has the same arguments, as mmap, but the byte representation is different.\n\nExamples\n\njulia> io = open(\"mmap.bin\", \"w+\");\n\njulia> B = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> B[3, 4000] = true;\n\njulia> Mmap.sync!(B);\n\njulia> close(io);\n\njulia> io = open(\"mmap.bin\", \"r+\");\n\njulia> C = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> C[3, 4000]\ntrue\n\njulia> C[2, 4000]\nfalse\n\njulia> close(io)\n\njulia> rm(\"mmap.bin\")\n\nThis creates a 25-by-30000 BitArray, linked to the file associated with stream io.\n\n\n\n\n\n"
+    "text": "Mmap.mmap(io::Union{IOStream,AbstractString,Mmap.AnonymousMmap}[, type::Type{Array{T,N}}, dims, offset]; grow::Bool=true, shared::Bool=true)\nMmap.mmap(type::Type{Array{T,N}}, dims)\n\nCreate an Array whose values are linked to a file, using memory-mapping. This provides a convenient way of working with data too large to fit in the computer\'s memory.\n\nThe type is an Array{T,N} with a bits-type element of T and dimension N that determines how the bytes of the array are interpreted. Note that the file must be stored in binary format, and no format conversions are possible (this is a limitation of operating systems, not Julia).\n\ndims is a tuple or single Integer specifying the size or length of the array.\n\nThe file is passed via the stream argument, either as an open IOStream or filename string. When you initialize the stream, use \"r\" for a \"read-only\" array, and \"w+\" to create a new array used to write values to disk.\n\nIf no type argument is specified, the default is Vector{UInt8}.\n\nOptionally, you can specify an offset (in bytes) if, for example, you want to skip over a header in the file. The default value for the offset is the current stream position for an IOStream.\n\nThe grow keyword argument specifies whether the disk file should be grown to accommodate the requested size of array (if the total file size is < requested array size). Write privileges are required to grow the file.\n\nThe shared keyword argument specifies whether the resulting Array and changes made to it will be visible to other processes mapping the same file.\n\nFor example, the following code\n\n# Create a file for mmapping\n# (you could alternatively use mmap to do this step, too)\nA = rand(1:20, 5, 30)\ns = open(\"/tmp/mmap.bin\", \"w+\")\n# We\'ll write the dimensions of the array as the first two Ints in the file\nwrite(s, size(A,1))\nwrite(s, size(A,2))\n# Now write the data\nwrite(s, A)\nclose(s)\n\n# Test by reading it back in\ns = open(\"/tmp/mmap.bin\")   # default is read-only\nm = read(s, Int)\nn = read(s, Int)\nA2 = Mmap.mmap(s, Matrix{Int}, (m,n))\n\ncreates a m-by-n Matrix{Int}, linked to the file associated with stream s.\n\nA more portable file would need to encode the word size – 32 bit or 64 bit – and endianness information in the header. In practice, consider encoding binary data using standard formats like HDF5 (which can be used with memory-mapping).\n\n\n\n\n\nMmap.mmap(io, BitArray, [dims, offset])\n\nCreate a BitArray whose values are linked to a file, using memory-mapping; it has the same purpose, works in the same way, and has the same arguments, as mmap, but the byte representation is different.\n\nExamples\n\njulia> io = open(\"mmap.bin\", \"w+\");\n\njulia> B = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> B[3, 4000] = true;\n\njulia> Mmap.sync!(B);\n\njulia> close(io);\n\njulia> io = open(\"mmap.bin\", \"r+\");\n\njulia> C = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> C[3, 4000]\ntrue\n\njulia> C[2, 4000]\nfalse\n\njulia> close(io)\n\njulia> rm(\"mmap.bin\")\n\nThis creates a 25-by-30000 BitArray, linked to the file associated with stream io.\n\n\n\n\n\n"
 },
 
 {
@@ -19637,7 +19637,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Pkg",
     "title": "Pkg.test",
     "category": "function",
-    "text": "Pkg.test(; coverage::Bool=true)\nPkg.test(pkg::Union{String, Vector{String}; coverage::Bool=true)\nPkg.test(pkgs::Union{PackageSpec, Vector{PackageSpec}}; coverage::Bool=true)\n\nRun the tests for package pkg or if no positional argument is given to test, the current project is tested (which thus needs to be a package). A package is tested by running its test/runtests.jl file.\n\nThe tests are run by generating a temporary environment with only pkg and its (recursive) dependencies (recursively) in it. If a manifest exist, the versions in that manifest is used, otherwise a feasible set of package are resolved and installed.\n\nDuring the test, test-specific dependencies are active, which are given in the project file as e.g.\n\n[extras]\nTest = \"8dfed614-e22c-5e08-85e1-65c5234f0b40\"\n\n[targets]\ntest = [Test]\n\nCoverage statistics for the packages may be generated by passing coverage=true. The default behavior is not to run coverage.\n\nThe tests are executed in a new process with check-bounds=yes and by default startup-file=no. If using the startup file (~/.julia/config/startup.jl) is desired, start julia with --startup-file=yes.\n\n\n\n\n\n"
+    "text": "Pkg.test(; coverage::Bool=true)\nPkg.test(pkg::Union{String, Vector{String}; coverage::Bool=true)\nPkg.test(pkgs::Union{PackageSpec, Vector{PackageSpec}}; coverage::Bool=true)\n\nRun the tests for package pkg or if no positional argument is given to test, the current project is tested (which thus needs to be a package). A package is tested by running its test/runtests.jl file.\n\nThe tests are run by generating a temporary environment with only pkg and its (recursive) dependencies (recursively) in it. If a manifest exist, the versions in that manifest is used, otherwise a feasible set of package are resolved and installed.\n\nDuring the test, test-specific dependencies are active, which are given in the project file as e.g.\n\n[extras]\nTest = \"8dfed614-e22c-5e08-85e1-65c5234f0b40\"\n\n[targets]\ntest = [\"Test\"]\n\nCoverage statistics for the packages may be generated by passing coverage=true. The default behavior is not to run coverage.\n\nThe tests are executed in a new process with check-bounds=yes and by default startup-file=no. If using the startup file (~/.julia/config/startup.jl) is desired, start julia with --startup-file=yes.\n\n\n\n\n\n"
 },
 
 {
@@ -20485,7 +20485,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Sockets",
     "title": "Base.bind",
     "category": "function",
-    "text": "bind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\nbind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\n"
+    "text": "bind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\nbind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\n"
 },
 
 {
@@ -20853,7 +20853,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Statistics",
     "title": "Statistics.quantile",
     "category": "function",
-    "text": "quantile(itr, p; sorted=false)\n\nCompute the quantile(s) of a collection itr at a specified probability or vector or tuple of probabilities p on the interval [0,1]. The keyword argument sorted indicates whether itr can be assumed to be sorted.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(itr). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if itr contains NaN or missing values. Use the skipmissing function to omit missing entries and compute the quantiles of non-missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\n```jldoctest julia> quantile(0:20, 0.5) 10.0\n\njulia> quantile(0:20, [0.1, 0.5, 0.9]) 3-element Array{Float64,1}:   2.0  10.0  18.0\n\njulia> quantile(skipmissing([1, 10, missing]), 0.5) 5.5  ```\n\n\n\n\n\n"
+    "text": "quantile(itr, p; sorted=false)\n\nCompute the quantile(s) of a collection itr at a specified probability or vector or tuple of probabilities p on the interval [0,1]. The keyword argument sorted indicates whether itr can be assumed to be sorted.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(itr). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if itr contains NaN or missing values. Use the skipmissing function to omit missing entries and compute the quantiles of non-missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\njulia> quantile(0:20, 0.5)\n10.0\n\njulia> quantile(0:20, [0.1, 0.5, 0.9])\n3-element Array{Float64,1}:\n  2.0\n 10.0\n 18.0\n\njulia> quantile(skipmissing([1, 10, missing]), 0.5)\n5.5\n\n\n\n\n\n"
 },
 
 {
