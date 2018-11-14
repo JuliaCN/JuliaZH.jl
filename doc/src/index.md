@@ -1,6 +1,10 @@
 # Julia 1.0 中文文档
 
 欢迎来到 Julia 1.0 中文文档。
+```@eval
+using Markdown, Dates
+Markdown.parse("上次更新时间: $(now())")
+```
 
 请先阅读 [v1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观，文章中也介绍了 julia 自 v0.6 以来所做出的诸多改进。另外与 v1.0 同时发布的还有 v0.7，该版本是 v0.6 与 v1.0 之间的过渡版本，它能够兼容大部分还没来得及更新到 v1.0 的包，也能够正常运行已经不再提供 v0.6 支持的包。v0.7 和 v1.0 的差别只是：v0.7 会告诉你哪些 v0.6 的函数和接口已经被废弃、移动或改名了；而 v1.0 则会直接报错。参见 [v0.7 更新说明](https://docs.julialang.org/en/v0.7.0/NEWS/)。
 
