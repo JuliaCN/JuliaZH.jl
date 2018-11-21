@@ -122,7 +122,7 @@ julia&gt; same_type(&quot;foo&quot;, &quot;bar&quot;)
 true
 
 julia&gt; same_type(Int32(1), Int64(2))
-false</code></pre><p>这样的定义对应着那些类型特征是<code>UnionAll</code>类型的方法（参见<a href="manual/@ref">UnionAll Types</a>）。</p><p>在Julia中这种通过分派进行函数行为的定义是十分常见的，甚至是惯用的。方法类型参数并不局限于用作参数的类型：他们可以用在任意地方，只要值会在函数或者函数体的特征中。这里有个例子，例子中方法类型参数<code>T</code>用作方法特征中的参数类型<code>Vector{T}</code>的类型参数：</p><pre><code class="language-julia-repl">julia&gt; myappend(v::Vector{T}, x::T) where {T} = [v..., x]
+false</code></pre><p>这样的定义对应着那些类型签名是 <code>UnionAll</code> 类型的方法（参见<a href="../types/#UnionAll-类型-1"> UnionAll 类型</a>）。</p><p>在Julia中这种通过分派进行函数行为的定义是十分常见的，甚至是惯用的。方法类型参数并不局限于用作参数的类型：他们可以用在任意地方，只要值会在函数或者函数体的特征中。这里有个例子，例子中方法类型参数<code>T</code>用作方法特征中的参数类型<code>Vector{T}</code>的类型参数：</p><pre><code class="language-julia-repl">julia&gt; myappend(v::Vector{T}, x::T) where {T} = [v..., x]
 myappend (generic function with 1 method)
 
 julia&gt; myappend([1,2,3],4)
@@ -179,7 +179,7 @@ julia&gt; same_type_numeric(&quot;foo&quot;, &quot;bar&quot;)
 ERROR: MethodError: no method matching same_type_numeric(::String, ::String)
 
 julia&gt; same_type_numeric(Int32(1), Int64(2))
-false</code></pre><p><code>same_type_numeric</code>函数的行为与上面定义的<code>same_type</code>函数基本相似，但是它只对一对数定义。</p><p>参数方法允许与<code>where</code>表达式同样的语法用来写类型（参见<a href="manual/@ref">UnionAll Types</a>）。如果只有一个参数，封闭的大括号（在<code>where {T}</code>中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如<code>where {T, S &lt;: Real}</code>，或者使用嵌套的<code>where</code>来写，例如<code>where S&lt;:Real where T</code>。</p><h2><a class="nav-anchor" id="重定义方法-1" href="#重定义方法-1">重定义方法</a></h2><p>当重定义一个方法或者增加一个方法时，知道这个变化不会立即生效很重要。这是Julia能够静态推断和编译代码使其运行很快而没有惯常的JIT技巧和额外开销的关键。实际上，任意新的方法定义不会对当前运行环境可见，包括Tasks和线程（和所有的之前定义的<code>@generated</code>函数）。让我们通过一个例子说明这意味着什么：</p><pre><code class="language-julia-repl">julia&gt; function tryeval()
+false</code></pre><p><code>same_type_numeric</code>函数的行为与上面定义的<code>same_type</code>函数基本相似，但是它只对一对数定义。</p><p>参数方法允许与<code>where</code>表达式同样的语法用来写类型（参见<a href="../types/#UnionAll-类型-1"> UnionAll 类型</a>）。如果只有一个参数，封闭的大括号（在<code>where {T}</code>中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如<code>where {T, S &lt;: Real}</code>，或者使用嵌套的<code>where</code>来写，例如<code>where S&lt;:Real where T</code>。</p><h2><a class="nav-anchor" id="重定义方法-1" href="#重定义方法-1">重定义方法</a></h2><p>当重定义一个方法或者增加一个方法时，知道这个变化不会立即生效很重要。这是Julia能够静态推断和编译代码使其运行很快而没有惯常的JIT技巧和额外开销的关键。实际上，任意新的方法定义不会对当前运行环境可见，包括Tasks和线程（和所有的之前定义的<code>@generated</code>函数）。让我们通过一个例子说明这意味着什么：</p><pre><code class="language-julia-repl">julia&gt; function tryeval()
            @eval newfun() = 1
            newfun()
        end

@@ -391,7 +391,7 @@ julia&gt; take!(chnl)
 8
 
 julia&gt; take!(chnl)
-&quot;stop&quot;</code></pre><p>一种思考这种行为地方式是，“生产者”能够多次返回。在两次调用 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 之间，生产者的执行是被中断的，消费者接管控制。</p><p>返回的 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 可以被用作一个 <code>for</code> 循环的迭代对象，循环变量可以是所有产生的值。当 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 关闭时，循环被终止。</p><pre><code class="language-julia-repl">julia&gt; for x in Channel(producer)
+&quot;stop&quot;</code></pre><p>一种思考这种行为的方式是，“生产者”能够多次返回。在两次调用 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 之间，生产者的执行是挂起的，此时由消费者接管控制。</p><p>返回的 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 可以被用作一个 <code>for</code> 循环的迭代对象，此时循环变量会依次取到所有产生的值。当 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 关闭时，循环就会终止。</p><pre><code class="language-julia-repl">julia&gt; for x in Channel(producer)
            println(x)
        end
 start

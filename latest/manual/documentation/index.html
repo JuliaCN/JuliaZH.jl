@@ -25,7 +25,7 @@ function bar(x, y) ...</code></pre><p>如上例所示，我们推荐在写文档
 - `n::Integer`: the number of elements to compute.
 - `dim::Integer=1`: the dimensions along which to perform the computation.
 ...
-&quot;&quot;&quot;</code></pre></li><li><p>给相关函数提供提示。</p><p>有时会存在具有功能相联系的函数。为了提供可探索性请提供 一个相关函数的小列表，在段落<code>See also:</code>中。</p><pre><code class="language-none">See also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)</code></pre></li><li><p>请在<code># Examples</code>中包含一些代码例子。</p><p>例子应尽可能按照<em>doctest</em>来写。<em>doctest</em>是一个栅栏分隔开的代码块 (参照 <a href="manual/@ref">Code blocks</a>)，以 <code>```jldoctest</code>开头并包含任意数量的提示<code>julia&gt;</code> 与输入和预期输出用来模拟Julia REPL。</p><p>例如在下面的docstring中定义了变量<code>a</code>，期待的输出 ，跟在Julia REPL中打印的一样，出现在后面。</p><pre><code class="language-julia">&quot;&quot;&quot;
+&quot;&quot;&quot;</code></pre></li><li><p>给相关函数提供提示。</p><p>有时会存在具有功能相联系的函数。为了提供可探索性请提供 一个相关函数的小列表，在段落<code>See also:</code>中。</p><pre><code class="language-none">See also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)</code></pre></li><li><p>请在<code># Examples</code>中包含一些代码例子。</p><p>例子应尽可能按照<em>doctest</em>来写。<em>doctest</em>是一个栅栏分隔开的代码块 （请参阅<a href="#代码块-1">代码块</a>）以 <code>```jldoctest</code> 开头并包含任意数量的提示符 <code>julia&gt;</code> 与输入和预期输出用来模拟Julia REPL。</p><p>例如在下面的docstring中定义了变量<code>a</code>，期待的输出 ，跟在Julia REPL中打印的一样，出现在后面。</p><pre><code class="language-julia">&quot;&quot;&quot;
 Some nice documentation here.
 
 # Examples
@@ -102,7 +102,7 @@ y = MyType(&quot;y&quot;)</code></pre><p>输入<code>?x</code>会显示&quot;Doc
 function f end
 
 &quot;...&quot;
-f</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了函数<code>f</code>。第一种语法是首选，虽然两者是等价的。</p><pre><code class="language-julia">&quot;...&quot;
+f</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了函数 <code>f</code>。首选的语法是第一种，虽然两者是等价的。</p><pre><code class="language-julia">&quot;...&quot;
 f(x) = x
 
 &quot;...&quot;
@@ -111,10 +111,10 @@ function f(x)
 end
 
 &quot;...&quot;
-f(x)</code></pre><p>把docstring <code>&quot;...&quot;</code> 添加给了方法<code>f(::Any)</code>。</p><pre><code class="language-julia">&quot;...&quot;
-f(x, y = 1) = x + y</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了两个<code>方法</code>，分别为<code>f(::Any)</code>和<code>f(::Any, ::Any)</code>。</p><h3><a class="nav-anchor" id="宏-1" href="#宏-1">宏</a></h3><pre><code class="language-julia">&quot;...&quot;
-macro m(x) end</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了 <code>@m(::Any)</code> 的宏定义。</p><pre><code class="language-julia">&quot;...&quot;
-:(@m)</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了名字为<code>@m</code>的宏。</p><h3><a class="nav-anchor" id="类型-1" href="#类型-1">类型</a></h3><pre><code class="language-none">&quot;...&quot;
+f(x)</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了方法 <code>f(::Any)</code>。</p><pre><code class="language-julia">&quot;...&quot;
+f(x, y = 1) = x + y</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了两个方法，分别为 <code>f(::Any)</code> 和 <code>f(::Any, ::Any)</code>。</p><h3><a class="nav-anchor" id="宏-1" href="#宏-1">宏</a></h3><pre><code class="language-julia">&quot;...&quot;
+macro m(x) end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了宏 <code>@m(::Any)</code> 的定义。</p><pre><code class="language-julia">&quot;...&quot;
+:(@m)</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了名为 <code>@m</code> 的宏。</p><h3><a class="nav-anchor" id="类型-1" href="#类型-1">类型</a></h3><pre><code class="language-none">&quot;...&quot;
 abstract type T1 end
 
 &quot;...&quot;
@@ -125,13 +125,13 @@ end
 &quot;...&quot;
 struct T3
     ...
-end</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了类型<code>T1</code>, <code>T2</code>和<code>T3</code>。</p><pre><code class="language-julia">&quot;...&quot;
+end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了类型 <code>T1</code>、<code>T2</code> 和 <code>T3</code>。</p><pre><code class="language-julia">&quot;...&quot;
 struct T
     &quot;x&quot;
     x
     &quot;y&quot;
     y
-end</code></pre><p>把docstring <code>&quot;...&quot;</code> 添加给了类型<code>T</code>，<code>&quot;x&quot;</code>添加给了域<code>T.y</code>，<code>&quot;y&quot;</code>添加给了域<code>T.y</code>。也可以运用于<code>可变结构</code>类型。</p><h3><a class="nav-anchor" id="模块-1" href="#模块-1">模块</a></h3><pre><code class="language-julia">&quot;...&quot;
+end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了类型 <code>T</code>，<code>&quot;x&quot;</code> 添加给字段 <code>T.x</code>，<code>&quot;y&quot;</code> 添加给字段 <code>T.y</code>。也可以运用于<code>mutable struct</code> 类型。</p><h3><a class="nav-anchor" id="模块-1" href="#模块-1">模块</a></h3><pre><code class="language-julia">&quot;...&quot;
 module M end
 
 module M
@@ -139,7 +139,7 @@ module M
 &quot;...&quot;
 M
 
-end</code></pre><p>把docstring <code>&quot;...&quot;</code> 添加给了<code>模块</code><code>M</code>.在<code>模块</code>之前添加docstring的语法是首选，虽然两者是等价的。</p><pre><code class="language-julia">&quot;...&quot;
+end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了模块 <code>M</code>。首选的语法是在模块之前添加 docstring，虽然两者是等价的。</p><pre><code class="language-julia">&quot;...&quot;
 baremodule M
 # ...
 end
@@ -151,7 +151,7 @@ import Base: @doc
 &quot;...&quot;
 f(x) = x
 
-end</code></pre><p>通过把docstring放在表达式之上来给一个<code>baremodule</code>写文档会自动在模块中引入<code>@doc</code>。当模块表达式并没有文档时必须手动引入。空的<code>baremodule</code>不能有文档。</p><h3><a class="nav-anchor" id="全局变量-1" href="#全局变量-1">全局变量</a></h3><pre><code class="language-julia">&quot;...&quot;
+end</code></pre><p>通过把 docstring 放在表达式之上来给一个 <code>baremodule</code> 写文档会在模块中自动引入 <code>@doc</code>。它在模块表达式并没有文档时必须手动引入。空的 <code>baremodule</code> 不能有文档。</p><h3><a class="nav-anchor" id="全局变量-1" href="#全局变量-1">全局变量</a></h3><pre><code class="language-julia">&quot;...&quot;
 const a = 1
 
 &quot;...&quot;
@@ -179,7 +179,7 @@ end</code></pre><p><code>@__doc__</code> has no effect when a macro that uses it
     accumulate!(op, y, x)
 
 Cumulative operation `op` on a vector `x`, storing the result in `y`. See also [`accumulate`](@ref).
-&quot;&quot;&quot;</code></pre><p>这会在生成的文档中生成指向 <code>accumulate</code> 文档的一个链接（含有更多的关于函数实际的功能的信息）。在函数的可变/不变版本中包含交叉引用或者在两个看起来相似地函数中间高光其区别是鼓励的。</p><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>上述的交叉引用<em>不是</em>Markdown的特色，其依赖于 <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>，这个包用来构建基础的Julia文档。</p></div></div><h4><a class="nav-anchor" id="脚注引用-1" href="#脚注引用-1">脚注引用</a></h4><p>命名的和编号的脚注引用应按照下列的语法编写：脚注名必须是没有截断的只有字母或者数字的单个单词。</p><pre><code class="language-none">A paragraph containing a numbered footnote [^1] and a named one [^named].</code></pre><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>与脚注相关的文本能写在脚注链接同一页的任意地方。用于定义脚注文本的语法在下面的<a href="manual/@ref">Footnotes</a>章节中讨论。</p></div></div><h3><a class="nav-anchor" id="顶层元素-1" href="#顶层元素-1">顶层元素</a></h3><p>下列元素可以写在文档的&quot;顶层&quot;或者&quot;顶层&quot;元素之中。</p><h4><a class="nav-anchor" id="段落-1" href="#段落-1">段落</a></h4><p>段落是一个纯文本的块，可能包含任意数量的在<a href="manual/@ref">Inline elements</a>中定义了的内联元素，在段落前后会拥有一个或者多个空行。</p><pre><code class="language-none">This is a paragraph.
+&quot;&quot;&quot;</code></pre><p>这会在生成的文档中生成指向 <code>accumulate</code> 文档的一个链接（含有更多的关于函数实际的功能的信息）。在函数的可变/不变版本中包含交叉引用或者在两个看起来相似地函数中间高光其区别是鼓励的。</p><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>上述的交叉引用<em>不是</em>Markdown的特色，其依赖于 <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>，这个包用来构建基础的Julia文档。</p></div></div><h4><a class="nav-anchor" id="脚注引用-1" href="#脚注引用-1">脚注引用</a></h4><p>命名的和编号的脚注引用应按照下列的语法编写：脚注名必须是没有截断的只有字母或者数字的单个单词。</p><pre><code class="language-none">A paragraph containing a numbered footnote [^1] and a named one [^named].</code></pre><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>与脚注相关的文本能写在脚注链接同一页的任意地方。用于定义脚注文本的语法在下面的<a href="#脚注-1">脚注</a>章节中讨论。</p></div></div><h3><a class="nav-anchor" id="顶层元素-1" href="#顶层元素-1">顶层元素</a></h3><p>下列元素可以写在文档的&quot;顶层&quot;或者&quot;顶层&quot;元素之中。</p><h4><a class="nav-anchor" id="段落-1" href="#段落-1">段落</a></h4><p>段落是一个纯文本的块，可能包含任意数量的在上面的<a href="#内联元素-1">内联元素</a>章节中定义的内联元素，在段落前后会拥有一个或者多个空行。</p><pre><code class="language-none">This is a paragraph.
 
 And this is *another* one containing some emphasised text.
 A new line, but still part of the same paragraph.</code></pre><h4><a class="nav-anchor" id="标题-1" href="#标题-1">标题</a></h4><p>文档可以使用标题分成不同的章节。标题使用的是下列的语法：</p><pre><code class="language-julia"># Level One
@@ -238,7 +238,7 @@ end
  6) item six
  7) item seven</code></pre><p>一个有序列表可以不从1开始编号，如同上例的第二个列表所示，这个列表从5开始编号。如同无序列表一样，有序列表可以包含嵌套的顶层元素。</p><h4><a class="nav-anchor" id="显示方程-1" href="#显示方程-1">显示方程</a></h4><p>大型的<span>$\LaTeX$</span>方程无法放进段落的行列中，可以使用&quot;语言&quot;为<code>math</code>的栅栏分隔的代码块将其写成显示方程，如同下列例子：</p><pre><code class="language-julia">```math
 f(a) = \frac{1}{2\pi}\int_{0}^{2\pi} (\alpha+R\cos(\theta))d\theta
-```</code></pre><h4><a class="nav-anchor" id="脚注-1" href="#脚注-1">脚注</a></h4><p>这个语法是与<a href="manual/@ref">Footnote references</a>内联语法相配合的。请确认也读过那个章节。</p><p>与脚注引用语法相似，脚注文本使用如下语法定义，不包括脚注标签之后的<code>:</code>字符：</p><pre><code class="language-none">[^1]: Numbered footnote text.
+```</code></pre><h4><a class="nav-anchor" id="脚注-1" href="#脚注-1">脚注</a></h4><p>这个语法是与<a href="#脚注引用-1">脚注引用</a>内联语法相配合的。请确认也读过那个章节。</p><p>与脚注引用语法相似，脚注文本使用如下语法定义，不包括脚注标签之后的<code>:</code>字符：</p><pre><code class="language-none">[^1]: Numbered footnote text.
 
 [^note]:
 
