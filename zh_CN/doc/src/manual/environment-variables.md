@@ -148,16 +148,16 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 *   如果是第 `n` 次调用 `jl_gc_pool_alloc()`，并且 `n`
     属于 `$JULIA_GC_ALLOC_POOL` 代表的算术序列，
-    那么垃圾收集是强制的。
+    那么垃圾回收是强制的。
 *   如果是第 `n` 次调用 `maybe_collect()`，并且 `n` 属于
     `$JULIA_GC_ALLOC_OTHER` 代表的算术序列，那么垃圾
-    收集是强制的。
+    回收是强制的。
 *   如果是第 `n` 次调用 `jl_gc_alloc()`，并且 `n` 属于
     `$JULIA_GC_ALLOC_PRINT` 代表的算术序列，那么
     调用 `jl_gc_pool_alloc()` 和 `maybe_collect()` 的次数会
     被打印。
 
-如果这些环境变量的值以字符 `‘r'` 开头，那么垃圾收集事件间的间隔是随机的。
+如果这些环境变量的值以字符 `‘r'` 开头，那么垃圾回收事件间的间隔是随机的。
 
 !!! note
 

@@ -116,11 +116,11 @@ julia> time_sum(x)
 
 Julia和其包生态圈包含了能帮助你诊断问题和提高你的代码的性能表现的工具：
 
-* [Profiling](@ref)允许你测量你运行的代码的性能表现并找出是性能瓶颈的代码。对于复杂的工程，[ProfileView](https://github.com/timholy/ProfileView.jl)能帮你将性能分析结果可视化。
+* [性能分析](@ref)允许你测量你运行的代码的性能表现并找出是性能瓶颈的代码。对于复杂的工程，[ProfileView](https://github.com/timholy/ProfileView.jl)能帮你将性能分析结果可视化。
 
 * [Traceur](https://github.com/MikeInnes/Traceur.jl)包能帮你找到你代码中的常见性能问题。
 
-* 没有预想到的巨大的内存申请 -- 像[`@time`](@ref)，[`@allocated`](@ref) 或者性能分析器（通过对于垃圾回收进程的调用）告诉你的一样 -- 提示着你的代码会有问题。 如果没有见到有关内存申请的其他原因，你需要怀疑这是一个类型问题。你也可以通过`-track-allocation=user`选项开启Julia并检查生成的`*.mem`文件来检查有关内存申请发生位置的信息。参见[Memory allocation analysis](@ref)。
+* 没有预想到的巨大的内存申请 -- 像[`@time`](@ref)，[`@allocated`](@ref) 或者性能分析器（通过对于垃圾回收进程的调用）告诉你的一样 -- 提示着你的代码会有问题。 如果没有见到有关内存申请的其他原因，你需要怀疑这是一个类型问题。你也可以通过`-track-allocation=user`选项开启Julia并检查生成的`*.mem`文件来检查有关内存申请发生位置的信息。参见[内存分配分析](@ref)。
 
 *`@code_warntype`生成你的代码的一个表示，对于找到会造成类型不确定的表达式有用。参见下面的[`@code_warntype`](@ref)。
 
@@ -156,7 +156,7 @@ julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
 
 把数字赋值给`a`会即时将数字转换成`Float64`并且`a`会按照64位浮点数值的连续的块来储存，这就能高效地处理。
 
-也请参见在[Parametric Types](@ref)下的讨论。
+也请参见在[参数类型](@ref)下的讨论。
 
 ## 类型声明
 
