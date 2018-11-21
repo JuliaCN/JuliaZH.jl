@@ -946,7 +946,7 @@ block:
 end
 ```
 
-## Non-Standard String Literals
+## 非标准字符串字面量
 
 Recall from [Strings](@ref non-standard-string-literals) that string literals prefixed by an identifier are called non-standard
 string literals, and can have different semantics than un-prefixed string literals. For example:

@@ -1,10 +1,10 @@
 # [类型](@id man-types)
 
-通常，我们把程序语言中的类型系统划分成两类：静态类型和动态类型。对于静态类型系统，在程序运行之前，我们就知道每一个表达式的类型。而对于动态类型系统，我们只有通过运行那个程序，得到表达式具体的值，才能确定其具体的类型。在静态类型语言中，通常我们可以在不知道具体类型的情况下写一些代码，这种将一段代码用在多个类型的能力被称为多态性。在经典的动态类型语言中，所有的代码都是多态的，这意味着这些代码对于其中值的类型没有约束，除非在代码中去具体的判断一个值的类型，或者对对象做一些它不支持的操作。
+通常，我们把程序语言中的类型系统划分成两类：静态类型和动态类型。对于静态类型系统，在程序运行之前，我们就可计算每一个表达式的类型。而对于动态类型系统，我们只有通过运行那个程序，得到表达式具体的值，才能确定其具体的类型。通过让编写的代码无需在编译时知道值的确切类型，面向对象允许静态类型语言具有一定的灵活性。可以编写在不同类型上都能运行的代码的能力被称为多态。在经典的动态类型语言中，所有的代码都是多态的，这意味着这些代码对于其中值的类型没有约束，除非在代码中去具体的判断一个值的类型，或者对对象做一些它不支持的操作。
 
-Julia 类型系统是动态的，但通过指出某些变量是特定类型的，可以获得静态类型系统的一些优点。这对于生成高效的代码非常有帮助，但更重要的是，它允许对函数参数类型的分派派发与语言深度集成。方法分派将在[方法](@ref)中详细探讨，但它根植于此处提供的类型系统。
+Julia 类型系统是动态的，但通过允许指出某些变量具有特定类型，获得了静态类型系统的一些优点。这对于生成高效的代码非常有帮助，但更重要的是，它允许针对函数参数类型的方法分派与语言深度集成。方法分派将在[方法](@ref)中详细探讨，但它根植于此处提供的类型系统。
 
-在类型被省略时，Julia 的默认行为是允许变量为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加注释主要有三个目的：利用 Julia 强大的多重分派机制、提高代码可读性和捕获程序错误。
+在类型被省略时，Julia 的默认行为是允许变量为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加类型注释主要有三个目的：利用 Julia 强大的多重分派机制、提高代码可读性以及捕获程序错误。
 
 Julia 用[类型系统](https://en.wikipedia.org/wiki/Type_system)的术语描述是动态（dynamic）、主格（nominative）和参数（parametric）的。范型可以被参数化，并且类型之间的层次关系可以被[显式地声明](https://en.wikipedia.org/wiki/Nominal_type_system)，而不是[隐含地通过兼容的结构](https://en.wikipedia.org/wiki/Structural_type_system)。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的类型，并且只有抽象类型可以作为其超类型。虽然起初看起来这可能过于严格，但它有许多有益的结果，但缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：
 
@@ -133,7 +133,7 @@ end
 
 首先需要注意的是上述的参数声明等价于 `x::Any` 和 `y::Any`。当函数被调用时，例如 `myplus(2,5)`，分派器选择与给定参数相匹配的名称为 `myplus` 的最具体方法。（有关多重派发的更多信息，请参阅[方法](@ref)。）
 
-假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 `myplus` 的方法，专门用于基于上面给出的范型函数的两个 `Int` 参数，即它定义并编译：
+假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 `myplus` 的方法，专门用于基于上面给出的泛型函数的两个 `Int` 参数，即它定义并编译：
 
 ```julia
 function myplus(x::Int,y::Int)
@@ -143,7 +143,7 @@ end
 
 最后，调用这个具体的方法。
 
-因此，抽象类型允许程序员编写范型函数，之后可以通过许多具体类型的组合将其用作默认方法。多亏了多重分派，程序员可以完全控制是使用默认方法还是更具体的方法。
+因此，抽象类型允许程序员编写泛型函数，之后可以通过许多具体类型的组合将其用作默认方法。多亏了多重分派，程序员可以完全控制是使用默认方法还是更具体的方法。
 
 需要注意的重点是，假使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但是，在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅[性能建议](@ref man-performance-tips)。）
 
@@ -399,7 +399,7 @@ false
 ```
 
 !!! warning
-    最后一点*非常*重要：即使 `Float64 <: Real` 也**没有** `Point{Float64} <: Point{Real}`。
+    最后一点*非常*重要：即使 `Float64 <: Real` 也**没有** `Point{Float64} <: Point{Real}`。
 
 换成类型理论说法，Julia 的类型参数是*不变的*，而不是[协变的（或甚至是逆变的）](https://en.wikipedia.org/wiki/Covariance_and_contravariance_%28computer_science%29)。这是出于实际原因：虽然任何 `Point{Float64}` 的实例在概念上也可能像是 `Point{Real}` 的实例，但这两种类型在内存中有不同的表示：
 
@@ -424,7 +424,7 @@ function norm(p::Point{<:Real})
 end
 ```
 
-（等效地，另一种定义方法 `function norm(p::Point{T} where T<:Real)` 或 `function norm(p::Point{T}) where T<:Real`；查看 [UnionAll Types](@ref)。）
+（等效地，另一种定义方法 `function norm(p::Point{T} where T<:Real)` 或 `function norm(p::Point{T}) where T<:Real`；查看 [UnionAll 类型](@ref)。）
 
 稍后将在[方法](@ref)中讨论更多示例。
 
@@ -509,9 +509,7 @@ julia> Pointy{Real} <: Pointy{Float64}
 false
 ```
 
-The notation `Pointy{<:Real}` can be used to express the Julia analogue of a
-*covariant* type, while `Pointy{>:Int}` the analogue of a *contravariant* type,
-but technically these represent *sets* of types (see [UnionAll Types](@ref)).
+符号 `Pointy{<:Real}` 可用于表示*协变*类型的 Julia 类似物，而 `Pointy{>:Int}` 类似于*逆变*类型，但从技术上讲，它们都代表了类型的*集合*（参见 [UnionAll 类型](@ref)）。
 ```jldoctest pointytype
 julia> Pointy{Float64} <: Pointy{<:Real}
 true
@@ -520,9 +518,7 @@ julia> Pointy{Real} <: Pointy{>:Int}
 true
 ```
 
-Much as plain old abstract types serve to create a useful hierarchy of types over concrete types,
-parametric abstract types serve the same purpose with respect to parametric composite types. We
-could, for example, have declared `Point{T}` to be a subtype of `Pointy{T}` as follows:
+正如之前的普通抽象类型用于在具体类型上创建实用的类型层次结构一样，参数抽象类型在参数复合类型上具有相同的用途。例如，我们可以将 `Point{T}` 声明为 `Pointy{T}` 的子类型，如下所示：
 
 ```jldoctest pointytype
 julia> struct Point{T} <: Pointy{T}
@@ -554,9 +550,7 @@ julia> Point{Float64} <: Pointy{<:Real}
 true
 ```
 
-What purpose do parametric abstract types like `Pointy` serve? Consider if we create a point-like
-implementation that only requires a single coordinate because the point is on the diagonal line
-*x = y*:
+参数抽象类型（比如 `Pointy`）的用途是什么？考虑一下如果点都在对角线 *x = y* 上，那我们创建的点的实现可以只有一个坐标：
 
 ```jldoctest pointytype
 julia> struct DiagPoint{T} <: Pointy{T}
@@ -564,21 +558,15 @@ julia> struct DiagPoint{T} <: Pointy{T}
        end
 ```
 
-Now both `Point{Float64}` and `DiagPoint{Float64}` are implementations of the `Pointy{Float64}`
-abstraction, and similarly for every other possible choice of type `T`. This allows programming
-to a common interface shared by all `Pointy` objects, implemented for both `Point` and `DiagPoint`.
-This cannot be fully demonstrated, however, until we have introduced methods and dispatch in the
-next section, [Methods](@ref).
+现在，`Point{Float64}` 和 `DiagPoint{Float64}` 都是抽象 `Pointy{Float64}` 的实现，每个类型 `T` 的其它可能选择与之类似。这允许对被所有 `Pointy` 对象共享的公共接口进行编程，接口都由 `Point` 和 `DiagPoint` 实现。但是，直到我们在下一节[方法](@ref)中引入方法和分派前，这无法完全证明。
 
-There are situations where it may not make sense for type parameters to range freely over all
-possible types. In such situations, one can constrain the range of `T` like so:
+有时，类型参数取遍所有可能类型也许是无意义的。在这种情况下，可以像这样约束 `T` 的范围：
 
 ```jldoctest realpointytype
 julia> abstract type Pointy{T<:Real} end
 ```
 
-With such a declaration, it is acceptable to use any type that is a subtype of
-[`Real`](@ref) in place of `T`, but not types that are not subtypes of `Real`:
+在这样的声明中，可以使用任何 [`Real`](@ref) 的子类型替换 `T`，但不能使用不是 `Real` 子类型的类型：
 
 ```jldoctest realpointytype
 julia> Pointy{Float64}
@@ -594,7 +582,7 @@ julia> Pointy{1}
 ERROR: TypeError: in Pointy, in T, expected T<:Real, got Int64
 ```
 
-Type parameters for parametric composite types can be restricted in the same manner:
+参数化复合类型的类型参数可用相同的方式限制：
 
 ```julia
 struct Point{T<:Real} <: Pointy{T}
@@ -603,9 +591,7 @@ struct Point{T<:Real} <: Pointy{T}
 end
 ```
 
-To give a real-world example of how all this parametric type machinery can be useful, here is
-the actual definition of Julia's [`Rational`](@ref) immutable type (except that we omit the
-constructor here for simplicity), representing an exact ratio of integers:
+在这里给出一个真实示例，展示了所有这些参数类型机制如何发挥作用，下面是 Julia 的不可变类型 [`Rational`](@ref) 的实际定义（除了我们为了简单起见省略了的构造函数），用来表示准确的整数比例：
 
 ```julia
 struct Rational{T<:Integer} <: Real
@@ -614,9 +600,7 @@ struct Rational{T<:Integer} <: Real
 end
 ```
 
-It only makes sense to take ratios of integer values, so the parameter type `T` is restricted
-to being a subtype of [`Integer`](@ref), and a ratio of integers represents a value on the
-real number line, so any [`Rational`](@ref) is an instance of the [`Real`](@ref) abstraction.
+只有接受整数值的比例才是有意义的，因此参数类型 `T` 被限制为 [`Integer`](@ref) 的子类型，又整数的比例代表实数轴上的值，因此任何 [`Rational`](@ref) 都是抽象 [`Real`](@ref) 的实现。
 
 ### 元组类型
 
