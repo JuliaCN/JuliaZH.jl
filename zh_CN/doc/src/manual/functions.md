@@ -240,8 +240,7 @@ julia> function foo(a,b)
 foo (generic function with 1 method)
 ```
 
-If you call it in an interactive session without assigning the return value anywhere, you will
-see the tuple returned:
+如果你在交互式会话中调用它且不把返回值赋值给任何变量，你会看到返回的元组：
 
 ```jldoctest foofunc
 julia> foo(2,3)

@@ -204,23 +204,21 @@ julia> y = Union{Missing, String}[missing, "b"]
 julia> convert(Array{String}, y)
 ERROR: MethodError: Cannot `convert` an object of type Missing to an object of type String
 ```
-## Skipping Missing Values
+## 跳过缺失值
 
-Since `missing` values propagate with standard mathematical operators, reduction
-functions return `missing` when called on arrays which contain missing values
+由于 `missing` 会随着标准数学运算符传播，归约函数会在调用的数组包含缺失值时返回 `missing`
 ```jldoctest
 julia> sum([1, missing])
 missing
 ```
 
-In this situation, use the [`skipmissing`](@ref) function to skip missing values
+在这种情况下，使用 [`skipmissing`](@ref) 即可跳过缺失值
 ```jldoctest
 julia> sum(skipmissing([1, missing]))
 1
 ```
 
-This convenience function returns an iterator which filters out `missing` values
-efficiently. It can therefore be used with any function which supports iterators
+下面这个函数很方便，它返回一个迭代器，能高效地过滤掉 `missing` 值。因此，它可与任何支持迭代器的函数一起使用
 ```jldoctest; setup = :(using Statistics)
 julia> maximum(skipmissing([3, missing, 2, 1]))
 3
@@ -241,15 +239,9 @@ julia> collect(skipmissing([3, missing, 2, 1]))
  1
 ```
 
-## Logical Operations on Arrays
+## 数组上的逻辑运算
 
-The three-valued logic described above for logical operators is also used
-by logical functions applied to arrays. Thus, array equality tests using
-the [`==`](@ref) operator return `missing` whenever the result cannot be
-determined without knowing the actual value of the `missing` entry. In practice,
-this means that `missing` is returned if all non-missing values of the compared
-arrays are equal, but one or both arrays contain missing values (possibly at
-different positions)
+上面描述的逻辑运算符的三值逻辑也适用于针对数组的函数。因此，使用 [`==`](@ref) 运算符的数组相等性测试一旦其结果无法在不知道 `missing` 条目实际值的情况下确定，就返回 `missing`。在应用中，这意味着在待比较数组的所有非缺失值都相等，但某个或全部数组包含缺失值（也许在不同位置）时会返回 `missing`。
 ```jldoctest
 julia> [1, missing] == [2, missing]
 false
@@ -261,8 +253,7 @@ julia> [1, 2, missing] == [1, missing, 2]
 missing
 ```
 
-As for single values, use [`isequal`](@ref) to treat `missing` values as equal
-to other `missing` values but different from non-missing values
+对于单个值，[`isequal`](@ref) 会将 `missing` 值视为与其它 `missing` 值相等但与非缺失值不同。
 ```jldoctest
 julia> isequal([1, missing], [1, missing])
 true
@@ -271,8 +262,7 @@ julia> isequal([1, 2, missing], [1, missing, 2])
 false
 ```
 
-Functions [`any`](@ref) and [`all`](@ref) also follow the rules of
-three-valued logic, returning `missing` when the result cannot be determined
+函数 [`any`](@ref) 和 [`all`](@ref) 遵循三值逻辑的规则，会在结果无法被确定时返回 `missing`。
 ```jldoctest
 julia> all([true, missing])
 missing
