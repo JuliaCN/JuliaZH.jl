@@ -93,7 +93,7 @@ julia&gt; x.a
 1</code></pre><p>具名元组和元组很像，除了具名元组的字段可以通过点号语法访问 <code>(x.a)</code> 。</p><h2><a class="nav-anchor" id="多返回值-1" href="#多返回值-1">多返回值</a></h2><p>Julia 中，一个函数可以返回一个元组来实现返回多个值。不过，元组的创建和消除都不一定要用括号，这时候给人的感觉就是返回了多个值而非一个元组。比如下面这个例子，函数返回了两个值：</p><pre><code class="language-julia-repl">julia&gt; function foo(a,b)
            a+b, a*b
        end
-foo (generic function with 1 method)</code></pre><p>If you call it in an interactive session without assigning the return value anywhere, you will see the tuple returned:</p><pre><code class="language-julia-repl">julia&gt; foo(2,3)
+foo (generic function with 1 method)</code></pre><p>如果你在交互式会话中调用它且不把返回值赋值给任何变量，你会看到返回的元组：</p><pre><code class="language-julia-repl">julia&gt; foo(2,3)
 (5, 6)</code></pre><p>这种值对的典型用法是把每个值抽取为一个变量。Julia 支持简洁的元组“解构”：</p><pre><code class="language-julia-repl">julia&gt; x, y = foo(2,3)
 (5, 6)
 

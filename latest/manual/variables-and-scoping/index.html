@@ -73,7 +73,7 @@ julia&gt; foo()
 4
 
 julia&gt; x
-1</code></pre><p>为一个全局变量赋值需要显式的<code>global</code>：</p><div class="admonition sidebar"><div class="admonition-title">不要用全局变量</div><div class="admonition-text"></div></div><p>为了使得编出来的程序是最好的，很多人都考虑了避免改变全局变量的值。一个原因是远程改变其他模块中的全局变量的状态会导致程序的局部行为变得难以琢磨，应该小心行事。这也是为什么引入局部作用域的作用域块需要<span>$global$</span>关键字来声明其改变一个全局变量的意图。</p><pre><code class="language-julia-repl">julia&gt; x = 1;
+1</code></pre><p>为一个全局变量赋值需要显式的<code>global</code>：</p><div class="admonition sidebar"><div class="admonition-title">不要用全局变量</div><div class="admonition-text"><p>为了使得编出来的程序是最好的，很多人都考虑了避免改变全局变量的值。一个原因是远程改变其他模块中的全局变量的状态会导致程序的局部行为变得难以琢磨，应该小心行事。这也是为什么引入局部作用域的作用域块需要<span>$global$</span>关键字来声明其改变一个全局变量的意图。</p></div></div><pre><code class="language-julia-repl">julia&gt; x = 1;
 
 julia&gt; function foobar()
            global x = 2
