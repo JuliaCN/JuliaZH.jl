@@ -128,7 +128,7 @@ julia> [1,2,3] .^ 3
  27
 ```
 
-具体来说，`a .^ b` 被解析为 [`dot` 调用](@ref man-vectorized) `(^).(a,b)`，这会执行 [broadcast](@ref Broadcasting) 操作：该操作能结合数组和标量、相同大小的数组（元素之间的运算）、甚至不同形状的数组（例如行、列向量结合生成矩阵）。更进一步，就像所有向量化的 `dot` 调用一样，这些 `dot` 运算符是**融合**的（fused）。例如，在计算表达式 `2 .* A.^2 .+ sin.(A)` 时，Julia 只对 `A` 进行做**一次**循环，遍历 `A` 中的每个元素 a 并计算 `2a^2 + sin(a)`。上诉表达式也可以用[`@.`](@ref @__dot__) 宏简写为 `@. 2A^2 + sin(A)`。特别的，类似 `f.(g.(x))` 的嵌套 `dot` 调用也是**融合**的，并且“相邻的”二元运算符表达式 `x .+ 3 .* x.^2` 可以等价转换为嵌套 `dot` 调用：`(+).(x, (*).(3, (^).(x, 2)))`。
+具体来说，`a .^ b` 被解析为 [`dot` 调用](@ref man-vectorized) `(^).(a,b)`，这会执行 [broadcast](@ref Broadcasting) 操作：该操作能结合数组和标量、相同大小的数组（元素之间的运算）、甚至不同形状的数组（例如行、列向量结合生成矩阵）。更进一步，就像所有向量化的 `dot` 调用一样，这些 `dot` 运算符是**融合**的（fused）。例如，在计算表达式 `2 .* A.^2 .+ sin.(A)` 时，Julia 只对 `A` 进行做**一次**循环，遍历 `A` 中的每个元素 a 并计算 `2a^2 + sin(a)`。上述表达式也可以用[`@.`](@ref @__dot__) 宏简写为 `@. 2A^2 + sin(A)`。特别的，类似 `f.(g.(x))` 的嵌套 `dot` 调用也是**融合**的，并且“相邻的”二元运算符表达式 `x .+ 3 .* x.^2` 可以等价转换为嵌套 `dot` 调用：`(+).(x, (*).(3, (^).(x, 2)))`。
 
 除了 `dot` 运算符，我们还有 `dot` 复合赋值运算符，类似 `a .+= b`（或者 `@. a += b`）会被解析成 `a .= a .+ b`，这里的 `.=` 是一个**融合**的 in-place 运算，更多信息请查看 [`dot` 文档](@ref man-vectorized)）。
 
@@ -313,7 +313,7 @@ Julia 提供了强大的数学函数和运算符集合。这些数学运算定�
 | 赋值    | `= += -= *= /= //= \= ^= ÷= %= \|= &= ⊻= <<= >>= >>>=`                                            | 右结合                      |
 
 [^1]:
-    一元运算符 `+` 和 `-` 需要给它们的参数显式使用括号以免和 `++`` 等运算符混淆。其他一元运算符的混合使用都被解析为右结合的，比如 `√√-a` 解析为 `√(√(-a))`。
+    一元运算符 `+` 和 `-` 需要显示调用，即给它们的参数加上括号，以免和 `++` 等运算符混淆。其他一元运算符的混合使用都被解析为右结合的，比如 `√√-a` 解析为 `√(√(-a))`。
 [^2]:
     The operators `+`, `++` and `*` are non-associative. `a + b + c` is parsed as `+(a, b, c)` not `+(+(a, b),
     c)`. However, the fallback methods for `+(a, b, c, d...)` and `*(a, b, c, d...)` both default to left-associative evaluation.
@@ -454,12 +454,12 @@ Stacktrace:
 | [`log2(x)`](@ref)        | 以 2 为底 `x` 的对数                                                    |
 | [`log10(x)`](@ref)       | 以 10 为底 `x` 的对数                                                   |
 | [`log1p(x)`](@ref)       | 当 `x`接近 0 时的 `log(1+x)` 的精确值                                      |
-| [`exponent(x)`](@ref)    | binary exponent of `x`                                                     |
-| [`significand(x)`](@ref) | binary significand (a.k.a. mantissa) of a floating-point number `x`        |
+| [`exponent(x)`](@ref)    | `x` 的二进制指数                                                     |
+| [`significand(x)`](@ref) | 浮点数 `x` 的二进制有效数（也就是尾数）        |
 
-For an overview of why functions like [`hypot`](@ref), [`expm1`](@ref), and [`log1p`](@ref)
-are necessary and useful, see John D. Cook's excellent pair of blog posts on the subject: [expm1, log1p, erfc](https://www.johndcook.com/blog/2010/06/07/math-library-functions-that-seem-unnecessary/),
-and [hypot](https://www.johndcook.com/blog/2010/06/02/whats-so-hard-about-finding-a-hypotenuse/).
+想大概了解一下为什么诸如 [`hypot`](@ref)、[`expm1`](@ref)和 [`log1p`](@ref)
+函数是必要和有用的，可以看一下 John D. Cook 关于这些主题的两篇优秀博文：[expm1, log1p, erfc](https://www.johndcook.com/blog/2010/06/07/math-library-functions-that-seem-unnecessary/)，
+和 [hypot](https://www.johndcook.com/blog/2010/06/02/whats-so-hard-about-finding-a-hypotenuse/)。
 
 ### 三角和双曲函数
 
@@ -473,15 +473,14 @@ asinh  acosh  atanh  acoth  asech  acsch
 sinc   cosc
 ```
 
-These are all single-argument functions, with [`atan`](@ref) also accepting two arguments
-corresponding to a traditional [`atan2`](https://en.wikipedia.org/wiki/Atan2) function.
+所有这些函数都是单参数函数，不过 [`atan`](@ref) 也可以接收两个参数
+来表示传统的 [`atan2`](https://en.wikipedia.org/wiki/Atan2) 函数。
 
-Additionally, [`sinpi(x)`](@ref) and [`cospi(x)`](@ref) are provided for more accurate computations
-of [`sin(pi*x)`](@ref) and [`cos(pi*x)`](@ref) respectively.
+另外，[`sinpi(x)`](@ref) 和 [`cospi(x)`](@ref) 分别用来对 [`sin(pi*x)`](@ref) 和 [`cos(pi*x)`](@ref) 进行更精确的计算。
 
-In order to compute trigonometric functions with degrees instead of radians, suffix the function
-with `d`. For example, [`sind(x)`](@ref) computes the sine of `x` where `x` is specified in degrees.
-The complete list of trigonometric functions with degree variants is:
+要计算角度而非弧度的三角函数，以 `d` 做后缀。
+比如，[`sind(x)`](@ref) 计算 `x` 的 sine 值，其中 `x` 是一个角度值。
+下面是角度变量的三角函数完整列表：
 
 ```
 sind   cosd   tand   cotd   secd   cscd

@@ -188,10 +188,10 @@ julia> Squares(10)[[3,4.,5]]
 | 需要实现的方法                            |                                        | 简短描述                                                                     |
 |:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |
 | `size(A)`                                       |                                        | 返回包含 `A` 维度的元组                                      |
-| `getindex(A, i::Int)`                           |                                        | (if `IndexLinear`) Linear scalar indexing                                             |
-| `getindex(A, I::Vararg{Int, N})`                |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexing             |
-| `setindex!(A, v, i::Int)`                       |                                        | (if `IndexLinear`) Scalar indexed assignment                                          |
-| `setindex!(A, v, I::Vararg{Int, N})`            |                                        | (if `IndexCartesian`, where `N = ndims(A)`) N-dimensional scalar indexed assignment   |
+| `getindex(A, i::Int)`                           |                                        | （如果 `IndexLinear`）线性标量索引                                             |
+| `getindex(A, I::Vararg{Int, N})`                |                                        | （如果 `IndexCartesian`，其中 `N = ndims(A)`）N 维标量索引             |
+| `setindex!(A, v, i::Int)`                       |                                        | （如果 `IndexLinear`）线性索引元素赋值                                          |
+| `setindex!(A, v, I::Vararg{Int, N})`            |                                        | （如果 `IndexCartesian`，其中 `N = ndims(A)`）N 维标量索引元素赋值   |
 | **可选方法**                            | **默认定义**                 | **简短描述**                                                                 |
 | `IndexStyle(::Type)`                            | `IndexCartesian()`                     | Returns either `IndexLinear()` or `IndexCartesian()`. See the description below.      |
 | `getindex(A, I...)`                             | defined in terms of scalar `getindex`  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |
@@ -209,14 +209,7 @@ julia> Squares(10)[[3,4.,5]]
 
 如果一个类型被定义为 `AbstractArray` 的子类型，那它就继承了一大堆丰富的行为，包括构建在单元素访问之上的迭代和多维索引。有关更多支持的方法，请参阅文档 [多维数组](@ref man-multi-dim-arrays) 及 [Julia Base](@ref lib-arrays)。
 
-A key part in defining an `AbstractArray` subtype is [`IndexStyle`](@ref). Since indexing is
-such an important part of an array and often occurs in hot loops, it's important to make both
-indexing and indexed assignment as efficient as possible.  Array data structures are typically
-defined in one of two ways: either it most efficiently accesses its elements using just one index
-(linear indexing) or it intrinsically accesses the elements with indices specified for every dimension.
- These two modalities are identified by Julia as `IndexLinear()` and `IndexCartesian()`.
- Converting a linear index to multiple indexing subscripts is typically very expensive, so this
-provides a traits-based mechanism to enable efficient generic code for all array types.
+定义 `AbstractArray` 子类型的关键部分是 [`IndexStyle`](@ref)。由于索引是数组的重要部分且经常出现在 hot loops 中，使索引和索引赋值尽可能高效非常重要。数组数据结构通常以两种方式定义：要么仅使用一个索引（即线性索引）来最高效地访问其元素，要么实际上使用由各个维度确定的索引访问其元素。这两种方式被 Julia 标记为 `IndexLinear()` 和 `IndexCartesian()`。把线性索引转换为多重索引下标通常代价高昂，因此这提供了基于 traits 机制，以便能为所有矩阵类型提供高效的通用代码。
 
 此区别决定了该类型必须定义的标量索引方法。`IndexLinear()` 很简单：只需定义 `getindex(A::ArrayType, i::Int)`。当数组后用多维索引集进行索引时，回退 `getindex(A::AbstractArray, I...)()` 高效地将该索引转换为线性索引，然后调用上述方法。另一方面，`IndexCartesian()` 数组需要为每个支持的、使用 `ndims(A)` 个 `Int` 索引的维度定义方法。例如，`SparseArrays` 标准库里的 [`SparseMatrixCSC`](@ref) 只支持二维，所以它只定义了 `getindex(A::SparseMatrixCSC, i::Int, j::Int)`。[`setindex!`](@ref) 也是如此。
 
@@ -376,7 +369,7 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 
 
 
-## [Customizing broadcasting](@id man-interfaces-broadcasting)
+## [自定义广播](@id man-interfaces-broadcasting)
 
 | 需要实现的方法 | 简短描述 |
 |:-------------------- |:----------------- |
@@ -393,73 +386,46 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 | `Base.Broadcast.broadcasted(f, args...)` | Override the default lazy behavior within a fused expression |
 | `Base.Broadcast.instantiate(bc::Broadcasted{DestStyle})` | Override the computation of the lazy broadcast's axes |
 
-[Broadcasting](@ref) is triggered by an explicit call to `broadcast` or `broadcast!`, or implicitly by
-"dot" operations like `A .+ b` or `f.(x, y)`. Any object that has [`axes`](@ref) and supports
-indexing can participate as an argument in broadcasting, and by default the result is stored
-in an `Array`. This basic framework is extensible in three major ways:
+[广播](@ref)可由 `broadcast` 或 `broadcast!` 的显式调用、或者像 `A .+ b` 或 `f.(x, y)` 这样的「点」操作隐式触发。任何具有 [`axes`](@ref) 且支持索引的对象都可作为参数参与广播，默认情况下，广播结果储存在 `Array` 中。这个基本框架可通过三个主要方式扩展：
 
-* Ensuring that all arguments support broadcast
-* Selecting an appropriate output array for the given set of arguments
-* Selecting an efficient implementation for the given set of arguments
+* 确保所有参数都支持广播
+* 为给定参数集选择合适的输出数组
+* 为给定参数集选择高效的实现
 
-Not all types support `axes` and indexing, but many are convenient to allow in broadcast.
-The [`Base.broadcastable`](@ref) function is called on each argument to broadcast, allowing
-it to return something different that supports `axes` and indexing. By
-default, this is the identity function for all `AbstractArray`s and `Number`s — they already
-support `axes` and indexing. For a handful of other types (including but not limited to
-types themselves, functions, special singletons like [`missing`](@ref) and [`nothing`](@ref), and dates),
-`Base.broadcastable` returns the argument wrapped in a `Ref` to act as a 0-dimensional
-"scalar" for the purposes of broadcasting. Custom types can similarly specialize
-`Base.broadcastable` to define their shape, but they should follow the convention that
-`collect(Base.broadcastable(x)) == collect(x)`. A notable exception is `AbstractString`;
-strings are special-cased to behave as scalars for the purposes of broadcast even though
-they are iterable collections of their characters (see [Strings](@ref) for more).
+不是所有类型都支持 `axes` 和索引，但许多类型便于支持广播。[`Base.broadcastable`](@ref) 函数会在每个广播参数上调用，它能返回与广播参数不同的支持 `axes` 和索引的对象。默认情况下，对于所有 `AbstractArray` 和 `Number` 来说这是 identity 函数——因为它们已经支持 `axes` 和索引了。少数其它类型（包括但不限于类型本身、函数、像 [`missing`](@ref) 和 [`nothing`](@ref) 这样的特殊单态类型以及日期）为了能被广播，`Base.broadcastable` 会返回封装在 `Ref` 的参数来充当 0 维「标量」。自定义类型可以类似地指定 `Base.broadcastable` 来定义其形状，但是它们应当遵循 `collect(Base.broadcastable(x)) == collect(x)` 的约定。一个值得注意的例外是 `AbstractString`；字符串是个特例，为了能被广播其表现为标量，尽管它们是其字符的可迭代集合（详见 [字符串](@ref)）。
 
-The next two steps (selecting the output array and implementation) are dependent upon
-determining a single answer for a given set of arguments. Broadcast must take all the varied
-types of its arguments and collapse them down to just one output array and one
-implementation. Broadcast calls this single answer a "style." Every broadcastable object
-each has its own preferred style, and a promotion-like system is used to combine these
-styles into a single answer — the "destination style".
+接下来的两个步骤（选择输出数组和实现）依赖于如何确定给定参数集的 single answer。广播必须接受其参数的所有不同类型，并把它们折叠到一个输出数组和实现。广播称此 single answer 为「风格」。每个可广播对象都有自己的首选风格，并使用类似于类型提升的系统将这些风格组合成 single answer——「目标风格」。
 
-### Broadcast Styles
+### 广播风格
 
-`Base.BroadcastStyle` is the abstract type from which all broadcast styles are derived. When used as a
-function it has two possible forms, unary (single-argument) and binary. The unary variant states
-that you intend to implement specific broadcasting behavior and/or output type, and do not wish to
-rely on the default fallback [`Broadcast.DefaultArrayStyle`](@ref).
+抽象类型 `Base.BroadcastStyle` 派生了所有的广播风格。其在用作函数时有两种可能的形式，分别为一元形式（单参数）和二元形式。使用一元形式表明你打算实现特定的广播行为和/或输出类型，并且不希望依赖于默认的回退 [`Broadcast.DefaultArrayStyle`](@ref)。
 
-To override these defaults, you can define a custom `BroadcastStyle` for your object:
+为了覆盖这些默认值，你可以为对象自定义 `BroadcastStyle`：
 
 ```julia
 struct MyStyle <: Broadcast.BroadcastStyle end
 Base.BroadcastStyle(::Type{<:MyType}) = MyStyle()
 ```
 
-In some cases it might be convenient not to have to define `MyStyle`, in which case you can
-leverage one of the general broadcast wrappers:
+在某些情况下，无需定义 `MyStyle` 也许很方便，在这些情况下，你可以利用一个通用的广播封装器：
 
-  - `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.Style{MyType}()` can be
-    used for arbitrary types.
-  - `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.ArrayStyle{MyType}()` is preferred
-    if `MyType` is an `AbstractArray`.
-  - For `AbstractArrays` that only support a certain dimensionality, create a subtype of `Broadcast.AbstractArrayStyle{N}` (see below).
+  - `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.Style{MyType}()` 可用于任意类型。
+     
+  - 如果 `MyType` 是 `AbstractArray`，首选是 `Base.BroadcastStyle(::Type{<:MyType}) = Broadcast.ArrayStyle{MyType}()`。
+     
+  - 对于只支持某个具体维度的 `AbstractArrays`，请创建 `Broadcast.AbstractArrayStyle{N}` 的子类型（请参阅下文）。
 
-When your broadcast operation involves several arguments, individual argument styles get
-combined to determine a single `DestStyle` that controls the type of the output container.
-For more details, see [below](@ref writing-binary-broadcasting-rules).
+当你的广播操作涉及多个参数，各个广播风格将合并以确定单个控制输出容器的类型的 `DestStyle`。有关更多详细信息，请参阅[下文](@ref writing-binary-broadcasting-rules)。
 
 ### 选择合适的输出数组
 
-The broadcast style is computed for every broadcasting operation to allow for
-dispatch and specialization. The actual allocation of the result array is
-handled by `similar`, using the Broadcasted object as its first argument.
+每个广播操作都会计算广播风格以便支持派发和专门化。结果数组的实际分配由 `similar` 处理，其使用 Broadcasted 对象作为其第一个参数。
 
 ```julia
 Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})
 ```
 
-The fallback definition is
+回退定义是
 
 ```julia
 similar(bc::Broadcasted{DefaultArrayStyle{N}}, ::Type{ElType}) where {N,ElType} =
@@ -472,8 +438,7 @@ object.  For these purposes, the most important fields of the wrapper are
 `f` and `args`, describing the function and argument list, respectively.  Note that the argument
 list can — and often does — include other nested `Broadcasted` wrappers.
 
-For a complete example, let's say you have created a type, `ArrayAndChar`, that stores an
-array and a single character:
+举个完整的例子，假设你创建了类型 `ArrayAndChar`，该类型存储一个数组和单个字符：
 
 ```jldoctest ArrayAndChar; output = false
 struct ArrayAndChar{T,N} <: AbstractArray{T,N}
@@ -488,7 +453,7 @@ Base.showarg(io::IO, A::ArrayAndChar, toplevel) = print(io, typeof(A), " with ch
 
 ```
 
-You might want broadcasting to preserve the `char` "metadata." First we define
+你可能想要保留「元数据」`char`。为此，我们首先定义
 
 ```jldoctest ArrayAndChar; output = false
 Base.BroadcastStyle(::Type{<:ArrayAndChar}) = Broadcast.ArrayStyle{ArrayAndChar}()
@@ -496,7 +461,7 @@ Base.BroadcastStyle(::Type{<:ArrayAndChar}) = Broadcast.ArrayStyle{ArrayAndChar}
 
 ```
 
-This means we must also define a corresponding `similar` method:
+这意味着我们还必须定义相应的 `similar` 方法：
 ```jldoctest ArrayAndChar; output = false
 function Base.similar(bc::Broadcast.Broadcasted{Broadcast.ArrayStyle{ArrayAndChar}}, ::Type{ElType}) where ElType
     # Scan the inputs for the ArrayAndChar:
@@ -515,7 +480,7 @@ find_aac(::Any, rest) = find_aac(rest)
 find_aac (generic function with 5 methods)
 ```
 
-From these definitions, one obtains the following behavior:
+在这些定义中，可以得到以下行为：
 ```jldoctest ArrayAndChar
 julia> a = ArrayAndChar([1 2; 3 4], 'x')
 2×2 ArrayAndChar{Int64,2} with char 'x':
