@@ -636,23 +636,11 @@ Expr
 
 `@assert` 宏充分利用拼接被引用的表达式，以便简化对宏内部表达式的操作。
 
-### Hygiene
+### 卫生宏
 
-An issue that arises in more complex macros is that of [hygiene](https://en.wikipedia.org/wiki/Hygienic_macro).
-In short, macros must ensure that the variables they introduce in their returned expressions do
-not accidentally clash with existing variables in the surrounding code they expand into. Conversely,
-the expressions that are passed into a macro as arguments are often *expected* to evaluate in
-the context of the surrounding code, interacting with and modifying the existing variables. Another
-concern arises from the fact that a macro may be called in a different module from where it was
-defined. In this case we need to ensure that all global variables are resolved to the correct
-module. Julia already has a major advantage over languages with textual macro expansion (like
-C) in that it only needs to consider the returned expression. All the other variables (such as
-`msg` in `@assert` above) follow the [normal scoping block behavior](@ref scope-of-variables).
+在更复杂的宏中会出现关于[卫生宏](https://en.wikipedia.org/wiki/Hygienic_macro) 的问题。简而言之，宏必须确保在其返回表达式中引入的变量不会意外地与其展开处周围代码中的现有变量相冲突。相反，作为参数传递给宏的表达式通常被*认为*在其周围代码的上下文中进行求值，与现有变量交互并修改之。另一个问题源于这样的事实：宏可以在不同于其定义所处模块的模块中调用。在这种情况下，我们需要确保所有全局变量都被解析到正确的模块中。Julia 比使用文本宏展开的语言（比如 C）具有更大的优势，因为它只需要考虑返回的表达式。所有其它变量（例如上面`@assert` 中的 `msg`）遵循[通常的作用域块规则](@ref scope-of-variables)。
 
-To demonstrate these issues, let us consider writing a `@time` macro that takes an expression
-as its argument, records the time, evaluates the expression, records the time again, prints the
-difference between the before and after times, and then has the value of the expression as its
-final value. The macro might look like this:
+为了演示这些问题，让我们来编写宏 `@time`，其以表达式为参数，记录当前时间，对表达式求值，再次记录当前时间，打印前后的时间差，然后以表达式的值作为其最终值。该宏可能看起来就像这样：
 
 ```julia
 macro time(ex)
@@ -666,21 +654,11 @@ macro time(ex)
 end
 ```
 
-Here, we want `t0`, `t1`, and `val` to be private temporary variables, and we want `time` to refer
-to the [`time`](@ref) function in Julia Base, not to any `time` variable the user
-might have (the same applies to `println`). Imagine the problems that could occur if the user
-expression `ex` also contained assignments to a variable called `t0`, or defined its own `time`
-variable. We might get errors, or mysteriously incorrect behavior.
+在这里，我们希望 `t0`、`t1` 和 `val` 是私有的临时变量且 `time` 引用在 Julia Base 中的 [`time`](@ref) 函数，而不是用户也许具有的任何 `time` 变量（对于 `println` 也是一样）。想象一下，如果用户表达式 `ex` 中也包含对名为 `t0` 的变量的赋值、或者定义了自己的 `time` 变量，则可能会出现问题，我们可能会得到错误或者诡异且不正确的行为。
 
-Julia's macro expander solves these problems in the following way. First, variables within a macro
-result are classified as either local or global. A variable is considered local if it is assigned
-to (and not declared global), declared local, or used as a function argument name. Otherwise,
-it is considered global. Local variables are then renamed to be unique (using the [`gensym`](@ref)
-function, which generates new symbols), and global variables are resolved within the macro definition
-environment. Therefore both of the above concerns are handled; the macro's locals will not conflict
-with any user variables, and `time` and `println` will refer to the Julia Base definitions.
+Julia 的宏展开器以下列方式解决这些问题。首先，宏返回结果中的变量被分为局部变量或全局变量。如果一个变量被赋值（且未声明为全局变量）、声明为局部变量或者用作函数参数名称，则将其视为局部变量。否则，则认为它是全局变量。接着，局部变量重命名为唯一名称（通过生成新符号的 [`gensym`](@ref) 函数），并在宏定义所处环境中解析全局变量。因此，上述两个问题都被解决了；宏的局部变量不会与任何用户变量相冲突，`time` 和 `println` 也将引用其在 Julia Base 中的定义。
 
-One problem remains however. Consider the following use of this macro:
+然而，仍有另外的问题。考虑此宏的以下用法：
 
 ```julia
 module MyModule
@@ -692,9 +670,7 @@ time() = ... # compute something
 end
 ```
 
-Here the user expression `ex` is a call to `time`, but not the same `time` function that the macro
-uses. It clearly refers to `MyModule.time`. Therefore we must arrange for the code in `ex` to
-be resolved in the macro call environment. This is done by "escaping" the expression with [`esc`](@ref):
+在这里，用户表达式 `ex` 是对 `time` 的调用，但不是宏所使用的 `time` 函数。它明确地引用 `MyModule.time`。因此，我们必须将 `ex` 中的代码安排在宏调用所处环境中解析。这通过用 [`esc`](@ref)「转义」表达式来完成：
 
 ```julia
 macro time(ex)
@@ -704,11 +680,9 @@ macro time(ex)
 end
 ```
 
-An expression wrapped in this manner is left alone by the macro expander and simply pasted into
-the output verbatim. Therefore it will be resolved in the macro call environment.
+以这种方式封装的表达式会被宏展开器单独保留，并将其简单地逐字粘贴到输出中。因此，它将在宏调用所处环境中解析。
 
-This escaping mechanism can be used to "violate" hygiene when necessary, in order to introduce
-or manipulate user variables. For example, the following macro sets `x` to zero in the call environment:
+这种转义机制可以在必要时用于「违反」卫生，以便于引入或操作用户变量。例如，以下宏在其调用所处环境中将 `x` 设置为零：
 
 ```jldoctest
 julia> macro zerox()
@@ -727,16 +701,11 @@ julia> foo()
 0
 ```
 
-This kind of manipulation of variables should be used judiciously, but is occasionally quite handy.
+应当明智地使用这种变量操作，但它偶尔会很方便。
 
-Getting the hygiene rules correct can be a formidable challenge.
-Before using a macro, you might want to consider whether a function closure
-would be sufficient. Another useful strategy is to defer as much work as possible to runtime.
-For example, many macros simply wrap their arguments in a QuoteNode or other similar Expr.
-Some examples of this include `@task body` which simply returns `schedule(Task(() -> $body))`,
-and `@eval expr`, which simply returns `eval(QuoteNode(expr))`.
+获得正确的规则也许是个艰巨的挑战。在使用宏之前，你可以去考虑是否函数闭包便已足够。另一个有用的策略是将尽可能多的工作推迟到运行时。例如，许多宏只是将其参数封装为 QuoteNode 或类似的 Expr。这方面的例子有 `@task body`，它只返回 `schedule(Task(() -> $body))`， 和 `@eval expr`，它只返回 `eval(QuoteNode(expr))`。
 
-To demonstrate, we might rewrite the `@time` example above as:
+为了演示，我们可以将上面的 `@time` 示例重新编写成：
 
 ```julia
 macro time(expr)
@@ -751,9 +720,7 @@ function timeit(f)
 end
 ```
 
-However, we don't do this for a good reason: wrapping the `expr` in a new scope block (the anonymous function)
-also slightly changes the meaning of the expression (the scope of any variables in it),
-while we want `@time` to be usable with minimum impact on the wrapped code.
+但是，我们不这样做也是有充分理由的：将 `expr` 封装在新的作用域块（该匿名函数）中也会稍微改变该表达式的含义（其中任何变量的作用域），而我们想要 `@time` 使用时对其封装的代码影响最小。
 
 ### 宏与派发
 
