@@ -1,21 +1,20 @@
 # Julia 的 AST
 
-Julia 有两种 代码的表现形式。
-第一种是解析器返回的表面语法 AST （例如 [`Meta.parse`](@ref) 函数），由宏来操控。是代码编写时的结构化表示，由字符流中的 `julia-parser.scm` 构造。
-另一种则是低级的形式，或者 IR（中间表示），用来类型推导和代码生成。在低级形式上有少部分结点的类型，所有的宏都会被展开，所有的控制流会被转化成显式的分支和语句的序列。底层的形式由 `julia-syntax.scm` 构建。
+Julia 有两种代码的表现形式。
+第一种是解析器返回的表面语法 AST （例如 [`Meta.parse`](@ref) 函数），由宏来操控。是代码编写时的结构化表示，由 `julia-parser.scm` 用字符流构造而成。
+另一种则是底层形式，或者 IR（中间表示），这种形式在进行类型推导和代码生成的时候被使用。在这种底层形式中结点的类型相对更少，所有的宏都会被展开，所有的控制流会被转化成显式的分支和语句的序列。底层的形式由 `julia-syntax.scm` 构建。
 
-First we will focus on the lowered form, since it is more important to the compiler. It is also
-less obvious to the human, since it results from a significant rearrangement of the input syntax.
+我们先来看下上面说到的底层形式，毕竟对于编译器其更为重要。同时由于其通过对输入的语法进行了极大的重整，对于人类而言较为不可见。
 
-## Lowered form
+## 底层形式
 
-The following data types exist in lowered form:
+以下数据类型在底层形式中存在：
 
   * `Expr`
 
     Has a node type indicated by the `head` field, and an `args` field which is a `Vector{Any}` of
     subexpressions.
-    While almost every part of a surface AST is represented by an `Expr`, the IR uses only a
+    尽管表层 AST 中，几乎每个部分都是通过 `Expr` 表示的，中间表现形式只四用了很有限的 `Expr`，主要用于调动、条件分支 (`gotoifnot`) 和返回。
     limited number of `Expr`s, mostly for calls, conditional branches (`gotoifnot`), and returns.
 
   * `Slot`

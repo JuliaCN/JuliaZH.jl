@@ -887,39 +887,29 @@ end
 
 当然，这个宏的定义中使用的函数隐藏了许多复杂性，但它们只是函数且完全用 Julia 编写。你可以阅读它们的源代码并精确地看到它们的行为——它们所做的一切就是构造要插入到你的程序的语法树的表达式对象。
 
-## Generated functions
+## 生成函数
 
-A very special macro is `@generated`, which allows you to define so-called *generated functions*.
-These have the capability to generate specialized code depending on the types of their arguments
-with more flexibility and/or less code than what can be achieved with multiple dispatch. While
-macros work with expressions at parse time and cannot access the types of their inputs, a generated
-function gets expanded at a time when the types of the arguments are known, but the function is
-not yet compiled.
+有个非常特殊的宏叫 `@generated`，它允许你定义所谓的*生成函数*。它们能根据其参数类型生成专用代码，与用多重派发所能实现的代码相比，其代码更灵活和/或少。虽然宏在解析时使用表达式且无法访问其输入值的类型，但是生成函数在参数类型已知时会被展开，但该函数尚未编译。
 
-Instead of performing some calculation or action, a generated function declaration returns a quoted
-expression which then forms the body for the method corresponding to the types of the arguments.
-When a generated function is called, the expression it returns is compiled and then run.
-To make this efficient, the result is usually cached. And to make this inferable, only a limited
-subset of the language is usable. Thus, generated functions provide a flexible way to move work from
-run time to compile time, at the expense of greater restrictions on allowed constructs.
+生成函数的声明不会执行某些计算或操作，而会返回一个被引用的表达式，接着该表达式构成参数类型所对应方法的主体。在调用生成函数时，其返回的表达式会被编译然后执行。为了提高效率，通常会缓存结果。为了能推断是否缓存结果，只能使用语言的受限子集。因此，生成函数提供了一个灵活的方式来将工作重运行时移到编译时，代价则是其构造能力受到更大的限制。
 
-When defining generated functions, there are four main differences to ordinary functions:
+定义生成函数与普通函数有四个主要区别：
 
-1. You annotate the function declaration with the `@generated` macro. This adds some information
-   to the AST that lets the compiler know that this is a generated function.
-2. In the body of the generated function you only have access to the *types* of the arguments –
-   not their values – and any function that was defined *before* the definition of the generated
-   function.
-3. Instead of calculating something or performing some action, you return a *quoted expression* which,
-   when evaluated, does what you want.
-4. Generated functions must not *mutate* or *observe* any non-constant global state (including,
-   例如，IO、锁、非本地词典或者使用`hasmethod`）
-   即它们只能读取全局常量，且没有任何副作用。
-   In other words, they must be completely pure.
-   Due to an implementation limitation, this also means that they currently cannot define a closure
-   or generator.
+1. 使用 `@generated` 标注函数声明。这会向 AST 附加一些信息，让编译器知道这个函数是生成函数。
+    
+2. 在生成函数的主体中，你只能访问参数的*类型*，而不能访问其值，以及在生成函数的定义之前便已定义的任何函数。
+    
+    
+3. 不应计算某些东西或执行某些操作，应返回一个*被引用的*表达式，它会在被求值时执行你想要的操作。
+    
+4. 生成函数不能*更改*或*观察*任何非常量的全局状态。（例如，其包括 IO、锁、非局部的字典或者使用 `hasmethod`）即它们只能读取全局常量，且没有任何副作用。换句话说，它们必须是纯函数。由于实现限制，这也意味着它们目前无法定义闭包或生成器。
+    
+    
+    
+    
+    
 
-It's easiest to illustrate this with an example. We can declare a generated function `foo` as
+举例子来说明这个是最简单的。我们可以将生成函数 `foo` 声明为
 
 ```jldoctest generated
 julia> @generated function foo(x)
@@ -929,11 +919,9 @@ julia> @generated function foo(x)
 foo (generic function with 1 method)
 ```
 
-Note that the body returns a quoted expression, namely `:(x * x)`, rather than just the value
-of `x * x`.
+请注意，代码主体返回一个被引用的表达式，即 `:(x * x)`，而不仅仅是 `x * x` 的值。
 
-From the caller's perspective, this is identical to a regular function; in fact, you don't
-have to know whether you're calling a regular or generated function. Let's see how `foo` behaves:
+从调用者的角度看，这与通常的函数等价；实际上，你无需知道你所调用的是通常的函数还是生成函数。让我们看看 `foo` 的行为：
 
 ```jldoctest generated
 julia> x = foo(2); # note: output is from println() statement in the body
@@ -949,9 +937,7 @@ julia> y
 "barbar"
 ```
 
-So, we see that in the body of the generated function, `x` is the *type* of the passed argument,
-and the value returned by the generated function, is the result of evaluating the quoted expression
-we returned from the definition, now with the *value* of `x`.
+因此，我们知道在生成函数的主体中，`x` 是所传递参数的*类型*，并且，生成函数的返回值是其定义所返回的被引用的表达式的求值结果，在该表达式求值时 `x` 表示其*值*。
 
 What happens if we evaluate `foo` again with a type that we have already used?
 

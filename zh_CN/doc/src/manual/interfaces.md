@@ -193,19 +193,19 @@ julia> Squares(10)[[3,4.,5]]
 | `setindex!(A, v, i::Int)`                       |                                        | （如果 `IndexLinear`）线性索引元素赋值                                          |
 | `setindex!(A, v, I::Vararg{Int, N})`            |                                        | （如果 `IndexCartesian`，其中 `N = ndims(A)`）N 维标量索引元素赋值   |
 | **可选方法**                            | **默认定义**                 | **简短描述**                                                                 |
-| `IndexStyle(::Type)`                            | `IndexCartesian()`                     | Returns either `IndexLinear()` or `IndexCartesian()`. See the description below.      |
-| `getindex(A, I...)`                             | defined in terms of scalar `getindex`  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |
-| `setindex!(A, I...)`                            | defined in terms of scalar `setindex!` | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |
-| `iterate`                                       | defined in terms of scalar `getindex`  | Iteration                                                                             |
+| `IndexStyle(::Type)`                            | `IndexCartesian()`                     | 返回 `IndexLinear()` 或 `IndexCartesian()`。请参阅下文描述。      |
+| `getindex(A, I...)`                             | 基于标量 `getindex` 定义  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |
+| `setindex!(A, I...)`                            | 基于标量 `setindex!` 定义 | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |
+| `iterate`                                       | 基于标量 `getindex` 定义  | Iteration                                                                             |
 | `length(A)`                                     | `prod(size(A))`                        | 元素数                                                                    |
 | `similar(A)`                                    | `similar(A, eltype(A), size(A))`       | 返回具有相同形状和元素类型的可变数组                           |
 | `similar(A, ::Type{S})`                         | `similar(A, S, size(A))`               | 返回具有相同形状和指定元素类型的可变数组             |
 | `similar(A, dims::NTuple{Int})`                 | `similar(A, eltype(A), dims)`          | 返回具有相同元素类型和大小为 *dims* 的可变数组                     |
 | `similar(A, ::Type{S}, dims::NTuple{Int})`      | `Array{S}(undef, dims)`               | 返回具有指定元素类型及大小的可变数组                       |
 | **Non-traditional indices**                     | **默认定义**                 | **简短描述**                                                                 |
-| `axes(A)`                                    | `map(OneTo, size(A))`                  | Return the `AbstractUnitRange` of valid indices                                       |
-| `Base.similar(A, ::Type{S}, inds::NTuple{Ind})` | `similar(A, S, Base.to_shape(inds))`   | Return a mutable array with the specified indices `inds` (see below)                  |
-| `Base.similar(T::Union{Type,Function}, inds)`   | `T(Base.to_shape(inds))`               | Return an array similar to `T` with the specified indices `inds` (see below)          |
+| `axes(A)`                                    | `map(OneTo, size(A))`                  | 返回有效索引的 `AbstractUnitRange`                                       |
+| `Base.similar(A, ::Type{S}, inds::NTuple{Ind})` | `similar(A, S, Base.to_shape(inds))`   | 返回使用特殊索引 `inds` 的可变数组（详见下文）                  |
+| `Base.similar(T::Union{Type,Function}, inds)`   | `T(Base.to_shape(inds))`               | 返回类似于 `T` 的使用特殊索引 `inds` 的数组（详见下文）          |
 
 如果一个类型被定义为 `AbstractArray` 的子类型，那它就继承了一大堆丰富的行为，包括构建在单元素访问之上的迭代和多维索引。有关更多支持的方法，请参阅文档 [多维数组](@ref man-multi-dim-arrays) 及 [Julia Base](@ref lib-arrays)。
 
@@ -332,30 +332,22 @@ julia> sum(A)
 45.0
 ```
 
-If you are defining an array type that allows non-traditional indexing (indices that start at
-something other than 1), you should specialize [`axes`](@ref). You should also specialize [`similar`](@ref)
-so that the `dims` argument (ordinarily a `Dims` size-tuple) can accept `AbstractUnitRange` objects,
-perhaps range-types `Ind` of your own design. For more information, see
-[Arrays with custom indices](@ref man-custom-indices).
+如果要定义允许非传统索引（索引以 1 之外的数字开始）的数组类型，你应该专门指定 [`axes`](@ref)。你也应该专门指定 [`similar`](@ref)，以便 `dims` 参数（通常是大小为 `Dims` 的元组）可以接收 `AbstractUnitRange` 对象，它也许是你自己设计的 range 类型 `Ind`。有关更多信息，请参阅[使用自定义索引的数组](@ref man-custom-indices)。
 
-## [Strided Arrays](@id man-interface-strided-arrays)
+## [Strided 数组](@id man-interface-strided-arrays)
 
-| Methods to implement                            |                                        | Brief description                                                                     |
+| 需要实现的方法 |   | 简短描述 |
 |:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |
-| `strides(A)`                             |                                        | Return the distance in memory (in number of elements) between adjacent elements in each dimension as a tuple. If `A` is an `AbstractArray{T,0}`, this should return an empty tuple.    |
-| `Base.unsafe_convert(::Type{Ptr{T}}, A)`        |                                        | Return the native address of an array.                                            |
-| **Optional methods**                            | **Default definition**                 | **Brief description**                                                                 |
-| `stride(A, i::Int)`                             |     `strides(A)[i]`                                   | Return the distance in memory (in number of elements) between adjacent elements in dimension k.    |
+| `strides(A)` |   | 返回每个维度中相邻元素之间的内存距离（以内存元素数量的形式）组成的元组。如果 `A` 是 `AbstractArray{T,0}`，这应该返回空元组。 |
+| `Base.unsafe_convert(::Type{Ptr{T}}, A)` |   | 返回数组的本地内存地址。 |
+| **可选方法** | **默认定义** | **简短描述** |
+| `stride(A, i::Int)` |   `strides(A)[i]` | 返回维度 i（译注：原文为 k）上相邻元素之间的内存距离（以内存元素数量的形式）。 |
 
-A strided array is a subtype of `AbstractArray` whose entries are stored in memory with fixed strides.
-Provided the element type of the array is compatible with BLAS, a strided array can utilize BLAS and LAPACK routines
-for more efficient linear algebra routines.  A typical example of a user-defined strided array is one
-that wraps a standard `Array` with additional structure.
+Strided 数组是 `AbstractArray` 的子类型，其条目以固定步长储存在内存中。如果数组的元素类型与 BLAS 兼容，则 strided 数组可以利用 BLAS 和 LAPACK 例程来实现更高效的线性代数例程。用户定义的 strided 数组的典型示例是把标准 `Array` 用附加结构进行封装的数组。
 
-Warning: do not implement these methods if the underlying storage is not actually strided, as it
-may lead to incorrect results or segmentation faults.
+警告：如果底层存储实际上不是 strided，则不要实现这些方法，因为这可能错误的结果或断错误。
 
-Here are some examples to demonstrate which type of arrays are strided and which are not:
+下面是一些示例，用来演示哪些数组类型是 strided 数组，哪些不是：
 ```julia
 1:5   # not strided (there is no storage associated with this array.)
 Vector(1:5)  # is strided with strides (1,)
@@ -380,9 +372,9 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 | `Base.broadcast_axes(x)` | Declaration of the indices of `x` for broadcasting purposes (defaults to [`axes(x)`](@ref)) |
 | `Base.broadcastable(x)` | Convert `x` to an object that has `axes` and supports indexing |
 | **Bypassing default machinery** | |
-| `Base.copy(bc::Broadcasted{DestStyle})` | Custom implementation of `broadcast` |
-| `Base.copyto!(dest, bc::Broadcasted{DestStyle})` | Custom implementation of `broadcast!`, specializing on `DestStyle` |
-| `Base.copyto!(dest::DestType, bc::Broadcasted{Nothing})` | Custom implementation of `broadcast!`, specializing on `DestType` |
+| `Base.copy(bc::Broadcasted{DestStyle})` | `broadcast` 的自定义实现 |
+| `Base.copyto!(dest, bc::Broadcasted{DestStyle})` | 专门针对 `DestStyle` 的自定义 `broadcast!` 实现 |
+| `Base.copyto!(dest::DestType, bc::Broadcasted{Nothing})` | 专门针对 `DestStyle` 的自定义 `broadcast!` 实现 |
 | `Base.Broadcast.broadcasted(f, args...)` | Override the default lazy behavior within a fused expression |
 | `Base.Broadcast.instantiate(bc::Broadcasted{DestStyle})` | Override the computation of the lazy broadcast's axes |
 
