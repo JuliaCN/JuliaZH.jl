@@ -194,8 +194,7 @@ of a [`UInt8`](@ref) differs from a [`Float64`](@ref) also means that the CPU ne
 them using two different kinds of instructions. Since the required information is not available
 in the type, such decisions have to be made at run-time. This slows performance.
 
-You can do better by declaring the type of `a`. Here, we are focused on the case where `a` might
-be any one of several types, in which case the natural solution is to use parameters. For example:
+通过声明 `a` 的类型，你能够做得更好。这里我们关注 `a` 可能是几种类型中任意一种的情况，在这种情况下，自然的一个解决方法是使用参数。例如：
 
 ```jldoctest myambig2
 julia> mutable struct MyType{T<:AbstractFloat}
@@ -211,8 +210,8 @@ julia> mutable struct MyStillAmbiguousType
        end
 ```
 
-because the first version specifies the type of `a` from the type of the wrapper object. For
-example:
+因为第一种通过包装对象的类型指定了 `a` 的类型。
+例如：
 
 ```jldoctest myambig2
 julia> m = MyType(3.2)
@@ -226,10 +225,7 @@ MyType{Float64}
 
 julia> typeof(t)
 MyStillAmbiguousType
-```
-
-The type of field `a` can be readily determined from the type of `m`, but not from the type of
-`t`. Indeed, in `t` it's possible to change the type of the field `a`:
+域 `a` 的类型可以很容易地通过 `m` 的类型确定，而不是通过 `t` 的类型确定。事实上，在 `t` 中是可以改变域 `a` 的类型的：
 
 ```jldoctest myambig2
 julia> typeof(t.a)
@@ -242,7 +238,7 @@ julia> typeof(t.a)
 Float32
 ```
 
-In contrast, once `m` is constructed, the type of `m.a` cannot change:
+反之，一旦 `m` 被构建出来，`m.a` 的类型就不能够更改了。
 
 ```jldoctest myambig2
 julia> m.a = 4.5f0
@@ -250,14 +246,8 @@ julia> m.a = 4.5f0
 
 julia> typeof(m.a)
 Float64
-```
-
-The fact that the type of `m.a` is known from `m`'s type—coupled with the fact that its type
-cannot change mid-function—allows the compiler to generate highly-optimized code for objects
-like `m` but not for objects like `t`.
-
-Of course, all of this is true only if we construct `m` with a concrete type. We can break this
-by explicitly constructing it with an abstract type:
+`m.a` 的类型是通过 `m` 的类型得知这一事实加上它的类型不能改变在函数中改变这一事实，这两者使得对于像 `m` 这样的对象编译器可以生成高度优化后的代码，但是对 `t` 这样的对象却不可以。
+当然，如果我们将 `m` 构造成一个具体类型，那么这两者都可以。我们可以通过明确地使用一个抽象类型去构建它来破坏这一点：
 
 ```jldoctest myambig2
 julia> m = MyType{AbstractFloat}(3.2)
@@ -273,28 +263,26 @@ julia> typeof(m.a)
 Float32
 ```
 
-For all practical purposes, such objects behave identically to those of `MyStillAmbiguousType`.
+对于一个实际的目的来说，这样的对象表现起来和那些 `MyStillAmbiguousType` 的对象一模一样。
 
-It's quite instructive to compare the sheer amount code generated for a simple function
+比较为一个简单函数生成的代码的绝对数量是十分有指导意义的，
 
 ```julia
 func(m::MyType) = m.a+1
 ```
 
-using
+使用
 
 ```julia
 code_llvm(func, Tuple{MyType{Float64}})
 code_llvm(func, Tuple{MyType{AbstractFloat}})
 ```
 
-For reasons of length the results are not shown here, but you may wish to try this yourself. Because
-the type is fully-specified in the first case, the compiler doesn't need to generate any code
-to resolve the type at run-time. This results in shorter and faster code.
+由于长度的原因，代码的结果没有在这里显示出来，但是你可能会希望自己去验证这一点。因为在第一种情况中，类型被完全指定了，在运行时，编译器不需要生成任何代码来决定类型。这就带来了更短和更快的代码。
 
-### Avoid fields with abstract containers
+### 避免有抽象容器的域
 
-The same best practices also work for container types:
+上面的做法同样也适用于容器的类型：
 
 ```jldoctest containers
 julia> struct MySimpleContainer{A<:AbstractVector}
@@ -330,12 +318,9 @@ julia> typeof(b)
 MyAmbiguousContainer{Int64}
 ```
 
-For `MySimpleContainer`, the object is fully-specified by its type and parameters, so the compiler
-can generate optimized functions. In most instances, this will probably suffice.
+对于 `MySimpleContainer` 来说，它被它的类型和参数完全确定了，因此编译器能够生成优化过的代码。在大多数实例中，这点能够实现。
 
-While the compiler can now do its job perfectly well, there are cases where *you* might wish that
-your code could do different things depending on the *element type* of `a`. Usually the best
-way to achieve this is to wrap your specific operation (here, `foo`) in a separate function:
+尽管编译器现在可以将它的工作做得非常好，但是还是有**你**可能希望你的代码能够能够根据 `a` 的**元素类型**做不同的事情的时候。通常达成这个目的最好的方式是将你的具体操作 (here, `foo`) 打包到一个独立的函数中。
 
 ```jldoctest containers
 julia> function sumfoo(c::MySimpleContainer)
@@ -442,9 +427,9 @@ c = (b + 1.0f0)::Complex{T}
 does not hinder performance (but does not help either) since the compiler can determine the type of `c`
 at the time `k` is compiled.
 
-### Declare types of keyword arguments
+### 声明关键参数的类型
 
-Keyword arguments can have declared types:
+关键参数可以声明类型：
 
 ```julia
 function with_keyword(x; name::Int = 1)
@@ -459,15 +444,13 @@ function that include keyword arguments.
 Functions with keyword arguments have near-zero overhead for call sites that pass only positional
 arguments.
 
-Passing dynamic lists of keyword arguments, as in `f(x; keywords...)`, can be slow and should
-be avoided in performance-sensitive code.
+在性能敏感的代码中应当避免传递像 `f(x; keywords...)` 的动态列表参数。
 
 ## Break functions into multiple definitions
 
-Writing a function as many small definitions allows the compiler to directly call the most applicable
-code, or even inline it.
+将一个函数写成许多小的定义能让编译器直接调用最适合的代码，甚至能够直接将它内联。
 
-Here is an example of a "compound function" that should really be written as multiple definitions:
+这是一个真的该被写成许多小的定义的**复合函数**的例子：
 
 ```julia
 using LinearAlgebra
@@ -483,7 +466,7 @@ function mynorm(A)
 end
 ```
 
-This can be written more concisely and efficiently as:
+这可以更简洁有效地写成：
 
 ```julia
 norm(x::Vector) = sqrt(real(dot(x, x)))
@@ -580,7 +563,7 @@ implementation it does not know the type of `a` during the loop (since it is cho
 Therefore the second version is generally faster since the inner loop can be recompiled as part
 of `fill_twos!` for different types of `a`.
 
-The second form is also often better style and can lead to more code reuse.
+第二种形式通常是更好的风格，并且可以带来更多的代码的重复利用。
 
 This pattern is used in several places in Julia Base. For example, see `vcat` and `hcat`
 in [`abstractarray.jl`](https://github.com/JuliaLang/julia/blob/40fe264f4ffaa29b749bcf42239a89abdcbba846/base/abstractarray.jl#L1205-L1206),
@@ -591,8 +574,7 @@ loaded from an input file that might contain either integers, floats, strings, o
 
 ## Types with values-as-parameters
 
-Let's say you want to create an `N`-dimensional array that has size 3 along each axis. Such arrays
-can be created like this:
+比方说你想创建一个每个维度大小都是3的 `N` 维数组。这种数组可以这样创建：
 
 ```jldoctest
 julia> A = fill(5.0, (3, 3))
@@ -602,13 +584,9 @@ julia> A = fill(5.0, (3, 3))
  5.0  5.0  5.0
 ```
 
-This approach works very well: the compiler can figure out that `A` is an `Array{Float64,2}` because
-it knows the type of the fill value (`5.0::Float64`) and the dimensionality (`(3, 3)::NTuple{2,Int}`).
-This implies that the compiler can generate very efficient code for any future usage of `A` in
-the same function.
+这个方法工作得很好：编译器可以识别出来 `A` 是一个 `Array{Float64,2}` 因为它知道填充值 (`5.0::Float64`) 的类型和维度 (`(3, 3)::NTuple{2,Int}`).
 
-But now let's say you want to write a function that creates a 3×3×... array in arbitrary dimensions;
-you might be tempted to write a function
+但是现在打比方说你想写一个函数，在任何一个维度下，它都创建一个 3×3×... 的数组；你可能会心动地写下一个函数
 
 ```jldoctest
 julia> function array3(fillval, N)
@@ -623,11 +601,7 @@ julia> array3(5.0, 2)
  5.0  5.0  5.0
 ```
 
-This works, but (as you can verify for yourself using `@code_warntype array3(5.0, 2)`) the problem
-is that the output type cannot be inferred: the argument `N` is a *value* of type `Int`, and type-inference
-does not (and cannot) predict its value in advance. This means that code using the output of this
-function has to be conservative, checking the type on each access of `A`; such code will be very
-slow.
+这确实有用，但是（你可以自己使用 `@code_warntype array3(5.0, 2)` 来验证）问题是输出地类型不能被推断出来：参数 `N` 是一个 `Int` 类型的**值**，而且类型推断不会（也不能）提前预测它的值。这意味着使用这个函数的结果的代码在每次获取 `A` 时都不得不保守地检查其类型；这样的代码将会是非常缓慢的。
 
 Now, one very good way to solve such problems is by using the [function-barrier technique](@ref kernal-functions).
 However, in some cases you might want to eliminate the type-instability altogether. In such cases,
@@ -666,7 +640,7 @@ easily make performance *worse* in many situations. (Only in situations where yo
 combining `Val` with the function-barrier trick, to make the kernel function more efficient, should
 code like the above be used.)
 
-An example of correct usage of `Val` would be:
+一个正确使用 `Val` 的例子是这样的：
 
 ```julia
 function filter3(A::AbstractArray{T,N}) where {T,N}

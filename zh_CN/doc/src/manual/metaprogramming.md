@@ -887,39 +887,29 @@ end
 
 当然，这个宏的定义中使用的函数隐藏了许多复杂性，但它们只是函数且完全用 Julia 编写。你可以阅读它们的源代码并精确地看到它们的行为——它们所做的一切就是构造要插入到你的程序的语法树的表达式对象。
 
-## Generated functions
+## 生成函数
 
-A very special macro is `@generated`, which allows you to define so-called *generated functions*.
-These have the capability to generate specialized code depending on the types of their arguments
-with more flexibility and/or less code than what can be achieved with multiple dispatch. While
-macros work with expressions at parse time and cannot access the types of their inputs, a generated
-function gets expanded at a time when the types of the arguments are known, but the function is
-not yet compiled.
+有个非常特殊的宏叫 `@generated`，它允许你定义所谓的*生成函数*。它们能根据其参数类型生成专用代码，与用多重派发所能实现的代码相比，其代码更灵活和/或少。虽然宏在解析时使用表达式且无法访问其输入值的类型，但是生成函数在参数类型已知时会被展开，但该函数尚未编译。
 
-Instead of performing some calculation or action, a generated function declaration returns a quoted
-expression which then forms the body for the method corresponding to the types of the arguments.
-When a generated function is called, the expression it returns is compiled and then run.
-To make this efficient, the result is usually cached. And to make this inferable, only a limited
-subset of the language is usable. Thus, generated functions provide a flexible way to move work from
-run time to compile time, at the expense of greater restrictions on allowed constructs.
+生成函数的声明不会执行某些计算或操作，而会返回一个被引用的表达式，接着该表达式构成参数类型所对应方法的主体。在调用生成函数时，其返回的表达式会被编译然后执行。为了提高效率，通常会缓存结果。为了能推断是否缓存结果，只能使用语言的受限子集。因此，生成函数提供了一个灵活的方式来将工作重运行时移到编译时，代价则是其构造能力受到更大的限制。
 
-When defining generated functions, there are four main differences to ordinary functions:
+定义生成函数与普通函数有四个主要区别：
 
-1. You annotate the function declaration with the `@generated` macro. This adds some information
-   to the AST that lets the compiler know that this is a generated function.
-2. In the body of the generated function you only have access to the *types* of the arguments –
-   not their values – and any function that was defined *before* the definition of the generated
-   function.
-3. Instead of calculating something or performing some action, you return a *quoted expression* which,
-   when evaluated, does what you want.
-4. Generated functions must not *mutate* or *observe* any non-constant global state (including,
-   例如，IO、锁、非本地词典或者使用`hasmethod`）
-   即它们只能读取全局常量，且没有任何副作用。
-   In other words, they must be completely pure.
-   Due to an implementation limitation, this also means that they currently cannot define a closure
-   or generator.
+1. 使用 `@generated` 标注函数声明。这会向 AST 附加一些信息，让编译器知道这个函数是生成函数。
+    
+2. 在生成函数的主体中，你只能访问参数的*类型*，而不能访问其值，以及在生成函数的定义之前便已定义的任何函数。
+    
+    
+3. 不应计算某些东西或执行某些操作，应返回一个*被引用的*表达式，它会在被求值时执行你想要的操作。
+    
+4. 生成函数不能*更改*或*观察*任何非常量的全局状态。（例如，其包括 IO、锁、非局部的字典或者使用 `hasmethod`）即它们只能读取全局常量，且没有任何副作用。换句话说，它们必须是纯函数。由于实现限制，这也意味着它们目前无法定义闭包或生成器。
+    
+    
+    
+    
+    
 
-It's easiest to illustrate this with an example. We can declare a generated function `foo` as
+举例子来说明这个是最简单的。我们可以将生成函数 `foo` 声明为
 
 ```jldoctest generated
 julia> @generated function foo(x)
@@ -929,11 +919,9 @@ julia> @generated function foo(x)
 foo (generic function with 1 method)
 ```
 
-Note that the body returns a quoted expression, namely `:(x * x)`, rather than just the value
-of `x * x`.
+请注意，代码主体返回一个被引用的表达式，即 `:(x * x)`，而不仅仅是 `x * x` 的值。
 
-From the caller's perspective, this is identical to a regular function; in fact, you don't
-have to know whether you're calling a regular or generated function. Let's see how `foo` behaves:
+从调用者的角度看，这与通常的函数等价；实际上，你无需知道你所调用的是通常的函数还是生成函数。让我们看看 `foo` 的行为：
 
 ```jldoctest generated
 julia> x = foo(2); # note: output is from println() statement in the body
@@ -949,43 +937,28 @@ julia> y
 "barbar"
 ```
 
-So, we see that in the body of the generated function, `x` is the *type* of the passed argument,
-and the value returned by the generated function, is the result of evaluating the quoted expression
-we returned from the definition, now with the *value* of `x`.
+因此，我们知道在生成函数的主体中，`x` 是所传递参数的*类型*，并且，生成函数的返回值是其定义所返回的被引用的表达式的求值结果，在该表达式求值时 `x` 表示其*值*。
 
-What happens if we evaluate `foo` again with a type that we have already used?
+如果我们使用我们已经使用过的类型再次对 `foo` 求值会发生什么？
 
 ```jldoctest generated
 julia> foo(4)
 16
 ```
 
-Note that there is no printout of [`Int64`](@ref). We can see that the body of the generated function
-was only executed once here, for the specific set of argument types, and the result was cached.
-After that, for this example, the expression returned from the generated function on the first
-invocation was re-used as the method body. However, the actual caching behavior is an implementation-defined
-performance optimization, so it is invalid to depend too closely on this behavior.
+请注意，这里并没有打印 [`Int64`](@ref)。我们可以看到对于特定的参数类型集来说，生成函数的主体只执行一次，且结果会被缓存。此后，对于此示例，生成函数首次调用返回的表达式被重新用作方法主体。但是，实际的缓存行为是由实现定义的性能优化，过于依赖此行为并不实际。
 
-The number of times a generated function is generated *might* be only once, but it *might* also
-be more often, or appear to not happen at all. As a consequence, you should *never* write a generated
-function with side effects - when, and how often, the side effects occur is undefined. (This is
-true for macros too - and just like for macros, the use of [`eval`](@ref) in a generated function
-is a sign that you're doing something the wrong way.) However, unlike macros, the runtime system
-cannot correctly handle a call to [`eval`](@ref), so it is disallowed.
+生成函数*可能*只生成一次函数,但也*可能*多次生成，或者看起来根本就没有生成过函数。因此，你应该*从不*编写有副作用的生成函数——因为副作用发生的时间和频率是不确定的。（对于宏来说也是如此——跟宏一样，在生成函数中使用 [`eval`](@ref) 也许意味着你正以错误的方式做某事。）但是，与宏不同，运行时系统无法正确处理对 [`eval`](@ref) 的调用，所以不允许这样做。
 
-It is also important to see how `@generated` functions interact with method redefinition.
-Following the principle that a correct `@generated` function must not observe any
-mutable state or cause any mutation of global state, we see the following behavior.
-Observe that the generated function *cannot* call any method that was not defined
-prior to the *definition* of the generated function itself.
+理解 `@generated` 函数与方法的重定义间如何相互作用也很重要。遵循正确的 `@generated` 函数不能观察任何可变状态或导致全局状态的任何更改的原则，我们看到以下行为。观察到，生成函数*不能*调用在生成函数本身的*定义*之前未定义的任何方法。
 
-Initially `f(x)` has one definition
+一开始 `f(x)` 有一个定义
 
 ```jldoctest redefinition
 julia> f(x) = "original definition";
 ```
 
-Define other operations that use `f(x)`:
+定义使用 `f(x)` 的其它操作：
 
 ```jldoctest redefinition
 julia> g(x) = f(x);
@@ -1003,7 +976,7 @@ julia> f(x::Int) = "definition for Int";
 julia> f(x::Type{Int}) = "definition for Type{Int}";
 ```
 
-and compare how these results differ:
+并比较这些结果的差异：
 
 ```jldoctest redefinition
 julia> f(1)
@@ -1019,7 +992,7 @@ julia> gen2(1)
 "definition for Int"
 ```
 
-Each method of a generated function has its own view of defined functions:
+生成函数的每个方法都有自己的已定义函数视图：
 
 ```jldoctest redefinition
 julia> @generated gen1(x::Real) = f(x);
@@ -1028,10 +1001,7 @@ julia> gen1(1)
 "definition for Type{Int}"
 ```
 
-The example generated function `foo` above did not do anything a normal function `foo(x) = x * x`
-could not do (except printing the type on the first invocation, and incurring higher overhead).
-However, the power of a generated function lies in its ability to compute different quoted expressions
-depending on the types passed to it:
+上例中的生成函数 `foo` 能做的，通常的函数 `foo(x) = x * x` 也能做（除了在第一次调用时打印类型，并产生了更高的开销）。但是，生成函数的强大之处在于其能够根据传递给它的类型计算不同的被引用的表达式：
 
 ```jldoctest
 julia> @generated function bar(x)
@@ -1050,9 +1020,9 @@ julia> bar("baz")
 "baz"
 ```
 
-(although of course this contrived example would be more easily implemented using multiple dispatch...)
+（当然，这个刻意的例子可以更简单地通过多重派发实现……）
 
-Abusing this will corrupt the runtime system and cause undefined behavior:
+滥用它会破坏运行时系统并导致未定义行为：
 
 ```jldoctest
 julia> @generated function baz(x)
@@ -1065,42 +1035,35 @@ julia> @generated function baz(x)
 baz (generic function with 1 method)
 ```
 
-Since the body of the generated function is non-deterministic, its behavior, *and the behavior of all subsequent code*
-is undefined.
+由于生成函数的主体具有不确定性，其行为和*所有后续代码的行为*并未定义。
 
-*Don't copy these examples!*
+*不要复制这些例子！*
 
-These examples are hopefully helpful to illustrate how generated functions work, both in the definition
-end and at the call site; however, *don't copy them*, for the following reasons:
+这些例子有助于说明生成函数定义和调用的工作方式；但是，*不要复制它们*，原因如下：
 
-  * the `foo` function has side-effects (the call to `Core.println`), and it is undefined exactly
-    when, how often or how many times these side-effects will occur
-  * the `bar` function solves a problem that is better solved with multiple dispatch - defining `bar(x) = x`
-    and `bar(x::Integer) = x ^ 2` will do the same thing, but it is both simpler and faster.
-  * the `baz` function is pathological
+  * `foo` 函数有副作用（对 `Core.println` 的调用），并且未确切定义这些副作用发生的时间、频率和次数。
+     
+  * `bar` 函数解决的问题可通过多重派发被更好地解决——定义 `bar(x) = x` 和 `bar(x::Integer) = x ^ 2` 会做同样的事，但它更简单和快捷。
+     
+  * `baz` 函数是病态的
 
-Note that the set of operations that should not be attempted in a generated function is unbounded,
-and the runtime system can currently only detect a subset of the invalid operations. There are
-many other operations that will simply corrupt the runtime system without notification, usually
-in subtle ways not obviously connected to the bad definition. Because the function generator is
-run during inference, it must respect all of the limitations of that code.
+请注意，不应在生成函数中尝试的操作并无严格限制，且运行时系统现在只能检测一部分无效操作。还有许多操作只会破坏运行时系统而没有通知，通常以微妙的方式而非显然地与错误的定义相关联。因为函数生成器是在类型推导期间运行的，所以它必须遵守该代码的所有限制。
 
-Some operations that should not be attempted include:
+一些不应该尝试的操作包括：
 
-1. Caching of native pointers.
+1. 缓存本地指针。
 2. Interacting with the contents or methods of Core.Compiler in any way.
-3. Observing any mutable state.
+3. 观察任何可变状态。
 
-     * Inference on the generated function may be run at *any* time, including while your code is attempting
-       to observe or mutate this state.
-4. Taking any locks: C code you call out to may use locks internally, (for example, it is not problematic
-   to call `malloc`, even though most implementations require locks internally) but don't attempt
-   to hold or acquire any while executing Julia code.
-5. Calling any function that is defined after the body of the generated function. This condition
-   is relaxed for incrementally-loaded precompiled modules to allow calling any function in the module.
+     * 生成函数的类型推导可以在*任何*时候运行，包括你的代码正在尝试观察或更改此状态时。
+        
+4. 采用任何锁：你调用的 C 代码可以在内部使用锁（例如，调用 `malloc` 不会有问题，即使大多数实现在内部需要锁），但是不要试图在执行 Julia 代码时保持或请求任何锁。
+    
+    
+5. 调用在生成函数的主体后定义的任何函数。对于增量加载的预编译模块，则放宽此条件，以允许调用模块中的任何函数。
+    
 
-Alright, now that we have a better understanding of how generated functions work, let's use them
-to build some more advanced (and valid) functionality...
+那好，我们现在已经更好地理解了生成函数的工作方式，让我们使用它来构建一些更高级（和有效）的功能……
 
 ### An advanced example
 
