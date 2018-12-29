@@ -91,7 +91,7 @@ function bar(x, y) ...
 6. 请在`# Examples`中包含一些代码例子。
 
    例子应尽可能按照*doctest*来写。*doctest*是一个栅栏分隔开的代码块
-   (参照 [Code blocks](@ref))，以 ````` ```jldoctest`````开头并包含任意数量的提示`julia>`
+   （请参阅[代码块](@ref)）以 ````` ```jldoctest````` 开头并包含任意数量的提示符 `julia>`
    与输入和预期输出用来模拟Julia REPL。
 
    例如在下面的docstring中定义了变量`a`，期待的输出
@@ -323,7 +323,7 @@ function f end
 f
 ```
 
-把docstring`"..."`添加给了函数`f`。第一种语法是首选，虽然两者是等价的。
+把 docstring `"..."` 添加给了函数 `f`。首选的语法是第一种，虽然两者是等价的。
 
 ```julia
 "..."
@@ -338,14 +338,14 @@ end
 f(x)
 ```
 
-把docstring `"..."` 添加给了方法`f(::Any)`。
+把 docstring `"..."` 添加给了方法 `f(::Any)`。
 
 ```julia
 "..."
 f(x, y = 1) = x + y
 ```
 
-把docstring`"..."`添加给了两个`方法`，分别为`f(::Any)`和`f(::Any, ::Any)`。
+把 docstring `"..."` 添加给了两个方法，分别为 `f(::Any)` 和 `f(::Any, ::Any)`。
 
 ### 宏
 
@@ -354,14 +354,14 @@ f(x, y = 1) = x + y
 macro m(x) end
 ```
 
-把docstring`"..."`添加给了 `@m(::Any)` 的宏定义。
+把 docstring `"..."` 添加给了宏 `@m(::Any)` 的定义。
 
 ```julia
 "..."
 :(@m)
 ```
 
-把docstring`"..."`添加给了名字为`@m`的宏。
+把 docstring `"..."` 添加给了名为 `@m` 的宏。
 
 ### 类型
 
@@ -380,7 +380,7 @@ struct T3
 end
 ```
 
-把docstring`"..."`添加给了类型`T1`, `T2`和`T3`。
+把 docstring `"..."` 添加给了类型 `T1`、`T2` 和 `T3`。
 
 ```julia
 "..."
@@ -392,7 +392,7 @@ struct T
 end
 ```
 
-把docstring `"..."` 添加给了类型`T`，`"x"`添加给了域`T.y`，`"y"`添加给了域`T.y`。也可以运用于`可变结构`类型。
+把 docstring `"..."` 添加给了类型 `T`，`"x"` 添加给字段 `T.x`，`"y"` 添加给字段 `T.y`。也可以运用于`mutable struct` 类型。
 
 ### 模块
 
@@ -408,7 +408,7 @@ M
 end
 ```
 
-把docstring `"..."` 添加给了`模块``M`.在`模块`之前添加docstring的语法是首选，虽然两者是等价的。
+把 docstring `"..."` 添加给了模块 `M`。首选的语法是在模块之前添加 docstring，虽然两者是等价的。
 
 ```julia
 "..."
@@ -426,7 +426,7 @@ f(x) = x
 end
 ```
 
-通过把docstring放在表达式之上来给一个`baremodule`写文档会自动在模块中引入`@doc`。当模块表达式并没有文档时必须手动引入。空的`baremodule`不能有文档。
+通过把 docstring 放在表达式之上来给一个 `baremodule` 写文档会在模块中自动引入 `@doc`。它在模块表达式并没有文档时必须手动引入。空的 `baremodule` 不能有文档。
 
 ### 全局变量
 
@@ -595,7 +595,7 @@ A paragraph containing a numbered footnote [^1] and a named one [^named].
 ```
 
 !!! note
-    与脚注相关的文本能写在脚注链接同一页的任意地方。用于定义脚注文本的语法在下面的[Footnotes](@ref)章节中讨论。
+    与脚注相关的文本能写在脚注链接同一页的任意地方。用于定义脚注文本的语法在下面的[脚注](@ref)章节中讨论。
 
 ### 顶层元素
 
@@ -603,7 +603,7 @@ A paragraph containing a numbered footnote [^1] and a named one [^named].
 
 #### 段落
 
-段落是一个纯文本的块，可能包含任意数量的在[Inline elements](@ref)中定义了的内联元素，在段落前后会拥有一个或者多个空行。
+段落是一个纯文本的块，可能包含任意数量的在上面的[内联元素](@ref)章节中定义的内联元素，在段落前后会拥有一个或者多个空行。
 
 ```
 This is a paragraph.
@@ -753,7 +753,7 @@ f(a) = \frac{1}{2\pi}\int_{0}^{2\pi} (\alpha+R\cos(\theta))d\theta
 
 #### 脚注
 
-这个语法是与[Footnote references](@ref)内联语法相配合的。请确认也读过那个章节。
+这个语法是与[脚注引用](@ref)内联语法相配合的。请确认也读过那个章节。
 
 与脚注引用语法相似，脚注文本使用如下语法定义，不包括脚注标签之后的`:`字符：
 

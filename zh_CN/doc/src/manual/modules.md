@@ -1,6 +1,6 @@
 # [模块](@id modules)
 
-Julia 中的模块（module）是一些互相隔离的工作空间，即它们会引入新的全局作用域。它们在语法上以 `module Name ... end` 界定。模块允许你创建顶层定义（也称为全局变量），而无需担心命名冲突。在模块中，利用导入（importing），你可以控制其它模块中的哪些名称是可见的；利用导出（exporting），你可以控制你自己的模块中的哪些名称是公开的。
+Julia 中的模块（module）是一些互相隔离的可变工作空间，也就是说它们会引入新的全局作用域。它们在语法上以 `module Name ... end` 界定。模块允许你创建顶层定义（也称为全局变量），而无需担心命名冲突。在模块中，利用导入（importing），你可以控制其它模块中的哪些名称是可见的；利用导出（exporting），你可以控制你自己的模块中的哪些名称是公开的。
 
 下面的示例演示了模块的主要功能。它不是为了运行，只是为了方便说明：
 
@@ -175,17 +175,11 @@ push!(LOAD_PATH, "/Path/To/My/Module/")
 
 如果你认为预编译自己的模块是**不**安全的（基于下面所说的各种原因），那么你应该在模块文件中添加 `__precompile__(false)`，一般会将其写在文件的最上面。这就可以触发 `Base.compilecache` 报错，并且在直接使用 `using` / `import` 加载的时候跳过预编译和缓存。这样做同时也可以防止其它开启预编译的模块加载此模块。
 
-在开发模块的时候，你可能需要了解一些与增量编译相关的某些固有行为。例如，外部状态不会被保留。为了解决这个问题，需要显式分离运行时与编译期的部分。Julia 允许你定义一个 `__init__()` 函数来执行任何需要在运行时发生的初始化。在编译期（`--output-*`），此函数将不会被调用。你可以假设在代码的生存周期中，此函数只会被运行一次。当然，如果有必要，你也可以手动调用它，但在默认的情况下，请假设此函数是为了处理与本机状态相关的信息，注意这些信息不需要，更不应该存入预编译镜像。此函数会在模块被导入到当前进程之后被调用，这包括在一个增量编译中导入该模块的时候（`--output-incremental=yes`），but not if it is being loaded into a full-compilation process.
+在开发模块的时候，你可能需要了解一些与增量编译相关的固有行为。例如，外部状态不会被保留。为了解决这个问题，需要显式分离运行时与编译期的部分。Julia 允许你定义一个 `__init__()` 函数来执行任何需要在运行时发生的初始化。在编译期（`--output-*`），此函数将不会被调用。你可以假设在代码的生存周期中，此函数只会被运行一次。当然，如果有必要，你也可以手动调用它，但在默认的情况下，请假定此函数是为了处理与本机状态相关的信息，注意这些信息不需要，更不应该存入预编译镜像。此函数会在模块被导入到当前进程之后被调用，这包括在一个增量编译中导入该模块的时候（`--output-incremental=yes`），但在完整编译时该函数不会被调用。
 
-特别的，如果你在一个模块里定义了一个名为 `__init__()` 的函数，那么Julia在加载这个模块之后会在第一次运行时（runtime）立刻调用这个函数（例如，在使用 `import`，`using`，或者 `require`），也就是说 `__init__` 只会在模块中所有其它命令执行过后调用一次。因为这个函数将在它完全载入后被调用，任何子模块或者已经载入的模块都将在当前模块调用 `__init__` **之前** 调用自己的 `__init__` 函数。
+特别的，如果你在模块里定义了一个名为 `__init__()` 的函数，那么Julia 在加载这个模块之后会在第一次运行时（runtime）立刻调用这个函数（例如，通过 `import`，`using`，或者 `require` 加载时），也就是说 `__init__` 只会在模块中所有其它命令都执行完以后被调用一次。因为这个函数将在模块完全载入后被调用，任何子模块或者已经载入的模块都将在当前模块调用 `__init__` **之前** 调用自己的 `__init__` 函数。
 
-Two typical uses of `__init__` are calling runtime initialization functions of external C libraries
-and initializing global constants that involve pointers returned by external libraries.  For example,
-suppose that we are calling a C library `libfoo` that requires us to call a `foo_init()` initialization
-function at runtime. Suppose that we also want to define a global constant `foo_data_ptr` that
-holds the return value of a `void *foo_data()` function defined by `libfoo` -- this constant must
-be initialized at runtime (not at compile time) because the pointer address will change from run
-to run.  You could accomplish this by defining the following `__init__` function in your module:
+`__init__`的典型用法有二，一是用于调用外部 C 库的运行时初始化函数，二是用于初始化涉及到外部库所返回的指针的全局常量。例如，假设我们正在调用一个 C 库 `libfoo`，它要求我们在运行时调用`foo_init()` 这个初始化函数。假设我们还想定义一个全局常量 `foo_data_ptr`，它保存 `libfoo` 所定义的 `void *foo_data()` 函数的返回值——必须在运行时（而非编译时）初始化这个常量，因为指针地址不是固定的。可以通过在模块中定义 `__init__` 函数来完成这个操作。
 
 ```julia
 const foo_data_ptr = Ref{Ptr{Cvoid}}(0)
@@ -196,11 +190,7 @@ function __init__()
 end
 ```
 
-Notice that it is perfectly possible to define a global inside a function like `__init__`; this
-is one of the advantages of using a dynamic language. But by making it a constant at global scope,
-we can ensure that the type is known to the compiler and allow it to generate better optimized
-code. Obviously, any other globals in your module that depends on `foo_data_ptr` would also have
-to be initialized in `__init__`.
+注意，在一个函数里定义一个像 `__init__` 的全局变量是完全可以的；这是使用动态语言的一个优点。但是通过把一个变量在全局作用域定义成一个常数，我们可以确保它的类型被编译器知道，并且能让编译器生成更好地优化过的代码。显然，在你的模块 (Module) 里的任何其他依赖 `foo_data_ptr` 的全局变量也必须要是在 `__init__` 中初始化了的。
 
 Constants involving most Julia objects that are not produced by `ccall` do not need to be placed
 in `__init__`: their definitions can be precompiled and loaded from the cached module image. This
@@ -270,7 +260,7 @@ code to help the user avoid other wrong-behavior situations:
    for plans to add an error for this)
 3. Replacing a module is a runtime error while doing an incremental precompile.
 
-A few other points to be aware of:
+一些其他需要注意的点：
 
 1. No code reload / cache invalidation is performed after changes are made to the source files themselves,
    (including by [`Pkg.update`], and no cleanup is done after [`Pkg.rm`]
@@ -278,8 +268,8 @@ A few other points to be aware of:
    its own copy)
 3. Expecting the filesystem to be unchanged between compile-time and runtime e.g. [`@__FILE__`](@ref)/`source_path()`
    to find resources at runtime, or the BinDeps `@checked_lib` macro. Sometimes this is unavoidable.
-   However, when possible, it can be good practice to copy resources into the module at compile-time
-   so they won't need to be found at runtime.
+   然而，当可能的时候，在编译期将资源复制到模块里面是个好做法，
+   从而在运行期间将不需要去寻找它们。
 4. `WeakRef` objects and finalizers are not currently handled properly by the serializer (this will
    be fixed in an upcoming release).
 5. It is usually best to avoid capturing references to instances of internal metadata objects such
