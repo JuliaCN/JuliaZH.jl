@@ -94,25 +94,13 @@ ERROR: MethodError: Cannot `convert` an object of type String to an object of ty
 
 如果 `x` 类型已经为 `T`，`convert(T, x)` 应该返回原本的 `x`。相反地，如果 `T` 是一个可变的集合类型，那么 `T(x)` 应该总是创建一个新的集合（从 `x` 复制元素）。
 
-#### Wrapper types
+#### 封装器类型
 
-For some types which "wrap" other values, the constructor may wrap its argument inside
-a new object even if it is already of the requested type.
-For example `Some(x)` wraps `x` to indicate that a value is present (in a context
-where the result might be a `Some` or `nothing`).
-However, `x` itself might be the object `Some(y)`, in which case the result is
-`Some(Some(y))`, with two levels of wrapping.
-`convert(Some, x)`, on the other hand, would just return `x` since it is already
-a `Some`.
+对于某些「封装」其它值的类型，构造函数可以其参数封装在一个新对象中，即使它已经是所请求的类型。例如，`Some(x)` 封装 `x` 表示存在一个值（在结果可能是 `Some` 或 `nothing` 的上下文中）。但是，`x` 本身可能是对象 `Some(y)`，在这种情况下，结果为 `Some(Some(y))`，封装了两层。另一方面，`convert(Some, x)` 只会返回 `x`，因为它已经是 `Some` 的实例了。
 
-#### Constructors that don't return instances of their own type
+#### 不返回自身类型的实例的构造函数
 
-In *very rare* cases it might make sense for the constructor `T(x)` to return
-an object not of type `T`.
-This could happen if a wrapper type is its own inverse (e.g. `Flip(Flip(x)) === x`),
-or to support an old calling syntax for backwards compatibility when a library is
-restructured.
-But `convert(T, x)` should always return a value of type `T`.
+在*极少见*的情况下，构造函数 `T(x)` 返回一个类型不为 `T` 的对象是有意义的。如果封装器类型是它自身的反转（例如 `Flip(Flip(x)) === x`），或者在重构库时为了支持某个旧的调用语法以实现向后兼容，则可能发生这种情况。但是，`convert(T, x)` 应该总是返回一个类型为 `T` 的值。
 
 ### 定义新的类型转换
 

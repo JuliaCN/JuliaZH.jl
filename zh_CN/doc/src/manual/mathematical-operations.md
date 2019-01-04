@@ -286,7 +286,7 @@ false
 
 ### 初等函数
 
-Julia 提供了强大的数学函数和运算符集合。这些数学运算定义在各种合理的数值上，包括整型、浮点数、分数、复数，只要有定义就行。
+Julia 提供了强大的数学函数和运算符集合。这些数学运算定义在各种合理的数值上，包括整型、浮点数、分数和复数，只要这些定义有数学意义就行。
 
 而且，和其它 Julia 函数一样，这些函数也能通过 [点语法](@ref man-vectorized) `f.(A)` 以“向量化”的方式作用于数组和其它集合上。
 比如，`sin.(A)` 会计算 `A` 中每个元素的 sin 值。
@@ -313,15 +313,14 @@ Julia 提供了强大的数学函数和运算符集合。这些数学运算定�
 | 赋值    | `= += -= *= /= //= \= ^= ÷= %= \|= &= ⊻= <<= >>= >>>=`                                            | 右结合                      |
 
 [^1]:
-    一元运算符 `+` 和 `-` 需要显示调用，即给它们的参数加上括号，以免和 `++` 等运算符混淆。其他一元运算符的混合使用都被解析为右结合的，比如 `√√-a` 解析为 `√(√(-a))`。
+    一元运算符 `+` 和 `-` 需要显式调用，即给它们的参数加上括号，以免和 `++` 等运算符混淆。其它一元运算符的混合使用都被解析为右结合的，比如 `√√-a` 解析为 `√(√(-a))`。
 [^2]:
     The operators `+`, `++` and `*` are non-associative. `a + b + c` is parsed as `+(a, b, c)` not `+(+(a, b),
     c)`. However, the fallback methods for `+(a, b, c, d...)` and `*(a, b, c, d...)` both default to left-associative evaluation.
 
-要看**全部** Julia 运算符的优先级关系，可以看这个文件的最上面部分：
-[`src/julia-parser.scm`](https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm)
+要看**全部** Julia 运算符的优先级关系，可以看这个文件的最上面部分：[`src/julia-parser.scm`](https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm)
 
-你也可以通过内置函数 `Base.operator_precedence` 查看任何给定运算符的数值优先级，数值越大优先级越高：
+你也可以通过内置函数 `Base.operator_precedence` 查看任何给定运算符的优先级数值，数值越大优先级越高：
 
 ```jldoctest
 julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)
@@ -331,7 +330,7 @@ julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.opera
 (0, 1, 1)
 ```
 
-另外，内置函数 `Base.operator_associativity` 可以返回运算符结合性的符号提示：
+另外，内置函数 `Base.operator_associativity` 可以返回运算符结合性的符号表示：
 
 ```jldoctest
 julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)
@@ -341,7 +340,7 @@ julia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Bas
 (:left, :none, :right)
 ```
 
-注意诸如 `:sin` 这样的符号返回优先级 0，代表无效的运算符或非最低优先级运算符。类似地，它们的结合性是 `:none`。
+注意诸如 `:sin` 这样的符号返回优先级 `0`，此值代表无效的运算符或非最低优先级运算符。类似地，它们的结合性被认为是 `:none`。
 
 ## 数值转换
 
@@ -352,9 +351,9 @@ Julia 支持三种数值转换，它们在处理不精确转换上有所不同�
       * 如果 `T` 是浮点类型，转换的结果就是最近的可表示值，
         可能会是正负无穷大。
       * 如果 `T` 为整数类型，当 `x` 不为 `T` 类型时，会触发 `InexactError`
-  * `x % T` 将整数 `x` 转换为整型 `T`，全等于 `x` 以 `2^n` 为模的结果，
-    其中 `n` 是 `T` 比特位数。换句话说，如果用二进制表示是被砍掉
-     一部分的。
+  * `x % T` 将整数 `x` 转换为整型 `T`，与 `x` 模 `2^n` 的结果一致，其中 `n` 是 `T` 的位数。换句话说，如果用二进制表示是被砍掉一部分的。
+     
+     
   * [舍入函数](@ref) 接收一个 `T` 类型的可选参数。比如，`round(Int,x)`
     是 `Int(round(x))` 的简写版。
 

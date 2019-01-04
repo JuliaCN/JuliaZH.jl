@@ -177,7 +177,7 @@ push!(LOAD_PATH, "/Path/To/My/Module/")
 
 在开发模块的时候，你可能需要了解一些与增量编译相关的固有行为。例如，外部状态不会被保留。为了解决这个问题，需要显式分离运行时与编译期的部分。Julia 允许你定义一个 `__init__()` 函数来执行任何需要在运行时发生的初始化。在编译期（`--output-*`），此函数将不会被调用。你可以假设在代码的生存周期中，此函数只会被运行一次。当然，如果有必要，你也可以手动调用它，但在默认的情况下，请假定此函数是为了处理与本机状态相关的信息，注意这些信息不需要，更不应该存入预编译镜像。此函数会在模块被导入到当前进程之后被调用，这包括在一个增量编译中导入该模块的时候（`--output-incremental=yes`），但在完整编译时该函数不会被调用。
 
-特别的，如果你在模块里定义了一个名为 `__init__()` 的函数，那么Julia 在加载这个模块之后会在第一次运行时（runtime）立刻调用这个函数（例如，通过 `import`，`using`，或者 `require` 加载时），也就是说 `__init__` 只会在模块中所有其它命令都执行完以后被调用一次。因为这个函数将在模块完全载入后被调用，任何子模块或者已经载入的模块都将在当前模块调用 `__init__` **之前** 调用自己的 `__init__` 函数。
+特别的，如果你在模块里定义了一个名为 `__init__()` 的函数，那么 Julia 在加载这个模块之后会在第一次运行时（runtime）立刻调用这个函数（例如，通过 `import`，`using`，或者 `require` 加载时），也就是说 `__init__` 只会在模块中所有其它命令都执行完以后被调用一次。因为这个函数将在模块完全载入后被调用，任何子模块或者已经载入的模块都将在当前模块调用 `__init__` **之前** 调用自己的 `__init__` 函数。
 
 `__init__`的典型用法有二，一是用于调用外部 C 库的运行时初始化函数，二是用于初始化涉及到外部库所返回的指针的全局常量。例如，假设我们正在调用一个 C 库 `libfoo`，它要求我们在运行时调用`foo_init()` 这个初始化函数。假设我们还想定义一个全局常量 `foo_data_ptr`，它保存 `libfoo` 所定义的 `void *foo_data()` 函数的返回值——必须在运行时（而非编译时）初始化这个常量，因为指针地址不是固定的。可以通过在模块中定义 `__init__` 函数来完成这个操作。
 
@@ -190,7 +190,7 @@ function __init__()
 end
 ```
 
-注意，在一个函数里定义一个像 `__init__` 的全局变量是完全可以的；这是使用动态语言的一个优点。但是通过把一个变量在全局作用域定义成一个常数，我们可以确保它的类型被编译器知道，并且能让编译器生成更好地优化过的代码。显然，在你的模块 (Module) 里的任何其他依赖 `foo_data_ptr` 的全局变量也必须要是在 `__init__` 中初始化了的。
+注意，在像 `__init` 这样的函数里定义一个全局变量是完全可以的，这是动态语言的优点之一。但是把全局作用域的值定义成常量，可以让编译器能确定该值的类型，并且能让编译器生成更好的优化过的代码。显然，你的模块 (Module) 中，任何其他依赖于 `foo_data_ptr` 的全局量也必须在 `__init__` 中被初始化。
 
 Constants involving most Julia objects that are not produced by `ccall` do not need to be placed
 in `__init__`: their definitions can be precompiled and loaded from the cached module image. This
@@ -233,8 +233,8 @@ at compile-time.
    注意 `objectid` （工作原理是 hash 内存指针）也有类似的问题，请查阅下面关于 `Dict` 的用法。
     
 
-   一种解决方案是用宏捕捉 [`@__MODULE__`](@ref)，并将它与目前的 `counter` 值一起保存。
-   然而，更好的方案是对代码进行重新设计，不要依赖这种全局状态变量。
+   一种解决方案是用宏捕捉 [`@__MODULE__`](@ref)，并将它与目前的 `counter` 值一起保存。然而，更好的方案是对代码进行重新设计，不要依赖这种全局状态变量。
+    
 2. 像 `Dict` 和 `Set` 这种关联集合需要在 `__init__` 中 re-hash。Julia 在未来很可能会提供一个机制来注册初始化函数。
     
 3. 依赖编译期的副作用会在加载时蔓延。例子包括：更改其它 Julia 模块里的数组或变量，操作文件或设备的句柄，保存指向其它系统资源（包括内存）的指针。
@@ -268,8 +268,8 @@ code to help the user avoid other wrong-behavior situations:
    its own copy)
 3. Expecting the filesystem to be unchanged between compile-time and runtime e.g. [`@__FILE__`](@ref)/`source_path()`
    to find resources at runtime, or the BinDeps `@checked_lib` macro. Sometimes this is unavoidable.
-   然而，当可能的时候，在编译期将资源复制到模块里面是个好做法，
-   从而在运行期间将不需要去寻找它们。
+   但是可能的话，在编译期将资源复制到模块里面是个好做法，
+   这样在运行期间，程序就不需要去寻找它们了。
 4. `WeakRef` objects and finalizers are not currently handled properly by the serializer (this will
    be fixed in an upcoming release).
 5. It is usually best to avoid capturing references to instances of internal metadata objects such
