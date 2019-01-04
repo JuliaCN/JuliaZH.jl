@@ -365,13 +365,13 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 
 | 需要实现的方法 | 简短描述 |
 |:-------------------- |:----------------- |
-| `Base.BroadcastStyle(::Type{SrcType}) = SrcStyle()` | Broadcasting behavior of `SrcType` |
-| `Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})` | Allocation of output container |
+| `Base.BroadcastStyle(::Type{SrcType}) = SrcStyle()` | `SrcType` 的广播行为 |
+| `Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})` | 输出结果的分配 |
 | **可选方法** | | |
-| `Base.BroadcastStyle(::Style1, ::Style2) = Style12()` | Precedence rules for mixing styles |
+| `Base.BroadcastStyle(::Style1, ::Style2) = Style12()` | 混合广播风格的优先级规则 |
 | `Base.broadcast_axes(x)` | Declaration of the indices of `x` for broadcasting purposes (defaults to [`axes(x)`](@ref)) |
-| `Base.broadcastable(x)` | Convert `x` to an object that has `axes` and supports indexing |
-| **Bypassing default machinery** | |
+| `Base.broadcastable(x)` | 将 `x` 转换为一个具有 `axes` 且支持索引的对象 |
+| **绕过默认机制** | |
 | `Base.copy(bc::Broadcasted{DestStyle})` | `broadcast` 的自定义实现 |
 | `Base.copyto!(dest, bc::Broadcasted{DestStyle})` | 专门针对 `DestStyle` 的自定义 `broadcast!` 实现 |
 | `Base.copyto!(dest::DestType, bc::Broadcasted{Nothing})` | 专门针对 `DestStyle` 的自定义 `broadcast!` 实现 |
@@ -424,11 +424,7 @@ similar(bc::Broadcasted{DefaultArrayStyle{N}}, ::Type{ElType}) where {N,ElType} 
     similar(Array{ElType}, axes(bc))
 ```
 
-However, if needed you can specialize on any or all of these arguments. The final argument
-`bc` is a lazy representation of a (potentially fused) broadcast operation, a `Broadcasted`
-object.  For these purposes, the most important fields of the wrapper are
-`f` and `args`, describing the function and argument list, respectively.  Note that the argument
-list can — and often does — include other nested `Broadcasted` wrappers.
+但是，如果需要，你可以专门化任何或所有这些参数。最后的参数 `bc` 是（还可能是融合的）广播操作的惰性表示，即 `Broadcasted` 对象。出于这些目的，该封装器中最重要的字段是 `f` 和 `args`，分别描述函数和参数列表。请注意，参数列表可以——并且经常——包含其它嵌套的 `Broadcasted` 封装器。
 
 举个完整的例子，假设你创建了类型 `ArrayAndChar`，该类型存储一个数组和单个字符：
 
@@ -490,80 +486,43 @@ julia> a .+ [5,10]
  13  14
 ```
 
-### [Extending broadcast with custom implementations](@id extending-in-place-broadcast)
+### [使用自定义实现扩展广播](@id extending-in-place-broadcast)
 
-In general, a broadcast operation is represented by a lazy `Broadcasted` container that holds onto
-the function to be applied alongside its arguments. Those arguments may themselves be more nested
-`Broadcasted` containers, forming a large expression tree to be evaluated. A nested tree of
-`Broadcasted` containers is directly constructed by the implicit dot syntax; `5 .+ 2.*x` is
-transiently represented by `Broadcasted(+, 5, Broadcasted(*, 2, x))`, for example. This is
-invisible to users as it is immediately realized through a call to `copy`, but it is this container
-that provides the basis for broadcast's extensibility for authors of custom types. The built-in
-broadcast machinery will then determine the result type and size based upon the arguments, allocate
-it, and then finally copy the realization of the `Broadcasted` object into it with a default
-`copyto!(::AbstractArray, ::Broadcasted)` method. The built-in fallback `broadcast` and
-`broadcast!` methods similarly construct a transient `Broadcasted` representation of the operation
-so they can follow the same codepath. This allows custom array implementations to
-provide their own `copyto!` specialization to customize and
-optimize broadcasting. This is again determined by the computed broadcast style. This is such
-an important part of the operation that it is stored as the first type parameter of the
-`Broadcasted` type, allowing for dispatch and specialization.
+一般来说，广播操作由一个惰性 `Broadcasted` 容器表示，该容器保存要应用的函数及其参数。这些参数可能本身是嵌套得更深的 `Broadcasted` 容器，并一起形成了一个待求值的大型表达式树。嵌套的 `Broadcasted` 容器树可由隐式的点语法直接构造；例如，`5 .+ 2.*x` 由 `Broadcasted(+, 5, Broadcasted(*, 2, x))` 暂时表示。这对于用户是不可见的，因为它是通过调用 `copy` 立即实现的，但是此容器为自定义类型的作者提供了广播可扩展性的基础。然后，内置的广播机制将根据参数确定结果的类型和大小，为它分配内存，并最终通过默认的 `copyto!(::AbstractArray, ::Broadcasted)` 方法将 `Broadcasted` 对象复制到其中。内置的回退 `broadcast` 和 `broadcast!` 方法类似地构造操作的暂时 `Broadcasted` 表示，因此它们共享相同的代码路径。这便允许自定义的数组实现通过提供它们自己的专门化 `copyto!` 来定义和优化广播。这再次由计算后的广播风格确定。此广播风格在广播操作中非常重要，以至于它被存储为 `Broadcasted` 类型的第一个类型参数，且允许派发和专门化。
 
-For some types, the machinery to "fuse" operations across nested levels of broadcasting
-is not available or could be done more efficiently incrementally. In such cases, you may
-need or want to evaluate `x .* (x .+ 1)` as if it had been
-written `broadcast(*, x, broadcast(+, x, 1))`, where the inner operation is evaluated before
-tackling the outer operation. This sort of eager operation is directly supported by a bit
-of indirection; instead of directly constructing `Broadcasted` objects, Julia lowers the
-fused expression `x .* (x .+ 1)` to `Broadcast.broadcasted(*, x, Broadcast.broadcasted(+, x, 1))`. Now,
-by default, `broadcasted` just calls the `Broadcasted` constructor to create the lazy representation
-of the fused expression tree, but you can choose to override it for a particular combination
-of function and arguments.
+对于某些类型，跨越层层嵌套的广播的「融合」操作无法实现，或者无法更高效地逐步完成。在这种情况下，你可能需要或者想要求值 `x .* (x .+ 1)`，就好像该式已被编写成 `broadcast(*, x, broadcast(+, x, 1))`，其中内部广播操作会在处理外部广播操作前进行求值。这种直接的操作以有点间接的方式得到直接支持；Julia 不会直接构造 `Broadcasted` 对象，而会将 待融合的表达式 `x .* (x .+ 1)` 降低为 `Broadcast.broadcasted(*, x, Broadcast.broadcasted(+, x, 1))`。现在，默认情况下，`broadcasted` 只会调用 `Broadcasted` 构造函数来创建待融合表达式树的惰性表示，但是你可以选择为函数和参数的特定组合覆盖它。
 
-As an example, the builtin `AbstractRange` objects use this machinery to optimize pieces
-of broadcasted expressions that can be eagerly evaluated purely in terms of the start,
-step, and length (or stop) instead of computing every single element. Just like all the
-other machinery, `broadcasted` also computes and exposes the combined broadcast style of its
-arguments, so instead of specializing on `broadcasted(f, args...)`, you can specialize on
-`broadcasted(::DestStyle, f, args...)` for any combination of style, function, and arguments.
+举个例子，内置的 `AbstractRange` 对象使用此机制优化广播表达式的片段，这些表达式片段可以只根据 start、step 和 length（或 stop）直接进行求值，而无需计算每个元素。与所有其它机制一样，`broadcasted` 也会计算并暴露其参数的组合广播风格，所以你可以为广播风格、函数和参数的任意组合专门化 `broadcasted(::DestStyle, f, args...)`，而不是专门化 `broadcasted(f, args...)`。
 
-For example, the following definition supports the negation of ranges:
+例如，以下定义支持 range 的负运算：
 
 ```julia
 broadcasted(::DefaultArrayStyle{1}, ::typeof(-), r::OrdinalRange) = range(-first(r), step=-step(r), length=length(r))
 ```
 
-### [Extending in-place broadcasting](@id extending-in-place-broadcast)
+### [扩展 in-place 广播](@id extending-in-place-broadcast)
 
-In-place broadcasting can be supported by defining the appropriate `copyto!(dest, bc::Broadcasted)`
-method. Because you might want to specialize either on `dest` or the specific subtype of `bc`,
-to avoid ambiguities between packages we recommend the following convention.
+In-place 广播可通过定义合适的 `copyto!(dest, bc::Broadcasted)` 方法来支持。由于你可能想要专门化 `dest` 或 `bc` 的特定子类型，为了避免包之间的歧义，我们建议采用以下约定。
 
-If you wish to specialize on a particular style `DestStyle`, define a method for
+如果你想要专门化特定的广播风格 `DestStyle`，请为其定义一个方法
 ```julia
 copyto!(dest, bc::Broadcasted{DestStyle})
 ```
-Optionally, with this form you can also specialize on the type of `dest`.
+你可选择使用此形式，如果使用，你还可以专门化 `dest` 的类型。
 
-If instead you want to specialize on the destination type `DestType` without specializing
-on `DestStyle`, then you should define a method with the following signature:
+如果你想专门化目标类型 `DestType` 而不专门化 `DestStyle`，那么你应该定义一个带有以下签名的方法：
 
 ```julia
 copyto!(dest::DestType, bc::Broadcasted{Nothing})
 ```
 
-This leverages a fallback implementation of `copyto!` that converts the wrapper into a
-`Broadcasted{Nothing}`. Consequently, specializing on `DestType` has lower precedence than
-methods that specialize on `DestStyle`.
+这利用了 `copyto!` 的回退实现，它将该封装器转换为一个 `Broadcasted{Nothing}` 对象。因此，专门化 `DestType` 的方法优先级低于专门化 `DestStyle` 的方法。
 
-Similarly, you can completely override out-of-place broadcasting with a `copy(::Broadcasted)`
-method.
+同样，你可以使用 `copy(::Broadcasted)` 方法完全覆盖 out-of-place 广播。
 
-#### Working with `Broadcasted` objects
+#### 使用 `Broadcasted` 对象
 
-In order to implement such a `copy` or `copyto!`, method, of course, you must
-work with the `Broadcasted` wrapper to compute each element. There are two main
-ways of doing so:
+当然，为了实现这样的 `copy` 或 `copyto!` 方法，你必须使用 `Broadcasted` 封装器来计算每个元素。这主要有两种方式：
 
 * `Broadcast.flatten` recomputes the potentially nested operation into a single
   function and flat list of arguments. You are responsible for implementing the

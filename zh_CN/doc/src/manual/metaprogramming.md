@@ -547,11 +547,7 @@ LineNumberNode
   file: Symbol none
 ```
 
-The argument `__module__` provides information (in the form of a `Module` object)
-about the expansion context of the macro invocation.
-This allows macros to look up contextual information, such as existing bindings,
-or to insert the value as an extra argument to a runtime function call doing self-reflection
-in the current module.
+参数 `__module__` 提供宏调用展开处的上下文相关信息（以 `Module` 对象的形式）。这允许宏查找上下文相关的信息，比如现有的绑定，或者将值作为附加参数插入到一个在当前模块中进行自我反射的运行时函数调用中。
 
 
 ### 构建高级的宏
@@ -968,7 +964,7 @@ julia> @generated gen1(x) = f(x);
 julia> @generated gen2(x) = :(f(x));
 ```
 
-We now add some new definitions for `f(x)`:
+我们现在为 `f(x)` 添加几个新定义：
 
 ```jldoctest redefinition
 julia> f(x::Int) = "definition for Int";
@@ -1052,7 +1048,7 @@ baz (generic function with 1 method)
 一些不应该尝试的操作包括：
 
 1. 缓存本地指针。
-2. Interacting with the contents or methods of Core.Compiler in any way.
+2. 以任何方式与 Core.Compiler 的内容或方法交互。
 3. 观察任何可变状态。
 
      * 生成函数的类型推导可以在*任何*时候运行，包括你的代码正在尝试观察或更改此状态时。
@@ -1065,12 +1061,9 @@ baz (generic function with 1 method)
 
 那好，我们现在已经更好地理解了生成函数的工作方式，让我们使用它来构建一些更高级（和有效）的功能……
 
-### An advanced example
+### 一个高级的例子
 
-Julia's base library has a an internal `sub2ind` function to calculate a linear index into an n-dimensional
-array, based on a set of n multilinear indices - in other words, to calculate the index `i` that
-can be used to index into an array `A` using `A[i]`, instead of `A[x,y,z,...]`. One possible implementation
-is the following:
+Julia 的 base 库有个内部函数 `sub2ind`，用于根据一组 n 重线性索引计算 n 维数组的线性索引——换句话说，用于计算索引 `i`，其可用于使用 `A[i]` 来索引数组 `A`，而不是用 `A[x,y,z,...]`。一种可能的实现如下：
 
 ```jldoctest sub2ind
 julia> function sub2ind_loop(dims::NTuple{N}, I::Integer...) where N
@@ -1086,7 +1079,7 @@ julia> sub2ind_loop((3, 5), 1, 2)
 4
 ```
 
-The same thing can be done using recursion:
+用递归可以完成同样的事情：
 
 ```jldoctest
 julia> sub2ind_rec(dims::Tuple{}) = 1;
@@ -1103,13 +1096,9 @@ julia> sub2ind_rec((3, 5), 1, 2)
 4
 ```
 
-Both these implementations, although different, do essentially the same thing: a runtime loop
-over the dimensions of the array, collecting the offset in each dimension into the final index.
+这两种实现虽然不同，但本质上做同样的事情：在数组维度上的运行时循环，将每个维度上的偏移量收集到最后的索引中。
 
-However, all the information we need for the loop is embedded in the type information of the arguments.
-Thus, we can utilize generated functions to move the iteration to compile-time; in compiler parlance,
-we use generated functions to manually unroll the loop. The body becomes almost identical, but
-instead of calculating the linear index, we build up an *expression* that calculates the index:
+然而，循环所需的信息都已嵌入到参数的类型信息中。因此，我们可以利用生成函数将迭代移动到编译期；用编译器的说法，我们用生成函数手动展开循环。代码主体变得几乎相同，但我们不是计算线性索引，而是建立计算索引的*表达式*：
 
 ```jldoctest sub2ind_gen
 julia> @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
@@ -1125,9 +1114,9 @@ julia> sub2ind_gen((3, 5), 1, 2)
 4
 ```
 
-**What code will this generate?**
+**这会生成什么代码？**
 
-An easy way to find out is to extract the body into another (regular) function:
+找出所生成代码的一个简单方法是将生成函数的主体提取到另一个（通常的）函数中：
 
 ```jldoctest sub2ind_gen2
 julia> @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
@@ -1146,31 +1135,20 @@ julia> function sub2ind_gen_impl(dims::Type{T}, I...) where T <: NTuple{N,Any} w
 sub2ind_gen_impl (generic function with 1 method)
 ```
 
-We can now execute `sub2ind_gen_impl` and examine the expression it returns:
+我们现在可以执行 `sub2ind_gen_impl` 并检查它所返回的表达式：
 
 ```jldoctest sub2ind_gen2
 julia> sub2ind_gen_impl(Tuple{Int,Int}, Int, Int)
 :(((I[1] - 1) + dims[1] * (I[2] - 1)) + 1)
 ```
 
-So, the method body that will be used here doesn't include a loop at all - just indexing into
-the two tuples, multiplication and addition/subtraction. All the looping is performed compile-time,
-and we avoid looping during execution entirely. Thus, we only loop *once per type*, in this case
-once per `N` (except in edge cases where the function is generated more than once - see disclaimer
-above).
+因此，这里使用的方法主体根本不包含循环——只有两个元组的索引、乘法和加法/减法。所有循环都是在编译期执行的，我们完全避免了在执行期间的循环。因此，我们只需对每个类型循环*一次*，在本例中每个 `N` 循环一次（除了在该函数被多次生成的边缘情况——请参阅上面的免责声明）。
 
-### Optionally-generated functions
+### 可选地生成函数
 
-Generated functions can achieve high efficiency at run time, but come with a compile time cost:
-a new function body must be generated for every combination of concrete argument types.
-Typically, Julia is able to compile "generic" versions of functions that will work for any
-arguments, but with generated functions this is impossible.
-This means that programs making heavy use of generated functions might be impossible to
-statically compile.
+生成函数可以在运行时实现高效率，但需要编译时间成本：必须为具体的参数类型的每个组合生成新的函数体。通常，Julia 能够编译函数的「泛型」版本，其适用于任何参数，但对于生成函数，这是不可能的。这意味着大量使用生成函数的程序可能无法静态编译。
 
-To solve this problem, the language provides syntax for writing normal, non-generated
-alternative implementations of generated functions.
-Applied to the `sub2ind` example above, it would look like this:
+为了解决这个问题，语言提供用于编写生成函数的通常、非生成的替代实现的语法。应用于上面的 `sub2ind` 示例，它看起来像这样：
 
 ```julia
 function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
@@ -1193,24 +1171,8 @@ function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
 end
 ```
 
-Internally, this code creates two implementations of the function: a generated one where
-the first block in `if @generated` is used, and a normal one where the `else` block is used.
-Inside the `then` part of the `if @generated` block, code has the same semantics as other
-generated functions: argument names refer to types, and the code should return an expression.
-Multiple `if @generated` blocks may occur, in which case the generated implementation uses
-all of the `then` blocks and the alternate implementation uses all of the `else` blocks.
+在内部，这段代码创建了函数的两个实现：一个生成函数的实现，其使用 `if @generated` 中的第一个块，一个通常的函数的实现，其使用 `else` 块。在 `if @generated` 块的 `then` 部分中，代码与其它生成函数具有相同的语义：参数名称引用类型，且代码应返回表达式。可能会出现多个 `if @generated` 块，在这种情况下，生成函数的实现使用所有的 `then` 块，而替代实现使用所有的 `else` 块。
 
-Notice that we added an error check to the top of the function.
-This code will be common to both versions, and is run-time code in both versions
-(it will be quoted and returned as an expression from the generated version).
-That means that the values and types of local variables are not available at code generation
-time --- the code-generation code can only see the types of arguments.
+请注意，我们在函数顶部添加了错误检查。此代码对两个版本都是通用的，且是两个版本中的运行时代码（它将被引用并返回为生成函数版本中的表达式）。这意味着局部变量的值和类型在代码生成时不可用——用于代码生成的代码只能看到参数类型。
 
-In this style of definition, the code generation feature is essentially an optional
-optimization.
-The compiler will use it if convenient, but otherwise may choose to use the normal
-implementation instead.
-This style is preferred, since it allows the compiler to make more decisions and compile
-programs in more ways, and since normal code is more readable than code-generating code.
-However, which implementation is used depends on compiler implementation details, so it
-is essential for the two implementations to behave identically.
+在这种定义方式中，代码生成功能本质上只是一种可选的优化。如果方便，编译器将使用它，否则可能选择使用通常的实现。这种方式是首选的，因为它允许编译器做出更多决策和以更多方式编译程序，还因为通常代码比由代码生成的代码更易读。但是，使用哪种实现取决于编译器实现细节，因此，两个实现的行为必须相同。
