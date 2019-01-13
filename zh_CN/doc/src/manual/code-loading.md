@@ -113,14 +113,14 @@ git-tree-sha1 = "e808e36a5d7173974b90a15a353b564f3494092f"
 version = "3.4.2"
 ```
 
-This manifest file describes a possible complete dependency graph for the `App` project:
+这个清单文件描述了 `App` 项目可能的完整依赖关系图：
 
-- There are two different `Priv` packages that the application needs—a private one which is a direct dependency and a public one which is an indirect dependency through `Pub`:
-  * The private `Priv` depends on the `Pub` and `Zebra` packages.
-  * The public `Priv` has no dependencies.
-- The application also depends on the `Pub` package, which in turn depends on the public `Priv ` and the same `Zebra` package which the private `Priv` package depends on.
+- 应用程序需要两个不同的 `Priv` 包——一个是直接依赖的私有包和一个通过 `Pub` 间接依赖的公共包：
+  * 私有的 `Priv` 依赖于 `Pub` 和 `Zebra` 包。
+  * 公有的 `Priv` 没有依赖关系。
+- 该应用程序还依赖于 `Pub` 包，而后者依赖于公有的 `Priv` 以及私有的 `Priv` 包所依赖的那个 `Zebra` 包。
 
-A materialized representation of this dependency `graph` looks like this:
+这种依赖“图形”的物化表示如下所示：
 
 ```julia
 graph = Dict{UUID,Dict{Symbol,UUID}}(
@@ -141,7 +141,7 @@ graph = Dict{UUID,Dict{Symbol,UUID}}(
 )
 ```
 
-Given this dependency `graph`, when Julia sees `import Priv` in the `Pub` package—which has UUID `c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1`—it looks up:
+给定这个依赖图，当 Julia 看到 `Pub` 包中的 `import Priv` ——它有 UUID`c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1` 时，它会查找：
 
 ```julia
 graph[UUID("c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1")][:Priv]
