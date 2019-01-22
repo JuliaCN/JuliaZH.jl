@@ -6,7 +6,7 @@ using Markdown, Dates
 Markdown.parse("上次更新时间: $(now())")
 ```
 
-请先阅读 [v1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观，文章中也介绍了 julia 自 v0.6 以来所做出的诸多改进。另外与 v1.0 同时发布的还有 v0.7，该版本是 v0.6 与 v1.0 之间的过渡版本，它能够兼容大部分还没来得及更新到 v1.0 的包，也能够正常运行已经不再提供 v0.6 支持的包。v0.7 和 v1.0 的差别只是：v0.7 会告诉你哪些 v0.6 的函数和接口已经被废弃、移动或改名了；而 v1.0 则会直接报错。参见 [v0.7 更新说明](https://docs.julialang.org/en/v0.7.0/NEWS/)。
+请先阅读 [v1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观，文章中也介绍了 Julia 自 v0.6 以来所做出的诸多改进。另外与 v1.0 同时发布的还有 v0.7，该版本是 v0.6 与 v1.0 之间的过渡版本，它能够兼容大部分还没来得及更新到 v1.0 的包，也能够正常运行已经不再提供 v0.6 支持的包。v0.7 和 v1.0 的差别只是：v0.7 会告诉你哪些 v0.6 的函数和接口已经被废弃、移动或改名了；而 v1.0 则会直接报错。参见 [v0.7 更新说明](https://docs.julialang.org/en/v0.7.0/NEWS/)。
 
 !!! note "关于中文文档"
     Julia 语言相关的本地化工作是一个由社区驱动的开源项目 [JuliaZH.jl](https://github.com/JuliaCN/JuliaZH.jl)，旨在方便 Julia 的中文用户。我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
@@ -16,7 +16,7 @@ Markdown.parse("上次更新时间: $(now())")
 科学计算对性能一直有着最高的需求，但目前相关领域的专家却大量使用比较慢的动态语言来完成他们的日常工作。
 我们相信在科学计算领域，有很多好的理由使专家们偏爱动态语言， 因此我们不会舍弃这样的特性。幸运的是，现代语言设计和编译器技术可以大大消除性能折衷（trade-off），并提供足够的单一环境来进行原型设计，而且足够高效地部署性能密集型应用程序。Julia 语言在这其中扮演了这样一个角色：它是一门灵活的动态语言，适合用于科学计算和数值计算，并且性能可与传统的静态类型语言媲美。
 
-由于 Julia 的编译器和其它语言比如 Python 或 R 的解释器有所不同，一开始您可能会觉得用 julia 编写高性能的代码并不是一件容易的事。
+由于 Julia 的编译器和其它语言比如 Python 或 R 的解释器有所不同，一开始您可能会觉得用 Julia 编写高性能的代码并不是一件容易的事。
 如果您发现您的某部分代码有些慢，我们非常建议您在尝试其它功能前读一下[提高性能的窍门](@ref man-performance-tips) 。在理解了 Julia 的运作方式后，写出和 C 一样快的代码对您而言就是小菜一碟。
 
 Julia 拥有可选类型标注和多重派发这两个特性，同时还拥有很棒的性能。这些都得归功于（使用 [LLVM](https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine) 实现的）类型推导和[即时编译（JIT）](https://en.wikipedia.org/wiki/Just-in-time_compilation)技术。Julia 是一门支持过程式、函数式和面向对象（object-oriented）的多范式语言。
