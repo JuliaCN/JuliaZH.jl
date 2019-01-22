@@ -107,22 +107,19 @@ julia> time_sum(x)
 496.84883432553846
 ```
 
-在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的[工具](@ref tools)之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见[Pre-allocating outputs](@ref)）。
-!!! note
+在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的[工具](@ref tools)之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见 [Pre-allocating outputs](@ref)）。
 
-对于更加正经的性能测试，考虑一下[BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)包，这个包除了其他方面之外会多次评估函数的性能以降低噪声。
+!!! note
+    对于更加正经的性能测试，考虑一下 [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) 包，这个包除了其他方面之外会多次评估函数的性能以降低噪声。
 
 ## [工具](@id tools)
 
-Julia和其包生态圈包含了能帮助你诊断问题和提高你的代码的性能表现的工具：
+Julia 和其包生态圈包含了能帮助你诊断问题和提高你的代码的性能表现的工具：
 
-* [性能分析](@ref)允许你测量你运行的代码的性能表现并找出是性能瓶颈的代码。对于复杂的工程，[ProfileView](https://github.com/timholy/ProfileView.jl)能帮你将性能分析结果可视化。
-
-* [Traceur](https://github.com/MikeInnes/Traceur.jl)包能帮你找到你代码中的常见性能问题。
-
-* 没有预想到的巨大的内存申请 -- 像[`@time`](@ref)，[`@allocated`](@ref) 或者性能分析器（通过对于垃圾回收进程的调用）告诉你的一样 -- 提示着你的代码会有问题。 如果没有见到有关内存申请的其他原因，你需要怀疑这是一个类型问题。你也可以通过`-track-allocation=user`选项开启Julia并检查生成的`*.mem`文件来检查有关内存申请发生位置的信息。参见[内存分配分析](@ref)。
-
-*`@code_warntype`生成你的代码的一个表示，对于找到会造成类型不确定的表达式有用。参见下面的[`@code_warntype`](@ref)。
+  * [性能分析](@ref)允许你测量你运行的代码的性能表现并找出是性能瓶颈的代码。对于复杂的工程，[ProfileView](https://github.com/timholy/ProfileView.jl) 能帮你将性能分析结果可视化。
+  * [Traceur](https://github.com/MikeInnes/Traceur.jl) 包能帮你找到你代码中的常见性能问题。
+  * 没有预想到的巨大的内存申请 -- 像 [`@time`](@ref)，[`@allocated`](@ref) 或者性能分析器（通过对于垃圾回收进程的调用）告诉你的一样——提示着你的代码会有问题。如果没有见到有关内存申请的其他原因，你需要怀疑这是一个类型问题。你也可以通过 `-track-allocation=user` 选项开启 Julia 并检查生成的 `*.mem` 文件来检查有关内存申请发生位置的信息。参见[内存分配分析](@ref)。
+  * `@code_warntype` 生成你的代码的一个表示，对于找到会造成类型不确定的表达式有用。参见下面的 [`@code_warntype`](@ref)。
 
 ## 避免拥有抽象类型参数的容器
 
@@ -704,11 +701,9 @@ or thousands of variants compiled for it. Each of these increases the size of th
 code, the length of internal lists of methods, etc. Excess enthusiasm for values-as-parameters
 can easily waste enormous resources.
 
-## Access arrays in memory order, along columns
+## 按内存顺序访问数组，即按列访问
 
-Multidimensional arrays in Julia are stored in column-major order. This means that arrays are
-stacked one column at a time. This can be verified using the `vec` function or the syntax `[:]`
-as shown below (notice that the array is ordered `[1 3 2 4]`, not `[1 2 3 4]`):
+Julia 中的多维数组以列主序存储。这意味着数组一次堆叠一列。这可使用 `vec` 函数或语法 `[:]` 来验证，如下所示（请注意，数组的顺序是 `[1 3 2 4]`，而不是 `[1 2 3 4]`）：
 
 ```jldoctest
 julia> x = [1 2; 3 4]
@@ -724,18 +719,9 @@ julia> x[:]
  4
 ```
 
-This convention for ordering arrays is common in many languages like Fortran, Matlab, and R (to
-name a few). The alternative to column-major ordering is row-major ordering, which is the convention
-adopted by C and Python (`numpy`) among other languages. Remembering the ordering of arrays can
-have significant performance effects when looping over arrays. A rule of thumb to keep in mind
-is that with column-major arrays, the first index changes most rapidly. Essentially this means
-that looping will be faster if the inner-most loop index is the first to appear in a slice expression.
+这种数组排序的约定在许多语言中都很常见，比如 Fortran、Matlab 和 R（仅举几例）。列主序的替代方案是行主序，这是 C 和 Python（`numpy`）在其它语言中采用的惯例。请记住数组的排序在循环数组时会对性能产生显著影响。需记住的一个经验法则是，对于列主序数组，改变第一个索引最快。实际上，这意味着如果最内层循环索引是切片表达式的第一个索引，那循环将更快。
 
-Consider the following contrived example. Imagine we wanted to write a function that accepts a
-[`Vector`](@ref) and returns a square [`Matrix`](@ref) with either the rows or the columns filled with copies
-of the input vector. Assume that it is not important whether rows or columns are filled with these
-copies (perhaps the rest of the code can be easily adapted accordingly). We could conceivably
-do this in at least four ways (in addition to the recommended call to the built-in [`repeat`](@ref)):
+考虑以下人为示例。假设我们想编写一个接收 [`Vector`](@ref) 并返回方阵 [`Matrix`](@ref) 的函数，所返回方阵的行或列都用输入向量的副本填充。并假设用这些副本填充的是行还是列并不重要（也许可以很容易地相应调整剩余代码）。我们至少可以想到四种方式（除了建议的调用内置函数 [`repeat`](@ref)）：
 
 ```julia
 function copy_cols(x::Vector{T}) where T
@@ -775,7 +761,7 @@ function copy_row_col(x::Vector{T}) where T
 end
 ```
 
-Now we will time each of these functions using the same random `10000` by `1` input vector:
+现在，我们使用相同的 `10000` 乘 `1` 的随机输入向量来对这些函数计时。
 
 ```julia-repl
 julia> x = randn(10000);
@@ -789,18 +775,13 @@ copy_col_row: 0.415630047
 copy_row_col: 1.721531501
 ```
 
-Notice that `copy_cols` is much faster than `copy_rows`. This is expected because `copy_cols`
-respects the column-based memory layout of the `Matrix` and fills it one column at a time. Additionally,
-`copy_col_row` is much faster than `copy_row_col` because it follows our rule of thumb that the
-first element to appear in a slice expression should be coupled with the inner-most loop.
+请注意，`copy_cols` 比 `copy_rows` 快得多。这与预料的一致，因为 `copy_cols` 尊重 `Matrix` 基于列的内存布局。另外，`copy_col_row` 比 `copy_row_col` 快得多，因为它遵循我们的经验法则，即切片表达式中出现的第一个元素应该与最内层循环耦合。
 
-## Pre-allocating outputs
+## 预分配输出
 
-If your function returns an `Array` or some other complex type, it may have to allocate memory.
-Unfortunately, oftentimes allocation and its converse, garbage collection, are substantial bottlenecks.
+如果函数返回 `Array` 或其它复杂类型，则可能需要分配内存。不幸的是，内存分配及其反面垃圾收集通常是很大的瓶颈。
 
-Sometimes you can circumvent the need to allocate memory on each function call by preallocating
-the output. As a trivial example, compare
+有时，你可以通过预分配输出结果来避免在每个函数调用上分配内存的需要。作为一个简单的例子，比较
 
 ```jldoctest prealloc
 julia> function xinc(x)
@@ -817,7 +798,7 @@ julia> function loopinc()
        end;
 ```
 
-with
+和
 
 ```jldoctest prealloc
 julia> function xinc!(ret::AbstractVector{T}, x::T) where T
@@ -838,7 +819,7 @@ julia> function loopinc_prealloc()
        end;
 ```
 
-Timing results:
+计时结果：
 
 ```jldoctest prealloc; filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> @time loopinc()
@@ -850,30 +831,15 @@ julia> @time loopinc_prealloc()
 50000015000000
 ```
 
-Preallocation has other advantages, for example by allowing the caller to control the "output"
-type from an algorithm. In the example above, we could have passed a `SubArray` rather than an
-[`Array`](@ref), had we so desired.
+预分配还有其它优点，例如允许调用者在算法中控制「输出」类型。在上述例子中，我们如果需要，可以传递 `SubArray` 而不是 [`Array`](@ref)。
 
-Taken to its extreme, pre-allocation can make your code uglier, so performance measurements and
-some judgment may be required. However, for "vectorized" (element-wise) functions, the convenient
-syntax `x .= f.(y)` can be used for in-place operations with fused loops and no temporary arrays
-(see the [dot syntax for vectorizing functions](@ref man-vectorized)).
+极端情况下，预分配可能会使你的代码更丑陋，所以可能需要做性能测试和一些判断。但是，对于「向量化」（逐元素）函数，方便的语法 `x .= f.(y)` 可用于具有融合循环的 in-place 操作且无需临时数组（请参阅[向量化函数的点语法](@ref man-vectorized)）。
 
-## More dots: Fuse vectorized operations
+## 点语法：融合向量化操作
 
-Julia has a special [dot syntax](@ref man-vectorized) that converts
-any scalar function into a "vectorized" function call, and any operator
-into a "vectorized" operator, with the special property that nested
-"dot calls" are *fusing*: they are combined at the syntax level into
-a single loop, without allocating temporary arrays. If you use `.=` and
-similar assignment operators, the result can also be stored in-place
-in a pre-allocated array (see above).
+Julia 有特殊的[点语法](@ref man-vectorized)，它可以将任何标量函数转换为「向量化」函数调用，将任何运算符转换为「向量化」运算符，其具有的特殊性质是嵌套「点调用」是*融合的*：它们在语法层级被组合为单个循环，无需分配临时数组。如果你使用 `.=` 和类似的赋值运算符，则结果也可以 in-place 存储在预分配的数组（参见上文）。
 
-In a linear-algebra context, this means that even though operations like
-`vector + vector` and `vector * scalar` are defined, it can be advantageous
-to instead use `vector .+ vector` and `vector .* scalar` because the
-resulting loops can be fused with surrounding computations. For example,
-consider the two functions:
+在线性代数的上下文中，这意味着即使诸如 `vector + vector` 和 `vector * scalar` 之类的运算，使用 `vector .+ vector` 和 `vector .* scalar` 来替代也可能是有利的，因为生成的循环可与周围的计算融合。例如，考虑两个函数：
 
 ```jldoctest dotfuse
 julia> f(x) = 3x.^2 + 4x + 7x.^3;
@@ -881,9 +847,7 @@ julia> f(x) = 3x.^2 + 4x + 7x.^3;
 julia> fdot(x) = @. 3x^2 + 4x + 7x^3 # equivalent to 3 .* x.^2 .+ 4 .* x .+ 7 .* x.^3;
 ```
 
-Both `f` and `fdot` compute the same thing. However, `fdot`
-(defined with the help of the [`@.`](@ref @__dot__) macro) is
-significantly faster when applied to an array:
+`f` 和 `fdot` 都做相同的计算。但是，`fdot`（在 [`@.`](@ref @__dot__) 宏的帮助下定义）在作用于数组时明显更快：
 
 ```jldoctest dotfuse; filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(10^6);
@@ -898,33 +862,13 @@ julia> @time f.(x);
   0.002626 seconds (8 allocations: 7.630 MiB)
 ```
 
-That is, `fdot(x)` is ten times faster and allocates 1/6 the
-memory of `f(x)`, because each `*` and `+` operation in `f(x)` allocates
-a new temporary array and executes in a separate loop. (Of course,
-if you just do `f.(x)` then it is as fast as `fdot(x)` in this
-example, but in many contexts it is more convenient to just sprinkle
-some dots in your expressions rather than defining a separate function
-for each vectorized operation.)
+也就是说，`fdot(x)` 比 `f(x)` 快十倍且分配的内存为其 1/6，因为 `f(x)` 中的每个 `*` 和 `+` 运算都会分配一个新的临时数组并在单独的循环中执行。（当然，如果你只计算 `f.(x)`，那在此例中它与 `fdot(x)` 一样快，但在许多情况下，在表达式中添加一些点比为每个向量化操作定义单独的函数更方便。）
 
-## Consider using views for slices
+## 考虑在切片中使用视图
 
-In Julia, an array "slice" expression like `array[1:5, :]` creates
-a copy of that data (except on the left-hand side of an assignment,
-where `array[1:5, :] = ...` assigns in-place to that portion of `array`).
-If you are doing many operations on the slice, this can be good for
-performance because it is more efficient to work with a smaller
-contiguous copy than it would be to index into the original array.
-On the other hand, if you are just doing a few simple operations on
-the slice, the cost of the allocation and copy operations can be
-substantial.
+在 Julia 中，数组「切片」表达式，如 `array[1:5, :]`，创建对应数据的副本（除了在赋值的左侧，此情况下 `array[1:5, :] = ...` 会对 `array` 的对应部分进行 in-place 赋值）。如果你会在切片上执行许多操作，这对性能是有好处的，因为使用更小的连续副本比索引到原始数组更高效。另一方面，如果你只在切片上执行一些简单操作，则分配和复制操作的成本可能很高。
 
-An alternative is to create a "view" of the array, which is
-an array object (a `SubArray`) that actually references the data
-of the original array in-place, without making a copy. (If you
-write to a view, it modifies the original array's data as well.)
-This can be done for individual slices by calling [`view`](@ref),
-or more simply for a whole expression or block of code by putting
-[`@views`](@ref) in front of that expression. For example:
+另一种方法是创建数组的「视图」，它是一个数组对象（一个 `SubArray`），它实际上 in-place 引用原始数组的数据而无需进行复制。（如果你改写一个视图，它也会修改原始数组的数据。）对于单个切片，这可通过调用 [`view`](@ref) 来完成，对于整个表达式或代码块，这还可更简单地通过将 [`@views`](@ref) 放在该表达式前来完成。例如：
 
 ```jldoctest; filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> fcopy(x) = sum(x[2:end-1]);
@@ -940,8 +884,7 @@ julia> @time fview(x);
   0.001020 seconds (6 allocations: 224 bytes)
 ```
 
-Notice both the 3× speedup and the decreased memory allocation
-of the `fview` version of the function.
+请注意，该函数的 `fview` 版本提速了 3 倍且减少了内存分配。
 
 ## Copying data is not always bad
 

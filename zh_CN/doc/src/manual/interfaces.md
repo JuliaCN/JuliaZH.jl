@@ -194,15 +194,15 @@ julia> Squares(10)[[3,4.,5]]
 | `setindex!(A, v, I::Vararg{Int, N})`            |                                        | （如果 `IndexCartesian`，其中 `N = ndims(A)`）N 维标量索引元素赋值   |
 | **可选方法**                            | **默认定义**                 | **简短描述**                                                                 |
 | `IndexStyle(::Type)`                            | `IndexCartesian()`                     | 返回 `IndexLinear()` 或 `IndexCartesian()`。请参阅下文描述。      |
-| `getindex(A, I...)`                             | 基于标量 `getindex` 定义  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |
-| `setindex!(A, I...)`                            | 基于标量 `setindex!` 定义 | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |
+| `getindex(A, I...)`                             | 基于标量 `getindex` 定义  | [多维非标量索引](@ref man-array-indexing)                    |
+| `setindex!(A, I...)`                            | 基于标量 `setindex!` 定义 | [多维非标量索引元素赋值](@ref man-array-indexing)          |
 | `iterate`                                       | 基于标量 `getindex` 定义  | Iteration                                                                             |
 | `length(A)`                                     | `prod(size(A))`                        | 元素数                                                                    |
 | `similar(A)`                                    | `similar(A, eltype(A), size(A))`       | 返回具有相同形状和元素类型的可变数组                           |
 | `similar(A, ::Type{S})`                         | `similar(A, S, size(A))`               | 返回具有相同形状和指定元素类型的可变数组             |
 | `similar(A, dims::NTuple{Int})`                 | `similar(A, eltype(A), dims)`          | 返回具有相同元素类型和大小为 *dims* 的可变数组                     |
 | `similar(A, ::Type{S}, dims::NTuple{Int})`      | `Array{S}(undef, dims)`               | 返回具有指定元素类型及大小的可变数组                       |
-| **Non-traditional indices**                     | **默认定义**                 | **简短描述**                                                                 |
+| **不遵循惯例的索引**                     | **默认定义**                 | **简短描述**                                                                 |
 | `axes(A)`                                    | `map(OneTo, size(A))`                  | 返回有效索引的 `AbstractUnitRange`                                       |
 | `Base.similar(A, ::Type{S}, inds::NTuple{Ind})` | `similar(A, S, Base.to_shape(inds))`   | 返回使用特殊索引 `inds` 的可变数组（详见下文）                  |
 | `Base.similar(T::Union{Type,Function}, inds)`   | `T(Base.to_shape(inds))`               | 返回类似于 `T` 的使用特殊索引 `inds` 的数组（详见下文）          |
@@ -369,14 +369,14 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 | `Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})` | 输出结果的分配 |
 | **可选方法** | | |
 | `Base.BroadcastStyle(::Style1, ::Style2) = Style12()` | 混合广播风格的优先级规则 |
-| `Base.broadcast_axes(x)` | Declaration of the indices of `x` for broadcasting purposes (defaults to [`axes(x)`](@ref)) |
+| `Base.broadcast_axes(x)` | 用于广播的 `x` 的索引的声明（默认为 [`axes(x)`](@ref)） |
 | `Base.broadcastable(x)` | 将 `x` 转换为一个具有 `axes` 且支持索引的对象 |
 | **绕过默认机制** | |
 | `Base.copy(bc::Broadcasted{DestStyle})` | `broadcast` 的自定义实现 |
 | `Base.copyto!(dest, bc::Broadcasted{DestStyle})` | 专门针对 `DestStyle` 的自定义 `broadcast!` 实现 |
 | `Base.copyto!(dest::DestType, bc::Broadcasted{Nothing})` | 专门针对 `DestStyle` 的自定义 `broadcast!` 实现 |
-| `Base.Broadcast.broadcasted(f, args...)` | Override the default lazy behavior within a fused expression |
-| `Base.Broadcast.instantiate(bc::Broadcasted{DestStyle})` | Override the computation of the lazy broadcast's axes |
+| `Base.Broadcast.broadcasted(f, args...)` | 覆盖融合表达式中的默认惰性行为 |
+| `Base.Broadcast.instantiate(bc::Broadcasted{DestStyle})` | 覆盖惰性广播的 axes 的计算 |
 
 [广播](@ref)可由 `broadcast` 或 `broadcast!` 的显式调用、或者像 `A .+ b` 或 `f.(x, y)` 这样的「点」操作隐式触发。任何具有 [`axes`](@ref) 且支持索引的对象都可作为参数参与广播，默认情况下，广播结果储存在 `Array` 中。这个基本框架可通过三个主要方式扩展：
 
@@ -524,37 +524,31 @@ copyto!(dest::DestType, bc::Broadcasted{Nothing})
 
 当然，为了实现这样的 `copy` 或 `copyto!` 方法，你必须使用 `Broadcasted` 封装器来计算每个元素。这主要有两种方式：
 
-* `Broadcast.flatten` recomputes the potentially nested operation into a single
-  function and flat list of arguments. You are responsible for implementing the
-  broadcasting shape rules yourself, but this may be helpful in limited situations.
-* Iterating over the `CartesianIndices` of the `axes(::Broadcasted)` and using
-  indexing with the resulting `CartesianIndex` object to compute the result.
+* `Broadcast.flatten` 将可能的嵌套操作重新计算为单个函数并平铺参数列表。你自己负责实现广播形状规则，但这在有限的情况下可能会有所帮助。
+   
+   
+* 迭代 `axes(::Broadcasted)` 的 `CartesianIndices` 并使用所生成的 `CartesianIndex` 对象的索引来计算结果。
+   
 
-### [Writing binary broadcasting rules](@id writing-binary-broadcasting-rules)
+### [编写二元广播规则](@id writing-binary-broadcasting-rules)
 
-The precedence rules are defined by binary `BroadcastStyle` calls:
+广播风格的优先级规则由二元 `BroadcastStyle` 调用定义：
 
 ```julia
 Base.BroadcastStyle(::Style1, ::Style2) = Style12()
 ```
 
-where `Style12` is the `BroadcastStyle` you want to choose for outputs involving
-arguments of `Style1` and `Style2`. For example,
+其中，`Style12` 是你要为输出所选择的 `BroadcastStyle`，所涉及的参数具有 `Style1` 及 `Style2`。例如，
 
 ```julia
 Base.BroadcastStyle(::Broadcast.Style{Tuple}, ::Broadcast.AbstractArrayStyle{0}) = Broadcast.Style{Tuple}()
 ```
 
-indicates that `Tuple` "wins" over zero-dimensional arrays (the output container will be a tuple).
-It is worth noting that you do not need to (and should not) define both argument orders
-of this call; defining one is sufficient no matter what order the user supplies the arguments in.
+表示 `Tuple`「胜过」零维数组（输出容器将是元组）。值得注意的是，你不需要（也不应该）为此调用的两个参数顺序下定义；无论用户提供的以何种顺序提供参数，定义一个就够了。
 
-For `AbstractArray` types, defining a `BroadcastStyle` supersedes the fallback choice,
-[`Broadcast.DefaultArrayStyle`](@ref). `DefaultArrayStyle` and the abstract supertype, `AbstractArrayStyle`, store the dimensionality as a type parameter to support specialized
-array types that have fixed dimensionality requirements.
+对于 `AbstractArray` 类型，定义 `BroadcastStyle` 将取代回退选择 [`Broadcast.DefaultArrayStyle`](@ref)。`DefaultArrayStyle` 及其抽象超类型 `AbstractArrayStyle` 将维度存储为类型参数，以支持具有固定维度需求的特定数组类型。
 
-`DefaultArrayStyle` "loses" to any other
-`AbstractArrayStyle` that has been defined because of the following methods:
+由于以下方法，`DefaultArrayStyle`「输给」任何其它已定义的 `AbstractArrayStyle`：
 
 ```julia
 BroadcastStyle(a::AbstractArrayStyle{Any}, ::DefaultArrayStyle) = a
@@ -563,12 +557,9 @@ BroadcastStyle(a::AbstractArrayStyle{M}, ::DefaultArrayStyle{N}) where {M,N} =
     typeof(a)(_max(Val(M),Val(N)))
 ```
 
-You do not need to write binary `BroadcastStyle`
-rules unless you want to establish precedence for
-two or more non-`DefaultArrayStyle` types.
+除非你想要为两个或多个非 `DefaultArrayStyle` 的类型建立优先级，否则不需要编写二元 `BroadcastStyle` 规则。
 
-If your array type does have fixed dimensionality requirements, then you should
-subtype `AbstractArrayStyle`. For example, the sparse array code has the following definitions:
+如果你的数组类型确实有固定的维度需求，那么你应该定义一个 `AbstractArrayStyle` 的子类型。例如，稀疏数组的代码中有以下定义：
 
 ```julia
 struct SparseVecStyle <: Broadcast.AbstractArrayStyle{1} end
@@ -577,9 +568,7 @@ Base.BroadcastStyle(::Type{<:SparseVector}) = SparseVecStyle()
 Base.BroadcastStyle(::Type{<:SparseMatrixCSC}) = SparseMatStyle()
 ```
 
-Whenever you subtype `AbstractArrayStyle`, you also need to define rules for combining
-dimensionalities, by creating a constructor for your style that takes a `Val(N)` argument.
-For example:
+每当你定义一个 `AbstractArrayStyle` 的子类型，你还需要定义用于组合维度的规则，这通过为你的广播风格创建带有一个 `Val(N)` 参数的构造函数。例如：
 
 ```julia
 SparseVecStyle(::Val{0}) = SparseVecStyle()
@@ -588,8 +577,4 @@ SparseVecStyle(::Val{2}) = SparseMatStyle()
 SparseVecStyle(::Val{N}) where N = Broadcast.DefaultArrayStyle{N}()
 ```
 
-These rules indicate that the combination of a `SparseVecStyle` with 0- or 1-dimensional arrays
-yields another `SparseVecStyle`, that its combination with a 2-dimensional array
-yields a `SparseMatStyle`, and anything of higher dimensionality falls back to the dense arbitrary-dimensional framework.
-These rules allow broadcasting to keep the sparse representation for operations that result
-in one or two dimensional outputs, but produce an `Array` for any other dimensionality.
+这些规则表明 `SparseVecStyle` 与 0 维或 1 维数组的组合会产生另一个 `SparseVecStyle`，与 2 维数组的组合会产生 `SparseMatStyle`，而与维度更高的数组则回退到任意维密集矩阵的框架中。这些规则允许广播为产生一维或二维输出的操作保持其稀疏表示，但为任何其它维度生成 `Array`。
