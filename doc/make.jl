@@ -153,7 +153,7 @@ makedocs(
     format    = render_pdf ? :latex : :html,
     sitename  = "Julia中文文档",
     authors   = "Julia中文社区",
-    analytics = "UA-89508993-1",
+    analytics = "UA-28835595-6",
     pages     = PAGES,
     html_prettyurls = !("local" in ARGS),
     html_canonical = "https://juliacn.github.io/JuliaZH.jl/latest/",
