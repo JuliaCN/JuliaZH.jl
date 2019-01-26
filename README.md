@@ -4,7 +4,7 @@
 
 |     |国内镜像 | Stable | Latest | Preview |
 |:---:|:---:|:---:|:---:|:---:|
-| 文档 | http://docs.juliacn.com | [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliacn.github.io/JuliaZH.jl/stable) | [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliacn.github.io/JuliaZH.jl/latest) | [Gitlab Pages](https://juliacn.gitlab.io/JuliaZH.jl) |
+| 文档 | [![](https://img.shields.io/website-up-down-green-red/https/shields.io.svg?label=docs.juliacn.com)](https://docs.juliacn.com) | [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliacn.github.io/JuliaZH.jl/stable) | [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliacn.github.io/JuliaZH.jl/latest) | [![](https://img.shields.io/badge/Gitlab%20Pages-Preview-brightgreen.svg)](https://juliacn.gitlab.io/JuliaZH.jl) |
 
 ## 安装
 
