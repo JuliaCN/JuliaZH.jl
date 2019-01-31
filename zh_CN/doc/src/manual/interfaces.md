@@ -32,7 +32,7 @@ Julia的迭代器可以从目标外部跟踪迭代状态，而不是在迭代过
 迭代过程中的返回一个包含了当前迭代值及其状态的元组，或者在没有元素存在的情况下返回  `nothing`  。
 状态对象将在下一次迭代时传递回迭代函数 并且通常被认为是可迭代对象的私有实现细节。
 
-任何定义了这个函数的兑现个都是可迭代的，并且可以被应用到  [many functions that rely upon iteration](@ref lib-collections-iteration) 。
+任何定义了这个函数的对象都是可迭代的，并且可以被应用到[许多依赖迭代的函数上](@ref lib-collections-iteration) 。
 也可以直接被应用到  [`for`](@ref) 循环中，因为根据语法：
 
 ```julia
@@ -41,7 +41,7 @@ for i in iter   # or  "for i = iter"
 end
 ```
 
-被解释为：
+以上代码被解释为：
 
 ```julia
 next = iterate(iter)
@@ -52,7 +52,7 @@ while next !== nothing
 end
 ```
 
-一个简单的例子是一组定长数据的平方数迭代序列：
+举一个简单的例子：一组定长数据的平方数迭代序列：
 
 ```jldoctest squaretype
 julia> struct Squares
@@ -77,7 +77,7 @@ julia> for i in Squares(7)
 49
 ```
 
-我们可以利用许多内置方法来处理迭代，比如标准库 `Statistics`  中的  [`in`](@ref) ， [`mean`](@ref) 和 [`std`](@ref) 。
+我们可以利用许多内置方法来处理迭代，比如标准库 `Statistics`  中的 [`in`](@ref)，[`mean`](@ref) 和 [`std`](@ref) 。
 
 ```jldoctest squaretype
 julia> 25 in Squares(10)
@@ -345,7 +345,7 @@ julia> sum(A)
 
 Strided 数组是 `AbstractArray` 的子类型，其条目以固定步长储存在内存中。如果数组的元素类型与 BLAS 兼容，则 strided 数组可以利用 BLAS 和 LAPACK 例程来实现更高效的线性代数例程。用户定义的 strided 数组的典型示例是把标准 `Array` 用附加结构进行封装的数组。
 
-警告：如果底层存储实际上不是 strided，则不要实现这些方法，因为这可能错误的结果或断错误。
+警告：如果底层存储实际上不是 strided，则不要实现这些方法，因为这可能导致错误的结果或段错误。
 
 下面是一些示例，用来演示哪些数组类型是 strided 数组，哪些不是：
 ```julia
