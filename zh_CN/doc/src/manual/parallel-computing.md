@@ -67,7 +67,7 @@ Julia 的并行编程平台采用协程任务 [Tasks (aka Coroutines)](@ref man-
 * 如果一个 [`Channel`](@ref) 是满的，那么写入的 task(即执行 [`put!`](@ref) 的 task)则会被阻塞，直到 Channel 有空余。
 * [`isready`](@ref) 可以用来检查一个 channel 中是否有已经准备好的元素，而等待一个元素准备好 则用 [`wait`](@ref)
    
-* 一个 [`Channel`](@ref) 一开始处于开启状态，也就是说可以被 [`take!`](@ref) 读取和 [`put!`](@ref) 写入。[`close`](@ref) 会关闭一个 [`Channel`](@ref)，对于一个已经关闭的 [`Channel`](@ref)，[`put!](@ref) 会失败，例如：
+* 一个 [`Channel`](@ref) 一开始处于开启状态，也就是说可以被 [`take!`](@ref) 读取和 [`put!`](@ref) 写入。[`close`](@ref) 会关闭一个 [`Channel`](@ref)，对于一个已经关闭的 [`Channel`](@ref)，[`put!`](@ref) 会失败，例如：
    
    
 

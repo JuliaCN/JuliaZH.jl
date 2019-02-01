@@ -190,7 +190,7 @@ function __init__()
 end
 ```
 
-注意，在像 `__init` 这样的函数里定义一个全局变量是完全可以的，这是动态语言的优点之一。但是把全局作用域的值定义成常量，可以让编译器能确定该值的类型，并且能让编译器生成更好的优化过的代码。显然，你的模块 (Module) 中，任何其他依赖于 `foo_data_ptr` 的全局量也必须在 `__init__` 中被初始化。
+注意，在像 `__init__` 这样的函数里定义一个全局变量是完全可以的，这是动态语言的优点之一。但是把全局作用域的值定义成常量，可以让编译器能确定该值的类型，并且能让编译器生成更好的优化过的代码。显然，你的模块（Module）中，任何其他依赖于 `foo_data_ptr` 的全局量也必须在 `__init__` 中被初始化。
 
 Constants involving most Julia objects that are not produced by `ccall` do not need to be placed
 in `__init__`: their definitions can be precompiled and loaded from the cached module image. This
