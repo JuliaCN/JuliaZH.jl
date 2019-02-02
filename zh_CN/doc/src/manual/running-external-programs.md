@@ -32,11 +32,9 @@ julia> run(mycommand);
 hello
 ```
 
-The `hello` is the output of the `echo` command, sent to [`stdout`](@ref). The run method itself
-returns `nothing`, and throws an [`ErrorException`](@ref) if the external command fails to run
-successfully.
+`hello` 是 `echo` 命令的输出，会被发送到 [`stdout`](@ref) 中去。run 方法本身返回 `nothing`，如果外部命令未能成功运行，则抛出 [`ErrorException`](@ref)。
 
-If you want to read the output of the external command, [`read`](@ref) can be used instead:
+如果要读取外部命令的输出，可以使用 [`read`](@ref)：
 
 ```jldoctest
 julia> a = read(`echo hello`, String)
@@ -46,7 +44,7 @@ julia> chomp(a) == "hello"
 true
 ```
 
-More generally, you can use [`open`](@ref) to read from or write to an external command.
+更一般地，你可以使用 [`open`](@ref) 来读取或写入外部命令。
 
 ```jldoctest
 julia> open(`less`, "w", stdout) do io
@@ -59,8 +57,7 @@ julia> open(`less`, "w", stdout) do io
 3
 ```
 
-The program name and the individual arguments in a command can be accessed
-and iterated over as if the command were an array of strings:
+命令中的程序名称和各个参数可以访问和迭代，这就好像命令也是一个字符串数组：
 ```jldoctest
 julia> collect(`echo "foo bar"`)
 2-element Array{String,1}:
@@ -71,11 +68,9 @@ julia> `echo "foo bar"`[2]
 "foo bar"
 ```
 
-## [Interpolation](@id command-interpolation)
+## [插值](@id command-interpolation)
 
-Suppose you want to do something a bit more complicated and use the name of a file in the variable
-`file` as an argument to a command. You can use `$` for interpolation much as you would in a string
-literal (see [Strings](@ref)):
+假设你想要做的事情更复杂，并使用以变量 `file` 表示的文件名作为命令的参数。那你可以像在字符串字面量中那样使用 `$` 进行插值：
 
 ```jldoctest
 julia> file = "/etc/passwd"
@@ -85,10 +80,7 @@ julia> `sort $file`
 `sort /etc/passwd`
 ```
 
-A common pitfall when running external programs via a shell is that if a file name contains characters
-that are special to the shell, they may cause undesirable behavior. Suppose, for example, rather
-than `/etc/passwd`, we wanted to sort the contents of the file `/Volumes/External HD/data.csv`.
-Let's try it:
+通过 shell 运行外部程序的一个常见陷阱是，如果文件名中包含 shell 中的特殊字符，那么可能会导致不希望出现的行为。例如，假设我们想要对其内容进行排序的文件是 `/Volumes/External HD/data.csv`，而不是 `/etc/passwd`。让我们来试试：
 
 ```jldoctest
 julia> file = "/Volumes/External HD/data.csv"
@@ -98,11 +90,7 @@ julia> `sort $file`
 `sort '/Volumes/External HD/data.csv'`
 ```
 
-How did the file name get quoted? Julia knows that `file` is meant to be interpolated as a single
-argument, so it quotes the word for you. Actually, that is not quite accurate: the value of `file`
-is never interpreted by a shell, so there's no need for actual quoting; the quotes are inserted
-only for presentation to the user. This will even work if you interpolate a value as part of a
-shell word:
+文件名是如何被引用的？Julia 知道 `file` 是作为单个参数插入的，因此它替你引用了此单词。事实上，这不太准确：`file` 的值始终不会被 shell 解释，因此并不需要实际引用；插入引号只是为了展现给用户。就算你把值作为 shell 单词的一部分插入，这也可以工作：
 
 ```jldoctest
 julia> path = "/Volumes/External HD"
@@ -118,8 +106,7 @@ julia> `sort $path/$name.$ext`
 `sort '/Volumes/External HD/data.csv'`
 ```
 
-As you can see, the space in the `path` variable is appropriately escaped. But what if you *want*
-to interpolate multiple words? In that case, just use an array (or any other iterable container):
+如你所见，`path` 变量中的空格被恰当地转义了。但是，如果你*想*插入多个单词怎么办？在此情况下，只需使用数组（或其它可迭代容器）：
 
 ```jldoctest
 julia> files = ["/etc/passwd","/Volumes/External HD/data.csv"]
@@ -131,8 +118,7 @@ julia> `grep foo $files`
 `grep foo /etc/passwd '/Volumes/External HD/data.csv'`
 ```
 
-If you interpolate an array as part of a shell word, Julia emulates the shell's `{a,b,c}` argument
-generation:
+如果将数组作为 shell 单词的一部分插入，Julia 将模拟 shell 的 `{a,b,c}` 参数生成：
 
 ```jldoctest
 julia> names = ["foo","bar","baz"]
@@ -145,8 +131,7 @@ julia> `grep xylophone $names.txt`
 `grep xylophone foo.txt bar.txt baz.txt`
 ```
 
-Moreover, if you interpolate multiple arrays into the same word, the shell's Cartesian product
-generation behavior is emulated:
+此外，若在同一单词中插入多个数组，则将模拟 shell 的笛卡尔积生成行为：
 
 ```jldoctest
 julia> names = ["foo","bar","baz"]
@@ -164,18 +149,16 @@ julia> `rm -f $names.$exts`
 `rm -f foo.aux foo.log bar.aux bar.log baz.aux baz.log`
 ```
 
-Since you can interpolate literal arrays, you can use this generative functionality without needing
-to create temporary array objects first:
+因为可以插入字面量数组，所以你可以使用此生成功能，而无需先创建临时数组对象：
 
 ```jldoctest
 julia> `rm -rf $["foo","bar","baz","qux"].$["aux","log","pdf"]`
 `rm -rf foo.aux foo.log foo.pdf bar.aux bar.log bar.pdf baz.aux baz.log baz.pdf qux.aux qux.log qux.pdf`
 ```
 
-## Quoting
+## 引用
 
-Inevitably, one wants to write commands that aren't quite so simple, and it becomes necessary
-to use quotes. Here's a simple example of a Perl one-liner at a shell prompt:
+不可避免地，我们会想要编写不那么简单的命令，且有必要使用引号。下面是 shell 提示符下单行 Perl 程序的简单示例：
 
 ```
 sh$ perl -le '$|=1; for (0..3) { print }'
@@ -185,10 +168,7 @@ sh$ perl -le '$|=1; for (0..3) { print }'
 3
 ```
 
-The Perl expression needs to be in single quotes for two reasons: so that spaces don't break the
-expression into multiple shell words, and so that uses of Perl variables like `$|` (yes, that's
-the name of a variable in Perl), don't cause interpolation. In other instances, you may want to
-use double quotes so that interpolation *does* occur:
+该 Perl 表达式需要使用单引号有两个原因：一是为了避免空格将表达式分解为多个 shell 单词，二是为了在使用像 `$|`（是的，这在 Perl 中是变量名）这样的 Perl 变量时避免发生插值。在其它情况下，你可能想要使用双引号来*真的*进行插值：
 
 ```
 sh$ first="A"
@@ -198,11 +178,7 @@ sh$ perl -le '$|=1; print for @ARGV' "1: $first" "2: $second"
 2: B
 ```
 
-In general, the Julia backtick syntax is carefully designed so that you can just cut-and-paste
-shell commands as is into backticks and they will work: the escaping, quoting, and interpolation
-behaviors are the same as the shell's. The only difference is that the interpolation is integrated
-and aware of Julia's notion of what is a single string value, and what is a container for multiple
-values. Let's try the above two examples in Julia:
+总之，Julia 反引号语法是经过精心设计的，因此你可以只是将 shell 命令剪切并粘贴到反引号中，接着它们将会工作：转义、引用和插值行为与 shell 相同。唯一的不同是，插值是集成的并且知道在 Julia 的概念中什么是单个字符串值、什么是多个值的容器。让我们在 Julia 中尝试上面的两个例子：
 
 ```jldoctest
 julia> A = `perl -le '$|=1; for (0..3) { print }'`
@@ -224,15 +200,11 @@ julia> run(B);
 2: B
 ```
 
-The results are identical, and Julia's interpolation behavior mimics the shell's with some improvements
-due to the fact that Julia supports first-class iterable objects while most shells use strings
-split on spaces for this, which introduces ambiguities. When trying to port shell commands to
-Julia, try cut and pasting first. Since Julia shows commands to you before running them, you can
-easily and safely just examine its interpretation without doing any damage.
+结果是相同的，且 Julia 的插值行为模仿了 shell 的并对其做了一些改进，因为 Julia 支持头等的可迭代对象，但大多数 shell 通过使用空格分隔字符串来实现这一点，而这又引入了歧义。在尝试将 shell 命令移植到 Julia 中时，请先试着剪切并粘贴它。因为 Julia 会在运行命令前向你显示命令，所以你可以在不造成任何破坏的前提下轻松并安全地检查命令的解释。
 
-## Pipelines
+## 管道
 
-Shell metacharacters, such as `|`, `&`, and `>`, need to be quoted (or escaped) inside of Julia's backticks:
+Shell 元字符，如 `|`、`&` 和 `>`，在 Julia 的反引号中需被引用（或转义）：
 
 ```jldoctest
 julia> run(`echo hello '|' sort`);
@@ -242,18 +214,14 @@ julia> run(`echo hello \| sort`);
 hello | sort
 ```
 
-This expression invokes the `echo` command with three words as arguments: `hello`, `|`, and `sort`.
-The result is that a single line is printed: `hello | sort`. How, then, does one construct a
-pipeline? Instead of using `'|'` inside of backticks, one uses [`pipeline`](@ref):
+此表达式调用 `echo` 命令并以三个单词作为其参数：`hello`、`|` 和 `sort`。结果是只打印了一行：`hello | sort`。那么，如何构造管道呢？为此，请使用 [`pipeline`](@ref)，而不是在反引号内使用 `'|'`：
 
 ```jldoctest
 julia> run(pipeline(`echo hello`, `sort`));
 hello
 ```
 
-This pipes the output of the `echo` command to the `sort` command. Of course, this isn't terribly
-interesting since there's only one line to sort, but we can certainly do much more interesting
-things:
+这将 `echo` 命令的输出传输到 `sort` 命令中。当然，这不是很有趣，因为只有一行要排序，但是我们的当然可以做更多、更有趣的事：
 
 ```julia-repl
 julia> run(pipeline(`cut -d: -f3 /etc/passwd`, `sort -n`, `tail -n5`))
@@ -264,13 +232,9 @@ julia> run(pipeline(`cut -d: -f3 /etc/passwd`, `sort -n`, `tail -n5`))
 214
 ```
 
-This prints the highest five user IDs on a UNIX system. The `cut`, `sort` and `tail` commands
-are all spawned as immediate children of the current `julia` process, with no intervening shell
-process. Julia itself does the work to setup pipes and connect file descriptors that is normally
-done by the shell. Since Julia does this itself, it retains better control and can do some things
-that shells cannot.
+这将打印在 UNIX 系统上最高的五个用户 ID。`cut`、`sort` 和 `tail` 命令都是当前 `julia` 进程的直接子进程，这中间没有 shell 进程的干预。Julia 自己负责设置管道和连接文件描述符，而这通常由 shell 完成。因为 Julia 自己做了这些事，所以它能更好的控制并做 shell 做不到的一些事情。
 
-Julia can run multiple commands in parallel:
+Julia 可以并行地运行多个命令：
 
 ```jldoctest; filter = r"(world\nhello|hello\nworld)"
 julia> run(`echo hello` & `echo world`);
@@ -278,10 +242,7 @@ world
 hello
 ```
 
-The order of the output here is non-deterministic because the two `echo` processes are started
-nearly simultaneously, and race to make the first write to the [`stdout`](@ref) descriptor they
-share with each other and the `julia` parent process. Julia lets you pipe the output from both
-of these processes to another program:
+这里的输出顺序是不确定的，因为两个 `echo` 进程几乎同时启动，并且争着先写入 [`stdout`](@ref) 描述符和 `julia` 父进程。Julia 允许你将这两个进程的输出通过管道传输到另一个程序：
 
 ```jldoctest
 julia> run(pipeline(`echo world` & `echo hello`, `sort`));
@@ -289,27 +250,21 @@ hello
 world
 ```
 
-In terms of UNIX plumbing, what's happening here is that a single UNIX pipe object is created
-and written to by both `echo` processes, and the other end of the pipe is read from by the `sort`
-command.
+在 UNIX 管道方面，这里发生的是，一个 UNIX 管道对象由两个 `echo` 进程创建和写入，管道的另一端由 `sort` 命令读取。
 
-IO redirection can be accomplished by passing keyword arguments `stdin`, `stdout`, and `stderr` to the
-`pipeline` function:
+IO 重定向可以通过向 `pipeline` 函数传递关键字参数 `stdin`、`stdout` 和 `stderr` 来实现：
 
 ```julia
 pipeline(`do_work`, stdout=pipeline(`sort`, "out.txt"), stderr="errs.txt")
 ```
 
-### Avoiding Deadlock in Pipelines
+### 避免管道中的死锁
 
-When reading and writing to both ends of a pipeline from a single process, it is important to
-avoid forcing the kernel to buffer all of the data.
+在单个进程中读取和写入管道的两端时，避免强制内核缓冲所有数据是很重要的。
 
-For example, when reading all of the output from a command, call `read(out, String)`, not `wait(process)`,
-since the former will actively consume all of the data written by the process, whereas the latter
-will attempt to store the data in the kernel's buffers while waiting for a reader to be connected.
+例如，在读取命令的所有输出时，请调用 `read(out, String)`，而非 `wait(process)`，因为前者会积极地消耗由该进程写入的所有数据，而后者在等待读取者连接时会尝试将数据存储内核的缓冲区中。
 
-Another common solution is to separate the reader and writer of the pipeline into separate [`Task`](@ref)s:
+另一个常见的解决方案是将读取者和写入者分离到单独的 [`Task`](@ref) 中：
 
 ```julia
 writer = @async write(process, "data")
@@ -318,12 +273,9 @@ wait(process)
 fetch(reader)
 ```
 
-### Complex Example
+### 复杂示例
 
-The combination of a high-level programming language, a first-class command abstraction, and automatic
-setup of pipes between processes is a powerful one. To give some sense of the complex pipelines
-that can be created easily, here are some more sophisticated examples, with apologies for the
-excessive use of Perl one-liners:
+高级编程语言、头等的命令抽象以及进程间管道的自动设置，三者组合起来非常强大。为了更好地理解可被轻松创建的复杂管道，这里有一些更复杂的例子，以避免对单行 Perl 程序的滥用。
 
 ```jldoctest prefixer; filter = r"([A-B] [0-5])"
 julia> prefixer(prefix, sleep) = `perl -nle '$|=1; print "'$prefix' ", $_; sleep '$sleep';'`;
@@ -337,15 +289,9 @@ B 4
 A 5
 ```
 
-This is a classic example of a single producer feeding two concurrent consumers: one `perl` process
-generates lines with the numbers 0 through 5 on them, while two parallel processes consume that
-output, one prefixing lines with the letter "A", the other with the letter "B". Which consumer
-gets the first line is non-deterministic, but once that race has been won, the lines are consumed
-alternately by one process and then the other. (Setting `$|=1` in Perl causes each print statement
-to flush the [`stdout`](@ref) handle, which is necessary for this example to work. Otherwise all
-the output is buffered and printed to the pipe at once, to be read by just one consumer process.)
+这是一个经典的例子，一个生产者为两个并发的消费者提供内容：一个 `perl` 进程生成从数字 0 到 5 的行，而两个并行进程则使用该输出，一个行首加字母「A」，另一个行首加字母「B」。哪个进程使用第一行是不确定的，但是一旦赢得了竞争，这些行会先后被其中一个进程及另一个进程交替使用。（在 Perl 中设置 `$|=1` 会导致每个 print 语句刷新 [`stdout`](@ref) 句柄，这是本例工作所必需的。此外，所有输出将被缓存并一次性打印到管道中，以便只由一个消费者进程读取。）
 
-Here is an even more complex multi-stage producer-consumer example:
+这是一个更加复杂的多阶段生产者——消费者示例：
 
 ```jldoctest prefixer; filter = r"[A-B] [X-Z] [0-5]"
 julia> run(pipeline(`perl -le '$|=1; for(0..5){ print; sleep 1 }'`,
@@ -359,8 +305,6 @@ A Y 4
 B Z 5
 ```
 
-This example is similar to the previous one, except there are two stages of consumers, and the
-stages have different latency so they use a different number of parallel workers, to maintain
-saturated throughput.
+此示例与前一个类似，不同之处在于本例中的消费者有两个阶段，并且阶段间有不同的延迟，因此它们使用不同数量的并行 worker 来维持饱和的吞吐量。
 
-We strongly encourage you to try all these examples to see how they work.
+我们强烈建议你尝试所有这些例子，以便了解它们的工作原理。

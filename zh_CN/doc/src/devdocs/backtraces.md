@@ -1,4 +1,4 @@
-# Reporting and analyzing crashes (segfaults)
+# 报告和分析崩溃（段错误）
 
 So you managed to break Julia.  Congratulations!  Collected here are some general procedures you
 can undergo for common symptoms encountered when something goes awry.  Including the information
@@ -8,11 +8,11 @@ to figure out why your script is running slower than expected.
 If you've been directed to this page, find the symptom that best matches what you're experiencing
 and follow the instructions to generate the debugging information requested.  Table of symptoms:
 
-  * [Segfaults during bootstrap (`sysimg.jl`)](@ref)
-  * [Segfaults when running a script](@ref)
-  * [Errors during Julia startup](@ref)
+  * [自举启动阶段的段错误 (`sysimg.jl`)](@ref)
+  * [运行脚本时的段错误](@ref)
+  * [启动 Julia 时发生的段错误](@ref)
 
-## [Version/Environment info](@id dev-version-info)
+## [版本/环境信息](@id dev-version-info)
 
 No matter the error, we will always need to know what version of Julia you are running. When Julia
 first starts up, a header is printed out with a version number and date. Please also include the
@@ -106,7 +106,7 @@ Create a [gist](https://gist.github.com) with the `strace`/ `dtruss` output, the
 and any other pertinent information and open a new [issue](https://github.com/JuliaLang/julia/issues?q=is%3Aopen)
 on Github with a link to the gist.
 
-## Glossary
+## 术语表
 
 A few terms have been used as shorthand in this guide:
 
