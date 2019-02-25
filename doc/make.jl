@@ -24,7 +24,7 @@ cp_q(src, dest) = isfile(dest) || cp(src, dest)
 
 # make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
 const STDLIB_DOCS = []
-const STDLIB_DIR = joinpath(@__DIR__, "..", "stdlib")
+const STDLIB_DIR = joinpath(@__DIR__, "..", "zh_CN", "stdlib")
 cd(joinpath(@__DIR__, "src")) do
     Base.rm("stdlib"; recursive=true, force=true)
     mkdir("stdlib")
@@ -144,19 +144,29 @@ for stdlib in STDLIB_DOCS
 end
 
 const render_pdf = "pdf" in ARGS
+
+const format = if render_pdf
+    LaTeX(
+        platform = "texplatform=docker" in ARGS ? "docker" : "native"
+    )
+else
+    Documenter.HTML(
+        prettyurls = ("deploy" in ARGS),
+        canonical = ("deploy" in ARGS) ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
+    )
+end
+
 makedocs(
     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = true,
     doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
     linkcheck = "linkcheck=true" in ARGS,
     checkdocs = :none,
-    format    = render_pdf ? :latex : :html,
+    format    = format,
     sitename  = "Julia中文文档",
     authors   = "Julia中文社区",
     analytics = "UA-28835595-9",
     pages     = PAGES,
-    html_prettyurls = !("local" in ARGS),
-    html_canonical = "https://juliacn.github.io/JuliaZH.jl/latest/",
     assets = ["assets/julia-manual.css", ]
 )
 
