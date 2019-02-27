@@ -7,15 +7,15 @@
 2. 多线程
 3. 多核心或分布式处理
 
-我们首先考虑 Julia 任务 [Tasks](@ref man-tasks) （也就是协程）以及其它依赖于 Julia  运行时库的模块。通过运行时库无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对任务间的通信拥有完全控制。
-Julia 同样允许利用一些操作在任务间进行通信，比如 ['wait'](@ref) 以及 ['fetch'](@ref)。
-另外，通信和数据同步是通过管道 ['Channel'](@ref) 完成的，它也是实现任务间通信的基石。
+我们首先考虑 Julia 任务 [Tasks（也就是协程）](@ref man-tasks)以及其它依赖于 Julia  运行时库的模块。通过运行时库无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对任务间的通信拥有完全控制。
+Julia 同样允许利用一些操作在任务间进行通信，比如 [`wait`](@ref) 以及 [`fetch`](@ref)。
+另外，通信和数据同步是通过管道 [`Channel`](@ref) 完成的，它也是实现任务间通信的基石。
 
 Julia 还支持实验性的多线程功能，在执行时通过分叉(fork)，然后有一个匿名函数在所有线程上运行。由于是一种*分叉-汇合*(fork-join)的方式，并行执行的线程必须在分叉之后，汇合到 Julia 主线程上，从而继续串行执行。多线程功能是通过 `Base.Threads` 模块提供的，目前仍然是实验性的，因为目前Julia 还不是完全线程安全的。尤其是在进行 I/O 操作和协程切换的时候可能会有段错误出现。最新的进展请关注 [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading)。多线程应该只在你考虑全局变量、锁以及原子操作的时候使用，后面我们会详细讲解。
 
 最后我们将介绍 Julia 的分布式和并行计算的实现方法。鉴于以科学计算为主要目的，
 Julia 底层实现上提供了通过多核或多机器对任务并行的接口。
-同时我们还将介绍一些有用的分布式编程的外部包，比如 'MPI.jl' 以及 'DistributedArrays.jl'。
+同时我们还将介绍一些有用的分布式编程的外部包，比如 `MPI.jl` 以及 `DistributedArrays.jl`。
 
 # 协程
 
@@ -26,8 +26,7 @@ Julia 的并行编程平台采用协程任务 [Tasks (aka Coroutines)](@ref man-
 
 ## 管道
 
-在 [Control Flow](@ref) 中有关 [`Task`](@ref) 的部分，已经讨论了如何协调多个函数的执行。[`Channel`](@ref) 可以很方便地在多个运行中的 task 传递数据，特别是那些涉及 I/O 的操作。
-
+在 [流程控制](@ref) 中有关 [`Task`](@ref) 的部分，已经讨论了如何协调多个函数的执行。[`Channel`](@ref) 可以很方便地在多个运行中的 task 传递数据，特别是那些涉及 I/O 的操作。
 
 典型的 I/O 操作包括读写文件、访问 web 服务、执行外部程序等。在所有这些场景中，如果其它 task 可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。
 
@@ -625,7 +624,7 @@ julia> addprocs(2)
 需要注意的时，worker 进程并不会执行 `~/.julia/config/startup.jl` 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。
 
 
-其它类型的集群可以通过自己写一个 `ClusterManager` 来实现，下面 [ClusterManagers](@ref) 部分会介绍。
+其它类型的集群可以通过自己写一个 `ClusterManager` 来实现，下面 [集群管理器](@ref) 部分会介绍。
 
 ## 数据转移
 
@@ -771,7 +770,7 @@ a = zeros(100000)
 end
 ```
 
-这段代码并不会把 `a` 的所有元素初始化，因为每个进程都会有一份 `a` 的拷贝，因此类似的 for 循环一定要避免。幸运的是，[Shared Arrays](@ref man-shared-arrays) 可以用来突破这种限制：
+这段代码并不会把 `a` 的所有元素初始化，因为每个进程都会有一份 `a` 的拷贝，因此类似的 for 循环一定要避免。幸运的是，[共享数组](@ref man-shared-arrays) 可以用来突破这种限制：
 
 ```julia
 using SharedArrays
@@ -1091,7 +1090,7 @@ julia> @time advection_shared!(q,u);
 
 和远程引用一样，共享数组也依赖于创建节点上的垃圾回收来释放所有参与的 worker 上的引用。因此，创建大量生命周期比较短的数组，并尽可能快地显式 finilize 这些对象，代码会更高效，这样与之对用的内存和文件句柄都会更快地释放。
 
-## 集群管理器（ClusterManagers）
+## 集群管理器
 
 Julia 通过集群管理器实现对多个进程（所构成的逻辑上的集群）的启动，管理以及网络通信。一个 `ClusterManager` 负责：
 
@@ -1348,7 +1347,7 @@ Julia 集群设计的时候，默认是在一个安全的环境中执行，比�
 
 ## 一些值得关注的外部库
 
-除了 Julia 自带的并行机制之外，还有许多外部的库值得一提。例如 [MPI.jl](https://github.com/JuliaParallel/MPI.jl) 提供了一个 `MPI` 协议的 Julia 的封装，或者是在 [Shared Arrays](@ref) 提到的 [DistributedArrays.jl](https://github.com/JuliaParallel/Distributedarrays.jl)，此外尤其值得一提的是 Julia 的 GPU 编程生态，包括：
+除了 Julia 自带的并行机制之外，还有许多外部的库值得一提。例如 [MPI.jl](https://github.com/JuliaParallel/MPI.jl) 提供了一个 `MPI` 协议的 Julia 的封装，或者是在 [共享数组](@ref) 提到的 [DistributedArrays.jl](https://github.com/JuliaParallel/Distributedarrays.jl)，此外尤其值得一提的是 Julia 的 GPU 编程生态，包括：
 
 1. 底层（C内核）的 [OpenCL.jl](https://github.com/JuliaGPU/OpenCL.jl) 和 [CUDAdrv.jl](https://github.com/JuliaGPU/CUDAdrv.jl)，分别提供了 OpenCL 和 CUDA 的封装。
 

@@ -1,9 +1,9 @@
 # 集合和数据结构
 
-## [Iteration](@id lib-collections-iteration)
+## [迭代](@id lib-collections-iteration)
 
 序列迭代由 [`iterate`](@ref) 实现
-广义的`for`循环
+广义的 `for` 循环
 
 ```julia
 for i in iter   # or  "for i = iter"
@@ -23,7 +23,7 @@ end
 ```
 
 `state` 对象可以是任何对象，并且对于每个可迭代类型应该选择合适的 `state` 对象。
-请参照 [manual section on the iteration interface](@ref man-interface-iteration) 来获取关于定义一个常见迭代类型的更多细节。
+请参照 [帮助文档接口的迭代小节](@ref man-interface-iteration) 来获取关于定义一个常见迭代类型的更多细节。
 
 ```@docs
 Base.iterate
@@ -31,7 +31,7 @@ Base.IteratorSize
 Base.IteratorEltype
 ```
 
-完全由以下实现：
+以下类型均完全实现了上述函数：
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
@@ -67,7 +67,7 @@ Base.empty!
 Base.length
 ```
 
-完全由以下实现：
+以下类型均完全实现了上述函数：
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
@@ -146,14 +146,14 @@ Base.firstindex
 Base.lastindex
 ```
 
-完全由以下实现：
+以下类型均完全实现了上述函数：
 
   * [`Array`](@ref)
   * [`BitArray`](@ref)
   * [`AbstractArray`](@ref)
   * `SubArray`
 
-Partially implemented by:
+以下类型仅实现了部分上述函数：
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
@@ -170,20 +170,21 @@ Partially implemented by:
 
 [`IdDict`](@ref) 是一种特殊的哈希表，在里面键始终是对象标识符。
 
-[`WeakKeyDict`](@ref) 是一个哈希表的实现，里面键是对象的弱引用，所以
-即使键在哈希表中被引用也有可能被垃圾回收。
-它像`Dict`一样使用`hash`来做哈希和`isequal`来做相等判断，但是它不会在插入时转换键，这点不像`Dict`。
+[`WeakKeyDict`](@ref) 是一个哈希表的实现，里面键是对象的弱引用，
+所以即使键在哈希表中被引用也有可能被垃圾回收。
+它像 `Dict` 一样使用 `hash` 来做哈希和 `isequal` 来做相等判断，
+但是它不会在插入时转换键，这点不像 `Dict`。
 
-[`Dict`](@ref)s 可以由传递含有`=>`的成对对象给 [`Dict`](@ref)的构造函数来被创建：
-`Dict("A"=>1, "B"=>2)`。这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 `Dict{String, Int64}`）。为了显式指定类型，
-请使用语法`Dict{KeyType,ValueType}(...)`。例如， `Dict{String,Int32}("A"=>1, "B"=>2)`。
+[`Dict`](@ref)s 可以由传递含有 `=>` 的成对对象给 [`Dict`](@ref) 的构造函数来被创建：`Dict("A"=>1, "B"=>2)`。
+这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 `Dict{String, Int64}`）。
+为了显式指定类型，请使用语法 `Dict{KeyType,ValueType}(...)`。例如：`Dict{String,Int32}("A"=>1, "B"=>2)`。
 
-字典也可以用生成器创建。例如`Dict(i => f(i) for i = 1:10)`。
+字典也可以用生成器创建。例如：`Dict(i => f(i) for i = 1:10)`。
 
-存在一个字典`D`，语法`D[x]`返回键`x`的值（如果存在）或者扔出
-一个错误，`D[x] = y`存储键值对`x => y`在`D`中（覆盖键'x'的
-已有的值）。多个参数传入`D[...]`会被转化成元组；例如，语法
-` D[x,y]`等于 `D[(x,y)]`，也就是说，它指向键为元组`(x,y)`的值。
+对于字典 `D`，若键 `x` 的值存在，则语法 `D[x]` 返回 `x` 的值；否则抛出一个错误。
+`D[x] = y` 存储键值对 `x => y` 到 `D` 中，会覆盖键 `x` 的已有的值。
+多个参数传入`D[...]` 会被转化成元组；
+例如：语法 `D[x,y]` 等于 `D[(x,y)]`，也就是说，它指向键为元组 `(x,y)` 的值。
 
 ```@docs
 Base.Dict
@@ -209,13 +210,13 @@ Base.keytype
 Base.valtype
 ```
 
-完全由以下实现：
+以下类型均完全实现了上述函数：
 
   * [`IdDict`](@ref)
   * [`Dict`](@ref)
   * [`WeakKeyDict`](@ref)
 
-Partially implemented by:
+以下类型仅实现了部分上述函数：
 
   * [`BitSet`](@ref)
   * [`Set`](@ref)
@@ -244,12 +245,12 @@ Base.:⊊
 Base.issetequal
 ```
 
-完全由以下实现：
+以下类型均完全实现了上述函数：
 
   * [`BitSet`](@ref)
   * [`Set`](@ref)
 
-部分由以下实现：
+以下类型仅实现了部分上述函数：
 
   * [`Array`](@ref)
 
@@ -268,7 +269,7 @@ Base.append!
 Base.prepend!
 ```
 
-完全由以下实现：
+以下类型均完全实现了上述函数：
 
   * `Vector` (a.k.a. 1-dimensional [`Array`](@ref))
   * `BitVector` (a.k.a. 1-dimensional [`BitArray`](@ref))

@@ -1,4 +1,4 @@
-# Logging
+# 日志记录
 
 The `Logging` module provides a way to record the history and progress of a
 computation as a log of events.  Events are created by inserting a logging
@@ -35,7 +35,7 @@ A = ones(Int, 4, 4)
 v = ones(100)
 @info "Some variables"  A  s=sum(v)
 
-# output
+# 输出：
 ┌ Info: Some variables
 │   A =
 │    4×4 Array{Int64,2}:
@@ -50,7 +50,7 @@ All of the logging macros `@debug`, `@info`, `@warn` and `@error` share common
 features that are described in detail in the documentation for the more
 general macro [`@logmsg`](@ref).
 
-## Log event structure
+## 日志事件结构
 
 Each event generates several pieces of data, some provided by the user and some
 automatically extracted. Let's examine the user-defined data first:
@@ -94,7 +94,7 @@ time, backtrace, values of global variables and other useful information as
 required.
 
 
-## Processing log events
+## 处理日志事件
 
 As you can see in the examples, logging statements make no mention of
 where log events go or how they are processed. This is a key design feature
@@ -165,14 +165,14 @@ application, which is helpful when enabling little-used debug events in a
 production system.  This behavior can be customized per logger type by
 extending [`Logging.catch_exceptions`](@ref).
 
-## Testing log events
+## 测试日志事件
 
 Log events are a side effect of running normal code, but you might find
 yourself wanting to test particular informational messages and warnings. The
 `Test` module provides a [`@test_logs`](@ref) macro that can be used to
 pattern match against the log event stream.
 
-## Environment variables
+## 环境变量
 
 Message filtering can be influenced through the `JULIA_DEBUG` environment
 variable, and serves as an easy way to enable debug logging for a file or
@@ -194,9 +194,9 @@ modules, such as `Pkg`, or module roots (see [`Base.moduleroot`](@ref)). To
 enable all debug logging, use the special value `all`.
 
 
-## Reference
+## 参考
 
-### Creating events
+### 创建事件
 
 ```@docs
 Logging.@logmsg
@@ -226,9 +226,9 @@ Logging.catch_exceptions
 Logging.disable_logging
 ```
 
-### Using Loggers
+### 使用记录器
 
-Logger installation and inspection:
+记录器安装和检查：
 
 ```@docs
 Logging.global_logger
@@ -236,7 +236,7 @@ Logging.with_logger
 Logging.current_logger
 ```
 
-Loggers that are supplied with the system:
+系统提供的记录器：
 
 ```@docs
 Logging.NullLogger

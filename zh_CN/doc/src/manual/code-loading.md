@@ -3,29 +3,29 @@
 Julia加载代码有两种机制：
 
 1. **代码包含：**例如 `include("source.jl")`。包含允许你把一个程序拆分为多个源文件。表达式 `include("source.jl")` 使得文件 `source.jl` 的内容在出现 `include` 调用的模块的全局作用域中执行。如果多次调用 `include("source.jl")`，`source.jl` 就被执行多次。`source.jl` 的包含路径解释为相对于出现 `include` 调用的文件路径。重定位源文件子树因此变得简单。在 REPL 中，包含路径为当前工作目录，即 `pwd()`。
-2. **加载包：**例如 `import X`或`using X`。 import通过加载包 ( 一个独立的，可重用的Julia代码集合，包含在一个模块中 )，并导入模块内部的名称“X”，使得模块X可用。 如果在同一个Julia会话中，多次导入包`X`，那么后续导入模块为第一次导入模块的引用。 应该注意，`import X`可以在不同的上下文中加载不同的包：`X`可以引用主工程中名为`X`的一个包，但他们可能依赖的包是完全不同的。 更多机制说明如下。
+2. **加载包：**例如 `import X` 或 `using X`。 `import` 通过加载包 ( 一个独立的，可重用的 Julia 代码集合，包含在一个模块中 )，并导入模块内部的名称 `X`，使得模块 X 可用。 如果在同一个 Julia 会话中，多次导入包 `X`，那么后续导入模块为第一次导入模块的引用。 应该注意，`import X` 可以在不同的上下文中加载不同的包：`X` 可以引用主工程中名为 `X` 的一个包，但他们可能依赖的包是完全不同的。 更多机制说明如下。
 
 代码包含是非常直接的，即在调用者的上下文中解释运行源文件。包加载是建立在代码包含之上的，并且相当复杂。因此，本章的其余部分将重点介绍程序包加载的行为和机制。
 
 !!! note
     除非你想了解 Julia 中包加载的技术细节，你才需要阅读本章。如果你只想安装和使用包，只需使用 Julia 的内置包管理器来往你的环境中添加包，并在你的代码中编写 `import X` 或 `using X` 来使用已经添加的包。
 
-一个 *包（package）* 就是一个源码树，其标准布局中提供了其他 Julia 项目可以复用的功能。包可以使用 `import X` 或 `using X` 语句加载。这些语句还使得名为 `X` 的模块在加载包代码时被产生，并在包含该模块的 import 语句的模块中可用。`import X` 中 `X` 的含义与上下文有关：程序中加载哪个 `X` 包取决于语句出现的代码。`import X` 的效果取决于以下两个问题：
+一个 *包（package）* 就是一个源码树，其标准布局中提供了其他 Julia 项目可以复用的功能。包可以使用 `import X` 或 `using X` 语句加载，名为 `X` 的模块在加载包代码时生成，并在包含该 import 语句的模块中可用。`import X` 中 `X` 的含义与上下文有关：程序加载哪个 `X` 包取决于 import 语句出现的位置。`import X` 的效果取决于以下两个问题：
 
 1. 在上下文中，**哪个**包是 `X` ？
 2. `X` 包在**哪里**能够被找到？
 
-理解 Julia 是如何回答这些问题是理解包如何被加载的重点。
+想要知道 Julia 对这些问题的回答，重点在于理解包的加载机制。
 
-## 包联盟
+## 包的联合
 
-Julia 支持包的联合管理。这意味着多个独立方可以维护公共和私有包及其注册列表，并且项目可以依赖于来自不同注册表的公共和私有包的组合。您也可以使用一组通用工具和工作流（workflow）来安装和管理来自各种注册表的包。Julia 0.7/1.0 附带的 `Pkg` 软件包管理器允许您通过创建和操作项目文件来安装和管理项目的依赖项，而项目文件描述了项目所依赖的内容和您项目完整依赖库的确切版本的快照清单文件。
+Julia 支持包的联合管理。这意味着多个独立的部分可以维护公有包和私有包，以及这些包的注册表，并且项目可以依赖于一系列来自不同注册表的公有包和私有包。您也可以使用一组通用工具和工作流（workflow）来安装和管理来自各种注册表的包。Julia 0.7/1.0 附带的 `Pkg` 软件包管理器允许您通过创建和操作项目文件来安装和管理项目的依赖项，而项目清单描述了项目所依赖的内容以及项目完整依赖库的确切版本的快照。
 
 联合管理的一个可能后果是没有包命名的中央权限。不同组织可以使用相同的名称来引用不相关的包。这并不是没有可能的，因为这些组织可能没有协作，甚至不知道彼此。由于缺乏中央命名权限，单个项目很可能最终依赖着具有相同名称的不同包。 Julia 的包加载机制通过不要求包名称是全局唯一的来解决这一问题，即使在单个项目的依赖关系图中也是如此。相反，包由[通用唯一标识符](https://en.wikipedia.org/wiki/Universally_unique_identifier) （UUID）进行标识，这些标识符在注册之前分配给它们。问题*“什么是 `X` ？”*通过确定 `X` 的UUID来回答。
 
 由于去中心化的命名问题有些抽象，因此可以通过具体情境来理解问题。假设你正在开发一个名为 `App` 的应用程序，它使用两个包： `Pub` 和 `Priv`。`Priv` 是你创建的私有包，而 `Pub` 是你使用但不控制的公共包。当你创建 `Priv` 时，该名称没有公共包。然而，随后一个名为 `Priv` 的不相关软件包发布并变得流行起来，而且 `Pub` 包已经开始使用它了。因此，当你下次升级 `Pub` 以获取最新的错误修复和特性时，除了升级之外，`App` 将会停止工作——这取决于两个名为 `Priv` 的不同包。`App` 直接依赖于你的私有 `Priv` 包，以及通过 `Pub` 在新的公共 `Priv` 包上的间接依赖。由于这两个 `Priv` 包是不同的，但是 `App` 继续正常工作依赖于他们两者，因此表达式 `import Priv` 必须引用不同的 `Priv` 包，具体取决于它是出现在 `App` 的代码中还是出现在 `Pub` 的代码中。Julia的包加载机制允许通过上下文和UUID区分两个 `Priv` 包，这种区分的工作原理取决于环境，如以下各节所述。
 
-## 环境（Environment）
+## 环境（Environments）
 
 **环境**决定了 `import X` 和 `using X` 语句在不同的代码上下文中的含义以及什么文件会被加载。Julia 有三类环境（environment）：
 
@@ -85,7 +85,9 @@ roots = Dict(
 
 基于这个 `root` 映射，在 `App` 的代码中，语句 `import Priv` 将使 Julia 查找 `roots[:Priv]`，这将得到 `ba13f791-ae1d-465a-978b-69c3ad90f72b`，也就是要在这一部分加载的 `Priv` 包的 UUID。当主应用程序解释运行到 `import Priv` 时，此 UUID 标识了要加载和使用的 `Priv` 包。
 
-**The dependency graph** of a project environment is determined by the contents of the manifest file, if present, or if there is no manifest file, `graph` is empty. A manifest file contains a stanza for each direct or indirect dependency of a project, including for each one, its UUID and a source tree hash or an explicit path to the source code. Consider the following example manifest file for `App`:
+若 `manifest` 文件存在，则项目环境的 **依赖图** 由文件内容决定；否则依赖图为空。
+`manifest` 文件包含一个个项目所需的直接依赖和间接依赖的节(stanza)，每个节包括依赖的 UUID、源码树的哈希值或显式指向源代码的路径。
+考虑以下示例 `App` 的 `manifest` 文件：
 
 ```toml
 [[Priv]] # the private one

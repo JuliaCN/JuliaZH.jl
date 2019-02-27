@@ -1,20 +1,14 @@
-# Sparse Arrays
+# 稀疏矩阵
 
 ```@meta
 DocTestSetup = :(using SparseArrays, LinearAlgebra)
 ```
 
-Julia has support for sparse vectors and [sparse matrices](https://en.wikipedia.org/wiki/Sparse_matrix)
-in the `SparseArrays` stdlib module. Sparse arrays are arrays that contain enough zeros
-that storing them in a special data structure leads to savings in space and execution time,
-compared to dense arrays.
+Julia在`SparseArrays`标准库模块中支持稀疏向量和[稀疏矩阵](https://en.wikipedia.org/wiki/Sparse_matrix)。相对于稠密数组，稀疏数组是包含很多零值的数组，将这些零值在一种特殊的数据结构中存储可以节省很大的空间和运算时间。
 
-## [Compressed Sparse Column (CSC) Sparse Matrix Storage](@id man-csc)
+## [压缩稀疏列(CSC)稀疏矩阵存储](@id man-csc)
 
-In Julia, sparse matrices are stored in the [Compressed Sparse Column (CSC) format](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_.28CSC_or_CCS.29).
-Julia sparse matrices have the type [`SparseMatrixCSC{Tv,Ti}`](@ref), where `Tv` is the
-type of the stored values, and `Ti` is the integer type for storing column pointers and
-row indices. The internal representation of `SparseMatrixCSC` is as follows:
+在Julia中，稀疏矩阵是按照[压缩稀疏列(CSC)格式](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_.28CSC_or_CCS.29)存储的。Julia稀疏矩阵具有[`SparseMatrixCSC{Tv,Ti}`](@ref)类型，其中`Tv`是存储值的类型，`Ti`是存储列指针和行索引的整型类型。`SparseMatrixCSC`的内部表示如下所示：
 
 ```julia
 struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}
@@ -26,11 +20,7 @@ struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}
 end
 ```
 
-The compressed sparse column storage makes it easy and quick to access the elements in the column
-of a sparse matrix, whereas accessing the sparse matrix by rows is considerably slower. Operations
-such as insertion of previously unstored entries one at a time in the CSC structure tend to be slow. This is
-because all elements of the sparse matrix that are beyond the point of insertion have to be moved
-one place over.
+压缩稀疏列存储格式使得访问稀疏矩阵的列元素非常简单快速，而访问稀疏矩阵的行会非常缓慢。在CSC稀疏矩阵中执行类似插入新元素的操作也会非常慢。这是由于在稀疏矩阵中插入新元素时，在插入点之后的所有元素都要向后移动一位。
 
 All operations on sparse matrices are carefully implemented to exploit the CSC data structure
 for performance, and to avoid expensive operations.
@@ -61,7 +51,7 @@ julia> dropzeros(A)
   [2, 2]  =  2
 ```
 
-## Sparse Vector Storage
+## 稀疏向量储存
 
 Sparse vectors are stored in a close analog to compressed sparse column format for sparse
 matrices. In Julia, sparse vectors have the type [`SparseVector{Tv,Ti}`](@ref) where `Tv`
@@ -79,7 +69,7 @@ end
 As for [`SparseMatrixCSC`](@ref), the `SparseVector` type can also contain explicitly
 stored zeros. (See [Sparse Matrix Storage](@ref man-csc).).
 
-## Sparse Vector and Matrix Constructors
+## 稀疏向量与矩阵构造函数
 
 The simplest way to create a sparse array is to use a function equivalent to the [`zeros`](@ref)
 function that Julia provides for working with dense arrays. To produce a
@@ -170,7 +160,7 @@ julia> issparse(spzeros(5))
 true
 ```
 
-## Sparse matrix operations
+## 稀疏矩阵的操作
 
 Arithmetic operations on sparse matrices also work as they do on dense matrices. Indexing of,
 assignment into, and concatenation of sparse matrices work in the same way as dense matrices.
@@ -190,7 +180,7 @@ element has a probability `d` of being non-zero.
 Details can be found in the [Sparse Vectors and Matrices](@ref stdlib-sparse-arrays)
 section of the standard library reference.
 
-| Sparse                     | Dense                  | Description                                                                                                                                                           |
+| 构造函数                     | 密度                  | 说明                                                                                                                                                           |
 |:-------------------------- |:---------------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`spzeros(m,n)`](@ref)     | [`zeros(m,n)`](@ref)   | Creates a *m*-by-*n* matrix of zeros. ([`spzeros(m,n)`](@ref) is empty.)                                                                                              |
 | [`sparse(I, n, n)`](@ref)  | [`Matrix(I,n,n)`](@ref)| Creates a *n*-by-*n* identity matrix.                                                                                                                                 |

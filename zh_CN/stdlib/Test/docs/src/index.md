@@ -1,10 +1,10 @@
-# Unit Testing
+# 单元测试
 
 ```@meta
 DocTestSetup = :(using Test)
 ```
 
-## Testing Base Julia
+## 测试 Julia Base 库
 
 Julia is under rapid development and has an extensive test suite to verify functionality across
 multiple platforms. If you build Julia from source, you can run this test suite with `make test`.
@@ -14,7 +14,7 @@ In a binary install, you can run the test suite using `Base.runtests()`.
 Base.runtests
 ```
 
-## Basic Unit Tests
+## 基本的单元测试
 
 The `Test` module provides simple *unit testing* functionality. Unit testing is a way to
 see if your code is correct by checking that the results are what you expect. It can be helpful
@@ -47,7 +47,7 @@ julia> @test foo("fizz") >= 10
 Test Passed
 ```
 
-If the condition is false, then a `Fail` is returned and an exception is thrown:
+如果条件为假，则返回 `Fail` 并抛出异常。
 
 ```jldoctest testfoo
 julia> @test foo("f") == 20
@@ -113,7 +113,7 @@ Test Summary: | Pass  Total
 Foo Tests     |    3      3
 ```
 
-Test sets can also be nested:
+测试集可以嵌套：
 
 ```jldoctest testfoo
 julia> @testset "Foo Tests" begin
@@ -160,7 +160,7 @@ Foo Tests     |    3     1      4
 ERROR: Some tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken.
 ```
 
-## Other Test Macros
+## 其他测试宏
 
 As calculations on floating-point values can be imprecise, you can perform approximate equality
 checks using either `@test a ≈ b` (where `≈`, typed via tab completion of `\approx`, is the
@@ -185,7 +185,7 @@ Test.@test_warn
 Test.@test_nowarn
 ```
 
-## Broken Tests
+## 损坏的测试
 
 If a test fails consistently it can be changed to use the `@test_broken` macro. This will denote
 the test as `Broken` if the test continues to fail and alerts the user via an `Error` if the test
@@ -202,7 +202,7 @@ in the test set reporting. The test will not run but gives a `Broken` `Result`.
 Test.@test_skip
 ```
 
-## Creating Custom `AbstractTestSet` Types
+## 自定义 `AbstractTestSet` 类型
 
 Packages can create their own `AbstractTestSet` subtypes by implementing the `record` and `finish`
 methods. The subtype should have a one-argument constructor taking a description string, with
@@ -228,7 +228,7 @@ subtype as their parent unless it is set explicitly. It does not propagate any p
 testset. Option inheritance behavior can be implemented by packages using the stack infrastructure
 that `Test` provides.
 
-Defining a basic `AbstractTestSet` subtype might look like:
+定义一个基本的 `AbstractTestSet` 子类：
 
 ```julia
 import Test: record, finish
@@ -253,7 +253,7 @@ function finish(ts::CustomTestSet)
 end
 ```
 
-And using that testset looks like:
+使用测试集：
 
 ```julia
 @testset CustomTestSet foo=4 "custom testset inner 2" begin

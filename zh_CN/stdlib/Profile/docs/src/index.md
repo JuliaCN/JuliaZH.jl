@@ -1,10 +1,10 @@
-# [Profiling](@id lib-profiling)
+# [性能分析](@id lib-profiling)
 
 ```@docs
 Profile.@profile
 ```
 
-The methods in `Profile` are not exported and need to be called e.g. as `Profile.print()`.
+`Profile` 里的方法均未导出，需要通过 `Profile.print()` 的方式调用。
 
 ```@docs
 Profile.clear

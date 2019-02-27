@@ -1,4 +1,4 @@
-# 标点符号
+# 运算符与记号
 
 数学符号与函数的扩展文档在 [这里](@ref math-ops).
 
@@ -35,7 +35,9 @@
 | `''`        | 分界字符字面值                                                                  |
 | ``` ` ` ``` | 分界外部操作（命令）指定                                           |
 | `...`       | 拼接参数到函数调用或者声明一个可变参数的函数                         |
-| `.`         | 存取对象/模块的命名空间（调用 [`getproperty`](@ref Base.getproperty) 或 [`setproperty!`](@ref Base.setproperty!)），并且为逐元素函数调用（调用[`broadcast`](@ref)）加前缀 |
+| `.`         | 存取对象/模块的命名空间（调用 [`getproperty`](@ref Base.getproperty) 或
+[`setproperty!`](@ref Base.setproperty!)），
+并且为逐元素函数调用（调用 [`broadcast`](@ref)）加前缀 |
 | `a:b`       | 范围 a, a+1, a+2, ..., b                                                                   |
 | `a:s:b`     | 范围 a, a+s, a+2s, ..., b                                                                  |
 | `:`         | 为整个维度定标（初始下标：末尾下标），参照[`Colon`](@ref))                      |

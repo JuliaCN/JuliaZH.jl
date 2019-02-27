@@ -1,14 +1,10 @@
 # 网络和流
 
-Julia provides a rich interface to deal with streaming I/O objects such as terminals, pipes and
-TCP sockets. This interface, though asynchronous at the system level, is presented in a synchronous
-manner to the programmer and it is usually unnecessary to think about the underlying asynchronous
-operation. This is achieved by making heavy use of Julia cooperative threading ([coroutine](@ref man-tasks))
-functionality.
+Julia 提供了一个功能丰富的接口来处理流式 I/O 对象，如终端、管道和 TCP 套接字。此接口虽然在系统级是异步的，但是其以同步的方式展现给程序员，通常也不需要考虑底层的异步操作。这是通过大量使用 Julia 协作线程（[协程](@ref man-tasks)）功能实现的。
 
 ## 基础流 I/O
 
-所有Julia stream都暴露了[`read`](@ref)和[`write`](@ref)方法，将stream作为它们的第一个参数，如：
+所有 Julia stream 都暴露了 [`read`](@ref) 和 [`write`](@ref) 方法，将 stream 作为它们的第一个参数，如：
 
 ```julia-repl
 julia> write(stdout, "Hello World");  # suppress return value 11 with ;
@@ -18,13 +14,11 @@ julia> read(stdin, Char)
 '\n': ASCII/Unicode U+000a (category Cc: Other, control)
 ```
 
-注意，[`write`](@ref) 返回11，字节数(`"Hello World"`)写入[`stdout`](@ref)，但是返回值使用`;`抑制。
+注意，[`write`](@ref) 返回 11，字节数（`"Hello World"`）写入 [`stdout`](@ref)，但是返回值使用 `;` 抑制。
 
-Here Enter was pressed again so that Julia would read the newline. Now, as you can see from this
-example, [`write`](@ref) takes the data to write as its second argument, while [`read`](@ref)
-takes the type of the data to be read as the second argument.
+这里按了两次回车，以便 Julia 能够读取到换行符。正如你在这个例子中所看到的，[`write`](@ref) 以待写入的数据作为其第二个参数，而 [`read`](@ref) 以待读取的数据的类型作为其第二个参数。
 
-For example, to read a simple byte array, we could do:
+例如，为了读取一个简单的字节数组，我们可以这样做：
 
 ```julia-repl
 julia> x = zeros(UInt8, 4)
@@ -43,8 +37,7 @@ abcd
  0x64
 ```
 
-However, since this is slightly cumbersome, there are several convenience methods provided. For
-example, we could have written the above as:
+但是，因为这有些繁琐，所以提供了几个方便的方法。例如，我们可以把上面的代码编写为：
 
 ```julia-repl
 julia> read(stdin, 4)
@@ -56,7 +49,7 @@ abcd
  0x64
 ```
 
-or if we had wanted to read the entire line instead:
+或者如果我们想要读取一整行：
 
 ```julia-repl
 julia> readline(stdin)
@@ -64,10 +57,9 @@ abcd
 "abcd"
 ```
 
-Note that depending on your terminal settings, your TTY may be line buffered and might thus require
-an additional enter before the data is sent to Julia.
+请注意，根据你的终端设置，你的 TTY 可能是行缓冲的，因此在数据发送给 Julia 前可能需要额外的回车。
 
-To read every line from [`stdin`](@ref) you can use [`eachline`](@ref):
+若要读取 [`stdin`](@ref) 的每一行，可以使用 [`eachline`](@ref)：
 
 ```julia
 for line in eachline(stdin)
@@ -75,7 +67,7 @@ for line in eachline(stdin)
 end
 ```
 
-or [`read`](@ref) if you wanted to read by character instead:
+或者如果你想要用字符读取的话，使用 [`read`](@ref) ：
 
 ```julia
 while !eof(stdin)
@@ -84,43 +76,33 @@ while !eof(stdin)
 end
 ```
 
-## Text I/O
+## 文本 I/O
 
-Note that the [`write`](@ref) method mentioned above operates on binary streams. In particular,
-values do not get converted to any canonical text representation but are written out as is:
+请注意，上面提到的 [`write`](@ref) 方法对二进制流进行操作。具体来说，值不会转换为任何规范的文本表示形式，而是按原样输出：
 
 ```jldoctest
 julia> write(stdout, 0x61);  # suppress return value 1 with ;
 a
 ```
 
-Note that `a` is written to [`stdout`](@ref) by the [`write`](@ref) function and that the returned
-value is `1` (since `0x61` is one byte).
+请注意，`a` 被 [`write`](@ref) 函数写入到 [`stdout`](@ref) 并且返回值为 `1`（因为 `0x61` 为一个字节）。
 
-For text I/O, use the [`print`](@ref) or [`show`](@ref) methods, depending on your needs (see
-the documentation for these two methods for a detailed discussion of the difference between them):
+对于文本 I/O，请根据需要使用 [`print`](@ref) 或 [`show`](@ref) 方法（有关这两个方法之间的差异的详细讨论，请参阅它们的文档）：
 
 ```jldoctest
 julia> print(stdout, 0x61)
 97
 ```
 
-See [Custom pretty-printing](@ref man-custom-pretty-printing) for more information on how to
-implement display methods for custom types.
+有关如何实现自定义类型的显示方法的更多信息，请参阅 [自定义 pretty-printing](@ref man-custom-pretty-printing)。
 
-## IO Output Contextual Properties
+## IO 输出的上下文信息
 
-Sometimes IO output can benefit from the ability to pass contextual information into show methods.
-The [`IOContext`](@ref) object provides this framework for associating arbitrary metadata with an IO object.
-For example, `:compact => true` adds a hinting parameter to the IO object that the invoked show method
-should print a shorter output (if applicable). See the [`IOContext`](@ref) documentation for a list
-of common properties.
+有时，IO 输出可受益于将上下文信息传递到 show 方法的能力。[`IOContext`](@ref) 对象提供了将任意元数据与 IO 对象相关联的框架。例如，`:compact => true` 向 IO 对象添加一个参数来提示调用的 show 方法应该打印一个较短的输出（如果适用）。有关常用属性的列表，请参阅 [`IOContext`](@ref) 文档。
 
-## Working with Files
+## 使用文件
 
-Like many other environments, Julia has an [`open`](@ref) function, which takes a filename and
-returns an `IOStream` object that you can use to read and write things from the file. For example,
-if we have a file, `hello.txt`, whose contents are `Hello, World!`:
+和其他环境一样，Julia 有 [`open`](@ref) 函数，它接收文件名并返回一个 `IOStream` 对象，你可以用该对象来对文件进行读取和写入。例如，如果我们有文件 `hello.txt`，其内容为 `Hello, World!`：
 
 ```julia-repl
 julia> f = open("hello.txt")
@@ -131,7 +113,7 @@ julia> readlines(f)
  "Hello, World!"
 ```
 
-If you want to write to a file, you can open it with the write (`"w"`) flag:
+若要写入文件，则可以带着 write（`"w"`）标志来打开它：
 
 ```julia-repl
 julia> f = open("hello.txt","w")
@@ -141,20 +123,15 @@ julia> write(f,"Hello again.")
 12
 ```
 
-If you examine the contents of `hello.txt` at this point, you will notice that it is empty; nothing
-has actually been written to disk yet. This is because the `IOStream` must be closed before the
-write is actually flushed to disk:
+你如果在此刻检查 `hello.txt` 的内容，会注意到它是空的；改动实际上还没有写入到磁盘中。这是因为 `IOStream` 必须在写入实际刷新到磁盘前关闭：
 
 ```julia-repl
 julia> close(f)
 ```
 
-Examining `hello.txt` again will show its contents have been changed.
+再次检查 `hello.txt` 将显示其内容已被更改。
 
-Opening a file, doing something to its contents, and closing it again is a very common pattern.
-To make this easier, there exists another invocation of [`open`](@ref) which takes a function
-as its first argument and filename as its second, opens the file, calls the function with the
-file as an argument, and then closes it again. For example, given a function:
+打开文件，对其内容执行一些操作，并再次关闭它是一种非常常见的模式。为了使这更容易，[`open`](@ref) 还有另一种调用方式，它以一个函数作为其第一个参数，以文件名作为其第二个参数，以该文件为参数调用该函数，然后再次关闭它。例如，给定函数：
 
 ```julia
 function read_and_capitalize(f::IOStream)
@@ -162,18 +139,16 @@ function read_and_capitalize(f::IOStream)
 end
 ```
 
-You can call:
+可以调用：
 
 ```julia-repl
 julia> open(read_and_capitalize, "hello.txt")
 "HELLO AGAIN."
 ```
 
-to open `hello.txt`, call `read_and_capitalize` on it, close `hello.txt` and return the capitalized
-contents.
+来打开 `hello.txt`，对它调用 `read_and_capitalize`，关闭 `hello.txt` 并返回大写的内容。
 
-To avoid even having to define a named function, you can use the `do` syntax, which creates an
-anonymous function on the fly:
+为了避免甚至必须定义一个命名函数，你可以使用 `do` 语法，它可以动态地创建匿名函数：
 
 ```julia-repl
 julia> open("hello.txt") do f
@@ -182,11 +157,9 @@ julia> open("hello.txt") do f
 "HELLO AGAIN."
 ```
 
-## A simple TCP example
+## 一个简单的 TCP 示例
 
-Let's jump right in with a simple example involving TCP sockets.
-This functionality is in a standard library package called `Sockets`.
-Let's first create a simple server:
+让我们直接进入一个 TCP 套接字相关的简单示例。此功能位于名为 `Sockets` 的标准库中。让我们先创建一个简单的服务器：
 
 ```julia-repl
 julia> using Sockets
@@ -201,10 +174,7 @@ julia> @async begin
 Task (runnable) @0x00007fd31dc11ae0
 ```
 
-To those familiar with the Unix socket API, the method names will feel familiar, though their
-usage is somewhat simpler than the raw Unix socket API. The first call to [`listen`](@ref) will
-create a server waiting for incoming connections on the specified port (2000) in this case. The
-same function may also be used to create various other kinds of servers:
+对于那些熟悉 Unix 套接字 API 的人，这些方法名称会让人感觉很熟悉，可是它们的用法比原始的 Unix 套接字 API 要简单些。在本例中，首次调用 [`listen`](@ref) 会创建一个服务器，等待传入指定端口（2000）的连接。
 
 ```julia-repl
 julia> listen(2000) # Listens on localhost:2000 (IPv4)
@@ -229,18 +199,7 @@ julia> listen("\\\\.\\pipe\\testsocket") # Listens on a Windows named pipe
 Base.PipeServer(active)
 ```
 
-Note that the return type of the last invocation is different. This is because this server does not
-listen on TCP, but rather on a named pipe (Windows) or UNIX domain socket. Also note that Windows
-named pipe format has to be a specific pattern such that the name prefix (`\\.\pipe\`) uniquely
-identifies the [file type](https://msdn.microsoft.com/en-us/library/windows/desktop/aa365783(v=vs.85).aspx).
-The difference between TCP and named pipes or
-UNIX domain sockets is subtle and has to do with the [`accept`](@ref) and [`connect`](@ref)
-methods. The [`accept`](@ref) method retrieves a connection to the client that is connecting on
-the server we just created, while the [`connect`](@ref) function connects to a server using the
-specified method. The [`connect`](@ref) function takes the same arguments as [`listen`](@ref),
-so, assuming the environment (i.e. host, cwd, etc.) is the same you should be able to pass the same
-arguments to [`connect`](@ref) as you did to listen to establish the connection. So let's try that
-out (after having created the server above):
+请注意，最后一次调用返回的类型是不同的。这是因为此服务器不监听 TCP，而是监听命名管道（Windows）或 UNIX 域套接字。还请注意 Windows 命名管道格式必须具有特定的模式，即名称前缀（`\\.\pipe\`），以便唯一标识[文件类型](https://msdn.microsoft.com/en-us/library/windows/desktop/aa365783(v=vs.85).aspx)。TCP 和命名管道或 UNIX 域套接字之间的区别是微妙的，这与 [`accept`](@ref) 和 [`connect`](@ref) 方法有关。[`accept`](@ref) 方法检索到连接到我们刚创建的服务器的客户端的连接，而 [`connect`](@ref) 函数使用指定的方法连接到服务器。[`connect`](@ref) 函数接收与 [`listen`](@ref) 相同的参数，因此，假设环境（即 host、cwd 等）相同，你应该能够将相同的参数传递给 [`connect`](@ref)，就像你在监听建立连接时所做的那样。那么让我们尝试一下（在创建上面的服务器之后）：
 
 ```julia-repl
 julia> connect(2000)
@@ -249,18 +208,9 @@ TCPSocket(open, 0 bytes waiting)
 julia> Hello World
 ```
 
-As expected we saw "Hello World" printed. So, let's actually analyze what happened behind the
-scenes. When we called [`connect`](@ref), we connect to the server we had just created. Meanwhile,
-the accept function returns a server-side connection to the newly created socket and prints "Hello
-World" to indicate that the connection was successful.
+不出所料，我们看到「Hello World」被打印出来。那么，让我们分析一下幕后发生的事情。在我们调用 [`connect`](@ref) 时，我们连接到刚刚创建的服务器。与此同时，accept 函数返回到新创建的套接字的服务器端连接，并打印「Hello World」来表明连接成功。
 
-A great strength of Julia is that since the API is exposed synchronously even though the I/O is
-actually happening asynchronously, we didn't have to worry about callbacks or even making sure that
-the server gets to run. When we called [`connect`](@ref) the current task waited for the connection
-to be established and only continued executing after that was done. In this pause, the server
-task resumed execution (because a connection request was now available), accepted the connection,
-printed the message and waited for the next client. Reading and writing works in the same way.
-To see this, consider the following simple echo server:
+Julia 的强大优势在于，即使 I/O 实际上是异步发生的，API 也以同步方式暴露，我们不必担心回调，甚至不必确保服务器能够运行。在我们调用 [`connect`](@ref) 时，当前任务等待建立连接，并在这之后才继续执行。在此暂停中，服务器任务恢复执行（因为现在有一个连接请求是可用的），接受该连接，打印信息并等待下一个客户端。读取和写入以同样的方式运行。为了理解这一点，请考虑以下简单的 echo 服务器：
 
 ```julia-repl
 julia> @async begin
@@ -286,25 +236,22 @@ julia> println(clientside,"Hello World from the Echo Server")
 Hello World from the Echo Server
 ```
 
-As with other streams, use [`close`](@ref) to disconnect the socket:
+与其他流一样，使用 [`close`](@ref) 即可断开该套接字：
 
 ```julia-repl
 julia> close(clientside)
 ```
 
-## Resolving IP Addresses
+## 解析 IP 地址
 
-One of the [`connect`](@ref) methods that does not follow the [`listen`](@ref) methods is
-`connect(host::String,port)`, which will attempt to connect to the host given by the `host` parameter
-on the port given by the `port` parameter. It allows you to do things like:
+与 [`listen`](@ref) 方法不一致的 [`connect`](@ref) 方法之一是 `connect(host::String,port)`，它将尝试连接到由 `host` 参数给定的主机上的由 `port` 参数给定的端口。它允许你执行以下操作：
 
 ```julia-repl
 julia> connect("google.com", 80)
 TCPSocket(RawFD(30) open, 0 bytes waiting)
 ```
 
-At the base of this functionality is [`getaddrinfo`](@ref), which will do the appropriate address
-resolution:
+此功能的基础是 [`getaddrinfo`](@ref)，它将执行适当的地址解析：
 
 ```julia-repl
 julia> getaddrinfo("google.com")

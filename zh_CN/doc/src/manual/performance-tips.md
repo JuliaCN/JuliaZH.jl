@@ -107,7 +107,7 @@ julia> time_sum(x)
 496.84883432553846
 ```
 
-在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的[工具](@ref tools)之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见 [Pre-allocating outputs](@ref)）。
+在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的[工具](@ref tools)之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见 [输出预分配](@ref)）。
 
 !!! note
     对于更加正经的性能测试，考虑一下 [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) 包，这个包除了其他方面之外会多次评估函数的性能以降低噪声。
@@ -159,7 +159,7 @@ julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
 
 在有可选类型声明的语言中，添加声明是使代码运行更快的原则性方法。在Julia中*并不是*这种情况。在Julia中，编译器都知道所有的函数参数，局部变量和表达式的类型。但是，有一些特殊的情况下声明是有帮助的。
 
-### 避免有抽象类型的域
+### 避免有抽象类型的字段
 
 类型能在不指定其域的类型的情况下被声明：
 
@@ -281,7 +281,7 @@ code_llvm(func, Tuple{MyType{AbstractFloat}})
 
 由于长度的原因，代码的结果没有在这里显示出来，但是你可能会希望自己去验证这一点。因为在第一种情况中，类型被完全指定了，在运行时，编译器不需要生成任何代码来决定类型。这就带来了更短和更快的代码。
 
-### 避免有抽象容器的域
+### 避免使用带抽象容器的字段
 
 上面的做法同样也适用于容器的类型：
 
@@ -607,7 +607,7 @@ julia> array3(5.0, 2)
 Now, one very good way to solve such problems is by using the [function-barrier technique](@ref kernal-functions).
 However, in some cases you might want to eliminate the type-instability altogether. In such cases,
 one approach is to pass the dimensionality as a parameter, for example through `Val{T}()` (see
-["Value types"](@ref)):
+[值类型](@ref)):
 
 ```jldoctest
 julia> function array3(fillval, ::Val{N}) where N
@@ -777,7 +777,7 @@ copy_row_col: 1.721531501
 
 请注意，`copy_cols` 比 `copy_rows` 快得多。这与预料的一致，因为 `copy_cols` 尊重 `Matrix` 基于列的内存布局。另外，`copy_col_row` 比 `copy_row_col` 快得多，因为它遵循我们的经验法则，即切片表达式中出现的第一个元素应该与最内层循环耦合。
 
-## 预分配输出
+## 输出预分配
 
 如果函数返回 `Array` 或其它复杂类型，则可能需要分配内存。不幸的是，内存分配及其反面垃圾收集通常是很大的瓶颈。
 

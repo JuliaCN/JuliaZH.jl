@@ -1,4 +1,4 @@
-# Random Numbers
+# 随机数
 
 ```@meta
 DocTestSetup = :(using Random)
@@ -99,7 +99,7 @@ Random.rand(rng::AbstractRNG, ::Random.SamplerType{Die}) = Die(rand(rng, 4:20))
 
 ```
 
-Scalar and array methods for `Die` now work as expected:
+`Die` 的标量和数组方法现在可以正常工作了：
 
 ```jldoctest Die; setup = :(Random.seed!(1))
 julia> rand(Die)
