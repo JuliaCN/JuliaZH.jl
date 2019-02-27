@@ -37,7 +37,7 @@ BC/BCE, etc.
     or UT1. Basing types on the UT second basically means that every minute has 60 seconds and every
     day has 24 hours and leads to more natural calculations when working with calendar dates.
 
-## Constructors
+## 构造函数
 
 [`Date`](@ref) and [`DateTime`](@ref) types can be constructed by integer or [`Period`](@ref)
 types, by parsing, or through adjusters (more on those later):
@@ -187,7 +187,7 @@ julia> dt - dt2
 381110400000 milliseconds
 ```
 
-## Accessor Functions
+## 访问函数
 
 Because the [`Date`](@ref) and [`DateTime`](@ref) types are stored as single [`Int64`](@ref) values, date
 parts or fields can be retrieved through accessor functions. The lowercase accessors return the
@@ -210,7 +210,7 @@ julia> Dates.day(t)
 31
 ```
 
-While propercase return the same value in the corresponding [`Period`](@ref) type:
+当首字母大写时会返回对应 [`Period`](@ref) 类型的相同值：
 
 ```jldoctest tdate
 julia> Dates.Year(t)
@@ -234,7 +234,7 @@ julia> Dates.yearmonthday(t)
 (2014, 1, 31)
 ```
 
-One may also access the underlying `UTInstant` or integer value:
+你也可以访问底层的 `UTInstant` 或整数值：
 
 ```jldoctest tdate
 julia> dump(t)
@@ -250,7 +250,7 @@ julia> Dates.value(t)
 735264
 ```
 
-## Query Functions
+## 查询函数
 
 Query functions provide calendrical information about a [`TimeType`](@ref). They include information
 about the day of the week:
@@ -269,7 +269,7 @@ julia> Dates.dayofweekofmonth(t) # 5th Friday of January
 5
 ```
 
-Month of the year:
+一年中的月份：
 
 ```jldoctest tdate2
 julia> Dates.monthname(t)
@@ -326,8 +326,7 @@ julia> Dates.monthabbr(t;locale="french")
 "janv"
 ```
 
-Since the abbreviated versions of the days are not loaded, trying to use the
-function `dayabbr` will error.
+自从缩写版本的 `days` 函数不加载之后，试图访问函数 `dayabbr` 将导致一个错误。
 
 ```jldoctest tdate2
 julia> Dates.dayabbr(t;locale="french")
@@ -457,12 +456,12 @@ adjustment criterion.
 For example:
 
 ```jldoctest
-julia> istuesday = x->Dates.dayofweek(x) == Dates.Tuesday; # Returns true if the day of the week of x is Tuesday
+julia> istuesday = x->Dates.dayofweek(x) == Dates.Tuesday; # 当 x 是周二时返回 true
 
-julia> Dates.tonext(istuesday, Date(2014,7,13)) # 2014-07-13 is a Sunday
+julia> Dates.tonext(istuesday, Date(2014,7,13)) # 2014-07-13 是周日
 2014-07-15
 
-julia> Dates.tonext(Date(2014,7,13), Dates.Tuesday) # Convenience method provided for day of the week adjustments
+julia> Dates.tonext(Date(2014,7,13), Dates.Tuesday) # 星期调整的便捷方法
 2014-07-15
 ```
 
@@ -470,7 +469,7 @@ This is useful with the do-block syntax for more complex temporal expressions:
 
 ```jldoctest
 julia> Dates.tonext(Date(2014,7,13)) do x
-           # Return true on the 4th Thursday of November (Thanksgiving)
+           # 在十一月的第四个星期四——感恩节那天返回 true
            Dates.dayofweek(x) == Dates.Thursday &&
            Dates.dayofweekofmonth(x) == 4 &&
            Dates.month(x) == Dates.November
@@ -535,7 +534,7 @@ julia> y3 - y2
 julia> y3 % y2
 0 years
 
-julia> div(y3,3) # mirrors integer division
+julia> div(y3,3) # 镜像整数除法
 3 years
 ```
 

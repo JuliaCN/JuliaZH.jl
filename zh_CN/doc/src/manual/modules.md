@@ -192,12 +192,12 @@ end
 
 注意，在像 `__init__` 这样的函数里定义一个全局变量是完全可以的，这是动态语言的优点之一。但是把全局作用域的值定义成常量，可以让编译器能确定该值的类型，并且能让编译器生成更好的优化过的代码。显然，你的模块（Module）中，任何其他依赖于 `foo_data_ptr` 的全局量也必须在 `__init__` 中被初始化。
 
-Constants involving most Julia objects that are not produced by `ccall` do not need to be placed
-in `__init__`: their definitions can be precompiled and loaded from the cached module image. This
-includes complicated heap-allocated objects like arrays. However, any routine that returns a raw
-pointer value must be called at runtime for precompilation to work (Ptr objects will turn into
-null pointers unless they are hidden inside an isbits object). This includes the return values
-of the Julia functions `cfunction` and `pointer`.
+不需要把不是由`ccall`生成的大多数Julia对象的常量放
+在`__init__`中：可以从缓存的模块映像中预编译和加载它们的定义。这个
+包括复杂的堆分配对象，如数组。但是，任何返回原始指针的例程
+必须在运行时调用才能使预编译工作（Ptr 对象将变为
+null 指针，除非它们隐藏在 isbits 对象中）。这包括
+Julia 函数`cfunction`和`pointer` 的返回值。
 
 Dictionary and set types, or in general anything that depends on the output of a `hash(key)` method,
 are a trickier case.  In the common case where the keys are numbers, strings, symbols, ranges,

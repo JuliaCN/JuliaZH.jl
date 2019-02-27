@@ -184,7 +184,7 @@ Base.something
 Base.Enums.@enum
 ```
 
-## 范型函数
+## 泛型
 
 ```@docs
 Core.Function

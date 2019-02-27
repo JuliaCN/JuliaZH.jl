@@ -366,7 +366,7 @@ julia> Point{AbstractString}
 Point{AbstractString}
 ```
 
-`Point{Float64}` 类型是坐标为 64 位浮点值的点，而 `Point{AbstractString}` 类型是「坐标」为字符串对象（请参阅 [Strings](@ref)）的「点」。
+`Point{Float64}` 类型是坐标为 64 位浮点值的点，而 `Point{AbstractString}` 类型是「坐标」为字符串对象（请参阅 [Strings](@id man-strings)）的「点」。
 
 `Point` 本身也是一个有效的类型对象，包括所有实例 `Point{Float64}`、`Point{AbstractString}` 等作为子类型：
 
@@ -1005,7 +1005,7 @@ julia> [Polar(3, 4.0) Polar(4.0,5.3)]
 
 有关调整打印效果的常用属性列表，请参阅文档 [`IOContext`](@ref)。
 
-## 「值类型」
+## 值类型
 
 在 Julia 中，你无法根据诸如 `true` 或 `false` 之类的*值*进行分派。然而，你可以根据参数类型进行分派，Julia 允许你包含「plain bits」值（类型、符号、整数、浮点数和元组等）作为类型参数。`Array{T,N}` 里的维度参数就是一个常见的例子，在那里 `T` 是类型（比如 [`Float64`](@ref)），而 `N` 只是个 `Int`。
 

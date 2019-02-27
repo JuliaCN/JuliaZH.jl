@@ -1,4 +1,4 @@
-# Interactive Utilities
+# 交互式组件
 
 ```@meta
 DocTestSetup = :(using InteractiveUtils)

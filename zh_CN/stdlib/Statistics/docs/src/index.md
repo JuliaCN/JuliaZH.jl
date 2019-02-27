@@ -1,10 +1,10 @@
-# Statistics
+# 统计
 
 ```@meta
 DocTestSetup = :(using Statistics)
 ```
 
-The Statistics module contains basic statistics functionality.
+统计模块包含了基本的统计函数。
 
 ```@docs
 Statistics.std
