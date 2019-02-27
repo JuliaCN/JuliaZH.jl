@@ -2,12 +2,12 @@
 
 Julia 提供了大量的流程控制构件：
 
-  * [复合表达式](@ref man-compound-expressions): `begin` 和 `(;)`。
-  * [条件表达式](@ref man-conditional-evaluation): `if`-`elseif`-`else` 和 `?:` (三元运算符)。
-  * [短路求值](@ref): `&&`, `||` 和链式比较。
-  * [重复执行：循环](@ref man-loops): `while` 和 `for`.
-  * [异常处理](@ref): `try`-`catch`, [`error`](@ref) 和 [`throw`](@ref).
-  * [`Task`（协程）](@ref man-tasks): [`yieldto`](@ref).
+  * [复合表达式](@ref man-compound-expressions)：`begin` 和 `(;)`。
+  * [条件表达式](@ref man-conditional-evaluation)：`if`-`elseif`-`else` 和 `?:` (三元运算符)。
+  * [短路求值](@ref)：`&&`、`||` 和链式比较。
+  * [重复执行：循环](@ref man-loops)：`while` 和 `for`。
+  * [异常处理](@ref)：`try`-`catch`、[`error`](@ref) 和 [`throw`](@ref)。
+  * [`Task`（协程）](@ref man-tasks)：[`yieldto`](@ref)。
 
 前五个流程控制机制是高级编程语言的标准。[`Task`](@ref) 不是那么的标准：它提供了非局部的流程控制，这使得在暂时挂起的计算任务之间进行切换成为可能。这是一个功能强大的构件：Julia 中的异常处理和协同多任务都是通过 `Task` 实现的。虽然日常编程并不需要直接使用 `Task`，但某些问题用 `Task` 处理会更加简单。
 
@@ -31,7 +31,7 @@ julia> z = (x = 1; y = 2; x + y)
 3
 ```
 
-这个语法在定义简洁的单行函数的时候特别有用，参见 [函数](@ref)。尽管很典型，但是并不要求 `begin` 代码块是多行的，或者 `(;)` 链是单行的：
+这个语法在定义简洁的单行函数的时候特别有用，参见 [函数](@id man-functions)。尽管很典型，但是并不要求 `begin` 代码块是多行的，或者 `(;)` 链是单行的：
 
 ```jldoctest
 julia> begin x = 1; y = 2; x + y end
@@ -293,7 +293,7 @@ Stacktrace:
  [3] top-level scope
 ```
 
-**无**短路求值的布尔运算可以用位布尔运算符来完成，见[数学运算及初等函数](@ref)：`&` 和 `|`。这些是普通的函数，同时也刚好支持中缀运算符语法，但总是会计算它们的所有参数：
+**无**短路求值的布尔运算可以用位布尔运算符来完成，见[数学运算和初等函数](@ref)：`&` 和 `|`。这些是普通的函数，同时也刚好支持中缀运算符语法，但总是会计算它们的所有参数：
 
 ```jldoctest tandf
 julia> f(1) & t(2)
@@ -573,12 +573,11 @@ julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defin
     错误信息的第一个单词最好用小写. 例如,
     `size(A) == size(B) || throw(DimensionMismatch("size of A not equal to size of B"))`
 
-   优于
+    优于
 
     `size(A) == size(B) || throw(DimensionMismatch("Size of A not equal to size of B"))`.
 
-   但是，有时第一个字母大写更合理，例如如果函数的一个参数
-    是一个大写字母：`size(A,1) == size(B,2) || throw(DimensionMismatch("A has first dimension..."))`。
+    但是，有时第一个字母大写更合理，例如如果函数的一个参数是一个大写字母：`size(A,1) == size(B,2) || throw(DimensionMismatch("A has first dimension..."))`。
 
 ### 错误
 
@@ -791,7 +790,7 @@ taskHdl = @task mytask(7)
 
 为了安排更高级的工作分配模式，[`bind`](@ref) 和 [`schedule`](@ref) 可以与 [`Task`](@ref) 和 [`Channel`](@ref) 构造函数配合使用，显式地连接一些 `Channel` 和生产者或消费者 `Task`。
 
-注意目前 Julia 的 `Task` 并不分配到或者运行在不同的 CPU 核心上。真正的内核进程将在[分布式计算](@ref)进行讨论。
+注意目前 Julia 的 `Task` 并不分配到或者运行在不同的 CPU 核心上。真正的内核进程将在[并行计算](@ref)进行讨论。
 
 ### `Task` 相关的核心操作
 

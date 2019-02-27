@@ -234,7 +234,7 @@ julia> same_type(Int32(1), Int64(2))
 false
 ```
 
-这样的定义对应着那些类型签名是 `UnionAll` 类型的方法（参见[ UnionAll 类型](@ref)）。
+这样的定义对应着那些类型签名是 `UnionAll` 类型的方法（参见 [UnionAll 类型](@ref)）。
 
 在Julia中这种通过分派进行函数行为的定义是十分常见的，甚至是惯用的。方法类型参数并不局限于用作参数的类型：他们可以用在任意地方，只要值会在函数或者函数体的特征中。这里有个例子，例子中方法类型参数`T`用作方法特征中的参数类型`Vector{T}`的类型参数：
 
@@ -313,7 +313,7 @@ false
 
 `same_type_numeric`函数的行为与上面定义的`same_type`函数基本相似，但是它只对一对数定义。
 
-参数方法允许与`where`表达式同样的语法用来写类型（参见[ UnionAll 类型](@ref)）。如果只有一个参数，封闭的大括号（在`where {T}`中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如`where {T, S <: Real}`，或者使用嵌套的`where`来写，例如`where S<:Real where T`。
+参数方法允许与 `where` 表达式同样的语法用来写类型（参见 [UnionAll 类型](@ref)）。如果只有一个参数，封闭的大括号（在 `where {T}` 中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如 `where {T, S <: Real}`，或者使用嵌套的 `where` 来写，例如 `where S<:Real where T`。
 
 重定义方法
 ------------------
@@ -422,7 +422,7 @@ julia> fetch(schedule(t, 1))
 abstract type AbstractArray{T, N} end
 eltype(::Type{<:AbstractArray{T}}) where {T} = T
 ```
-使用了所谓的三角分派。注意如果`T`是一个`UnionAll`类型，比如`eltype(Array{T} where T <: Integer)`，会返回`Any`（如同`Base`中的`eltype`一样）。
+使用了所谓的三角分派。注意如果 `T` 是一个 `UnionAll` 类型，比如 `eltype(Array{T} where T <: Integer)`，会返回 `Any`（如同 `Base` 中的 `eltype` 一样）。
 
 另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：
 

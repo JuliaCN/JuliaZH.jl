@@ -384,7 +384,7 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 * 为给定参数集选择合适的输出数组
 * 为给定参数集选择高效的实现
 
-不是所有类型都支持 `axes` 和索引，但许多类型便于支持广播。[`Base.broadcastable`](@ref) 函数会在每个广播参数上调用，它能返回与广播参数不同的支持 `axes` 和索引的对象。默认情况下，对于所有 `AbstractArray` 和 `Number` 来说这是 identity 函数——因为它们已经支持 `axes` 和索引了。少数其它类型（包括但不限于类型本身、函数、像 [`missing`](@ref) 和 [`nothing`](@ref) 这样的特殊单态类型以及日期）为了能被广播，`Base.broadcastable` 会返回封装在 `Ref` 的参数来充当 0 维「标量」。自定义类型可以类似地指定 `Base.broadcastable` 来定义其形状，但是它们应当遵循 `collect(Base.broadcastable(x)) == collect(x)` 的约定。一个值得注意的例外是 `AbstractString`；字符串是个特例，为了能被广播其表现为标量，尽管它们是其字符的可迭代集合（详见 [字符串](@ref)）。
+不是所有类型都支持 `axes` 和索引，但许多类型便于支持广播。[`Base.broadcastable`](@ref) 函数会在每个广播参数上调用，它能返回与广播参数不同的支持 `axes` 和索引的对象。默认情况下，对于所有 `AbstractArray` 和 `Number` 来说这是 identity 函数——因为它们已经支持 `axes` 和索引了。少数其它类型（包括但不限于类型本身、函数、像 [`missing`](@ref) 和 [`nothing`](@ref) 这样的特殊单态类型以及日期）为了能被广播，`Base.broadcastable` 会返回封装在 `Ref` 的参数来充当 0 维「标量」。自定义类型可以类似地指定 `Base.broadcastable` 来定义其形状，但是它们应当遵循 `collect(Base.broadcastable(x)) == collect(x)` 的约定。一个值得注意的例外是 `AbstractString`；字符串是个特例，为了能被广播其表现为标量，尽管它们是其字符的可迭代集合（详见 [字符串](@id man-strings)）。
 
 接下来的两个步骤（选择输出数组和实现）依赖于如何确定给定参数集的 single answer。广播必须接受其参数的所有不同类型，并把它们折叠到一个输出数组和实现。广播称此 single answer 为「风格」。每个可广播对象都有自己的首选风格，并使用类似于类型提升的系统将这些风格组合成 single answer——「目标风格」。
 

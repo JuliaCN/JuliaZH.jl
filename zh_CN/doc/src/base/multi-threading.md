@@ -1,8 +1,8 @@
 
 # 多线程
 
-这个实验性接口支持Julia的多线程功能。类型和函数
-在本节的相关描述很有可能会在未来进行修改。
+这个实验性接口支持 Julia 的多线程功能。
+类型和函数在本节的相关描述很有可能会在未来进行修改。
 
 ```@docs
 Base.Threads.threadid
@@ -22,7 +22,7 @@ Base.Threads.atomic_min!
 Base.Threads.atomic_fence
 ```
 
-## 使用线程池的ccal方法（实验性）
+## 使用线程池的 `ccal` 方法（实验性）
 
 ```@docs
 Base.@threadcall

@@ -115,8 +115,7 @@ Base.@uint128_str
 
 ## 长浮点型
 
- [`BigFloat`](@ref) 类型实现任意精度的浮点运
-the [GNU MPFR library](http://www.mpfr.org/).
+ [`BigFloat`](@ref) 类型使用 [GNU MPFR 库](http://www.mpfr.org/) 实现了任意精度的浮点运算。
 
 ```@docs
 Base.precision

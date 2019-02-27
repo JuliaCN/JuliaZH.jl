@@ -1,4 +1,4 @@
-# StackTraces
+# 堆栈跟踪
 
 ```@docs
 Base.StackTraces.StackFrame

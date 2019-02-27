@@ -1,4 +1,4 @@
-# Distributed Computing
+# 分布式计算
 
 ```@meta
 DocTestSetup = :(using Distributed)
@@ -55,7 +55,7 @@ Distributed.cluster_cookie()
 Distributed.cluster_cookie(::Any)
 ```
 
-## Cluster Manager Interface
+## 集群管理接口
 
 This interface provides a mechanism to launch and manage Julia workers on different cluster environments.
 There are two types of managers present in Base: `LocalManager`, for launching additional workers on the

@@ -134,9 +134,9 @@ Base.Sort.partialsortperm!
 
 `InsertionSort` 是一个在 `QuickSort` 中使用的时间复杂度为 O(n^2) 的稳定的排序算法，它通常在 `n` 比较小的时候才具有较高的效率。
 
-`QuickSort`是一个内置并且非常快，但是不稳定的时间复杂度为O(n log n）的排序算法，例如即使数组两个元素相等的，它们排序之后的顺序也可能和在原数组中顺序不一致。`QuickSort`是内置的包括整数和浮点数在内的数字值的默认排序算法。
+`QuickSort` 是一个内置并且非常快，但是不稳定的时间复杂度为 O(n log n）的排序算法，例如即使数组两个元素相等的，它们排序之后的顺序也可能和在原数组中顺序不一致。`QuickSort` 是内置的包括整数和浮点数在内的数字值的默认排序算法。
 
-`PartialQuickSort(k)`类似于`QuickSort`，但是如果`k`是一个整数，输出数组只排序到索引`k`，如果`k`是 `OrdinalRange`，则输出数组排在`k`范围内。 例如：
+`PartialQuickSort(k)` 类似于 `QuickSort`，但是如果 `k` 是一个整数，输出数组只排序到索引 `k`，如果 `k` 是 `OrdinalRange`，则输出数组排在 `k` 范围内。 例如：
 
 ```julia
 x = rand(1:500, 100)
@@ -152,11 +152,11 @@ s[1:k] == ps[1:k]                      # => true
 s[k2] == qs[k2]                        # => true
 ```
 
-`MergeSort`是一个时间复杂度为O(n log n)的稳定但是非in-place的算法，它需要一个大小为输入数组一般的临时数组——同时也不像`QuickSort`一样快。`MergeSort`是非数值型数据的默认排序算法。
+`MergeSort` 是一个时间复杂度为 O(n log n) 的稳定但是非 in-place 的算法，它需要一个大小为输入数组一般的临时数组——同时也不像 `QuickSort` 一样快。`MergeSort` 是非数值型数据的默认排序算法。
 
-默认排序算法的选择是基于它们的快速稳定，或者 *appear*之类的。对于数值类型，实际上选择了`QuickSort`，因为在这种情况下，它更快，与稳定排序没有区别(除非数组以某种方式记录了突变)
+默认排序算法的选择是基于它们的快速稳定，或者 *appear* 之类的。对于数值类型，实际上选择了 `QuickSort`，因为在这种情况下，它更快，与稳定排序没有区别(除非数组以某种方式记录了突变)
 
-Julia选择默认排序算法的机制是通过`Base.Sort.defalg`来实现的，其允许将特定算法注册为特定数组的所有排序函数中的默认值。例如，这有两个默认算法[`sort.jl`](https://github.com/JuliaLang/julia/blob/master/base/sort.jl):
+Julia选择默认排序算法的机制是通过 `Base.Sort.defalg` 来实现的，其允许将特定算法注册为特定数组的所有排序函数中的默认值。例如，这有两个默认算法 [`sort.jl`](https://github.com/JuliaLang/julia/blob/master/base/sort.jl):
 
 ```julia
 defalg(v::AbstractArray) = MergeSort

@@ -1,4 +1,4 @@
-# Shared Arrays
+# 共享数组
 
 ```@docs
 SharedArrays.SharedArray

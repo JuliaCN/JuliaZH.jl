@@ -997,7 +997,7 @@ cond = Base.AsyncCondition()
 wait(cond)
 ```
 
-传递给 C 的回调应该只通过 [' ccall '](@ref) 将 `cond.handle` 作为参数传递给 `:uv_async_send` 并调用，注意避免任何内存分配操作或与 Julia 运行时的其他交互。
+传递给 C 的回调应该只通过 [`ccall`](@ref) 将 `cond.handle` 作为参数传递给 `:uv_async_send` 并调用，注意避免任何内存分配操作或与 Julia 运行时的其他交互。
 
 注意，事件可能会合并，因此对 `uv_async_send` 的多个调用可能会导致对该条件的单个唤醒通知。
 

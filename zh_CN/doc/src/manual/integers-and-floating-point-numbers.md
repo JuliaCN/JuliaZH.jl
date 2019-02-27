@@ -30,7 +30,7 @@ Julia 提供了很丰富的原始数值类型，并基于它们定义了一整�
 | [`Float32`](@ref) | [single](https://en.wikipedia.org/wiki/Single_precision_floating-point_format) | 32             |
 | [`Float64`](@ref) | [double](https://en.wikipedia.org/wiki/Double_precision_floating-point_format) | 64             |
 
-此外，对[复数和分数](@ref)的完整支持是在这些原始数据类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的[类型提升系统](@ref conversion-and-promotion)，所有的数值类型都无需显式转换就可以很自然地相互进行运算。
+此外，对[复数和有理数](@ref)的完整支持是在这些原始数据类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的[类型提升系统](@ref conversion-and-promotion)，所有的数值类型都无需显式转换就可以很自然地相互进行运算。
 
 ## 整数
 
