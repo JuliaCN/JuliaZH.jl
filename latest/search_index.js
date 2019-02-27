@@ -93,7 +93,7 @@ var documenterSearchIndex = {"docs": [
     "page": "整数和浮点数",
     "title": "整数和浮点数",
     "category": "section",
-    "text": "整数和浮点值是算术和计算的基础。这些数值的内置表示被称作原始数值类型（numeric primitive），且整数和浮点数在代码中作为立即数时称作数值字面量（numeric literal）。例如，1 是个整型字面量，1.0 是个浮点型字面量，它们在内存中作为对象的二进制表示就是原始数值类型。Julia 提供了很丰富的原始数值类型，并基于它们定义了一整套算术操作，还提供按位运算符以及一些标准数学函数。这些函数能够直接映射到现代计算机原生支持的数值类型及运算上，因此 Julia 可以充分地利用运算资源。此外，Julia 还为任意精度算术提供了软件支持，对于无法使用原生硬件表示的数值类型，Julia 也能够高效地处理其数值运算。当然，这需要相对的牺牲一些性能。以下是 Julia 的原始数值类型：整数类型：类型 带符号？ 比特数 最小值 最大值\nInt8 ✓ 8 -2^7 2^7 - 1\nUInt8  8 0 2^8 - 1\nInt16 ✓ 16 -2^15 2^15 - 1\nUInt16  16 0 2^16 - 1\nInt32 ✓ 32 -2^31 2^31 - 1\nUInt32  32 0 2^32 - 1\nInt64 ✓ 64 -2^63 2^63 - 1\nUInt64  64 0 2^64 - 1\nInt128 ✓ 128 -2^127 2^127 - 1\nUInt128  128 0 2^128 - 1\nBool N/A 8 false (0) true (1)浮点类型:类型 精度 比特数\nFloat16 half 16\nFloat32 single 32\nFloat64 double 64此外，对复数和分数的完整支持是在这些原始数据类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的类型提升系统，所有的数值类型都无需显式转换就可以很自然地相互进行运算。"
+    "text": "整数和浮点值是算术和计算的基础。这些数值的内置表示被称作原始数值类型（numeric primitive），且整数和浮点数在代码中作为立即数时称作数值字面量（numeric literal）。例如，1 是个整型字面量，1.0 是个浮点型字面量，它们在内存中作为对象的二进制表示就是原始数值类型。Julia 提供了很丰富的原始数值类型，并基于它们定义了一整套算术操作，还提供按位运算符以及一些标准数学函数。这些函数能够直接映射到现代计算机原生支持的数值类型及运算上，因此 Julia 可以充分地利用运算资源。此外，Julia 还为任意精度算术提供了软件支持，对于无法使用原生硬件表示的数值类型，Julia 也能够高效地处理其数值运算。当然，这需要相对的牺牲一些性能。以下是 Julia 的原始数值类型：整数类型：类型 带符号？ 比特数 最小值 最大值\nInt8 ✓ 8 -2^7 2^7 - 1\nUInt8  8 0 2^8 - 1\nInt16 ✓ 16 -2^15 2^15 - 1\nUInt16  16 0 2^16 - 1\nInt32 ✓ 32 -2^31 2^31 - 1\nUInt32  32 0 2^32 - 1\nInt64 ✓ 64 -2^63 2^63 - 1\nUInt64  64 0 2^64 - 1\nInt128 ✓ 128 -2^127 2^127 - 1\nUInt128  128 0 2^128 - 1\nBool N/A 8 false (0) true (1)浮点类型:类型 精度 比特数\nFloat16 half 16\nFloat32 single 32\nFloat64 double 64此外，对复数和有理数的完整支持是在这些原始数据类型之上建立起来的。多亏了 Julia 有一个很灵活的、用户可扩展的类型提升系统，所有的数值类型都无需显式转换就可以很自然地相互进行运算。"
 },
 
 {
@@ -277,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "数学运算和初等函数",
     "title": "运算符的优先级与结合性",
     "category": "section",
-    "text": "从高到低，Julia 运算符的优先级与结合性为：分类 运算符 结合性\n语法 . followed by :: 左结合\n幂运算 ^ 右结合\n一元运算符 + - √ 右结合[1]\n移位运算 << >> >>> 左结合\n除法 // 左结合\n乘法 * / % & \\ ÷ 左结合[2]\n加法 + - | ⊻ 左结合[2]\n语法 : .. 左结合\n语法 |> 左结合\n语法 <| 右结合\n比较 > < >= <= == === != !== <: 无结合性\n控制流程 && followed by || followed by ? 右结合\nPair 操作 => 右结合\n赋值 = += -= *= /= //= \\= ^= ÷= %= |= &= ⊻= <<= >>= >>>= 右结合[1]: 一元运算符 + 和 - 需要显式调用，即给它们的参数加上括号，以免和 ++ 等运算符混淆。其它一元运算符的混合使用都被解析为右结合的，比如 √√-a 解析为 √(√(-a))。[2]: The operators +, ++ and * are non-associative. a + b + c is parsed as +(a, b, c) not +(+(a, b), c). However, the fallback methods for +(a, b, c, d...) and *(a, b, c, d...) both default to left-associative evaluation.要看全部 Julia 运算符的优先级关系，可以看这个文件的最上面部分：src/julia-parser.scm你也可以通过内置函数 Base.operator_precedence 查看任何给定运算符的优先级数值，数值越大优先级越高：julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)\n(11, 13, 17)\n\njulia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)\n(0, 1, 1)另外，内置函数 Base.operator_associativity 可以返回运算符结合性的符号表示：julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)\n(:left, :none, :right)\n\njulia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Base.operator_associativity(:→)\n(:left, :none, :right)注意诸如 :sin 这样的符号返回优先级 0，此值代表无效的运算符或非最低优先级运算符。类似地，它们的结合性被认为是 :none。"
+    "text": "从高到低，Julia 运算符的优先级与结合性为：分类 运算符 结合性\n语法 . followed by :: 左结合\n幂运算 ^ 右结合\n一元运算符 + - √ 右结合[1]\n移位运算 << >> >>> 左结合\n除法 // 左结合\n乘法 * / % & \\ ÷ 左结合[2]\n加法 + - | ⊻ 左结合[2]\n语法 : .. 左结合\n语法 |> 左结合\n语法 <| 右结合\n比较 > < >= <= == === != !== <: 无结合性\n流程控制 && followed by || followed by ? 右结合\nPair 操作 => 右结合\n赋值 = += -= *= /= //= \\= ^= ÷= %= |= &= ⊻= <<= >>= >>>= 右结合[1]: 一元运算符 + 和 - 需要显式调用，即给它们的参数加上括号，以免和 ++ 等运算符混淆。其它一元运算符的混合使用都被解析为右结合的，比如 √√-a 解析为 √(√(-a))。[2]: The operators +, ++ and * are non-associative. a + b + c is parsed as +(a, b, c) not +(+(a, b), c). However, the fallback methods for +(a, b, c, d...) and *(a, b, c, d...) both default to left-associative evaluation.要看全部 Julia 运算符的优先级关系，可以看这个文件的最上面部分：src/julia-parser.scm你也可以通过内置函数 Base.operator_precedence 查看任何给定运算符的优先级数值，数值越大优先级越高：julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)\n(11, 13, 17)\n\njulia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)\n(0, 1, 1)另外，内置函数 Base.operator_associativity 可以返回运算符结合性的符号表示：julia> Base.operator_associativity(:-), Base.operator_associativity(:+), Base.operator_associativity(:^)\n(:left, :none, :right)\n\njulia> Base.operator_associativity(:⊗), Base.operator_associativity(:sin), Base.operator_associativity(:→)\n(:left, :none, :right)注意诸如 :sin 这样的符号返回优先级 0，此值代表无效的运算符或非最低优先级运算符。类似地，它们的结合性被认为是 :none。"
 },
 
 {
@@ -338,32 +338,32 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "manual/complex-and-rational-numbers/#",
-    "page": "复数和分数",
-    "title": "复数和分数",
+    "page": "复数和有理数",
+    "title": "复数和有理数",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "manual/complex-and-rational-numbers/#复数和分数-1",
-    "page": "复数和分数",
-    "title": "复数和分数",
+    "location": "manual/complex-and-rational-numbers/#复数和有理数-1",
+    "page": "复数和有理数",
+    "title": "复数和有理数",
     "category": "section",
-    "text": "Julia 语言自带预定义的表示复数与分数的类型，并且支持它们的各种数学运算和基础函数。由于也定义了复数与分数的转换与提升，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。"
+    "text": "Julia 语言自带预定义的表示复数与分数的类型，并且支持它们的各种数学运算和初等函数。由于也定义了复数与分数的转换与提升，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。"
 },
 
 {
     "location": "manual/complex-and-rational-numbers/#复数-1",
-    "page": "复数和分数",
+    "page": "复数和有理数",
     "title": "复数",
     "category": "section",
-    "text": "在Julia中,全局常量 im 被绑定到复数 i，表示 -1 的主平方根。由于 i 是一个很流行的用作索引的变量名，所以直接把它作为全局常量被认为是很危险的。由于 Julia 允许数值文本作为系数与标识符并置，这种绑定就足够为复数提供很方便的语法，类似于传统的数学记法：julia> 1 + 2im\n1 + 2im你可以对复数进行各种标准算术操作：julia> (1 + 2im)*(2 - 3im)\n8 + 1im\n\njulia> (1 + 2im)/(1 - 2im)\n-0.6 + 0.8im\n\njulia> (1 + 2im) + (1 - 2im)\n2 + 0im\n\njulia> (-3 + 2im) - (5 - 1im)\n-8 + 3im\n\njulia> (-1 + 2im)^2\n-3 - 4im\n\njulia> (-1 + 2im)^2.5\n2.729624464784009 - 6.9606644595719im\n\njulia> (-1 + 2im)^(1 + 1im)\n-0.27910381075826657 + 0.08708053414102428im\n\njulia> 3(2 - 5im)\n6 - 15im\n\njulia> 3(2 - 5im)^2\n-63 - 60im\n\njulia> 3(2 - 5im)^-1.0\n0.20689655172413796 + 0.5172413793103449im类型提升机制也确保你可以使用不同类型的操作数的组合：julia> 2(1 - 1im)\n2 - 2im\n\njulia> (2 + 3im) - 1\n1 + 3im\n\njulia> (1 + 2im) + 0.5\n1.5 + 2.0im\n\njulia> (2 + 3im) - 0.5im\n2.0 + 2.5im\n\njulia> 0.75(1 + 2im)\n0.75 + 1.5im\n\njulia> (2 + 3im) / 2\n1.0 + 1.5im\n\njulia> (1 - 3im) / (2 + 2im)\n-0.5 - 1.0im\n\njulia> 2im^2\n-2 + 0im\n\njulia> 1 + 3/4im\n1.0 - 0.75im注意 3/4im == 3/(4*im) == -(3/4*im)，因为文本系数比除法的优先级更高。Julia 提供了一些操作复数的标准函数：julia> z = 1 + 2im\n1 + 2im\n\njulia> real(1 + 2im) # real part of z\n1\n\njulia> imag(1 + 2im) # imaginary part of z\n2\n\njulia> conj(1 + 2im) # complex conjugate of z\n1 - 2im\n\njulia> abs(1 + 2im) # absolute value of z\n2.23606797749979\n\njulia> abs2(1 + 2im) # squared absolute value\n5\n\njulia> angle(1 + 2im) # phase angle in radians\n1.1071487177940904按照惯例，复数的绝对值（abs）是从零点到它的距离。abs2 给出绝对值的平方，作用于复数上时非常有用,可以避免做平方根的操作。[angle] 返回以弧度为单位的相位角（这也被称为辐角函数）。所有其它的基础函数在复数上也都有完整的定义：julia> sqrt(1im)\n0.7071067811865476 + 0.7071067811865475im\n\njulia> sqrt(1 + 2im)\n1.272019649514069 + 0.7861513777574233im\n\njulia> cos(1 + 2im)\n2.0327230070196656 - 3.0518977991518im\n\njulia> exp(1 + 2im)\n-1.1312043837568135 + 2.4717266720048188im\n\njulia> sinh(1 + 2im)\n-0.4890562590412937 + 1.4031192506220405im注意数学函数通常应用于实数就返回实数值，应用于复数就返回复数值。例如，当 sqrt 应用于 -1 与 -1 + 0im 会有不同的表现，虽然 -1 == -1 + 0im：julia> sqrt(-1)\nERROR: DomainError with -1.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]\n\njulia> sqrt(-1 + 0im)\n0.0 + 1.0im从变量构建复数时，文本型数值系数记法不再适用。相反地，乘法必须显式地写出：julia> a = 1; b = 2; a + b*im\n1 + 2im然而，我们并不推荐这样做，而应改为使用 complex 函数直接通过实部与虚部构建一个复数值：julia> a = 1; b = 2; complex(a, b)\n1 + 2im这种构建避免了乘法和加法操作。Inf 和 NaN 可能出现在复数的实部和虚部，正如特殊的浮点值章节所描述的：julia> 1 + Inf*im\n1.0 + Inf*im\n\njulia> 1 + NaN*im\n1.0 + NaN*im"
+    "text": "在Julia中,全局常量 im 被绑定到复数 i，表示 -1 的主平方根。由于 i 是一个很流行的用作索引的变量名，所以直接把它作为全局常量被认为是很危险的。由于 Julia 允许数值文本作为系数与标识符并置，这种绑定就足够为复数提供很方便的语法，类似于传统的数学记法：julia> 1 + 2im\n1 + 2im你可以对复数进行各种标准算术操作：julia> (1 + 2im)*(2 - 3im)\n8 + 1im\n\njulia> (1 + 2im)/(1 - 2im)\n-0.6 + 0.8im\n\njulia> (1 + 2im) + (1 - 2im)\n2 + 0im\n\njulia> (-3 + 2im) - (5 - 1im)\n-8 + 3im\n\njulia> (-1 + 2im)^2\n-3 - 4im\n\njulia> (-1 + 2im)^2.5\n2.729624464784009 - 6.9606644595719im\n\njulia> (-1 + 2im)^(1 + 1im)\n-0.27910381075826657 + 0.08708053414102428im\n\njulia> 3(2 - 5im)\n6 - 15im\n\njulia> 3(2 - 5im)^2\n-63 - 60im\n\njulia> 3(2 - 5im)^-1.0\n0.20689655172413796 + 0.5172413793103449im类型提升机制也确保你可以使用不同类型的操作数的组合：julia> 2(1 - 1im)\n2 - 2im\n\njulia> (2 + 3im) - 1\n1 + 3im\n\njulia> (1 + 2im) + 0.5\n1.5 + 2.0im\n\njulia> (2 + 3im) - 0.5im\n2.0 + 2.5im\n\njulia> 0.75(1 + 2im)\n0.75 + 1.5im\n\njulia> (2 + 3im) / 2\n1.0 + 1.5im\n\njulia> (1 - 3im) / (2 + 2im)\n-0.5 - 1.0im\n\njulia> 2im^2\n-2 + 0im\n\njulia> 1 + 3/4im\n1.0 - 0.75im注意 3/4im == 3/(4*im) == -(3/4*im)，因为文本系数比除法的优先级更高。Julia 提供了一些操作复数的标准函数：julia> z = 1 + 2im\n1 + 2im\n\njulia> real(1 + 2im) # real part of z\n1\n\njulia> imag(1 + 2im) # imaginary part of z\n2\n\njulia> conj(1 + 2im) # complex conjugate of z\n1 - 2im\n\njulia> abs(1 + 2im) # absolute value of z\n2.23606797749979\n\njulia> abs2(1 + 2im) # squared absolute value\n5\n\njulia> angle(1 + 2im) # phase angle in radians\n1.1071487177940904按照惯例，复数的绝对值（abs）是从零点到它的距离。abs2 给出绝对值的平方，作用于复数上时非常有用，可以避免做平方根的操作。angle 返回以弧度为单位的相位角（这也被称为辐角函数）。所有其它的初等函数在复数上也都有完整的定义：julia> sqrt(1im)\n0.7071067811865476 + 0.7071067811865475im\n\njulia> sqrt(1 + 2im)\n1.272019649514069 + 0.7861513777574233im\n\njulia> cos(1 + 2im)\n2.0327230070196656 - 3.0518977991518im\n\njulia> exp(1 + 2im)\n-1.1312043837568135 + 2.4717266720048188im\n\njulia> sinh(1 + 2im)\n-0.4890562590412937 + 1.4031192506220405im注意数学函数通常应用于实数就返回实数值，应用于复数就返回复数值。例如，当 sqrt 应用于 -1 与 -1 + 0im 会有不同的表现，虽然 -1 == -1 + 0im：julia> sqrt(-1)\nERROR: DomainError with -1.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\nStacktrace:\n[...]\n\njulia> sqrt(-1 + 0im)\n0.0 + 1.0im从变量构建复数时，文本型数值系数记法不再适用。相反地，乘法必须显式地写出：julia> a = 1; b = 2; a + b*im\n1 + 2im然而，我们并不推荐这样做，而应改为使用 complex 函数直接通过实部与虚部构建一个复数值：julia> a = 1; b = 2; complex(a, b)\n1 + 2im这种构建避免了乘法和加法操作。Inf 和 NaN 可能出现在复数的实部和虚部，正如特殊的浮点值章节所描述的：julia> 1 + Inf*im\n1.0 + Inf*im\n\njulia> 1 + NaN*im\n1.0 + NaN*im"
 },
 
 {
-    "location": "manual/complex-and-rational-numbers/#分数-1",
-    "page": "复数和分数",
-    "title": "分数",
+    "location": "manual/complex-and-rational-numbers/#有理数-1",
+    "page": "复数和有理数",
+    "title": "有理数",
     "category": "section",
     "text": "Julia 有一个用于表示整数精确比值的分数类型。分数通过 // 运算符构建：julia> 2//3\n2//3如果一个分数的分子和分母含有公因子，它们会被约分到最简形式且分母非负：julia> 6//9\n2//3\n\njulia> -4//8\n-1//2\n\njulia> 5//-15\n-1//3\n\njulia> -4//-12\n1//3整数比值的这种标准化形式是唯一的，所以分数值的相等性可由校验分子与分母都相等来测试。分数值的标准化分子和分母可以使用 numerator 和 denominator 函数得到：julia> numerator(2//3)\n2\n\njulia> denominator(2//3)\n3分子和分母的直接比较通常是不必要的，因为标准算术和比较操作对分数值也有定义：julia> 2//3 == 6//9\ntrue\n\njulia> 2//3 == 9//27\nfalse\n\njulia> 3//7 < 1//2\ntrue\n\njulia> 3//4 > 2//3\ntrue\n\njulia> 2//4 + 1//6\n2//3\n\njulia> 5//12 - 1//4\n1//6\n\njulia> 5//8 * 3//12\n5//32\n\njulia> 6//5 / 10//7\n21//25分数可以很容易地转换成浮点数：julia> float(3//4)\n0.75对任意整数值 a 和 b（除了 a == 0 且 b == 0 时），从分数到浮点数的转换遵从以下的一致性：julia> a = 1; b = 2;\n\njulia> isequal(float(a//b), a/b)\ntrueJulia接受构建无穷分数值：julia> 5//0\n1//0\n\njulia> -3//0\n-1//0\n\njulia> typeof(ans)\nRational{Int64}但不接受试图构建一个 NaN 分数值：julia> 0//0\nERROR: ArgumentError: invalid rational: zero(Int64)//zero(Int64)\nStacktrace:\n[...]像往常一样，类型提升系统使得分数可以轻松地同其它数值类型进行交互：julia> 3//5 + 1\n8//5\n\njulia> 3//5 - 0.5\n0.09999999999999998\n\njulia> 2//7 * (1 + 2im)\n2//7 + 4//7*im\n\njulia> 2//7 * (1.5 + 2im)\n0.42857142857142855 + 0.5714285714285714im\n\njulia> 3//2 / (1 + 2im)\n3//10 - 3//5*im\n\njulia> 1//2 + 2im\n1//2 + 2//1*im\n\njulia> 1 + 2//3im\n1//1 - 2//3*im\n\njulia> 0.5 == 1//2\ntrue\n\njulia> 0.33 == 1//3\nfalse\n\njulia> 0.33 < 1//3\ntrue\n\njulia> 1//3 - 0.33\n0.0033333333333332993"
 },
@@ -465,15 +465,15 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/strings/#版本号字面量-1",
+    "location": "manual/strings/#man-version-number-literals-1",
     "page": "字符串",
     "title": "版本号字面量",
     "category": "section",
-    "text": "版本号很容易用 v\"...\" 形式的非标准字符串字面量表示。版本号字面量生成遵循语义版本规范的 VersionNumber 对象，因此由主、次、补丁号构成，后跟预发行 (pre-release) 和生成阿尔法数注释 (build alpha-numeric)。例如，v\"0.2.1-rc1+win64\" 可分为主版本号 0，次版本号 2，补丁版本号 1，预发行版号 rc1，以及生成版本 win64。输入版本字面量时，除了主版本号以外所有内容都是可选的，因此 v\"0.2\" 等效于 v\"0.2.0\" (预发行号和生成注释为空), v\"2\" 等效于 v\"2.0.0\"，等等。VersionNumber 对象在轻松正确地比较两个（或更多）版本时非常有用。例如，常数 VERSION 把 Julia 的版本号保留为一个 VersionNumber 对象，因此可以像下面这样用简单的声明定义一些特定版本的行为：if v\"0.2\" <= VERSION < v\"0.3-\"\n    # do something specific to 0.2 release series\nend注意在上例中用到了非标准版本号 v\"0.3-\"，其中有尾随符 -：这个符号是 Julia 标准的扩展，它可以用来表明低于任何 0.3 发行版的版本，包括所有的预发行版。所以上例中代码只能在稳定版本 0.2 上运行，而不能在 v\"0.3.0-rc1\" 这样的版本上运行。为了支持非稳定（即预发行）的 0.2 版本，下限检查应像这样应该改为：v\"0.2-\" <= VERSION。另一个非标准版本规范扩展使得能够使用 + 来表示生成版本的上限，例如 VERSION > v\"0.2-rc1+\" 可以用来表示任意高于 0.2-rc1 和其任意生成版本的版本：它对 v\"0.2-rc1+win64\" 返回 false 而对 v\"0.2-rc2\" 返回 true。在比较中使用这样的特殊版本是个好办法（特别是，总是应该对高版本使用尾随 -，除非有好理由不这样），但它们不应该被用作任何内容的实际版本，因为它们在语义版本控制方案中无效。除了用于常数 VERSION，c 对象在 Pkg 模块中被广泛用于指定包版本和其依赖。"
+    "text": "版本号很容易用 v\"...\" 形式的非标准字符串字面量表示。版本号字面量生成遵循语义版本规范的 VersionNumber 对象，因此由主、次、补丁号构成，后跟预发行 (pre-release) 和生成阿尔法数注释 (build alpha-numeric)。例如，v\"0.2.1-rc1+win64\" 可分为主版本号 0，次版本号 2，补丁版本号 1，预发行版号 rc1，以及生成版本 win64。输入版本字面量时，除了主版本号以外所有内容都是可选的，因此 v\"0.2\" 等效于 v\"0.2.0\" (预发行号和生成注释为空), v\"2\" 等效于 v\"2.0.0\"，等等。VersionNumber 对象在轻松正确地比较两个（或更多）版本时非常有用。例如，常数 VERSION 把 Julia 的版本号保留为一个 VersionNumber 对象，因此可以像下面这样用简单的声明定义一些特定版本的行为：if v\"0.2\" <= VERSION < v\"0.3-\"\n    # do something specific to 0.2 release series\nend注意在上例中用到了非标准版本号 v\"0.3-\"，其中有尾随符 -：这个符号是 Julia 标准的扩展，它可以用来表明低于任何 0.3 发行版的版本，包括所有的预发行版。所以上例中代码只能在稳定版本 0.2 上运行，而不能在 v\"0.3.0-rc1\" 这样的版本上运行。为了支持非稳定（即预发行）的 0.2 版本，下限检查应像这样应该改为：v\"0.2-\" <= VERSION。另一个非标准版本规范扩展使得能够使用 + 来表示生成版本的上限，例如 VERSION > v\"0.2-rc1+\" 可以用来表示任意高于 0.2-rc1 和其任意生成版本的版本：它对 v\"0.2-rc1+win64\" 返回 false 而对 v\"0.2-rc2\" 返回 true。在比较中使用这样的特殊版本是个好办法（特别是，总是应该对高版本使用尾随 -，除非有好理由不这样），但它们不应该被用作任何内容的实际版本，因为它们在语义版本控制方案中无效。除了用于定义常数 VERSION，VersionNumber 对象在 Pkg 模块应用广泛，常用于指定软件包的版本及其依赖。"
 },
 
 {
-    "location": "manual/strings/#原始字符串字面量-1",
+    "location": "manual/strings/#man-raw-string-literals-1",
     "page": "字符串",
     "title": "原始字符串字面量",
     "category": "section",
@@ -493,7 +493,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "函数",
     "category": "section",
-    "text": "在Julia里，函数是一个将参数值元组映射到返回值的对象。Julia的函数不是纯粹的数学函数，在某种意义上，函数可以改变并受程序的全局状态的影响。在Julia中定义函数的基本语法是：julia> function f(x,y)\n           x + y\n       end\nf (generic function with 1 method)在Julia中定义函数还有第二种更简洁的语法。上述的传统函数声明语法等效于以下紧凑性的“赋值形式”：julia> f(x,y) = x + y\nf (generic function with 1 method)尽管函数可以是复合表达式 (见 Compound Expressions)，但在赋值形式下，函数体必须是一个一行的表达式。简短的函数定义在Julia中是很常见的。非常惯用的短函数语法大大减少了打字和视觉方面的干扰。使用传统的括号语法调用函数：julia> f(2,3)\n5没有括号时，表达式f指的是函数对象，可以像任何值一样被传递：julia> g = f;\n\njulia> g(2,3)\n5和变量名一样，Unicode字符也可以用作函数名：julia> ∑(x,y) = x + y\n∑ (generic function with 1 method)\n\njulia> ∑(2, 3)\n5"
+    "text": "在 Julia 里，函数是一个将参数值元组映射到返回值的对象。Julia 的函数不是纯粹的数学函数，在某种意义上，函数可以改变并受程序的全局状态的影响。在Julia中定义函数的基本语法是：julia> function f(x,y)\n           x + y\n       end\nf (generic function with 1 method)在 Julia 中定义函数还有第二种更简洁的语法。上述的传统函数声明语法等效于以下紧凑性的“赋值形式”：julia> f(x,y) = x + y\nf (generic function with 1 method)尽管函数可以是复合表达式 (见 复合表达式)，但在赋值形式下，函数体必须是一个一行的表达式。简短的函数定义在 Julia 中是很常见的。非常惯用的短函数语法大大减少了打字和视觉方面的干扰。使用传统的括号语法调用函数：julia> f(2,3)\n5没有括号时，表达式 f 指的是函数对象，可以像任何值一样被传递：julia> g = f;\n\njulia> g(2,3)\n5和变量名一样，Unicode 字符也可以用作函数名：julia> ∑(x,y) = x + y\n∑ (generic function with 1 method)\n\njulia> ∑(2, 3)\n5"
 },
 
 {
@@ -501,7 +501,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "参数传递行为",
     "category": "section",
-    "text": "Julia函数参数遵循有时称为“pass-by-sharing”的约定，这意味着变量在被传递给函数时其值并不会被复制。函数参数本身充当新的变量绑定（指向变量值的新地址），它们所指向的值与所传递变量的值完全相同。调用者可以看到对函数内可变值（如数组）的修改。这与Scheme，大多数Lisps，Python，Ruby和Perl以及其他动态语言中的行为相同。"
+    "text": "Julia 函数参数遵循有时称为 “pass-by-sharing” 的约定，这意味着变量在被传递给函数时其值并不会被复制。函数参数本身充当新的变量绑定（指向变量值的新地址），它们所指向的值与所传递变量的值完全相同。调用者可以看到对函数内可变值（如数组）的修改。这与 Scheme，大多数 Lisps，Python，Ruby 和 Perl 以及其他动态语言中的行为相同。"
 },
 
 {
@@ -509,7 +509,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "return 关键字",
     "category": "section",
-    "text": "函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在示例函数中f，从上一节开始，这是表达式的 x + y值。与在C和大多数其他命令式或函数式语言中一样，return关键字会导致函数立即返回，从而提供返回值的表达式：function g(x,y)\n    return x * y\n    x + y\nend由于函数定义可以输入到交互式会话中，因此可以很容易的比较这些定义：julia> f(x,y) = x + y\nf (generic function with 1 method)\n\njulia> function g(x,y)\n           return x * y\n           x + y\n       end\ng (generic function with 1 method)\n\njulia> f(2,3)\n5\n\njulia> g(2,3)\n6当然，在一个单纯的线性执行的函数体内，例如 g，使用return 是没有意义的，因为表达式x + y永远不会被执行到，我们可以简单地把x * y 写为最后一个表达式从而省略掉return。 然而在使用其他控制流程的函数体内，return却是有用的。 例如，一个计算两条边长分别为x和y的三角形的斜边长度时可以避免overflow：julia> function hypot(x,y)\n           x = abs(x)\n           y = abs(y)\n           if x > y\n               r = y/x\n               return x*sqrt(1+r*r)\n           end\n           if y == 0\n               return zero(x)\n           end\n           r = x/y\n           return y*sqrt(1+r*r)\n       end\nhypot (generic function with 1 method)\n\njulia> hypot(3, 4)\n5.0这个函数有三个可能的返回处，返回三个不同表达式的值，具体取决于x和y的值。 最后一行的return可以省略，因为它是最后一个表达式。也可以使用::运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。julia> function g(x, y)::Int8\n           return x * y\n       end;\n\njulia> typeof(g(1, 2))\nInt8这个函数将忽略x 和y的类型，返回Int8类型的值。有关返回类型的更多信息，请参见 类型声明。"
+    "text": "函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在示例函数中 f，从上一节开始，这是表达式的 x + y 值。与在 C 语言和大多数其他命令式或函数式语言中一样，return 关键字会导致函数立即返回，从而提供返回值的表达式：function g(x,y)\n    return x * y\n    x + y\nend由于函数定义可以输入到交互式会话中，因此可以很容易的比较这些定义：julia> f(x,y) = x + y\nf (generic function with 1 method)\n\njulia> function g(x,y)\n           return x * y\n           x + y\n       end\ng (generic function with 1 method)\n\njulia> f(2,3)\n5\n\njulia> g(2,3)\n6当然，在一个单纯的线性执行的函数体内，例如 g，使用 return 是没有意义的，因为表达式 x + y 永远不会被执行到，我们可以简单地把 x * y 写为最后一个表达式从而省略掉 return。 然而在使用其他控制流程的函数体内，return 却是有用的。 例如，在计算两条边长分别为 x 和 y 的三角形的斜边长度时可以避免溢出：julia> function hypot(x,y)\n           x = abs(x)\n           y = abs(y)\n           if x > y\n               r = y/x\n               return x*sqrt(1+r*r)\n           end\n           if y == 0\n               return zero(x)\n           end\n           r = x/y\n           return y*sqrt(1+r*r)\n       end\nhypot (generic function with 1 method)\n\njulia> hypot(3, 4)\n5.0这个函数有三个可能的返回处，返回三个不同表达式的值，具体取决于 x 和 y 的值。 最后一行的 return 可以省略，因为它是最后一个表达式。也可以使用 :: 运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。julia> function g(x, y)::Int8\n           return x * y\n       end;\n\njulia> typeof(g(1, 2))\nInt8这个函数将忽略 x 和 y 的类型，返回 Int8 类型的值。有关返回类型的更多信息，请参见类型声明。"
 },
 
 {
@@ -573,7 +573,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "变参函数",
     "category": "section",
-    "text": "定义有任意个参数的函数通常是很方便的。 这样的函数通常被称为变参函数 （Varargs Functions）， 是“参数数量可变的函数”的简称。 你可以通过在最后一个参数后面增加一个省略号来定义一个变参函数：julia> bar(a,b,x...) = (a,b,x)\nbar (generic function with 1 method)变量 a 和 b 和以前一样被绑定给前两个参数，后面的参数整个做为迭代集合被绑定到变量 x 上 :julia> bar(1,2)\n(1, 2, ())\n\njulia> bar(1,2,3)\n(1, 2, (3,))\n\njulia> bar(1, 2, 3, 4)\n(1, 2, (3, 4))\n\njulia> bar(1,2,3,4,5,6)\n(1, 2, (3, 4, 5, 6))在所有这些情况下，x 被绑定到传递给 bar 的尾随值的元组。也可以限制可以传递给函数的参数的数量，这部分内容稍后在  Parametrically-constrained Varargs methods  中讨论。另一方面，将可迭代集中包含的值拆解为单独的参数进行函数调用通常很方便。 要实现这一点，需要在函数调用中额外使用 ... 而不仅仅只是变量：julia> x = (3, 4)\n(3, 4)\n\njulia> bar(1,2,x...)\n(1, 2, (3, 4))在这个情况下一组值会被精确切片成一个可变参数调用，这里参数的数量是可变的。但是并不需要成为这种情况：julia> x = (2, 3, 4)\n(2, 3, 4)\n\njulia> bar(1,x...)\n(1, 2, (3, 4))\n\njulia> x = (1, 2, 3, 4)\n(1, 2, 3, 4)\n\njulia> bar(x...)\n(1, 2, (3, 4))进一步，拆解给函数调用中的可迭代对象不需要是个元组：julia> x = [3,4]\n2-element Array{Int64,1}:\n 3\n 4\n\njulia> bar(1,2,x...)\n(1, 2, (3, 4))\n\njulia> x = [1,2,3,4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> bar(x...)\n(1, 2, (3, 4))另外，参数可拆解的函数也不一定就是变参函数 —— 尽管一般都是：julia> baz(a,b) = a + b;\n\njulia> args = [1,2]\n2-element Array{Int64,1}:\n1\n2\n\njulia> baz(args...)\n3\n\njulia> args = [1,2,3]\n3-element Array{Int64,1}:\n1\n2\n3\n\njulia> baz(args...)\nERROR: MethodError: no method matching baz(::Int64, ::Int64, ::Int64)\nClosest candidates are:\nbaz(::Any, ::Any) at none:1正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。"
+    "text": "定义有任意个参数的函数通常是很方便的。 这样的函数通常被称为变参函数 （Varargs Functions）， 是“参数数量可变的函数”的简称。 你可以通过在最后一个参数后面增加一个省略号来定义一个变参函数：julia> bar(a,b,x...) = (a,b,x)\nbar (generic function with 1 method)变量 a 和 b 和以前一样被绑定给前两个参数，后面的参数整个做为迭代集合被绑定到变量 x 上 :julia> bar(1,2)\n(1, 2, ())\n\njulia> bar(1,2,3)\n(1, 2, (3,))\n\njulia> bar(1, 2, 3, 4)\n(1, 2, (3, 4))\n\njulia> bar(1,2,3,4,5,6)\n(1, 2, (3, 4, 5, 6))在所有这些情况下，x 被绑定到传递给 bar 的尾随值的元组。也可以限制可以传递给函数的参数的数量，这部分内容稍后在  参数化约束的可变参数方法  中讨论。另一方面，将可迭代集中包含的值拆解为单独的参数进行函数调用通常很方便。 要实现这一点，需要在函数调用中额外使用 ... 而不仅仅只是变量：julia> x = (3, 4)\n(3, 4)\n\njulia> bar(1,2,x...)\n(1, 2, (3, 4))在这个情况下一组值会被精确切片成一个可变参数调用，这里参数的数量是可变的。但是并不需要成为这种情况：julia> x = (2, 3, 4)\n(2, 3, 4)\n\njulia> bar(1,x...)\n(1, 2, (3, 4))\n\njulia> x = (1, 2, 3, 4)\n(1, 2, 3, 4)\n\njulia> bar(x...)\n(1, 2, (3, 4))进一步，拆解给函数调用中的可迭代对象不需要是个元组：julia> x = [3,4]\n2-element Array{Int64,1}:\n 3\n 4\n\njulia> bar(1,2,x...)\n(1, 2, (3, 4))\n\njulia> x = [1,2,3,4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> bar(x...)\n(1, 2, (3, 4))另外，参数可拆解的函数也不一定就是变参函数 —— 尽管一般都是：julia> baz(a,b) = a + b;\n\njulia> args = [1,2]\n2-element Array{Int64,1}:\n1\n2\n\njulia> baz(args...)\n3\n\njulia> args = [1,2,3]\n3-element Array{Int64,1}:\n1\n2\n3\n\njulia> baz(args...)\nERROR: MethodError: no method matching baz(::Int64, ::Int64, ::Int64)\nClosest candidates are:\nbaz(::Any, ::Any) at none:1正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。"
 },
 
 {
@@ -581,7 +581,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "可选参数",
     "category": "section",
-    "text": "在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，Dates 模块中的 Date(y, [m, d]) 函数对于给定的年（year）y、月（mouth）m、日（data）d 构造了 Date 类型。但是，m 和 d 参数都是可选的，默认值都是 1。这行为可以简述为：function Date(y::Int64, m::Int64=1, d::Int64=1)\n    err = validargs(Date, y, m, d)\n    err === nothing || throw(err)\n    return Date(UTD(totaldays(y, m, d)))\nend注意到，这定义调用了 Date 函数的另一个方法，该方法带有一个 UTInstant{Day} 类型的参数。在此定义下，函数调用时可以带有一个、两个或三个参数，并且在没有指定参数时，自动传递 1：julia> using Dates\n\njulia> Date(2000, 12, 12)\n2000-12-12\n\njulia> Date(2000, 12)\n2000-12-01\n\njulia> Date(2000)\n2000-01-01可选参数实际上只是一种方便的语法，用于编写多种具有不同数量参数的方法定义（请参阅 Note on Optional and keyword Arguments）。这可通过调用 methods 函数来检查我们的 Date 函数示例。"
+    "text": "在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，Dates 模块中的 Date(y, [m, d]) 函数对于给定的年（year）y、月（mouth）m、日（data）d 构造了 Date 类型。但是，m 和 d 参数都是可选的，默认值都是 1。这行为可以简述为：function Date(y::Int64, m::Int64=1, d::Int64=1)\n    err = validargs(Date, y, m, d)\n    err === nothing || throw(err)\n    return Date(UTD(totaldays(y, m, d)))\nend注意到，这定义调用了 Date 函数的另一个方法，该方法带有一个 UTInstant{Day} 类型的参数。在此定义下，函数调用时可以带有一个、两个或三个参数，并且在没有指定参数时，自动传递 1：julia> using Dates\n\njulia> Date(2000, 12, 12)\n2000-12-12\n\njulia> Date(2000, 12)\n2000-12-01\n\njulia> Date(2000)\n2000-01-01可选参数实际上只是一种方便的语法，用于编写多种具有不同数量参数的方法定义（请参阅 可选参数和关键字的参数的注意事项）。这可通过调用 methods 函数来检查我们的 Date 函数示例。"
 },
 
 {
@@ -605,7 +605,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "函数参数中的 Do 结构",
     "category": "section",
-    "text": "把函数作为参数传递给其他函数是一种强大的技术，但它的语法并不总是很方便。当函数参数占据多行时，这样的调用便特别难以编写。例如，考虑在具有多种情况的函数上调用 map：map(x->begin\n           if x < 0 && iseven(x)\n               return 0\n           elseif x == 0\n               return 1\n           else\n               return x\n           end\n       end,\n    [A, B, C])Julia 提供了一个保留字 do，用于更清楚地重写此代码：map([A, B, C]) do x\n    if x < 0 && iseven(x)\n        return 0\n    elseif x == 0\n        return 1\n    else\n        return x\n    end\nenddo x 语法创建一个带有参数 x 的匿名函数，并将其作为第一个参数传递 map。类似地，do a，b 会创建一个双参数匿名函数，而一个简单的 do 会声明一个满足形式 () -> ... 的匿名函数。这些参数如何初始化取决于「外部」函数；在这里，map 将会依次将 x 设置为 A、B、C，再分别调用调用匿名函数，正如在 map(func, [A, B, C]) 语法中所发生的。这种语法使得更容易使用函数来有效地扩展语言，因为调用看起来就像普通代码块。有许多可能的用法与 map 完全不同，比如管理系统状态。例如，有一个版本的 open 可以通过运行代码来确保已经打开的文件最终会被关闭：open(\"outfile\", \"w\") do io\n    write(io, data)\nend这是通过以下定义实现的：function open(f::Function, args...)\n    io = open(args...)\n    try\n        f(io)\n    finally\n        close(io)\n    end\nend在这里，open 首先打开要写入的文件，接着将结果输出流传递给你在 do ... end 代码快中定义的匿名函数。在你的函数退出后，open 将确保流被正确关闭，无论你的函数是正常退出还是抛出了一个异常（try/finally 结构会在 Control Flow 中描述）。使用 do 代码块语法时，查阅文档或实现有助于了解用户函数的参数是如何初始化的。与任何其它内部函数一样，do 代码块可以从包含它的作用域里「捕获」变量。例如，在上例的 open...do 中，data 变量是从外部作用域中捕获的。捕获变量也许会带来在 performance tips 中讨论的性能挑战。"
+    "text": "把函数作为参数传递给其他函数是一种强大的技术，但它的语法并不总是很方便。当函数参数占据多行时，这样的调用便特别难以编写。例如，考虑在具有多种情况的函数上调用 map：map(x->begin\n           if x < 0 && iseven(x)\n               return 0\n           elseif x == 0\n               return 1\n           else\n               return x\n           end\n       end,\n    [A, B, C])Julia 提供了一个保留字 do，用于更清楚地重写此代码：map([A, B, C]) do x\n    if x < 0 && iseven(x)\n        return 0\n    elseif x == 0\n        return 1\n    else\n        return x\n    end\nenddo x 语法创建一个带有参数 x 的匿名函数，并将其作为第一个参数传递 map。类似地，do a，b 会创建一个双参数匿名函数，而一个简单的 do 会声明一个满足形式 () -> ... 的匿名函数。这些参数如何初始化取决于「外部」函数；在这里，map 将会依次将 x 设置为 A、B、C，再分别调用调用匿名函数，正如在 map(func, [A, B, C]) 语法中所发生的。这种语法使得更容易使用函数来有效地扩展语言，因为调用看起来就像普通代码块。有许多可能的用法与 map 完全不同，比如管理系统状态。例如，有一个版本的 open 可以通过运行代码来确保已经打开的文件最终会被关闭：open(\"outfile\", \"w\") do io\n    write(io, data)\nend这是通过以下定义实现的：function open(f::Function, args...)\n    io = open(args...)\n    try\n        f(io)\n    finally\n        close(io)\n    end\nend在这里，open 首先打开要写入的文件，接着将结果输出流传递给你在 do ... end 代码快中定义的匿名函数。在你的函数退出后，open 将确保流被正确关闭，无论你的函数是正常退出还是抛出了一个异常（try/finally 结构会在 流程控制 中描述）。使用 do 代码块语法时，查阅文档或实现有助于了解用户函数的参数是如何初始化的。与任何其它内部函数一样，do 代码块可以从包含它的作用域里「捕获」变量。例如，在上例的 open...do 中，data 变量是从外部作用域中捕获的。捕获变量也许会带来在 performance tips 中讨论的性能挑战。"
 },
 
 {
@@ -613,7 +613,7 @@ var documenterSearchIndex = {"docs": [
     "page": "函数",
     "title": "向量化函数的点语法",
     "category": "section",
-    "text": "在科学计算语言中，通常会有函数的「向量化」版本，它简单地将给定函数 f(x) 作用于数组 A 的每个元素，接着通过 f(A) 生成一个新数组。这种语法便于数据处理，但在其它语言中，向量化通常也是性能所需要的：如果循环很慢，函数的「向量化」版本可以调用由低级语言编写的、快速的库代码。在 Julia 中，向量化函数不是性能所必需的，实际上编写自己的循环通常也是有益的（请参阅 Performance Tips），但它们仍然很方便。因此，任何 Julia 函数 f 能够以元素方式作用于任何数组（或者其它集合），这通过语法 f.(A) 实现。例如，sin 可以作用于向量 A 中的所有元素，如下所示：julia> A = [1.0, 2.0, 3.0]\n3-element Array{Float64,1}:\n 1.0\n 2.0\n 3.0\n\njulia> sin.(A)\n3-element Array{Float64,1}:\n 0.8414709848078965\n 0.9092974268256817\n 0.1411200080598672当然，你如果为 f 编写了一个专门的「向量化」方法，例如通过 f(A::AbstractArray) = map(f, A)，可以省略点号，这和 f.(A) 一样高效。但这种方法要求你事先决定要进行向量化的函数。更一般地，f.(args...) 实际上等价于 broadcast(f, args...)，它允许你操作多个数组（甚至是不同形状的），或是数组和标量的混合（请参阅 Broadcasting）。例如，如果有 f(x,y) = 3x + 4y，那么 f.(pi,A) 将为 A 中的每个 a 返回一个由 f(pi,a) 组成的新数组，而 f.(vector1,vector2) 将为每个索引 i 返回一个由 f(vector1[i],vector2[i]) 组成的新向量（如果向量具有不同的长度则会抛出异常）。julia> f(x,y) = 3x + 4y;\n\njulia> A = [1.0, 2.0, 3.0];\n\njulia> B = [4.0, 5.0, 6.0];\n\njulia> f.(pi, A)\n3-element Array{Float64,1}:\n 13.42477796076938\n 17.42477796076938\n 21.42477796076938\n\njulia> f.(A, B)\n3-element Array{Float64,1}:\n 19.0\n 26.0\n 33.0此外，嵌套的 f.(args...) 调用会被融合到一个 broadcast 循环中。例如，sin.(cos.(X)) 等价于 broadcast(x -> sin(cos(x)), X)，类似于 [sin(cos(x)) for x in X]：在 X 上只有一个循环，并且只为结果分配了一个数组。[ 相反，在典型的「向量化」语言中，sin(cos(X)) 首先会为 tmp=cos(X) 分配第一个临时数组，然后在单独的循环中计算 sin(tmp)，再分配第二个数组。] 这种循环融合不是可能发生也可能不发生的编译器优化，只要遇到了嵌套的 f.(args...) 调用，它就是一个语法保证。技术上，一旦遇到「非点」函数调用，融合就会停止；例如，在 sin.(sort(cos.(X))) 中，由于插入的 sort 函数，sin 和 cos 无法被合并。最后，最大效率通常在向量化操作的输出数组被预分配时实现，以便重复调用不会一次又一次地为结果分配新数组（请参阅 Pre-allocating outputs）。一个方便的语法是 X .= ...，它等价于 broadcast!(identity, X, ...)，除了上面提到的，broadcast! 循环可与任何嵌套的「点」调用融合。例如，X .= sin.(Y) 等价于 broadcast!(sin, X, Y)，用 sin.(Y) in-place 覆盖 X。如果左边是数组索引表达式，例如 X[2:end] .= sin.(Y)，那就将 broadcast! 转换在一个 view 上，例如 broadcast!(sin, view(X, 2:lastindex(X)), Y)，这样左侧就被 in-place 更新了。由于在表达式中为许多操作和函数调用添加点可能很乏味并导致难以阅读的代码，宏 @. 用于将表达式中的每个函数调用、操作和赋值转换为「点」版本。julia> Y = [1.0, 2.0, 3.0, 4.0];\n\njulia> X = similar(Y); # pre-allocate output array\n\njulia> @. X = sin(cos(Y)) # equivalent to X .= sin.(cos.(Y))\n4-element Array{Float64,1}:\n  0.5143952585235492\n -0.4042391538522658\n -0.8360218615377305\n -0.6080830096407656像 .+ 这样的二元（或一元）运算符使用相同的机制进行管理：它们等价于 broadcast 调用且可与其它嵌套的「点」调用融合。X .+= Y 等等价于 X .= X .+ Y，结果为一个融合的 in-place 赋值；另见 dot operators。您也可以使用 |> 将点操作与函数链组合在一起，如本例所示：julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]\n5-element Array{Real,1}:\n    1\n    0.5\n    6\n   -4\n true"
+    "text": "在科学计算语言中，通常会有函数的「向量化」版本，它简单地将给定函数 f(x) 作用于数组 A 的每个元素，接着通过 f(A) 生成一个新数组。这种语法便于数据处理，但在其它语言中，向量化通常也是性能所需要的：如果循环很慢，函数的「向量化」版本可以调用由低级语言编写的、快速的库代码。在 Julia 中，向量化函数不是性能所必需的，实际上编写自己的循环通常也是有益的（请参阅 Performance Tips），但它们仍然很方便。因此，任何 Julia 函数 f 能够以元素方式作用于任何数组（或者其它集合），这通过语法 f.(A) 实现。例如，sin 可以作用于向量 A 中的所有元素，如下所示：julia> A = [1.0, 2.0, 3.0]\n3-element Array{Float64,1}:\n 1.0\n 2.0\n 3.0\n\njulia> sin.(A)\n3-element Array{Float64,1}:\n 0.8414709848078965\n 0.9092974268256817\n 0.1411200080598672当然，你如果为 f 编写了一个专门的「向量化」方法，例如通过 f(A::AbstractArray) = map(f, A)，可以省略点号，这和 f.(A) 一样高效。但这种方法要求你事先决定要进行向量化的函数。更一般地，f.(args...) 实际上等价于 broadcast(f, args...)，它允许你操作多个数组（甚至是不同形状的），或是数组和标量的混合（请参阅 Broadcasting）。例如，如果有 f(x,y) = 3x + 4y，那么 f.(pi,A) 将为 A 中的每个 a 返回一个由 f(pi,a) 组成的新数组，而 f.(vector1,vector2) 将为每个索引 i 返回一个由 f(vector1[i],vector2[i]) 组成的新向量（如果向量具有不同的长度则会抛出异常）。julia> f(x,y) = 3x + 4y;\n\njulia> A = [1.0, 2.0, 3.0];\n\njulia> B = [4.0, 5.0, 6.0];\n\njulia> f.(pi, A)\n3-element Array{Float64,1}:\n 13.42477796076938\n 17.42477796076938\n 21.42477796076938\n\njulia> f.(A, B)\n3-element Array{Float64,1}:\n 19.0\n 26.0\n 33.0此外，嵌套的 f.(args...) 调用会被融合到一个 broadcast 循环中。例如，sin.(cos.(X)) 等价于 broadcast(x -> sin(cos(x)), X)，类似于 [sin(cos(x)) for x in X]：在 X 上只有一个循环，并且只为结果分配了一个数组。[ 相反，在典型的「向量化」语言中，sin(cos(X)) 首先会为 tmp=cos(X) 分配第一个临时数组，然后在单独的循环中计算 sin(tmp)，再分配第二个数组。] 这种循环融合不是可能发生也可能不发生的编译器优化，只要遇到了嵌套的 f.(args...) 调用，它就是一个语法保证。技术上，一旦遇到「非点」函数调用，融合就会停止；例如，在 sin.(sort(cos.(X))) 中，由于插入的 sort 函数，sin 和 cos 无法被合并。最后，最大效率通常在向量化操作的输出数组被预分配时实现，以便重复调用不会一次又一次地为结果分配新数组（请参阅 输出预分配）。一个方便的语法是 X .= ...，它等价于 broadcast!(identity, X, ...)，除了上面提到的，broadcast! 循环可与任何嵌套的「点」调用融合。例如，X .= sin.(Y) 等价于 broadcast!(sin, X, Y)，用 sin.(Y) in-place 覆盖 X。如果左边是数组索引表达式，例如 X[2:end] .= sin.(Y)，那就将 broadcast! 转换在一个 view 上，例如 broadcast!(sin, view(X, 2:lastindex(X)), Y)，这样左侧就被 in-place 更新了。由于在表达式中为许多操作和函数调用添加点可能很乏味并导致难以阅读的代码，宏 @. 用于将表达式中的每个函数调用、操作和赋值转换为「点」版本。julia> Y = [1.0, 2.0, 3.0, 4.0];\n\njulia> X = similar(Y); # pre-allocate output array\n\njulia> @. X = sin(cos(Y)) # equivalent to X .= sin.(cos.(Y))\n4-element Array{Float64,1}:\n  0.5143952585235492\n -0.4042391538522658\n -0.8360218615377305\n -0.6080830096407656像 .+ 这样的二元（或一元）运算符使用相同的机制进行管理：它们等价于 broadcast 调用且可与其它嵌套的「点」调用融合。X .+= Y 等等价于 X .= X .+ Y，结果为一个融合的 in-place 赋值；另见 dot operators。您也可以使用 |> 将点操作与函数链组合在一起，如本例所示：julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]\n5-element Array{Real,1}:\n    1\n    0.5\n    6\n   -4\n true"
 },
 
 {
@@ -637,7 +637,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "流程控制",
     "category": "section",
-    "text": "Julia 提供了大量的流程控制构件：复合表达式: begin 和 (;)。\n条件表达式: if-elseif-else 和 ?: (三元运算符)。\n短路求值: &&, || 和链式比较。\n重复执行：循环: while 和 for.\n异常处理: try-catch, error 和 throw.\nTask（协程）: yieldto.前五个流程控制机制是高级编程语言的标准。Task 不是那么的标准：它提供了非局部的流程控制，这使得在暂时挂起的计算任务之间进行切换成为可能。这是一个功能强大的构件：Julia 中的异常处理和协同多任务都是通过 Task 实现的。虽然日常编程并不需要直接使用 Task，但某些问题用 Task 处理会更加简单。"
+    "text": "Julia 提供了大量的流程控制构件：复合表达式：begin 和 (;)。\n条件表达式：if-elseif-else 和 ?: (三元运算符)。\n短路求值：&&、|| 和链式比较。\n重复执行：循环：while 和 for。\n异常处理：try-catch、error 和 throw。\nTask（协程）：yieldto。前五个流程控制机制是高级编程语言的标准。Task 不是那么的标准：它提供了非局部的流程控制，这使得在暂时挂起的计算任务之间进行切换成为可能。这是一个功能强大的构件：Julia 中的异常处理和协同多任务都是通过 Task 实现的。虽然日常编程并不需要直接使用 Task，但某些问题用 Task 处理会更加简单。"
 },
 
 {
@@ -661,7 +661,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "短路求值",
     "category": "section",
-    "text": "短路求值非常类似条件求值。这种行为在多数有 && 和 || 布尔运算符地命令式编程语言里都可以找到：在一系列由这些运算符连接的布尔表达式中，为了得到整个链的最终布尔值，仅仅只有最小数量的表达式被计算。更明确的说，这意味着：在表达式 a && b 中，子表达式 b 仅当 a 为 true 的时候才会被执行。\n在表达式 a || b 中，子表达式 b 仅在 a 为 false 的时候才会被执行。这里的原因是：如果 a 是 false，那么无论 b 的值是多少，a && b 一定是 false。同理，如果 a 是 true，那么无论 b 的值是多少，a || b 的值一定是 true。&& 和 || 都依赖于右边，但是 && 比 || 有更高的优先级。我们可以简单地测试一下这个行为：julia> t(x) = (println(x); true)\nt (generic function with 1 method)\n\njulia> f(x) = (println(x); false)\nf (generic function with 1 method)\n\njulia> t(1) && t(2)\n1\n2\ntrue\n\njulia> t(1) && f(2)\n1\n2\nfalse\n\njulia> f(1) && t(2)\n1\nfalse\n\njulia> f(1) && f(2)\n1\nfalse\n\njulia> t(1) || t(2)\n1\ntrue\n\njulia> t(1) || f(2)\n1\ntrue\n\njulia> f(1) || t(2)\n1\n2\ntrue\n\njulia> f(1) || f(2)\n1\n2\nfalse你可以用同样的方式测试不同 && 和 || 运算符的组合条件下的关联和优先级。这种行为在 Julia 中经常被用来作为简短 if 语句的替代。 可以用 <cond> && <statement> (可读为: <cond> and then <statement>)来替换 if <cond> <statement> end。 类似的， 可以用 <cond> || <statement> (可读为: <cond> or else <statement>)来替换 if ! <cond> <statement> end.例如，可以像这样定义递归阶乘：julia> function fact(n::Int)\n           n >= 0 || error(\"n must be non-negative\")\n           n == 0 && return 1\n           n * fact(n-1)\n       end\nfact (generic function with 1 method)\n\njulia> fact(5)\n120\n\njulia> fact(0)\n1\n\njulia> fact(-1)\nERROR: n must be non-negative\nStacktrace:\n [1] error at ./error.jl:33 [inlined]\n [2] fact(::Int64) at ./none:2\n [3] top-level scope无短路求值的布尔运算可以用位布尔运算符来完成，见数学运算及初等函数：& 和 |。这些是普通的函数，同时也刚好支持中缀运算符语法，但总是会计算它们的所有参数：julia> f(1) & t(2)\n1\n2\nfalse\n\njulia> t(1) | t(2)\n1\n2\ntrue与 if, elseif 或者三元运算符中的条件表达式相同，&& 或者 || 的操作数必须是布尔值（true 或者 false）。在链式嵌套的条件表达式中， 除最后一项外，使用非布尔值会导致错误：julia> 1 && true\nERROR: TypeError: non-boolean (Int64) used in boolean context但在链的末尾允许使用任意类型的表达式，此表达式会根据前面的条件被执行并返回：julia> true && (x = (1, 2, 3))\n(1, 2, 3)\n\njulia> false && (x = (1, 2, 3))\nfalse"
+    "text": "短路求值非常类似条件求值。这种行为在多数有 && 和 || 布尔运算符地命令式编程语言里都可以找到：在一系列由这些运算符连接的布尔表达式中，为了得到整个链的最终布尔值，仅仅只有最小数量的表达式被计算。更明确的说，这意味着：在表达式 a && b 中，子表达式 b 仅当 a 为 true 的时候才会被执行。\n在表达式 a || b 中，子表达式 b 仅在 a 为 false 的时候才会被执行。这里的原因是：如果 a 是 false，那么无论 b 的值是多少，a && b 一定是 false。同理，如果 a 是 true，那么无论 b 的值是多少，a || b 的值一定是 true。&& 和 || 都依赖于右边，但是 && 比 || 有更高的优先级。我们可以简单地测试一下这个行为：julia> t(x) = (println(x); true)\nt (generic function with 1 method)\n\njulia> f(x) = (println(x); false)\nf (generic function with 1 method)\n\njulia> t(1) && t(2)\n1\n2\ntrue\n\njulia> t(1) && f(2)\n1\n2\nfalse\n\njulia> f(1) && t(2)\n1\nfalse\n\njulia> f(1) && f(2)\n1\nfalse\n\njulia> t(1) || t(2)\n1\ntrue\n\njulia> t(1) || f(2)\n1\ntrue\n\njulia> f(1) || t(2)\n1\n2\ntrue\n\njulia> f(1) || f(2)\n1\n2\nfalse你可以用同样的方式测试不同 && 和 || 运算符的组合条件下的关联和优先级。这种行为在 Julia 中经常被用来作为简短 if 语句的替代。 可以用 <cond> && <statement> (可读为: <cond> and then <statement>)来替换 if <cond> <statement> end。 类似的， 可以用 <cond> || <statement> (可读为: <cond> or else <statement>)来替换 if ! <cond> <statement> end.例如，可以像这样定义递归阶乘：julia> function fact(n::Int)\n           n >= 0 || error(\"n must be non-negative\")\n           n == 0 && return 1\n           n * fact(n-1)\n       end\nfact (generic function with 1 method)\n\njulia> fact(5)\n120\n\njulia> fact(0)\n1\n\njulia> fact(-1)\nERROR: n must be non-negative\nStacktrace:\n [1] error at ./error.jl:33 [inlined]\n [2] fact(::Int64) at ./none:2\n [3] top-level scope无短路求值的布尔运算可以用位布尔运算符来完成，见数学运算和初等函数：& 和 |。这些是普通的函数，同时也刚好支持中缀运算符语法，但总是会计算它们的所有参数：julia> f(1) & t(2)\n1\n2\nfalse\n\njulia> t(1) | t(2)\n1\n2\ntrue与 if, elseif 或者三元运算符中的条件表达式相同，&& 或者 || 的操作数必须是布尔值（true 或者 false）。在链式嵌套的条件表达式中， 除最后一项外，使用非布尔值会导致错误：julia> 1 && true\nERROR: TypeError: non-boolean (Int64) used in boolean context但在链的末尾允许使用任意类型的表达式，此表达式会根据前面的条件被执行并返回：julia> true && (x = (1, 2, 3))\n(1, 2, 3)\n\njulia> false && (x = (1, 2, 3))\nfalse"
 },
 
 {
@@ -693,7 +693,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "throw 函数",
     "category": "section",
-    "text": "我们可以用 throw 显式地创建异常。例如，若一个函数只对非负数有定义，当输入参数是负数的时候，可以用 throw 抛出一个 DomainError。julia> f(x) = x>=0 ? exp(-x) : throw(DomainError(x, \"argument must be nonnegative\"))\nf (generic function with 1 method)\n\njulia> f(1)\n0.36787944117144233\n\njulia> f(-1)\nERROR: DomainError with -1:\nargument must be nonnegative\nStacktrace:\n [1] f(::Int64) at ./none:1注意 DomainError 后面不接括号的话不是一个异常，而是一个异常类型。我们需要调用它来获得一个 Exception 对象：julia> typeof(DomainError(nothing)) <: Exception\ntrue\n\njulia> typeof(DomainError) <: Exception\nfalse另外，一些异常类型会接受一个或多个参数来进行错误报告：julia> throw(UndefVarError(:x))\nERROR: UndefVarError: x not defined我们可以仿照 UndefVarError 的写法，用自定义异常类型来轻松实现这个机制：julia> struct MyUndefVarError <: Exception\n           var::Symbol\n       end\n\njulia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, \" not defined\")note: Note\n错误信息的第一个单词最好用小写. 例如, size(A) == size(B) || throw(DimensionMismatch(\"size of A not equal to size of B\"))优于`size(A) == size(B) || throw(DimensionMismatch(\"Size of A not equal to size of B\"))`.但是，有时第一个字母大写更合理，例如如果函数的一个参数     是一个大写字母：size(A,1) == size(B,2) || throw(DimensionMismatch(\"A has first dimension...\"))。"
+    "text": "我们可以用 throw 显式地创建异常。例如，若一个函数只对非负数有定义，当输入参数是负数的时候，可以用 throw 抛出一个 DomainError。julia> f(x) = x>=0 ? exp(-x) : throw(DomainError(x, \"argument must be nonnegative\"))\nf (generic function with 1 method)\n\njulia> f(1)\n0.36787944117144233\n\njulia> f(-1)\nERROR: DomainError with -1:\nargument must be nonnegative\nStacktrace:\n [1] f(::Int64) at ./none:1注意 DomainError 后面不接括号的话不是一个异常，而是一个异常类型。我们需要调用它来获得一个 Exception 对象：julia> typeof(DomainError(nothing)) <: Exception\ntrue\n\njulia> typeof(DomainError) <: Exception\nfalse另外，一些异常类型会接受一个或多个参数来进行错误报告：julia> throw(UndefVarError(:x))\nERROR: UndefVarError: x not defined我们可以仿照 UndefVarError 的写法，用自定义异常类型来轻松实现这个机制：julia> struct MyUndefVarError <: Exception\n           var::Symbol\n       end\n\njulia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, \" not defined\")note: Note\n错误信息的第一个单词最好用小写. 例如, size(A) == size(B) || throw(DimensionMismatch(\"size of A not equal to size of B\"))优于size(A) == size(B) || throw(DimensionMismatch(\"Size of A not equal to size of B\")).但是，有时第一个字母大写更合理，例如如果函数的一个参数是一个大写字母：size(A,1) == size(B,2) || throw(DimensionMismatch(\"A has first dimension...\"))。"
 },
 
 {
@@ -725,7 +725,7 @@ var documenterSearchIndex = {"docs": [
     "page": "流程控制",
     "title": "Task（协程）",
     "category": "section",
-    "text": "Task 是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。这个特性有时被叫做其它名字，例如，对称协程（symmetric coroutines），轻量级线程（lightweight threads），合作多任务处理（cooperative multitasking），或者单次续延（one-shot continuations）。当一部分计算任务（在实际中，执行一个特定的函数）可以被设计成一个 Task 时，就可以中断它，并切换到另一个 Task。原本的 Task 可以恢复到它上次中断的地方，并继续执行。第一眼感觉，这个跟函数调用很类似。但是有两个关键的区别。首先，是切换 Task 并不使用任何空间，所以任意数量的 Task 切换都不会使用调用栈（call stack）。其次，Task 可以以任意次序切换，而不像函数调用那样，被调用函数必须在返回主调用函数之前结束执行。这种流程控制的方式使得解决一个特定问题更简便。在一些问题中，多个需求并不是有函数调用来自然连接的；在需要完成的工作之间并没有明确的“调用者”或者“被调用者”。一个例子是生产-消费问题，一个复杂的流程产生数据，另一个复杂的流程消费他们。消费者不能简单的调用生产函数来获得一个值，因为生产者可能有更多的值需要创建，还没有准备好返回。用 Task 的话，生产者和消费者能同时运行他们所需要的任意时间，根据需要传递值回来或者过去。Julia 提供了 Channel 机制来解决这个问题。一个 Channel 是一个先进先出的队列，允许多个 Task 对它可以进行读和写。让我们定义一个生产者任务，调用 put! 来生产数值。为了消费数值，我们需要对生产者开始新任务进行排班。可以使用一个特殊的 Channel 组件来运行一个与其绑定的 Task，它能接受单参数函数作为其参数，然后可以用 take! 从 Channel 对象里不断地提取值：julia> function producer(c::Channel)\n           put!(c, \"start\")\n           for n=1:4\n               put!(c, 2n)\n           end\n           put!(c, \"stop\")\n       end;\n\njulia> chnl = Channel(producer);\n\njulia> take!(chnl)\n\"start\"\n\njulia> take!(chnl)\n2\n\njulia> take!(chnl)\n4\n\njulia> take!(chnl)\n6\n\njulia> take!(chnl)\n8\n\njulia> take!(chnl)\n\"stop\"一种思考这种行为的方式是，“生产者”能够多次返回。在两次调用 put! 之间，生产者的执行是挂起的，此时由消费者接管控制。返回的 Channel 可以被用作一个 for 循环的迭代对象，此时循环变量会依次取到所有产生的值。当 Channel 关闭时，循环就会终止。julia> for x in Channel(producer)\n           println(x)\n       end\nstart\n2\n4\n6\n8\nstop注意我们并不需要显式地在生产者中关闭 Channel。这是因为 Channel 对 Task 的绑定同时也意味着 Channel 的生命周期与绑定的 Task 一致。当 Task 结束时，Channel 对象会自动关闭。多个 Channel 可以绑定到一个 Task，反之亦然。尽管 Task 的构造函数只能接受一个“无参函数”，但 Channel 方法会创建一个与 Channel 绑定的 Task，并令其可以接受 Channel 类型的单参数函数。一个通用模式是对生产者参数化，此时需要一个部分函数应用来创建一个无参，或者单参的匿名函数。对于 Task 对象，可以直接用，也可以为了方便用宏。function mytask(myarg)\n    ...\nend\n\ntaskHdl = Task(() -> mytask(7))\n# or, equivalently\ntaskHdl = @task mytask(7)为了安排更高级的工作分配模式，bind 和 schedule 可以与 Task 和 Channel 构造函数配合使用，显式地连接一些 Channel 和生产者或消费者 Task。注意目前 Julia 的 Task 并不分配到或者运行在不同的 CPU 核心上。真正的内核进程将在分布式计算进行讨论。"
+    "text": "Task 是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。这个特性有时被叫做其它名字，例如，对称协程（symmetric coroutines），轻量级线程（lightweight threads），合作多任务处理（cooperative multitasking），或者单次续延（one-shot continuations）。当一部分计算任务（在实际中，执行一个特定的函数）可以被设计成一个 Task 时，就可以中断它，并切换到另一个 Task。原本的 Task 可以恢复到它上次中断的地方，并继续执行。第一眼感觉，这个跟函数调用很类似。但是有两个关键的区别。首先，是切换 Task 并不使用任何空间，所以任意数量的 Task 切换都不会使用调用栈（call stack）。其次，Task 可以以任意次序切换，而不像函数调用那样，被调用函数必须在返回主调用函数之前结束执行。这种流程控制的方式使得解决一个特定问题更简便。在一些问题中，多个需求并不是有函数调用来自然连接的；在需要完成的工作之间并没有明确的“调用者”或者“被调用者”。一个例子是生产-消费问题，一个复杂的流程产生数据，另一个复杂的流程消费他们。消费者不能简单的调用生产函数来获得一个值，因为生产者可能有更多的值需要创建，还没有准备好返回。用 Task 的话，生产者和消费者能同时运行他们所需要的任意时间，根据需要传递值回来或者过去。Julia 提供了 Channel 机制来解决这个问题。一个 Channel 是一个先进先出的队列，允许多个 Task 对它可以进行读和写。让我们定义一个生产者任务，调用 put! 来生产数值。为了消费数值，我们需要对生产者开始新任务进行排班。可以使用一个特殊的 Channel 组件来运行一个与其绑定的 Task，它能接受单参数函数作为其参数，然后可以用 take! 从 Channel 对象里不断地提取值：julia> function producer(c::Channel)\n           put!(c, \"start\")\n           for n=1:4\n               put!(c, 2n)\n           end\n           put!(c, \"stop\")\n       end;\n\njulia> chnl = Channel(producer);\n\njulia> take!(chnl)\n\"start\"\n\njulia> take!(chnl)\n2\n\njulia> take!(chnl)\n4\n\njulia> take!(chnl)\n6\n\njulia> take!(chnl)\n8\n\njulia> take!(chnl)\n\"stop\"一种思考这种行为的方式是，“生产者”能够多次返回。在两次调用 put! 之间，生产者的执行是挂起的，此时由消费者接管控制。返回的 Channel 可以被用作一个 for 循环的迭代对象，此时循环变量会依次取到所有产生的值。当 Channel 关闭时，循环就会终止。julia> for x in Channel(producer)\n           println(x)\n       end\nstart\n2\n4\n6\n8\nstop注意我们并不需要显式地在生产者中关闭 Channel。这是因为 Channel 对 Task 的绑定同时也意味着 Channel 的生命周期与绑定的 Task 一致。当 Task 结束时，Channel 对象会自动关闭。多个 Channel 可以绑定到一个 Task，反之亦然。尽管 Task 的构造函数只能接受一个“无参函数”，但 Channel 方法会创建一个与 Channel 绑定的 Task，并令其可以接受 Channel 类型的单参数函数。一个通用模式是对生产者参数化，此时需要一个部分函数应用来创建一个无参，或者单参的匿名函数。对于 Task 对象，可以直接用，也可以为了方便用宏。function mytask(myarg)\n    ...\nend\n\ntaskHdl = Task(() -> mytask(7))\n# or, equivalently\ntaskHdl = @task mytask(7)为了安排更高级的工作分配模式，bind 和 schedule 可以与 Task 和 Channel 构造函数配合使用，显式地连接一些 Channel 和生产者或消费者 Task。注意目前 Julia 的 Task 并不分配到或者运行在不同的 CPU 核心上。真正的内核进程将在并行计算进行讨论。"
 },
 
 {
@@ -805,7 +805,7 @@ var documenterSearchIndex = {"docs": [
     "page": "变量作用域",
     "title": "对于循环和推导式",
     "category": "section",
-    "text": "for循环，while循环，和Comprehensions拥有下述的行为：任何在它们的内部的作用域中引入的新变量在每次循环迭代中都会被新分配一块内存，就像循环体是被let块包围一样。julia> Fs = Vector{Any}(undef, 2);\n\njulia> for j = 1:2\n           Fs[j] = ()->j\n       end\n\njulia> Fs[1]()\n1\n\njulia> Fs[2]()\n2for循环或者推导式的迭代变量始终是个新的变量：julia> function f()\n i = 0\n for i = 1:3\n end\n return i\n end;\n\njulia> f()\n0但是，有时重复使用一个存在的变量作为迭代变量是有用的。 这能够通过添加关键字outer来方便地做到：julia> function f()\n i = 0\n for outer i = 1:3\n end\n return i\n end;\n\njulia> f()\n3"
+    "text": "for 循环，while 循环，和数组推导拥有下述的行为：任何在它们的内部的作用域中引入的新变量在每次循环迭代中都会被新分配一块内存，就像循环体是被 let 块包围一样。julia> Fs = Vector{Any}(undef, 2);\n\njulia> for j = 1:2\n           Fs[j] = ()->j\n       end\n\njulia> Fs[1]()\n1\n\njulia> Fs[2]()\n2for循环或者推导式的迭代变量始终是个新的变量：julia> function f()\n i = 0\n for i = 1:3\n end\n return i\n end;\n\njulia> f()\n0但是，有时重复使用一个存在的变量作为迭代变量是有用的。 这能够通过添加关键字outer来方便地做到：julia> function f()\n i = 0\n for outer i = 1:3\n end\n return i\n end;\n\njulia> f()\n3"
 },
 
 {
@@ -985,9 +985,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/types/#「值类型」-1",
+    "location": "manual/types/#值类型-1",
     "page": "类型",
-    "title": "「值类型」",
+    "title": "值类型",
     "category": "section",
     "text": "在 Julia 中，你无法根据诸如 true 或 false 之类的值进行分派。然而，你可以根据参数类型进行分派，Julia 允许你包含「plain bits」值（类型、符号、整数、浮点数和元组等）作为类型参数。Array{T,N} 里的维度参数就是一个常见的例子，在那里 T 是类型（比如 Float64），而 N 只是个 Int。你可以创建把值作为参数的自定义类型，并使用它们控制自定义类型的分派。为了说明这个想法，让我们引入参数类型 Val{x} 和构造函数 Val(x) = Val{x}()，它可以作为一种习惯的方式来利用这种技术需要更精细的层次结构。这可以作为利用这种技术的惯用方式，而且不需要更精细的层次结构。Val 的定义为：julia> struct Val{x}\n       end\n\njulia> Val(x) = Val{x}()\nValVal 的实现就只需要这些。一些 Julia 标准库里的函数接收 Val 的实例作为参数，你也可以使用它来编写你自己的函数，例如：julia> firstlast(::Val{true}) = \"First\"\nfirstlast (generic function with 1 method)\n\njulia> firstlast(::Val{false}) = \"Last\"\nfirstlast (generic function with 2 methods)\n\njulia> firstlast(Val(true))\n\"First\"\n\njulia> firstlast(Val(false))\n\"Last\"为了保证 Julia 的一致性，调用处应当始终传递 Val 实例而不是类型，也就是使用 foo(Val(:bar)) 而不是 foo(Val{:bar})。值得注意的是，参数「值」类型非常容易被误用，包括 Val；情况不太好时，你很容易使代码性能变得更糟糕。特别是，你再也不会编写如上所示的实际代码。有关 Val 的正确（和不正确）使用的更多信息，请阅读性能建议中更广泛的讨论。[1]: 「少数」由常数 MAX_UNION_SPLITTING 定义，目前设置为 4。"
 },
@@ -1029,7 +1029,7 @@ var documenterSearchIndex = {"docs": [
     "page": "方法",
     "title": "参数方法",
     "category": "section",
-    "text": "方法定义可以视需要存在限定特征的类型参数：julia> same_type(x::T, y::T) where {T} = true\nsame_type (generic function with 1 method)\n\njulia> same_type(x,y) = false\nsame_type (generic function with 2 methods)第一个方法应用于两个参数都是同一个具体类型时，不管类型是什么，而第二个方法接受一切，涉及其他所有情况。所以，总得来说，这个定义了一个布尔函数来检查两个参数是否是同样的类型：julia> same_type(1, 2)\ntrue\n\njulia> same_type(1, 2.0)\nfalse\n\njulia> same_type(1.0, 2.0)\ntrue\n\njulia> same_type(\"foo\", 2.0)\nfalse\n\njulia> same_type(\"foo\", \"bar\")\ntrue\n\njulia> same_type(Int32(1), Int64(2))\nfalse这样的定义对应着那些类型签名是 UnionAll 类型的方法（参见 UnionAll 类型）。在Julia中这种通过分派进行函数行为的定义是十分常见的，甚至是惯用的。方法类型参数并不局限于用作参数的类型：他们可以用在任意地方，只要值会在函数或者函数体的特征中。这里有个例子，例子中方法类型参数T用作方法特征中的参数类型Vector{T}的类型参数：julia> myappend(v::Vector{T}, x::T) where {T} = [v..., x]\nmyappend (generic function with 1 method)\n\njulia> myappend([1,2,3],4)\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> myappend([1,2,3],2.5)\nERROR: MethodError: no method matching myappend(::Array{Int64,1}, ::Float64)\nClosest candidates are:\n  myappend(::Array{T,1}, !Matched::T) where T at none:1\n\njulia> myappend([1.0,2.0,3.0],4.0)\n4-element Array{Float64,1}:\n 1.0\n 2.0\n 3.0\n 4.0\n\njulia> myappend([1.0,2.0,3.0],4)\nERROR: MethodError: no method matching myappend(::Array{Float64,1}, ::Int64)\nClosest candidates are:\n  myappend(::Array{T,1}, !Matched::T) where T at none:1如你所看到的，追加的元素的类型必须匹配它追加到的向量的元素类型，否则会引起MethodError。在下面的例子中，方法类型参量T用作返回值：julia> mytypeof(x::T) where {T} = T\nmytypeof (generic function with 1 method)\n\njulia> mytypeof(1)\nInt64\n\njulia> mytypeof(1.0)\nFloat64就像你能在类型声明时通过类型参数对子类型进行约束一样（参见参数类型），你也可以约束方法的类型参数：julia> same_type_numeric(x::T, y::T) where {T<:Number} = true\nsame_type_numeric (generic function with 1 method)\n\njulia> same_type_numeric(x::Number, y::Number) = false\nsame_type_numeric (generic function with 2 methods)\n\njulia> same_type_numeric(1, 2)\ntrue\n\njulia> same_type_numeric(1, 2.0)\nfalse\n\njulia> same_type_numeric(1.0, 2.0)\ntrue\n\njulia> same_type_numeric(\"foo\", 2.0)\nERROR: MethodError: no method matching same_type_numeric(::String, ::Float64)\nClosest candidates are:\n  same_type_numeric(!Matched::T<:Number, ::T<:Number) where T<:Number at none:1\n  same_type_numeric(!Matched::Number, ::Number) at none:1\n\njulia> same_type_numeric(\"foo\", \"bar\")\nERROR: MethodError: no method matching same_type_numeric(::String, ::String)\n\njulia> same_type_numeric(Int32(1), Int64(2))\nfalsesame_type_numeric函数的行为与上面定义的same_type函数基本相似，但是它只对一对数定义。参数方法允许与where表达式同样的语法用来写类型（参见 UnionAll 类型）。如果只有一个参数，封闭的大括号（在where {T}中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如where {T, S <: Real}，或者使用嵌套的where来写，例如where S<:Real where T。"
+    "text": "方法定义可以视需要存在限定特征的类型参数：julia> same_type(x::T, y::T) where {T} = true\nsame_type (generic function with 1 method)\n\njulia> same_type(x,y) = false\nsame_type (generic function with 2 methods)第一个方法应用于两个参数都是同一个具体类型时，不管类型是什么，而第二个方法接受一切，涉及其他所有情况。所以，总得来说，这个定义了一个布尔函数来检查两个参数是否是同样的类型：julia> same_type(1, 2)\ntrue\n\njulia> same_type(1, 2.0)\nfalse\n\njulia> same_type(1.0, 2.0)\ntrue\n\njulia> same_type(\"foo\", 2.0)\nfalse\n\njulia> same_type(\"foo\", \"bar\")\ntrue\n\njulia> same_type(Int32(1), Int64(2))\nfalse这样的定义对应着那些类型签名是 UnionAll 类型的方法（参见 UnionAll 类型）。在Julia中这种通过分派进行函数行为的定义是十分常见的，甚至是惯用的。方法类型参数并不局限于用作参数的类型：他们可以用在任意地方，只要值会在函数或者函数体的特征中。这里有个例子，例子中方法类型参数T用作方法特征中的参数类型Vector{T}的类型参数：julia> myappend(v::Vector{T}, x::T) where {T} = [v..., x]\nmyappend (generic function with 1 method)\n\njulia> myappend([1,2,3],4)\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> myappend([1,2,3],2.5)\nERROR: MethodError: no method matching myappend(::Array{Int64,1}, ::Float64)\nClosest candidates are:\n  myappend(::Array{T,1}, !Matched::T) where T at none:1\n\njulia> myappend([1.0,2.0,3.0],4.0)\n4-element Array{Float64,1}:\n 1.0\n 2.0\n 3.0\n 4.0\n\njulia> myappend([1.0,2.0,3.0],4)\nERROR: MethodError: no method matching myappend(::Array{Float64,1}, ::Int64)\nClosest candidates are:\n  myappend(::Array{T,1}, !Matched::T) where T at none:1如你所看到的，追加的元素的类型必须匹配它追加到的向量的元素类型，否则会引起MethodError。在下面的例子中，方法类型参量T用作返回值：julia> mytypeof(x::T) where {T} = T\nmytypeof (generic function with 1 method)\n\njulia> mytypeof(1)\nInt64\n\njulia> mytypeof(1.0)\nFloat64就像你能在类型声明时通过类型参数对子类型进行约束一样（参见参数类型），你也可以约束方法的类型参数：julia> same_type_numeric(x::T, y::T) where {T<:Number} = true\nsame_type_numeric (generic function with 1 method)\n\njulia> same_type_numeric(x::Number, y::Number) = false\nsame_type_numeric (generic function with 2 methods)\n\njulia> same_type_numeric(1, 2)\ntrue\n\njulia> same_type_numeric(1, 2.0)\nfalse\n\njulia> same_type_numeric(1.0, 2.0)\ntrue\n\njulia> same_type_numeric(\"foo\", 2.0)\nERROR: MethodError: no method matching same_type_numeric(::String, ::Float64)\nClosest candidates are:\n  same_type_numeric(!Matched::T<:Number, ::T<:Number) where T<:Number at none:1\n  same_type_numeric(!Matched::Number, ::Number) at none:1\n\njulia> same_type_numeric(\"foo\", \"bar\")\nERROR: MethodError: no method matching same_type_numeric(::String, ::String)\n\njulia> same_type_numeric(Int32(1), Int64(2))\nfalsesame_type_numeric函数的行为与上面定义的same_type函数基本相似，但是它只对一对数定义。参数方法允许与 where 表达式同样的语法用来写类型（参见 UnionAll 类型）。如果只有一个参数，封闭的大括号（在 where {T} 中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如 where {T, S <: Real}，或者使用嵌套的 where 来写，例如 where S<:Real where T。"
 },
 
 {
@@ -1053,7 +1053,7 @@ var documenterSearchIndex = {"docs": [
     "page": "方法",
     "title": "从超类型中提取出类型参数",
     "category": "section",
-    "text": "这里是一个正确地代码模板，它返回AbstractArray的任意子类型的元素类型T:abstract type AbstractArray{T, N} end\neltype(::Type{<:AbstractArray{T}}) where {T} = T使用了所谓的三角分派。注意如果T是一个UnionAll类型，比如eltype(Array{T} where T <: Integer)，会返回Any（如同Base中的eltype一样）。另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：abstract type AbstractArray{T, N} end\neltype(::Type{AbstractArray}) = Any\neltype(::Type{AbstractArray{T}}) where {T} = T\neltype(::Type{AbstractArray{T, N}}) where {T, N} = T\neltype(::Type{A}) where {A<:AbstractArray} = eltype(supertype(A))另外一个可能性如下例，这可以对适配那些参数T需要更严格匹配的情况有用：eltype(::Type{AbstractArray{T, N} where {T<:S, N<:M}}) where {M, S} = Any\neltype(::Type{AbstractArray{T, N} where {T<:S}}) where {N, S} = Any\neltype(::Type{AbstractArray{T, N} where {N<:M}}) where {M, T} = T\neltype(::Type{AbstractArray{T, N}}) where {T, N} = T\neltype(::Type{A}) where {A <: AbstractArray} = eltype(supertype(A))一个常见的错误是试着使用内省来得到元素类型：eltype_wrong(::Type{A}) where {A<:AbstractArray} = A.parameters[1]但是创建一个这个方法会失败的情况不难：struct BitVector <: AbstractArray{Bool, 1}; end这里我们已经创建了一个没有参数的类型BitVector，但是元素类型已经完全指定了，T等于Bool！"
+    "text": "这里是一个正确地代码模板，它返回AbstractArray的任意子类型的元素类型T:abstract type AbstractArray{T, N} end\neltype(::Type{<:AbstractArray{T}}) where {T} = T使用了所谓的三角分派。注意如果 T 是一个 UnionAll 类型，比如 eltype(Array{T} where T <: Integer)，会返回 Any（如同 Base 中的 eltype 一样）。另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：abstract type AbstractArray{T, N} end\neltype(::Type{AbstractArray}) = Any\neltype(::Type{AbstractArray{T}}) where {T} = T\neltype(::Type{AbstractArray{T, N}}) where {T, N} = T\neltype(::Type{A}) where {A<:AbstractArray} = eltype(supertype(A))另外一个可能性如下例，这可以对适配那些参数T需要更严格匹配的情况有用：eltype(::Type{AbstractArray{T, N} where {T<:S, N<:M}}) where {M, S} = Any\neltype(::Type{AbstractArray{T, N} where {T<:S}}) where {N, S} = Any\neltype(::Type{AbstractArray{T, N} where {N<:M}}) where {M, T} = T\neltype(::Type{AbstractArray{T, N}}) where {T, N} = T\neltype(::Type{A}) where {A <: AbstractArray} = eltype(supertype(A))一个常见的错误是试着使用内省来得到元素类型：eltype_wrong(::Type{A}) where {A<:AbstractArray} = A.parameters[1]但是创建一个这个方法会失败的情况不难：struct BitVector <: AbstractArray{Bool, 1}; end这里我们已经创建了一个没有参数的类型BitVector，但是元素类型已经完全指定了，T等于Bool！"
 },
 
 {
@@ -1189,7 +1189,7 @@ var documenterSearchIndex = {"docs": [
     "page": "构造函数",
     "title": "构造函数",
     "category": "section",
-    "text": "构造函数 [1] 是用来创建新对象的函数 – 确切地说，它创建的是复合类型的实例。在 Julia 中，类型对象也同时充当构造函数的角色：可以用类名加参数元组的方式像函数调用一样来创建新实例。这一点在介绍复合类型（Composite Types）时已经大致谈过了。例如：julia> struct Foo\n           bar\n           baz\n       end\n\njulia> foo = Foo(1, 2)\nFoo(1, 2)\n\njulia> foo.bar\n1\n\njulia> foo.baz\n2对很多类型来说，通过给所有成员赋值来创建新对象的这种方式就足以用于产生新实例了。然而，在某些情形下，创建复合对象需要更多的功能。有时必须通过检查或转化参数来确保固有属性不变。递归数据结构，特别是那些可能引用自身的数据结构，它们通常不能被干净地构造，而是需要首先被不完整地构造，然后再通过编程的方式完成补全。为了方便，有时需要用较少的参数或者不同类型的参数来创建对象，Julia 的对象构造系统解决了所有这些问题。[1]: 命名法：虽然术语“构造函数”通常是指用于构造类型对象的函数全体，但通常会略微滥用术语将特定的构造方法称为“构造函数”。在这种情况下，通常可以从上下文中清楚地辨别出术语表示的是“构造方法”而不是“构造函数”，尤其是在讨论某个特别的“构造方法”的时候。"
+    "text": "构造函数 [1] 是用来创建新对象的函数 – 确切地说，它创建的是复合类型的实例。在 Julia 中，类型对象也同时充当构造函数的角色：可以用类名加参数元组的方式像函数调用一样来创建新实例。这一点在介绍复合类型（Composite Types）时已经大致谈过了。例如：julia> struct Foo\n           bar\n           baz\n       end\n\njulia> foo = Foo(1, 2)\nFoo(1, 2)\n\njulia> foo.bar\n1\n\njulia> foo.baz\n2对很多类型来说，通过给所有成员赋值来创建新对象的这种方式就足以用于产生新实例了。然而，在某些情形下，创建复合对象需要更多的功能。有时必须通过检查或转化参数来确保固有属性不变。递归数据结构，特别是那些可能引用自身的数据结构，它们通常不能被干净地构造，而是需要首先被不完整地构造，然后再通过编程的方式完成补全。为了方便，有时需要用较少的参数或者不同类型的参数来创建对象，Julia 的对象构造系统解决了所有这些问题。[1]: 命名法：虽然术语“构造函数”通常是指用于构造类型对象的函数全体，但通常会略微滥用术语将特定的构造方法称为“构造函数”。 在这种情况下，通常可以从上下文中清楚地辨别出术语表示的是“构造方法”而不是“构造函数”，尤其是在讨论某个特别的“构造方法”的时候。"
 },
 
 {
@@ -1229,7 +1229,7 @@ var documenterSearchIndex = {"docs": [
     "page": "构造函数",
     "title": "案例分析：分数的实现",
     "category": "section",
-    "text": "上文主要讲了关于参数复合类型及其构造函数的一些零散内容，或许将这些内容结合起来的一个最佳方法是分析一个真实的案例。为此，我们来实现一个我们自己的分数类型 OurRational，它与 Julia 内置的分数类型 Rational 很相似，它的定义在 rational.jl 里：julia> struct OurRational{T<:Integer} <: Real\n           num::T\n           den::T\n           function OurRational{T}(num::T, den::T) where T<:Integer\n               if num == 0 && den == 0\n                    error(\"invalid rational: 0//0\")\n               end\n               g = gcd(den, num)\n               num = div(num, g)\n               den = div(den, g)\n               new(num, den)\n           end\n       end\n\njulia> OurRational(n::T, d::T) where {T<:Integer} = OurRational{T}(n,d)\nOurRational\n\njulia> OurRational(n::Integer, d::Integer) = OurRational(promote(n,d)...)\nOurRational\n\njulia> OurRational(n::Integer) = OurRational(n,one(n))\nOurRational\n\njulia> ⊘(n::Integer, d::Integer) = OurRational(n,d)\n⊘ (generic function with 1 method)\n\njulia> ⊘(x::OurRational, y::Integer) = x.num ⊘ (x.den*y)\n⊘ (generic function with 2 methods)\n\njulia> ⊘(x::Integer, y::OurRational) = (x*y.den) ⊘ y.num\n⊘ (generic function with 3 methods)\n\njulia> ⊘(x::Complex, y::Real) = complex(real(x) ⊘ y, imag(x) ⊘ y)\n⊘ (generic function with 4 methods)\n\njulia> ⊘(x::Real, y::Complex) = (x*y\') ⊘ real(y*y\')\n⊘ (generic function with 5 methods)\n\njulia> function ⊘(x::Complex, y::Complex)\n           xy = x*y\'\n           yy = real(y*y\')\n           complex(real(xy) ⊘ yy, imag(xy) ⊘ yy)\n       end\n⊘ (generic function with 6 methods)第一行 – struct OurRational{T<:Integer} <: Real – 声明了 OurRational 会接收一个整数类型的类型参数，且它自己属于实数类型。它声明了两个成员：num::T 和 den::T。这表明一个 OurRational{T} 的实例中会包含一对整数，且类型为 T，其中一个表示分子，另一个表示分母。现在事情开始变得有意思了，OurRational 只有一个内部构造函数，它的作用是检查 num 和 den 是否为 0，并确保构建的每个分数都是经过约分化简的形式，且分母为非负数。这可以令分子和分母同时除以它们的最大公约数来实现，最大公约数可以用 Julia 内置的 gcd 函数计算。由于 gcd 返回的最大公约数的符号是跟第一个参数 den 一致的，所以约分后一定会保证 den 的值为非负数。因为这是 OurRational 的唯一一个内部构造函数，所以我们可以确保构建出的 OurRational 对象一定是这种化简的形式。为了方便，OurRational 也提供了一些其它的外部构造函数。第一个外部构造函数是“标准的”通用构造函数，当分子和分母的类型一致时，它就可以推导出类型参数 T。第二个外部构造函数可以用于分子和分母的类型不一致的情景，它会将分子和分母的类型提升至一个共同的类型，然后再委托第一个外部构造函数进行构造。第三个构造函数会将一个整数转化为分数，方法是将 1 当作分母。在定义了外部构造函数之后，我们为 ⊘ 算符定义了一系列的方法，之后就可以使用 ⊘ 算符来写分数，比如 1 ⊘ 2。Julia 的 Rational 类型采用的是 // 算符。在做上述定义之前，⊘ 是一个无意的且未被定义的算符。它的行为与在分数一节中描述的一致，注意它的所有行为都是那短短几行定义的。第一个也是最基础的定义只是将 a ⊘ b 中的 a 和 b 当作参数传递给 OurRational 的构造函数来实例化 OurRational，当然这要求 a 和 b 分别都是整数。在 ⊘ 的某个操作数已经是分数的情况下，我们采用了一个有点不一样的方法来构建新的分数，这实际上等价于用分数除以一个整数。最后，我们也可以让 ⊘ 作用于复数，用来创建一个类型为 Complex{OurRational} 的对象，即一个实部和虚部都是分数的复数：julia> z = (1 + 2im) ⊘ (1 - 2im);\n\njulia> typeof(z)\nComplex{OurRational{Int64}}\n\njulia> typeof(z) <: Complex{OurRational}\nfalse因此，尽管 ⊘ 算符通常会返回一个 OurRational 的实例，但倘若其中一个操作数是复整数，那么就会返回 Complex{OurRational}。感兴趣的话可以 读一读 rational.jl：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自包涵的。"
+    "text": "上文主要讲了关于参数复合类型及其构造函数的一些零散内容，或许将这些内容结合起来的一个最佳方法是分析一个真实的案例。为此，我们来实现一个我们自己的分数类型 OurRational，它与 Julia 内置的分数类型 Rational 很相似，它的定义在 rational.jl 里：julia> struct OurRational{T<:Integer} <: Real\n           num::T\n           den::T\n           function OurRational{T}(num::T, den::T) where T<:Integer\n               if num == 0 && den == 0\n                    error(\"invalid rational: 0//0\")\n               end\n               g = gcd(den, num)\n               num = div(num, g)\n               den = div(den, g)\n               new(num, den)\n           end\n       end\n\njulia> OurRational(n::T, d::T) where {T<:Integer} = OurRational{T}(n,d)\nOurRational\n\njulia> OurRational(n::Integer, d::Integer) = OurRational(promote(n,d)...)\nOurRational\n\njulia> OurRational(n::Integer) = OurRational(n,one(n))\nOurRational\n\njulia> ⊘(n::Integer, d::Integer) = OurRational(n,d)\n⊘ (generic function with 1 method)\n\njulia> ⊘(x::OurRational, y::Integer) = x.num ⊘ (x.den*y)\n⊘ (generic function with 2 methods)\n\njulia> ⊘(x::Integer, y::OurRational) = (x*y.den) ⊘ y.num\n⊘ (generic function with 3 methods)\n\njulia> ⊘(x::Complex, y::Real) = complex(real(x) ⊘ y, imag(x) ⊘ y)\n⊘ (generic function with 4 methods)\n\njulia> ⊘(x::Real, y::Complex) = (x*y\') ⊘ real(y*y\')\n⊘ (generic function with 5 methods)\n\njulia> function ⊘(x::Complex, y::Complex)\n           xy = x*y\'\n           yy = real(y*y\')\n           complex(real(xy) ⊘ yy, imag(xy) ⊘ yy)\n       end\n⊘ (generic function with 6 methods)第一行 – struct OurRational{T<:Integer} <: Real – 声明了 OurRational 会接收一个整数类型的类型参数，且它自己属于实数类型。它声明了两个成员：num::T 和 den::T。这表明一个 OurRational{T} 的实例中会包含一对整数，且类型为 T，其中一个表示分子，另一个表示分母。现在事情开始变得有意思了，OurRational 只有一个内部构造函数，它的作用是检查 num 和 den 是否为 0，并确保构建的每个分数都是经过约分化简的形式，且分母为非负数。这可以令分子和分母同时除以它们的最大公约数来实现，最大公约数可以用 Julia 内置的 gcd 函数计算。由于 gcd 返回的最大公约数的符号是跟第一个参数 den 一致的，所以约分后一定会保证 den 的值为非负数。因为这是 OurRational 的唯一一个内部构造函数，所以我们可以确保构建出的 OurRational 对象一定是这种化简的形式。为了方便，OurRational 也提供了一些其它的外部构造函数。第一个外部构造函数是“标准的”通用构造函数，当分子和分母的类型一致时，它就可以推导出类型参数 T。第二个外部构造函数可以用于分子和分母的类型不一致的情景，它会将分子和分母的类型提升至一个共同的类型，然后再委托第一个外部构造函数进行构造。第三个构造函数会将一个整数转化为分数，方法是将 1 当作分母。在定义了外部构造函数之后，我们为 ⊘ 算符定义了一系列的方法，之后就可以使用 ⊘ 算符来写分数，比如 1 ⊘ 2。Julia 的 Rational 类型采用的是 // 算符。在做上述定义之前，⊘ 是一个无意的且未被定义的算符。它的行为与在有理数一节中描述的一致，注意它的所有行为都是那短短几行定义的。第一个也是最基础的定义只是将 a ⊘ b 中的 a 和 b 当作参数传递给 OurRational 的构造函数来实例化 OurRational，当然这要求 a 和 b 分别都是整数。在 ⊘ 的某个操作数已经是分数的情况下，我们采用了一个有点不一样的方法来构建新的分数，这实际上等价于用分数除以一个整数。最后，我们也可以让 ⊘ 作用于复数，用来创建一个类型为 Complex{OurRational} 的对象，即一个实部和虚部都是分数的复数：julia> z = (1 + 2im) ⊘ (1 - 2im);\n\njulia> typeof(z)\nComplex{OurRational{Int64}}\n\njulia> typeof(z) <: Complex{OurRational}\nfalse因此，尽管 ⊘ 算符通常会返回一个 OurRational 的实例，但倘若其中一个操作数是复整数，那么就会返回 Complex{OurRational}。感兴趣的话可以 读一读 rational.jl：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自包涵的。"
 },
 
 {
@@ -1253,7 +1253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "类型转换和类型提升",
     "title": "类型转换和类型提升",
     "category": "section",
-    "text": "Julia 有一个提升系统，可以将数学运算符的参数提升为通用类型，如在前面章节中提到的整数和浮点数、数学运算和基础函数、类型和方法。在本节中，我们将解释类型提升系统如何工作，以及如何将其扩展到新的类型，并将其应用于除内置数学运算符之外的其他函数。传统上，编程语言在参数的类型提升上分为两大阵营:内置数学类型和运算符的自动类型提升。大多数语言中，内置数值类型，当作为带有中缀语法的算术运算符的操作数时，例如 +、-、* 和 / 将自动提升为通用类型，以产生预期的结果。举例来说，C、Java、Perl 和 Python，都将 1 + 1.5 的和作为浮点值 2.5，即使 + 的一个操作数是整数。这些系统非常方便且设计得足够精细，以至于它对于程序员来讲通常是不可见的：在编写这样的表达式时，几乎没有人有意识地想到这种类型提升，但编译器和解释器必须在相加前执行转换，因为整数和浮点值无法按原样相加。因此，这种自动类型转换的复杂规则不可避免地是这些语言的规范和实现的一部分。\n没有自动类型提升。这个阵营包括 Ada 和 ML——非常「严格的」 静态类型语言。在这些语言中，每个类型转换都必须由程序员明确指定。因此，示例表达式 1 + 1.5 在 Ada 和 ML 中都会导致编译错误。相反地，必须编写 real(1) + 1.5，来在执行加法前将整数 1 显式转换为浮点值。然而，处处都显式转换是如此地不方便，以至于连 Ada 也有一定程度的自动类型转换：整数字面量被类型提升为预期的整数类型，浮点字面量同样被类型提升为适当的浮点类型。在某种意义上，Julia 属于「无自动类型提升」类别：数学操作符只是具有特殊语法的函数，函数的参数永远不会自动转换。然而，人们可能会发现数学运算能应用于各种混合的参数类型，但这只是多态的多重分派的极端情况——这是 Julia 的分派和类型系统特别适合处理的情况。数学操作数的「自动」类型提升只是作为一个特殊的应用出现：Julia 带有预定义的数学运算符的 catch-all 分派规则，其在某些操作数类型的组合没有特定实现时调用。这些 catch-all 分派规则首先使用用户可定义的类型提升规则将所有操作数提升到一个通用的类型，然后针对结果值（现在已属于相同类型）调用相关运算符的特定实现。用户定义的类型可简单地加入这个类型提升系统，这需要先定义与其它类型进行相互类型转换的方法，接着提供一些类型提升规则来定义与其它类型混合时应该提升到什么类型。"
+    "text": "Julia 有一个提升系统，可以将数学运算符的参数提升为通用类型，如在前面章节中提到的整数和浮点数、数学运算和初等函数、类型和方法。在本节中，我们将解释类型提升系统如何工作，以及如何将其扩展到新的类型，并将其应用于除内置数学运算符之外的其他函数。传统上，编程语言在参数的类型提升上分为两大阵营:内置数学类型和运算符的自动类型提升。大多数语言中，内置数值类型，当作为带有中缀语法的算术运算符的操作数时，例如 +、-、* 和 / 将自动提升为通用类型，以产生预期的结果。举例来说，C、Java、Perl 和 Python，都将 1 + 1.5 的和作为浮点值 2.5，即使 + 的一个操作数是整数。这些系统非常方便且设计得足够精细，以至于它对于程序员来讲通常是不可见的：在编写这样的表达式时，几乎没有人有意识地想到这种类型提升，但编译器和解释器必须在相加前执行转换，因为整数和浮点值无法按原样相加。因此，这种自动类型转换的复杂规则不可避免地是这些语言的规范和实现的一部分。\n没有自动类型提升。这个阵营包括 Ada 和 ML——非常「严格的」 静态类型语言。在这些语言中，每个类型转换都必须由程序员明确指定。因此，示例表达式 1 + 1.5 在 Ada 和 ML 中都会导致编译错误。相反地，必须编写 real(1) + 1.5，来在执行加法前将整数 1 显式转换为浮点值。然而，处处都显式转换是如此地不方便，以至于连 Ada 也有一定程度的自动类型转换：整数字面量被类型提升为预期的整数类型，浮点字面量同样被类型提升为适当的浮点类型。在某种意义上，Julia 属于「无自动类型提升」类别：数学操作符只是具有特殊语法的函数，函数的参数永远不会自动转换。然而，人们可能会发现数学运算能应用于各种混合的参数类型，但这只是多态的多重分派的极端情况——这是 Julia 的分派和类型系统特别适合处理的情况。数学操作数的「自动」类型提升只是作为一个特殊的应用出现：Julia 带有预定义的数学运算符的 catch-all 分派规则，其在某些操作数类型的组合没有特定实现时调用。这些 catch-all 分派规则首先使用用户可定义的类型提升规则将所有操作数提升到一个通用的类型，然后针对结果值（现在已属于相同类型）调用相关运算符的特定实现。用户定义的类型可简单地加入这个类型提升系统，这需要先定义与其它类型进行相互类型转换的方法，接着提供一些类型提升规则来定义与其它类型混合时应该提升到什么类型。"
 },
 
 {
@@ -1525,7 +1525,7 @@ var documenterSearchIndex = {"docs": [
     "page": "模块",
     "title": "模块初始化和预编译",
     "category": "section",
-    "text": "因为执行模块中的所有语句通常需要编译大量代码，大型模块可能需要几秒钟才能加载。Julia 会创建模块的预编译缓存以减少这个时间。在使用 import 或 using 载入模块时，会自动创建并使用增量预编译的模块文件。模块在第一次导入时会自动编译，也可以手动调用 Base.compilecache(modulename)。编译好的缓存文件会被存储在 DEPOT_PATH[1]/compiled/ 目录下。之后，只要模块的依赖发生了改动，就会在下一次 using 或 import 时自动编译。这里所说的依赖是指：在模块中导入的其它模块，Julia 的系统镜像，模块包含的文件，或者在模块中用 include_dependency(path) 显式声明的依赖。对于文件依赖，判断是否有变动的方法是：在 include 或 include_dependency 的时候检查每个文件的变更时间（mtime）是否没变，或等于截断变更时间。截断变更时间是指将变更时间截断到最近的一秒，这是由于在某些操作系统中，用 mtime 无法获取亚秒级的精度。此外，也会考虑到 require 搜索到的文件路径与之前预编译文件中的是否匹配。对于已经加载到当前进程的依赖，即使它们的文件发成了变更，甚至是丢失，Julia 也不会重新编译这些模块，这是为了避免正在运行的系统与预编译缓存之间的不兼容性。如果你认为预编译自己的模块是不安全的（基于下面所说的各种原因），那么你应该在模块文件中添加 __precompile__(false)，一般会将其写在文件的最上面。这就可以触发 Base.compilecache 报错，并且在直接使用 using / import 加载的时候跳过预编译和缓存。这样做同时也可以防止其它开启预编译的模块加载此模块。在开发模块的时候，你可能需要了解一些与增量编译相关的固有行为。例如，外部状态不会被保留。为了解决这个问题，需要显式分离运行时与编译期的部分。Julia 允许你定义一个 __init__() 函数来执行任何需要在运行时发生的初始化。在编译期（--output-*），此函数将不会被调用。你可以假设在代码的生存周期中，此函数只会被运行一次。当然，如果有必要，你也可以手动调用它，但在默认的情况下，请假定此函数是为了处理与本机状态相关的信息，注意这些信息不需要，更不应该存入预编译镜像。此函数会在模块被导入到当前进程之后被调用，这包括在一个增量编译中导入该模块的时候（--output-incremental=yes），但在完整编译时该函数不会被调用。特别的，如果你在模块里定义了一个名为 __init__() 的函数，那么 Julia 在加载这个模块之后会在第一次运行时（runtime）立刻调用这个函数（例如，通过 import，using，或者 require 加载时），也就是说 __init__ 只会在模块中所有其它命令都执行完以后被调用一次。因为这个函数将在模块完全载入后被调用，任何子模块或者已经载入的模块都将在当前模块调用 __init__ 之前 调用自己的 __init__ 函数。__init__的典型用法有二，一是用于调用外部 C 库的运行时初始化函数，二是用于初始化涉及到外部库所返回的指针的全局常量。例如，假设我们正在调用一个 C 库 libfoo，它要求我们在运行时调用foo_init() 这个初始化函数。假设我们还想定义一个全局常量 foo_data_ptr，它保存 libfoo 所定义的 void *foo_data() 函数的返回值——必须在运行时（而非编译时）初始化这个常量，因为指针地址不是固定的。可以通过在模块中定义 __init__ 函数来完成这个操作。const foo_data_ptr = Ref{Ptr{Cvoid}}(0)\nfunction __init__()\n    ccall((:foo_init, :libfoo), Cvoid, ())\n    foo_data_ptr[] = ccall((:foo_data, :libfoo), Ptr{Cvoid}, ())\n    nothing\nend注意，在像 __init__ 这样的函数里定义一个全局变量是完全可以的，这是动态语言的优点之一。但是把全局作用域的值定义成常量，可以让编译器能确定该值的类型，并且能让编译器生成更好的优化过的代码。显然，你的模块（Module）中，任何其他依赖于 foo_data_ptr 的全局量也必须在 __init__ 中被初始化。Constants involving most Julia objects that are not produced by ccall do not need to be placed in __init__: their definitions can be precompiled and loaded from the cached module image. This includes complicated heap-allocated objects like arrays. However, any routine that returns a raw pointer value must be called at runtime for precompilation to work (Ptr objects will turn into null pointers unless they are hidden inside an isbits object). This includes the return values of the Julia functions cfunction and pointer.Dictionary and set types, or in general anything that depends on the output of a hash(key) method, are a trickier case.  In the common case where the keys are numbers, strings, symbols, ranges, Expr, or compositions of these types (via arrays, tuples, sets, pairs, etc.) they are safe to precompile.  However, for a few other key types, such as Function or DataType and generic user-defined types where you haven\'t defined a hash method, the fallback hash method depends on the memory address of the object (via its objectid) and hence may change from run to run. If you have one of these key types, or if you aren\'t sure, to be safe you can initialize this dictionary from within your __init__ function. Alternatively, you can use the IdDict dictionary type, which is specially handled by precompilation so that it is safe to initialize at compile-time.当使用预编译时，我们必须要清楚地区分代码的编译阶段和运行阶段。在此模式下，我们会更清楚发现 Julia 的编译器可以执行任何 Julia 代码，而不是一个用于生成编译后代码的独立的解释器。其它已知的潜在失败场景包括：全局计数器（例如，为了生成对象的唯一标识符）考虑下面一段代码：\nmutable struct UniquedById\n    myid::Int\n    let counter = 0\n        UniquedById() = new(counter += 1)\n    end\nend\n尽管这段代码的目标是给每个实例赋一个唯一的 ID，但计数器的值会在代码编译结束时被记录。任何对此增量编译模块的后续使用，计数器都将从同一个值开始计数。\n注意 objectid （工作原理是 hash 内存指针）也有类似的问题，请查阅下面关于 Dict 的用法。\n一种解决方案是用宏捕捉 @__MODULE__，并将它与目前的 counter 值一起保存。然而，更好的方案是对代码进行重新设计，不要依赖这种全局状态变量。\n像 Dict 和 Set 这种关联集合需要在 __init__ 中 re-hash。Julia 在未来很可能会提供一个机制来注册初始化函数。\n依赖编译期的副作用会在加载时蔓延。例子包括：更改其它 Julia 模块里的数组或变量，操作文件或设备的句柄，保存指向其它系统资源（包括内存）的指针。\n无意中从其它模块中“拷贝”了全局状态：通过直接引用的方式而不是通过查找的方式。例如，在全局作用域下：\n#mystdout = Base.stdout #= will not work correctly, since this will copy Base.stdout into this module =#\n# instead use accessor functions:\ngetstdout() = Base.stdout #= best option =#\n# or move the assignment into the runtime:\n__init__() = global mystdout = Base.stdout #= also works =#Several additional restrictions are placed on the operations that can be done while precompiling code to help the user avoid other wrong-behavior situations:Calling eval to cause a side-effect in another module. This will also cause a warning to be emitted when the incremental precompile flag is set.\nglobal const statements from local scope after __init__() has been started (see issue #12010 for plans to add an error for this)\nReplacing a module is a runtime error while doing an incremental precompile.一些其他需要注意的点：No code reload / cache invalidation is performed after changes are made to the source files themselves, (including by [Pkg.update], and no cleanup is done after [Pkg.rm]\nThe memory sharing behavior of a reshaped array is disregarded by precompilation (each view gets its own copy)\nExpecting the filesystem to be unchanged between compile-time and runtime e.g. @__FILE__/source_path() to find resources at runtime, or the BinDeps @checked_lib macro. Sometimes this is unavoidable. 但是可能的话，在编译期将资源复制到模块里面是个好做法， 这样在运行期间，程序就不需要去寻找它们了。\nWeakRef objects and finalizers are not currently handled properly by the serializer (this will be fixed in an upcoming release).\nIt is usually best to avoid capturing references to instances of internal metadata objects such as Method, MethodInstance, MethodTable, TypeMapLevel, TypeMapEntry and fields of those objects, as this can confuse the serializer and may not lead to the outcome you desire. It is not necessarily an error to do this, but you simply need to be prepared that the system will try to copy some of these and to create a single unique instance of others.It is sometimes helpful during module development to turn off incremental precompilation. The command line flag --compiled-modules={yes|no} enables you to toggle module precompilation on and off. When Julia is started with --compiled-modules=no the serialized modules in the compile cache are ignored when loading modules and module dependencies. Base.compilecache can still be called manually. The state of this command line flag is passed to Pkg.build to disable automatic precompilation triggering when installing, updating, and explicitly building packages."
+    "text": "因为执行模块中的所有语句通常需要编译大量代码，大型模块可能需要几秒钟才能加载。Julia 会创建模块的预编译缓存以减少这个时间。在使用 import 或 using 载入模块时，会自动创建并使用增量预编译的模块文件。模块在第一次导入时会自动编译，也可以手动调用 Base.compilecache(modulename)。编译好的缓存文件会被存储在 DEPOT_PATH[1]/compiled/ 目录下。之后，只要模块的依赖发生了改动，就会在下一次 using 或 import 时自动编译。这里所说的依赖是指：在模块中导入的其它模块，Julia 的系统镜像，模块包含的文件，或者在模块中用 include_dependency(path) 显式声明的依赖。对于文件依赖，判断是否有变动的方法是：在 include 或 include_dependency 的时候检查每个文件的变更时间（mtime）是否没变，或等于截断变更时间。截断变更时间是指将变更时间截断到最近的一秒，这是由于在某些操作系统中，用 mtime 无法获取亚秒级的精度。此外，也会考虑到 require 搜索到的文件路径与之前预编译文件中的是否匹配。对于已经加载到当前进程的依赖，即使它们的文件发成了变更，甚至是丢失，Julia 也不会重新编译这些模块，这是为了避免正在运行的系统与预编译缓存之间的不兼容性。如果你认为预编译自己的模块是不安全的（基于下面所说的各种原因），那么你应该在模块文件中添加 __precompile__(false)，一般会将其写在文件的最上面。这就可以触发 Base.compilecache 报错，并且在直接使用 using / import 加载的时候跳过预编译和缓存。这样做同时也可以防止其它开启预编译的模块加载此模块。在开发模块的时候，你可能需要了解一些与增量编译相关的固有行为。例如，外部状态不会被保留。为了解决这个问题，需要显式分离运行时与编译期的部分。Julia 允许你定义一个 __init__() 函数来执行任何需要在运行时发生的初始化。在编译期（--output-*），此函数将不会被调用。你可以假设在代码的生存周期中，此函数只会被运行一次。当然，如果有必要，你也可以手动调用它，但在默认的情况下，请假定此函数是为了处理与本机状态相关的信息，注意这些信息不需要，更不应该存入预编译镜像。此函数会在模块被导入到当前进程之后被调用，这包括在一个增量编译中导入该模块的时候（--output-incremental=yes），但在完整编译时该函数不会被调用。特别的，如果你在模块里定义了一个名为 __init__() 的函数，那么 Julia 在加载这个模块之后会在第一次运行时（runtime）立刻调用这个函数（例如，通过 import，using，或者 require 加载时），也就是说 __init__ 只会在模块中所有其它命令都执行完以后被调用一次。因为这个函数将在模块完全载入后被调用，任何子模块或者已经载入的模块都将在当前模块调用 __init__ 之前 调用自己的 __init__ 函数。__init__的典型用法有二，一是用于调用外部 C 库的运行时初始化函数，二是用于初始化涉及到外部库所返回的指针的全局常量。例如，假设我们正在调用一个 C 库 libfoo，它要求我们在运行时调用foo_init() 这个初始化函数。假设我们还想定义一个全局常量 foo_data_ptr，它保存 libfoo 所定义的 void *foo_data() 函数的返回值——必须在运行时（而非编译时）初始化这个常量，因为指针地址不是固定的。可以通过在模块中定义 __init__ 函数来完成这个操作。const foo_data_ptr = Ref{Ptr{Cvoid}}(0)\nfunction __init__()\n    ccall((:foo_init, :libfoo), Cvoid, ())\n    foo_data_ptr[] = ccall((:foo_data, :libfoo), Ptr{Cvoid}, ())\n    nothing\nend注意，在像 __init__ 这样的函数里定义一个全局变量是完全可以的，这是动态语言的优点之一。但是把全局作用域的值定义成常量，可以让编译器能确定该值的类型，并且能让编译器生成更好的优化过的代码。显然，你的模块（Module）中，任何其他依赖于 foo_data_ptr 的全局量也必须在 __init__ 中被初始化。不需要把不是由ccall生成的大多数Julia对象的常量放 在__init__中：可以从缓存的模块映像中预编译和加载它们的定义。这个 包括复杂的堆分配对象，如数组。但是，任何返回原始指针的例程 必须在运行时调用才能使预编译工作（Ptr 对象将变为 null 指针，除非它们隐藏在 isbits 对象中）。这包括 Julia 函数cfunction和pointer 的返回值。Dictionary and set types, or in general anything that depends on the output of a hash(key) method, are a trickier case.  In the common case where the keys are numbers, strings, symbols, ranges, Expr, or compositions of these types (via arrays, tuples, sets, pairs, etc.) they are safe to precompile.  However, for a few other key types, such as Function or DataType and generic user-defined types where you haven\'t defined a hash method, the fallback hash method depends on the memory address of the object (via its objectid) and hence may change from run to run. If you have one of these key types, or if you aren\'t sure, to be safe you can initialize this dictionary from within your __init__ function. Alternatively, you can use the IdDict dictionary type, which is specially handled by precompilation so that it is safe to initialize at compile-time.当使用预编译时，我们必须要清楚地区分代码的编译阶段和运行阶段。在此模式下，我们会更清楚发现 Julia 的编译器可以执行任何 Julia 代码，而不是一个用于生成编译后代码的独立的解释器。其它已知的潜在失败场景包括：全局计数器（例如，为了生成对象的唯一标识符）考虑下面一段代码：\nmutable struct UniquedById\n    myid::Int\n    let counter = 0\n        UniquedById() = new(counter += 1)\n    end\nend\n尽管这段代码的目标是给每个实例赋一个唯一的 ID，但计数器的值会在代码编译结束时被记录。任何对此增量编译模块的后续使用，计数器都将从同一个值开始计数。\n注意 objectid （工作原理是 hash 内存指针）也有类似的问题，请查阅下面关于 Dict 的用法。\n一种解决方案是用宏捕捉 @__MODULE__，并将它与目前的 counter 值一起保存。然而，更好的方案是对代码进行重新设计，不要依赖这种全局状态变量。\n像 Dict 和 Set 这种关联集合需要在 __init__ 中 re-hash。Julia 在未来很可能会提供一个机制来注册初始化函数。\n依赖编译期的副作用会在加载时蔓延。例子包括：更改其它 Julia 模块里的数组或变量，操作文件或设备的句柄，保存指向其它系统资源（包括内存）的指针。\n无意中从其它模块中“拷贝”了全局状态：通过直接引用的方式而不是通过查找的方式。例如，在全局作用域下：\n#mystdout = Base.stdout #= will not work correctly, since this will copy Base.stdout into this module =#\n# instead use accessor functions:\ngetstdout() = Base.stdout #= best option =#\n# or move the assignment into the runtime:\n__init__() = global mystdout = Base.stdout #= also works =#Several additional restrictions are placed on the operations that can be done while precompiling code to help the user avoid other wrong-behavior situations:Calling eval to cause a side-effect in another module. This will also cause a warning to be emitted when the incremental precompile flag is set.\nglobal const statements from local scope after __init__() has been started (see issue #12010 for plans to add an error for this)\nReplacing a module is a runtime error while doing an incremental precompile.一些其他需要注意的点：No code reload / cache invalidation is performed after changes are made to the source files themselves, (including by [Pkg.update], and no cleanup is done after [Pkg.rm]\nThe memory sharing behavior of a reshaped array is disregarded by precompilation (each view gets its own copy)\nExpecting the filesystem to be unchanged between compile-time and runtime e.g. @__FILE__/source_path() to find resources at runtime, or the BinDeps @checked_lib macro. Sometimes this is unavoidable. 但是可能的话，在编译期将资源复制到模块里面是个好做法， 这样在运行期间，程序就不需要去寻找它们了。\nWeakRef objects and finalizers are not currently handled properly by the serializer (this will be fixed in an upcoming release).\nIt is usually best to avoid capturing references to instances of internal metadata objects such as Method, MethodInstance, MethodTable, TypeMapLevel, TypeMapEntry and fields of those objects, as this can confuse the serializer and may not lead to the outcome you desire. It is not necessarily an error to do this, but you simply need to be prepared that the system will try to copy some of these and to create a single unique instance of others.It is sometimes helpful during module development to turn off incremental precompilation. The command line flag --compiled-modules={yes|no} enables you to toggle module precompilation on and off. When Julia is started with --compiled-modules=no the serialized modules in the compile cache are ignored when loading modules and module dependencies. Base.compilecache can still be called manually. The state of this command line flag is passed to Pkg.build to disable automatic precompilation triggering when installing, updating, and explicitly building packages."
 },
 
 {
@@ -2057,9 +2057,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/arrays/#（数组）推导-1",
+    "location": "manual/arrays/#数组推导-1",
     "page": "多维数组",
-    "title": "（数组）推导",
+    "title": "数组推导",
     "category": "section",
     "text": "（数组）推导提供了构造数组的通用且强大的方法。其语法类似于数学中的集合构造的写法：A = [ F(x,y,...) for x=rx, y=ry, ... ]这种形式的含义是 F(x,y,...) 取其给定列表中变量 x，y 等的每个值进行计算。值可以指定为任何可迭代对象，但通常是 1:n 或 2:(n-1) 之类的范围，或者像 [1.2, 3.4, 5.7] 这样的显式数组值。结果是一个 N 维密集数组，其维数是变量范围 rx，ry 等的维数串联。每次 FF(x,y,...) 计算返回一个标量。下面的示例计算当前元素和沿一维网格其左，右相邻元素的加权平均值：julia> x = rand(8)\n8-element Array{Float64,1}:\n 0.843025\n 0.869052\n 0.365105\n 0.699456\n 0.977653\n 0.994953\n 0.41084\n 0.809411\n\njulia> [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]\n6-element Array{Float64,1}:\n 0.736559\n 0.57468\n 0.685417\n 0.912429\n 0.8446\n 0.656511生成的数组类型取决于参与计算元素的类型。为了明确地控制类型，可以在（数组）推导之前添加类型。例如，我们可以要求结果为单精度类型：Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]"
 },
@@ -2133,7 +2133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多维数组",
     "title": "数组、向量化操作符及函数",
     "category": "section",
-    "text": "以下运算符支持对数组操作一元运算符 – -, +\n二元运算符 – -, +, *, /, \\, ^\n比较操作符 – ==, !=, ≈ (isapprox), ≉当一个参数是标量时，上面列出的大多数二元算术运算符也可以按元素运行：当任一参数是标量时，-，+ 和 *；当分母是标量时，/ 和 \\。例如，[1, 2] + 3 == [4, 5] 和 [6, 4] / 2 == [3, 2]。另外，为了便于数学上和其他运算的向量化，Julia 提供了点语法（dot syntax） f.(args...)，例如，sin.(x) 或 min.(x,y)，用于数组或数组和标量的混合上的按元素运算（Broadcasting运算）; 当与其他点调用（dot call）结合使用时，它们的额外优点是能“融合”到单个循环中，例如，sin.(cos.(x))。此外，每个二元运算符支持相应的点操作版本，可以应用于此类融合 broadcasting 操作的数组（以及数组和标量的组合），例如 z .== sin.(x .* y)。请注意，类似 == 的比较运算在作用于整个数组时，得到一个布尔结果。使用像 .== 这样的点运算符进行按元素的比较。（对于像 < 这样的比较操作，只有按元素运算的版本 .< 适用于数组。）还要注意 max.(a,b) 和 maximum(a) 之间的区别，max.(a,b) 对 a 和 b 的每个元素 broadcasts max，maximum(a) 寻找在 a 中的最大值。min.(a,b) 和 minimum(a) 也有同样的关系。"
+    "text": "以下运算符支持对数组操作一元运算符 – -, +\n二元运算符 – -, +, *, /, \\, ^\n比较操作符 – ==, !=, ≈ (isapprox), ≉当一个参数是标量时，上面列出的大多数二元算术运算符也可以按元素运行：当任一参数是标量时，-，+ 和 *；当分母是标量时，/ 和 \\。例如，[1, 2] + 3 == [4, 5] 和 [6, 4] / 2 == [3, 2]。另外，为了便于数学上和其他运算的向量化，Julia 提供了点语法（dot syntax） f.(args...)，例如，sin.(x) 或 min.(x,y)，用于数组或数组和标量的混合上的按元素运算（广播运算）; 当与其他点调用（dot call）结合使用时，它们的额外优点是能“融合”到单个循环中，例如，sin.(cos.(x))。此外，每个二元运算符支持相应的点操作版本，可以应用于此类融合 broadcasting 操作的数组（以及数组和标量的组合），例如 z .== sin.(x .* y)。请注意，类似 == 的比较运算在作用于整个数组时，得到一个布尔结果。使用像 .== 这样的点运算符进行按元素的比较。（对于像 < 这样的比较操作，只有按元素运算的版本 .< 适用于数组。）还要注意 max.(a,b) 和 maximum(a) 之间的区别，max.(a,b) 对 a 和 b 的每个元素 broadcasts max，maximum(a) 寻找在 a 中的最大值。min.(a,b) 和 minimum(a) 也有同样的关系。"
 },
 
 {
@@ -2237,7 +2237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "网络和流",
     "title": "网络和流",
     "category": "section",
-    "text": "Julia provides a rich interface to deal with streaming I/O objects such as terminals, pipes and TCP sockets. This interface, though asynchronous at the system level, is presented in a synchronous manner to the programmer and it is usually unnecessary to think about the underlying asynchronous operation. This is achieved by making heavy use of Julia cooperative threading (coroutine) functionality."
+    "text": "Julia 提供了一个功能丰富的接口来处理流式 I/O 对象，如终端、管道和 TCP 套接字。此接口虽然在系统级是异步的，但是其以同步的方式展现给程序员，通常也不需要考虑底层的异步操作。这是通过大量使用 Julia 协作线程（协程）功能实现的。"
 },
 
 {
@@ -2245,47 +2245,47 @@ var documenterSearchIndex = {"docs": [
     "page": "网络和流",
     "title": "基础流 I/O",
     "category": "section",
-    "text": "所有Julia stream都暴露了read和write方法，将stream作为它们的第一个参数，如：julia> write(stdout, \"Hello World\");  # suppress return value 11 with ;\nHello World\njulia> read(stdin, Char)\n\n\'\\n\': ASCII/Unicode U+000a (category Cc: Other, control)注意，write 返回11，字节数(\"Hello World\")写入stdout，但是返回值使用;抑制。Here Enter was pressed again so that Julia would read the newline. Now, as you can see from this example, write takes the data to write as its second argument, while read takes the type of the data to be read as the second argument.For example, to read a simple byte array, we could do:julia> x = zeros(UInt8, 4)\n4-element Array{UInt8,1}:\n 0x00\n 0x00\n 0x00\n 0x00\n\njulia> read!(stdin, x)\nabcd\n4-element Array{UInt8,1}:\n 0x61\n 0x62\n 0x63\n 0x64However, since this is slightly cumbersome, there are several convenience methods provided. For example, we could have written the above as:julia> read(stdin, 4)\nabcd\n4-element Array{UInt8,1}:\n 0x61\n 0x62\n 0x63\n 0x64or if we had wanted to read the entire line instead:julia> readline(stdin)\nabcd\n\"abcd\"Note that depending on your terminal settings, your TTY may be line buffered and might thus require an additional enter before the data is sent to Julia.To read every line from stdin you can use eachline:for line in eachline(stdin)\n    print(\"Found $line\")\nendor read if you wanted to read by character instead:while !eof(stdin)\n    x = read(stdin, Char)\n    println(\"Found: $x\")\nend"
+    "text": "所有 Julia stream 都暴露了 read 和 write 方法，将 stream 作为它们的第一个参数，如：julia> write(stdout, \"Hello World\");  # suppress return value 11 with ;\nHello World\njulia> read(stdin, Char)\n\n\'\\n\': ASCII/Unicode U+000a (category Cc: Other, control)注意，write 返回 11，字节数（\"Hello World\"）写入 stdout，但是返回值使用 ; 抑制。这里按了两次回车，以便 Julia 能够读取到换行符。正如你在这个例子中所看到的，write 以待写入的数据作为其第二个参数，而 read 以待读取的数据的类型作为其第二个参数。例如，为了读取一个简单的字节数组，我们可以这样做：julia> x = zeros(UInt8, 4)\n4-element Array{UInt8,1}:\n 0x00\n 0x00\n 0x00\n 0x00\n\njulia> read!(stdin, x)\nabcd\n4-element Array{UInt8,1}:\n 0x61\n 0x62\n 0x63\n 0x64但是，因为这有些繁琐，所以提供了几个方便的方法。例如，我们可以把上面的代码编写为：julia> read(stdin, 4)\nabcd\n4-element Array{UInt8,1}:\n 0x61\n 0x62\n 0x63\n 0x64或者如果我们想要读取一整行：julia> readline(stdin)\nabcd\n\"abcd\"请注意，根据你的终端设置，你的 TTY 可能是行缓冲的，因此在数据发送给 Julia 前可能需要额外的回车。若要读取 stdin 的每一行，可以使用 eachline：for line in eachline(stdin)\n    print(\"Found $line\")\nend或者如果你想要用字符读取的话，使用 read ：while !eof(stdin)\n    x = read(stdin, Char)\n    println(\"Found: $x\")\nend"
 },
 
 {
-    "location": "manual/networking-and-streams/#Text-I/O-1",
+    "location": "manual/networking-and-streams/#文本-I/O-1",
     "page": "网络和流",
-    "title": "Text I/O",
+    "title": "文本 I/O",
     "category": "section",
-    "text": "Note that the write method mentioned above operates on binary streams. In particular, values do not get converted to any canonical text representation but are written out as is:julia> write(stdout, 0x61);  # suppress return value 1 with ;\naNote that a is written to stdout by the write function and that the returned value is 1 (since 0x61 is one byte).For text I/O, use the print or show methods, depending on your needs (see the documentation for these two methods for a detailed discussion of the difference between them):julia> print(stdout, 0x61)\n97See Custom pretty-printing for more information on how to implement display methods for custom types."
+    "text": "请注意，上面提到的 write 方法对二进制流进行操作。具体来说，值不会转换为任何规范的文本表示形式，而是按原样输出：julia> write(stdout, 0x61);  # suppress return value 1 with ;\na请注意，a 被 write 函数写入到 stdout 并且返回值为 1（因为 0x61 为一个字节）。对于文本 I/O，请根据需要使用 print 或 show 方法（有关这两个方法之间的差异的详细讨论，请参阅它们的文档）：julia> print(stdout, 0x61)\n97有关如何实现自定义类型的显示方法的更多信息，请参阅 自定义 pretty-printing。"
 },
 
 {
-    "location": "manual/networking-and-streams/#IO-Output-Contextual-Properties-1",
+    "location": "manual/networking-and-streams/#IO-输出的上下文信息-1",
     "page": "网络和流",
-    "title": "IO Output Contextual Properties",
+    "title": "IO 输出的上下文信息",
     "category": "section",
-    "text": "Sometimes IO output can benefit from the ability to pass contextual information into show methods. The IOContext object provides this framework for associating arbitrary metadata with an IO object. For example, :compact => true adds a hinting parameter to the IO object that the invoked show method should print a shorter output (if applicable). See the IOContext documentation for a list of common properties."
+    "text": "有时，IO 输出可受益于将上下文信息传递到 show 方法的能力。IOContext 对象提供了将任意元数据与 IO 对象相关联的框架。例如，:compact => true 向 IO 对象添加一个参数来提示调用的 show 方法应该打印一个较短的输出（如果适用）。有关常用属性的列表，请参阅 IOContext 文档。"
 },
 
 {
-    "location": "manual/networking-and-streams/#Working-with-Files-1",
+    "location": "manual/networking-and-streams/#使用文件-1",
     "page": "网络和流",
-    "title": "Working with Files",
+    "title": "使用文件",
     "category": "section",
-    "text": "Like many other environments, Julia has an open function, which takes a filename and returns an IOStream object that you can use to read and write things from the file. For example, if we have a file, hello.txt, whose contents are Hello, World!:julia> f = open(\"hello.txt\")\nIOStream(<file hello.txt>)\n\njulia> readlines(f)\n1-element Array{String,1}:\n \"Hello, World!\"If you want to write to a file, you can open it with the write (\"w\") flag:julia> f = open(\"hello.txt\",\"w\")\nIOStream(<file hello.txt>)\n\njulia> write(f,\"Hello again.\")\n12If you examine the contents of hello.txt at this point, you will notice that it is empty; nothing has actually been written to disk yet. This is because the IOStream must be closed before the write is actually flushed to disk:julia> close(f)Examining hello.txt again will show its contents have been changed.Opening a file, doing something to its contents, and closing it again is a very common pattern. To make this easier, there exists another invocation of open which takes a function as its first argument and filename as its second, opens the file, calls the function with the file as an argument, and then closes it again. For example, given a function:function read_and_capitalize(f::IOStream)\n    return uppercase(read(f, String))\nendYou can call:julia> open(read_and_capitalize, \"hello.txt\")\n\"HELLO AGAIN.\"to open hello.txt, call read_and_capitalize on it, close hello.txt and return the capitalized contents.To avoid even having to define a named function, you can use the do syntax, which creates an anonymous function on the fly:julia> open(\"hello.txt\") do f\n           uppercase(read(f, String))\n       end\n\"HELLO AGAIN.\""
+    "text": "和其他环境一样，Julia 有 open 函数，它接收文件名并返回一个 IOStream 对象，你可以用该对象来对文件进行读取和写入。例如，如果我们有文件 hello.txt，其内容为 Hello, World!：julia> f = open(\"hello.txt\")\nIOStream(<file hello.txt>)\n\njulia> readlines(f)\n1-element Array{String,1}:\n \"Hello, World!\"若要写入文件，则可以带着 write（\"w\"）标志来打开它：julia> f = open(\"hello.txt\",\"w\")\nIOStream(<file hello.txt>)\n\njulia> write(f,\"Hello again.\")\n12你如果在此刻检查 hello.txt 的内容，会注意到它是空的；改动实际上还没有写入到磁盘中。这是因为 IOStream 必须在写入实际刷新到磁盘前关闭：julia> close(f)再次检查 hello.txt 将显示其内容已被更改。打开文件，对其内容执行一些操作，并再次关闭它是一种非常常见的模式。为了使这更容易，open 还有另一种调用方式，它以一个函数作为其第一个参数，以文件名作为其第二个参数，以该文件为参数调用该函数，然后再次关闭它。例如，给定函数：function read_and_capitalize(f::IOStream)\n    return uppercase(read(f, String))\nend可以调用：julia> open(read_and_capitalize, \"hello.txt\")\n\"HELLO AGAIN.\"来打开 hello.txt，对它调用 read_and_capitalize，关闭 hello.txt 并返回大写的内容。为了避免甚至必须定义一个命名函数，你可以使用 do 语法，它可以动态地创建匿名函数：julia> open(\"hello.txt\") do f\n           uppercase(read(f, String))\n       end\n\"HELLO AGAIN.\""
 },
 
 {
-    "location": "manual/networking-and-streams/#A-simple-TCP-example-1",
+    "location": "manual/networking-and-streams/#一个简单的-TCP-示例-1",
     "page": "网络和流",
-    "title": "A simple TCP example",
+    "title": "一个简单的 TCP 示例",
     "category": "section",
-    "text": "Let\'s jump right in with a simple example involving TCP sockets. This functionality is in a standard library package called Sockets. Let\'s first create a simple server:julia> using Sockets\n\njulia> @async begin\n           server = listen(2000)\n           while true\n               sock = accept(server)\n               println(\"Hello World\\n\")\n           end\n       end\nTask (runnable) @0x00007fd31dc11ae0To those familiar with the Unix socket API, the method names will feel familiar, though their usage is somewhat simpler than the raw Unix socket API. The first call to listen will create a server waiting for incoming connections on the specified port (2000) in this case. The same function may also be used to create various other kinds of servers:julia> listen(2000) # Listens on localhost:2000 (IPv4)\nBase.TCPServer(active)\n\njulia> listen(ip\"127.0.0.1\",2000) # Equivalent to the first\nBase.TCPServer(active)\n\njulia> listen(ip\"::1\",2000) # Listens on localhost:2000 (IPv6)\nBase.TCPServer(active)\n\njulia> listen(IPv4(0),2001) # Listens on port 2001 on all IPv4 interfaces\nBase.TCPServer(active)\n\njulia> listen(IPv6(0),2001) # Listens on port 2001 on all IPv6 interfaces\nBase.TCPServer(active)\n\njulia> listen(\"testsocket\") # Listens on a UNIX domain socket\nBase.PipeServer(active)\n\njulia> listen(\"\\\\\\\\.\\\\pipe\\\\testsocket\") # Listens on a Windows named pipe\nBase.PipeServer(active)Note that the return type of the last invocation is different. This is because this server does not listen on TCP, but rather on a named pipe (Windows) or UNIX domain socket. Also note that Windows named pipe format has to be a specific pattern such that the name prefix (\\\\.\\pipe\\) uniquely identifies the file type. The difference between TCP and named pipes or UNIX domain sockets is subtle and has to do with the accept and connect methods. The accept method retrieves a connection to the client that is connecting on the server we just created, while the connect function connects to a server using the specified method. The connect function takes the same arguments as listen, so, assuming the environment (i.e. host, cwd, etc.) is the same you should be able to pass the same arguments to connect as you did to listen to establish the connection. So let\'s try that out (after having created the server above):julia> connect(2000)\nTCPSocket(open, 0 bytes waiting)\n\njulia> Hello WorldAs expected we saw \"Hello World\" printed. So, let\'s actually analyze what happened behind the scenes. When we called connect, we connect to the server we had just created. Meanwhile, the accept function returns a server-side connection to the newly created socket and prints \"Hello World\" to indicate that the connection was successful.A great strength of Julia is that since the API is exposed synchronously even though the I/O is actually happening asynchronously, we didn\'t have to worry about callbacks or even making sure that the server gets to run. When we called connect the current task waited for the connection to be established and only continued executing after that was done. In this pause, the server task resumed execution (because a connection request was now available), accepted the connection, printed the message and waited for the next client. Reading and writing works in the same way. To see this, consider the following simple echo server:julia> @async begin\n           server = listen(2001)\n           while true\n               sock = accept(server)\n               @async while isopen(sock)\n                   write(sock, readline(sock, keep=true))\n               end\n           end\n       end\nTask (runnable) @0x00007fd31dc12e60\n\njulia> clientside = connect(2001)\nTCPSocket(RawFD(28) open, 0 bytes waiting)\n\njulia> @async while isopen(clientside)\n           write(stdout, readline(clientside, keep=true))\n       end\nTask (runnable) @0x00007fd31dc11870\n\njulia> println(clientside,\"Hello World from the Echo Server\")\nHello World from the Echo ServerAs with other streams, use close to disconnect the socket:julia> close(clientside)"
+    "text": "让我们直接进入一个 TCP 套接字相关的简单示例。此功能位于名为 Sockets 的标准库中。让我们先创建一个简单的服务器：julia> using Sockets\n\njulia> @async begin\n           server = listen(2000)\n           while true\n               sock = accept(server)\n               println(\"Hello World\\n\")\n           end\n       end\nTask (runnable) @0x00007fd31dc11ae0对于那些熟悉 Unix 套接字 API 的人，这些方法名称会让人感觉很熟悉，可是它们的用法比原始的 Unix 套接字 API 要简单些。在本例中，首次调用 listen 会创建一个服务器，等待传入指定端口（2000）的连接。julia> listen(2000) # Listens on localhost:2000 (IPv4)\nBase.TCPServer(active)\n\njulia> listen(ip\"127.0.0.1\",2000) # Equivalent to the first\nBase.TCPServer(active)\n\njulia> listen(ip\"::1\",2000) # Listens on localhost:2000 (IPv6)\nBase.TCPServer(active)\n\njulia> listen(IPv4(0),2001) # Listens on port 2001 on all IPv4 interfaces\nBase.TCPServer(active)\n\njulia> listen(IPv6(0),2001) # Listens on port 2001 on all IPv6 interfaces\nBase.TCPServer(active)\n\njulia> listen(\"testsocket\") # Listens on a UNIX domain socket\nBase.PipeServer(active)\n\njulia> listen(\"\\\\\\\\.\\\\pipe\\\\testsocket\") # Listens on a Windows named pipe\nBase.PipeServer(active)请注意，最后一次调用返回的类型是不同的。这是因为此服务器不监听 TCP，而是监听命名管道（Windows）或 UNIX 域套接字。还请注意 Windows 命名管道格式必须具有特定的模式，即名称前缀（\\\\.\\pipe\\），以便唯一标识文件类型。TCP 和命名管道或 UNIX 域套接字之间的区别是微妙的，这与 accept 和 connect 方法有关。accept 方法检索到连接到我们刚创建的服务器的客户端的连接，而 connect 函数使用指定的方法连接到服务器。connect 函数接收与 listen 相同的参数，因此，假设环境（即 host、cwd 等）相同，你应该能够将相同的参数传递给 connect，就像你在监听建立连接时所做的那样。那么让我们尝试一下（在创建上面的服务器之后）：julia> connect(2000)\nTCPSocket(open, 0 bytes waiting)\n\njulia> Hello World不出所料，我们看到「Hello World」被打印出来。那么，让我们分析一下幕后发生的事情。在我们调用 connect 时，我们连接到刚刚创建的服务器。与此同时，accept 函数返回到新创建的套接字的服务器端连接，并打印「Hello World」来表明连接成功。Julia 的强大优势在于，即使 I/O 实际上是异步发生的，API 也以同步方式暴露，我们不必担心回调，甚至不必确保服务器能够运行。在我们调用 connect 时，当前任务等待建立连接，并在这之后才继续执行。在此暂停中，服务器任务恢复执行（因为现在有一个连接请求是可用的），接受该连接，打印信息并等待下一个客户端。读取和写入以同样的方式运行。为了理解这一点，请考虑以下简单的 echo 服务器：julia> @async begin\n           server = listen(2001)\n           while true\n               sock = accept(server)\n               @async while isopen(sock)\n                   write(sock, readline(sock, keep=true))\n               end\n           end\n       end\nTask (runnable) @0x00007fd31dc12e60\n\njulia> clientside = connect(2001)\nTCPSocket(RawFD(28) open, 0 bytes waiting)\n\njulia> @async while isopen(clientside)\n           write(stdout, readline(clientside, keep=true))\n       end\nTask (runnable) @0x00007fd31dc11870\n\njulia> println(clientside,\"Hello World from the Echo Server\")\nHello World from the Echo Server与其他流一样，使用 close 即可断开该套接字：julia> close(clientside)"
 },
 
 {
-    "location": "manual/networking-and-streams/#Resolving-IP-Addresses-1",
+    "location": "manual/networking-and-streams/#解析-IP-地址-1",
     "page": "网络和流",
-    "title": "Resolving IP Addresses",
+    "title": "解析 IP 地址",
     "category": "section",
-    "text": "One of the connect methods that does not follow the listen methods is connect(host::String,port), which will attempt to connect to the host given by the host parameter on the port given by the port parameter. It allows you to do things like:julia> connect(\"google.com\", 80)\nTCPSocket(RawFD(30) open, 0 bytes waiting)At the base of this functionality is getaddrinfo, which will do the appropriate address resolution:julia> getaddrinfo(\"google.com\")\nip\"74.125.226.225\""
+    "text": "与 listen 方法不一致的 connect 方法之一是 connect(host::String,port)，它将尝试连接到由 host 参数给定的主机上的由 port 参数给定的端口。它允许你执行以下操作：julia> connect(\"google.com\", 80)\nTCPSocket(RawFD(30) open, 0 bytes waiting)此功能的基础是 getaddrinfo，它将执行适当的地址解析：julia> getaddrinfo(\"google.com\")\nip\"74.125.226.225\""
 },
 
 {
@@ -2301,7 +2301,7 @@ var documenterSearchIndex = {"docs": [
     "page": "并行计算",
     "title": "并行计算",
     "category": "section",
-    "text": "对于多线程和并行计算的新手来说，首先了解Jullia所提供的 不同层级并行是非常有用的。这里我们主要将其分成三类：Julia 协程（绿色线程）\n多线程\n多核心或分布式处理我们首先考虑 Julia 任务 Tasks （也就是协程）以及其它依赖于 Julia  运行时库的模块。通过运行时库无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对任务间的通信拥有完全控制。 Julia 同样允许利用一些操作在任务间进行通信，比如 \'wait\' 以及 \'fetch\'。 另外，通信和数据同步是通过管道 \'Channel\' 完成的，它也是实现任务间通信的基石。Julia 还支持实验性的多线程功能，在执行时通过分叉(fork)，然后有一个匿名函数在所有线程上运行。由于是一种分叉-汇合(fork-join)的方式，并行执行的线程必须在分叉之后，汇合到 Julia 主线程上，从而继续串行执行。多线程功能是通过 Base.Threads 模块提供的，目前仍然是实验性的，因为目前Julia 还不是完全线程安全的。尤其是在进行 I/O 操作和协程切换的时候可能会有段错误出现。最新的进展请关注 the issue tracker。多线程应该只在你考虑全局变量、锁以及原子操作的时候使用，后面我们会详细讲解。最后我们将介绍 Julia 的分布式和并行计算的实现方法。鉴于以科学计算为主要目的， Julia 底层实现上提供了通过多核或多机器对任务并行的接口。 同时我们还将介绍一些有用的分布式编程的外部包，比如 \'MPI.jl\' 以及 \'DistributedArrays.jl\'。"
+    "text": "对于多线程和并行计算的新手来说，首先了解Jullia所提供的 不同层级并行是非常有用的。这里我们主要将其分成三类：Julia 协程（绿色线程）\n多线程\n多核心或分布式处理我们首先考虑 Julia 任务 Tasks（也就是协程）以及其它依赖于 Julia  运行时库的模块。通过运行时库无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对任务间的通信拥有完全控制。 Julia 同样允许利用一些操作在任务间进行通信，比如 wait 以及 fetch。 另外，通信和数据同步是通过管道 Channel 完成的，它也是实现任务间通信的基石。Julia 还支持实验性的多线程功能，在执行时通过分叉(fork)，然后有一个匿名函数在所有线程上运行。由于是一种分叉-汇合(fork-join)的方式，并行执行的线程必须在分叉之后，汇合到 Julia 主线程上，从而继续串行执行。多线程功能是通过 Base.Threads 模块提供的，目前仍然是实验性的，因为目前Julia 还不是完全线程安全的。尤其是在进行 I/O 操作和协程切换的时候可能会有段错误出现。最新的进展请关注 the issue tracker。多线程应该只在你考虑全局变量、锁以及原子操作的时候使用，后面我们会详细讲解。最后我们将介绍 Julia 的分布式和并行计算的实现方法。鉴于以科学计算为主要目的， Julia 底层实现上提供了通过多核或多机器对任务并行的接口。 同时我们还将介绍一些有用的分布式编程的外部包，比如 MPI.jl 以及 DistributedArrays.jl。"
 },
 
 {
@@ -2317,7 +2317,7 @@ var documenterSearchIndex = {"docs": [
     "page": "并行计算",
     "title": "管道",
     "category": "section",
-    "text": "在 Control Flow 中有关 Task 的部分，已经讨论了如何协调多个函数的执行。Channel 可以很方便地在多个运行中的 task 传递数据，特别是那些涉及 I/O 的操作。典型的 I/O 操作包括读写文件、访问 web 服务、执行外部程序等。在所有这些场景中，如果其它 task 可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。一个管道可以形象得看做是一个管子，一端可读，另一端可写：不同的 task 可以通过 put! 往同一个 channel 并发地写入。\n不同的 task 也可以通过 take! 从同一个 channel 并发地取数据\n举个例子：\n# Given Channels c1 and c2,\nc1 = Channel(32)\nc2 = Channel(32)\n\n# and a function `foo` which reads items from from c1, processes the item read\n# and writes a result to c2,\nfunction foo()\n    while true\n        data = take!(c1)\n        [...]               # process data\n        put!(c2, result)    # write out result\n    end\nend\n\n# we can schedule `n` instances of `foo` to be active concurrently.\nfor _ in 1:n\n    @schedule foo()\nend\nChanne l可以通过 Channel{T}(sz) 构造，得到的 channel 只能存储类型 T 的数据。如果 T 没有指定，那么 channel 可以存任意类型。sz 表示该 channel 能够存储的最大元素个数。比如 Channel(32) 得到的 channel 最多可以存储32个元素。而 Channel{MyType}(64) 则可以最多存储64个 MyType 类型的数据。如果一个 Channel 是空的，读取的 task(即执行 take! 的 task)会被阻塞直到有新的数据准备好了。\n如果一个 Channel 是满的，那么写入的 task(即执行 put! 的 task)则会被阻塞，直到 Channel 有空余。\nisready 可以用来检查一个 channel 中是否有已经准备好的元素，而等待一个元素准备好 则用 wait\n一个 Channel 一开始处于开启状态，也就是说可以被 take! 读取和 put! 写入。close 会关闭一个 Channel，对于一个已经关闭的 Channel，put! 会失败，例如：julia> c = Channel(2);\n\njulia> put!(c, 1) # `put!` on an open channel succeeds\n1\n\njulia> close(c);\n\njulia> put!(c, 2) # `put!` on a closed channel throws an exception.\nERROR: InvalidStateException(\"Channel is closed.\",:closed)\nStacktrace:\n[...]take! 和 fetch (只读取，不会将元素从 channel 中删掉)仍然可以从一个已经关闭的 channel 中读数据，直到 channel 被取空了为止。继续上面的例子：julia> fetch(c) # Any number of `fetch` calls succeed.\n1\n\njulia> fetch(c)\n1\n\njulia> take!(c) # The first `take!` removes the value.\n1\n\njulia> take!(c) # No more data available on a closed channel.\nERROR: InvalidStateException(\"Channel is closed.\",:closed)\nStacktrace:\n[...]Channel 可以在 for 循环中遍历，此时，循环会一直运行直到 Channel 中有数据，遍历过程中会取遍加入到 Channel 中的所有值。一旦 Channel关闭或者取空了，for 循环就会终止。例如，下面的 for 循环会等待新的数据：julia> c = Channel{Int}(10);\n\njulia> foreach(i->put!(c, i), 1:3) # add a few entries\n\njulia> data = [i for i in c]而下面的则会返回已经读取的数据：julia> c = Channel{Int}(10);\n\njulia> foreach(i->put!(c, i), 1:3); # add a few entries\n\njulia> close(c);                    # `for` loops can exit\n\njulia> data = [i for i in c]\n3-element Array{Int64,1}:\n 1\n 2\n 3考虑这样一个用 channel 做 task 之间通信的例子。首先，起4个 task 来处理一个 jobs channel 中的数据。jobs 中的每个任务通过 job_id 来表示，然后每个 task 模拟读取一个 job_id，然后随机等待一会儿，然后往一个 results channel 中写入一个 Tuple，分别包含 job_id 和执行的时间，最后将结果打印出来：julia> const jobs = Channel{Int}(32);\n\njulia> const results = Channel{Tuple}(32);\n\njulia> function do_work()\n           for job_id in jobs\n               exec_time = rand()\n               sleep(exec_time)                # simulates elapsed time doing actual work\n                                               # typically performed externally.\n               put!(results, (job_id, exec_time))\n           end\n       end;\n\njulia> function make_jobs(n)\n           for i in 1:n\n               put!(jobs, i)\n           end\n       end;\n\njulia> n = 12;\n\njulia> @schedule make_jobs(n); # feed the jobs channel with \"n\" jobs\n\njulia> for i in 1:4 # start 4 tasks to process requests in parallel\n           @schedule do_work()\n       end\n\njulia> @elapsed while n > 0 # print out results\n           job_id, exec_time = take!(results)\n           println(\"$job_id finished in $(round(exec_time,2)) seconds\")\n           n = n - 1\n       end\n4 finished in 0.22 seconds\n3 finished in 0.45 seconds\n1 finished in 0.5 seconds\n7 finished in 0.14 seconds\n2 finished in 0.78 seconds\n5 finished in 0.9 seconds\n9 finished in 0.36 seconds\n6 finished in 0.87 seconds\n8 finished in 0.79 seconds\n10 finished in 0.64 seconds\n12 finished in 0.5 seconds\n11 finished in 0.97 seconds\n0.029772311当前版本的 Julia 会将所有 task 分发到一个操作系统的线程，因此，涉及 I/O 的操作会从并行执行中获利，而计算密集型的 task 则会顺序地在单独这个线程上执行。未来 Julia 将支持在多个线程上调度 task，从而让计算密集型 task 也能从并行计算中获利。"
+    "text": "在 流程控制 中有关 Task 的部分，已经讨论了如何协调多个函数的执行。Channel 可以很方便地在多个运行中的 task 传递数据，特别是那些涉及 I/O 的操作。典型的 I/O 操作包括读写文件、访问 web 服务、执行外部程序等。在所有这些场景中，如果其它 task 可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。一个管道可以形象得看做是一个管子，一端可读，另一端可写：不同的 task 可以通过 put! 往同一个 channel 并发地写入。\n不同的 task 也可以通过 take! 从同一个 channel 并发地取数据\n举个例子：\n# Given Channels c1 and c2,\nc1 = Channel(32)\nc2 = Channel(32)\n\n# and a function `foo` which reads items from from c1, processes the item read\n# and writes a result to c2,\nfunction foo()\n    while true\n        data = take!(c1)\n        [...]               # process data\n        put!(c2, result)    # write out result\n    end\nend\n\n# we can schedule `n` instances of `foo` to be active concurrently.\nfor _ in 1:n\n    @schedule foo()\nend\nChanne l可以通过 Channel{T}(sz) 构造，得到的 channel 只能存储类型 T 的数据。如果 T 没有指定，那么 channel 可以存任意类型。sz 表示该 channel 能够存储的最大元素个数。比如 Channel(32) 得到的 channel 最多可以存储32个元素。而 Channel{MyType}(64) 则可以最多存储64个 MyType 类型的数据。如果一个 Channel 是空的，读取的 task(即执行 take! 的 task)会被阻塞直到有新的数据准备好了。\n如果一个 Channel 是满的，那么写入的 task(即执行 put! 的 task)则会被阻塞，直到 Channel 有空余。\nisready 可以用来检查一个 channel 中是否有已经准备好的元素，而等待一个元素准备好 则用 wait\n一个 Channel 一开始处于开启状态，也就是说可以被 take! 读取和 put! 写入。close 会关闭一个 Channel，对于一个已经关闭的 Channel，put! 会失败，例如：julia> c = Channel(2);\n\njulia> put!(c, 1) # `put!` on an open channel succeeds\n1\n\njulia> close(c);\n\njulia> put!(c, 2) # `put!` on a closed channel throws an exception.\nERROR: InvalidStateException(\"Channel is closed.\",:closed)\nStacktrace:\n[...]take! 和 fetch (只读取，不会将元素从 channel 中删掉)仍然可以从一个已经关闭的 channel 中读数据，直到 channel 被取空了为止。继续上面的例子：julia> fetch(c) # Any number of `fetch` calls succeed.\n1\n\njulia> fetch(c)\n1\n\njulia> take!(c) # The first `take!` removes the value.\n1\n\njulia> take!(c) # No more data available on a closed channel.\nERROR: InvalidStateException(\"Channel is closed.\",:closed)\nStacktrace:\n[...]Channel 可以在 for 循环中遍历，此时，循环会一直运行直到 Channel 中有数据，遍历过程中会取遍加入到 Channel 中的所有值。一旦 Channel关闭或者取空了，for 循环就会终止。例如，下面的 for 循环会等待新的数据：julia> c = Channel{Int}(10);\n\njulia> foreach(i->put!(c, i), 1:3) # add a few entries\n\njulia> data = [i for i in c]而下面的则会返回已经读取的数据：julia> c = Channel{Int}(10);\n\njulia> foreach(i->put!(c, i), 1:3); # add a few entries\n\njulia> close(c);                    # `for` loops can exit\n\njulia> data = [i for i in c]\n3-element Array{Int64,1}:\n 1\n 2\n 3考虑这样一个用 channel 做 task 之间通信的例子。首先，起4个 task 来处理一个 jobs channel 中的数据。jobs 中的每个任务通过 job_id 来表示，然后每个 task 模拟读取一个 job_id，然后随机等待一会儿，然后往一个 results channel 中写入一个 Tuple，分别包含 job_id 和执行的时间，最后将结果打印出来：julia> const jobs = Channel{Int}(32);\n\njulia> const results = Channel{Tuple}(32);\n\njulia> function do_work()\n           for job_id in jobs\n               exec_time = rand()\n               sleep(exec_time)                # simulates elapsed time doing actual work\n                                               # typically performed externally.\n               put!(results, (job_id, exec_time))\n           end\n       end;\n\njulia> function make_jobs(n)\n           for i in 1:n\n               put!(jobs, i)\n           end\n       end;\n\njulia> n = 12;\n\njulia> @schedule make_jobs(n); # feed the jobs channel with \"n\" jobs\n\njulia> for i in 1:4 # start 4 tasks to process requests in parallel\n           @schedule do_work()\n       end\n\njulia> @elapsed while n > 0 # print out results\n           job_id, exec_time = take!(results)\n           println(\"$job_id finished in $(round(exec_time,2)) seconds\")\n           n = n - 1\n       end\n4 finished in 0.22 seconds\n3 finished in 0.45 seconds\n1 finished in 0.5 seconds\n7 finished in 0.14 seconds\n2 finished in 0.78 seconds\n5 finished in 0.9 seconds\n9 finished in 0.36 seconds\n6 finished in 0.87 seconds\n8 finished in 0.79 seconds\n10 finished in 0.64 seconds\n12 finished in 0.5 seconds\n11 finished in 0.97 seconds\n0.029772311当前版本的 Julia 会将所有 task 分发到一个操作系统的线程，因此，涉及 I/O 的操作会从并行执行中获利，而计算密集型的 task 则会顺序地在单独这个线程上执行。未来 Julia 将支持在多个线程上调度 task，从而让计算密集型 task 也能从并行计算中获利。"
 },
 
 {
@@ -2389,7 +2389,7 @@ var documenterSearchIndex = {"docs": [
     "page": "并行计算",
     "title": "启动和管理 worker 进程",
     "category": "section",
-    "text": "Julia 自带两种集群管理模式：本地集群，前面通过启动时指定 -p 参数就是这种模式\n跨机器的集群，通过 --machine-file 指定。这种模式采用没有密码的 ssh 登陆并对应的机器上（与 host 相同的路径下）启动 Julia 的 worker 进程。addprocs, rmprocs, workers 这些函数可以分别用来对集群中的进程进行增加，删除和修改。julia> using Distributed\n\njulia> addprocs(2)\n2-element Array{Int64,1}:\n 2\n 3在 master 主线程中，Distributed 模块必须显式地在调用 addprocs 之前载入，该模块会自动在其它进程中可见。需要注意的时，worker 进程并不会执行 ~/.julia/config/startup.jl 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。其它类型的集群可以通过自己写一个 ClusterManager 来实现，下面 ClusterManagers 部分会介绍。"
+    "text": "Julia 自带两种集群管理模式：本地集群，前面通过启动时指定 -p 参数就是这种模式\n跨机器的集群，通过 --machine-file 指定。这种模式采用没有密码的 ssh 登陆并对应的机器上（与 host 相同的路径下）启动 Julia 的 worker 进程。addprocs, rmprocs, workers 这些函数可以分别用来对集群中的进程进行增加，删除和修改。julia> using Distributed\n\njulia> addprocs(2)\n2-element Array{Int64,1}:\n 2\n 3在 master 主线程中，Distributed 模块必须显式地在调用 addprocs 之前载入，该模块会自动在其它进程中可见。需要注意的时，worker 进程并不会执行 ~/.julia/config/startup.jl 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。其它类型的集群可以通过自己写一个 ClusterManager 来实现，下面 集群管理器 部分会介绍。"
 },
 
 {
@@ -2413,7 +2413,7 @@ var documenterSearchIndex = {"docs": [
     "page": "并行计算",
     "title": "并行的Map和Loop",
     "category": "section",
-    "text": "幸运的是，许多有用的并行计算并不涉及数据转移。一个典型的例子就是蒙特卡洛模拟，每个进程都独立地完成一些模拟试验。这里用 @spawn 在两个进程进行抛硬币的试验，首先，将下面的代码写入 count_heads.jl 文件:function count_heads(n)\n    c::Int = 0\n    for i = 1:n\n        c += rand(Bool)\n    end\n    c\nend函数 count_heads 只是简单地将 n 个随机 0-1 值累加，下面在两个机器上进行试验，并将结果叠加：julia> @everywhere include_string(Main, $(read(\"count_heads.jl\", String)), \"count_heads.jl\")\n\njulia> a = @spawn count_heads(100000000)\nFuture(2, 1, 6, nothing)\n\njulia> b = @spawn count_heads(100000000)\nFuture(3, 1, 7, nothing)\n\njulia> fetch(a)+fetch(b)\n100001564上面的例子展示了一种非常常见而且有用的并行编程模式，在一些进程中执行多次独立的迭代，然后将它们的结果通过某个函数合并到一起，这个合并操作通常称作聚合(reduction)，也就是一般意义上的张量降维(tensor-rank-reducing)，比如将一个向量降维成一个数，或者是将一个 tensor 降维到某一行或者某一列等。在代码中，通常具有 x = f(x, v[i]) 这种形式，其中 x 是一个叠加器，f 是一个聚合函数，而 v[i] 则是将要被聚合的值。一般来说，f 要求满足结合律，这样不管执行的顺序如何，都不会影响计算结果。前面的代码中，调用 count_heads 的方式可以被抽象出来，之前我们显式地调用了两次 @spawn，这将并行计算限制在了两个进程上，为了将并行计算扩展到任意多进程，可以使用 parallel for loop 这种形式，在 Julia 中可以用 @distributed 宏来实现：nheads = @distributed (+) for i = 1:200000000\n    Int(rand(Bool))\nend上面的写法将多次迭代分配到了不同的线程，然后通过一个聚合函数（这里是 (+)）合并计算结果，其中，每次迭代的结果作为 for 循环中的表达式的结果，最后整个循环的结果聚合后得到最终的结果。注意，尽管这里 for 循环看起来跟串行的 for 循环差不多，实际表现完全不同。这里的迭代并没有特定的执行顺序，而且由于所有的迭代都在不同的进程中进行，其中变量的写入对全局来说不可见。所有并行的 for 循环中的变量都会复制并广播到每个进程。比如，下面这段代码并不会像你想要的那样执行：a = zeros(100000)\n@distributed for i = 1:100000\n    a[i] = i\nend这段代码并不会把 a 的所有元素初始化，因为每个进程都会有一份 a 的拷贝，因此类似的 for 循环一定要避免。幸运的是，Shared Arrays 可以用来突破这种限制：using SharedArrays\n\na = SharedArray{Float64}(10)\n@distributed for i = 1:10\n    a[i] = i\nend当然，对于 for 循环外面的变量来说，如果是只读的话，使用起来完全没问题：a = randn(1000)\n@distributed (+) for i = 1:100000\n    f(a[rand(1:end)])\nend这里每次迭代都会从共享给每个进程的向量 a 中随机选一个样本，然后用来计算 f。可以看到，如果不需要的话，聚合函数可以省略掉，此时，for 循环会异步执行，将独立的任务发送给所有的进程，然后不用等待执行完成，而是立即返回一个 Future 数组，调用者可以在之后的某个时刻通过调用 fetch 来等待 Future 执行完成，或者通过在并行的 for 循环之前添加一个 @sync，就像@sync @distributed for。在一些不需要聚合函数的情况下，我们可能只是像对某个范围内的整数应用一个函数(或者，更一般地，某个序列中的所有元素)，这种操作称作并行的 map，在 Julia 中有一个对应的函数 pmap。例如，可以像下面这样计算一些随机大矩阵的奇异值：julia> M = Matrix{Float64}[rand(1000,1000) for i = 1:10];\n\njulia> pmap(svdvals, M);Julia 中的 pmap 是被设计用来处理一些计算量比较复杂的函数的并行化的。与之对比的是，@distributed for 是用来处理一些每次迭代计算都很轻量的计算，比如简单地对两个数求和。pmap 和 @distributed for 都只会用到 worker 的进程。对于 @distributed for 而言，最后的聚合计算由发起者的进程完成。"
+    "text": "幸运的是，许多有用的并行计算并不涉及数据转移。一个典型的例子就是蒙特卡洛模拟，每个进程都独立地完成一些模拟试验。这里用 @spawn 在两个进程进行抛硬币的试验，首先，将下面的代码写入 count_heads.jl 文件:function count_heads(n)\n    c::Int = 0\n    for i = 1:n\n        c += rand(Bool)\n    end\n    c\nend函数 count_heads 只是简单地将 n 个随机 0-1 值累加，下面在两个机器上进行试验，并将结果叠加：julia> @everywhere include_string(Main, $(read(\"count_heads.jl\", String)), \"count_heads.jl\")\n\njulia> a = @spawn count_heads(100000000)\nFuture(2, 1, 6, nothing)\n\njulia> b = @spawn count_heads(100000000)\nFuture(3, 1, 7, nothing)\n\njulia> fetch(a)+fetch(b)\n100001564上面的例子展示了一种非常常见而且有用的并行编程模式，在一些进程中执行多次独立的迭代，然后将它们的结果通过某个函数合并到一起，这个合并操作通常称作聚合(reduction)，也就是一般意义上的张量降维(tensor-rank-reducing)，比如将一个向量降维成一个数，或者是将一个 tensor 降维到某一行或者某一列等。在代码中，通常具有 x = f(x, v[i]) 这种形式，其中 x 是一个叠加器，f 是一个聚合函数，而 v[i] 则是将要被聚合的值。一般来说，f 要求满足结合律，这样不管执行的顺序如何，都不会影响计算结果。前面的代码中，调用 count_heads 的方式可以被抽象出来，之前我们显式地调用了两次 @spawn，这将并行计算限制在了两个进程上，为了将并行计算扩展到任意多进程，可以使用 parallel for loop 这种形式，在 Julia 中可以用 @distributed 宏来实现：nheads = @distributed (+) for i = 1:200000000\n    Int(rand(Bool))\nend上面的写法将多次迭代分配到了不同的线程，然后通过一个聚合函数（这里是 (+)）合并计算结果，其中，每次迭代的结果作为 for 循环中的表达式的结果，最后整个循环的结果聚合后得到最终的结果。注意，尽管这里 for 循环看起来跟串行的 for 循环差不多，实际表现完全不同。这里的迭代并没有特定的执行顺序，而且由于所有的迭代都在不同的进程中进行，其中变量的写入对全局来说不可见。所有并行的 for 循环中的变量都会复制并广播到每个进程。比如，下面这段代码并不会像你想要的那样执行：a = zeros(100000)\n@distributed for i = 1:100000\n    a[i] = i\nend这段代码并不会把 a 的所有元素初始化，因为每个进程都会有一份 a 的拷贝，因此类似的 for 循环一定要避免。幸运的是，共享数组 可以用来突破这种限制：using SharedArrays\n\na = SharedArray{Float64}(10)\n@distributed for i = 1:10\n    a[i] = i\nend当然，对于 for 循环外面的变量来说，如果是只读的话，使用起来完全没问题：a = randn(1000)\n@distributed (+) for i = 1:100000\n    f(a[rand(1:end)])\nend这里每次迭代都会从共享给每个进程的向量 a 中随机选一个样本，然后用来计算 f。可以看到，如果不需要的话，聚合函数可以省略掉，此时，for 循环会异步执行，将独立的任务发送给所有的进程，然后不用等待执行完成，而是立即返回一个 Future 数组，调用者可以在之后的某个时刻通过调用 fetch 来等待 Future 执行完成，或者通过在并行的 for 循环之前添加一个 @sync，就像@sync @distributed for。在一些不需要聚合函数的情况下，我们可能只是像对某个范围内的整数应用一个函数(或者，更一般地，某个序列中的所有元素)，这种操作称作并行的 map，在 Julia 中有一个对应的函数 pmap。例如，可以像下面这样计算一些随机大矩阵的奇异值：julia> M = Matrix{Float64}[rand(1000,1000) for i = 1:10];\n\njulia> pmap(svdvals, M);Julia 中的 pmap 是被设计用来处理一些计算量比较复杂的函数的并行化的。与之对比的是，@distributed for 是用来处理一些每次迭代计算都很轻量的计算，比如简单地对两个数求和。pmap 和 @distributed for 都只会用到 worker 的进程。对于 @distributed for 而言，最后的聚合计算由发起者的进程完成。"
 },
 
 {
@@ -2457,9 +2457,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/parallel-computing/#集群管理器（ClusterManagers）-1",
+    "location": "manual/parallel-computing/#集群管理器-1",
     "page": "并行计算",
-    "title": "集群管理器（ClusterManagers）",
+    "title": "集群管理器",
     "category": "section",
     "text": "Julia 通过集群管理器实现对多个进程（所构成的逻辑上的集群）的启动，管理以及网络通信。一个 ClusterManager 负责：在一个集群环境中启动 worker 进程 \n管理每个 worker 生命周期内的事件\n（可选），提供数据传输一个 Julia 集群由以下特点：初始进程，称为 master，其 id 为 1\n只有 master 进程可以增加或删除 worker 进程\n所有进程之间都可以直接通信worker 之间的连接（用的是内置的 TCP/IP 传输）按照以下方式进行：master 进程对一个 ClusterManager 对象调用 addprocs\naddprocs 调用对应的 launch 方法，然后在对应的机器上启动相应数量的 worker 进程\n每个 worker 监听一个端口，然后将其 host 和 port 信息传给 stdout\n集群管理器捕获 stdout 中每个 worker 的信息，并提供给 master 进程\nmaster 进程解析信息并与相应的 worker 建立 TCP/IP 连接\n每个 worker 都会被通知集群中的其它 worker\n每个 worker 与 id 小于自己的 worker 连接\n这样，一个网络就建立了，从而，每个 worker 都可以与其它 worker 建立连接尽管默认的传输层使用的是 TCPSocket，对于一个自定义的集群管理器来说，完全可以使用其它传输方式。Julia 提供了两种内置的集群管理器：LocalManager，调用 addprocs() 或 addprocs(np::Integer) 时会用到。\nSSHManager，调用 addprocs(hostnames::Array) 时，传递一个 hostnames 的列表。LocalManager 用来在同一个 host 上启动多个 worker，从而利用多核/多处理器硬件。因此，一个最小的集群管理器需要：是一个 ClusterManager 抽象类的一个子类\n实现 launch 接口，用来启动新的 worker\n实现 manage，在一个 worker 的生命周期中多次被调用（例如，发送中断信号）addprocs(manager::FooManager) 需要 FooManager 实现：function launch(manager::FooManager, params::Dict, launched::Array, c::Condition)\n    [...]\nend\n\nfunction manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symbol)\n    [...]\nend作为一个例子，我们来看下 LocalManager 是怎么实现的：struct LocalManager <: ClusterManager\n    np::Integer\nend\n\nfunction launch(manager::LocalManager, params::Dict, launched::Array, c::Condition)\n    [...]\nend\n\nfunction manage(manager::LocalManager, id::Integer, config::WorkerConfig, op::Symbol)\n    [...]\nendlaunch 方法接收以下参数：manager::ClusterManager: 调用 addprocs 时所用到的集群管理器\nparams::Dict: 所有的关键字参数都会传递到 addprocs 中\nlaunched::Array: 用来存储一个或多个 WorkerConfig\nc::Condition: 在 workers 启动后被通知的条件变量launch 会在一个异步的task中调用，该 task 结束之后，意味着所有请求的 worker 都已经启动好了。因此，launch 函数必须在所有 worker 启动之后，尽快退出。新启动的 worker 之间采用的是多对多的连接方式。在命令行中指定参数 --worker[=<cookie>] 会让所有启动的进程把自己当作 worker，然后通过 TCP/IP 构建连接。集群中所有的 worker 默认使用同一个 master 的 cookie。如果 cookie 没有指定，（比如没有通过 --worker 指定），那么 worker 会尝试从它的标准输入中读取。LocalManager 和 SSHManager 都是通过标准输入来将 cookie 传递给新启动的 worker。默认情况下，一个 worker 会监听从 getipaddr() 函数返回的地址上的一个开放端口。若要指定监听的地址，可以通过额外的参数 --bind-to bind_addr[:port] 指定，这对于多 host 的情况来说很方便。对于非 TCP/IP 传输，可以选择 MPI 作为一种实现，此时一定不要指定 --worker 参数，另外，新启动的 worker 必须调用 init_worker(cookie) 之后再使用并行的结构体。对于每个已经启动的 worker，launch 方法必须往 launched 中添加一个 WorkerConfig 对象（相应的值已经初始化）。mutable struct WorkerConfig\n    # Common fields relevant to all cluster managers\n    io::Union{IO, Nothing}\n    host::Union{AbstractString, Nothing}\n    port::Union{Integer, Nothing}\n\n    # Used when launching additional workers at a host\n    count::Union{Int, Symbol, Nothing}\n    exename::Union{AbstractString, Cmd, Nothing}\n    exeflags::Union{Cmd, Nothing}\n\n    # External cluster managers can use this to store information at a per-worker level\n    # Can be a dict if multiple fields need to be stored.\n    userdata::Any\n\n    # SSHManager / SSH tunnel connections to workers\n    tunnel::Union{Bool, Nothing}\n    bind_addr::Union{AbstractString, Nothing}\n    sshflags::Union{Cmd, Nothing}\n    max_parallel::Union{Integer, Nothing}\n\n    # Used by Local/SSH managers\n    connect_at::Any\n\n    [...]\nendWorkerConfig 中的大多数字段都是内置的集群管理器会用到，对于自定义的管理器，通常只需要指定 io 或 host/port:如果指定了 io，那么就会用来读取 host/port 信息。每个 worker 会在启动时打印地址和端口，这样 worker 就可以自由监听可用的端口，而不必手动配置 worker 的端口。\n如果 io 没有指定，那么 host 和 port 就会用来连接。\ncount，exename 和 exeflags 用于从一个 worker 上启动额外的 worker。例如，一个集群管理器可能对每个节点都只启动一个 worker，然后再用它来启动额外的 worker。\ncount 可以是一个整数 n，用来指定启动 n 个 worker\ncount 还可以是 :auto，用来启动跟那台机器上 CPU 个数（逻辑上的核的个数）相同的 worker\nexename 是 julia 可执行文件的全路径\nexeflags 应该设置成传递给将要启动的 worker 命令行参数\ntunnel, bind_addr, sshflags 和 max_parallel 会在从 worker 与 master 进程建立 ssh 隧道时用到\nuserdata 用来提供给自定义集群管理器存储自己的 worker 相关的信息manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symbol) 会在一个 worker 生命周期中的不同时刻被调用，其中 op 的值可能是：:register/:deregister，从 Julia 的 worker 池子中添加/删除一个 worker\n:interrupt，当 interrupt(workers) 被调用是，此时，ClusterManager 应该给相应的 worker 发送终端信号\n:finalize，用于清理操作。"
 },
@@ -2501,7 +2501,7 @@ var documenterSearchIndex = {"docs": [
     "page": "并行计算",
     "title": "一些值得关注的外部库",
     "category": "section",
-    "text": "除了 Julia 自带的并行机制之外，还有许多外部的库值得一提。例如 MPI.jl 提供了一个 MPI 协议的 Julia 的封装，或者是在 Shared Arrays 提到的 DistributedArrays.jl，此外尤其值得一提的是 Julia 的 GPU 编程生态，包括：底层（C内核）的 OpenCL.jl 和 CUDAdrv.jl，分别提供了 OpenCL 和 CUDA 的封装。\n底层（Julia 内核）的接口，如 CUDAnative.jl，提供了 Julia 原生的 CUDA 实现。\n高层的特定抽象，如 CuArrays.jl 和 CLArrays.jl。\n高层的库，如 ArrayFire.jl 和 GPUArrays.jl。下面的例子将介绍如何用 DistributedArrays.jl 和 CuArrays.jl 通过 distribute() 和 CuArray() 将数组分配到多个进程。记住在载入 DistributedArrays.jl 时，需要用 @everywhere 将其载入到多个进程中。$ ./julia -p 4\n\njulia> addprocs()\n\njulia> @everywhere using DistributedArrays\n\njulia> using CuArrays\n\njulia> B = ones(10_000) ./ 2;\n\njulia> A = ones(10_000) .* π;\n\njulia> C = 2 .* A ./ B;\n\njulia> all(C .≈ 4*π)\ntrue\n\njulia> typeof(C)\nArray{Float64,1}\n\njulia> dB = distribute(B);\n\njulia> dA = distribute(A);\n\njulia> dC = 2 .* dA ./ dB;\n\njulia> all(dC .≈ 4*π)\ntrue\n\njulia> typeof(dC)\nDistributedArrays.DArray{Float64,1,Array{Float64,1}}\n\njulia> cuB = CuArray(B);\n\njulia> cuA = CuArray(A);\n\njulia> cuC = 2 .* cuA ./ cuB;\n\njulia> all(cuC .≈ 4*π);\ntrue\n\njulia> typeof(cuC)\nCuArray{Float64,1}要牢记，当前一些 Julia 的特性并没有被 CUDAnative.jl [2] 支持，尤其是一些像 sin 之类的函数需要换成 CUDAnative.sin(cc: @maleadt)。下面的例子中，通过 DistributedArrays.jl 和 CuArrays.jl 将一个数组分配到多个进程，然后调用一个函数。function power_method(M, v)\n    for i in 1:100\n        v = M*v\n        v /= norm(v)\n    end\n\n    return v, norm(M*v) / norm(v)  # or  (M*v) ./ v\nendpower_method 重复创建一个新的向量然后对其归一化，这里并没有在函数中指定类型信息，来看看是否对前面提到的类型适用：julia> M = [2. 1; 1 1];\n\njulia> v = rand(2)\n2-element Array{Float64,1}:\n0.40395\n0.445877\n\njulia> power_method(M,v)\n([0.850651, 0.525731], 2.618033988749895)\n\njulia> cuM = CuArray(M);\n\njulia> cuv = CuArray(v);\n\njulia> curesult = power_method(cuM, cuv);\n\njulia> typeof(curesult)\nCuArray{Float64,1}\n\njulia> dM = distribute(M);\n\njulia> dv = distribute(v);\n\njulia> dC = power_method(dM, dv);\n\njulia> typeof(dC)\nTuple{DistributedArrays.DArray{Float64,1,Array{Float64,1}},Float64}最后，我们来看看 MPI.jl，这个库时 Julia 对 MPI 协议的封装。一一介绍其中的每个函数太累赘了，这里领会其实现协议的方法就够了。考虑下面这个简单的脚本，它做的只是调用每个子进程，然后初始化其 rank，然后在 master 访问时，对 rank 求和。import MPI\n\nMPI.Init()\n\ncomm = MPI.COMM_WORLD\nMPI.Barrier(comm)\n\nroot = 0\nr = MPI.Comm_rank(comm)\n\nsr = MPI.Reduce(r, MPI.SUM, root, comm)\n\nif(MPI.Comm_rank(comm) == root)\n   @printf(\"sum of ranks: %s\\n\", sr)\nend\n\nMPI.Finalize()mpirun -np 4 ./julia example.jl[1]: in this context, mpi refers to the mpi-1 standard. beginning with mpi-2, the mpi standards committee introduced a new set of communication mechanisms, collectively referred to as remote memory access (rma). the motivation for adding rma to the mpi standard was to facilitate one-sided communication patterns. for additional information on the latest mpi standard, see http://mpi-forum.org/docs.[2]: Julia GPU 手册"
+    "text": "除了 Julia 自带的并行机制之外，还有许多外部的库值得一提。例如 MPI.jl 提供了一个 MPI 协议的 Julia 的封装，或者是在 共享数组 提到的 DistributedArrays.jl，此外尤其值得一提的是 Julia 的 GPU 编程生态，包括：底层（C内核）的 OpenCL.jl 和 CUDAdrv.jl，分别提供了 OpenCL 和 CUDA 的封装。\n底层（Julia 内核）的接口，如 CUDAnative.jl，提供了 Julia 原生的 CUDA 实现。\n高层的特定抽象，如 CuArrays.jl 和 CLArrays.jl。\n高层的库，如 ArrayFire.jl 和 GPUArrays.jl。下面的例子将介绍如何用 DistributedArrays.jl 和 CuArrays.jl 通过 distribute() 和 CuArray() 将数组分配到多个进程。记住在载入 DistributedArrays.jl 时，需要用 @everywhere 将其载入到多个进程中。$ ./julia -p 4\n\njulia> addprocs()\n\njulia> @everywhere using DistributedArrays\n\njulia> using CuArrays\n\njulia> B = ones(10_000) ./ 2;\n\njulia> A = ones(10_000) .* π;\n\njulia> C = 2 .* A ./ B;\n\njulia> all(C .≈ 4*π)\ntrue\n\njulia> typeof(C)\nArray{Float64,1}\n\njulia> dB = distribute(B);\n\njulia> dA = distribute(A);\n\njulia> dC = 2 .* dA ./ dB;\n\njulia> all(dC .≈ 4*π)\ntrue\n\njulia> typeof(dC)\nDistributedArrays.DArray{Float64,1,Array{Float64,1}}\n\njulia> cuB = CuArray(B);\n\njulia> cuA = CuArray(A);\n\njulia> cuC = 2 .* cuA ./ cuB;\n\njulia> all(cuC .≈ 4*π);\ntrue\n\njulia> typeof(cuC)\nCuArray{Float64,1}要牢记，当前一些 Julia 的特性并没有被 CUDAnative.jl [2] 支持，尤其是一些像 sin 之类的函数需要换成 CUDAnative.sin(cc: @maleadt)。下面的例子中，通过 DistributedArrays.jl 和 CuArrays.jl 将一个数组分配到多个进程，然后调用一个函数。function power_method(M, v)\n    for i in 1:100\n        v = M*v\n        v /= norm(v)\n    end\n\n    return v, norm(M*v) / norm(v)  # or  (M*v) ./ v\nendpower_method 重复创建一个新的向量然后对其归一化，这里并没有在函数中指定类型信息，来看看是否对前面提到的类型适用：julia> M = [2. 1; 1 1];\n\njulia> v = rand(2)\n2-element Array{Float64,1}:\n0.40395\n0.445877\n\njulia> power_method(M,v)\n([0.850651, 0.525731], 2.618033988749895)\n\njulia> cuM = CuArray(M);\n\njulia> cuv = CuArray(v);\n\njulia> curesult = power_method(cuM, cuv);\n\njulia> typeof(curesult)\nCuArray{Float64,1}\n\njulia> dM = distribute(M);\n\njulia> dv = distribute(v);\n\njulia> dC = power_method(dM, dv);\n\njulia> typeof(dC)\nTuple{DistributedArrays.DArray{Float64,1,Array{Float64,1}},Float64}最后，我们来看看 MPI.jl，这个库时 Julia 对 MPI 协议的封装。一一介绍其中的每个函数太累赘了，这里领会其实现协议的方法就够了。考虑下面这个简单的脚本，它做的只是调用每个子进程，然后初始化其 rank，然后在 master 访问时，对 rank 求和。import MPI\n\nMPI.Init()\n\ncomm = MPI.COMM_WORLD\nMPI.Barrier(comm)\n\nroot = 0\nr = MPI.Comm_rank(comm)\n\nsr = MPI.Reduce(r, MPI.SUM, root, comm)\n\nif(MPI.Comm_rank(comm) == root)\n   @printf(\"sum of ranks: %s\\n\", sr)\nend\n\nMPI.Finalize()mpirun -np 4 ./julia example.jl[1]: in this context, mpi refers to the mpi-1 standard. beginning with mpi-2, the mpi standards committee introduced a new set of communication mechanisms, collectively referred to as remote memory access (rma). the motivation for adding rma to the mpi standard was to facilitate one-sided communication patterns. for additional information on the latest mpi standard, see http://mpi-forum.org/docs.[2]: Julia GPU 手册"
 },
 
 {
@@ -2517,7 +2517,7 @@ var documenterSearchIndex = {"docs": [
     "page": "运行外部程序",
     "title": "运行外部程序",
     "category": "section",
-    "text": "Julia 中命令的反引号记法借鉴于 shell、Perl 和 Ruby。然而，在 Julia 中编写julia> `echo hello`\n`echo hello`在多个方面上与 shell、Perl 和 Ruby 中的行为有所不同：反引号创建一个 Cmd 对象来表示命令，而不是立即运行命令。 你可以使用此对象将命令通过管道连接到其它命令、run 它以及对它进行 read 或 write。\n在命令运行时，Julia 不会捕获命令的输出结果，除非你对它专门安排。相反，在默认情况下，命令的输出会被定向到 stdout，因为它将使用 libc 的 system 调用。\n命令一直不会在 shell 中运行。相反地，Julia 直接解析命令语法，适当地插入变量且像 shell 那样拆分单词，也遵从 shell 的引用语法。命令作为 julia 的直接子进程运行，使用 fork 和 exec 调用。这是运行外部程序的简单示例：julia> mycommand = `echo hello`\n`echo hello`\n\njulia> typeof(mycommand)\nCmd\n\njulia> run(mycommand);\nhellohello 是 echo 命令的输出，会被发送到 stdout 中去。run 方法本身返回 nothing，如果外部命令未能成功运行，则抛出 ErrorException。如果要读取外部命令的输出，可以使用 read：julia> a = read(`echo hello`, String)\n\"hello\\n\"\n\njulia> chomp(a) == \"hello\"\ntrue更一般地，你可以使用 open 来读取或写入外部命令。julia> open(`less`, \"w\", stdout) do io\n           for i = 1:3\n               println(io, i)\n           end\n       end\n1\n2\n3命令中的程序名称和各个参数可以访问和迭代，这就好像命令也是一个字符串数组：julia> collect(`echo \"foo bar\"`)\n2-element Array{String,1}:\n \"echo\"\n \"foo bar\"\n\njulia> `echo \"foo bar\"`[2]\n\"foo bar\""
+    "text": "Julia 中命令的反引号记法借鉴于 shell、Perl 和 Ruby。然而，在 Julia 中编写julia> `echo hello`\n`echo hello`在多个方面上与 shell、Perl 和 Ruby 中的行为有所不同：反引号创建一个 Cmd 对象来表示命令，而不是立即运行命令。 你可以使用此对象将命令通过管道连接到其它命令、run 它以及对它进行 read 或 write。\n在命令运行时，Julia 不会捕获命令的输出结果，除非你对它专门安排。相反，在默认情况下，命令的输出会被定向到 stdout，因为它将使用 libc 的 system 调用。\n命令从不会在 shell 中运行。相反地，Julia 会直接解析命令语法，适当地插入变量并像 shell 那样拆分单词，同时遵从 shell 的引用语法。命令会作为 julia 的直接子进程运行，使用 fork 和 exec 调用。这是运行外部程序的简单示例：julia> mycommand = `echo hello`\n`echo hello`\n\njulia> typeof(mycommand)\nCmd\n\njulia> run(mycommand);\nhellohello 是 echo 命令的输出，会被发送到 stdout 中去。run 方法本身返回 nothing，如果外部命令未能成功运行，则抛出 ErrorException。如果要读取外部命令的输出，可以使用 read：julia> a = read(`echo hello`, String)\n\"hello\\n\"\n\njulia> chomp(a) == \"hello\"\ntrue更一般地，你可以使用 open 来读取或写入外部命令。julia> open(`less`, \"w\", stdout) do io\n           for i = 1:3\n               println(io, i)\n           end\n       end\n1\n2\n3命令中的程序名称和各个参数可以访问和迭代，这就好像命令也是一个字符串数组：julia> collect(`echo \"foo bar\"`)\n2-element Array{String,1}:\n \"echo\"\n \"foo bar\"\n\njulia> `echo \"foo bar\"`[2]\n\"foo bar\""
 },
 
 {
@@ -2773,7 +2773,7 @@ var documenterSearchIndex = {"docs": [
     "page": "调用 C 和 Fortran 代码",
     "title": "线程安全",
     "category": "section",
-    "text": "Some C libraries execute their callbacks from a different thread, and since Julia isn\'t thread-safe you\'ll need to take some extra precautions. In particular, you\'ll need to set up a two-layered system: the C callback should only schedule (via Julia\'s event loop) the execution of your \"real\" callback. To do this, create an AsyncCondition object and wait on it:cond = Base.AsyncCondition()\nwait(cond)传递给 C 的回调应该只通过 \' ccall \' 将 cond.handle 作为参数传递给 :uv_async_send 并调用，注意避免任何内存分配操作或与 Julia 运行时的其他交互。注意，事件可能会合并，因此对 uv_async_send 的多个调用可能会导致对该条件的单个唤醒通知。"
+    "text": "Some C libraries execute their callbacks from a different thread, and since Julia isn\'t thread-safe you\'ll need to take some extra precautions. In particular, you\'ll need to set up a two-layered system: the C callback should only schedule (via Julia\'s event loop) the execution of your \"real\" callback. To do this, create an AsyncCondition object and wait on it:cond = Base.AsyncCondition()\nwait(cond)传递给 C 的回调应该只通过 ccall 将 cond.handle 作为参数传递给 :uv_async_send 并调用，注意避免任何内存分配操作或与 Julia 运行时的其他交互。注意，事件可能会合并，因此对 uv_async_send 的多个调用可能会导致对该条件的单个唤醒通知。"
 },
 
 {
@@ -2941,7 +2941,7 @@ var documenterSearchIndex = {"docs": [
     "page": "环境变量",
     "title": "REPL 格式化输出",
     "category": "section",
-    "text": "决定 REPL 应当如何格式化输出的环境变量。通常，这些变量应当被设置为 ANSI 终端转义序列。Julia 提供了具有相同功能的高级接口：请参阅 The Julia REPL。"
+    "text": "决定 REPL 应当如何格式化输出的环境变量。通常，这些变量应当被设置为 ANSI 终端转义序列。Julia 提供了具有相同功能的高级接口：请参阅 Julia REPL。"
 },
 
 {
@@ -3197,21 +3197,21 @@ var documenterSearchIndex = {"docs": [
     "page": "代码加载",
     "title": "代码加载",
     "category": "section",
-    "text": "Julia加载代码有两种机制：代码包含：例如 include(\"source.jl\")。包含允许你把一个程序拆分为多个源文件。表达式 include(\"source.jl\") 使得文件 source.jl 的内容在出现 include 调用的模块的全局作用域中执行。如果多次调用 include(\"source.jl\")，source.jl 就被执行多次。source.jl 的包含路径解释为相对于出现 include 调用的文件路径。重定位源文件子树因此变得简单。在 REPL 中，包含路径为当前工作目录，即 pwd()。\n加载包：例如 import X或using X。 import通过加载包 ( 一个独立的，可重用的Julia代码集合，包含在一个模块中 )，并导入模块内部的名称“X”，使得模块X可用。 如果在同一个Julia会话中，多次导入包X，那么后续导入模块为第一次导入模块的引用。 应该注意，import X可以在不同的上下文中加载不同的包：X可以引用主工程中名为X的一个包，但他们可能依赖的包是完全不同的。 更多机制说明如下。代码包含是非常直接的，即在调用者的上下文中解释运行源文件。包加载是建立在代码包含之上的，并且相当复杂。因此，本章的其余部分将重点介绍程序包加载的行为和机制。note: Note\n除非你想了解 Julia 中包加载的技术细节，你才需要阅读本章。如果你只想安装和使用包，只需使用 Julia 的内置包管理器来往你的环境中添加包，并在你的代码中编写 import X 或 using X 来使用已经添加的包。一个 包（package） 就是一个源码树，其标准布局中提供了其他 Julia 项目可以复用的功能。包可以使用 import X 或 using X 语句加载。这些语句还使得名为 X 的模块在加载包代码时被产生，并在包含该模块的 import 语句的模块中可用。import X 中 X 的含义与上下文有关：程序中加载哪个 X 包取决于语句出现的代码。import X 的效果取决于以下两个问题：在上下文中，哪个包是 X ？\nX 包在哪里能够被找到？理解 Julia 是如何回答这些问题是理解包如何被加载的重点。"
+    "text": "Julia加载代码有两种机制：代码包含：例如 include(\"source.jl\")。包含允许你把一个程序拆分为多个源文件。表达式 include(\"source.jl\") 使得文件 source.jl 的内容在出现 include 调用的模块的全局作用域中执行。如果多次调用 include(\"source.jl\")，source.jl 就被执行多次。source.jl 的包含路径解释为相对于出现 include 调用的文件路径。重定位源文件子树因此变得简单。在 REPL 中，包含路径为当前工作目录，即 pwd()。\n加载包：例如 import X 或 using X。 import 通过加载包 ( 一个独立的，可重用的 Julia 代码集合，包含在一个模块中 )，并导入模块内部的名称 X，使得模块 X 可用。 如果在同一个 Julia 会话中，多次导入包 X，那么后续导入模块为第一次导入模块的引用。 应该注意，import X 可以在不同的上下文中加载不同的包：X 可以引用主工程中名为 X 的一个包，但他们可能依赖的包是完全不同的。 更多机制说明如下。代码包含是非常直接的，即在调用者的上下文中解释运行源文件。包加载是建立在代码包含之上的，并且相当复杂。因此，本章的其余部分将重点介绍程序包加载的行为和机制。note: Note\n除非你想了解 Julia 中包加载的技术细节，你才需要阅读本章。如果你只想安装和使用包，只需使用 Julia 的内置包管理器来往你的环境中添加包，并在你的代码中编写 import X 或 using X 来使用已经添加的包。一个 包（package） 就是一个源码树，其标准布局中提供了其他 Julia 项目可以复用的功能。包可以使用 import X 或 using X 语句加载，名为 X 的模块在加载包代码时生成，并在包含该 import 语句的模块中可用。import X 中 X 的含义与上下文有关：程序加载哪个 X 包取决于 import 语句出现的位置。import X 的效果取决于以下两个问题：在上下文中，哪个包是 X ？\nX 包在哪里能够被找到？想要知道 Julia 对这些问题的回答，重点在于理解包的加载机制。"
 },
 
 {
-    "location": "manual/code-loading/#包联盟-1",
+    "location": "manual/code-loading/#包的联合-1",
     "page": "代码加载",
-    "title": "包联盟",
+    "title": "包的联合",
     "category": "section",
-    "text": "Julia 支持包的联合管理。这意味着多个独立方可以维护公共和私有包及其注册列表，并且项目可以依赖于来自不同注册表的公共和私有包的组合。您也可以使用一组通用工具和工作流（workflow）来安装和管理来自各种注册表的包。Julia 0.7/1.0 附带的 Pkg 软件包管理器允许您通过创建和操作项目文件来安装和管理项目的依赖项，而项目文件描述了项目所依赖的内容和您项目完整依赖库的确切版本的快照清单文件。联合管理的一个可能后果是没有包命名的中央权限。不同组织可以使用相同的名称来引用不相关的包。这并不是没有可能的，因为这些组织可能没有协作，甚至不知道彼此。由于缺乏中央命名权限，单个项目很可能最终依赖着具有相同名称的不同包。 Julia 的包加载机制通过不要求包名称是全局唯一的来解决这一问题，即使在单个项目的依赖关系图中也是如此。相反，包由通用唯一标识符 （UUID）进行标识，这些标识符在注册之前分配给它们。问题“什么是 X ？”通过确定 X 的UUID来回答。由于去中心化的命名问题有些抽象，因此可以通过具体情境来理解问题。假设你正在开发一个名为 App 的应用程序，它使用两个包： Pub 和 Priv。Priv 是你创建的私有包，而 Pub 是你使用但不控制的公共包。当你创建 Priv 时，该名称没有公共包。然而，随后一个名为 Priv 的不相关软件包发布并变得流行起来，而且 Pub 包已经开始使用它了。因此，当你下次升级 Pub 以获取最新的错误修复和特性时，除了升级之外，App 将会停止工作——这取决于两个名为 Priv 的不同包。App 直接依赖于你的私有 Priv 包，以及通过 Pub 在新的公共 Priv 包上的间接依赖。由于这两个 Priv 包是不同的，但是 App 继续正常工作依赖于他们两者，因此表达式 import Priv 必须引用不同的 Priv 包，具体取决于它是出现在 App 的代码中还是出现在 Pub 的代码中。Julia的包加载机制允许通过上下文和UUID区分两个 Priv 包，这种区分的工作原理取决于环境，如以下各节所述。"
+    "text": "Julia 支持包的联合管理。这意味着多个独立的部分可以维护公有包和私有包，以及这些包的注册表，并且项目可以依赖于一系列来自不同注册表的公有包和私有包。您也可以使用一组通用工具和工作流（workflow）来安装和管理来自各种注册表的包。Julia 0.7/1.0 附带的 Pkg 软件包管理器允许您通过创建和操作项目文件来安装和管理项目的依赖项，而项目清单描述了项目所依赖的内容以及项目完整依赖库的确切版本的快照。联合管理的一个可能后果是没有包命名的中央权限。不同组织可以使用相同的名称来引用不相关的包。这并不是没有可能的，因为这些组织可能没有协作，甚至不知道彼此。由于缺乏中央命名权限，单个项目很可能最终依赖着具有相同名称的不同包。 Julia 的包加载机制通过不要求包名称是全局唯一的来解决这一问题，即使在单个项目的依赖关系图中也是如此。相反，包由通用唯一标识符 （UUID）进行标识，这些标识符在注册之前分配给它们。问题“什么是 X ？”通过确定 X 的UUID来回答。由于去中心化的命名问题有些抽象，因此可以通过具体情境来理解问题。假设你正在开发一个名为 App 的应用程序，它使用两个包： Pub 和 Priv。Priv 是你创建的私有包，而 Pub 是你使用但不控制的公共包。当你创建 Priv 时，该名称没有公共包。然而，随后一个名为 Priv 的不相关软件包发布并变得流行起来，而且 Pub 包已经开始使用它了。因此，当你下次升级 Pub 以获取最新的错误修复和特性时，除了升级之外，App 将会停止工作——这取决于两个名为 Priv 的不同包。App 直接依赖于你的私有 Priv 包，以及通过 Pub 在新的公共 Priv 包上的间接依赖。由于这两个 Priv 包是不同的，但是 App 继续正常工作依赖于他们两者，因此表达式 import Priv 必须引用不同的 Priv 包，具体取决于它是出现在 App 的代码中还是出现在 Pub 的代码中。Julia的包加载机制允许通过上下文和UUID区分两个 Priv 包，这种区分的工作原理取决于环境，如以下各节所述。"
 },
 
 {
-    "location": "manual/code-loading/#环境（Environment）-1",
+    "location": "manual/code-loading/#环境（Environments）-1",
     "page": "代码加载",
-    "title": "环境（Environment）",
+    "title": "环境（Environments）",
     "category": "section",
     "text": "环境决定了 import X 和 using X 语句在不同的代码上下文中的含义以及什么文件会被加载。Julia 有三类环境（environment）：项目环境（project environment）是包含项目文件和清单文件（可选）的目录。项目文件确定项目的直接依赖项的名称和标识。清单文件（如果存在）提供完整的依赖关系图，包括所有直接和间接依赖关系，每个依赖的确切版本以及定位和加载正确版本的足够信息。\n包目录（package directory）是包含一组包的源码树子目录的目录。这种环境是 Julia 0.6 及更早版本中唯一存在的环境。如果 X 是包目录的子目录并且存在 X/src/X.jl，那么程序包 X 在包目录环境中可用，而 X/src/X.jl 是加载它使用的源文件。\n堆栈环境（stacked environment）是一组有序的项目环境和包目录，重叠为一个复合环境，其中组成环境的所有可用包都可用。例如，Julia 的负载路径是一个堆栈环境。这三种环境各有不同的用途：项目环境提供可迁移性。通过将项目环境以及项目源代码的其余部分存放到版本控制（例如一个 git 存储库），您可以重现项目的确切状态和所有依赖项，因为清单文件会记录每个依赖项的确切版本，并且可以轻松地重新实现。\n当使用项目环境是大材小用时，包目录提供低开销的便利。当你有一组包，只是想把它们放在某处，并且在使用时不必为他们创建和维护项目环境时，使用包目录这种环境是很趁手的。（译注：即不需要项目环境的复杂依赖关系维护时使用。）\n堆栈环境允许使用其他工具扩展基本环境。您可以将包含开发工具在内的环境堆到堆栈中，它们可以从 REPL 和脚本中获得，但不能从包内部获得。作为一种抽象，环境提供了三个映射：根路径 roots ，依赖关系 graph 和路径 paths。当解释运行 import X 时，roots 和 graph 用于确定 X 的身份并回答问题“什么是 X？”，同时使用 paths 关系找到 X 的源代码并回答问题“哪里是 X？”这三个映射的具体作用是：roots: name::Symbol ⟶ uuid::UUID\n环境的 roots 映射将包名称分配给UUID，以获取环境可用于主项目的所有顶级依赖项（即可以在 Main 中加载的那些依赖项）。当 Julia 在主项目中遇到 import X 时，它会将 X 的标识作为 roots[:X]。\ngraph: context::UUID ⟶ name::Symbol ⟶ uuid::UUID\n环境的 graph 是一个多级映射，它为每个 context UUID 分配一个从名称到 UUID 的映射——类似于 roots 映射，但专一于那个 context。当 Julia 在 UUID 为 context 的包代码中运行到 import X 时，它会将 X 的标识看作为 graph[context][:X]。正是因为如此，import X 可以根据 context 引用不同的包。\npaths: uuid::UUID × name::Symbol ⟶ path::String\npaths 映射会为每个包分配 UUID-name 对，即该包的入口点源文件的位置。在 import X 中，X 的标识已经通过 roots 或 graph 解析为 UUID（取决于它是从主项目还是从依赖项加载），Julia 确定要加载哪个文件来获取 X 是通过在环境中查找 paths[uuid,:X]。要包含此文件应该创建一个名为 X 的模块。在第一次加载此包之后，任何解析为相同的 uuid 的导入只会创建一个到同一个已加载的包模块的绑定。每种环境都以不同的方式定义这三种映射，详见以下各节。note: Note\n为了清楚地说明，本章中的示例包括 roots、graph 和 paths 的数据结构实现。不过这些映射实际上只是一种抽象。事实上，为了提高效率，Julia 的包加载代码实际上并没有实现它们。相反，加载一个给定包是通过查询它们的内建 API，并简单地只计算所必需的结构实现的。"
 },
@@ -3221,7 +3221,7 @@ var documenterSearchIndex = {"docs": [
     "page": "代码加载",
     "title": "项目环境（Project environments）",
     "category": "section",
-    "text": "项目环境由包含项目文件 Project.toml 的目录以及清单文件（可选）Manifest.toml确定。这些文件也可以命名为 JuliaProject.toml 和 JuliaManifest.toml，此时 Project.toml 和 Manifest.toml 被忽略——这允许项目与可能需要名为 Project.toml 和 Manifest.toml 文件的其他重要工具共存。但是对于纯 Julia 项目，名称 Project.toml 和 Manifest.toml 应是首选。项目环境的 roots、graph 和 paths 映射定义如下。roots 映射 在环境中由其项目文件的内容决定，特别是它的顶级 name 和 uuid 条目及其 [deps] 部分（全部是可选的）。考虑以下一个假想的应用程序 App 的示例项目文件，如上所述：name = \"App\"\nuuid = \"8f986787-14fe-4607-ba5d-fbff2944afa9\"\n\n[deps]\nPriv = \"ba13f791-ae1d-465a-978b-69c3ad90f72b\"\nPub  = \"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"如果它被实现为 Julia 字典，那么这个项目文件意味着以下 roots 映射：roots = Dict(\n    :App  => UUID(\"8f986787-14fe-4607-ba5d-fbff2944afa9\"),\n    :Priv => UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\"),\n    :Pub  => UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"),\n)基于这个 root 映射，在 App 的代码中，语句 import Priv 将使 Julia 查找 roots[:Priv]，这将得到 ba13f791-ae1d-465a-978b-69c3ad90f72b，也就是要在这一部分加载的 Priv 包的 UUID。当主应用程序解释运行到 import Priv 时，此 UUID 标识了要加载和使用的 Priv 包。The dependency graph of a project environment is determined by the contents of the manifest file, if present, or if there is no manifest file, graph is empty. A manifest file contains a stanza for each direct or indirect dependency of a project, including for each one, its UUID and a source tree hash or an explicit path to the source code. Consider the following example manifest file for App:[[Priv]] # the private one\ndeps = [\"Pub\", \"Zebra\"]\nuuid = \"ba13f791-ae1d-465a-978b-69c3ad90f72b\"\npath = \"deps/Priv\"\n\n[[Priv]] # the public one\nuuid = \"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"\ngit-tree-sha1 = \"1bf63d3be994fe83456a03b874b409cfd59a6373\"\nversion = \"0.1.5\"\n\n[[Pub]]\nuuid = \"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"\ngit-tree-sha1 = \"9ebd50e2b0dd1e110e842df3b433cb5869b0dd38\"\nversion = \"2.1.4\"\n\n  [Pub.deps]\n  Priv = \"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"\n  Zebra = \"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"\n\n[[Zebra]]\nuuid = \"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"\ngit-tree-sha1 = \"e808e36a5d7173974b90a15a353b564f3494092f\"\nversion = \"3.4.2\"这个清单文件描述了 App 项目可能的完整依赖关系图：应用程序需要两个不同的 Priv 包——一个是直接依赖的私有包和一个通过 Pub 间接依赖的公共包：\n私有的 Priv 依赖于 Pub 和 Zebra 包。\n公有的 Priv 没有依赖关系。\n该应用程序还依赖于 Pub 包，而后者依赖于公有的 Priv 以及私有的 Priv 包所依赖的那个 Zebra 包。这种依赖“图形”的物化表示如下所示：graph = Dict{UUID,Dict{Symbol,UUID}}(\n    # Priv – the private one:\n    UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\") => Dict{Symbol,UUID}(\n        :Pub   => UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"),\n        :Zebra => UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"),\n    ),\n    # Priv – the public one:\n    UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\") => Dict{Symbol,UUID}(),\n    # Pub:\n    UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\") => Dict{Symbol,UUID}(\n        :Priv  => UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"),\n        :Zebra => UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"),\n    ),\n    # Zebra:\n    UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\") => Dict{Symbol,UUID}(),\n)给定这个依赖图，当 Julia 看到 Pub 包中的 import Priv ——它有 UUIDc07ecb7d-0dc9-4db7-8803-fadaaeaf08e1 时，它会查找：graph[UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\")][:Priv]and gets 2d15fe94-a1f7-436c-a4d8-07a9a496e01c , which indicates that in the context of the Pub package,  import Priv refers to the public Priv package, rather than the private one which the app depends on directly. This is how the name Priv can refer to different packages in the main project than it does in one of the packages dependencies, which allows for name collisions in the package ecosystem.What happens if import Zebra is evaluated in the main App code base? Since Zebra does not appear in the project file, the import will fail even though Zebra does appear in the manifest file. Moreover, if import Zebra occurs in the public Priv package—the one with UUID 2d15fe94-a1f7-436c-a4d8-07a9a496e01c—then that would also fail since that Priv package has no declared dependencies in the manifest file and therefore cannot load any packages. The Zebra package can only be loaded by packages for which it appear as an explicit dependency in the manifest file: the  Pub package and one of the Priv packages.The paths map of a project environment is also determined by the manifest file if present and is empty if there is no manifest. The path of a package uuid named X is determined by these two rules:If the manifest stanza matching uuid has a path entry, use that path relative to the manifest file.\nOtherwise, if the manifest stanza matching uuid has a git-tree-sha1 entry, compute a deterministic hash function of uuid and git-tree-sha1—call it slug—and look for packages/X/$slug in each directory in the Julia DEPOT_PATH global array. Use the first such directory that exists.If applying these rules doesn\'t find a loadable path, the package should be considered not installed and the system should raise an error or prompt the user to install the appropriate package version.In the example manifest file above, to find the path of the first Priv package—the one with UUID ba13f791-ae1d-465a-978b-69c3ad90f72b—Julia looks for its stanza in the manifest file, sees that it has a path entry, looks at deps/Priv relative to the App project directory—let\'s suppose the App code lives in /home/me/projects/App—sees that /home/me/projects/App/deps/Priv exists and therefore loads Priv from there.If, on the other hand, Julia was loading the other Priv package—the one with UUID 2d15fe94-a1f7-436c-a4d8-07a9a496e01c—it finds its stanza in the manifest, see that it does not have a path entry, but that it does have a git-tree-sha1 entry. It then computes the slug for this UUID/SHA-1 pair, which is HDkr (the exact details of this computation aren\'t important, but it is consistent and deterministic). This means that the path to this Priv package will be packages/Priv/HDkr/src/Priv.jl in one of the package depots. Suppose the contents of DEPOT_PATH is [\"/users/me/.julia\", \"/usr/local/julia\"]; then Julia will look at the following paths to see if they exist:/home/me/.julia/packages/Priv/HDkr/src/Priv.jl\n/usr/local/julia/packages/Priv/HDkr/src/Priv.jlJulia uses the first of these that exists to load the public Priv package.Here is a materialized paths map for the App project environment:paths = Dict{Tuple{UUID,Symbol},String}(\n    # Priv – the private one:\n    (UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\"), :Priv) =>\n        # relative entry-point inside `App` repo:\n        \"/home/me/projects/App/deps/Priv/src/Priv.jl\",\n    # Priv – the public one:\n    (UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"), :Priv) =>\n        # package installed in the system depot:\n        \"/usr/local/julia/packages/Priv/HDkr/src/Priv.jl\",\n    # Pub:\n    (UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"), :Pub) =>\n        # package installed in the user depot:\n        \"/home/me/.julia/packages/Pub/oKpw/src/Pub.jl\",\n    # Zebra:\n    (UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"), :Zebra) =>\n        # package installed in the system depot:\n        \"/usr/local/julia/packages/Zebra/me9k/src/Zebra.jl\",\n)This example map includes three different kinds of package locations:The private Priv package is \"vendored\" inside of App repository.\nThe public Priv and Zebra packages are in the system depot, where packages installed and managed by the system administrator live. These are available to all users on the system.\nThe Pub package is in the user depot, where packages installed by the user live. These are only available to the user who installed them."
+    "text": "项目环境由包含项目文件 Project.toml 的目录以及清单文件（可选）Manifest.toml确定。这些文件也可以命名为 JuliaProject.toml 和 JuliaManifest.toml，此时 Project.toml 和 Manifest.toml 被忽略——这允许项目与可能需要名为 Project.toml 和 Manifest.toml 文件的其他重要工具共存。但是对于纯 Julia 项目，名称 Project.toml 和 Manifest.toml 应是首选。项目环境的 roots、graph 和 paths 映射定义如下。roots 映射 在环境中由其项目文件的内容决定，特别是它的顶级 name 和 uuid 条目及其 [deps] 部分（全部是可选的）。考虑以下一个假想的应用程序 App 的示例项目文件，如上所述：name = \"App\"\nuuid = \"8f986787-14fe-4607-ba5d-fbff2944afa9\"\n\n[deps]\nPriv = \"ba13f791-ae1d-465a-978b-69c3ad90f72b\"\nPub  = \"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"如果它被实现为 Julia 字典，那么这个项目文件意味着以下 roots 映射：roots = Dict(\n    :App  => UUID(\"8f986787-14fe-4607-ba5d-fbff2944afa9\"),\n    :Priv => UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\"),\n    :Pub  => UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"),\n)基于这个 root 映射，在 App 的代码中，语句 import Priv 将使 Julia 查找 roots[:Priv]，这将得到 ba13f791-ae1d-465a-978b-69c3ad90f72b，也就是要在这一部分加载的 Priv 包的 UUID。当主应用程序解释运行到 import Priv 时，此 UUID 标识了要加载和使用的 Priv 包。若 manifest 文件存在，则项目环境的 依赖图 由文件内容决定；否则依赖图为空。 manifest 文件包含一个个项目所需的直接依赖和间接依赖的节(stanza)，每个节包括依赖的 UUID、源码树的哈希值或显式指向源代码的路径。 考虑以下示例 App 的 manifest 文件：[[Priv]] # the private one\ndeps = [\"Pub\", \"Zebra\"]\nuuid = \"ba13f791-ae1d-465a-978b-69c3ad90f72b\"\npath = \"deps/Priv\"\n\n[[Priv]] # the public one\nuuid = \"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"\ngit-tree-sha1 = \"1bf63d3be994fe83456a03b874b409cfd59a6373\"\nversion = \"0.1.5\"\n\n[[Pub]]\nuuid = \"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"\ngit-tree-sha1 = \"9ebd50e2b0dd1e110e842df3b433cb5869b0dd38\"\nversion = \"2.1.4\"\n\n  [Pub.deps]\n  Priv = \"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"\n  Zebra = \"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"\n\n[[Zebra]]\nuuid = \"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"\ngit-tree-sha1 = \"e808e36a5d7173974b90a15a353b564f3494092f\"\nversion = \"3.4.2\"这个清单文件描述了 App 项目可能的完整依赖关系图：应用程序需要两个不同的 Priv 包——一个是直接依赖的私有包和一个通过 Pub 间接依赖的公共包：\n私有的 Priv 依赖于 Pub 和 Zebra 包。\n公有的 Priv 没有依赖关系。\n该应用程序还依赖于 Pub 包，而后者依赖于公有的 Priv 以及私有的 Priv 包所依赖的那个 Zebra 包。这种依赖“图形”的物化表示如下所示：graph = Dict{UUID,Dict{Symbol,UUID}}(\n    # Priv – the private one:\n    UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\") => Dict{Symbol,UUID}(\n        :Pub   => UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"),\n        :Zebra => UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"),\n    ),\n    # Priv – the public one:\n    UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\") => Dict{Symbol,UUID}(),\n    # Pub:\n    UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\") => Dict{Symbol,UUID}(\n        :Priv  => UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"),\n        :Zebra => UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"),\n    ),\n    # Zebra:\n    UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\") => Dict{Symbol,UUID}(),\n)给定这个依赖图，当 Julia 看到 Pub 包中的 import Priv ——它有 UUIDc07ecb7d-0dc9-4db7-8803-fadaaeaf08e1 时，它会查找：graph[UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\")][:Priv]and gets 2d15fe94-a1f7-436c-a4d8-07a9a496e01c , which indicates that in the context of the Pub package,  import Priv refers to the public Priv package, rather than the private one which the app depends on directly. This is how the name Priv can refer to different packages in the main project than it does in one of the packages dependencies, which allows for name collisions in the package ecosystem.What happens if import Zebra is evaluated in the main App code base? Since Zebra does not appear in the project file, the import will fail even though Zebra does appear in the manifest file. Moreover, if import Zebra occurs in the public Priv package—the one with UUID 2d15fe94-a1f7-436c-a4d8-07a9a496e01c—then that would also fail since that Priv package has no declared dependencies in the manifest file and therefore cannot load any packages. The Zebra package can only be loaded by packages for which it appear as an explicit dependency in the manifest file: the  Pub package and one of the Priv packages.The paths map of a project environment is also determined by the manifest file if present and is empty if there is no manifest. The path of a package uuid named X is determined by these two rules:If the manifest stanza matching uuid has a path entry, use that path relative to the manifest file.\nOtherwise, if the manifest stanza matching uuid has a git-tree-sha1 entry, compute a deterministic hash function of uuid and git-tree-sha1—call it slug—and look for packages/X/$slug in each directory in the Julia DEPOT_PATH global array. Use the first such directory that exists.If applying these rules doesn\'t find a loadable path, the package should be considered not installed and the system should raise an error or prompt the user to install the appropriate package version.In the example manifest file above, to find the path of the first Priv package—the one with UUID ba13f791-ae1d-465a-978b-69c3ad90f72b—Julia looks for its stanza in the manifest file, sees that it has a path entry, looks at deps/Priv relative to the App project directory—let\'s suppose the App code lives in /home/me/projects/App—sees that /home/me/projects/App/deps/Priv exists and therefore loads Priv from there.If, on the other hand, Julia was loading the other Priv package—the one with UUID 2d15fe94-a1f7-436c-a4d8-07a9a496e01c—it finds its stanza in the manifest, see that it does not have a path entry, but that it does have a git-tree-sha1 entry. It then computes the slug for this UUID/SHA-1 pair, which is HDkr (the exact details of this computation aren\'t important, but it is consistent and deterministic). This means that the path to this Priv package will be packages/Priv/HDkr/src/Priv.jl in one of the package depots. Suppose the contents of DEPOT_PATH is [\"/users/me/.julia\", \"/usr/local/julia\"]; then Julia will look at the following paths to see if they exist:/home/me/.julia/packages/Priv/HDkr/src/Priv.jl\n/usr/local/julia/packages/Priv/HDkr/src/Priv.jlJulia uses the first of these that exists to load the public Priv package.Here is a materialized paths map for the App project environment:paths = Dict{Tuple{UUID,Symbol},String}(\n    # Priv – the private one:\n    (UUID(\"ba13f791-ae1d-465a-978b-69c3ad90f72b\"), :Priv) =>\n        # relative entry-point inside `App` repo:\n        \"/home/me/projects/App/deps/Priv/src/Priv.jl\",\n    # Priv – the public one:\n    (UUID(\"2d15fe94-a1f7-436c-a4d8-07a9a496e01c\"), :Priv) =>\n        # package installed in the system depot:\n        \"/usr/local/julia/packages/Priv/HDkr/src/Priv.jl\",\n    # Pub:\n    (UUID(\"c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1\"), :Pub) =>\n        # package installed in the user depot:\n        \"/home/me/.julia/packages/Pub/oKpw/src/Pub.jl\",\n    # Zebra:\n    (UUID(\"f7a24cb4-21fc-4002-ac70-f0e3a0dd3f62\"), :Zebra) =>\n        # package installed in the system depot:\n        \"/usr/local/julia/packages/Zebra/me9k/src/Zebra.jl\",\n)This example map includes three different kinds of package locations:The private Priv package is \"vendored\" inside of App repository.\nThe public Priv and Zebra packages are in the system depot, where packages installed and managed by the system administrator live. These are available to all users on the system.\nThe Pub package is in the user depot, where packages installed by the user live. These are only available to the user who installed them."
 },
 
 {
@@ -3381,7 +3381,7 @@ var documenterSearchIndex = {"docs": [
     "page": "性能建议",
     "title": "使用 @time评估性能以及注意内存分配",
     "category": "section",
-    "text": "@time 宏是一个有用的性能评估工具。这里我们将重复上面全局变量的例子，但是这次移除类型声明：julia> x = rand(1000);\n\njulia> function sum_global()\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_global()\n  0.017705 seconds (15.28 k allocations: 694.484 KiB)\n496.84883432553846\n\njulia> @time sum_global()\n  0.000140 seconds (3.49 k allocations: 70.313 KiB)\n496.84883432553846在第一次调用函数(@time sum_global())的时候，它会被编译。（如果你这次会话中还没有使用过@time，这时也会编译计时需要的相关函数。）你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64比特浮点向量元素和，因此这里应该没有申请内存的必要的（至少不用在@time报告的堆上申请内存）。未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数没有生成最佳的代码。认真对待这些现象，遵循接下来的建议。如果你换成将x作为参数传给函数，就可以避免内存的分配（这里报告的内存分配是由于在全局作用域中运行@time导致的），而且在第一次运行之后运行速度也会得到显著的提高。julia> x = rand(1000);\n\njulia> function sum_arg(x)\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_arg(x)\n  0.007701 seconds (821 allocations: 43.059 KiB)\n496.84883432553846\n\njulia> @time sum_arg(x)\n  0.000006 seconds (5 allocations: 176 bytes)\n496.84883432553846这里出现的5个内存分配是由于在全局作用域中运行@time宏导致的。如果我们在函数中运行时间测试，我们将发现事实上并没有发生任何内存分配。julia> time_sum(x) = @time sum_arg(x);\n\njulia> time_sum(x)\n  0.000001 seconds\n496.84883432553846在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的工具之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见 Pre-allocating outputs）。note: Note\n对于更加正经的性能测试，考虑一下 BenchmarkTools.jl 包，这个包除了其他方面之外会多次评估函数的性能以降低噪声。"
+    "text": "@time 宏是一个有用的性能评估工具。这里我们将重复上面全局变量的例子，但是这次移除类型声明：julia> x = rand(1000);\n\njulia> function sum_global()\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_global()\n  0.017705 seconds (15.28 k allocations: 694.484 KiB)\n496.84883432553846\n\njulia> @time sum_global()\n  0.000140 seconds (3.49 k allocations: 70.313 KiB)\n496.84883432553846在第一次调用函数(@time sum_global())的时候，它会被编译。（如果你这次会话中还没有使用过@time，这时也会编译计时需要的相关函数。）你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64比特浮点向量元素和，因此这里应该没有申请内存的必要的（至少不用在@time报告的堆上申请内存）。未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数没有生成最佳的代码。认真对待这些现象，遵循接下来的建议。如果你换成将x作为参数传给函数，就可以避免内存的分配（这里报告的内存分配是由于在全局作用域中运行@time导致的），而且在第一次运行之后运行速度也会得到显著的提高。julia> x = rand(1000);\n\njulia> function sum_arg(x)\n           s = 0.0\n           for i in x\n               s += i\n           end\n           return s\n       end;\n\njulia> @time sum_arg(x)\n  0.007701 seconds (821 allocations: 43.059 KiB)\n496.84883432553846\n\njulia> @time sum_arg(x)\n  0.000006 seconds (5 allocations: 176 bytes)\n496.84883432553846这里出现的5个内存分配是由于在全局作用域中运行@time宏导致的。如果我们在函数中运行时间测试，我们将发现事实上并没有发生任何内存分配。julia> time_sum(x) = @time sum_arg(x);\n\njulia> time_sum(x)\n  0.000001 seconds\n496.84883432553846在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的工具之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见 输出预分配）。note: Note\n对于更加正经的性能测试，考虑一下 BenchmarkTools.jl 包，这个包除了其他方面之外会多次评估函数的性能以降低噪声。"
 },
 
 {
@@ -3409,17 +3409,17 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/performance-tips/#避免有抽象类型的域-1",
+    "location": "manual/performance-tips/#避免有抽象类型的字段-1",
     "page": "性能建议",
-    "title": "避免有抽象类型的域",
+    "title": "避免有抽象类型的字段",
     "category": "section",
     "text": "类型能在不指定其域的类型的情况下被声明：julia> struct MyAmbiguousType\n           a\n       end这就允许a可以是任意类型。这经常很有用，但是有个缺点：对于类型MyAmbiguousType的对象，编译器不能够生成高性能的代码。原因是编译器使用对象的类型，而非值，来确定如何构建代码。不幸的是，几乎没有信息可以从类型MyAmbiguousType的对象中推导出来：julia> b = MyAmbiguousType(\"Hello\")\nMyAmbiguousType(\"Hello\")\n\njulia> c = MyAmbiguousType(17)\nMyAmbiguousType(17)\n\njulia> typeof(b)\nMyAmbiguousType\n\njulia> typeof(c)\nMyAmbiguousTypeThe values of b and c have the same type, yet their underlying representation of data in memory is very different. Even if you stored just numeric values in field a, the fact that the memory representation of a UInt8 differs from a Float64 also means that the CPU needs to handle them using two different kinds of instructions. Since the required information is not available in the type, such decisions have to be made at run-time. This slows performance.通过声明 a 的类型，你能够做得更好。这里我们关注 a 可能是几种类型中任意一种的情况，在这种情况下，自然的一个解决方法是使用参数。例如：julia> mutable struct MyType{T<:AbstractFloat}\n           a::T\n       end比下面这种更好julia> mutable struct MyStillAmbiguousType\n           a::AbstractFloat\n       end因为第一种通过包装对象的类型指定了 a 的类型。 例如：julia> m = MyType(3.2)\nMyType{Float64}(3.2)\n\njulia> t = MyStillAmbiguousType(3.2)\nMyStillAmbiguousType(3.2)\n\njulia> typeof(m)\nMyType{Float64}\n\njulia> typeof(t)\nMyStillAmbiguousType域 a 的类型可以很容易地通过 m 的类型确定，而不是通过 t 的类型确定。事实上，在 t 中是可以改变域 a 的类型的：julia> typeof(t.a)\nFloat64\n\njulia> t.a = 4.5f0\n4.5f0\n\njulia> typeof(t.a)\nFloat32反之，一旦 m 被构建出来，m.a 的类型就不能够更改了。julia> m.a = 4.5f0\n4.5f0\n\njulia> typeof(m.a)\nFloat64m.a 的类型是通过 m 的类型得知这一事实加上它的类型不能改变在函数中改变这一事实，这两者使得对于像 m 这样的对象编译器可以生成高度优化后的代码，但是对 t 这样的对象却不可以。 当然，如果我们将 m 构造成一个具体类型，那么这两者都可以。我们可以通过明确地使用一个抽象类型去构建它来破坏这一点：julia> m = MyType{AbstractFloat}(3.2)\nMyType{AbstractFloat}(3.2)\n\njulia> typeof(m.a)\nFloat64\n\njulia> m.a = 4.5f0\n4.5f0\n\njulia> typeof(m.a)\nFloat32对于一个实际的目的来说，这样的对象表现起来和那些 MyStillAmbiguousType 的对象一模一样。比较为一个简单函数生成的代码的绝对数量是十分有指导意义的，func(m::MyType) = m.a+1使用code_llvm(func, Tuple{MyType{Float64}})\ncode_llvm(func, Tuple{MyType{AbstractFloat}})由于长度的原因，代码的结果没有在这里显示出来，但是你可能会希望自己去验证这一点。因为在第一种情况中，类型被完全指定了，在运行时，编译器不需要生成任何代码来决定类型。这就带来了更短和更快的代码。"
 },
 
 {
-    "location": "manual/performance-tips/#避免有抽象容器的域-1",
+    "location": "manual/performance-tips/#避免使用带抽象容器的字段-1",
     "page": "性能建议",
-    "title": "避免有抽象容器的域",
+    "title": "避免使用带抽象容器的字段",
     "category": "section",
     "text": "上面的做法同样也适用于容器的类型：julia> struct MySimpleContainer{A<:AbstractVector}\n           a::A\n       end\n\njulia> struct MyAmbiguousContainer{T}\n           a::AbstractVector{T}\n       end例如:julia> c = MySimpleContainer(1:3);\n\njulia> typeof(c)\nMySimpleContainer{UnitRange{Int64}}\n\njulia> c = MySimpleContainer([1:3;]);\n\njulia> typeof(c)\nMySimpleContainer{Array{Int64,1}}\n\njulia> b = MyAmbiguousContainer(1:3);\n\njulia> typeof(b)\nMyAmbiguousContainer{Int64}\n\njulia> b = MyAmbiguousContainer([1:3;]);\n\njulia> typeof(b)\nMyAmbiguousContainer{Int64}对于 MySimpleContainer 来说，它被它的类型和参数完全确定了，因此编译器能够生成优化过的代码。在大多数实例中，这点能够实现。尽管编译器现在可以将它的工作做得非常好，但是还是有你可能希望你的代码能够能够根据 a 的元素类型做不同的事情的时候。通常达成这个目的最好的方式是将你的具体操作 (here, foo) 打包到一个独立的函数中。julia> function sumfoo(c::MySimpleContainer)\n           s = 0\n           for x in c.a\n               s += foo(x)\n           end\n           s\n       end\nsumfoo (generic function with 1 method)\n\njulia> foo(x::Integer) = x\nfoo (generic function with 1 method)\n\njulia> foo(x::AbstractFloat) = round(x)\nfoo (generic function with 2 methods)This keeps things simple, while allowing the compiler to generate optimized code in all cases.However, there are cases where you may need to declare different versions of the outer function for different element types or types of the AbstractVector of the field a in MySimpleContainer. You could do it like this:julia> function myfunc(c::MySimpleContainer{<:AbstractArray{<:Integer}})\n           return c.a[1]+1\n       end\nmyfunc (generic function with 1 method)\n\njulia> function myfunc(c::MySimpleContainer{<:AbstractArray{<:AbstractFloat}})\n           return c.a[1]+2\n       end\nmyfunc (generic function with 2 methods)\n\njulia> function myfunc(c::MySimpleContainer{Vector{T}}) where T <: Integer\n           return c.a[1]+3\n       end\nmyfunc (generic function with 3 methods)julia> myfunc(MySimpleContainer(1:3))\n2\n\njulia> myfunc(MySimpleContainer(1.0:3))\n3.0\n\njulia> myfunc(MySimpleContainer([1:3;]))\n4"
 },
@@ -3477,7 +3477,7 @@ var documenterSearchIndex = {"docs": [
     "page": "性能建议",
     "title": "Types with values-as-parameters",
     "category": "section",
-    "text": "比方说你想创建一个每个维度大小都是3的 N 维数组。这种数组可以这样创建：julia> A = fill(5.0, (3, 3))\n3×3 Array{Float64,2}:\n 5.0  5.0  5.0\n 5.0  5.0  5.0\n 5.0  5.0  5.0这个方法工作得很好：编译器可以识别出来 A 是一个 Array{Float64,2} 因为它知道填充值 (5.0::Float64) 的类型和维度 ((3, 3)::NTuple{2,Int}).但是现在打比方说你想写一个函数，在任何一个维度下，它都创建一个 3×3×... 的数组；你可能会心动地写下一个函数julia> function array3(fillval, N)\n           fill(fillval, ntuple(d->3, N))\n       end\narray3 (generic function with 1 method)\n\njulia> array3(5.0, 2)\n3×3 Array{Float64,2}:\n 5.0  5.0  5.0\n 5.0  5.0  5.0\n 5.0  5.0  5.0这确实有用，但是（你可以自己使用 @code_warntype array3(5.0, 2) 来验证）问题是输出地类型不能被推断出来：参数 N 是一个 Int 类型的值，而且类型推断不会（也不能）提前预测它的值。这意味着使用这个函数的结果的代码在每次获取 A 时都不得不保守地检查其类型；这样的代码将会是非常缓慢的。Now, one very good way to solve such problems is by using the function-barrier technique. However, in some cases you might want to eliminate the type-instability altogether. In such cases, one approach is to pass the dimensionality as a parameter, for example through Val{T}() (see \"Value types\"):julia> function array3(fillval, ::Val{N}) where N\n           fill(fillval, ntuple(d->3, Val(N)))\n       end\narray3 (generic function with 1 method)\n\njulia> array3(5.0, Val(2))\n3×3 Array{Float64,2}:\n 5.0  5.0  5.0\n 5.0  5.0  5.0\n 5.0  5.0  5.0Julia has a specialized version of ntuple that accepts a Val{::Int} instance as the second parameter; by passing N as a type-parameter, you make its \"value\" known to the compiler. Consequently, this version of array3 allows the compiler to predict the return type.However, making use of such techniques can be surprisingly subtle. For example, it would be of no help if you called array3 from a function like this:function call_array3(fillval, n)\n    A = array3(fillval, Val(n))\nendHere, you\'ve created the same problem all over again: the compiler can\'t guess what n is, so it doesn\'t know the type of Val(n). Attempting to use Val, but doing so incorrectly, can easily make performance worse in many situations. (Only in situations where you\'re effectively combining Val with the function-barrier trick, to make the kernel function more efficient, should code like the above be used.)一个正确使用 Val 的例子是这样的：function filter3(A::AbstractArray{T,N}) where {T,N}\n    kernel = array3(1, Val(N))\n    filter(A, kernel)\nendIn this example, N is passed as a parameter, so its \"value\" is known to the compiler. Essentially, Val(T) works only when T is either hard-coded/literal (Val(3)) or already specified in the type-domain."
+    "text": "比方说你想创建一个每个维度大小都是3的 N 维数组。这种数组可以这样创建：julia> A = fill(5.0, (3, 3))\n3×3 Array{Float64,2}:\n 5.0  5.0  5.0\n 5.0  5.0  5.0\n 5.0  5.0  5.0这个方法工作得很好：编译器可以识别出来 A 是一个 Array{Float64,2} 因为它知道填充值 (5.0::Float64) 的类型和维度 ((3, 3)::NTuple{2,Int}).但是现在打比方说你想写一个函数，在任何一个维度下，它都创建一个 3×3×... 的数组；你可能会心动地写下一个函数julia> function array3(fillval, N)\n           fill(fillval, ntuple(d->3, N))\n       end\narray3 (generic function with 1 method)\n\njulia> array3(5.0, 2)\n3×3 Array{Float64,2}:\n 5.0  5.0  5.0\n 5.0  5.0  5.0\n 5.0  5.0  5.0这确实有用，但是（你可以自己使用 @code_warntype array3(5.0, 2) 来验证）问题是输出地类型不能被推断出来：参数 N 是一个 Int 类型的值，而且类型推断不会（也不能）提前预测它的值。这意味着使用这个函数的结果的代码在每次获取 A 时都不得不保守地检查其类型；这样的代码将会是非常缓慢的。Now, one very good way to solve such problems is by using the function-barrier technique. However, in some cases you might want to eliminate the type-instability altogether. In such cases, one approach is to pass the dimensionality as a parameter, for example through Val{T}() (see 值类型):julia> function array3(fillval, ::Val{N}) where N\n           fill(fillval, ntuple(d->3, Val(N)))\n       end\narray3 (generic function with 1 method)\n\njulia> array3(5.0, Val(2))\n3×3 Array{Float64,2}:\n 5.0  5.0  5.0\n 5.0  5.0  5.0\n 5.0  5.0  5.0Julia has a specialized version of ntuple that accepts a Val{::Int} instance as the second parameter; by passing N as a type-parameter, you make its \"value\" known to the compiler. Consequently, this version of array3 allows the compiler to predict the return type.However, making use of such techniques can be surprisingly subtle. For example, it would be of no help if you called array3 from a function like this:function call_array3(fillval, n)\n    A = array3(fillval, Val(n))\nendHere, you\'ve created the same problem all over again: the compiler can\'t guess what n is, so it doesn\'t know the type of Val(n). Attempting to use Val, but doing so incorrectly, can easily make performance worse in many situations. (Only in situations where you\'re effectively combining Val with the function-barrier trick, to make the kernel function more efficient, should code like the above be used.)一个正确使用 Val 的例子是这样的：function filter3(A::AbstractArray{T,N}) where {T,N}\n    kernel = array3(1, Val(N))\n    filter(A, kernel)\nendIn this example, N is passed as a parameter, so its \"value\" is known to the compiler. Essentially, Val(T) works only when T is either hard-coded/literal (Val(3)) or already specified in the type-domain."
 },
 
 {
@@ -3497,9 +3497,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "manual/performance-tips/#预分配输出-1",
+    "location": "manual/performance-tips/#输出预分配-1",
     "page": "性能建议",
-    "title": "预分配输出",
+    "title": "输出预分配",
     "category": "section",
     "text": "如果函数返回 Array 或其它复杂类型，则可能需要分配内存。不幸的是，内存分配及其反面垃圾收集通常是很大的瓶颈。有时，你可以通过预分配输出结果来避免在每个函数调用上分配内存的需要。作为一个简单的例子，比较julia> function xinc(x)\n           return [x, x+1, x+2]\n       end;\n\njulia> function loopinc()\n           y = 0\n           for i = 1:10^7\n               ret = xinc(i)\n               y += ret[2]\n           end\n           return y\n       end;和julia> function xinc!(ret::AbstractVector{T}, x::T) where T\n           ret[1] = x\n           ret[2] = x+1\n           ret[3] = x+2\n           nothing\n       end;\n\njulia> function loopinc_prealloc()\n           ret = Vector{Int}(undef, 3)\n           y = 0\n           for i = 1:10^7\n               xinc!(ret, i)\n               y += ret[2]\n           end\n           return y\n       end;计时结果：julia> @time loopinc()\n  0.529894 seconds (40.00 M allocations: 1.490 GiB, 12.14% gc time)\n50000015000000\n\njulia> @time loopinc_prealloc()\n  0.030850 seconds (6 allocations: 288 bytes)\n50000015000000预分配还有其它优点，例如允许调用者在算法中控制「输出」类型。在上述例子中，我们如果需要，可以传递 SubArray 而不是 Array。极端情况下，预分配可能会使你的代码更丑陋，所以可能需要做性能测试和一些判断。但是，对于「向量化」（逐元素）函数，方便的语法 x .= f.(y) 可用于具有融合循环的 in-place 操作且无需临时数组（请参阅向量化函数的点语法）。"
 },
@@ -3613,7 +3613,7 @@ var documenterSearchIndex = {"docs": [
     "page": "工作流程建议",
     "title": "基于 REPL 的工作流程",
     "category": "section",
-    "text": "正如在 The Julia REPL 中演示的那样，Julia 的 REPL 为高效的交互式工作流程提供了丰富的功能。这里是一些可能进一步提升你在命令行下的体验的建议。"
+    "text": "正如在 Julia REPL 中演示的那样，Julia 的 REPL 为高效的交互式工作流程提供了丰富的功能。这里是一些可能进一步提升你在命令行下的体验的建议。"
 },
 
 {
@@ -3749,7 +3749,7 @@ var documenterSearchIndex = {"docs": [
     "page": "代码风格指南",
     "title": "不要使用不必要的静态参数",
     "category": "section",
-    "text": "如下的函数签名：foo(x::T) where {T<:Real} = ...应当被写作：foo(x::Real) = ...尤其是当 T 没有被用在函数体中时格外有意义。即使 T 被用到了，通常也可以被替换为 typeof(x)，后者不会导致性能上的差别。注意这并不是针对静态参数的一般警告，而仅仅是针对那些不必要的情况。同样需要注意的是，容器类型在函数调用中可能明确地需要类型参数。详情参见避免使用抽象容器的域。"
+    "text": "如下的函数签名：foo(x::T) where {T<:Real} = ...应当被写作：foo(x::Real) = ...尤其是当 T 没有被用在函数体中时格外有意义。即使 T 被用到了，通常也可以被替换为 typeof(x)，后者不会导致性能上的差别。注意这并不是针对静态参数的一般警告，而仅仅是针对那些不必要的情况。同样需要注意的是，容器类型在函数调用中可能明确地需要类型参数。详情参见避免使用带抽象容器的字段。"
 },
 
 {
@@ -4093,7 +4093,7 @@ var documenterSearchIndex = {"docs": [
     "page": "与其他语言的显著差异",
     "title": "与 MATLAB 的显著差异",
     "category": "section",
-    "text": "虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的 Julia 用户感到困扰的显著差异：Julia 数组使用方括号 A[i,j] 进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。\nJulia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 a(4) = 3.2 可以创建数组 a = [0 0 0 3.2]，而 a(5) = 7 可以将它增长为 a = [0 0 0 3.2 7]。如果 a 的长度小于 5 或者这个语句是第一次使用标识符 a，则相应的 Julia 语句 a[5] = 7 会抛出错误。Julia 使用 push! 和 append! 来增长 Vector，它们比 MATLAB 的 a(end+1) = val 更高效。\n虚数单位 sqrt(-1) 在Julia中表示为 im，而不是在 MATLAB 中的 i 或 j。\n在 Julia 中，没有小数点的数字字面量（例如 42）会创建整数而不是浮点数。也支持任意大整数字面量。因此，某些操作（如 2^-1）将抛出 domain error，因为结果不是整数（有关的详细信息，请参阅常见问题中有关 domain errors 的条目）。\n在 Julia 中，能返回多个值并将其赋值为元组，例如 (a, b) = (1, 2) 或 a, b = 1, 2。 在 Julia 中不存在 MATLAB 的 nargout，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。取而代之的是，用户可以使用可选参数和关键字参数来实现类似的功能。\nJulia 拥有真正的一维数组。列向量的大小为 N，而不是 Nx1。例如，rand(N) 创建一个一维数组。\n在 Julia 中，[x,y,z] 将始终构造一个包含x，y 和 z 的 3 元数组。\n要在第一个维度（「垂直列」）中连接元素，请使用 vcat(x,y,z) 或用分号分隔（[x; y; z]）。\n要在第二个维度（「水平行」）中连接元素，请使用 hcat(x,y,z) 或用空格分隔（[x y z]）。\n要构造分块矩阵（在前两个维度中连接元素），请使用 hvcat 或组合空格和分号（[a b; c d]）。\n在 Julia 中，a:b 和 a:b:c 构造 AbstractRange 对象。使用 collect(a:b) 构造一个类似 MATLAB 中完整的向量。 通常，不需要调用 collect。 在大多数情况下，AbstractRange 对象将像普通数组一样运行，但效率更高，因为它是懒惰求值。 这种创建专用对象而不是完整数组的模式经常被使用，并且 也可以在诸如 range 之类的函数中看到，或者在诸如 enumerate 和 zip 之类的迭代器中看到。 特殊对象大多可以像正常数组一样使用。\nJulia 中的函数返回其最后一个表达式或 return 关键字的值而无需 在函数定义中列出要返回的变量的名称（有关详细信息，请参阅 return 关键字）。\nJulia 脚本可以包含任意数量的函数，并且在加载文件时，所有定义都将在外部可见。 可以从当前工作目录之外的文件加载函数定义。 directory.\n在Julia中，例如 sum、prod和max的归约操作会作用到数组的每一个元素上，当调用时只有一个函数，例如sum(A)，即使A并不只有一个维度。 over every element of an array when called with a single argument, as in sum(A), even if A has more than one dimension.\n在Julia中，调用无参数的函数时必须使用小括号，例如 rand()。\nJulia不鼓励使用分号来结束语句。 语句的结果不会自动打印（除了在REPL中），并且代码的一行不必使用分号结尾。 println 或者 @printf 能用来打印特定输出。\n在Julia中，如果A和B是数组，像A == B这样的逻辑比较运算符不会返回布尔值数组。 相反地，请使用A .== B。对于其他的像是<、> 和 = 的布尔运算符同理。 <, > and =.\n在Julia中，运算符&、 | 和 ⊻ (xor)进行按位操作， 分别与MATLAB中的and、or 和 xor 等价，并且优先级 与Python的按位运算符相似（不像C）。他们可以对标量运算 或者数组中逐元素运算，可以用来合并逻辑数组，但是注意运算顺序的区别： parentheses may be required (e.g., to select elements of A equal to 1 or 2 use (A .== 1) .| (A .== 2)).\nIn Julia, the elements of a collection can be passed as arguments to a function using the splat operator ..., as in xs=[1,2]; f(xs...).\nJulia\'s svd returns singular values as a vector instead of as a dense diagonal matrix.\nIn Julia, ... is not used to continue lines of code. Instead, incomplete expressions automatically continue onto the next line.\nIn both Julia and MATLAB, the variable ans is set to the value of the last expression issued in an interactive session. In Julia, unlike MATLAB, ans is not set when Julia code is run in non-interactive mode.\nJulia\'s structs do not support dynamically adding fields at runtime, unlike MATLAB\'s classes. Instead, use a Dict.\nIn Julia each module has its own global scope/namespace, whereas in MATLAB there is just one global scope.\nIn MATLAB, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x(x>3) or in the statement x(x>3) = [] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays.\nThe analogue of extracting (or \"dereferencing\") all elements of a cell array, e.g. in vertcat(A{:}) in MATLAB, is written using the splat operator in Julia, e.g. as vcat(A...)."
+    "text": "虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的 Julia 用户感到困扰的显著差异：Julia 数组使用方括号 A[i,j] 进行索引。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。\nJulia 不会在赋值语句中自动增长数组。 而在 MATLAB 中 a(4) = 3.2 可以创建数组 a = [0 0 0 3.2]，而 a(5) = 7 可以将它增长为 a = [0 0 0 3.2 7]。如果 a 的长度小于 5 或者这个语句是第一次使用标识符 a，则相应的 Julia 语句 a[5] = 7 会抛出错误。Julia 使用 push! 和 append! 来增长 Vector，它们比 MATLAB 的 a(end+1) = val 更高效。\n虚数单位 sqrt(-1) 在 Julia 中表示为 im，而不是在 MATLAB 中的 i 或 j。\n在 Julia 中，没有小数点的数字字面量（例如 42）会创建整数而不是浮点数。也支持任意大整数字面量。因此，某些操作（如 2^-1）将抛出 domain error，因为结果不是整数（有关的详细信息，请参阅常见问题中有关 domain errors 的条目）。\n在 Julia 中，能返回多个值并将其赋值为元组，例如 (a, b) = (1, 2) 或 a, b = 1, 2。 在 Julia 中不存在 MATLAB 的 nargout，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。取而代之的是，用户可以使用可选参数和关键字参数来实现类似的功能。\nJulia 拥有真正的一维数组。列向量的大小为 N，而不是 Nx1。例如，rand(N) 创建一个一维数组。\n在 Julia 中，[x,y,z] 将始终构造一个包含x、y 和 z 的 3 元数组。\n要在第一个维度（「垂直列」）中连接元素，请使用 vcat(x,y,z) 或用分号分隔（[x; y; z]）。\n要在第二个维度（「水平行」）中连接元素，请使用 hcat(x,y,z) 或用空格分隔（[x y z]）。\n要构造分块矩阵（在前两个维度中连接元素），请使用 hvcat 或组合空格和分号（[a b; c d]）。\n在 Julia 中，a:b 和 a:b:c 构造 AbstractRange 对象。使用 collect(a:b) 构造一个类似 MATLAB 中完整的向量。通常，不需要调用 collect。在大多数情况下，AbstractRange 对象将像普通数组一样运行，但效率更高，因为它是懒惰求值。这种创建专用对象而不是完整数组的模式经常被使用，并且也可以在诸如 range 之类的函数中看到，或者在诸如 enumerate 和 zip 之类的迭代器中看到。特殊对象大多可以像正常数组一样使用。\nJulia 中的函数返回其最后一个表达式或 return 关键字的值而无需在函数定义中列出要返回的变量的名称（有关详细信息，请参阅 return 关键字）。\nJulia 脚本可以包含任意数量的函数，并且在加载文件时，所有定义都将在外部可见。可以从当前工作目录之外的文件加载函数定义。\n在 Julia 中，例如 sum、prod 和 max 的归约操作会作用到数组的每一个元素上，当调用时只有一个函数，例如 sum(A)，即使 A 并不只有一个维度。\n在 Julia 中，调用无参数的函数时必须使用小括号，例如 rand()。\nJulia 不鼓励使用分号来结束语句。语句的结果不会自动打印（除了在 REPL 中），并且代码的一行不必使用分号结尾。println 或者 @printf 能用来打印特定输出。\n在 Julia 中，如果 A 和 B 是数组，像 A == B 这样的逻辑比较运算符不会返回布尔值数组。相反地，请使用 A .== B。对于其他的像是 <、> 和 = 的布尔运算符同理。\n在 Julia 中，运算符&、| 和 ⊻（xor）进行按位操作，分别与MATLAB中的and、or 和 xor 等价，并且优先级与 Python 的按位运算符相似（不像 C）。他们可以对标量运算或者数组中逐元素运算，可以用来合并逻辑数组，但是注意运算顺序的区别：括号可能是必要的（例如，选择 A 中等于 1 或 2 的元素可使用 (A .== 1) .| (A .== 2)）。\n在 Julia 中，集合的元素可以使用 splat 运算符 ... 来作为参数传递给函数，如 xs=[1,2]; f(xs...)。\nJulia 的 svd 将奇异值作为向量而非密集对角矩阵返回。\n在 Julia 中，... 不用于延续代码行。不同的是，Julia 中不完整的表达式会自动延续到下一行。\n在 Julia 和 MATLAB 中，变量 ans 被设置为交互式会话中提交的最后一个表达式的值。在 Julia 中与 MATLAB 不同的是，当 Julia 代码以非交互式模式运行时并不会设置 ans。\nJulia 的 struct 不支持在运行时动态地添加字段，这与 MATLAB 的 class 不同。如需支持，请使用 Dict。\n在 Julia 中，每个模块有自身的全局作用域/命名空间，而在 MATLAB 中只有一个全局作用域。\n在 MATLAB 中，删除不需要的值的惯用方法是使用逻辑索引，如表达式 x(x>3) 或语句 x(x>3) = [] 来 in-place 修改 x。相比之下，Julia 提供了更高阶的函数 filter 和 filter!，允许用户编写 filter(z->z>3, x) 和 filter!(z->z>3, x) 来代替相应直译 x[x.>3] 和 x = x[x.>3]。使用 filter! 可以减少临时数组的使用。\n类似于提取（或「解引用」）元胞数组的所有元素的操作，例如 MATLAB 中的 vertcat(A{:})，在 Julia 中是使用 splat 运算符编写的，例如 vcat(A...)。"
 },
 
 {
@@ -4101,7 +4101,7 @@ var documenterSearchIndex = {"docs": [
     "page": "与其他语言的显著差异",
     "title": "与 R 的显著差异",
     "category": "section",
-    "text": "One of Julia\'s goals is to provide an effective language for data analysis and statistical programming. For users coming to Julia from R, these are some noteworthy differences:Julia\'s single quotes enclose characters, not strings.\nJulia can create substrings by indexing into strings. In R, strings must be converted into character vectors before creating substrings.\nIn Julia, like Python but unlike R, strings can be created with triple quotes \"\"\" ... \"\"\". This syntax is convenient for constructing strings that contain line breaks.\nIn Julia, varargs are specified using the splat operator ..., which always follows the name of a specific variable, unlike R, for which ... can occur in isolation.\nIn Julia, modulus is mod(a, b), not a %% b. % in Julia is the remainder operator.\nIn Julia, not all data structures support logical indexing. Furthermore, logical indexing in Julia is supported only with vectors of length equal to the object being indexed. For example:\nIn R, c(1, 2, 3, 4)[c(TRUE, FALSE)] is equivalent to c(1, 3).\nIn R, c(1, 2, 3, 4)[c(TRUE, FALSE, TRUE, FALSE)] is equivalent to c(1, 3).\nIn Julia, [1, 2, 3, 4][[true, false]] throws a BoundsError.\nIn Julia, [1, 2, 3, 4][[true, false, true, false]] produces [1, 3].\nLike many languages, Julia does not always allow operations on vectors of different lengths, unlike R where the vectors only need to share a common index range.  For example, c(1, 2, 3, 4) + c(1, 2) is valid R but the equivalent [1, 2, 3, 4] + [1, 2] will throw an error in Julia.\nJulia allows an optional trailing comma when that comma does not change the meaning of code. This can cause confusion among R users when indexing into arrays. For example, x[1,] in R would return the first row of a matrix; in Julia, however, the comma is ignored, so x[1,] == x[1], and will return the first element. To extract a row, be sure to use :, as in x[1,:].\nJulia\'s map takes the function first, then its arguments, unlike lapply(<structure>, function, ...) in R. Similarly Julia\'s equivalent of apply(X, MARGIN, FUN, ...) in R is mapslices where the function is the first argument.\nMultivariate apply in R, e.g. mapply(choose, 11:13, 1:3), can be written as broadcast(binomial, 11:13, 1:3) in Julia. Equivalently Julia offers a shorter dot syntax for vectorizing functions binomial.(11:13, 1:3).\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value).\nIn Julia, <-, <<- and -> are not assignment operators.\nJulia\'s -> creates an anonymous function.\nJulia constructs vectors using brackets. Julia\'s [1, 2, 3] is the equivalent of R\'s c(1, 2, 3).\nJulia\'s * operator can perform matrix multiplication, unlike in R. If A and B are matrices, then A * B denotes a matrix multiplication in Julia, equivalent to R\'s A %*% B. In R, this same notation would perform an element-wise (Hadamard) product. To get the element-wise multiplication operation, you need to write A .* B in Julia.\nJulia performs matrix transposition using the transpose function and conjugated transposition using the \' operator or the adjoint function. Julia\'s transpose(A) is therefore equivalent to R\'s t(A). Additionally a non-recursive transpose in Julia is provided by the permutedims function.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (i in c(1, 2, 3)) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia does not provide nrow and ncol. Instead, use size(M, 1) for nrow(M) and size(M, 2) for ncol(M).\nJulia is careful to distinguish scalars, vectors and matrices.  In R, 1 and c(1) are the same. In Julia, they cannot be used interchangeably.\nJulia\'s diag and diagm are not like R\'s.\nJulia cannot assign to the results of function calls on the left hand side of an assignment operation: you cannot write diag(M) = fill(1, n).\nJulia discourages populating the main namespace with functions. Most statistical functionality for Julia is found in packages under the JuliaStats organization. 例如：\nFunctions pertaining to probability distributions are provided by the Distributions package.\nThe DataFrames package provides data frames.\nGeneralized linear models are provided by the GLM package.\nJulia provides tuples and real hash tables, but not R-style lists. When returning multiple items, you should typically use a tuple or a named tuple: instead of list(a = 1, b = 2), use (1, 2) or (a=1, b=2).\nJulia encourages users to write their own types, which are easier to use than S3 or S4 objects in R. Julia\'s multiple dispatch system means that table(x::TypeA) and table(x::TypeB) act like R\'s table.TypeA(x) and table.TypeB(x).\nIn Julia, values are not copied when assigned or passed to a function. If a function modifies an array, the changes will be visible in the caller. This is very different from R and allows new functions to operate on large data structures much more efficiently.\nIn Julia, vectors and matrices are concatenated using hcat, vcat and hvcat, not c, rbind and cbind like in R.\nIn Julia, a range like a:b is not shorthand for a vector like in R, but is a specialized AbstractRange object that is used for iteration without high memory overhead. To convert a range into a vector, use collect(a:b).\nJulia\'s max and min are the equivalent of pmax and pmin respectively in R, but both arguments need to have the same dimensions.  While maximum and minimum replace max and min in R, there are important differences.\nJulia\'s sum, prod, maximum, and minimum are different from their counterparts in R. They all accept one or two arguments. The first argument is an iterable collection such as an array.  If there is a second argument, then this argument indicates the dimensions, over which the operation is carried out.  For instance, let A = [1 2; 3 4] in Julia and B <- rbind(c(1,2),c(3,4)) be the same matrix in R.  Then sum(A) gives the same result as sum(B), but sum(A, dims=1) is a row vector containing the sum over each column and sum(A, dims=2) is a column vector containing the sum over each row. This contrasts to the behavior of R, where separate colSums(B) and rowSums(B) functions provide these functionalities. If the dims keyword argument is a vector, then it specifies all the dimensions over which the sum is performed, while retaining the dimensions of the summed array, e.g. sum(A, dims=(1,2)) == hcat(10). It should be noted that there is no error checking regarding the second argument.\nJulia has several functions that can mutate their arguments. For example, it has both sort and sort!.\nIn R, performance requires vectorization. In Julia, almost the opposite is true: the best performing code is often achieved by using devectorized loops.\nJulia is eagerly evaluated and does not support R-style lazy evaluation. For most users, this means that there are very few unquoted expressions or column names.\nJulia does not support the NULL type. The closest equivalent is nothing, but it behaves like a scalar value rather than like a list. Use x == nothing instead of is.null(x).\nIn Julia, missing values are represented by the missing object rather than by NA. Use ismissing(x) instead of isna(x). The skipmissing function is generally used instead of na.rm=TRUE (though in some particular cases functions take a skipmissing argument).\nJulia lacks the equivalent of R\'s assign or get.\nIn Julia, return does not require parentheses.\nIn R, an idiomatic way to remove unwanted values is to use logical indexing, like in the expression x[x>3] or in the statement x = x[x>3] to modify x in-place. In contrast, Julia provides the higher order functions filter and filter!, allowing users to write filter(z->z>3, x) and filter!(z->z>3, x) as alternatives to the corresponding transliterations x[x.>3] and x = x[x.>3]. Using filter! reduces the use of temporary arrays."
+    "text": "Julia 的目标之一是为数据分析和统计编程提供高效的语言。对于从 R 转到 Julia 的用户来说，这是一些显著差异：Julia 的单引号封闭字符，而不是字符串。\nJulia 可以通过索引字符串来创建子字符串。在 R 中，在创建子字符串之前必须将字符串转换为字符向量。\n在 Julia 中，与 Python 相同但与 R 不同的是，字符串可由三重引号 \"\"\" ... \"\"\" 创建。此语法对于构造包含换行符的字符串很方便。\n在 Julia 中，可变参数使用 splat 运算符 ... 指定，该运算符总是跟在具体变量的名称后面，与 R 的不同，R 的 ... 可以单独出现。\n在 Julia 中，模数是 mod(a, b)，而不是 a %% b。Julia 中的 % 是余数运算符。\n在 Julia 中，并非所有数据结构都支持逻辑索引。此外，Julia 中的逻辑索引只支持长度等于被索引对象的向量。例如：\n在 R 中，c(1, 2, 3, 4)[c(TRUE, FALSE)] 等价于 c(1, 3)。\n在 R 中，c(1, 2, 3, 4)[c(TRUE, FALSE, TRUE, FALSE)] 等价于 c(1, 3)。\n在 Julia 中，[1, 2, 3, 4][[true, false]] 抛出 BoundsError。\n在 Julia 中，[1, 2, 3, 4][[true, false, true, false]] 产生 [1, 3]。\n与许多语言一样，Julia 并不总是允许对不同长度的向量进行操作，与 R 不同，R 中的向量只需要共享一个公共的索引范围。例如，c(1, 2, 3, 4) + c(1, 2) 是有效的 R，但等价的 [1, 2, 3, 4] + [1, 2] 在 Julia 中会抛出一个错误。\n在逗号不改变代码含义时，Julia 允许使用可选的尾随括号。在索引数组时，这可能在 R 用户间造成混淆。例如，R 中的 x[1,] 将返回矩阵的第一行；但是，在 Julia 中，引号被忽略，于是 x[1,] == x[1]，并且将返回第一个元素。要提取一行，请务必使用 :，如 x[1,:]。\nJulia 的 map 首先接受函数，然后是该函数的参数，这与 R 中的 lapply(<structure>, function, ...) 不同。类似地，R 中的 apply(X, MARGIN, FUN, ...) 等价于 Julia 的 mapslices，其中函数是第一个参数。\nR 中的多变量 apply，如 mapply(choose, 11:13, 1:3)，在 Julia 中可以编写成 broadcast(binomial, 11:13, 1:3)。等价地，Julia 提供了更短的点语法来向量化函数 binomial.(11:13, 1:3)。\nJulia 使用 end 来表示条件块（如 if）、循环块（如 while/for）和函数的结束。为了代替单行 if ( cond ) statement，Julia 允许形式为 if cond; statement; end、cond && statement 和 !cond || statement 的语句。后两种语法中的赋值语句必须显式地包含在括号中，例如 cond && (x = value)，这是因为运算符的优先级。\n在 Julia 中，<-, <<- and -> 不是赋值运算符。\nJulia 的 -> 创建一个匿名函数。\nJulia 使用括号构造向量。Julia 的 [1, 2, 3] 等价于 R 的 c(1, 2, 3)。\nJulia 的 * 运算符可以执行矩阵乘法，这与 R 不同。如果 A 和 B 都是矩阵，那么 A * B 在 Julia 中表示矩阵乘法，等价于 R 的 A %*% B。在 R 中，相同的符号将执行逐元素（Hadamard）乘积。要在 Julia 中使用逐元素乘法运算，你需要编写 A .* B。\nJulia 使用 transpose 函数来执行矩阵转置，使用 \' 运算符或 adjoint 函数来执行共轭转置。因此，Julia 的 transpose(A) 等价于 R 的 t(A)。另外，Julia 中的非递归转置由 permutedims 函数提供。\nJulia 在编写 if 语句或 for/while 循环时不需要括号：请使用 for i in [1, 2, 3] 代替 for (int i=1; i <= 3; i++)，以及 if i == 1 代替 if (i == 1)\nJulia 不把数字 0 和 1 视为布尔值。在 Julia 中不能编写 if (1)，因为 if 语句只接受布尔值。相反，可以编写 if true、if Bool(1) 或 if 1==1。\nJulia 不提供 nrow 和 ncol。相反，请使用 size(M, 1) 代替 nrow(M) 以及 size(M, 2) 代替 ncol(M)\nJulia 仔细区分了标量、向量和矩阵。在 R 中，1 和 c(1) 是相同的。在 Julia 中，它们不能互换地使用。\nJulia 的 diag 和 diagm 与 R 的不同。\nJulia 赋值操作的左侧不能为函数调用的结果：你不能编写 diag(M) = fill(1, n)。\nJulia 不鼓励使用函数填充主命名空间。Julia 的大多数统计功能都可在 JuliaStats 组织的包中找到。例如：\n与概率分布相关的函数由 Distributions 包提供。\nDataFrames 包提供数据帧。\n广义线性模型由 GLM 包提供。\nJulia 提供了元组和真正的哈希表，但不提供 R 风格的列表。在返回多个项时，通常应使用元组或具名元组：请使用 (1, 2) 或 (a=1, b=2) 代替 list(a = 1, b = 2)。\nJulia 鼓励用户编写自己的类型，它比 R 中的 S3 或 S4 对象更容易使用。Julia 的多重派发系统意味着 table(x::TypeA) 和 table(x::TypeB) 类似于 R 的 table.TypeA(x) 和 table.TypeB(x)。\nJulia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。这与 R 非常不同，允许新函数更高效地操作大型数据结构。\n在 Julia 中，向量和矩阵使用 hcat、vcat 和 hvcat 拼接，而不是像在 R 中那样使用 c、rbind 和 cbind。\n在 Julia 中，像 a:b 这样的 range 不是 R 中的向量简写，而是一个专门的 AbstractRange 对象，该对象用于没有高内存开销地进行迭代。要将 range 转换为 vector，请使用 collect(a:b)。\nJulia 的 max 和 min 分别等价于 R 中的 pmax 和 pmin，但两者的参数都需要具有相同的维度。虽然 maximum 和 minimum 代替了 R 中的 max 和 min，但它们之间有重大区别。\nJulia 的 sum、prod、maximum 和 minimum 与它们在 R 中的对应物不同。它们都接受一个或两个参数。第一个参数是可迭代集合，比如数组。如果有第二个参数，则该参数表示执行操作的维度。例如，在 Julia 中令 A = [1 2; 3 4]，在 R 中令 B <- rbind(c(1,2),c(3,4)) 是与之相同的矩阵。然后 sum(A) 得到与 sum(B) 相同的结果，但 sum(A, dims=1) 是一个包含每一列总和的行向量，sum(A, dims=2) 是一个包含每一行总和的列向量。这与 R 的行为形成了对比，在 R 中，单独的 colSums(B) 和 rowSums(B) 提供了这些功能。如果 dims 关键字参数是向量，则它指定执行求和的所有维度，并同时保持待求和数组的维数，例如 sum(A, dims=(1,2)) == hcat(10)。应该注意的是，没有针对第二个参数的错误检查。\nJulia 具有一些可以改变其参数的函数。例如，它具有 sort 和 sort!。\n在 R 中，高性能需要向量化。在 Julia 中，这几乎恰恰相反：性能最高的代码通常通过去向量化的循环来实现。\nJulia 是立即求值的，不支持 R 风格的惰性求值。对于大多数用户来说，这意味着很少有未引用的表达式或列名。\nJulia 不支持 NULL 类型。最接近的等价物是 nothing，但它的行为类似于标量值而不是列表。请使用 x == nothing 代替 is.null(x)。\n在 Julia 中，缺失值由 missing 表示，而不是由 NA 表示。请使用 ismissing(x) 代替 isna(x)。通常使用 skipmissing 代替 na.rm=TRUE（尽管在某些特定情况下函数接受 skipmissing 参数）。\nJulia 缺少 R 中的 assign 或 get 的等价物。\n在 Julia 中，return 不需要括号。\n在 R 中，删除不需要的值的惯用方法是使用逻辑索引，如表达式 x[x>3] 或语句 x = x[x>3] 来 in-place 修改 x。相比之下，Julia 提供了更高阶的函数 filter 和 filter!，允许用户编写 filter(z->z>3, x) 和 filter!(z->z>3, x) 来代替相应直译 x[x.>3] 和 x = x[x.>3]。使用 filter! 可以减少临时数组的使用。"
 },
 
 {
@@ -4117,7 +4117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "与其他语言的显著差异",
     "title": "与 C/C++ 的显著差异",
     "category": "section",
-    "text": "Julia 的数组由方括号索引，方括号中可以包含不止一个维度 A[i,j]。 这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见 Julia 文档数组构造的语法（依版本不同有所变动）。\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。像 += 这样的更新运算符不会以 in-place 的方式执行，而是相当于 A = A + B，将左侧绑定到右侧表达式的计算结果上。\nJulia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 性能建议）。\nJulia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。\n在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。\n在 Julia 中，没有小数点的数值字面量（如 42）生成有符号整数，类型为 Int，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 Int64（如果 Int 是 Int32）、Int128，或者任意精度的 BigInt 类型。不存在诸如 L, LL, U, UL, ULL 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 0x 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同，也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的长度，包括开头的 0。例如，0x0 和 0x00 的类型是 UInt8，0x000 和 0x0000 的类型是 UInt16。同理，字面量的长度在 5-8 之间，类型为 UInt32；在 9-16 之间，类型为 UInt64；在 17-32 之间，类型为 UInt128。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 ~0xf == 0xf0 与 ~0x000f == 0xfff0 完全不同。64 位 Float64 和 32 位 Float32 的字面量分别表示为 1.0 和 1.0f0。浮点字面量在无法被精确表示时舍入（且不会提升为 BigFloat 类型）。浮点字面量在行为上与 C/C++ 更接近。八进制（前缀为 0o）和二进制（前缀为 0b）也被视为无符号的。\nString literals can be delimited with either \"  or \"\"\", \"\"\" delimited literals can contain \" characters without quoting it like \"\\\"\" String literals can have values of other variables or expressions interpolated into them, indicated by $variablename or $(expression), which evaluates the variable name or the expression in the context of the function.\n// indicates a Rational number, and not a single-line comment (which is # in Julia)\n#= indicates the start of a multiline comment, and =# ends it.\nFunctions in Julia return values from their last expression(s) or the return keyword.  Multiple values can be returned from functions and assigned as tuples, e.g. (a, b) = myfunction() or a, b = myfunction(), instead of having to pass pointers to values as one would have to do in C/C++ (i.e. a = myfunction(&b).\nJulia does not require the use of semicolons to end statements. The results of expressions are not automatically printed (except at the interactive prompt, i.e. the REPL), and lines of code do not need to end with semicolons. println or @printf can be used to print specific output. In the REPL, ; can be used to suppress output. ; also has a different meaning within [ ], something to watch out for. ; can be used to separate expressions on a single line, but are not strictly necessary in many cases, and are more an aid to readability.\nIn Julia, the operator ⊻ (xor) performs the bitwise XOR operation, i.e. ^ in C/C++.  Also, the bitwise operators do not have the same precedence as C/++, so parenthesis may be required.\nJulia\'s ^ is exponentiation (pow), not bitwise XOR as in C/C++ (use ⊻, or xor, in Julia)\nJulia has two right-shift operators, >> and >>>.  >>> performs an arithmetic shift, >> always performs a logical shift, unlike C/C++, where the meaning of >> depends on the type of the value being shifted.\nJulia\'s -> creates an anonymous function, it does not access a member via a pointer.\nJulia does not require parentheses when writing if statements or for/while loops: use for i in [1, 2, 3] instead of for (int i=1; i <= 3; i++) and if i == 1 instead of if (i == 1).\nJulia does not treat the numbers 0 and 1 as Booleans. You cannot write if (1) in Julia, because if statements accept only booleans. Instead, you can write if true, if Bool(1), or if 1==1.\nJulia uses end to denote the end of conditional blocks, like if, loop blocks, like while/ for, and functions. In lieu of the one-line if ( cond ) statement, Julia allows statements of the form if cond; statement; end, cond && statement and !cond || statement. Assignment statements in the latter two syntaxes must be explicitly wrapped in parentheses, e.g. cond && (x = value), because of the operator precedence.\nJulia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的表达式，则认为其已经结束；否则，认为输入继续。强制表达式继续的一种方式是将其包含在括号中。\nJulia macros operate on parsed expressions, rather than the text of the program, which allows them to perform sophisticated transformations of Julia code. Macro names start with the @ character, and have both a function-like syntax, @mymacro(arg1, arg2, arg3), and a statement-like syntax, @mymacro arg1 arg2 arg3. The forms are interchangeable; the function-like form is particularly useful if the macro appears within another expression, and is often clearest. The statement-like form is often used to annotate blocks, as in the distributed for construct: @distributed for i in 1:n; #= body =#; end. Where the end of the macro construct may be unclear, use the function-like form.\nJulia now has an enumeration type, expressed using the macro @enum(name, value1, value2, ...) For example: @enum(Fruit, banana=1, apple, pear)\nBy convention, functions that modify their arguments have a ! at the end of the name, for example push!.\nIn C++, by default, you have static dispatch, i.e. you need to annotate a function as virtual, in order to have dynamic dispatch. On the other hand, in Julia every method is \"virtual\" (although it\'s more general than that since methods are dispatched on every argument type, not only this, using the most-specific-declaration rule)."
+    "text": "Julia 的数组由方括号索引，方括号中可以包含不止一个维度 A[i,j]。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见关于数组构造的语法的 Julia 文档（依版本不同有所变动）。\n在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。\nJulia 的数组在赋值给另一个变量时不发生复制。执行 A = B 后，改变 B 中元素也会修改 A。像 += 这样的更新运算符不会以 in-place 的方式执行，而是相当于 A = A + B，将左侧绑定到右侧表达式的计算结果上。\nJulia 的数组是行优先的（Fortran 顺序），而 C/C++ 的数组默认是列优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 性能建议）。\nJulia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。\n在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。\n在 Julia 中，没有小数点的数值字面量（如 42）生成有符号整数，类型为 Int，但如果字面量太长，超过了机器字长，则会被自动提升为容量更大的类型，例如 Int64（如果 Int 是 Int32）、Int128，或者任意精度的 BigInt 类型。不存在诸如 L, LL, U, UL, ULL 这样的数值字面量后缀指示无符号和/或有符号与无符号。十进制字面量始终是有符号的，十六进制字面量（像 C/C++ 一样由 0x 开头）是无符号的。另外，十六进制字面量与 C/C++/Java 不同，也与 Julia 中的十进制字面量不同，它们的类型取决于字面量的长度，包括开头的 0。例如，0x0 和 0x00 的类型是 UInt8，0x000 和 0x0000 的类型是 UInt16。同理，字面量的长度在 5-8 之间，类型为 UInt32；在 9-16 之间，类型为 UInt64；在 17-32 之间，类型为 UInt128。当定义十六进制掩码时，就需要将这一问题考虑在内，比如 ~0xf == 0xf0 与 ~0x000f == 0xfff0 完全不同。64 位 Float64 和 32 位 Float32 的字面量分别表示为 1.0 和 1.0f0。浮点字面量在无法被精确表示时舍入（且不会提升为 BigFloat 类型）。浮点字面量在行为上与 C/C++ 更接近。八进制（前缀为 0o）和二进制（前缀为 0b）也被视为无符号的。\n字符串字面量可用 \" 或 \"\"\" 分隔，用 \"\"\" 分隔的字面量可以包含 \" 字符而无需像 \"\\\"\" 这样来引用它。字符串字面量可以包含插入其中的其他变量或表达式，由 $variablename 或 $(expression) 表示，它在该函数所处的上下文中计算变量名或表达式。\n// 表示 Rational 数，而非单行注释（其在 Julia 中是 #）\n#= 表示多行注释的开头，=# 结束之。\nJulia 中的函数返回其最后一个表达式或 return 关键字的值。可以从函数中返回多个值并将其作为元组赋值，如 (a, b) = myfunction() 或 a, b = myfunction()，而不必像在 C/C++ 中那样必须传递指向值的指针（即 a = myfunction(&b)）。\nJulia 不要求使用分号来结束语句。表达式的结果不会自动打印（除了在交互式提示符中，即 REPL），且代码行不需要以分号结尾。println 或 @printf 可用于打印特定输出。在 REPL 中，; 可用于抑制输出。; 在 [ ] 中也有不同的含义，需要注意。; 可用于在单行中分隔表达式，但在许多情况下不是绝对必要的，更经常是为了可读性。\n在 Julia 中，运算符 ⊻（xor）执行按位 XOR 操作，即 C/C++ 中的 ^。此外，按位运算符不具有与 C/C++ 相同的优先级，所以可能需要括号。\nJulia 的 ^ 是取幂（pow），而非 C/C++ 中的按位 XOR（在 Julia 中请使用 ⊻ 或 xor）  , in Julia)\nJulia 中有两个右移运算符，>> 和 >>>。>>> 执行逻辑移位，>> 总是执行算术移位（译注：此处原文为「>>> performs an arithmetic shift, >> always performs a logical shift」，疑误），与 C/C++ 不同，C/C++ 中的 >> 的含义依赖于被移位的值的类型。\nJulia 的 -> 创建一个匿名函数，它并不通过指针访问成员。\nJulia 在编写 if 语句或 for/while 循环时不需要括号：请使用 for i in [1, 2, 3] 代替 for (int i=1; i <= 3; i++)，以及 if i == 1 代替 if (i == 1)\nJulia 不把数字 0 和 1 视为布尔值。在 Julia 中不能编写 if (1)，因为 if 语句只接受布尔值。相反，可以编写 if true、if Bool(1) 或 if 1==1。\nJulia 使用 end 来表示条件块（如 if）、循环块（如 while/for）和函数的结束。为了代替单行 if ( cond ) statement，Julia 允许形式为 if cond; statement; end、cond && statement 和 !cond || statement 的语句。后两种语法中的赋值语句必须显式地包含在括号中，例如 cond && (x = value)，这是因为运算符的优先级。\nJulia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的表达式，则认为其已经结束；否则，认为输入继续。强制表达式继续的一种方式是将其包含在括号中。\nJulia 宏对已解析的表达式进行操作，而非程序的文本，这允许它们执行复杂的 Julia 代码转换。宏名称以 @ 字符开头，具有类似函数的语法 @mymacro(arg1, arg2, arg3) 和类似语句的语法 @mymacro arg1 arg2 arg3。两种形式的语法可以相互转换；如果宏出现在另一个表达式中，则类似函数的形式尤其有用，并且它通常是最清晰的。类似语句的形式通常用于标注块，如在分布式 for 结构中：@distributed for i in 1:n; #= body =#; end。如果宏结构的结尾不那么清晰，请使用类似函数的形式。\nJulia 现在有一个枚举类型，使用宏 @enum(name, value1, value2, ...) 来表示，例如：@enum(Fruit, banana=1, apple, pear)。\n按照惯例，修改其参数的函数在名称的末尾有个 !，例如 push!。\n在 C++ 中，默认情况下，你具有静态分派，即为了支持动态派发，你需要将函数标注为 virtual 函数。另一方面，Julia 中的每个方法都是「virtual」（尽管它更通用，因为方法是在每个参数类型上派发的，而不仅仅是 this，并且使用的是最具体的声明规则）。"
 },
 
 {
@@ -5313,9 +5313,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/base/#范型函数-1",
+    "location": "base/base/#泛型-1",
     "page": "基本功能",
-    "title": "范型函数",
+    "title": "泛型",
     "category": "section",
     "text": "Core.Function\nBase.hasmethod\nCore.applicable\nCore.invoke\nBase.invokelatest\nnew\nBase.:(|>)\nBase.:(∘)"
 },
@@ -6411,9 +6411,9 @@ var documenterSearchIndex = {"docs": [
 {
     "location": "base/collections/#lib-collections-iteration-1",
     "page": "集合和数据结构",
-    "title": "Iteration",
+    "title": "迭代",
     "category": "section",
-    "text": "序列迭代由 iterate 实现 广义的for循环for i in iter   # or  \"for i = iter\"\n    # body\nend被转换成next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nendstate 对象可以是任何对象，并且对于每个可迭代类型应该选择合适的 state 对象。 请参照 manual section on the iteration interface 来获取关于定义一个常见迭代类型的更多细节。Base.iterate\nBase.IteratorSize\nBase.IteratorEltype完全由以下实现：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nEachLine\nAbstractString\nSet\nPair\nNamedTuple"
+    "text": "序列迭代由 iterate 实现 广义的 for 循环for i in iter   # or  \"for i = iter\"\n    # body\nend被转换成next = iterate(iter)\nwhile next !== nothing\n    (i, state) = next\n    # body\n    next = iterate(iter, state)\nendstate 对象可以是任何对象，并且对于每个可迭代类型应该选择合适的 state 对象。 请参照 帮助文档接口的迭代小节 来获取关于定义一个常见迭代类型的更多细节。Base.iterate\nBase.IteratorSize\nBase.IteratorEltype以下类型均完全实现了上述函数：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nEachLine\nAbstractString\nSet\nPair\nNamedTuple"
 },
 
 {
@@ -6501,7 +6501,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "通用集合",
     "category": "section",
-    "text": "Base.isempty\nBase.empty!\nBase.length完全由以下实现：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nAbstractString\nSet\nNamedTuple"
+    "text": "Base.isempty\nBase.empty!\nBase.length以下类型均完全实现了上述函数：AbstractRange\nUnitRange\nTuple\nNumber\nAbstractArray\nBitSet\nIdDict\nDict\nWeakKeyDict\nAbstractString\nSet\nNamedTuple"
 },
 
 {
@@ -6949,7 +6949,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "可索引集合",
     "category": "section",
-    "text": "Base.getindex\nBase.setindex!\nBase.firstindex\nBase.lastindex完全由以下实现：Array\nBitArray\nAbstractArray\nSubArrayPartially implemented by:AbstractRange\nUnitRange\nTuple\nAbstractString\nDict\nIdDict\nWeakKeyDict\nNamedTuple"
+    "text": "Base.getindex\nBase.setindex!\nBase.firstindex\nBase.lastindex以下类型均完全实现了上述函数：Array\nBitArray\nAbstractArray\nSubArray以下类型仅实现了部分上述函数：AbstractRange\nUnitRange\nTuple\nAbstractString\nDict\nIdDict\nWeakKeyDict\nNamedTuple"
 },
 
 {
@@ -7125,7 +7125,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "字典",
     "category": "section",
-    "text": "Dict 是一个标准字典。其实现利用了 hash 作为键的哈希函数和 isequal 来决定是否相等。对于自定义类型，可以定义这两个函数来重载它们在哈希表内的存储方式。IdDict 是一种特殊的哈希表，在里面键始终是对象标识符。WeakKeyDict 是一个哈希表的实现，里面键是对象的弱引用，所以 即使键在哈希表中被引用也有可能被垃圾回收。 它像Dict一样使用hash来做哈希和isequal来做相等判断，但是它不会在插入时转换键，这点不像Dict。Dicts 可以由传递含有=>的成对对象给 Dict的构造函数来被创建： Dict(\"A\"=>1, \"B\"=>2)。这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 Dict{String, Int64}）。为了显式指定类型， 请使用语法Dict{KeyType,ValueType}(...)。例如， Dict{String,Int32}(\"A\"=>1, \"B\"=>2)。字典也可以用生成器创建。例如Dict(i => f(i) for i = 1:10)。存在一个字典D，语法D[x]返回键x的值（如果存在）或者扔出 一个错误，D[x] = y存储键值对x => y在D中（覆盖键\'x\'的 已有的值）。多个参数传入D[...]会被转化成元组；例如，语法 D[x,y]等于 D[(x,y)]，也就是说，它指向键为元组(x,y)的值。Base.Dict\nBase.IdDict\nBase.WeakKeyDict\nBase.ImmutableDict\nBase.haskey\nBase.get(::Any, ::Any, ::Any)\nBase.get\nBase.get!(::Any, ::Any, ::Any)\nBase.get!(::Function, ::Any, ::Any)\nBase.getkey\nBase.delete!\nBase.pop!(::Any, ::Any, ::Any)\nBase.keys\nBase.values\nBase.pairs\nBase.merge\nBase.merge!(::AbstractDict, ::AbstractDict...)\nBase.merge!(::Function, ::AbstractDict, ::AbstractDict...)\nBase.sizehint!\nBase.keytype\nBase.valtype完全由以下实现：IdDict\nDict\nWeakKeyDictPartially implemented by:BitSet\nSet\nEnvDict\nArray\nBitArray\nImmutableDict\nIterators.Pairs"
+    "text": "Dict 是一个标准字典。其实现利用了 hash 作为键的哈希函数和 isequal 来决定是否相等。对于自定义类型，可以定义这两个函数来重载它们在哈希表内的存储方式。IdDict 是一种特殊的哈希表，在里面键始终是对象标识符。WeakKeyDict 是一个哈希表的实现，里面键是对象的弱引用， 所以即使键在哈希表中被引用也有可能被垃圾回收。 它像 Dict 一样使用 hash 来做哈希和 isequal 来做相等判断， 但是它不会在插入时转换键，这点不像 Dict。Dicts 可以由传递含有 => 的成对对象给 Dict 的构造函数来被创建：Dict(\"A\"=>1, \"B\"=>2)。 这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 Dict{String, Int64}）。 为了显式指定类型，请使用语法 Dict{KeyType,ValueType}(...)。例如：Dict{String,Int32}(\"A\"=>1, \"B\"=>2)。字典也可以用生成器创建。例如：Dict(i => f(i) for i = 1:10)。对于字典 D，若键 x 的值存在，则语法 D[x] 返回 x 的值；否则抛出一个错误。 D[x] = y 存储键值对 x => y 到 D 中，会覆盖键 x 的已有的值。 多个参数传入D[...] 会被转化成元组； 例如：语法 D[x,y] 等于 D[(x,y)]，也就是说，它指向键为元组 (x,y) 的值。Base.Dict\nBase.IdDict\nBase.WeakKeyDict\nBase.ImmutableDict\nBase.haskey\nBase.get(::Any, ::Any, ::Any)\nBase.get\nBase.get!(::Any, ::Any, ::Any)\nBase.get!(::Function, ::Any, ::Any)\nBase.getkey\nBase.delete!\nBase.pop!(::Any, ::Any, ::Any)\nBase.keys\nBase.values\nBase.pairs\nBase.merge\nBase.merge!(::AbstractDict, ::AbstractDict...)\nBase.merge!(::Function, ::AbstractDict, ::AbstractDict...)\nBase.sizehint!\nBase.keytype\nBase.valtype以下类型均完全实现了上述函数：IdDict\nDict\nWeakKeyDict以下类型仅实现了部分上述函数：BitSet\nSet\nEnvDict\nArray\nBitArray\nImmutableDict\nIterators.Pairs"
 },
 
 {
@@ -7245,7 +7245,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "类似 Set 的集合",
     "category": "section",
-    "text": "Base.Set\nBase.BitSet\nBase.union\nBase.union!\nBase.intersect\nBase.setdiff\nBase.setdiff!\nBase.symdiff\nBase.symdiff!\nBase.intersect!\nBase.issubset\nBase.:⊈\nBase.:⊊\nBase.issetequal完全由以下实现：BitSet\nSet部分由以下实现：Array"
+    "text": "Base.Set\nBase.BitSet\nBase.union\nBase.union!\nBase.intersect\nBase.setdiff\nBase.setdiff!\nBase.symdiff\nBase.symdiff!\nBase.intersect!\nBase.issubset\nBase.:⊈\nBase.:⊊\nBase.issetequal以下类型均完全实现了上述函数：BitSet\nSet以下类型仅实现了部分上述函数：Array"
 },
 
 {
@@ -7333,7 +7333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "集合和数据结构",
     "title": "双端队列",
     "category": "section",
-    "text": "Base.push!\nBase.pop!\nBase.pushfirst!\nBase.popfirst!\nBase.insert!\nBase.deleteat!\nBase.splice!\nBase.resize!\nBase.append!\nBase.prepend!完全由以下实现：Vector (a.k.a. 1-dimensional Array)\nBitVector (a.k.a. 1-dimensional BitArray)"
+    "text": "Base.push!\nBase.pop!\nBase.pushfirst!\nBase.popfirst!\nBase.insert!\nBase.deleteat!\nBase.splice!\nBase.resize!\nBase.append!\nBase.prepend!以下类型均完全实现了上述函数：Vector (a.k.a. 1-dimensional Array)\nBitVector (a.k.a. 1-dimensional BitArray)"
 },
 
 {
@@ -9549,7 +9549,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Numbers",
     "title": "长浮点型",
     "category": "section",
-    "text": "BigFloat 类型实现任意精度的浮点运 the GNU MPFR library.Base.precision\nBase.MPFR.precision(::Type{BigFloat})\nBase.MPFR.setprecision\nBase.MPFR.BigFloat(x, prec::Int)\nBigFloat(x::Union{Integer, AbstractFloat, String}, rounding::RoundingMode)\nBase.MPFR.BigFloat(x, prec::Int, rounding::RoundingMode)\nBase.MPFR.BigFloat(x::String)\nBase.@big_str"
+    "text": "BigFloat 类型使用 GNU MPFR 库 实现了任意精度的浮点运算。Base.precision\nBase.MPFR.precision(::Type{BigFloat})\nBase.MPFR.setprecision\nBase.MPFR.BigFloat(x, prec::Int)\nBigFloat(x::Union{Integer, AbstractFloat, String}, rounding::RoundingMode)\nBase.MPFR.BigFloat(x, prec::Int, rounding::RoundingMode)\nBase.MPFR.BigFloat(x::String)\nBase.@big_str"
 },
 
 {
@@ -11557,7 +11557,7 @@ var documenterSearchIndex = {"docs": [
     "page": "多线程",
     "title": "多线程",
     "category": "section",
-    "text": "这个实验性接口支持Julia的多线程功能。类型和函数 在本节的相关描述很有可能会在未来进行修改。Base.Threads.threadid\nBase.Threads.nthreads\nBase.Threads.@threads\nBase.Threads.Atomic\nBase.Threads.atomic_cas!\nBase.Threads.atomic_xchg!\nBase.Threads.atomic_add!\nBase.Threads.atomic_sub!\nBase.Threads.atomic_and!\nBase.Threads.atomic_nand!\nBase.Threads.atomic_or!\nBase.Threads.atomic_xor!\nBase.Threads.atomic_max!\nBase.Threads.atomic_min!\nBase.Threads.atomic_fence"
+    "text": "这个实验性接口支持 Julia 的多线程功能。 类型和函数在本节的相关描述很有可能会在未来进行修改。Base.Threads.threadid\nBase.Threads.nthreads\nBase.Threads.@threads\nBase.Threads.Atomic\nBase.Threads.atomic_cas!\nBase.Threads.atomic_xchg!\nBase.Threads.atomic_add!\nBase.Threads.atomic_sub!\nBase.Threads.atomic_and!\nBase.Threads.atomic_nand!\nBase.Threads.atomic_or!\nBase.Threads.atomic_xor!\nBase.Threads.atomic_max!\nBase.Threads.atomic_min!\nBase.Threads.atomic_fence"
 },
 
 {
@@ -11569,9 +11569,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "base/multi-threading/#使用线程池的ccal方法（实验性）-1",
+    "location": "base/multi-threading/#使用线程池的-ccal-方法（实验性）-1",
     "page": "多线程",
-    "title": "使用线程池的ccal方法（实验性）",
+    "title": "使用线程池的 ccal 方法（实验性）",
     "category": "section",
     "text": "Base.@threadcall"
 },
@@ -12893,7 +12893,7 @@ var documenterSearchIndex = {"docs": [
     "page": "I/O 与网络",
     "title": "多媒体 I/O",
     "category": "section",
-    "text": "就像文本输出用 print 实现，用户自定义类型可以通过重载show 来指定其文本化表示，Julia 提供了一个应用于富多媒体输出的 标准化机制（例如图片，格式化文本，甚至音频和视频），由以下三部分组成：函数display(x)来请求一个Julia对象的最富的可得的多媒体展示 x (with a plain-text fallback).\n过载 show 允许指定用户自定义类型的任意多媒体表现形式（以标准MIME类型为键值） 以标准MIME类型为键）。\n支持多媒体显示后端可以被注册，通过子类化通用的AbstractDisplay类型 并通过pushdisplay将其压进显示后端的栈中。基础Julia运行环境只提供纯文本显示，但是更富的显示可以 通过加载外部模块或者使用图形化Julia环境（比如基于IPython的IJulia  notebook）来实现。Base.Multimedia.display\nBase.Multimedia.redisplay\nBase.Multimedia.displayable\nBase.show(::Any, ::Any, ::Any)\nBase.Multimedia.showable\nBase.repr(::MIME, ::Any)如上面提到的，用户可以定义新的显示后端。例如，可以在窗口显示PNG图片的模块可以在Julia中注册这个能力，以便为有PNG表示的类型调用display(x)时可以在模块窗口中自动显示图片。为了定义新的显示后端，应该首先创建抽象类AbstractDisplay的子类型D。然后，对于每个可以显示在D上的MIME类型(mime string)，用户应该定义一个函数display(d::D, ::MIME\"mime\", x) = ... 这里的x表示为 MIME　类型，经常在show(io, mime, x)或repr(io, mime, x)中被调用。如果x不能被表示为 MIME 类型则MethodError会被抛出； 这在用户调用show 或repr的时候是会自动执行的。最后，用户应该定义一个函数display(d::D, x) 来查询showable(mime, x)以获得D支持的mime类型并把它显示为＂最好＂的一个;如果没有为x找到支持的 MIME 类型，就应该抛出MethodError。类似地，一些子类型可能希望重写redisplay(d::D, ...)。（同样，用户也应该通过import Base.display去添加新的方法去display。）这些函数的返回值取决于实现（因为在某些情况下，返回某种类型的显示“句柄”可能很有用）。D的显示功能可以直接调用，但它们也可以从display(x)自动调用，只需在显示后端栈中添加一个新显示即可:Base.Multimedia.pushdisplay\nBase.Multimedia.popdisplay\nBase.Multimedia.TextDisplay\nBase.Multimedia.istextmime"
+    "text": "就像文本输出用 print 实现，用户自定义类型可以通过重载 show 来指定其文本化表示， Julia 提供了一个应用于富多媒体输出的标准化机制 （例如图片、格式化文本、甚至音频和视频），由以下三部分组成：函数 display(x) 来请求一个 Julia 对象 x 最丰富的多媒体展示，并以纯文本作为后备模式。\n重载 show 允许指定用户自定义类型的任意多媒体表现形式（以标准MIME类型为键值）。\n支持多媒体显示后端可以被注册，通过子类化通用的 AbstractDisplay 类型 并通过 pushdisplay 将其压进显示后端的栈中。基础 Julia 运行环境只提供纯文本显示， 但是更富的显示可以通过加载外部模块或者使用图形化 Julia 环境 （比如基于 IPython 的 IJulia notebook）来实现。Base.Multimedia.display\nBase.Multimedia.redisplay\nBase.Multimedia.displayable\nBase.show(::Any, ::Any, ::Any)\nBase.Multimedia.showable\nBase.repr(::MIME, ::Any)如上面提到的，用户可以定义新的显示后端。 例如，可以在窗口显示 PNG 图片的模块可以在 Julia 中注册这个能力， 以便为有 PNG 表示的类型调用 display(x) 时可以在模块窗口中自动显示图片。为了定义新的显示后端，应该首先创建抽象类AbstractDisplay的子类型D。然后，对于每个可以显示在 D 上的MIME类型 (mime string)， 用户应该定义一个函数 display(d::D, ::MIME\"mime\", x) = ... 这里的 x 表示为 MIME 类型， 经常在 show(io, mime, x) 或 repr(io, mime, x) 中被调用。 如果 x 不能被表示为 MIME 类型则 MethodError 会被抛出；  这在用户调用 show 或 repr 的时候是会自动执行的。最后，用户应该定义一个函数 display(d::D, x) 来查询 showable(mime, x) 以获得 D 支持的 mime 类型并把它显示为＂最好＂的一个； 如果没有为 x 找到支持的 MIME 类型，就应该抛出 MethodError。 类似地，一些子类型可能希望重写 redisplay(d::D, ...)。 （同样，用户也应该通过 import Base.display 去添加新的方法去 display。） 这些函数的返回值取决于实现（因为在某些情况下，返回某种类型的显示“句柄”可能很有用）。 D 的显示功能可以直接调用，但它们也可以从 display(x) 自动调用， 只需在显示后端栈中添加一个新显示即可:Base.Multimedia.pushdisplay\nBase.Multimedia.popdisplay\nBase.Multimedia.TextDisplay\nBase.Multimedia.istextmime"
 },
 
 {
@@ -12954,18 +12954,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/punctuation/#",
-    "page": "标点符号",
-    "title": "标点符号",
+    "page": "运算符与记号",
+    "title": "运算符与记号",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "base/punctuation/#标点符号-1",
-    "page": "标点符号",
-    "title": "标点符号",
+    "location": "base/punctuation/#运算符与记号-1",
+    "page": "运算符与记号",
+    "title": "运算符与记号",
     "category": "section",
-    "text": "数学符号与函数的扩展文档在 这里.符号 含义\n@m 调用宏 m；随后是空格分割的表达式\n! 前缀 “not”（逻辑非）运算符\na!( ) 在函数名的末尾，! 用作表示函数会修改参数（或多个参数）的约定\n# 开始单行注释\n#= 开始多行注释（可嵌套）\n=# 结束多行注释\n$ 字符串和表达式插值\n% 求余运算符\n^ 指数运算符\n& 按位与\n&& 短路布尔值和\n| 按位或\n|| 短路布尔值或\n⊻ 按位异或运算符\n* 乘法，或者矩阵乘法\n() 空元组\n~ 按位非(not)\n\\ 反斜线运算符\n\' 复转置运算符Aᴴ\na[] 数组定标（调用getindex 或 setindex!）\n[,] 向量字面构造器（调用vect）\n[;] 纵向拼接（调用 vcat或者hvcat）\n[    ] 和空格分隔的表达式，横向拼接（调用hcat or hvcat）\nT{ } 参数化类型实例化\n; 语句运算符\n, 分隔函数参数或者元组成分\n? 三元条件运算符（如此使用： 条件 ? 真分支 : 假分支）\n\"\" 分界字符串字面值\n\'\' 分界字符字面值\n` ` 分界外部操作（命令）指定\n... 拼接参数到函数调用或者声明一个可变参数的函数\n. 存取对象/模块的命名空间（调用 getproperty 或 setproperty!），并且为逐元素函数调用（调用broadcast）加前缀\na:b 范围 a, a+1, a+2, ..., b\na:s:b 范围 a, a+s, a+2s, ..., b\n: 为整个维度定标（初始下标：末尾下标），参照Colon)\n:: 类型注释或 typeassert，取决于上下文\n:( ) 引用表达式\n:a 符号 a\n<: 子类型运算符\n>: 父类型运算符 (reverse of subtype operator)\n=== \"egal\" 比较运算符"
+    "text": "数学符号与函数的扩展文档在 这里.符号 含义\n@m 调用宏 m；随后是空格分割的表达式\n! 前缀 “not”（逻辑非）运算符\na!( ) 在函数名的末尾，! 用作表示函数会修改参数（或多个参数）的约定\n# 开始单行注释\n#= 开始多行注释（可嵌套）\n=# 结束多行注释\n$ 字符串和表达式插值\n% 求余运算符\n^ 指数运算符\n& 按位与\n&& 短路布尔值和\n| 按位或\n|| 短路布尔值或\n⊻ 按位异或运算符\n* 乘法，或者矩阵乘法\n() 空元组\n~ 按位非(not)\n\\ 反斜线运算符\n\' 复转置运算符Aᴴ\na[] 数组定标（调用getindex 或 setindex!）\n[,] 向量字面构造器（调用vect）\n[;] 纵向拼接（调用 vcat或者hvcat）\n[    ] 和空格分隔的表达式，横向拼接（调用hcat or hvcat）\nT{ } 参数化类型实例化\n; 语句运算符\n, 分隔函数参数或者元组成分\n? 三元条件运算符（如此使用： 条件 ? 真分支 : 假分支）\n\"\" 分界字符串字面值\n\'\' 分界字符字面值\n` ` 分界外部操作（命令）指定\n... 拼接参数到函数调用或者声明一个可变参数的函数\n. 存取对象/模块的命名空间（调用 getproperty 或setproperty!）， 并且为逐元素函数调用（调用 broadcast）加前缀 | | a:b       | 范围 a, a+1, a+2, ..., b                                                                   | | a:s:b     | 范围 a, a+s, a+2s, ..., b                                                                  | | :         | 为整个维度定标（初始下标：末尾下标），参照Colon)                      | | ::        | 类型注释或 typeassert，取决于上下文                               | | :( )      | 引用表达式                                                                           | | :a        | 符号 a                                                                                    | | <:        | 子类型运算符                                                               | | >:        | 父类型运算符 (reverse of subtype operator)                               | | ===       | \"egal\" 比较运算符                                                      |"
 },
 
 {
@@ -13109,7 +13109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "排序及相关函数",
     "title": "排序算法",
     "category": "section",
-    "text": "目前，Julia Base 中有四种可用的排序算法：InsertionSort\nQuickSort\nPartialQuickSort(k)\nMergeSortInsertionSort 是一个在 QuickSort 中使用的时间复杂度为 O(n^2) 的稳定的排序算法，它通常在 n 比较小的时候才具有较高的效率。QuickSort是一个内置并且非常快，但是不稳定的时间复杂度为O(n log n）的排序算法，例如即使数组两个元素相等的，它们排序之后的顺序也可能和在原数组中顺序不一致。QuickSort是内置的包括整数和浮点数在内的数字值的默认排序算法。PartialQuickSort(k)类似于QuickSort，但是如果k是一个整数，输出数组只排序到索引k，如果k是 OrdinalRange，则输出数组排在k范围内。 例如：x = rand(1:500, 100)\nk = 50\nk2 = 50:100\ns = sort(x; alg=QuickSort)\nps = sort(x; alg=PartialQuickSort(k))\nqs = sort(x; alg=PartialQuickSort(k2))\nmap(issorted, (s, ps, qs))             # => (true, false, false)\nmap(x->issorted(x[1:k]), (s, ps, qs))  # => (true, true, false)\nmap(x->issorted(x[k2]), (s, ps, qs))   # => (true, false, true)\ns[1:k] == ps[1:k]                      # => true\ns[k2] == qs[k2]                        # => trueMergeSort是一个时间复杂度为O(n log n)的稳定但是非in-place的算法，它需要一个大小为输入数组一般的临时数组——同时也不像QuickSort一样快。MergeSort是非数值型数据的默认排序算法。默认排序算法的选择是基于它们的快速稳定，或者 appear之类的。对于数值类型，实际上选择了QuickSort，因为在这种情况下，它更快，与稳定排序没有区别(除非数组以某种方式记录了突变)Julia选择默认排序算法的机制是通过Base.Sort.defalg来实现的，其允许将特定算法注册为特定数组的所有排序函数中的默认值。例如，这有两个默认算法sort.jl:defalg(v::AbstractArray) = MergeSort\ndefalg(v::AbstractArray{<:Number}) = QuickSort对于数值型数组，选择非稳定的默认排序算法的原则是稳定的排序算法没有必要的（例如：但两个值相比较时相等且不可区分时）。"
+    "text": "目前，Julia Base 中有四种可用的排序算法：InsertionSort\nQuickSort\nPartialQuickSort(k)\nMergeSortInsertionSort 是一个在 QuickSort 中使用的时间复杂度为 O(n^2) 的稳定的排序算法，它通常在 n 比较小的时候才具有较高的效率。QuickSort 是一个内置并且非常快，但是不稳定的时间复杂度为 O(n log n）的排序算法，例如即使数组两个元素相等的，它们排序之后的顺序也可能和在原数组中顺序不一致。QuickSort 是内置的包括整数和浮点数在内的数字值的默认排序算法。PartialQuickSort(k) 类似于 QuickSort，但是如果 k 是一个整数，输出数组只排序到索引 k，如果 k 是 OrdinalRange，则输出数组排在 k 范围内。 例如：x = rand(1:500, 100)\nk = 50\nk2 = 50:100\ns = sort(x; alg=QuickSort)\nps = sort(x; alg=PartialQuickSort(k))\nqs = sort(x; alg=PartialQuickSort(k2))\nmap(issorted, (s, ps, qs))             # => (true, false, false)\nmap(x->issorted(x[1:k]), (s, ps, qs))  # => (true, true, false)\nmap(x->issorted(x[k2]), (s, ps, qs))   # => (true, false, true)\ns[1:k] == ps[1:k]                      # => true\ns[k2] == qs[k2]                        # => trueMergeSort 是一个时间复杂度为 O(n log n) 的稳定但是非 in-place 的算法，它需要一个大小为输入数组一般的临时数组——同时也不像 QuickSort 一样快。MergeSort 是非数值型数据的默认排序算法。默认排序算法的选择是基于它们的快速稳定，或者 appear 之类的。对于数值类型，实际上选择了 QuickSort，因为在这种情况下，它更快，与稳定排序没有区别(除非数组以某种方式记录了突变)Julia选择默认排序算法的机制是通过 Base.Sort.defalg 来实现的，其允许将特定算法注册为特定数组的所有排序函数中的默认值。例如，这有两个默认算法 sort.jl:defalg(v::AbstractArray) = MergeSort\ndefalg(v::AbstractArray{<:Number}) = QuickSort对于数值型数组，选择非稳定的默认排序算法的原则是稳定的排序算法没有必要的（例如：但两个值相比较时相等且不可区分时）。"
 },
 
 {
@@ -13714,15 +13714,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/stacktraces/#",
-    "page": "StackTraces",
-    "title": "StackTraces",
+    "page": "堆栈跟踪",
+    "title": "堆栈跟踪",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "base/stacktraces/#Base.StackTraces.StackFrame",
-    "page": "StackTraces",
+    "page": "堆栈跟踪",
     "title": "Base.StackTraces.StackFrame",
     "category": "type",
     "text": "StackFrame\n\nStack information representing execution context, with the following fields:\n\nfunc::Symbol\nThe name of the function containing the execution context.\nlinfo::Union{Core.MethodInstance, CodeInfo, Nothing}\nThe MethodInstance containing the execution context (if it could be found).\nfile::Symbol\nThe path to the file containing the execution context.\nline::Int\nThe line number in the file containing the execution context.\nfrom_c::Bool\nTrue if the code is from C.\ninlined::Bool\nTrue if the code is from an inlined frame.\npointer::UInt64\nRepresentation of the pointer to the execution context as returned by backtrace.\n\n\n\n\n\n"
@@ -13730,7 +13730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/stacktraces/#Base.StackTraces.StackTrace",
-    "page": "StackTraces",
+    "page": "堆栈跟踪",
     "title": "Base.StackTraces.StackTrace",
     "category": "type",
     "text": "StackTrace\n\nAn alias for Vector{StackFrame} provided for convenience; returned by calls to stacktrace.\n\n\n\n\n\n"
@@ -13738,7 +13738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/stacktraces/#Base.StackTraces.stacktrace",
-    "page": "StackTraces",
+    "page": "堆栈跟踪",
     "title": "Base.StackTraces.stacktrace",
     "category": "function",
     "text": "stacktrace([trace::Vector{Ptr{Cvoid}},] [c_funcs::Bool=false]) -> StackTrace\n\nReturns a stack trace in the form of a vector of StackFrames. (By default stacktrace doesn\'t return C functions, but this can be enabled.) When called without specifying a trace, stacktrace first calls backtrace.\n\n\n\n\n\n"
@@ -13746,7 +13746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/stacktraces/#Base.StackTraces.lookup",
-    "page": "StackTraces",
+    "page": "堆栈跟踪",
     "title": "Base.StackTraces.lookup",
     "category": "function",
     "text": "lookup(pointer::Union{Ptr{Cvoid}, UInt}) -> Vector{StackFrame}\n\nGiven a pointer to an execution context (usually generated by a call to backtrace), looks up stack frame context information. Returns an array of frame information for all functions inlined at that point, innermost function first.\n\n\n\n\n\n"
@@ -13754,16 +13754,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "base/stacktraces/#Base.StackTraces.remove_frames!",
-    "page": "StackTraces",
+    "page": "堆栈跟踪",
     "title": "Base.StackTraces.remove_frames!",
     "category": "function",
     "text": "remove_frames!(stack::StackTrace, name::Symbol)\n\nTakes a StackTrace (a vector of StackFrames) and a function name (a Symbol) and removes the StackFrame specified by the function name from the StackTrace (also removing all frames above the specified function). Primarily used to remove StackTraces functions from the StackTrace prior to returning it.\n\n\n\n\n\nremove_frames!(stack::StackTrace, m::Module)\n\nReturns the StackTrace with all StackFrames from the provided Module removed.\n\n\n\n\n\n"
 },
 
 {
-    "location": "base/stacktraces/#StackTraces-1",
-    "page": "StackTraces",
-    "title": "StackTraces",
+    "location": "base/stacktraces/#堆栈跟踪-1",
+    "page": "堆栈跟踪",
+    "title": "堆栈跟踪",
     "category": "section",
     "text": "Base.StackTraces.StackFrame\nBase.StackTraces.StackTrace\nBase.StackTraces.stacktraceBase.StackTraces 中以下方法和类型不会被导出，需要显式调用，例如 StackTraces.lookup(ptr)。Base.StackTraces.lookup\nBase.StackTraces.remove_frames!"
 },
@@ -13889,9 +13889,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/Dates/#Constructors-1",
+    "location": "stdlib/Dates/#构造函数-1",
     "page": "Dates",
-    "title": "Constructors",
+    "title": "构造函数",
     "category": "section",
     "text": "Date and DateTime types can be constructed by integer or Period types, by parsing, or through adjusters (more on those later):julia> DateTime(2013)\n2013-01-01T00:00:00\n\njulia> DateTime(2013,7)\n2013-07-01T00:00:00\n\njulia> DateTime(2013,7,1)\n2013-07-01T00:00:00\n\njulia> DateTime(2013,7,1,12)\n2013-07-01T12:00:00\n\njulia> DateTime(2013,7,1,12,30)\n2013-07-01T12:30:00\n\njulia> DateTime(2013,7,1,12,30,59)\n2013-07-01T12:30:59\n\njulia> DateTime(2013,7,1,12,30,59,1)\n2013-07-01T12:30:59.001\n\njulia> Date(2013)\n2013-01-01\n\njulia> Date(2013,7)\n2013-07-01\n\njulia> Date(2013,7,1)\n2013-07-01\n\njulia> Date(Dates.Year(2013),Dates.Month(7),Dates.Day(1))\n2013-07-01\n\njulia> Date(Dates.Month(7),Dates.Year(2013))\n2013-07-01Date or DateTime parsing is accomplished by the use of format strings. Format strings work by the notion of defining delimited or fixed-width \"slots\" that contain a period to parse and passing the text to parse and format string to a Date or DateTime constructor, of the form Date(\"2015-01-01\",\"y-m-d\") or DateTime(\"20150101\",\"yyyymmdd\").Delimited slots are marked by specifying the delimiter the parser should expect between two subsequent periods; so \"y-m-d\" lets the parser know that between the first and second slots in a date string like \"2014-07-16\", it should find the - character. The y, m, and d characters let the parser know which periods to parse in each slot.Fixed-width slots are specified by repeating the period character the number of times corresponding to the width with no delimiter between characters. So \"yyyymmdd\" would correspond to a date string like \"20140716\". The parser distinguishes a fixed-width slot by the absence of a delimiter, noting the transition \"yyyymm\" from one period character to the next.Support for text-form month parsing is also supported through the u and U characters, for abbreviated and full-length month names, respectively. By default, only English month names are supported, so u corresponds to \"Jan\", \"Feb\", \"Mar\", etc. And U corresponds to \"January\", \"February\", \"March\", etc. Similar to other name=>value mapping functions dayname and monthname, custom locales can be loaded by passing in the locale=>Dict{String,Int} mapping to the MONTHTOVALUEABBR and MONTHTOVALUE dicts for abbreviated and full-name month names, respectively.One note on parsing performance: using the Date(date_string,format_string) function is fine if only called a few times. If there are many similarly formatted date strings to parse however, it is much more efficient to first create a Dates.DateFormat, and pass it instead of a raw format string.julia> df = DateFormat(\"y-m-d\");\n\njulia> dt = Date(\"2015-01-01\",df)\n2015-01-01\n\njulia> dt2 = Date(\"2015-01-02\",df)\n2015-01-02You can also use the dateformat\"\" string macro. This macro creates the DateFormat object once when the macro is expanded and uses the same DateFormat object even if a code snippet is run multiple times.julia> for i = 1:10^5\n           Date(\"2015-01-01\", dateformat\"y-m-d\")\n       endA full suite of parsing and formatting tests and examples is available in stdlib/Dates/test/io.jl."
 },
@@ -13905,19 +13905,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/Dates/#Accessor-Functions-1",
+    "location": "stdlib/Dates/#访问函数-1",
     "page": "Dates",
-    "title": "Accessor Functions",
+    "title": "访问函数",
     "category": "section",
-    "text": "Because the Date and DateTime types are stored as single Int64 values, date parts or fields can be retrieved through accessor functions. The lowercase accessors return the field as an integer:julia> t = Date(2014, 1, 31)\n2014-01-31\n\njulia> Dates.year(t)\n2014\n\njulia> Dates.month(t)\n1\n\njulia> Dates.week(t)\n5\n\njulia> Dates.day(t)\n31While propercase return the same value in the corresponding Period type:julia> Dates.Year(t)\n2014 years\n\njulia> Dates.Day(t)\n31 daysCompound methods are provided, as they provide a measure of efficiency if multiple fields are needed at the same time:julia> Dates.yearmonth(t)\n(2014, 1)\n\njulia> Dates.monthday(t)\n(1, 31)\n\njulia> Dates.yearmonthday(t)\n(2014, 1, 31)One may also access the underlying UTInstant or integer value:julia> dump(t)\nDate\n  instant: Dates.UTInstant{Day}\n    periods: Day\n      value: Int64 735264\n\njulia> t.instant\nDates.UTInstant{Day}(735264 days)\n\njulia> Dates.value(t)\n735264"
+    "text": "Because the Date and DateTime types are stored as single Int64 values, date parts or fields can be retrieved through accessor functions. The lowercase accessors return the field as an integer:julia> t = Date(2014, 1, 31)\n2014-01-31\n\njulia> Dates.year(t)\n2014\n\njulia> Dates.month(t)\n1\n\njulia> Dates.week(t)\n5\n\njulia> Dates.day(t)\n31当首字母大写时会返回对应 Period 类型的相同值：julia> Dates.Year(t)\n2014 years\n\njulia> Dates.Day(t)\n31 daysCompound methods are provided, as they provide a measure of efficiency if multiple fields are needed at the same time:julia> Dates.yearmonth(t)\n(2014, 1)\n\njulia> Dates.monthday(t)\n(1, 31)\n\njulia> Dates.yearmonthday(t)\n(2014, 1, 31)你也可以访问底层的 UTInstant 或整数值：julia> dump(t)\nDate\n  instant: Dates.UTInstant{Day}\n    periods: Day\n      value: Int64 735264\n\njulia> t.instant\nDates.UTInstant{Day}(735264 days)\n\njulia> Dates.value(t)\n735264"
 },
 
 {
-    "location": "stdlib/Dates/#Query-Functions-1",
+    "location": "stdlib/Dates/#查询函数-1",
     "page": "Dates",
-    "title": "Query Functions",
+    "title": "查询函数",
     "category": "section",
-    "text": "Query functions provide calendrical information about a TimeType. They include information about the day of the week:julia> t = Date(2014, 1, 31)\n2014-01-31\n\njulia> Dates.dayofweek(t)\n5\n\njulia> Dates.dayname(t)\n\"Friday\"\n\njulia> Dates.dayofweekofmonth(t) # 5th Friday of January\n5Month of the year:julia> Dates.monthname(t)\n\"January\"\n\njulia> Dates.daysinmonth(t)\n31As well as information about the TimeType\'s year and quarter:julia> Dates.isleapyear(t)\nfalse\n\njulia> Dates.dayofyear(t)\n31\n\njulia> Dates.quarterofyear(t)\n1\n\njulia> Dates.dayofquarter(t)\n31The dayname and monthname methods can also take an optional locale keyword that can be used to return the name of the day or month of the year for other languages/locales. There are also versions of these functions returning the abbreviated names, namely dayabbr and monthabbr. First the mapping is loaded into the LOCALES variable:julia> french_months = [\"janvier\", \"février\", \"mars\", \"avril\", \"mai\", \"juin\",\n                        \"juillet\", \"août\", \"septembre\", \"octobre\", \"novembre\", \"décembre\"];\n\njulia> french_monts_abbrev = [\"janv\",\"févr\",\"mars\",\"avril\",\"mai\",\"juin\",\n                              \"juil\",\"août\",\"sept\",\"oct\",\"nov\",\"déc\"];\n\njulia> french_days = [\"lundi\",\"mardi\",\"mercredi\",\"jeudi\",\"vendredi\",\"samedi\",\"dimanche\"];\n\njulia> Dates.LOCALES[\"french\"] = Dates.DateLocale(french_months, french_monts_abbrev, french_days, [\"\"]);The above mentioned functions can then be used to perform the queries:julia> Dates.dayname(t;locale=\"french\")\n\"vendredi\"\n\njulia> Dates.monthname(t;locale=\"french\")\n\"janvier\"\n\njulia> Dates.monthabbr(t;locale=\"french\")\n\"janv\"Since the abbreviated versions of the days are not loaded, trying to use the function dayabbr will error.julia> Dates.dayabbr(t;locale=\"french\")\nERROR: BoundsError: attempt to access 1-element Array{String,1} at index [5]\nStacktrace:\n[...]"
+    "text": "Query functions provide calendrical information about a TimeType. They include information about the day of the week:julia> t = Date(2014, 1, 31)\n2014-01-31\n\njulia> Dates.dayofweek(t)\n5\n\njulia> Dates.dayname(t)\n\"Friday\"\n\njulia> Dates.dayofweekofmonth(t) # 5th Friday of January\n5一年中的月份：julia> Dates.monthname(t)\n\"January\"\n\njulia> Dates.daysinmonth(t)\n31As well as information about the TimeType\'s year and quarter:julia> Dates.isleapyear(t)\nfalse\n\njulia> Dates.dayofyear(t)\n31\n\njulia> Dates.quarterofyear(t)\n1\n\njulia> Dates.dayofquarter(t)\n31The dayname and monthname methods can also take an optional locale keyword that can be used to return the name of the day or month of the year for other languages/locales. There are also versions of these functions returning the abbreviated names, namely dayabbr and monthabbr. First the mapping is loaded into the LOCALES variable:julia> french_months = [\"janvier\", \"février\", \"mars\", \"avril\", \"mai\", \"juin\",\n                        \"juillet\", \"août\", \"septembre\", \"octobre\", \"novembre\", \"décembre\"];\n\njulia> french_monts_abbrev = [\"janv\",\"févr\",\"mars\",\"avril\",\"mai\",\"juin\",\n                              \"juil\",\"août\",\"sept\",\"oct\",\"nov\",\"déc\"];\n\njulia> french_days = [\"lundi\",\"mardi\",\"mercredi\",\"jeudi\",\"vendredi\",\"samedi\",\"dimanche\"];\n\njulia> Dates.LOCALES[\"french\"] = Dates.DateLocale(french_months, french_monts_abbrev, french_days, [\"\"]);The above mentioned functions can then be used to perform the queries:julia> Dates.dayname(t;locale=\"french\")\n\"vendredi\"\n\njulia> Dates.monthname(t;locale=\"french\")\n\"janvier\"\n\njulia> Dates.monthabbr(t;locale=\"french\")\n\"janv\"自从缩写版本的 days 函数不加载之后，试图访问函数 dayabbr 将导致一个错误。julia> Dates.dayabbr(t;locale=\"french\")\nERROR: BoundsError: attempt to access 1-element Array{String,1} at index [5]\nStacktrace:\n[...]"
 },
 
 {
@@ -13933,7 +13933,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Dates",
     "title": "Adjuster Functions",
     "category": "section",
-    "text": "As convenient as date-period arithmetic is, often the kinds of calculations needed on dates take on a calendrical or temporal nature rather than a fixed number of periods. Holidays are a perfect example; most follow rules such as \"Memorial Day = Last Monday of May\", or \"Thanksgiving = 4th Thursday of November\". These kinds of temporal expressions deal with rules relative to the calendar, like first or last of the month, next Tuesday, or the first and third Wednesdays, etc.The Dates module provides the adjuster API through several convenient methods that aid in simply and succinctly expressing temporal rules. The first group of adjuster methods deal with the first and last of weeks, months, quarters, and years. They each take a single TimeType as input and return or adjust to the first or last of the desired period relative to the input.julia> Dates.firstdayofweek(Date(2014,7,16)) # Adjusts the input to the Monday of the input\'s week\n2014-07-14\n\njulia> Dates.lastdayofmonth(Date(2014,7,16)) # Adjusts to the last day of the input\'s month\n2014-07-31\n\njulia> Dates.lastdayofquarter(Date(2014,7,16)) # Adjusts to the last day of the input\'s quarter\n2014-09-30The next two higher-order methods, tonext, and toprev, generalize working with temporal expressions by taking a DateFunction as first argument, along with a starting TimeType. A DateFunction is just a function, usually anonymous, that takes a single TimeType as input and returns a Bool, true indicating a satisfied adjustment criterion. For example:julia> istuesday = x->Dates.dayofweek(x) == Dates.Tuesday; # Returns true if the day of the week of x is Tuesday\n\njulia> Dates.tonext(istuesday, Date(2014,7,13)) # 2014-07-13 is a Sunday\n2014-07-15\n\njulia> Dates.tonext(Date(2014,7,13), Dates.Tuesday) # Convenience method provided for day of the week adjustments\n2014-07-15This is useful with the do-block syntax for more complex temporal expressions:julia> Dates.tonext(Date(2014,7,13)) do x\n           # Return true on the 4th Thursday of November (Thanksgiving)\n           Dates.dayofweek(x) == Dates.Thursday &&\n           Dates.dayofweekofmonth(x) == 4 &&\n           Dates.month(x) == Dates.November\n       end\n2014-11-27The Base.filter method can be used to obtain all valid dates/moments in a specified range:# Pittsburgh street cleaning; Every 2nd Tuesday from April to November\n# Date range from January 1st, 2014 to January 1st, 2015\njulia> dr = Dates.Date(2014):Day(1):Dates.Date(2015);\n\njulia> filter(dr) do x\n           Dates.dayofweek(x) == Dates.Tue &&\n           Dates.April <= Dates.month(x) <= Dates.Nov &&\n           Dates.dayofweekofmonth(x) == 2\n       end\n8-element Array{Date,1}:\n 2014-04-08\n 2014-05-13\n 2014-06-10\n 2014-07-08\n 2014-08-12\n 2014-09-09\n 2014-10-14\n 2014-11-11Additional examples and tests are available in stdlib/Dates/test/adjusters.jl."
+    "text": "As convenient as date-period arithmetic is, often the kinds of calculations needed on dates take on a calendrical or temporal nature rather than a fixed number of periods. Holidays are a perfect example; most follow rules such as \"Memorial Day = Last Monday of May\", or \"Thanksgiving = 4th Thursday of November\". These kinds of temporal expressions deal with rules relative to the calendar, like first or last of the month, next Tuesday, or the first and third Wednesdays, etc.The Dates module provides the adjuster API through several convenient methods that aid in simply and succinctly expressing temporal rules. The first group of adjuster methods deal with the first and last of weeks, months, quarters, and years. They each take a single TimeType as input and return or adjust to the first or last of the desired period relative to the input.julia> Dates.firstdayofweek(Date(2014,7,16)) # Adjusts the input to the Monday of the input\'s week\n2014-07-14\n\njulia> Dates.lastdayofmonth(Date(2014,7,16)) # Adjusts to the last day of the input\'s month\n2014-07-31\n\njulia> Dates.lastdayofquarter(Date(2014,7,16)) # Adjusts to the last day of the input\'s quarter\n2014-09-30The next two higher-order methods, tonext, and toprev, generalize working with temporal expressions by taking a DateFunction as first argument, along with a starting TimeType. A DateFunction is just a function, usually anonymous, that takes a single TimeType as input and returns a Bool, true indicating a satisfied adjustment criterion. For example:julia> istuesday = x->Dates.dayofweek(x) == Dates.Tuesday; # 当 x 是周二时返回 true\n\njulia> Dates.tonext(istuesday, Date(2014,7,13)) # 2014-07-13 是周日\n2014-07-15\n\njulia> Dates.tonext(Date(2014,7,13), Dates.Tuesday) # 星期调整的便捷方法\n2014-07-15This is useful with the do-block syntax for more complex temporal expressions:julia> Dates.tonext(Date(2014,7,13)) do x\n           # 在十一月的第四个星期四——感恩节那天返回 true\n           Dates.dayofweek(x) == Dates.Thursday &&\n           Dates.dayofweekofmonth(x) == 4 &&\n           Dates.month(x) == Dates.November\n       end\n2014-11-27The Base.filter method can be used to obtain all valid dates/moments in a specified range:# Pittsburgh street cleaning; Every 2nd Tuesday from April to November\n# Date range from January 1st, 2014 to January 1st, 2015\njulia> dr = Dates.Date(2014):Day(1):Dates.Date(2015);\n\njulia> filter(dr) do x\n           Dates.dayofweek(x) == Dates.Tue &&\n           Dates.April <= Dates.month(x) <= Dates.Nov &&\n           Dates.dayofweekofmonth(x) == 2\n       end\n8-element Array{Date,1}:\n 2014-04-08\n 2014-05-13\n 2014-06-10\n 2014-07-08\n 2014-08-12\n 2014-09-09\n 2014-10-14\n 2014-11-11Additional examples and tests are available in stdlib/Dates/test/adjusters.jl."
 },
 
 {
@@ -13941,7 +13941,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Dates",
     "title": "Period Types",
     "category": "section",
-    "text": "Periods are a human view of discrete, sometimes irregular durations of time. Consider 1 month; it could represent, in days, a value of 28, 29, 30, or 31 depending on the year and month context. Or a year could represent 365 or 366 days in the case of a leap year. Period types are simple Int64 wrappers and are constructed by wrapping any Int64 convertible type, i.e. Year(1) or Month(3.0). Arithmetic between Period of the same type behave like integers, and limited Period-Real arithmetic is available.julia> y1 = Dates.Year(1)\n1 year\n\njulia> y2 = Dates.Year(2)\n2 years\n\njulia> y3 = Dates.Year(10)\n10 years\n\njulia> y1 + y2\n3 years\n\njulia> div(y3,y2)\n5\n\njulia> y3 - y2\n8 years\n\njulia> y3 % y2\n0 years\n\njulia> div(y3,3) # mirrors integer division\n3 years"
+    "text": "Periods are a human view of discrete, sometimes irregular durations of time. Consider 1 month; it could represent, in days, a value of 28, 29, 30, or 31 depending on the year and month context. Or a year could represent 365 or 366 days in the case of a leap year. Period types are simple Int64 wrappers and are constructed by wrapping any Int64 convertible type, i.e. Year(1) or Month(3.0). Arithmetic between Period of the same type behave like integers, and limited Period-Real arithmetic is available.julia> y1 = Dates.Year(1)\n1 year\n\njulia> y2 = Dates.Year(2)\n2 years\n\njulia> y3 = Dates.Year(10)\n10 years\n\njulia> y1 + y2\n3 years\n\njulia> div(y3,y2)\n5\n\njulia> y3 - y2\n8 years\n\njulia> y3 % y2\n0 years\n\njulia> div(y3,3) # 镜像整数除法\n3 years"
 },
 
 {
@@ -14409,7 +14409,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/Dates/#Accessor-Functions-2",
+    "location": "stdlib/Dates/#Accessor-Functions-1",
     "page": "Dates",
     "title": "Accessor Functions",
     "category": "section",
@@ -14529,7 +14529,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "stdlib/Dates/#Query-Functions-2",
+    "location": "stdlib/Dates/#Query-Functions-1",
     "page": "Dates",
     "title": "Query Functions",
     "category": "section",
@@ -14866,15 +14866,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/DelimitedFiles/#",
-    "page": "Delimited Files",
-    "title": "Delimited Files",
+    "page": "分隔符文件",
+    "title": "分隔符文件",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar,Type,AbstractChar}",
-    "page": "Delimited Files",
+    "page": "分隔符文件",
     "title": "DelimitedFiles.readdlm",
     "category": "method",
     "text": "readdlm(source, delim::AbstractChar, T::Type, eol::AbstractChar; header=false, skipstart=0, skipblanks=true, use_mmap, quotes=true, dims, comments=false, comment_char=\'#\')\n\nRead a matrix from the source where each line (separated by eol) gives one row, with elements separated by the given delimiter. The source can be a text file, stream or byte array. Memory mapped files can be used by passing the byte array representation of the mapped segment as source.\n\nIf T is a numeric type, the result is an array of that type, with any non-numeric elements as NaN for floating-point types, or zero. Other useful values of T include String, AbstractString, and Any.\n\nIf header is true, the first row of data will be read as header and the tuple (data_cells, header_cells) is returned instead of only data_cells.\n\nSpecifying skipstart will ignore the corresponding number of initial lines from the input.\n\nIf skipblanks is true, blank lines in the input will be ignored.\n\nIf use_mmap is true, the file specified by source is memory mapped for potential speedups. Default is true except on Windows. On Windows, you may want to specify true if the file is large, and is only read once and not written to.\n\nIf quotes is true, columns enclosed within double-quote (\") characters are allowed to contain new lines and column delimiters. Double-quote characters within a quoted field must be escaped with another double-quote.  Specifying dims as a tuple of the expected rows and columns (including header, if any) may speed up reading of large files.  If comments is true, lines beginning with comment_char and text following comment_char in any line are ignored.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [5; 6; 7; 8];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end\n\njulia> readdlm(\"delim_file.txt\", \'\\t\', Int, \'\\n\')\n4×2 Array{Int64,2}:\n 1  5\n 2  6\n 3  7\n 4  8\n\n\n\n\n\n"
@@ -14882,7 +14882,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar,AbstractChar}",
-    "page": "Delimited Files",
+    "page": "分隔符文件",
     "title": "DelimitedFiles.readdlm",
     "category": "method",
     "text": "readdlm(source, delim::AbstractChar, eol::AbstractChar; options...)\n\nIf all data is numeric, the result will be a numeric array. If some elements cannot be parsed as numbers, a heterogeneous array of numbers and strings is returned.\n\n\n\n\n\n"
@@ -14890,7 +14890,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar,Type}",
-    "page": "Delimited Files",
+    "page": "分隔符文件",
     "title": "DelimitedFiles.readdlm",
     "category": "method",
     "text": "readdlm(source, delim::AbstractChar, T::Type; options...)\n\nThe end of line delimiter is taken as \\n.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [1.1; 2.2; 3.3; 4.4];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y], \',\')\n       end;\n\njulia> readdlm(\"delim_file.txt\", \',\', Float64)\n4×2 Array{Float64,2}:\n 1.0  1.1\n 2.0  2.2\n 3.0  3.3\n 4.0  4.4\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
@@ -14898,7 +14898,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,AbstractChar}",
-    "page": "Delimited Files",
+    "page": "分隔符文件",
     "title": "DelimitedFiles.readdlm",
     "category": "method",
     "text": "readdlm(source, delim::AbstractChar; options...)\n\nThe end of line delimiter is taken as \\n. If all data is numeric, the result will be a numeric array. If some elements cannot be parsed as numbers, a heterogeneous array of numbers and strings is returned.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [1.1; 2.2; 3.3; 4.4];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y], \',\')\n       end;\n\njulia> readdlm(\"delim_file.txt\", \',\')\n4×2 Array{Float64,2}:\n 1.0  1.1\n 2.0  2.2\n 3.0  3.3\n 4.0  4.4\n\njulia> rm(\"delim_file.txt\")\n\njulia> z = [\"a\"; \"b\"; \"c\"; \"d\"];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x z], \',\')\n       end;\n\njulia> readdlm(\"delim_file.txt\", \',\')\n4×2 Array{Any,2}:\n 1  \"a\"\n 2  \"b\"\n 3  \"c\"\n 4  \"d\"\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
@@ -14906,7 +14906,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any,Type}",
-    "page": "Delimited Files",
+    "page": "分隔符文件",
     "title": "DelimitedFiles.readdlm",
     "category": "method",
     "text": "readdlm(source, T::Type; options...)\n\nThe columns are assumed to be separated by one or more whitespaces. The end of line delimiter is taken as \\n.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [5; 6; 7; 8];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end;\n\njulia> readdlm(\"delim_file.txt\", Int64)\n4×2 Array{Int64,2}:\n 1  5\n 2  6\n 3  7\n 4  8\n\njulia> readdlm(\"delim_file.txt\", Float64)\n4×2 Array{Float64,2}:\n 1.0  5.0\n 2.0  6.0\n 3.0  7.0\n 4.0  8.0\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
@@ -14914,7 +14914,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/DelimitedFiles/#DelimitedFiles.readdlm-Tuple{Any}",
-    "page": "Delimited Files",
+    "page": "分隔符文件",
     "title": "DelimitedFiles.readdlm",
     "category": "method",
     "text": "readdlm(source; options...)\n\nThe columns are assumed to be separated by one or more whitespaces. The end of line delimiter is taken as \\n. If all data is numeric, the result will be a numeric array. If some elements cannot be parsed as numbers, a heterogeneous array of numbers and strings is returned.\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [\"a\"; \"b\"; \"c\"; \"d\"];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end;\n\njulia> readdlm(\"delim_file.txt\")\n4×2 Array{Any,2}:\n 1  \"a\"\n 2  \"b\"\n 3  \"c\"\n 4  \"d\"\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
@@ -14922,31 +14922,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/DelimitedFiles/#DelimitedFiles.writedlm",
-    "page": "Delimited Files",
+    "page": "分隔符文件",
     "title": "DelimitedFiles.writedlm",
     "category": "function",
     "text": "writedlm(f, A, delim=\'\\t\'; opts)\n\nWrite A (a vector, matrix, or an iterable collection of iterable rows) as text to f (either a filename string or an IO stream) using the given delimiter delim (which defaults to tab, but can be any printable Julia object, typically a Char or AbstractString).\n\nFor example, two vectors x and y of the same length can be written as two columns of tab-delimited text to f by either writedlm(f, [x y]) or by writedlm(f, zip(x, y)).\n\nExamples\n\njulia> using DelimitedFiles\n\njulia> x = [1; 2; 3; 4];\n\njulia> y = [5; 6; 7; 8];\n\njulia> open(\"delim_file.txt\", \"w\") do io\n           writedlm(io, [x y])\n       end\n\njulia> readdlm(\"delim_file.txt\", \'\\t\', Int, \'\\n\')\n4×2 Array{Int64,2}:\n 1  5\n 2  6\n 3  7\n 4  8\n\njulia> rm(\"delim_file.txt\")\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/DelimitedFiles/#Delimited-Files-1",
-    "page": "Delimited Files",
-    "title": "Delimited Files",
+    "location": "stdlib/DelimitedFiles/#分隔符文件-1",
+    "page": "分隔符文件",
+    "title": "分隔符文件",
     "category": "section",
     "text": "DocTestSetup = :(using DelimitedFiles)DelimitedFiles.readdlm(::Any, ::AbstractChar, ::Type, ::AbstractChar)\nDelimitedFiles.readdlm(::Any, ::AbstractChar, ::AbstractChar)\nDelimitedFiles.readdlm(::Any, ::AbstractChar, ::Type)\nDelimitedFiles.readdlm(::Any, ::AbstractChar)\nDelimitedFiles.readdlm(::Any, ::Type)\nDelimitedFiles.readdlm(::Any)\nDelimitedFiles.writedlmDocTestSetup = nothing"
 },
 
 {
     "location": "stdlib/Distributed/#",
-    "page": "Distributed Computing",
-    "title": "Distributed Computing",
+    "page": "分布式计算",
+    "title": "分布式计算",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/Distributed/#Distributed.addprocs",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.addprocs",
     "category": "function",
     "text": "addprocs(manager::ClusterManager; kwargs...) -> List of process identifiers\n\nLaunches worker processes via the specified cluster manager.\n\nFor example, Beowulf clusters are supported via a custom cluster manager implemented in the package ClusterManagers.jl.\n\nThe number of seconds a newly launched worker waits for connection establishment from the master can be specified via variable JULIA_WORKER_TIMEOUT in the worker process\'s environment. Relevant only when using TCP/IP as transport.\n\n\n\n\n\naddprocs(machines; tunnel=false, sshflags=``, max_parallel=10, kwargs...) -> List of process identifiers\n\nAdd processes on remote machines via SSH. Requires julia to be installed in the same location on each node, or to be available via a shared file system.\n\nmachines is a vector of machine specifications. Workers are started for each specification.\n\nA machine specification is either a string machine_spec or a tuple - (machine_spec, count).\n\nmachine_spec is a string of the form [user@]host[:port] [bind_addr[:port]]. user defaults to current user, port to the standard ssh port. If [bind_addr[:port]] is specified, other workers will connect to this worker at the specified bind_addr and port.\n\ncount is the number of workers to be launched on the specified host. If specified as :auto it will launch as many workers as the number of CPU threads on the specific host.\n\nKeyword arguments:\n\ntunnel: if true then SSH tunneling will be used to connect to the worker from the master process. Default is false.\nsshflags: specifies additional ssh options, e.g. sshflags=`-i /home/foo/bar.pem`\nmax_parallel: specifies the maximum number of workers connected to in parallel at a host. Defaults to 10.\ndir: specifies the working directory on the workers. Defaults to the host\'s current directory (as found by pwd())\nenable_threaded_blas: if true then  BLAS will run on multiple threads in added processes. Default is false.\nexename: name of the julia executable. Defaults to \"$(Sys.BINDIR)/julia\" or \"$(Sys.BINDIR)/julia-debug\" as the case may be.\nexeflags: additional flags passed to the worker processes.\ntopology: Specifies how the workers connect to each other. Sending a message between unconnected workers results in an error.\ntopology=:all_to_all: All processes are connected to each other. The default.\ntopology=:master_worker: Only the driver process, i.e. pid 1 connects to the workers. The workers do not connect to each other.\ntopology=:custom: The launch method of the cluster manager specifies the connection topology via fields ident and connect_idents in WorkerConfig. A worker with a cluster manager identity ident will connect to all workers specified in connect_idents.\nlazy: Applicable only with topology=:all_to_all. If true, worker-worker connections are setup lazily, i.e. they are setup at the first instance of a remote call between workers. Default is true.\n\nEnvironment variables :\n\nIf the master process fails to establish a connection with a newly launched worker within 60.0 seconds, the worker treats it as a fatal situation and terminates. This timeout can be controlled via environment variable JULIA_WORKER_TIMEOUT. The value of JULIA_WORKER_TIMEOUT on the master process specifies the number of seconds a newly launched worker waits for connection establishment.\n\n\n\n\n\naddprocs(; kwargs...) -> List of process identifiers\n\nEquivalent to addprocs(Sys.CPU_THREADS; kwargs...)\n\nNote that workers do not run a .julia/config/startup.jl startup script, nor do they synchronize their global state (such as global variables, new method definitions, and loaded modules) with any of the other running processes.\n\n\n\n\n\naddprocs(np::Integer; restrict=true, kwargs...) -> List of process identifiers\n\nLaunches workers using the in-built LocalManager which only launches workers on the local host. This can be used to take advantage of multiple cores. addprocs(4) will add 4 processes on the local machine. If restrict is true, binding is restricted to 127.0.0.1. Keyword args dir, exename, exeflags, topology, lazy and enable_threaded_blas have the same effect as documented for addprocs(machines).\n\n\n\n\n\n"
@@ -14954,7 +14954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.nprocs",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.nprocs",
     "category": "function",
     "text": "nprocs()\n\nGet the number of available processes.\n\nExamples\n\njulia> nprocs()\n3\n\njulia> workers()\n5-element Array{Int64,1}:\n 2\n 3\n\n\n\n\n\n"
@@ -14962,7 +14962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.nworkers",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.nworkers",
     "category": "function",
     "text": "nworkers()\n\nGet the number of available worker processes. This is one less than nprocs(). Equal to nprocs() if nprocs() == 1.\n\nExamples\n\n$ julia -p 5\n\njulia> nprocs()\n6\n\njulia> nworkers()\n5\n\n\n\n\n\n"
@@ -14970,7 +14970,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.procs-Tuple{}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.procs",
     "category": "method",
     "text": "procs()\n\nReturn a list of all process identifiers, including pid 1 (which is not included by workers()).\n\nExamples\n\n$ julia -p 5\n\njulia> procs()\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\n\n\n\n\n"
@@ -14978,7 +14978,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.procs-Tuple{Integer}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.procs",
     "category": "method",
     "text": "procs(pid::Integer)\n\nReturn a list of all process identifiers on the same physical node. Specifically all workers bound to the same ip-address as pid are returned.\n\n\n\n\n\n"
@@ -14986,7 +14986,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.workers",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.workers",
     "category": "function",
     "text": "workers()\n\nReturn a list of all worker process identifiers.\n\nExamples\n\n$ julia -p 5\n\njulia> workers()\n2-element Array{Int64,1}:\n 2\n 3\n\n\n\n\n\n"
@@ -14994,7 +14994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.rmprocs",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.rmprocs",
     "category": "function",
     "text": "rmprocs(pids...; waitfor=typemax(Int))\n\nRemove the specified workers. Note that only process 1 can add or remove workers.\n\nArgument waitfor specifies how long to wait for the workers to shut down:\n\nIf unspecified, rmprocs will wait until all requested pids are removed.\nAn ErrorException is raised if all workers cannot be terminated before the requested waitfor seconds.\nWith a waitfor value of 0, the call returns immediately with the workers scheduled for removal in a different task. The scheduled Task object is returned. The user should call wait on the task before invoking any other parallel calls.\n\nExamples\n\n$ julia -p 5\n\njulia> t = rmprocs(2, 3, waitfor=0)\nTask (runnable) @0x0000000107c718d0\n\njulia> wait(t)\n\njulia> workers()\n3-element Array{Int64,1}:\n 4\n 5\n 6\n\n\n\n\n\n"
@@ -15002,7 +15002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.interrupt",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.interrupt",
     "category": "function",
     "text": "interrupt(pids::Integer...)\n\nInterrupt the current executing task on the specified workers. This is equivalent to pressing Ctrl-C on the local machine. If no arguments are given, all workers are interrupted.\n\n\n\n\n\ninterrupt(pids::AbstractVector=workers())\n\nInterrupt the current executing task on the specified workers. This is equivalent to pressing Ctrl-C on the local machine. If no arguments are given, all workers are interrupted.\n\n\n\n\n\n"
@@ -15010,7 +15010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.myid",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.myid",
     "category": "function",
     "text": "myid()\n\nGet the id of the current process.\n\nExamples\n\njulia> myid()\n1\n\njulia> remotecall_fetch(() -> myid(), 4)\n4\n\n\n\n\n\n"
@@ -15018,7 +15018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.pmap",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.pmap",
     "category": "function",
     "text": "pmap(f, [::AbstractWorkerPool], c...; distributed=true, batch_size=1, on_error=nothing, retry_delays=[], retry_check=nothing) -> collection\n\nTransform collection c by applying f to each element using available workers and tasks.\n\nFor multiple collection arguments, apply f elementwise.\n\nNote that f must be made available to all worker processes; see Code Availability and Loading Packages for details.\n\nIf a worker pool is not specified, all available workers, i.e., the default worker pool is used.\n\nBy default, pmap distributes the computation over all specified workers. To use only the local process and distribute over tasks, specify distributed=false. This is equivalent to using asyncmap. For example, pmap(f, c; distributed=false) is equivalent to asyncmap(f,c; ntasks=()->nworkers())\n\npmap can also use a mix of processes and tasks via the batch_size argument. For batch sizes greater than 1, the collection is processed in multiple batches, each of length batch_size or less. A batch is sent as a single request to a free worker, where a local asyncmap processes elements from the batch using multiple concurrent tasks.\n\nAny error stops pmap from processing the remainder of the collection. To override this behavior you can specify an error handling function via argument on_error which takes in a single argument, i.e., the exception. The function can stop the processing by rethrowing the error, or, to continue, return any value which is then returned inline with the results to the caller.\n\nConsider the following two examples. The first one returns the exception object inline, the second a 0 in place of any exception:\n\njulia> pmap(x->iseven(x) ? error(\"foo\") : x, 1:4; on_error=identity)\n4-element Array{Any,1}:\n 1\n  ErrorException(\"foo\")\n 3\n  ErrorException(\"foo\")\n\njulia> pmap(x->iseven(x) ? error(\"foo\") : x, 1:4; on_error=ex->0)\n4-element Array{Int64,1}:\n 1\n 0\n 3\n 0\n\nErrors can also be handled by retrying failed computations. Keyword arguments retry_delays and retry_check are passed through to retry as keyword arguments delays and check respectively. If batching is specified, and an entire batch fails, all items in the batch are retried.\n\nNote that if both on_error and retry_delays are specified, the on_error hook is called before retrying. If on_error does not throw (or rethrow) an exception, the element will not be retried.\n\nExample: On errors, retry f on an element a maximum of 3 times without any delay between retries.\n\npmap(f, c; retry_delays = zeros(3))\n\nExample: Retry f only if the exception is not of type InexactError, with exponentially increasing delays up to 3 times. Return a NaN in place for all InexactError occurrences.\n\npmap(f, c; on_error = e->(isa(e, InexactError) ? NaN : rethrow(e)), retry_delays = ExponentialBackOff(n = 3))\n\n\n\n\n\n"
@@ -15026,7 +15026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.RemoteException",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.RemoteException",
     "category": "type",
     "text": "RemoteException(captured)\n\nExceptions on remote computations are captured and rethrown locally.  A RemoteException wraps the pid of the worker and a captured exception. A CapturedException captures the remote exception and a serializable form of the call stack when the exception was raised.\n\n\n\n\n\n"
@@ -15034,7 +15034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.Future",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.Future",
     "category": "type",
     "text": "Future(pid::Integer=myid())\n\nCreate a Future on process pid. The default pid is the current process.\n\n\n\n\n\n"
@@ -15042,7 +15042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.RemoteChannel",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.RemoteChannel",
     "category": "type",
     "text": "RemoteChannel(pid::Integer=myid())\n\nMake a reference to a Channel{Any}(1) on process pid. The default pid is the current process.\n\nRemoteChannel(f::Function, pid::Integer=myid())\n\nCreate references to remote channels of a specific size and type. f is a function that when executed on pid must return an implementation of an AbstractChannel.\n\nFor example, RemoteChannel(()->Channel{Int}(10), pid), will return a reference to a channel of type Int and size 10 on pid.\n\nThe default pid is the current process.\n\n\n\n\n\n"
@@ -15050,7 +15050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.wait",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.wait",
     "category": "function",
     "text": "wait(r::Future)\n\nWait for a value to become available for the specified Future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified RemoteChannel.\n\n\n\n\n\nwait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\n"
@@ -15058,7 +15058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.fetch-Tuple{Any}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.fetch",
     "category": "method",
     "text": "fetch(x)\n\nWaits and fetches a value from x depending on the type of x:\n\nFuture: Wait for and get the value of a Future. The fetched value is cached locally. Further calls to fetch on the same reference return the cached value. If the remote value is an exception, throws a RemoteException which captures the remote exception and backtrace.\nRemoteChannel: Wait for and get the value of a remote reference. Exceptions raised are same as for a Future .\n\nDoes not remove the item fetched.\n\n\n\n\n\n"
@@ -15066,7 +15066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remotecall-Tuple{Any,Integer,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remotecall",
     "category": "method",
     "text": "remotecall(f, id::Integer, args...; kwargs...) -> Future\n\nCall a function f asynchronously on the given arguments on the specified process. Return a Future. Keyword arguments, if any, are passed through to f.\n\n\n\n\n\n"
@@ -15074,7 +15074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remotecall_wait-Tuple{Any,Integer,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remotecall_wait",
     "category": "method",
     "text": "remotecall_wait(f, id::Integer, args...; kwargs...)\n\nPerform a faster wait(remotecall(...)) in one message on the Worker specified by worker id id. Keyword arguments, if any, are passed through to f.\n\nSee also wait and remotecall.\n\n\n\n\n\n"
@@ -15082,7 +15082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remotecall_fetch-Tuple{Any,Integer,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remotecall_fetch",
     "category": "method",
     "text": "remotecall_fetch(f, id::Integer, args...; kwargs...)\n\nPerform fetch(remotecall(...)) in one message. Keyword arguments, if any, are passed through to f. Any remote exceptions are captured in a RemoteException and thrown.\n\nSee also fetch and remotecall.\n\nExamples\n\n$ julia -p 2\n\njulia> remotecall_fetch(sqrt, 2, 4)\n2.0\n\njulia> remotecall_fetch(sqrt, 2, -4)\nERROR: On worker 2:\nDomainError with -4.0:\nsqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).\n...\n\n\n\n\n\n"
@@ -15090,7 +15090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remote_do-Tuple{Any,Integer,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remote_do",
     "category": "method",
     "text": "remote_do(f, id::Integer, args...; kwargs...) -> nothing\n\nExecutes f on worker id asynchronously. Unlike remotecall, it does not store the result of computation, nor is there a way to wait for its completion.\n\nA successful invocation indicates that the request has been accepted for execution on the remote node.\n\nWhile consecutive remotecalls to the same worker are serialized in the order they are invoked, the order of executions on the remote worker is undetermined. For example, remote_do(f1, 2); remotecall(f2, 2); remote_do(f3, 2) will serialize the call to f1, followed by f2 and f3 in that order. However, it is not guaranteed that f1 is executed before f3 on worker 2.\n\nAny exceptions thrown by f are printed to stderr on the remote worker.\n\nKeyword arguments, if any, are passed through to f.\n\n\n\n\n\n"
@@ -15098,7 +15098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.put!-Tuple{RemoteChannel,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.put!",
     "category": "method",
     "text": "put!(rr::RemoteChannel, args...)\n\nStore a set of values to the RemoteChannel. If the channel is full, blocks until space is available. Return the first argument.\n\n\n\n\n\n"
@@ -15106,7 +15106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.put!-Tuple{Future,Any}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.put!",
     "category": "method",
     "text": "put!(rr::Future, v)\n\nStore a value to a Future rr. Futures are write-once remote references. A put! on an already set Future throws an Exception. All asynchronous remote calls return Futures and set the value to the return value of the call upon completion.\n\n\n\n\n\n"
@@ -15114,7 +15114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.take!-Tuple{RemoteChannel,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.take!",
     "category": "method",
     "text": "take!(rr::RemoteChannel, args...)\n\nFetch value(s) from a RemoteChannel rr, removing the value(s) in the process.\n\n\n\n\n\n"
@@ -15122,7 +15122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.isready-Tuple{RemoteChannel,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.isready",
     "category": "method",
     "text": "isready(rr::RemoteChannel, args...)\n\nDetermine whether a RemoteChannel has a value stored to it. Note that this function can cause race conditions, since by the time you receive its result it may no longer be true. However, it can be safely used on a Future since they are assigned only once.\n\n\n\n\n\n"
@@ -15130,7 +15130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.isready-Tuple{Future}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.isready",
     "category": "method",
     "text": "isready(rr::Future)\n\nDetermine whether a Future has a value stored to it.\n\nIf the argument Future is owned by a different node, this call will block to wait for the answer. It is recommended to wait for rr in a separate task instead or to use a local Channel as a proxy:\n\nc = Channel(1)\n@async put!(c, remotecall_fetch(long_computation, p))\nisready(c)  # will not block\n\n\n\n\n\n"
@@ -15138,7 +15138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.WorkerPool",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.WorkerPool",
     "category": "type",
     "text": "WorkerPool(workers::Vector{Int})\n\nCreate a WorkerPool from a vector of worker ids.\n\nExamples\n\n$ julia -p 3\n\njulia> WorkerPool([2, 3])\nWorkerPool(Channel{Int64}(sz_max:9223372036854775807,sz_curr:2), Set([2, 3]), RemoteChannel{Channel{Any}}(1, 1, 6))\n\n\n\n\n\n"
@@ -15146,7 +15146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.CachingPool",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.CachingPool",
     "category": "type",
     "text": "CachingPool(workers::Vector{Int})\n\nAn implementation of an AbstractWorkerPool. remote, remotecall_fetch, pmap (and other remote calls which execute functions remotely) benefit from caching the serialized/deserialized functions on the worker nodes, especially closures (which may capture large amounts of data).\n\nThe remote cache is maintained for the lifetime of the returned CachingPool object. To clear the cache earlier, use clear!(pool).\n\nFor global variables, only the bindings are captured in a closure, not the data. let blocks can be used to capture global data.\n\nExamples\n\nconst foo = rand(10^8);\nwp = CachingPool(workers())\nlet foo = foo\n    pmap(wp, i -> sum(foo) + i, 1:100);\nend\n\nThe above would transfer foo only once to each worker.\n\n\n\n\n\n"
@@ -15154,7 +15154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.default_worker_pool",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.default_worker_pool",
     "category": "function",
     "text": "default_worker_pool()\n\nWorkerPool containing idle workers - used by remote(f) and pmap (by default).\n\nExamples\n\n$ julia -p 3\n\njulia> default_worker_pool()\nWorkerPool(Channel{Int64}(sz_max:9223372036854775807,sz_curr:3), Set([4, 2, 3]), RemoteChannel{Channel{Any}}(1, 1, 4))\n\n\n\n\n\n"
@@ -15162,7 +15162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.clear!-Tuple{CachingPool}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.clear!",
     "category": "method",
     "text": "clear!(pool::CachingPool) -> pool\n\nRemoves all cached functions from all participating workers.\n\n\n\n\n\n"
@@ -15170,7 +15170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remote",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remote",
     "category": "function",
     "text": "remote([p::AbstractWorkerPool], f) -> Function\n\nReturn an anonymous function that executes function f on an available worker (drawn from WorkerPool p if provided) using remotecall_fetch.\n\n\n\n\n\n"
@@ -15178,7 +15178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remotecall-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remotecall",
     "category": "method",
     "text": "remotecall(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall(f, pid, ....). Wait for and take a free worker from pool and perform a remotecall on it.\n\nExamples\n\n$ julia -p 3\n\njulia> wp = WorkerPool([2, 3]);\n\njulia> A = rand(3000);\n\njulia> f = remotecall(maximum, wp, A)\nFuture(2, 1, 6, nothing)\n\nIn this example, the task ran on pid 2, called from pid 1.\n\n\n\n\n\n"
@@ -15186,7 +15186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remotecall_wait-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remotecall_wait",
     "category": "method",
     "text": "remotecall_wait(f, pool::AbstractWorkerPool, args...; kwargs...) -> Future\n\nWorkerPool variant of remotecall_wait(f, pid, ....). Wait for and take a free worker from pool and perform a remotecall_wait on it.\n\nExamples\n\n$ julia -p 3\n\njulia> wp = WorkerPool([2, 3]);\n\njulia> A = rand(3000);\n\njulia> f = remotecall_wait(maximum, wp, A)\nFuture(3, 1, 9, nothing)\n\njulia> fetch(f)\n0.9995177101692958\n\n\n\n\n\n"
@@ -15194,7 +15194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remotecall_fetch-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remotecall_fetch",
     "category": "method",
     "text": "remotecall_fetch(f, pool::AbstractWorkerPool, args...; kwargs...) -> result\n\nWorkerPool variant of remotecall_fetch(f, pid, ....). Waits for and takes a free worker from pool and performs a remotecall_fetch on it.\n\nExamples\n\n$ julia -p 3\n\njulia> wp = WorkerPool([2, 3]);\n\njulia> A = rand(3000);\n\njulia> remotecall_fetch(maximum, wp, A)\n0.9995177101692958\n\n\n\n\n\n"
@@ -15202,7 +15202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remote_do-Tuple{Any,AbstractWorkerPool,Vararg{Any,N} where N}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remote_do",
     "category": "method",
     "text": "remote_do(f, pool::AbstractWorkerPool, args...; kwargs...) -> nothing\n\nWorkerPool variant of remote_do(f, pid, ....). Wait for and take a free worker from pool and perform a remote_do on it.\n\n\n\n\n\n"
@@ -15210,7 +15210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.timedwait",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.timedwait",
     "category": "function",
     "text": "timedwait(testcb::Function, secs::Float64; pollint::Float64=0.1)\n\nWaits until testcb returns true or for secs seconds, whichever is earlier. testcb is polled every pollint seconds.\n\n\n\n\n\n"
@@ -15218,7 +15218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.@spawn",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.@spawn",
     "category": "macro",
     "text": "@spawn\n\nCreate a closure around an expression and run it on an automatically-chosen process, returning a Future to the result.\n\nExamples\n\njulia> addprocs(3);\n\njulia> f = @spawn myid()\nFuture(2, 1, 5, nothing)\n\njulia> fetch(f)\n2\n\njulia> f = @spawn myid()\nFuture(3, 1, 7, nothing)\n\njulia> fetch(f)\n3\n\n\n\n\n\n"
@@ -15226,7 +15226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.@spawnat",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.@spawnat",
     "category": "macro",
     "text": "@spawnat\n\nCreate a closure around an expression and run the closure asynchronously on process p. Return a Future to the result. Accepts two arguments, p and an expression.\n\nExamples\n\njulia> addprocs(1);\n\njulia> f = @spawnat 2 myid()\nFuture(2, 1, 3, nothing)\n\njulia> fetch(f)\n2\n\n\n\n\n\n"
@@ -15234,7 +15234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.@fetch",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.@fetch",
     "category": "macro",
     "text": "@fetch\n\nEquivalent to fetch(@spawn expr). See fetch and @spawn.\n\nExamples\n\njulia> addprocs(3);\n\njulia> @fetch myid()\n2\n\njulia> @fetch myid()\n3\n\njulia> @fetch myid()\n4\n\njulia> @fetch myid()\n2\n\n\n\n\n\n"
@@ -15242,7 +15242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.@fetchfrom",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.@fetchfrom",
     "category": "macro",
     "text": "@fetchfrom\n\nEquivalent to fetch(@spawnat p expr). See fetch and @spawnat.\n\nExamples\n\njulia> addprocs(3);\n\njulia> @fetchfrom 2 myid()\n2\n\njulia> @fetchfrom 4 myid()\n4\n\n\n\n\n\n"
@@ -15250,7 +15250,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.@async",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.@async",
     "category": "macro",
     "text": "@async\n\nWrap an expression in a Task and add it to the local machine\'s scheduler queue.\n\n\n\n\n\n"
@@ -15258,7 +15258,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.@sync",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.@sync",
     "category": "macro",
     "text": "@sync\n\nWait until all lexically-enclosed uses of @async, @spawn, @spawnat and @distributed are complete. All exceptions thrown by enclosed async operations are collected and thrown as a CompositeException.\n\n\n\n\n\n"
@@ -15266,7 +15266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.@distributed",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.@distributed",
     "category": "macro",
     "text": "@distributed\n\nA distributed memory, parallel for loop of the form :\n\n@distributed [reducer] for var = range\n    body\nend\n\nThe specified range is partitioned and locally executed across all workers. In case an optional reducer function is specified, @distributed performs local reductions on each worker with a final reduction on the calling process.\n\nNote that without a reducer function, @distributed executes asynchronously, i.e. it spawns independent tasks on all available workers and returns immediately without waiting for completion. To wait for completion, prefix the call with @sync, like :\n\n@sync @distributed for var = range\n    body\nend\n\n\n\n\n\n"
@@ -15274,7 +15274,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.@everywhere",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.@everywhere",
     "category": "macro",
     "text": "@everywhere [procs()] expr\n\nExecute an expression under Main on all procs. Errors on any of the processes are collected into a CompositeException and thrown. For example:\n\n@everywhere bar = 1\n\nwill define Main.bar on all processes.\n\nUnlike @spawn and @spawnat, @everywhere does not capture any local variables. Instead, local variables can be broadcast using interpolation:\n\nfoo = 1\n@everywhere bar = $foo\n\nThe optional argument procs allows specifying a subset of all processes to have execute the expression.\n\nEquivalent to calling remotecall_eval(Main, procs, expr).\n\n\n\n\n\n"
@@ -15282,7 +15282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.clear!-Tuple{Any,Any}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.clear!",
     "category": "method",
     "text": "clear!(syms, pids=workers(); mod=Main)\n\nClears global bindings in modules by initializing them to nothing. syms should be of type Symbol or a collection of Symbols . pids and mod identify the processes and the module in which global variables are to be reinitialized. Only those names found to be defined under mod are cleared.\n\nAn exception is raised if a global constant is requested to be cleared.\n\n\n\n\n\n"
@@ -15290,7 +15290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.remoteref_id",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.remoteref_id",
     "category": "function",
     "text": "remoteref_id(r::AbstractRemoteRef) -> RRID\n\nFutures and RemoteChannels are identified by fields:\n\nwhere - refers to the node where the underlying object/storage referred to by the reference actually exists.\nwhence - refers to the node the remote reference was created from. Note that this is different from the node where the underlying object referred to actually exists. For example calling RemoteChannel(2) from the master process would result in a where value of 2 and a whence value of 1.\nid is unique across all references created from the worker specified by whence.\n\nTaken together,  whence and id uniquely identify a reference across all workers.\n\nremoteref_id is a low-level API which returns a RRID object that wraps whence and id values of a remote reference.\n\n\n\n\n\n"
@@ -15298,7 +15298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.channel_from_id",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.channel_from_id",
     "category": "function",
     "text": "channel_from_id(id) -> c\n\nA low-level API which returns the backing AbstractChannel for an id returned by remoteref_id. The call is valid only on the node where the backing channel exists.\n\n\n\n\n\n"
@@ -15306,7 +15306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.worker_id_from_socket",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.worker_id_from_socket",
     "category": "function",
     "text": "worker_id_from_socket(s) -> pid\n\nA low-level API which, given a IO connection or a Worker, returns the pid of the worker it is connected to. This is useful when writing custom serialize methods for a type, which optimizes the data written out depending on the receiving process id.\n\n\n\n\n\n"
@@ -15314,7 +15314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.cluster_cookie-Tuple{}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.cluster_cookie",
     "category": "method",
     "text": "cluster_cookie() -> cookie\n\nReturn the cluster cookie.\n\n\n\n\n\n"
@@ -15322,23 +15322,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.cluster_cookie-Tuple{Any}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.cluster_cookie",
     "category": "method",
     "text": "cluster_cookie(cookie) -> cookie\n\nSet the passed cookie as the cluster cookie, then returns it.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Distributed/#Distributed-Computing-1",
-    "page": "Distributed Computing",
-    "title": "Distributed Computing",
+    "location": "stdlib/Distributed/#分布式计算-1",
+    "page": "分布式计算",
+    "title": "分布式计算",
     "category": "section",
     "text": "DocTestSetup = :(using Distributed)Distributed.addprocs\nDistributed.nprocs\nDistributed.nworkers\nDistributed.procs()\nDistributed.procs(::Integer)\nDistributed.workers\nDistributed.rmprocs\nDistributed.interrupt\nDistributed.myid\nDistributed.pmap\nDistributed.RemoteException\nDistributed.Future\nDistributed.RemoteChannel\nDistributed.wait\nDistributed.fetch(::Any)\nDistributed.remotecall(::Any, ::Integer, ::Any...)\nDistributed.remotecall_wait(::Any, ::Integer, ::Any...)\nDistributed.remotecall_fetch(::Any, ::Integer, ::Any...)\nDistributed.remote_do(::Any, ::Integer, ::Any...)\nDistributed.put!(::RemoteChannel, ::Any...)\nDistributed.put!(::Future, ::Any)\nDistributed.take!(::RemoteChannel, ::Any...)\nDistributed.isready(::RemoteChannel, ::Any...)\nDistributed.isready(::Future)\nDistributed.WorkerPool\nDistributed.CachingPool\nDistributed.default_worker_pool\nDistributed.clear!(::CachingPool)\nDistributed.remote\nDistributed.remotecall(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.remotecall_wait(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.remotecall_fetch(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.remote_do(::Any, ::AbstractWorkerPool, ::Any...)\nDistributed.timedwait\nDistributed.@spawn\nDistributed.@spawnat\nDistributed.@fetch\nDistributed.@fetchfrom\nDistributed.@async\nDistributed.@sync\nDistributed.@distributed\nDistributed.@everywhere\nDistributed.clear!(::Any, ::Any; ::Any)\nDistributed.remoteref_id\nDistributed.channel_from_id\nDistributed.worker_id_from_socket\nDistributed.cluster_cookie()\nDistributed.cluster_cookie(::Any)"
 },
 
 {
     "location": "stdlib/Distributed/#Distributed.launch",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.launch",
     "category": "function",
     "text": "launch(manager::ClusterManager, params::Dict, launched::Array, launch_ntfy::Condition)\n\nImplemented by cluster managers. For every Julia worker launched by this function, it should append a WorkerConfig entry to launched and notify launch_ntfy. The function MUST exit once all workers, requested by manager have been launched. params is a dictionary of all keyword arguments addprocs was called with.\n\n\n\n\n\n"
@@ -15346,7 +15346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.manage",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.manage",
     "category": "function",
     "text": "manage(manager::ClusterManager, id::Integer, config::WorkerConfig. op::Symbol)\n\nImplemented by cluster managers. It is called on the master process, during a worker\'s lifetime, with appropriate op values:\n\nwith :register/:deregister when a worker is added / removed from the Julia worker pool.\nwith :interrupt when interrupt(workers) is called. The ClusterManager should signal the appropriate worker with an interrupt signal.\nwith :finalize for cleanup purposes.\n\n\n\n\n\n"
@@ -15354,7 +15354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Base.kill-Tuple{ClusterManager,Int64,WorkerConfig}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Base.kill",
     "category": "method",
     "text": "kill(manager::ClusterManager, pid::Int, config::WorkerConfig)\n\nImplemented by cluster managers. It is called on the master process, by rmprocs. It should cause the remote worker specified by pid to exit. kill(manager::ClusterManager.....) executes a remote exit() on pid.\n\n\n\n\n\n"
@@ -15362,7 +15362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Sockets.connect-Tuple{ClusterManager,Int64,WorkerConfig}",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Sockets.connect",
     "category": "method",
     "text": "connect(manager::ClusterManager, pid::Int, config::WorkerConfig) -> (instrm::IO, outstrm::IO)\n\nImplemented by cluster managers using custom transports. It should establish a logical connection to worker with id pid, specified by config and return a pair of IO objects. Messages from pid to current process will be read off instrm, while messages to be sent to pid will be written to outstrm. The custom transport implementation must ensure that messages are delivered and received completely and in order. connect(manager::ClusterManager.....) sets up TCP/IP socket connections in-between workers.\n\n\n\n\n\n"
@@ -15370,7 +15370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.init_worker",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.init_worker",
     "category": "function",
     "text": "init_worker(cookie::AbstractString, manager::ClusterManager=DefaultClusterManager())\n\nCalled by cluster managers implementing custom transports. It initializes a newly launched process as a worker. Command line argument --worker[=<cookie>] has the effect of initializing a process as a worker using TCP/IP sockets for transport. cookie is a cluster_cookie.\n\n\n\n\n\n"
@@ -15378,7 +15378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.start_worker",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.start_worker",
     "category": "function",
     "text": "start_worker([out::IO=stdout], cookie::AbstractString=readline(stdin))\n\nstart_worker is an internal function which is the default entry point for worker processes connecting via TCP/IP. It sets up the process as a Julia cluster worker.\n\nhost:port information is written to stream out (defaults to stdout).\n\nThe function closes stdin (after reading the cookie if required), redirects stderr to stdout, listens on a free port (or if specified, the port in the --bind-to command line option) and schedules tasks to process incoming TCP connections and requests.\n\nIt does not return.\n\n\n\n\n\n"
@@ -15386,31 +15386,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Distributed/#Distributed.process_messages",
-    "page": "Distributed Computing",
+    "page": "分布式计算",
     "title": "Distributed.process_messages",
     "category": "function",
     "text": "process_messages(r_stream::IO, w_stream::IO, incoming::Bool=true)\n\nCalled by cluster managers using custom transports. It should be called when the custom transport implementation receives the first message from a remote worker. The custom transport must manage a logical connection to the remote worker and provide two IO objects, one for incoming messages and the other for messages addressed to the remote worker. If incoming is true, the remote peer initiated the connection. Whichever of the pair initiates the connection sends the cluster cookie and its Julia version number to perform the authentication handshake.\n\nSee also cluster_cookie.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Distributed/#Cluster-Manager-Interface-1",
-    "page": "Distributed Computing",
-    "title": "Cluster Manager Interface",
+    "location": "stdlib/Distributed/#集群管理接口-1",
+    "page": "分布式计算",
+    "title": "集群管理接口",
     "category": "section",
     "text": "This interface provides a mechanism to launch and manage Julia workers on different cluster environments. There are two types of managers present in Base: LocalManager, for launching additional workers on the same host, and SSHManager, for launching on remote hosts via ssh. TCP/IP sockets are used to connect and transport messages between processes. It is possible for Cluster Managers to provide a different transport.Distributed.launch\nDistributed.manage\nDistributed.kill(::ClusterManager, ::Int, ::WorkerConfig)\nDistributed.connect(::ClusterManager, ::Int, ::WorkerConfig)\nDistributed.init_worker\nDistributed.start_worker\nDistributed.process_messagesDocTestSetup = nothing"
 },
 
 {
     "location": "stdlib/FileWatching/#",
-    "page": "File Events",
-    "title": "File Events",
+    "page": "文件相关事件",
+    "title": "文件相关事件",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/FileWatching/#FileWatching.poll_fd",
-    "page": "File Events",
+    "page": "文件相关事件",
     "title": "FileWatching.poll_fd",
     "category": "function",
     "text": "poll_fd(fd, timeout_s::Real=-1; readable=false, writable=false)\n\nMonitor a file descriptor fd for changes in the read or write availability, and with a timeout given by timeout_s seconds.\n\nThe keyword arguments determine which of read and/or write status should be monitored; at least one of them must be set to true.\n\nThe returned value is an object with boolean fields readable, writable, and timedout, giving the result of the polling.\n\n\n\n\n\n"
@@ -15418,7 +15418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/FileWatching/#FileWatching.poll_file",
-    "page": "File Events",
+    "page": "文件相关事件",
     "title": "FileWatching.poll_file",
     "category": "function",
     "text": "poll_file(path::AbstractString, interval_s::Real=5.007, timeout_s::Real=-1) -> (previous::StatStruct, current)\n\nMonitor a file for changes by polling every interval_s seconds until a change occurs or timeout_s seconds have elapsed. The interval_s should be a long period; the default is 5.007 seconds.\n\nReturns a pair of status objects (previous, current) when a change is detected. The previous status is always a StatStruct, but it may have all of the fields zeroed (indicating the file didn\'t previously exist, or wasn\'t previously accessible).\n\nThe current status object may be a StatStruct, an EOFError (indicating the timeout elapsed), or some other Exception subtype (if the stat operation failed - for example, if the path does not exist).\n\nTo determine when a file was modified, compare current isa StatStruct && mtime(prev) != mtime(current) to detect notification of changes. However, using watch_file for this operation is preferred, since it is more reliable and efficient, although in some situations it may not be available.\n\n\n\n\n\n"
@@ -15426,7 +15426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/FileWatching/#FileWatching.watch_file",
-    "page": "File Events",
+    "page": "文件相关事件",
     "title": "FileWatching.watch_file",
     "category": "function",
     "text": "watch_file(path::AbstractString, timeout_s::Real=-1)\n\nWatch file or directory path for changes until a change occurs or timeout_s seconds have elapsed.\n\nThe returned value is an object with boolean fields changed, renamed, and timedout, giving the result of watching the file.\n\nThis behavior of this function varies slightly across platforms. See https://nodejs.org/api/fs.html#fs_caveats for more detailed information.\n\n\n\n\n\n"
@@ -15434,7 +15434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/FileWatching/#FileWatching.watch_folder",
-    "page": "File Events",
+    "page": "文件相关事件",
     "title": "FileWatching.watch_folder",
     "category": "function",
     "text": "watch_folder(path::AbstractString, timeout_s::Real=-1)\n\nWatches a file or directory path for changes until a change has occurred or timeout_s seconds have elapsed.\n\nThis will continuing tracking changes for path in the background until unwatch_folder is called on the same path.\n\nThe returned value is an pair where the first field is the name of the changed file (if available) and the second field is an object with boolean fields changed, renamed, and timedout, giving the event.\n\nThis behavior of this function varies slightly across platforms. See https://nodejs.org/api/fs.html#fs_caveats for more detailed information.\n\n\n\n\n\n"
@@ -15442,31 +15442,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/FileWatching/#FileWatching.unwatch_folder",
-    "page": "File Events",
+    "page": "文件相关事件",
     "title": "FileWatching.unwatch_folder",
     "category": "function",
     "text": "unwatch_folder(path::AbstractString)\n\nStop background tracking of changes for path. It is not recommended to do this while another task is waiting for watch_folder to return on the same path, as the result may be unpredictable.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/FileWatching/#lib-filewatching-1",
-    "page": "File Events",
-    "title": "File Events",
+    "location": "stdlib/FileWatching/#文件相关事件-1",
+    "page": "文件相关事件",
+    "title": "文件相关事件",
     "category": "section",
     "text": "FileWatching.poll_fd\nFileWatching.poll_file\nFileWatching.watch_file\nFileWatching.watch_folder\nFileWatching.unwatch_folder"
 },
 
 {
     "location": "stdlib/InteractiveUtils/#",
-    "page": "Interactive Utilities",
-    "title": "Interactive Utilities",
+    "page": "交互式组件",
+    "title": "交互式组件",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/InteractiveUtils/#Base.Docs.apropos",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "Base.Docs.apropos",
     "category": "function",
     "text": "apropos(string)\n\nSearch through all documentation for a string, ignoring case.\n\n\n\n\n\n"
@@ -15474,7 +15474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.varinfo",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.varinfo",
     "category": "function",
     "text": "varinfo(m::Module=Main, pattern::Regex=r\"\")\n\nReturn a markdown table giving information about exported global variables in a module, optionally restricted to those matching pattern.\n\nThe memory consumption estimate is an approximate lower bound on the size of the internal structure of the object.\n\n\n\n\n\n"
@@ -15482,7 +15482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.versioninfo",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.versioninfo",
     "category": "function",
     "text": "versioninfo(io::IO=stdout; verbose::Bool=false)\n\nPrint information about the version of Julia in use. The output is controlled with boolean keyword arguments:\n\nverbose: print all additional information\n\n\n\n\n\n"
@@ -15490,7 +15490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.methodswith",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.methodswith",
     "category": "function",
     "text": "methodswith(typ[, module or function]; supertypes::Bool=false])\n\nReturn an array of methods with an argument of type typ.\n\nThe optional second argument restricts the search to a particular module or function (the default is all top-level modules).\n\nIf keyword supertypes is true, also return arguments with a parent type of typ, excluding type Any.\n\n\n\n\n\n"
@@ -15498,7 +15498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.subtypes",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.subtypes",
     "category": "function",
     "text": "subtypes(T::DataType)\n\nReturn a list of immediate subtypes of DataType T. Note that all currently loaded subtypes are included, including those not visible in the current module.\n\nExamples\n\njulia> subtypes(Integer)\n3-element Array{Any,1}:\n Bool\n Signed\n Unsigned\n\n\n\n\n\n"
@@ -15506,7 +15506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.edit-Tuple{AbstractString,Integer}",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.edit",
     "category": "method",
     "text": "edit(path::AbstractString, line::Integer=0)\n\nEdit a file or directory optionally providing a line number to edit the file at. Return to the julia prompt when you quit the editor. The editor can be changed by setting JULIA_EDITOR, VISUAL or EDITOR as an environment variable.\n\n\n\n\n\n"
@@ -15514,7 +15514,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.edit-Tuple{Any}",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.edit",
     "category": "method",
     "text": "edit(function, [types])\n\nEdit the definition of a function, optionally specifying a tuple of types to indicate which method to edit. The editor can be changed by setting JULIA_EDITOR, VISUAL or EDITOR as an environment variable.\n\n\n\n\n\n"
@@ -15522,7 +15522,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@edit",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@edit",
     "category": "macro",
     "text": "@edit\n\nEvaluates the arguments to the function or macro call, determines their types, and calls the edit function on the resulting expression.\n\n\n\n\n\n"
@@ -15530,7 +15530,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.less-Tuple{AbstractString}",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.less",
     "category": "method",
     "text": "less(file::AbstractString, [line::Integer])\n\nShow a file using the default pager, optionally providing a starting line number. Returns to the julia prompt when you quit the pager.\n\n\n\n\n\n"
@@ -15538,7 +15538,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.less-Tuple{Any}",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.less",
     "category": "method",
     "text": "less(function, [types])\n\nShow the definition of a function using the default pager, optionally specifying a tuple of types to indicate which method to see.\n\n\n\n\n\n"
@@ -15546,7 +15546,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@less",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@less",
     "category": "macro",
     "text": "@less\n\nEvaluates the arguments to the function or macro call, determines their types, and calls the less function on the resulting expression.\n\n\n\n\n\n"
@@ -15554,7 +15554,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@which",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@which",
     "category": "macro",
     "text": "@which\n\nApplied to a function or macro call, it evaluates the arguments to the specified call, and returns the Method object for the method that would be called for those arguments. Applied to a variable, it returns the module in which the variable was bound. It calls out to the which function.\n\n\n\n\n\n"
@@ -15562,7 +15562,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@functionloc",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@functionloc",
     "category": "macro",
     "text": "@functionloc\n\nApplied to a function or macro call, it evaluates the arguments to the specified call, and returns a tuple (filename,line) giving the location for the method that would be called for those arguments. It calls out to the functionloc function.\n\n\n\n\n\n"
@@ -15570,7 +15570,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_lowered",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@code_lowered",
     "category": "macro",
     "text": "@code_lowered\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_lowered on the resulting expression.\n\n\n\n\n\n"
@@ -15578,7 +15578,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_typed",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@code_typed",
     "category": "macro",
     "text": "@code_typed\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_typed on the resulting expression. Use the optional argument optimize with\n\n@code_typed optimize=true foo(x)\n\nto control whether additional optimizations, such as inlining, are also applied.\n\n\n\n\n\n"
@@ -15586,7 +15586,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.code_warntype",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.code_warntype",
     "category": "function",
     "text": "code_warntype([io::IO], f, types; verbose_linetable=false)\n\nPrints lowered and type-inferred ASTs for the methods matching the given generic function and type signature to io which defaults to stdout. The ASTs are annotated in such a way as to cause \"non-leaf\" types to be emphasized (if color is available, displayed in red). This serves as a warning of potential type instability. Not all non-leaf types are particularly problematic for performance, so the results need to be used judiciously. In particular, unions containing either missing or nothing are displayed in yellow, since these are often intentional. If the verbose_linetable keyword is set, the linetable will be printed in verbose mode, showing all available information (rather than applying the usual heuristics). See @code_warntype for more information.\n\n\n\n\n\n"
@@ -15594,7 +15594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_warntype",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@code_warntype",
     "category": "macro",
     "text": "@code_warntype\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_warntype on the resulting expression.\n\n\n\n\n\n"
@@ -15602,7 +15602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.code_llvm",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.code_llvm",
     "category": "function",
     "text": "code_llvm([io=stdout,], f, types)\n\nPrints the LLVM bitcodes generated for running the method matching the given generic function and type signature to io.\n\nIf the optimize keyword is unset, the code will be shown before LLVM optimizations. All metadata and dbg.* calls are removed from the printed bitcode. Set the raw keyword for the full IR. To dump the entire module that encapsulates the function, with debug info and metadata, set the dump_module keyword.\n\n\n\n\n\n"
@@ -15610,7 +15610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_llvm",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@code_llvm",
     "category": "macro",
     "text": "@code_llvm\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_llvm on the resulting expression. Set the optional keyword arguments raw, dump_module and optimize by putting them and their value before the function call, like this:\n\n@code_llvm raw=true dump_module=true f(x)\n@code_llvm optimize=false f(x)\n\noptimize controls whether additional optimizations, such as inlining, are also applied. raw makes all metadata and dbg.* calls visible. dump_module prints the entire module that encapsulates the function, with debug info and metadata.\n\n\n\n\n\n"
@@ -15618,7 +15618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.code_native",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.code_native",
     "category": "function",
     "text": "code_native([io=stdout,], f, types; syntax = :att)\n\nPrints the native assembly instructions generated for running the method matching the given generic function and type signature to io. Switch assembly syntax using syntax symbol parameter set to :att for AT&T syntax or :intel for Intel syntax.\n\n\n\n\n\n"
@@ -15626,7 +15626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.@code_native",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.@code_native",
     "category": "macro",
     "text": "@code_native\n\nEvaluates the arguments to the function or macro call, determines their types, and calls code_native on the resulting expression.\n\n\n\n\n\n"
@@ -15634,16 +15634,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/InteractiveUtils/#InteractiveUtils.clipboard",
-    "page": "Interactive Utilities",
+    "page": "交互式组件",
     "title": "InteractiveUtils.clipboard",
     "category": "function",
     "text": "clipboard(x)\n\nSend a printed form of x to the operating system clipboard (\"copy\").\n\n\n\n\n\nclipboard() -> AbstractString\n\nReturn a string with the contents of the operating system clipboard (\"paste\").\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/InteractiveUtils/#Interactive-Utilities-1",
-    "page": "Interactive Utilities",
-    "title": "Interactive Utilities",
+    "location": "stdlib/InteractiveUtils/#交互式组件-1",
+    "page": "交互式组件",
+    "title": "交互式组件",
     "category": "section",
     "text": "DocTestSetup = :(using InteractiveUtils)InteractiveUtils.apropos\nInteractiveUtils.varinfo\nInteractiveUtils.versioninfo\nInteractiveUtils.methodswith\nInteractiveUtils.subtypes\nInteractiveUtils.edit(::AbstractString, ::Integer)\nInteractiveUtils.edit(::Any)\nInteractiveUtils.@edit\nInteractiveUtils.less(::AbstractString)\nInteractiveUtils.less(::Any)\nInteractiveUtils.@less\nInteractiveUtils.@which\nInteractiveUtils.@functionloc\nInteractiveUtils.@code_lowered\nInteractiveUtils.@code_typed\nInteractiveUtils.code_warntype\nInteractiveUtils.@code_warntype\nInteractiveUtils.code_llvm\nInteractiveUtils.@code_llvm\nInteractiveUtils.code_native\nInteractiveUtils.@code_native\nInteractiveUtils.clipboardDocTestSetup = nothing"
 },
@@ -19058,39 +19058,39 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#",
-    "page": "Logging",
-    "title": "Logging",
+    "page": "日志记录",
+    "title": "日志记录",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "stdlib/Logging/#Logging-1",
-    "page": "Logging",
-    "title": "Logging",
+    "location": "stdlib/Logging/#日志记录-1",
+    "page": "日志记录",
+    "title": "日志记录",
     "category": "section",
-    "text": "The Logging module provides a way to record the history and progress of a computation as a log of events.  Events are created by inserting a logging statement into the source code, for example:@warn \"Abandon printf debugging, all ye who enter here!\"\n┌ Warning: Abandon printf debugging, all ye who enter here!\n└ @ Main REPL[1]:1The system provides several advantages over peppering your source code with calls to println().  First, it allows you to control the visibility and presentation of messages without editing the source code.  For example, in contrast to the @warn above@debug \"The sum of some values $(sum(rand(100)))\"will produce no output by default.  Furthermore, it\'s very cheap to leave debug statements like this in the source code because the system avoids evaluating the message if it would later be ignored.  In this case sum(rand(100)) and the associated string processing will never be executed unless debug logging is enabled.Second, the logging tools allow you to attach arbitrary data to each event as a set of key–value pairs. This allows you to capture local variables and other program state for later analysis. For example, to attach the local array variable A and the sum of a vector v as the key s you can useA = ones(Int, 4, 4)\nv = ones(100)\n@info \"Some variables\"  A  s=sum(v)\n\n# output\n┌ Info: Some variables\n│   A =\n│    4×4 Array{Int64,2}:\n│     1  1  1  1\n│     1  1  1  1\n│     1  1  1  1\n│     1  1  1  1\n└   s = 100.0All of the logging macros @debug, @info, @warn and @error share common features that are described in detail in the documentation for the more general macro @logmsg."
+    "text": "The Logging module provides a way to record the history and progress of a computation as a log of events.  Events are created by inserting a logging statement into the source code, for example:@warn \"Abandon printf debugging, all ye who enter here!\"\n┌ Warning: Abandon printf debugging, all ye who enter here!\n└ @ Main REPL[1]:1The system provides several advantages over peppering your source code with calls to println().  First, it allows you to control the visibility and presentation of messages without editing the source code.  For example, in contrast to the @warn above@debug \"The sum of some values $(sum(rand(100)))\"will produce no output by default.  Furthermore, it\'s very cheap to leave debug statements like this in the source code because the system avoids evaluating the message if it would later be ignored.  In this case sum(rand(100)) and the associated string processing will never be executed unless debug logging is enabled.Second, the logging tools allow you to attach arbitrary data to each event as a set of key–value pairs. This allows you to capture local variables and other program state for later analysis. For example, to attach the local array variable A and the sum of a vector v as the key s you can useA = ones(Int, 4, 4)\nv = ones(100)\n@info \"Some variables\"  A  s=sum(v)\n\n# 输出：\n┌ Info: Some variables\n│   A =\n│    4×4 Array{Int64,2}:\n│     1  1  1  1\n│     1  1  1  1\n│     1  1  1  1\n│     1  1  1  1\n└   s = 100.0All of the logging macros @debug, @info, @warn and @error share common features that are described in detail in the documentation for the more general macro @logmsg."
 },
 
 {
-    "location": "stdlib/Logging/#Log-event-structure-1",
-    "page": "Logging",
-    "title": "Log event structure",
+    "location": "stdlib/Logging/#日志事件结构-1",
+    "page": "日志记录",
+    "title": "日志事件结构",
     "category": "section",
     "text": "Each event generates several pieces of data, some provided by the user and some automatically extracted. Let\'s examine the user-defined data first:The log level is a broad category for the message that is used for early filtering. There are several standard levels of type LogLevel; user-defined levels are also possible.\nUse Debug for verbose information that could be useful when debugging an application or module. These events are disabled by default.\nUse Info to inform the user about the normal operation of the program.\nUse Warn when a potential problem is detected.\nUse Error to report errors where the code has enough context to recover and continue.  (When the code doesn\'t have enough context, an exception or early return is more appropriate.)\nThe message  is an object describing the event. By convention AbstractStrings passed as messages are assumed to be in markdown format. Other types will be displayed using show(io,mime,obj) according to the display capabilities of the installed logger.\nOptional key–value pairs allow arbitrary data to be attached to each event. Some keys have conventional meaning that can affect the way an event is interpreted (see @logmsg).The system also generates some standard information for each event:The module in which the logging macro was expanded.\nThe file and line where the logging macro occurs in the source code.\nA message id that is unique for each logging macro invocation. This is very useful as a key for caching information or actions associated with an event. For instance, it can be used to limit the number of times a message is presented to the user.\nA group for the event, which is set to the base name of the file by default, without extension.  This can be used to group messages into categories more finely than the log level (for example, all deprecation warnings have group :depwarn), or into logical groupings across or within modules.Notice that some useful information such as the event time is not included by default. This is because such information can be expensive to extract and is also dynamically available to the current logger. It\'s simple to define a custom logger to augment event data with the time, backtrace, values of global variables and other useful information as required."
 },
 
 {
-    "location": "stdlib/Logging/#Processing-log-events-1",
-    "page": "Logging",
-    "title": "Processing log events",
+    "location": "stdlib/Logging/#处理日志事件-1",
+    "page": "日志记录",
+    "title": "处理日志事件",
     "category": "section",
     "text": "As you can see in the examples, logging statements make no mention of where log events go or how they are processed. This is a key design feature that makes the system composable and natural for concurrent use. It does this by separating two different concerns:Creating log events is the concern of the module author who needs to decide where events are triggered and which information to include.\nProcessing of log events — that is, display, filtering, aggregation and recording — is the concern of the application author who needs to bring multiple modules together into a cooperating application."
 },
 
 {
     "location": "stdlib/Logging/#Loggers-1",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Loggers",
     "category": "section",
     "text": "Processing of events is performed by a logger, which is the first piece of user configurable code to see the event. All loggers must be subtypes of AbstractLogger.When an event is triggered, the appropriate logger is found by looking for a task-local logger with the global logger as fallback.  The idea here is that the application code knows how log events should be processed and exists somewhere at the top of the call stack. So we should look up through the call stack to discover the logger — that is, the logger should be dynamically scoped. (This is a point of contrast with logging frameworks where the logger is lexically scoped; provided explicitly by the module author or as a simple global variable. In such a system it\'s awkward to control logging while composing functionality from multiple modules.)The global logger may be set with global_logger, and task-local loggers controlled using with_logger.  Newly spawned tasks inherit the logger of the parent task.There are three logger types provided by the library.  ConsoleLogger is the default logger you see when starting the REPL.  It displays events in a readable text format and tries to give simple but user friendly control over formatting and filtering.  NullLogger is a convenient way to drop all messages where necessary; it is the logging equivalent of the devnull stream.  SimpleLogger is a very simplistic text formatting logger, mainly useful for debugging the logging system itself.Custom loggers should come with overloads for the functions described in the reference section."
@@ -19098,39 +19098,39 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Early-filtering-and-message-handling-1",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Early filtering and message handling",
     "category": "section",
     "text": "When an event occurs, a few steps of early filtering occur to avoid generating messages that will be discarded:The message log level is checked against a global minimum level (set via disable_logging).  This is a crude but extremely cheap global setting.\nThe current logger state is looked up and the message level checked against the logger\'s cached minimum level, as found by calling Logging.min_enabled_level. This behavior can be overridden via environment variables (more on this later).\nThe Logging.shouldlog function is called with the current logger, taking some minimal information (level, module, group, id) which can be computed statically.  Most usefully, shouldlog is passed an event id which can be used to discard events early based on a cached predicate.If all these checks pass, the message and key–value pairs are evaluated in full and passed to the current logger via the Logging.handle_message function. handle_message() may perform additional filtering as required and display the event to the screen, save it to a file, etc.Exceptions that occur while generating the log event are captured and logged by default.  This prevents individual broken events from crashing the application, which is helpful when enabling little-used debug events in a production system.  This behavior can be customized per logger type by extending Logging.catch_exceptions."
 },
 
 {
-    "location": "stdlib/Logging/#Testing-log-events-1",
-    "page": "Logging",
-    "title": "Testing log events",
+    "location": "stdlib/Logging/#测试日志事件-1",
+    "page": "日志记录",
+    "title": "测试日志事件",
     "category": "section",
     "text": "Log events are a side effect of running normal code, but you might find yourself wanting to test particular informational messages and warnings. The Test module provides a @test_logs macro that can be used to pattern match against the log event stream."
 },
 
 {
-    "location": "stdlib/Logging/#Environment-variables-1",
-    "page": "Logging",
-    "title": "Environment variables",
+    "location": "stdlib/Logging/#环境变量-1",
+    "page": "日志记录",
+    "title": "环境变量",
     "category": "section",
     "text": "Message filtering can be influenced through the JULIA_DEBUG environment variable, and serves as an easy way to enable debug logging for a file or module. For example, loading julia with JULIA_DEBUG=loading will activate @debug log messages in loading.jl:$ JULIA_DEBUG=loading julia -e \'using OhMyREPL\'\n┌ Debug: Rejecting cache file /home/user/.julia/compiled/v0.7/OhMyREPL.ji due to it containing an invalid cache header\n└ @ Base loading.jl:1328\n[ Info: Recompiling stale cache file /home/user/.julia/compiled/v0.7/OhMyREPL.ji for module OhMyREPL\n┌ Debug: Rejecting cache file /home/user/.julia/compiled/v0.7/Tokenize.ji due to it containing an invalid cache header\n└ @ Base loading.jl:1328\n...Similarly, the environment variable can be used to enable debug logging of modules, such as Pkg, or module roots (see Base.moduleroot). To enable all debug logging, use the special value all."
 },
 
 {
-    "location": "stdlib/Logging/#Reference-1",
-    "page": "Logging",
-    "title": "Reference",
+    "location": "stdlib/Logging/#参考-1",
+    "page": "日志记录",
+    "title": "参考",
     "category": "section",
     "text": ""
 },
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.@logmsg",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.@logmsg",
     "category": "macro",
     "text": "@debug message  [key=value | value ...]\n@info  message  [key=value | value ...]\n@warn  message  [key=value | value ...]\n@error message  [key=value | value ...]\n\n@logmsg level message [key=value | value ...]\n\nCreate a log record with an informational message.  For convenience, four logging macros @debug, @info, @warn and @error are defined which log at the standard severity levels Debug, Info, Warn and Error.  @logmsg allows level to be set programmatically to any LogLevel or custom log level types.\n\nmessage should be an expression which evaluates to a string which is a human readable description of the log event.  By convention, this string will be formatted as markdown when presented.\n\nThe optional list of key=value pairs supports arbitrary user defined metadata which will be passed through to the logging backend as part of the log record.  If only a value expression is supplied, a key representing the expression will be generated using Symbol. For example, x becomes x=x, and foo(10) becomes Symbol(\"foo(10)\")=foo(10).  For splatting a list of key value pairs, use the normal splatting syntax, @info \"blah\" kws....\n\nThere are some keys which allow automatically generated log data to be overridden:\n\n_module=mod can be used to specify a different originating module from the source location of the message.\n_group=symbol can be used to override the message group (this is normally derived from the base name of the source file).\n_id=symbol can be used to override the automatically generated unique message identifier.  This is useful if you need to very closely associate messages generated on different source lines.\n_file=string and _line=integer can be used to override the apparent source location of a log message.\n\nThere\'s also some key value pairs which have conventional meaning:\n\nmaxlog=integer should be used as a hint to the backend that the message should be displayed no more than maxlog times.\nexception=ex should be used to transport an exception with a log message, often used with @error. An associated backtrace bt may be attached using the tuple exception=(ex,bt).\n\nExamples\n\n@debug \"Verbose debugging information.  Invisible by default\"\n@info  \"An informational message\"\n@warn  \"Something was odd.  You should pay attention\"\n@error \"A non fatal error occurred\"\n\nx = 10\n@info \"Some variables attached to the message\" x a=42.0\n\n@debug begin\n    sA = sum(A)\n    \"sum(A) = $sA is an expensive operation, evaluated only when `shouldlog` returns true\"\nend\n\nfor i=1:10000\n    @info \"With the default backend, you will only see (i = $i) ten times\"  maxlog=10\n    @debug \"Algorithm1\" i progress=i/10000\nend\n\n\n\n\n\n"
@@ -19138,23 +19138,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.LogLevel",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.LogLevel",
     "category": "type",
     "text": "LogLevel(level)\n\nSeverity/verbosity of a log record.\n\nThe log level provides a key against which potential log records may be filtered, before any other work is done to construct the log record data structure itself.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Logging/#Creating-events-1",
-    "page": "Logging",
-    "title": "Creating events",
+    "location": "stdlib/Logging/#创建事件-1",
+    "page": "日志记录",
+    "title": "创建事件",
     "category": "section",
     "text": "Logging.@logmsg\nLogging.LogLevel"
 },
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.AbstractLogger",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.AbstractLogger",
     "category": "type",
     "text": "A logger controls how log records are filtered and dispatched.  When a log record is generated, the logger is the first piece of user configurable code which gets to inspect the record and decide what to do with it.\n\n\n\n\n\n"
@@ -19162,7 +19162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.handle_message",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.handle_message",
     "category": "function",
     "text": "handle_message(logger, level, message, _module, group, id, file, line; key1=val1, ...)\n\nLog a message to logger at level.  The logical location at which the message was generated is given by module _module and group; the source location by file and line. id is an arbitrary unique Symbol to be used as a key to identify the log statement when filtering.\n\n\n\n\n\n"
@@ -19170,7 +19170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.shouldlog",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.shouldlog",
     "category": "function",
     "text": "shouldlog(logger, level, _module, group, id)\n\nReturn true when logger accepts a message at level, generated for _module, group and with unique log identifier id.\n\n\n\n\n\n"
@@ -19178,7 +19178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.min_enabled_level",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.min_enabled_level",
     "category": "function",
     "text": "min_enabled_level(logger)\n\nReturn the maximum disabled level for logger for early filtering.  That is, the log level below or equal to which all messages are filtered.\n\n\n\n\n\n"
@@ -19186,7 +19186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.catch_exceptions",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.catch_exceptions",
     "category": "function",
     "text": "catch_exceptions(logger)\n\nReturn true if the logger should catch exceptions which happen during log record construction.  By default, messages are caught\n\nBy default all exceptions are caught to prevent log message generation from crashing the program.  This lets users confidently toggle little-used functionality - such as debug logging - in a production system.\n\nIf you want to use logging as an audit trail you should disable this for your logger type.\n\n\n\n\n\n"
@@ -19194,7 +19194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.disable_logging",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.disable_logging",
     "category": "function",
     "text": "disable_logging(level)\n\nDisable all log messages at log levels equal to or less than level.  This is a global setting, intended to make debug logging extremely cheap when disabled.\n\n\n\n\n\n"
@@ -19202,7 +19202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#AbstractLogger-interface-1",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Processing events with AbstractLogger",
     "category": "section",
     "text": "Event processing is controlled by overriding functions associated with AbstractLogger:Methods to implement  Brief description\nLogging.handle_message  Handle a log event\nLogging.shouldlog  Early filtering of events\nLogging.min_enabled_level  Lower bound for log level of accepted events\nOptional methods Default definition Brief description\nLogging.catch_exceptions true Catch exceptions during event evaluationLogging.AbstractLogger\nLogging.handle_message\nLogging.shouldlog\nLogging.min_enabled_level\nLogging.catch_exceptions\nLogging.disable_logging"
@@ -19210,7 +19210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.global_logger",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.global_logger",
     "category": "function",
     "text": "global_logger()\n\nReturn the global logger, used to receive messages when no specific logger exists for the current task.\n\nglobal_logger(logger)\n\nSet the global logger to logger, and return the previous global logger.\n\n\n\n\n\n"
@@ -19218,7 +19218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.with_logger",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.with_logger",
     "category": "function",
     "text": "with_logger(function, logger)\n\nExecute function, directing all log messages to logger.\n\nExample\n\nfunction test(x)\n    @info \"x = $x\"\nend\n\nwith_logger(logger) do\n    test(1)\n    test([1,2])\nend\n\n\n\n\n\n"
@@ -19226,7 +19226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.current_logger",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.current_logger",
     "category": "function",
     "text": "current_logger()\n\nReturn the logger for the current task, or the global logger if none is attached to the task.\n\n\n\n\n\n"
@@ -19234,7 +19234,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.NullLogger",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.NullLogger",
     "category": "type",
     "text": "NullLogger()\n\nLogger which disables all messages and produces no output - the logger equivalent of /dev/null.\n\n\n\n\n\n"
@@ -19242,7 +19242,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Logging.ConsoleLogger",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Logging.ConsoleLogger",
     "category": "type",
     "text": "ConsoleLogger(stream=stderr, min_level=Info; meta_formatter=default_metafmt,\n              show_limited=true, right_justify=0)\n\nLogger with formatting optimized for readability in a text console, for example interactive work with the Julia REPL.\n\nLog levels less than min_level are filtered out.\n\nMessage formatting can be controlled by setting keyword arguments:\n\nmeta_formatter is a function which takes the log event metadata (level, _module, group, id, file, line) and returns a color (as would be passed to printstyled), prefix and suffix for the log message.  The default is to prefix with the log level and a suffix containing the module, file and line location.\nshow_limited limits the printing of large data structures to something which can fit on the screen by setting the :limit IOContext key during formatting.\nright_justify is the integer column which log metadata is right justified at. The default is zero (metadata goes on its own line).\n\n\n\n\n\n"
@@ -19250,18 +19250,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Logging/#Base.CoreLogging.SimpleLogger",
-    "page": "Logging",
+    "page": "日志记录",
     "title": "Base.CoreLogging.SimpleLogger",
     "category": "type",
     "text": "SimpleLogger(stream=stderr, min_level=Info)\n\nSimplistic logger for logging all messages with level greater than or equal to min_level to stream.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Logging/#Using-Loggers-1",
-    "page": "Logging",
-    "title": "Using Loggers",
+    "location": "stdlib/Logging/#使用记录器-1",
+    "page": "日志记录",
+    "title": "使用记录器",
     "category": "section",
-    "text": "Logger installation and inspection:Logging.global_logger\nLogging.with_logger\nLogging.current_loggerLoggers that are supplied with the system:Logging.NullLogger\nLogging.ConsoleLogger\nLogging.SimpleLogger"
+    "text": "记录器安装和检查：Logging.global_logger\nLogging.with_logger\nLogging.current_logger系统提供的记录器：Logging.NullLogger\nLogging.ConsoleLogger\nLogging.SimpleLogger"
 },
 
 {
@@ -19282,15 +19282,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Mmap/#",
-    "page": "Memory-mapped I/O",
-    "title": "Memory-mapped I/O",
+    "page": "内存映射 I/O",
+    "title": "内存映射 I/O",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/Mmap/#Mmap.Anonymous",
-    "page": "Memory-mapped I/O",
+    "page": "内存映射 I/O",
     "title": "Mmap.Anonymous",
     "category": "type",
     "text": "Mmap.Anonymous(name::AbstractString=\"\", readonly::Bool=false, create::Bool=true)\n\nCreate an IO-like object for creating zeroed-out mmapped-memory that is not tied to a file for use in Mmap.mmap. Used by SharedArray for creating shared memory arrays.\n\nExamples\n\njulia> anon = Mmap.Anonymous();\n\njulia> isreadable(anon)\ntrue\n\njulia> iswritable(anon)\ntrue\n\njulia> isopen(anon)\ntrue\n\n\n\n\n\n"
@@ -19298,7 +19298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Mmap/#Mmap.mmap",
-    "page": "Memory-mapped I/O",
+    "page": "内存映射 I/O",
     "title": "Mmap.mmap",
     "category": "function",
     "text": "Mmap.mmap(io::Union{IOStream,AbstractString,Mmap.AnonymousMmap}[, type::Type{Array{T,N}}, dims, offset]; grow::Bool=true, shared::Bool=true)\nMmap.mmap(type::Type{Array{T,N}}, dims)\n\nCreate an Array whose values are linked to a file, using memory-mapping. This provides a convenient way of working with data too large to fit in the computer\'s memory.\n\nThe type is an Array{T,N} with a bits-type element of T and dimension N that determines how the bytes of the array are interpreted. Note that the file must be stored in binary format, and no format conversions are possible (this is a limitation of operating systems, not Julia).\n\ndims is a tuple or single Integer specifying the size or length of the array.\n\nThe file is passed via the stream argument, either as an open IOStream or filename string. When you initialize the stream, use \"r\" for a \"read-only\" array, and \"w+\" to create a new array used to write values to disk.\n\nIf no type argument is specified, the default is Vector{UInt8}.\n\nOptionally, you can specify an offset (in bytes) if, for example, you want to skip over a header in the file. The default value for the offset is the current stream position for an IOStream.\n\nThe grow keyword argument specifies whether the disk file should be grown to accommodate the requested size of array (if the total file size is < requested array size). Write privileges are required to grow the file.\n\nThe shared keyword argument specifies whether the resulting Array and changes made to it will be visible to other processes mapping the same file.\n\nFor example, the following code\n\n# Create a file for mmapping\n# (you could alternatively use mmap to do this step, too)\nA = rand(1:20, 5, 30)\ns = open(\"/tmp/mmap.bin\", \"w+\")\n# We\'ll write the dimensions of the array as the first two Ints in the file\nwrite(s, size(A,1))\nwrite(s, size(A,2))\n# Now write the data\nwrite(s, A)\nclose(s)\n\n# Test by reading it back in\ns = open(\"/tmp/mmap.bin\")   # default is read-only\nm = read(s, Int)\nn = read(s, Int)\nA2 = Mmap.mmap(s, Matrix{Int}, (m,n))\n\ncreates a m-by-n Matrix{Int}, linked to the file associated with stream s.\n\nA more portable file would need to encode the word size – 32 bit or 64 bit – and endianness information in the header. In practice, consider encoding binary data using standard formats like HDF5 (which can be used with memory-mapping).\n\n\n\n\n\nMmap.mmap(io, BitArray, [dims, offset])\n\nCreate a BitArray whose values are linked to a file, using memory-mapping; it has the same purpose, works in the same way, and has the same arguments, as mmap, but the byte representation is different.\n\nExamples\n\njulia> io = open(\"mmap.bin\", \"w+\");\n\njulia> B = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> B[3, 4000] = true;\n\njulia> Mmap.sync!(B);\n\njulia> close(io);\n\njulia> io = open(\"mmap.bin\", \"r+\");\n\njulia> C = Mmap.mmap(io, BitArray, (25,30000));\n\njulia> C[3, 4000]\ntrue\n\njulia> C[2, 4000]\nfalse\n\njulia> close(io)\n\njulia> rm(\"mmap.bin\")\n\nThis creates a 25-by-30000 BitArray, linked to the file associated with stream io.\n\n\n\n\n\n"
@@ -19306,16 +19306,16 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Mmap/#Mmap.sync!",
-    "page": "Memory-mapped I/O",
+    "page": "内存映射 I/O",
     "title": "Mmap.sync!",
     "category": "function",
     "text": "Mmap.sync!(array)\n\nForces synchronization between the in-memory version of a memory-mapped Array or BitArray and the on-disk version.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Mmap/#Memory-mapped-I/O-1",
-    "page": "Memory-mapped I/O",
-    "title": "Memory-mapped I/O",
+    "location": "stdlib/Mmap/#内存映射-I/O-1",
+    "page": "内存映射 I/O",
+    "title": "内存映射 I/O",
     "category": "section",
     "text": "DocTestSetup = :(using Mmap)Mmap.Anonymous\nMmap.mmap\nMmap.sync!DocTestSetup = nothing"
 },
@@ -19730,15 +19730,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#",
-    "page": "Profiling",
-    "title": "Profiling",
+    "page": "性能分析",
+    "title": "性能分析",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/Profile/#Profile.@profile",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.@profile",
     "category": "macro",
     "text": "@profile\n\n@profile <expression> runs your expression while taking periodic backtraces. These are appended to an internal buffer of backtraces.\n\n\n\n\n\n"
@@ -19746,7 +19746,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#Profile.clear",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.clear",
     "category": "function",
     "text": "clear()\n\nClear any existing backtraces from the internal buffer.\n\n\n\n\n\n"
@@ -19754,7 +19754,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#Profile.print",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.print",
     "category": "function",
     "text": "print([io::IO = stdout,] [data::Vector]; kwargs...)\n\nPrints profiling results to io (by default, stdout). If you do not supply a data vector, the internal buffer of accumulated backtraces will be used.\n\nThe keyword arguments can be any combination of:\n\nformat – Determines whether backtraces are printed with (default, :tree) or without (:flat) indentation indicating tree structure.\nC – If true, backtraces from C and Fortran code are shown (normally they are excluded).\ncombine – If true (default), instruction pointers are merged that correspond to the same line of code.\nmaxdepth – Limits the depth higher than maxdepth in the :tree format.\nsortedby – Controls the order in :flat format. :filefuncline (default) sorts by the source  line, whereas :count sorts in order of number of collected samples.\nnoisefloor – Limits frames that exceed the heuristic noise floor of the sample (only applies to format :tree).  A suggested value to try for this is 2.0 (the default is 0). This parameter hides samples for which n <= noisefloor * √N,  where n is the number of samples on this line, and N is the number of samples for the callee.\nmincount – Limits the printout to only those lines with at least mincount occurrences.\n\n\n\n\n\nprint([io::IO = stdout,] data::Vector, lidict::LineInfoDict; kwargs...)\n\nPrints profiling results to io. This variant is used to examine results exported by a previous call to retrieve. Supply the vector data of backtraces and a dictionary lidict of line information.\n\nSee Profile.print([io], data) for an explanation of the valid keyword arguments.\n\n\n\n\n\n"
@@ -19762,7 +19762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#Profile.init",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.init",
     "category": "function",
     "text": "init(; n::Integer, delay::Float64)\n\nConfigure the delay between backtraces (measured in seconds), and the number n of instruction pointers that may be stored. Each instruction pointer corresponds to a single line of code; backtraces generally consist of a long list of instruction pointers. Default settings can be obtained by calling this function with no arguments, and each can be set independently using keywords or in the order (n, delay).\n\n\n\n\n\n"
@@ -19770,7 +19770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#Profile.fetch",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.fetch",
     "category": "function",
     "text": "fetch() -> data\n\nReturns a reference to the internal buffer of backtraces. Note that subsequent operations, like clear, can affect data unless you first make a copy. Note that the values in data have meaning only on this machine in the current session, because it depends on the exact memory addresses used in JIT-compiling. This function is primarily for internal use; retrieve may be a better choice for most users.\n\n\n\n\n\n"
@@ -19778,7 +19778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#Profile.retrieve",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.retrieve",
     "category": "function",
     "text": "retrieve() -> data, lidict\n\n\"Exports\" profiling results in a portable format, returning the set of all backtraces (data) and a dictionary that maps the (session-specific) instruction pointers in data to LineInfo values that store the file name, function name, and line number. This function allows you to save profiling results for future analysis.\n\n\n\n\n\n"
@@ -19786,7 +19786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#Profile.callers",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.callers",
     "category": "function",
     "text": "callers(funcname, [data, lidict], [filename=<filename>], [linerange=<start:stop>]) -> Vector{Tuple{count, lineinfo}}\n\nGiven a previous profiling run, determine who called a particular function. Supplying the filename (and optionally, range of line numbers over which the function is defined) allows you to disambiguate an overloaded method. The returned value is a vector containing a count of the number of calls and line information about the caller. One can optionally supply backtrace data obtained from retrieve; otherwise, the current internal profile buffer is used.\n\n\n\n\n\n"
@@ -19794,7 +19794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#Profile.clear_malloc_data",
-    "page": "Profiling",
+    "page": "性能分析",
     "title": "Profile.clear_malloc_data",
     "category": "function",
     "text": "clear_malloc_data()\n\nClears any stored memory allocation data when running julia with --track-allocation. Execute the command(s) you want to test (to force JIT-compilation), then call clear_malloc_data. Then execute your command(s) again, quit Julia, and examine the resulting *.mem files.\n\n\n\n\n\n"
@@ -19802,10 +19802,10 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Profile/#lib-profiling-1",
-    "page": "Profiling",
-    "title": "Profiling",
+    "page": "性能分析",
+    "title": "性能分析",
     "category": "section",
-    "text": "Profile.@profileThe methods in Profile are not exported and need to be called e.g. as Profile.print().Profile.clear\nProfile.print\nProfile.init\nProfile.fetch\nProfile.retrieve\nProfile.callers\nProfile.clear_malloc_data"
+    "text": "Profile.@profileProfile 里的方法均未导出，需要通过 Profile.print() 的方式调用。Profile.clear\nProfile.print\nProfile.init\nProfile.fetch\nProfile.retrieve\nProfile.callers\nProfile.clear_malloc_data"
 },
 
 {
@@ -19970,23 +19970,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#",
-    "page": "Random Numbers",
-    "title": "Random Numbers",
+    "page": "随机数",
+    "title": "随机数",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "stdlib/Random/#Random-Numbers-1",
-    "page": "Random Numbers",
-    "title": "Random Numbers",
+    "location": "stdlib/Random/#随机数-1",
+    "page": "随机数",
+    "title": "随机数",
     "category": "section",
     "text": "DocTestSetup = :(using Random)Random number generation in Julia uses the Mersenne Twister library via MersenneTwister objects. Julia has a global RNG, which is used by default. Other RNG types can be plugged in by inheriting the AbstractRNG type; they can then be used to have multiple streams of random numbers. Besides MersenneTwister, Julia also provides the RandomDevice RNG type, which is a wrapper over the OS provided entropy.Most functions related to random generation accept an optional AbstractRNG object as first argument, which defaults to the global one if not provided. Moreover, some of them accept optionally dimension specifications dims... (which can be given as a tuple) to generate arrays of random values.A MersenneTwister or RandomDevice RNG can generate uniformly random numbers of the following types: Float16, Float32, Float64, BigFloat, Bool, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Int128, UInt128, BigInt (or complex numbers of those types). Random floating point numbers are generated uniformly in 0 1). As BigInt represents unbounded integers, the interval must be specified (e.g. rand(big.(1:6))).Additionally, normal and exponential distributions are implemented for some AbstractFloat and Complex types, see randn and randexp for details."
 },
 
 {
     "location": "stdlib/Random/#Base.rand",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Base.rand",
     "category": "function",
     "text": "rand([rng=GLOBAL_RNG], [S], [dims...])\n\nPick a random element or array of random elements from the set of values specified by S; S can be\n\nan indexable collection (for example 1:n or [\'x\',\'y\',\'z\']),\nan AbstractDict or AbstractSet object,\na string (considered as a collection of characters), or\na type: the set of values to pick from is then equivalent to typemin(S):typemax(S) for integers (this is not applicable to BigInt), and to 0 1) for floating point numbers;\n\nS defaults to Float64 (except when dims is a tuple of integers, in which case S must be specified).\n\nExamples\n\njulia> rand(Int, 2)\n2-element Array{Int64,1}:\n 1339893410598768192\n 1575814717733606317\n\njulia> rand(MersenneTwister(0), Dict(1=>2, 3=>4))\n1=>2\n\nnote: Note\nThe complexity of rand(rng, s::Union{AbstractDict,AbstractSet}) is linear in the length of s, unless an optimized method with constant complexity is available, which is the case for Dict, Set and BitSet. For more than a few calls, use rand(rng, collect(s)) instead, or either rand(rng, Dict(s)) or rand(rng, Set(s)) as appropriate.\n\n\n\n\n\n"
@@ -19994,7 +19994,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.rand!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.rand!",
     "category": "function",
     "text": "rand!([rng=GLOBAL_RNG], A, [S=eltype(A)])\n\nPopulate the array A with random values. If S is specified (S can be a type or a collection, cf. rand for details), the values are picked randomly from S. This is equivalent to copyto!(A, rand(rng, S, size(A))) but without allocating a new array.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> rand!(rng, zeros(5))\n5-element Array{Float64,1}:\n 0.5908446386657102\n 0.7667970365022592\n 0.5662374165061859\n 0.4600853424625171\n 0.7940257103317943\n\n\n\n\n\n"
@@ -20002,7 +20002,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.bitrand",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.bitrand",
     "category": "function",
     "text": "bitrand([rng=GLOBAL_RNG], [dims...])\n\nGenerate a BitArray of random boolean values.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> bitrand(rng, 10)\n10-element BitArray{1}:\n false\n  true\n  true\n  true\n  true\n false\n  true\n false\n false\n  true\n\n\n\n\n\n"
@@ -20010,7 +20010,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Base.randn",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Base.randn",
     "category": "function",
     "text": "randn([rng=GLOBAL_RNG], [T=Float64], [dims...])\n\nGenerate a normally-distributed random number of type T with mean 0 and standard deviation 1. Optionally generate an array of normally-distributed random numbers. The Base module currently provides an implementation for the types Float16, Float32, and Float64 (the default), and their Complex counterparts. When the type argument is complex, the values are drawn from the circularly symmetric complex normal distribution.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randn(rng, ComplexF64)\n0.6133070881429037 - 0.6376291670853887im\n\njulia> randn(rng, ComplexF32, (2, 3))\n2×3 Array{Complex{Float32},2}:\n -0.349649-0.638457im  0.376756-0.192146im  -0.396334-0.0136413im\n  0.611224+1.56403im   0.355204-0.365563im  0.0905552+1.31012im\n\n\n\n\n\n"
@@ -20018,7 +20018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randn!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randn!",
     "category": "function",
     "text": "randn!([rng=GLOBAL_RNG], A::AbstractArray) -> A\n\nFill the array A with normally-distributed (mean 0, standard deviation 1) random numbers. Also see the rand function.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randn!(rng, zeros(5))\n5-element Array{Float64,1}:\n  0.8673472019512456\n -0.9017438158568171\n -0.4944787535042339\n -0.9029142938652416\n  0.8644013132535154\n\n\n\n\n\n"
@@ -20026,7 +20026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randexp",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randexp",
     "category": "function",
     "text": "randexp([rng=GLOBAL_RNG], [T=Float64], [dims...])\n\nGenerate a random number of type T according to the exponential distribution with scale 1. Optionally generate an array of such random numbers. The Base module currently provides an implementation for the types Float16, Float32, and Float64 (the default).\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randexp(rng, Float32)\n2.4835055f0\n\njulia> randexp(rng, 3, 3)\n3×3 Array{Float64,2}:\n 1.5167    1.30652   0.344435\n 0.604436  2.78029   0.418516\n 0.695867  0.693292  0.643644\n\n\n\n\n\n"
@@ -20034,7 +20034,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randexp!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randexp!",
     "category": "function",
     "text": "randexp!([rng=GLOBAL_RNG], A::AbstractArray) -> A\n\nFill the array A with random numbers following the exponential distribution (with scale 1).\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randexp!(rng, zeros(5))\n5-element Array{Float64,1}:\n 2.4835053723904896\n 1.516703605376473\n 0.6044364871025417\n 0.6958665886385867\n 1.3065196315496677\n\n\n\n\n\n"
@@ -20042,7 +20042,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randstring",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randstring",
     "category": "function",
     "text": "randstring([rng=GLOBAL_RNG], [chars], [len=8])\n\nCreate a random string of length len, consisting of characters from chars, which defaults to the set of upper- and lower-case letters and the digits 0-9. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> Random.seed!(0); randstring()\n\"0IPrGg0J\"\n\njulia> randstring(MersenneTwister(0), \'a\':\'z\', 6)\n\"aszvqk\"\n\njulia> randstring(\"ACGT\")\n\"TATCGGTC\"\n\nnote: Note\nchars can be any collection of characters, of type Char or UInt8 (more efficient), provided rand can randomly pick characters from it.\n\n\n\n\n\n"
@@ -20050,7 +20050,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random-generation-functions-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random generation functions",
     "category": "section",
     "text": "Random.rand\nRandom.rand!\nRandom.bitrand\nRandom.randn\nRandom.randn!\nRandom.randexp\nRandom.randexp!\nRandom.randstring"
@@ -20058,7 +20058,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randsubseq",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randsubseq",
     "category": "function",
     "text": "randsubseq([rng=GLOBAL_RNG,] A, p) -> Vector\n\nReturn a vector consisting of a random subsequence of the given array A, where each element of A is included (in order) with independent probability p. (Complexity is linear in p*length(A), so this function is efficient even if p is small and A is large.) Technically, this process is known as \"Bernoulli sampling\" of A.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> randsubseq(rng, collect(1:8), 0.3)\n2-element Array{Int64,1}:\n 7\n 8\n\n\n\n\n\n"
@@ -20066,7 +20066,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randsubseq!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randsubseq!",
     "category": "function",
     "text": "randsubseq!([rng=GLOBAL_RNG,] S, A, p)\n\nLike randsubseq, but the results are stored in S (which is resized as needed).\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> S = Int64[];\n\njulia> randsubseq!(rng, S, collect(1:8), 0.3);\n\njulia> S\n2-element Array{Int64,1}:\n 7\n 8\n\n\n\n\n\n"
@@ -20074,7 +20074,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randperm",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randperm",
     "category": "function",
     "text": "randperm([rng=GLOBAL_RNG,] n::Integer)\n\nConstruct a random permutation of length n. The optional rng argument specifies a random number generator (see Random Numbers). To randomly permute an arbitrary vector, see shuffle or shuffle!.\n\nExamples\n\njulia> randperm(MersenneTwister(1234), 4)\n4-element Array{Int64,1}:\n 2\n 1\n 4\n 3\n\n\n\n\n\n"
@@ -20082,7 +20082,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randperm!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randperm!",
     "category": "function",
     "text": "randperm!([rng=GLOBAL_RNG,] A::Array{<:Integer})\n\nConstruct in A a random permutation of length length(A). The optional rng argument specifies a random number generator (see Random Numbers). To randomly permute an arbitrary vector, see shuffle or shuffle!.\n\nExamples\n\njulia> randperm!(MersenneTwister(1234), Vector{Int}(undef, 4))\n4-element Array{Int64,1}:\n 2\n 1\n 4\n 3\n\n\n\n\n\n"
@@ -20090,7 +20090,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randcycle",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randcycle",
     "category": "function",
     "text": "randcycle([rng=GLOBAL_RNG,] n::Integer)\n\nConstruct a random cyclic permutation of length n. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> randcycle(MersenneTwister(1234), 6)\n6-element Array{Int64,1}:\n 3\n 5\n 4\n 6\n 1\n 2\n\n\n\n\n\n"
@@ -20098,7 +20098,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.randcycle!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.randcycle!",
     "category": "function",
     "text": "randcycle!([rng=GLOBAL_RNG,] A::Array{<:Integer})\n\nConstruct in A a random cyclic permutation of length length(A). The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> randcycle!(MersenneTwister(1234), Vector{Int}(undef, 6))\n6-element Array{Int64,1}:\n 3\n 5\n 4\n 6\n 1\n 2\n\n\n\n\n\n"
@@ -20106,7 +20106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.shuffle",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.shuffle",
     "category": "function",
     "text": "shuffle([rng=GLOBAL_RNG,] v::AbstractArray)\n\nReturn a randomly permuted copy of v. The optional rng argument specifies a random number generator (see Random Numbers). To permute v in-place, see shuffle!. To obtain randomly permuted indices, see randperm.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> shuffle(rng, Vector(1:10))\n10-element Array{Int64,1}:\n  6\n  1\n 10\n  2\n  3\n  9\n  5\n  7\n  4\n  8\n\n\n\n\n\n"
@@ -20114,7 +20114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.shuffle!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.shuffle!",
     "category": "function",
     "text": "shuffle!([rng=GLOBAL_RNG,] v::AbstractArray)\n\nIn-place version of shuffle: randomly permute v in-place, optionally supplying the random-number generator rng.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> shuffle!(rng, Vector(1:16))\n16-element Array{Int64,1}:\n  2\n 15\n  5\n 14\n  1\n  9\n 10\n  6\n 11\n  3\n 16\n  7\n  4\n 12\n  8\n 13\n\n\n\n\n\n"
@@ -20122,7 +20122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Subsequences,-permutations-and-shuffling-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Subsequences, permutations and shuffling",
     "category": "section",
     "text": "Random.randsubseq\nRandom.randsubseq!\nRandom.randperm\nRandom.randperm!\nRandom.randcycle\nRandom.randcycle!\nRandom.shuffle\nRandom.shuffle!"
@@ -20130,7 +20130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.seed!",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.seed!",
     "category": "function",
     "text": "seed!([rng=GLOBAL_RNG], seed) -> rng\nseed!([rng=GLOBAL_RNG]) -> rng\n\nReseed the random number generator: rng will give a reproducible sequence of numbers if and only if a seed is provided. Some RNGs don\'t accept a seed, like RandomDevice. After the call to seed!, rng is equivalent to a newly created object initialized with the same seed.\n\nExamples\n\njulia> Random.seed!(1234);\n\njulia> x1 = rand(2)\n2-element Array{Float64,1}:\n 0.590845\n 0.766797\n\njulia> Random.seed!(1234);\n\njulia> x2 = rand(2)\n2-element Array{Float64,1}:\n 0.590845\n 0.766797\n\njulia> x1 == x2\ntrue\n\njulia> rng = MersenneTwister(1234); rand(rng, 2) == x1\ntrue\n\njulia> MersenneTwister(1) == Random.seed!(rng, 1)\ntrue\n\njulia> rand(Random.seed!(rng), Bool) # not reproducible\ntrue\n\njulia> rand(Random.seed!(rng), Bool)\nfalse\n\njulia> rand(MersenneTwister(), Bool) # not reproducible either\ntrue\n\n\n\n\n\n"
@@ -20138,7 +20138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.MersenneTwister",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.MersenneTwister",
     "category": "type",
     "text": "MersenneTwister(seed)\nMersenneTwister()\n\nCreate a MersenneTwister RNG object. Different RNG objects can have their own seeds, which may be useful for generating different streams of random numbers. The seed may be a non-negative integer or a vector of UInt32 integers. If no seed is provided, a randomly generated one is created (using entropy from the system). See the seed! function for reseeding an already existing MersenneTwister object.\n\nExamples\n\njulia> rng = MersenneTwister(1234);\n\njulia> x1 = rand(rng, 2)\n2-element Array{Float64,1}:\n 0.5908446386657102\n 0.7667970365022592\n\njulia> rng = MersenneTwister(1234);\n\njulia> x2 = rand(rng, 2)\n2-element Array{Float64,1}:\n 0.5908446386657102\n 0.7667970365022592\n\njulia> x1 == x2\ntrue\n\n\n\n\n\n"
@@ -20146,7 +20146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Random.RandomDevice",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Random.RandomDevice",
     "category": "type",
     "text": "RandomDevice()\n\nCreate a RandomDevice RNG object. Two such objects will always generate different streams of random numbers. The entropy is obtained from the operating system.\n\n\n\n\n\n"
@@ -20154,7 +20154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Generators-(creation-and-seeding)-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Generators (creation and seeding)",
     "category": "section",
     "text": "Random.seed!\nRandom.MersenneTwister\nRandom.RandomDevice"
@@ -20162,7 +20162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Hooking-into-the-Random-API-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Hooking into the Random API",
     "category": "section",
     "text": "There are two mostly orthogonal ways to extend Random functionalities:generating random values of custom types\ncreating new generatorsThe API for 1) is quite functional, but is relatively recent so it may still have to evolve in subsequent releases of the Random module. For example, it\'s typically sufficient to implement one rand method in order to have all other usual methods work automatically.The API for 2) is still rudimentary, and may require more work than strictly necessary from the implementor, in order to support usual types of generated values."
@@ -20170,7 +20170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Generating-random-values-of-custom-types-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Generating random values of custom types",
     "category": "section",
     "text": "There are two categories: generating values from a type (e.g. rand(Int)), or from a collection (e.g. rand(1:3)). The simple cases are explained first, and more advanced usage is presented later. We assume here that the choice of algorithm is independent of the RNG, so we use AbstractRNG in our signatures."
@@ -20178,15 +20178,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Generating-values-from-a-type-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Generating values from a type",
     "category": "section",
-    "text": "Given a type T, it\'s currently assumed that if rand(T) is defined, an object of type T will be produced. In order to define random generation of values of type T, the following method can be defined: rand(rng::AbstractRNG, ::Random.SamplerType{T}) (this should return what rand(rng, T) is expected to return).Let\'s take the following example: we implement a Die type, with a variable number n of sides, numbered from 1 to n. We want rand(Die) to produce a die with a random number of up to 20 sides (and at least 4):struct Die\n    nsides::Int # number of sides\nend\n\nRandom.rand(rng::AbstractRNG, ::Random.SamplerType{Die}) = Die(rand(rng, 4:20))\n\n# output\nScalar and array methods for Die now work as expected:julia> rand(Die)\nDie(18)\n\njulia> rand(MersenneTwister(0), Die)\nDie(4)\n\njulia> rand(Die, 3)\n3-element Array{Die,1}:\n Die(6)\n Die(11)\n Die(5)\n\njulia> a = Vector{Die}(undef, 3); rand!(a)\n3-element Array{Die,1}:\n Die(18)\n Die(6)\n Die(8)"
+    "text": "Given a type T, it\'s currently assumed that if rand(T) is defined, an object of type T will be produced. In order to define random generation of values of type T, the following method can be defined: rand(rng::AbstractRNG, ::Random.SamplerType{T}) (this should return what rand(rng, T) is expected to return).Let\'s take the following example: we implement a Die type, with a variable number n of sides, numbered from 1 to n. We want rand(Die) to produce a die with a random number of up to 20 sides (and at least 4):struct Die\n    nsides::Int # number of sides\nend\n\nRandom.rand(rng::AbstractRNG, ::Random.SamplerType{Die}) = Die(rand(rng, 4:20))\n\n# output\nDie 的标量和数组方法现在可以正常工作了：julia> rand(Die)\nDie(18)\n\njulia> rand(MersenneTwister(0), Die)\nDie(4)\n\njulia> rand(Die, 3)\n3-element Array{Die,1}:\n Die(6)\n Die(11)\n Die(5)\n\njulia> a = Vector{Die}(undef, 3); rand!(a)\n3-element Array{Die,1}:\n Die(18)\n Die(6)\n Die(8)"
 },
 
 {
     "location": "stdlib/Random/#Generating-values-from-a-collection-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Generating values from a collection",
     "category": "section",
     "text": "Given a collection type S, it\'s currently assumed that if rand(::S) is defined, an object of type eltype(S) will be produced. In order to define random generation out of objects of type S, the following method can be defined: rand(rng::AbstractRNG, sp::Random.SamplerTrivial{S}). Here, sp simply wraps an object of type S, which can be accessed via sp[]. Continuing the Die example, we want now to define rand(d::Die) to produce an Int corresponding to one of d\'s sides:julia> Random.rand(rng::AbstractRNG, d::Random.SamplerTrivial{Die}) = rand(rng, 1:d[].nsides);\n\njulia> rand(Die(4))\n3\n\njulia> rand(Die(4), 3)\n3-element Array{Any,1}:\n 3\n 4\n 2In the last example, a Vector{Any} is produced; the reason is that eltype(Die) == Any. The remedy is to define Base.eltype(::Type{Die}) = Int."
@@ -20194,7 +20194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Generating-values-for-an-AbstractFloat-type-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Generating values for an AbstractFloat type",
     "category": "section",
     "text": "AbstractFloat types are special-cased, because by default random values are not produced in the whole type domain, but rather in [0,1). The following method should be implemented for T <: AbstractFloat: Random.rand(::AbstractRNG, ::Random.SamplerTrivial{Random.CloseOpen01{T}})"
@@ -20202,7 +20202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Optimizing-generation-with-cached-computation-between-calls-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Optimizing generation with cached computation between calls",
     "category": "section",
     "text": "When repeatedly generating random values (with the same rand parameters), it happens for some types that the result of a computation is used for each call. In this case, the computation can be decoupled from actually generating the values. This is the case for example with the default implementation for AbstractArray. Assume that rand(rng, 1:20) has to be called repeatedly in a loop: the way to take advantage of this decoupling is as follows:rng = MersenneTwister()\nsp = Random.Sampler(rng, 1:20) # or Random.Sampler(MersenneTwister,1:20)\nfor x in X\n    n = rand(rng, sp) # similar to n = rand(rng, 1:20)\n    # use n\nendThis mechanism is of course used by the default implementation of random array generation (like in rand(1:20, 10)). In order to implement this decoupling for a custom type, a helper type can be used. Going back to our Die example: rand(::Die) uses random generation from a range, so there is an opportunity for this optimization:import Random: Sampler, rand\n\nstruct SamplerDie <: Sampler{Int} # generates values of type Int\n    die::Die\n    sp::Sampler{Int} # this is an abstract type, so this could be improved\nend\n\nSampler(RNG::Type{<:AbstractRNG}, die::Die, r::Random.Repetition) =\n    SamplerDie(die, Sampler(RNG, 1:die.nsides, r))\n# the `r` parameter will be explained later on\n\nrand(rng::AbstractRNG, sp::SamplerDie) = rand(rng, sp.sp)It\'s now possible to get a sampler with sp = Sampler(rng, die), and use sp instead of die in any rand call involving rng. In the simplistic example above, die doesn\'t need to be stored in SamplerDie but this is often the case in practice.This pattern is so frequent that a helper type named Random.SamplerSimple is available, saving us the definition of SamplerDie: we could have implemented our decoupling with:Sampler(RNG::Type{<:AbstractRNG}, die::Die, r::Random.Repetition) =\n    SamplerSimple(die, Sampler(RNG, 1:die.nsides, r))\n\nrand(rng::AbstractRNG, sp::SamplerSimple{Die}) = rand(rng, sp.data)Here, sp.data refers to the second parameter in the call to the SamplerSimple constructor (in this case equal to Sampler(rng, 1:die.nsides, r)), while the Die object can be accessed via sp[].Another helper type is currently available for other cases, Random.SamplerTag, but is considered as internal API, and can break at any time without proper deprecations."
@@ -20210,7 +20210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Using-distinct-algorithms-for-scalar-or-array-generation-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Using distinct algorithms for scalar or array generation",
     "category": "section",
     "text": "In some cases, whether one wants to generate only a handful of values or a large number of values will have an impact on the choice of algorithm. This is handled with the third parameter of the Sampler constructor. Let\'s assume we defined two helper types for Die, say SamplerDie1 which should be used to generate only few random values, and SamplerDieMany for many values. We can use those types as follows:Sampler(RNG::Type{<:AbstractRNG}, die::Die, ::Val{1}) = SamplerDie1(...)\nSampler(RNG::Type{<:AbstractRNG}, die::Die, ::Val{Inf}) = SamplerDieMany(...)Of course, rand must also be defined on those types (i.e. rand(::AbstractRNG, ::SamplerDie1) and rand(::AbstractRNG, ::SamplerDieMany)).Note: Sampler(rng, x) is simply a shorthand for Sampler(rng, x, Val(Inf)), and Random.Repetition is an alias for Union{Val{1}, Val{Inf}}."
@@ -20218,7 +20218,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Creating-new-generators-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Creating new generators",
     "category": "section",
     "text": "The API is not clearly defined yet, but as a rule of thumb:any rand method producing \"basic\" types (isbitstype integer and floating types in Base) should be defined for this specific RNG, if they are needed;\nother documented rand methods accepting an AbstractRNG should work out of the box, (provided the methods from 1) what are relied on are implemented), but can of course be specialized for this RNG if there is room for optimization.Concerning 1), a rand method may happen to work automatically, but it\'s not officially supported and may break without warnings in a subsequent release.To define a new rand method for an hypothetical MyRNG generator, and a value specification s (e.g. s == Int, or s == 1:10) of type S==typeof(s) or S==Type{s} if s is a type, the same two methods as we saw before must be defined:Sampler(::Type{MyRNG}, ::S, ::Repetition), which returns an object of type say SamplerS\nrand(rng::MyRNG, sp::SamplerS)It can happen that Sampler(rng::AbstractRNG, ::S, ::Repetition) is already defined in the Random module. It would then be possible to skip step 1) in practice (if one wants to specialize generation for this particular RNG type), but the corresponding SamplerS type is considered as internal detail, and may be changed without warning."
@@ -20226,7 +20226,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Random/#Specializing-array-generation-1",
-    "page": "Random Numbers",
+    "page": "随机数",
     "title": "Specializing array generation",
     "category": "section",
     "text": "In some cases, for a given RNG type, generating an array of random values can be more efficient with a specialized method than by merely using the decoupling technique explained before. This is for example the case for MersenneTwister, which natively writes random values in an array.To implement this specialization for MyRNG and for a specification s, producing elements of type S, the following method can be defined: rand!(rng::MyRNG, a::AbstractArray{S}, ::SamplerS), where SamplerS is the type of the sampler returned by Sampler(MyRNG, s, Val(Inf)). Instead of AbstractArray, it\'s possible to implement the functionality only for a subtype, e.g. Array{S}. The non-mutating array method of rand will automatically call this specialization internally.DocTestSetup = nothing"
@@ -20245,20 +20245,20 @@ var documenterSearchIndex = {"docs": [
     "page": "SHA",
     "title": "SHA",
     "category": "section",
-    "text": "Usage is very straightforward:julia> using SHA\n\njulia> bytes2hex(sha256(\"test\"))\n\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\"Each exported function (at the time of this writing, SHA-1, SHA-2 224, 256, 384 and 512, and SHA-3 224, 256, 384 and 512 functions are implemented) takes in either an Array{UInt8}, a ByteString or an IO object.  This makes it trivial to checksum a file:shell> cat /tmp/test.txt\ntest\njulia> using SHA\n\njulia> open(\"/tmp/test.txt\") do f\n           sha2_256(f)\n       end\n32-element Array{UInt8,1}:\n 0x9f\n 0x86\n 0xd0\n 0x81\n 0x88\n 0x4c\n 0x7d\n 0x65\n    ⋮\n 0x5d\n 0x6c\n 0x15\n 0xb0\n 0xf0\n 0x0a\n 0x08Note the lack of a newline at the end of /tmp/text.txt.  Julia automatically inserts a newline before the julia> prompt.Due to the colloquial usage of sha256 to refer to sha2_256, convenience functions are provided, mapping shaxxx() function calls to sha2_xxx().  For SHA-3, no such colloquialisms exist and the user must use the full sha3_xxx() names.shaxxx() takes AbstractString and array-like objects (NTuple and Array) with elements of type UInt8.Note that, at the time of this writing, the SHA3 code is not optimized, and as such is roughly an order of magnitude slower than SHA2."
+    "text": "用法非常直接：julia> using SHA\n\njulia> bytes2hex(sha256(\"test\"))\n\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\"Each exported function (at the time of this writing, SHA-1, SHA-2 224, 256, 384 and 512, and SHA-3 224, 256, 384 and 512 functions are implemented) takes in either an Array{UInt8}, a ByteString or an IO object.  This makes it trivial to checksum a file:shell> cat /tmp/test.txt\ntest\njulia> using SHA\n\njulia> open(\"/tmp/test.txt\") do f\n           sha2_256(f)\n       end\n32-element Array{UInt8,1}:\n 0x9f\n 0x86\n 0xd0\n 0x81\n 0x88\n 0x4c\n 0x7d\n 0x65\n    ⋮\n 0x5d\n 0x6c\n 0x15\n 0xb0\n 0xf0\n 0x0a\n 0x08Note the lack of a newline at the end of /tmp/text.txt.  Julia automatically inserts a newline before the julia> prompt.Due to the colloquial usage of sha256 to refer to sha2_256, convenience functions are provided, mapping shaxxx() function calls to sha2_xxx().  For SHA-3, no such colloquialisms exist and the user must use the full sha3_xxx() names.shaxxx() takes AbstractString and array-like objects (NTuple and Array) with elements of type UInt8.Note that, at the time of this writing, the SHA3 code is not optimized, and as such is roughly an order of magnitude slower than SHA2."
 },
 
 {
     "location": "stdlib/Serialization/#",
-    "page": "Serialization",
-    "title": "Serialization",
+    "page": "序列化",
+    "title": "序列化",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/Serialization/#Serialization.serialize",
-    "page": "Serialization",
+    "page": "序列化",
     "title": "Serialization.serialize",
     "category": "function",
     "text": "serialize(stream::IO, value)\n\nWrite an arbitrary value to a stream in an opaque format, such that it can be read back by deserialize. The read-back value will be as identical as possible to the original. In general, this process will not work if the reading and writing are done by different versions of Julia, or an instance of Julia with a different system image. Ptr values are serialized as all-zero bit patterns (NULL).\n\nAn 8-byte identifying header is written to the stream first. To avoid writing the header, construct a Serializer and use it as the first argument to serialize instead. See also Serialization.writeheader.\n\n\n\n\n\n"
@@ -20266,7 +20266,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Serialization/#Serialization.deserialize",
-    "page": "Serialization",
+    "page": "序列化",
     "title": "Serialization.deserialize",
     "category": "function",
     "text": "deserialize(stream)\n\nRead a value written by serialize. deserialize assumes the binary data read from stream is correct and has been serialized by a compatible implementation of serialize. It has been designed with simplicity and performance as a goal and does not validate the data read. Malformed data can result in process termination. The caller has to ensure the integrity and correctness of data read from stream.\n\n\n\n\n\n"
@@ -20274,31 +20274,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Serialization/#Serialization.writeheader",
-    "page": "Serialization",
+    "page": "序列化",
     "title": "Serialization.writeheader",
     "category": "function",
     "text": "Serialization.writeheader(s::AbstractSerializer)\n\nWrite an identifying header to the specified serializer. The header consists of 8 bytes as follows:\n\nOffset Description\n0 tag byte (0x37)\n1-2 signature bytes \"JL\"\n3 protocol version\n4 bits 0-1: endianness: 0 = little, 1 = big\n4 bits 2-3: platform: 0 = 32-bit, 1 = 64-bit\n5-7 reserved\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Serialization/#Serialization-1",
-    "page": "Serialization",
-    "title": "Serialization",
+    "location": "stdlib/Serialization/#序列化-1",
+    "page": "序列化",
+    "title": "序列化",
     "category": "section",
     "text": "Serialization.serialize\nSerialization.deserialize\nSerialization.writeheader"
 },
 
 {
     "location": "stdlib/SharedArrays/#",
-    "page": "Shared Arrays",
-    "title": "Shared Arrays",
+    "page": "共享数组",
+    "title": "共享数组",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/SharedArrays/#SharedArrays.SharedArray",
-    "page": "Shared Arrays",
+    "page": "共享数组",
     "title": "SharedArrays.SharedArray",
     "category": "type",
     "text": "SharedArray{T}(dims::NTuple; init=false, pids=Int[])\nSharedArray{T,N}(...)\n\nConstruct a SharedArray of a bits type T and size dims across the processes specified by pids - all of which have to be on the same host.  If N is specified by calling SharedArray{T,N}(dims), then N must match the length of dims.\n\nIf pids is left unspecified, the shared array will be mapped across all processes on the current host, including the master. But, localindices and indexpids will only refer to worker processes. This facilitates work distribution code to use workers for actual computation with the master process acting as a driver.\n\nIf an init function of the type initfn(S::SharedArray) is specified, it is called on all the participating workers.\n\nThe shared array is valid as long as a reference to the SharedArray object exists on the node which created the mapping.\n\nSharedArray{T}(filename::AbstractString, dims::NTuple, [offset=0]; mode=nothing, init=false, pids=Int[])\nSharedArray{T,N}(...)\n\nConstruct a SharedArray backed by the file filename, with element type T (must be a bits type) and size dims, across the processes specified by pids - all of which have to be on the same host. This file is mmapped into the host memory, with the following consequences:\n\nThe array data must be represented in binary format (e.g., an ASCII format like CSV cannot be supported)\nAny changes you make to the array values (e.g., A[3] = 0) will also change the values on disk\n\nIf pids is left unspecified, the shared array will be mapped across all processes on the current host, including the master. But, localindices and indexpids will only refer to worker processes. This facilitates work distribution code to use workers for actual computation with the master process acting as a driver.\n\nmode must be one of \"r\", \"r+\", \"w+\", or \"a+\", and defaults to \"r+\" if the file specified by filename already exists, or \"w+\" if not. If an init function of the type initfn(S::SharedArray) is specified, it is called on all the participating workers. You cannot specify an init function if the file is not writable.\n\noffset allows you to skip the specified number of bytes at the beginning of the file.\n\n\n\n\n\n"
@@ -20306,7 +20306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SharedArrays/#Distributed.procs-Tuple{SharedArray}",
-    "page": "Shared Arrays",
+    "page": "共享数组",
     "title": "Distributed.procs",
     "category": "method",
     "text": "procs(S::SharedArray)\n\nGet the vector of processes mapping the shared array.\n\n\n\n\n\n"
@@ -20314,7 +20314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SharedArrays/#SharedArrays.sdata",
-    "page": "Shared Arrays",
+    "page": "共享数组",
     "title": "SharedArrays.sdata",
     "category": "function",
     "text": "sdata(S::SharedArray)\n\nReturns the actual Array object backing S.\n\n\n\n\n\n"
@@ -20322,7 +20322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SharedArrays/#SharedArrays.indexpids",
-    "page": "Shared Arrays",
+    "page": "共享数组",
     "title": "SharedArrays.indexpids",
     "category": "function",
     "text": "indexpids(S::SharedArray)\n\nReturns the current worker\'s index in the list of workers mapping the SharedArray (i.e. in the same list returned by procs(S)), or 0 if the SharedArray is not mapped locally.\n\n\n\n\n\n"
@@ -20330,31 +20330,31 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SharedArrays/#SharedArrays.localindices",
-    "page": "Shared Arrays",
+    "page": "共享数组",
     "title": "SharedArrays.localindices",
     "category": "function",
     "text": "localindices(S::SharedArray)\n\nReturns a range describing the \"default\" indices to be handled by the current process.  This range should be interpreted in the sense of linear indexing, i.e., as a sub-range of 1:length(S).  In multi-process contexts, returns an empty range in the parent process (or any process for which indexpids returns 0).\n\nIt\'s worth emphasizing that localindices exists purely as a convenience, and you can partition work on the array among workers any way you wish. For a SharedArray, all indices should be equally fast for each worker process.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/SharedArrays/#Shared-Arrays-1",
-    "page": "Shared Arrays",
-    "title": "Shared Arrays",
+    "location": "stdlib/SharedArrays/#共享数组-1",
+    "page": "共享数组",
+    "title": "共享数组",
     "category": "section",
     "text": "SharedArrays.SharedArray\nSharedArrays.procs(::SharedArray)\nSharedArrays.sdata\nSharedArrays.indexpids\nSharedArrays.localindices"
 },
 
 {
     "location": "stdlib/Sockets/#",
-    "page": "Sockets",
-    "title": "Sockets",
+    "page": "套接字",
+    "title": "套接字",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/Sockets/#Sockets.connect-Tuple{TCPSocket,Integer}",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.connect",
     "category": "method",
     "text": "connect([host], port::Integer) -> TCPSocket\n\nConnect to the host host on port port.\n\n\n\n\n\n"
@@ -20362,7 +20362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.connect-Tuple{AbstractString}",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.connect",
     "category": "method",
     "text": "connect(path::AbstractString) -> PipeEndpoint\n\nConnect to the named pipe / UNIX domain socket at path.\n\n\n\n\n\n"
@@ -20370,7 +20370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.listen-Tuple{Any}",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.listen",
     "category": "method",
     "text": "listen([addr, ]port::Integer; backlog::Integer=BACKLOG_DEFAULT) -> TCPServer\n\nListen on port on the address specified by addr. By default this listens on localhost only. To listen on all interfaces pass IPv4(0) or IPv6(0) as appropriate. backlog determines how many connections can be pending (not having called accept) before the server will begin to reject them. The default value of backlog is 511.\n\n\n\n\n\n"
@@ -20378,7 +20378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.listen-Tuple{AbstractString}",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.listen",
     "category": "method",
     "text": "listen(path::AbstractString) -> PipeServer\n\nCreate and listen on a named pipe / UNIX domain socket.\n\n\n\n\n\n"
@@ -20386,7 +20386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.getaddrinfo",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.getaddrinfo",
     "category": "function",
     "text": "getalladdrinfo(host::AbstractString, IPAddr=IPv4) -> IPAddr\n\nGets the first IP address of the host of the specified IPAddr type. Uses the operating system\'s underlying getaddrinfo implementation, which may do a DNS lookup.\n\n\n\n\n\n"
@@ -20394,7 +20394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.getipaddr",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.getipaddr",
     "category": "function",
     "text": "getipaddr() -> IPAddr\n\nGet the IP address of the local machine.\n\nExamples\n\njulia> getipaddr()\nip\"192.168.1.28\"\n\n\n\n\n\n"
@@ -20402,7 +20402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.getalladdrinfo",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.getalladdrinfo",
     "category": "function",
     "text": "getalladdrinfo(host::AbstractString) -> Vector{IPAddr}\n\nGets all of the IP addresses of the host. Uses the operating system\'s underlying getaddrinfo implementation, which may do a DNS lookup.\n\nExample\n\njulia> getalladdrinfo(\"google.com\")\n2-element Array{IPAddr,1}:\n ip\"172.217.6.174\"\n ip\"2607:f8b0:4000:804::200e\"\n\n\n\n\n\n"
@@ -20410,7 +20410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.getnameinfo",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.getnameinfo",
     "category": "function",
     "text": "getnameinfo(host::IPAddr) -> String\n\nPerforms a reverse-lookup for IP address to return a hostname and service using the operating system\'s underlying getnameinfo implementation.\n\nExamples\n\njulia> getnameinfo(Sockets.IPv4(\"8.8.8.8\"))\n\"google-public-dns-a.google.com\"\n\n\n\n\n\n"
@@ -20418,7 +20418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.getsockname",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.getsockname",
     "category": "function",
     "text": "getsockname(sock::Union{TCPServer, TCPSocket}) -> (IPAddr, UInt16)\n\nGet the IP address and port that the given socket is bound to.\n\n\n\n\n\n"
@@ -20426,7 +20426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.getpeername",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.getpeername",
     "category": "function",
     "text": "getpeername(sock::TCPSocket) -> (IPAddr, UInt16)\n\nGet the IP address and port of the remote endpoint that the given socket is connected to. Valid only for connected TCP sockets.\n\n\n\n\n\n"
@@ -20434,7 +20434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.IPv4",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.IPv4",
     "category": "type",
     "text": "IPv4(host::Integer) -> IPv4\n\nReturns an IPv4 object from ip address host formatted as an Integer.\n\njulia> IPv4(3223256218)\nip\"192.30.252.154\"\n\n\n\n\n\n"
@@ -20442,7 +20442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.IPv6",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.IPv6",
     "category": "type",
     "text": "IPv6(host::Integer) -> IPv6\n\nReturns an IPv6 object from ip address host formatted as an Integer.\n\njulia> IPv6(3223256218)\nip\"::c01e:fc9a\"\n\n\n\n\n\n"
@@ -20450,7 +20450,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.TCPSocket",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.TCPSocket",
     "category": "type",
     "text": "TCPSocket(; delay=true)\n\nOpen a TCP socket using libuv. If delay is true, libuv delays creation of the socket\'s file descriptor till the first bind call. TCPSocket has various fields to denote the state of the socket as well as its send/receive buffers.\n\n\n\n\n\n"
@@ -20458,7 +20458,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.UDPSocket",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.UDPSocket",
     "category": "type",
     "text": "UDPSocket()\n\nOpen a UDP socket using libuv. UDPSocket has various fields to denote the state of the socket.\n\n\n\n\n\n"
@@ -20466,7 +20466,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.accept",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.accept",
     "category": "function",
     "text": "accept(server[,client])\n\nAccepts a connection on the given server and returns a connection to the client. An uninitialized client stream may be provided, in which case it will be used instead of creating a new stream.\n\n\n\n\n\n"
@@ -20474,7 +20474,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.listenany",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.listenany",
     "category": "function",
     "text": "listenany([host::IPAddr,] port_hint) -> (UInt16, TCPServer)\n\nCreate a TCPServer on any port, using hint as a starting point. Returns a tuple of the actual port that the server was created on and the server itself.\n\n\n\n\n\n"
@@ -20482,7 +20482,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Base.bind",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Base.bind",
     "category": "function",
     "text": "bind(socket::Union{UDPSocket, TCPSocket}, host::IPAddr, port::Integer; ipv6only=false, reuseaddr=false, kws...)\n\nBind socket to the given host:port. Note that 0.0.0.0 will listen on all devices.\n\nThe ipv6only parameter disables dual stack mode. If ipv6only=true, only an IPv6 stack is created.\nIf reuseaddr=true, multiple threads or processes can bind to the same address without error if they all set reuseaddr=true, but only the last to bind will receive any traffic.\n\n\n\n\n\nbind(chnl::Channel, task::Task)\n\nAssociate the lifetime of chnl with a task. Channel chnl is automatically closed when the task terminates. Any uncaught exception in the task is propagated to all waiters on chnl.\n\nThe chnl object can be explicitly closed independent of task termination. Terminating tasks have no effect on already closed Channel objects.\n\nWhen a channel is bound to multiple tasks, the first task to terminate will close the channel. When multiple channels are bound to the same task, termination of the task will close all of the bound channels.\n\nExamples\n\njulia> c = Channel(0);\n\njulia> task = @async foreach(i->put!(c, i), 1:4);\n\njulia> bind(c,task);\n\njulia> for i in c\n           @show i\n       end;\ni = 1\ni = 2\ni = 3\ni = 4\n\njulia> isopen(c)\nfalse\n\njulia> c = Channel(0);\n\njulia> task = @async (put!(c,1);error(\"foo\"));\n\njulia> bind(c,task);\n\njulia> take!(c)\n1\n\njulia> put!(c,1);\nERROR: foo\nStacktrace:\n[...]\n\n\n\n\n\n"
@@ -20490,7 +20490,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.send",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.send",
     "category": "function",
     "text": "send(socket::UDPSocket, host, port::Integer, msg)\n\nSend msg over socket to host:port.\n\n\n\n\n\n"
@@ -20498,7 +20498,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.recv",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.recv",
     "category": "function",
     "text": "recv(socket::UDPSocket)\n\nRead a UDP packet from the specified socket, and return the bytes received. This call blocks.\n\n\n\n\n\n"
@@ -20506,7 +20506,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.recvfrom",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.recvfrom",
     "category": "function",
     "text": "recvfrom(socket::UDPSocket) -> (address, data)\n\nRead a UDP packet from the specified socket, returning a tuple of (address, data), where address will be either IPv4 or IPv6 as appropriate.\n\n\n\n\n\n"
@@ -20514,79 +20514,79 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Sockets/#Sockets.setopt",
-    "page": "Sockets",
+    "page": "套接字",
     "title": "Sockets.setopt",
     "category": "function",
     "text": "setopt(sock::UDPSocket; multicast_loop = nothing, multicast_ttl=nothing, enable_broadcast=nothing, ttl=nothing)\n\nSet UDP socket options.\n\nmulticast_loop: loopback for multicast packets (default: true).\nmulticast_ttl: TTL for multicast packets (default: nothing).\nenable_broadcast: flag must be set to true if socket will be used for broadcast messages, or else the UDP system will return an access error (default: false).\nttl: Time-to-live of packets sent on the socket (default: nothing).\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Sockets/#Sockets-1",
-    "page": "Sockets",
-    "title": "Sockets",
+    "location": "stdlib/Sockets/#套接字-1",
+    "page": "套接字",
+    "title": "套接字",
     "category": "section",
     "text": "DocTestSetup = :(using Sockets)Sockets.connect(::TCPSocket, ::Integer)\nSockets.connect(::AbstractString)\nSockets.listen(::Any)\nSockets.listen(::AbstractString)\nSockets.getaddrinfo\nSockets.getipaddr\nSockets.getalladdrinfo\nSockets.getnameinfo\nSockets.getsockname\nSockets.getpeername\nSockets.IPv4\nSockets.IPv6\nSockets.TCPSocket\nSockets.UDPSocket\nSockets.accept\nSockets.listenany\nSockets.bind\nSockets.send\nSockets.recv\nSockets.recvfrom\nSockets.setoptDocTestSetup = nothing"
 },
 
 {
     "location": "stdlib/SparseArrays/#",
-    "page": "Sparse Arrays",
-    "title": "Sparse Arrays",
+    "page": "稀疏矩阵",
+    "title": "稀疏矩阵",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "stdlib/SparseArrays/#Sparse-Arrays-1",
-    "page": "Sparse Arrays",
-    "title": "Sparse Arrays",
+    "location": "stdlib/SparseArrays/#稀疏矩阵-1",
+    "page": "稀疏矩阵",
+    "title": "稀疏矩阵",
     "category": "section",
-    "text": "DocTestSetup = :(using SparseArrays, LinearAlgebra)Julia has support for sparse vectors and sparse matrices in the SparseArrays stdlib module. Sparse arrays are arrays that contain enough zeros that storing them in a special data structure leads to savings in space and execution time, compared to dense arrays."
+    "text": "DocTestSetup = :(using SparseArrays, LinearAlgebra)Julia在SparseArrays标准库模块中支持稀疏向量和稀疏矩阵。相对于稠密数组，稀疏数组是包含很多零值的数组，将这些零值在一种特殊的数据结构中存储可以节省很大的空间和运算时间。"
 },
 
 {
     "location": "stdlib/SparseArrays/#man-csc-1",
-    "page": "Sparse Arrays",
-    "title": "Compressed Sparse Column (CSC) Sparse Matrix Storage",
+    "page": "稀疏矩阵",
+    "title": "压缩稀疏列(CSC)稀疏矩阵存储",
     "category": "section",
-    "text": "In Julia, sparse matrices are stored in the Compressed Sparse Column (CSC) format. Julia sparse matrices have the type SparseMatrixCSC{Tv,Ti}, where Tv is the type of the stored values, and Ti is the integer type for storing column pointers and row indices. The internal representation of SparseMatrixCSC is as follows:struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}\n    m::Int                  # Number of rows\n    n::Int                  # Number of columns\n    colptr::Vector{Ti}      # Column i is in colptr[i]:(colptr[i+1]-1)\n    rowval::Vector{Ti}      # Row indices of stored values\n    nzval::Vector{Tv}       # Stored values, typically nonzeros\nendThe compressed sparse column storage makes it easy and quick to access the elements in the column of a sparse matrix, whereas accessing the sparse matrix by rows is considerably slower. Operations such as insertion of previously unstored entries one at a time in the CSC structure tend to be slow. This is because all elements of the sparse matrix that are beyond the point of insertion have to be moved one place over.All operations on sparse matrices are carefully implemented to exploit the CSC data structure for performance, and to avoid expensive operations.If you have data in CSC format from a different application or library, and wish to import it in Julia, make sure that you use 1-based indexing. The row indices in every column need to be sorted. If your SparseMatrixCSC object contains unsorted row indices, one quick way to sort them is by doing a double transpose.In some applications, it is convenient to store explicit zero values in a SparseMatrixCSC. These are accepted by functions in Base (but there is no guarantee that they will be preserved in mutating operations). Such explicitly stored zeros are treated as structural nonzeros by many routines. The nnz function returns the number of elements explicitly stored in the sparse data structure, including structural nonzeros. In order to count the exact number of numerical nonzeros, use count(!iszero, x), which inspects every stored element of a sparse matrix. dropzeros, and the in-place dropzeros!, can be used to remove stored zeros from the sparse matrix.julia> A = sparse([1, 2, 3], [1, 2, 3], [0, 2, 0])\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  0\n  [2, 2]  =  2\n  [3, 3]  =  0\n\njulia> dropzeros(A)\n3×3 SparseMatrixCSC{Int64,Int64} with 1 stored entry:\n  [2, 2]  =  2"
+    "text": "在Julia中，稀疏矩阵是按照压缩稀疏列(CSC)格式存储的。Julia稀疏矩阵具有SparseMatrixCSC{Tv,Ti}类型，其中Tv是存储值的类型，Ti是存储列指针和行索引的整型类型。SparseMatrixCSC的内部表示如下所示：struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}\n    m::Int                  # Number of rows\n    n::Int                  # Number of columns\n    colptr::Vector{Ti}      # Column i is in colptr[i]:(colptr[i+1]-1)\n    rowval::Vector{Ti}      # Row indices of stored values\n    nzval::Vector{Tv}       # Stored values, typically nonzeros\nend压缩稀疏列存储格式使得访问稀疏矩阵的列元素非常简单快速，而访问稀疏矩阵的行会非常缓慢。在CSC稀疏矩阵中执行类似插入新元素的操作也会非常慢。这是由于在稀疏矩阵中插入新元素时，在插入点之后的所有元素都要向后移动一位。All operations on sparse matrices are carefully implemented to exploit the CSC data structure for performance, and to avoid expensive operations.If you have data in CSC format from a different application or library, and wish to import it in Julia, make sure that you use 1-based indexing. The row indices in every column need to be sorted. If your SparseMatrixCSC object contains unsorted row indices, one quick way to sort them is by doing a double transpose.In some applications, it is convenient to store explicit zero values in a SparseMatrixCSC. These are accepted by functions in Base (but there is no guarantee that they will be preserved in mutating operations). Such explicitly stored zeros are treated as structural nonzeros by many routines. The nnz function returns the number of elements explicitly stored in the sparse data structure, including structural nonzeros. In order to count the exact number of numerical nonzeros, use count(!iszero, x), which inspects every stored element of a sparse matrix. dropzeros, and the in-place dropzeros!, can be used to remove stored zeros from the sparse matrix.julia> A = sparse([1, 2, 3], [1, 2, 3], [0, 2, 0])\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  0\n  [2, 2]  =  2\n  [3, 3]  =  0\n\njulia> dropzeros(A)\n3×3 SparseMatrixCSC{Int64,Int64} with 1 stored entry:\n  [2, 2]  =  2"
 },
 
 {
-    "location": "stdlib/SparseArrays/#Sparse-Vector-Storage-1",
-    "page": "Sparse Arrays",
-    "title": "Sparse Vector Storage",
+    "location": "stdlib/SparseArrays/#稀疏向量储存-1",
+    "page": "稀疏矩阵",
+    "title": "稀疏向量储存",
     "category": "section",
     "text": "Sparse vectors are stored in a close analog to compressed sparse column format for sparse matrices. In Julia, sparse vectors have the type SparseVector{Tv,Ti} where Tv is the type of the stored values and Ti the integer type for the indices. The internal representation is as follows:struct SparseVector{Tv,Ti<:Integer} <: AbstractSparseVector{Tv,Ti}\n    n::Int              # Length of the sparse vector\n    nzind::Vector{Ti}   # Indices of stored values\n    nzval::Vector{Tv}   # Stored values, typically nonzeros\nendAs for SparseMatrixCSC, the SparseVector type can also contain explicitly stored zeros. (See Sparse Matrix Storage.)."
 },
 
 {
-    "location": "stdlib/SparseArrays/#Sparse-Vector-and-Matrix-Constructors-1",
-    "page": "Sparse Arrays",
-    "title": "Sparse Vector and Matrix Constructors",
+    "location": "stdlib/SparseArrays/#稀疏向量与矩阵构造函数-1",
+    "page": "稀疏矩阵",
+    "title": "稀疏向量与矩阵构造函数",
     "category": "section",
     "text": "The simplest way to create a sparse array is to use a function equivalent to the zeros function that Julia provides for working with dense arrays. To produce a sparse array instead, you can use the same name with an sp prefix:julia> spzeros(3)\n3-element SparseVector{Float64,Int64} with 0 stored entriesThe sparse function is often a handy way to construct sparse arrays. For example, to construct a sparse matrix we can input a vector I of row indices, a vector J of column indices, and a vector V of stored values (this is also known as the COO (coordinate) format). sparse(I,J,V) then constructs a sparse matrix such that S[I[k], J[k]] = V[k]. The equivalent sparse vector constructor is sparsevec, which takes the (row) index vector I and the vector V with the stored values and constructs a sparse vector R such that R[I[k]] = V[k].julia> I = [1, 4, 3, 5]; J = [4, 7, 18, 9]; V = [1, 2, -5, 3];\n\njulia> S = sparse(I,J,V)\n5×18 SparseMatrixCSC{Int64,Int64} with 4 stored entries:\n  [1 ,  4]  =  1\n  [4 ,  7]  =  2\n  [5 ,  9]  =  3\n  [3 , 18]  =  -5\n\njulia> R = sparsevec(I,V)\n5-element SparseVector{Int64,Int64} with 4 stored entries:\n  [1]  =  1\n  [3]  =  -5\n  [4]  =  2\n  [5]  =  3The inverse of the sparse and sparsevec functions is findnz, which retrieves the inputs used to create the sparse array. findall(!iszero, x) returns the cartesian indices of non-zero entries in x (including stored entries equal to zero).julia> findnz(S)\n([1, 4, 5, 3], [4, 7, 9, 18], [1, 2, 3, -5])\n\njulia> findall(!iszero, S)\n4-element Array{CartesianIndex{2},1}:\n CartesianIndex(1, 4)\n CartesianIndex(4, 7)\n CartesianIndex(5, 9)\n CartesianIndex(3, 18)\n\njulia> findnz(R)\n([1, 3, 4, 5], [1, -5, 2, 3])\n\njulia> findall(!iszero, R)\n4-element Array{Int64,1}:\n 1\n 3\n 4\n 5Another way to create a sparse array is to convert a dense array into a sparse array using the sparse function:julia> sparse(Matrix(1.0I, 5, 5))\n5×5 SparseMatrixCSC{Float64,Int64} with 5 stored entries:\n  [1, 1]  =  1.0\n  [2, 2]  =  1.0\n  [3, 3]  =  1.0\n  [4, 4]  =  1.0\n  [5, 5]  =  1.0\n\njulia> sparse([1.0, 0.0, 1.0])\n3-element SparseVector{Float64,Int64} with 2 stored entries:\n  [1]  =  1.0\n  [3]  =  1.0You can go in the other direction using the Array constructor. The issparse function can be used to query if a matrix is sparse.julia> issparse(spzeros(5))\ntrue"
 },
 
 {
-    "location": "stdlib/SparseArrays/#Sparse-matrix-operations-1",
-    "page": "Sparse Arrays",
-    "title": "Sparse matrix operations",
+    "location": "stdlib/SparseArrays/#稀疏矩阵的操作-1",
+    "page": "稀疏矩阵",
+    "title": "稀疏矩阵的操作",
     "category": "section",
     "text": "Arithmetic operations on sparse matrices also work as they do on dense matrices. Indexing of, assignment into, and concatenation of sparse matrices work in the same way as dense matrices. Indexing operations, especially assignment, are expensive, when carried out one element at a time. In many cases it may be better to convert the sparse matrix into (I,J,V) format using findnz, manipulate the values or the structure in the dense vectors (I,J,V), and then reconstruct the sparse matrix."
 },
 
 {
     "location": "stdlib/SparseArrays/#Correspondence-of-dense-and-sparse-methods-1",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "Correspondence of dense and sparse methods",
     "category": "section",
-    "text": "The following table gives a correspondence between built-in methods on sparse matrices and their corresponding methods on dense matrix types. In general, methods that generate sparse matrices differ from their dense counterparts in that the resulting matrix follows the same sparsity pattern as a given sparse matrix S, or that the resulting sparse matrix has density d, i.e. each matrix element has a probability d of being non-zero.Details can be found in the Sparse Vectors and Matrices section of the standard library reference.Sparse Dense Description\nspzeros(m,n) zeros(m,n) Creates a m-by-n matrix of zeros. (spzeros(m,n) is empty.)\nsparse(I, n, n) Matrix(I,n,n) Creates a n-by-n identity matrix.\nArray(S) sparse(A) Interconverts between dense and sparse formats.\nsprand(m,n,d) rand(m,n) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed uniformly on the half-open interval 0 1).\nsprandn(m,n,d) randn(m,n) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed according to the standard normal (Gaussian) distribution.\nsprandn(m,n,d,X) randn(m,n,X) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed according to the X distribution. (Requires the Distributions package.)"
+    "text": "The following table gives a correspondence between built-in methods on sparse matrices and their corresponding methods on dense matrix types. In general, methods that generate sparse matrices differ from their dense counterparts in that the resulting matrix follows the same sparsity pattern as a given sparse matrix S, or that the resulting sparse matrix has density d, i.e. each matrix element has a probability d of being non-zero.Details can be found in the Sparse Vectors and Matrices section of the standard library reference.构造函数 密度 说明\nspzeros(m,n) zeros(m,n) Creates a m-by-n matrix of zeros. (spzeros(m,n) is empty.)\nsparse(I, n, n) Matrix(I,n,n) Creates a n-by-n identity matrix.\nArray(S) sparse(A) Interconverts between dense and sparse formats.\nsprand(m,n,d) rand(m,n) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed uniformly on the half-open interval 0 1).\nsprandn(m,n,d) randn(m,n) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed according to the standard normal (Gaussian) distribution.\nsprandn(m,n,d,X) randn(m,n,X) Creates a m-by-n random matrix (of density d) with iid non-zero elements distributed according to the X distribution. (Requires the Distributions package.)"
 },
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.SparseVector",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.SparseVector",
     "category": "type",
     "text": "SparseVector{Tv,Ti<:Integer} <: AbstractSparseVector{Tv,Ti}\n\nVector type for storing sparse vectors.\n\n\n\n\n\n"
@@ -20594,7 +20594,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.SparseMatrixCSC",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.SparseMatrixCSC",
     "category": "type",
     "text": "SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrix{Tv,Ti}\n\nMatrix type for storing sparse matrices in the Compressed Sparse Column format.\n\n\n\n\n\n"
@@ -20602,7 +20602,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.sparse",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.sparse",
     "category": "function",
     "text": "sparse(A)\n\nConvert an AbstractMatrix A into a sparse matrix.\n\nExamples\n\njulia> A = Matrix(1.0I, 3, 3)\n3×3 Array{Float64,2}:\n 1.0  0.0  0.0\n 0.0  1.0  0.0\n 0.0  0.0  1.0\n\njulia> sparse(A)\n3×3 SparseMatrixCSC{Float64,Int64} with 3 stored entries:\n  [1, 1]  =  1.0\n  [2, 2]  =  1.0\n  [3, 3]  =  1.0\n\n\n\n\n\nsparse(I, J, V,[ m, n, combine])\n\nCreate a sparse matrix S of dimensions m x n such that S[I[k], J[k]] = V[k]. The combine function is used to combine duplicates. If m and n are not specified, they are set to maximum(I) and maximum(J) respectively. If the combine function is not supplied, combine defaults to + unless the elements of V are Booleans in which case combine defaults to |. All elements of I must satisfy 1 <= I[k] <= m, and all elements of J must satisfy 1 <= J[k] <= n. Numerical zeros in (I, J, V) are retained as structural nonzeros; to drop numerical zeros, use dropzeros!.\n\nFor additional documentation and an expert driver, see Base.SparseArrays.sparse!.\n\nExamples\n\njulia> Is = [1; 2; 3];\n\njulia> Js = [1; 2; 3];\n\njulia> Vs = [1; 2; 3];\n\njulia> sparse(Is, Js, Vs)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  1\n  [2, 2]  =  2\n  [3, 3]  =  3\n\n\n\n\n\n"
@@ -20610,7 +20610,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.sparsevec",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.sparsevec",
     "category": "function",
     "text": "sparsevec(I, V, [m, combine])\n\nCreate a sparse vector S of length m such that S[I[k]] = V[k]. Duplicates are combined using the combine function, which defaults to + if no combine argument is provided, unless the elements of V are Booleans in which case combine defaults to |.\n\nExamples\n\njulia> II = [1, 3, 3, 5]; V = [0.1, 0.2, 0.3, 0.2];\n\njulia> sparsevec(II, V)\n5-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  0.1\n  [3]  =  0.5\n  [5]  =  0.2\n\njulia> sparsevec(II, V, 8, -)\n8-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  0.1\n  [3]  =  -0.1\n  [5]  =  0.2\n\njulia> sparsevec([1, 3, 1, 2, 2], [true, true, false, false, false])\n3-element SparseVector{Bool,Int64} with 3 stored entries:\n  [1]  =  true\n  [2]  =  false\n  [3]  =  true\n\n\n\n\n\nsparsevec(d::Dict, [m])\n\nCreate a sparse vector of length m where the nonzero indices are keys from the dictionary, and the nonzero values are the values from the dictionary.\n\nExamples\n\njulia> sparsevec(Dict(1 => 3, 2 => 2))\n2-element SparseVector{Int64,Int64} with 2 stored entries:\n  [1]  =  3\n  [2]  =  2\n\n\n\n\n\nsparsevec(A)\n\nConvert a vector A into a sparse vector of length m.\n\nExamples\n\njulia> sparsevec([1.0, 2.0, 0.0, 0.0, 3.0, 0.0])\n6-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  1.0\n  [2]  =  2.0\n  [5]  =  3.0\n\n\n\n\n\n"
@@ -20618,7 +20618,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.issparse",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.issparse",
     "category": "function",
     "text": "issparse(S)\n\nReturns true if S is sparse, and false otherwise.\n\nExamples\n\njulia> sv = sparsevec([1, 4], [2.3, 2.2], 10)\n10-element SparseVector{Float64,Int64} with 2 stored entries:\n  [1 ]  =  2.3\n  [4 ]  =  2.2\n\njulia> issparse(sv)\ntrue\n\njulia> issparse(Array(sv))\nfalse\n\n\n\n\n\n"
@@ -20626,7 +20626,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.nnz",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.nnz",
     "category": "function",
     "text": "nnz(A)\n\nReturns the number of stored (filled) elements in a sparse array.\n\nExamples\n\njulia> A = sparse(2I, 3, 3)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n\njulia> nnz(A)\n3\n\n\n\n\n\n"
@@ -20634,7 +20634,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.findnz",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.findnz",
     "category": "function",
     "text": "findnz(A)\n\nReturn a tuple (I, J, V) where I and J are the row and column indices of the stored (\"structurally non-zero\") values in sparse matrix A, and V is a vector of the values.\n\nExamples\n\njulia> A = sparse([1 2 0; 0 0 3; 0 4 0])\n3×3 SparseMatrixCSC{Int64,Int64} with 4 stored entries:\n  [1, 1]  =  1\n  [1, 2]  =  2\n  [3, 2]  =  4\n  [2, 3]  =  3\n\njulia> findnz(A)\n([1, 1, 3, 2], [1, 2, 2, 3], [1, 2, 4, 3])\n\n\n\n\n\n"
@@ -20642,7 +20642,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.spzeros",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.spzeros",
     "category": "function",
     "text": "spzeros([type,]m[,n])\n\nCreate a sparse vector of length m or sparse matrix of size m x n. This sparse array will not contain any nonzero values. No storage will be allocated for nonzero values during construction. The type defaults to Float64 if not specified.\n\nExamples\n\njulia> spzeros(3, 3)\n3×3 SparseMatrixCSC{Float64,Int64} with 0 stored entries\n\njulia> spzeros(Float32, 4)\n4-element SparseVector{Float32,Int64} with 0 stored entries\n\n\n\n\n\n"
@@ -20650,7 +20650,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.spdiagm",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.spdiagm",
     "category": "function",
     "text": "spdiagm(kv::Pair{<:Integer,<:AbstractVector}...)\n\nConstruct a square sparse diagonal matrix from Pairs of vectors and diagonals. Vector kv.second will be placed on the kv.first diagonal.\n\nExamples\n\njulia> spdiagm(-1 => [1,2,3,4], 1 => [4,3,2,1])\n5×5 SparseMatrixCSC{Int64,Int64} with 8 stored entries:\n  [2, 1]  =  1\n  [1, 2]  =  4\n  [3, 2]  =  2\n  [2, 3]  =  3\n  [4, 3]  =  3\n  [3, 4]  =  2\n  [5, 4]  =  4\n  [4, 5]  =  1\n\n\n\n\n\n"
@@ -20658,7 +20658,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.blockdiag",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.blockdiag",
     "category": "function",
     "text": "blockdiag(A...)\n\nConcatenate matrices block-diagonally. Currently only implemented for sparse matrices.\n\nExamples\n\njulia> blockdiag(sparse(2I, 3, 3), sparse(4I, 2, 2))\n5×5 SparseMatrixCSC{Int64,Int64} with 5 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n  [4, 4]  =  4\n  [5, 5]  =  4\n\n\n\n\n\n"
@@ -20666,7 +20666,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.sprand",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.sprand",
     "category": "function",
     "text": "sprand([rng],[type],m,[n],p::AbstractFloat,[rfn])\n\nCreate a random length m sparse vector or m by n sparse matrix, in which the probability of any element being nonzero is independently given by p (and hence the mean density of nonzeros is also exactly p). Nonzero values are sampled from the distribution specified by rfn and have the type type. The uniform distribution is used in case rfn is not specified. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> sprand(Bool, 2, 2, 0.5)\n2×2 SparseMatrixCSC{Bool,Int64} with 2 stored entries:\n  [1, 1]  =  true\n  [2, 1]  =  true\n\njulia> sprand(Float64, 3, 0.75)\n3-element SparseVector{Float64,Int64} with 1 stored entry:\n  [3]  =  0.298614\n\n\n\n\n\n"
@@ -20674,7 +20674,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.sprandn",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.sprandn",
     "category": "function",
     "text": "sprandn([rng], m[,n],p::AbstractFloat)\n\nCreate a random sparse vector of length m or sparse matrix of size m by n with the specified (independent) probability p of any entry being nonzero, where nonzero values are sampled from the normal distribution. The optional rng argument specifies a random number generator, see Random Numbers.\n\nExamples\n\njulia> sprandn(2, 2, 0.75)\n2×2 SparseMatrixCSC{Float64,Int64} with 2 stored entries:\n  [1, 1]  =  0.586617\n  [1, 2]  =  0.297336\n\n\n\n\n\n"
@@ -20682,7 +20682,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.nonzeros",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.nonzeros",
     "category": "function",
     "text": "nonzeros(A)\n\nReturn a vector of the structural nonzero values in sparse array A. This includes zeros that are explicitly stored in the sparse array. The returned vector points directly to the internal nonzero storage of A, and any modifications to the returned vector will mutate A as well. See rowvals and nzrange.\n\nExamples\n\njulia> A = sparse(2I, 3, 3)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n\njulia> nonzeros(A)\n3-element Array{Int64,1}:\n 2\n 2\n 2\n\n\n\n\n\n"
@@ -20690,7 +20690,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.rowvals",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.rowvals",
     "category": "function",
     "text": "rowvals(A::SparseMatrixCSC)\n\nReturn a vector of the row indices of A. Any modifications to the returned vector will mutate A as well. Providing access to how the row indices are stored internally can be useful in conjunction with iterating over structural nonzero values. See also nonzeros and nzrange.\n\nExamples\n\njulia> A = sparse(2I, 3, 3)\n3×3 SparseMatrixCSC{Int64,Int64} with 3 stored entries:\n  [1, 1]  =  2\n  [2, 2]  =  2\n  [3, 3]  =  2\n\njulia> rowvals(A)\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\n\n\n\n\n"
@@ -20698,7 +20698,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.nzrange",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.nzrange",
     "category": "function",
     "text": "nzrange(A::SparseMatrixCSC, col::Integer)\n\nReturn the range of indices to the structural nonzero values of a sparse matrix column. In conjunction with nonzeros and rowvals, this allows for convenient iterating over a sparse matrix :\n\nA = sparse(I,J,V)\nrows = rowvals(A)\nvals = nonzeros(A)\nm, n = size(A)\nfor i = 1:n\n   for j in nzrange(A, i)\n      row = rows[j]\n      val = vals[j]\n      # perform sparse wizardry...\n   end\nend\n\n\n\n\n\n"
@@ -20706,7 +20706,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.dropzeros!",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.dropzeros!",
     "category": "function",
     "text": "dropzeros!(A::SparseMatrixCSC; trim::Bool = true)\n\nRemoves stored numerical zeros from A, optionally trimming resulting excess space from A.rowval and A.nzval when trim is true.\n\nFor an out-of-place version, see dropzeros. For algorithmic information, see fkeep!.\n\n\n\n\n\ndropzeros!(x::SparseVector; trim::Bool = true)\n\nRemoves stored numerical zeros from x, optionally trimming resulting excess space from x.nzind and x.nzval when trim is true.\n\nFor an out-of-place version, see dropzeros. For algorithmic information, see fkeep!.\n\n\n\n\n\n"
@@ -20714,7 +20714,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.dropzeros",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.dropzeros",
     "category": "function",
     "text": "dropzeros(A::SparseMatrixCSC; trim::Bool = true)\n\nGenerates a copy of A and removes stored numerical zeros from that copy, optionally trimming excess space from the result\'s rowval and nzval arrays when trim is true.\n\nFor an in-place version and algorithmic information, see dropzeros!.\n\nExamples\n\njulia> A = sparse([1, 2, 3], [1, 2, 3], [1.0, 0.0, 1.0])\n3×3 SparseMatrixCSC{Float64,Int64} with 3 stored entries:\n  [1, 1]  =  1.0\n  [2, 2]  =  0.0\n  [3, 3]  =  1.0\n\njulia> dropzeros(A)\n3×3 SparseMatrixCSC{Float64,Int64} with 2 stored entries:\n  [1, 1]  =  1.0\n  [3, 3]  =  1.0\n\n\n\n\n\ndropzeros(x::SparseVector; trim::Bool = true)\n\nGenerates a copy of x and removes numerical zeros from that copy, optionally trimming excess space from the result\'s nzind and nzval arrays when trim is true.\n\nFor an in-place version and algorithmic information, see dropzeros!.\n\nExamples\n\njulia> A = sparsevec([1, 2, 3], [1.0, 0.0, 1.0])\n3-element SparseVector{Float64,Int64} with 3 stored entries:\n  [1]  =  1.0\n  [2]  =  0.0\n  [3]  =  1.0\n\njulia> dropzeros(A)\n3-element SparseVector{Float64,Int64} with 2 stored entries:\n  [1]  =  1.0\n  [3]  =  1.0\n\n\n\n\n\n"
@@ -20722,7 +20722,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#SparseArrays.permute",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "SparseArrays.permute",
     "category": "function",
     "text": "permute(A::SparseMatrixCSC{Tv,Ti}, p::AbstractVector{<:Integer},\n        q::AbstractVector{<:Integer}) where {Tv,Ti}\n\nBilaterally permute A, returning PAQ (A[p,q]). Column-permutation q\'s length must match A\'s column count (length(q) == A.n). Row-permutation p\'s length must match A\'s row count (length(p) == A.m).\n\nFor expert drivers and additional information, see permute!.\n\nExamples\n\njulia> A = spdiagm(0 => [1, 2, 3, 4], 1 => [5, 6, 7])\n4×4 SparseMatrixCSC{Int64,Int64} with 7 stored entries:\n  [1, 1]  =  1\n  [1, 2]  =  5\n  [2, 2]  =  2\n  [2, 3]  =  6\n  [3, 3]  =  3\n  [3, 4]  =  7\n  [4, 4]  =  4\n\njulia> permute(A, [4, 3, 2, 1], [1, 2, 3, 4])\n4×4 SparseMatrixCSC{Int64,Int64} with 7 stored entries:\n  [4, 1]  =  1\n  [3, 2]  =  2\n  [4, 2]  =  5\n  [2, 3]  =  3\n  [3, 3]  =  6\n  [1, 4]  =  4\n  [2, 4]  =  7\n\njulia> permute(A, [1, 2, 3, 4], [4, 3, 2, 1])\n4×4 SparseMatrixCSC{Int64,Int64} with 7 stored entries:\n  [3, 1]  =  7\n  [4, 1]  =  4\n  [2, 2]  =  6\n  [3, 2]  =  3\n  [1, 3]  =  5\n  [2, 3]  =  2\n  [1, 4]  =  1\n\n\n\n\n\n"
@@ -20730,7 +20730,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#Base.permute!-Union{Tuple{Tq}, Tuple{Tp}, Tuple{Ti}, Tuple{Tv}, Tuple{SparseMatrixCSC{Tv,Ti},SparseMatrixCSC{Tv,Ti},AbstractArray{Tp,1},AbstractArray{Tq,1}}} where Tq<:Integer where Tp<:Integer where Ti where Tv",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "Base.permute!",
     "category": "method",
     "text": "permute!(X::SparseMatrixCSC{Tv,Ti}, A::SparseMatrixCSC{Tv,Ti},\n         p::AbstractVector{<:Integer}, q::AbstractVector{<:Integer},\n         [C::SparseMatrixCSC{Tv,Ti}]) where {Tv,Ti}\n\nBilaterally permute A, storing result PAQ (A[p,q]) in X. Stores intermediate result (AQ)^T (transpose(A[:,q])) in optional argument C if present. Requires that none of X, A, and, if present, C alias each other; to store result PAQ back into A, use the following method lacking X:\n\npermute!(A::SparseMatrixCSC{Tv,Ti}, p::AbstractVector{<:Integer},\n         q::AbstractVector{<:Integer}[, C::SparseMatrixCSC{Tv,Ti},\n         [workcolptr::Vector{Ti}]]) where {Tv,Ti}\n\nX\'s dimensions must match those of A (X.m == A.m and X.n == A.n), and X must have enough storage to accommodate all allocated entries in A (length(X.rowval) >= nnz(A) and length(X.nzval) >= nnz(A)). Column-permutation q\'s length must match A\'s column count (length(q) == A.n). Row-permutation p\'s length must match A\'s row count (length(p) == A.m).\n\nC\'s dimensions must match those of transpose(A) (C.m == A.n and C.n == A.m), and C must have enough storage to accommodate all allocated entries in A (length(C.rowval) >= nnz(A) and length(C.nzval) >= nnz(A)).\n\nFor additional (algorithmic) information, and for versions of these methods that forgo argument checking, see (unexported) parent methods unchecked_noalias_permute! and unchecked_aliasing_permute!.\n\nSee also: permute.\n\n\n\n\n\n"
@@ -20738,7 +20738,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/SparseArrays/#stdlib-sparse-arrays-1",
-    "page": "Sparse Arrays",
+    "page": "稀疏矩阵",
     "title": "Sparse Arrays",
     "category": "section",
     "text": "SparseArrays.SparseVector\nSparseArrays.SparseMatrixCSC\nSparseArrays.sparse\nSparseArrays.sparsevec\nSparseArrays.issparse\nSparseArrays.nnz\nSparseArrays.findnz\nSparseArrays.spzeros\nSparseArrays.spdiagm\nSparseArrays.blockdiag\nSparseArrays.sprand\nSparseArrays.sprandn\nSparseArrays.nonzeros\nSparseArrays.rowvals\nSparseArrays.nzrange\nSparseArrays.dropzeros!\nSparseArrays.dropzeros\nSparseArrays.permute\npermute!{Tv, Ti, Tp <: Integer, Tq <: Integer}(::SparseMatrixCSC{Tv,Ti}, ::SparseMatrixCSC{Tv,Ti}, ::AbstractArray{Tp,1}, ::AbstractArray{Tq,1})DocTestSetup = nothing"
@@ -20746,15 +20746,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#",
-    "page": "Statistics",
-    "title": "Statistics",
+    "page": "统计",
+    "title": "统计",
     "category": "page",
     "text": ""
 },
 
 {
     "location": "stdlib/Statistics/#Statistics.std",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.std",
     "category": "function",
     "text": "std(v; corrected::Bool=true, mean=nothing, dims)\n\nCompute the sample standard deviation of a vector or array v, optionally along the given dimensions. The algorithm returns an estimator of the generative distribution\'s standard deviation under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sqrt(sum((v - mean(v)).^2) / (length(v) - 1)). A pre-computed mean may be provided. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
@@ -20762,7 +20762,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.stdm",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.stdm",
     "category": "function",
     "text": "stdm(v, m; corrected::Bool=true)\n\nCompute the sample standard deviation of a vector v with known mean m. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the standard deviation of non-missing values.\n\n\n\n\n\n"
@@ -20770,7 +20770,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.var",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.var",
     "category": "function",
     "text": "var(v; dims, corrected::Bool=true, mean=nothing)\n\nCompute the sample variance of a vector or array v, optionally along the given dimensions. The algorithm will return an estimator of the generative distribution\'s variance under the assumption that each entry of v is an IID drawn from that generative distribution. This computation is equivalent to calculating sum(abs2, v - mean(v)) / (length(v) - 1). If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v). The mean mean over the region may be provided.\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
@@ -20778,7 +20778,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.varm",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.varm",
     "category": "function",
     "text": "varm(v, m; dims, corrected::Bool=true)\n\nCompute the sample variance of a collection v with known mean(s) m, optionally over the given dimensions. m may contain means for each dimension of v. If corrected is true, then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(v).\n\nnote: Note\nIf array contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the variance of non-missing values.\n\n\n\n\n\n"
@@ -20786,7 +20786,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.cor",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.cor",
     "category": "function",
     "text": "cor(x::AbstractVector)\n\nReturn the number one.\n\n\n\n\n\ncor(X::AbstractMatrix; dims::Int=1)\n\nCompute the Pearson correlation matrix of the matrix X along the dimension dims.\n\n\n\n\n\ncor(x::AbstractVector, y::AbstractVector)\n\nCompute the Pearson correlation between the vectors x and y.\n\n\n\n\n\ncor(X::AbstractVecOrMat, Y::AbstractVecOrMat; dims=1)\n\nCompute the Pearson correlation between the vectors or matrices X and Y along the dimension dims.\n\n\n\n\n\n"
@@ -20794,7 +20794,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.cov",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.cov",
     "category": "function",
     "text": "cov(x::AbstractVector; corrected::Bool=true)\n\nCompute the variance of the vector x. If corrected is true (the default) then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = length(x).\n\n\n\n\n\ncov(X::AbstractMatrix; dims::Int=1, corrected::Bool=true)\n\nCompute the covariance matrix of the matrix X along the dimension dims. If corrected is true (the default) then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = size(X, dims).\n\n\n\n\n\ncov(x::AbstractVector, y::AbstractVector; corrected::Bool=true)\n\nCompute the covariance between the vectors x and y. If corrected is true (the default), computes frac1n-1sum_i=1^n (x_i-bar x) (y_i-bar y)^* where * denotes the complex conjugate and n = length(x) = length(y). If corrected is false, computes frac1nsum_i=1^n (x_i-bar x) (y_i-bar y)^*.\n\n\n\n\n\ncov(X::AbstractVecOrMat, Y::AbstractVecOrMat; dims::Int=1, corrected::Bool=true)\n\nCompute the covariance between the vectors or matrices X and Y along the dimension dims. If corrected is true (the default) then the sum is scaled with n-1, whereas the sum is scaled with n if corrected is false where n = size(X, dims) = size(Y, dims).\n\n\n\n\n\n"
@@ -20802,7 +20802,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.mean!",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.mean!",
     "category": "function",
     "text": "mean!(r, v)\n\nCompute the mean of v over the singleton dimensions of r, and write results to r.\n\nExamples\n\njulia> v = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> mean!([1., 1.], v)\n2-element Array{Float64,1}:\n 1.5\n 3.5\n\njulia> mean!([1. 1.], v)\n1×2 Array{Float64,2}:\n 2.0  3.0\n\n\n\n\n\n"
@@ -20810,7 +20810,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.mean",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.mean",
     "category": "function",
     "text": "mean(itr)\n\nCompute the mean of all elements in a collection.\n\nnote: Note\nIf itr contains NaN or missing values, the result is also NaN or missing (missing takes precedence if array contains both). Use the skipmissing function to omit missing entries and compute the mean of non-missing values.\n\nExamples\n\njulia> mean(1:20)\n10.5\n\njulia> mean([1, missing, 3])\nmissing\n\njulia> mean(skipmissing([1, missing, 3]))\n2.0\n\n\n\n\n\nmean(f::Function, itr)\n\nApply the function f to each element of collection itr and take the mean.\n\njulia> mean(√, [1, 2, 3])\n1.3820881233139908\n\njulia> mean([√1, √2, √3])\n1.3820881233139908\n\n\n\n\n\nmean(A::AbstractArray; dims)\n\nCompute the mean of an array over the given dimensions.\n\nExamples\n\njulia> A = [1 2; 3 4]\n2×2 Array{Int64,2}:\n 1  2\n 3  4\n\njulia> mean(A, dims=1)\n1×2 Array{Float64,2}:\n 2.0  3.0\n\njulia> mean(A, dims=2)\n2×1 Array{Float64,2}:\n 1.5\n 3.5\n\n\n\n\n\n"
@@ -20818,7 +20818,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.median!",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.median!",
     "category": "function",
     "text": "median!(v)\n\nLike median, but may overwrite the input vector.\n\n\n\n\n\n"
@@ -20826,7 +20826,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.median",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.median",
     "category": "function",
     "text": "median(itr)\n\nCompute the median of all elements in a collection. For an even number of elements no exact median element exists, so the result is equivalent to calculating mean of two median elements.\n\nnote: Note\nIf itr contains NaN or missing values, the result is also NaN or missing (missing takes precedence if itr contains both). Use the skipmissing function to omit missing entries and compute the median of non-missing values.\n\nExamples\n\njulia> median([1, 2, 3])\n2.0\n\njulia> median([1, 2, 3, 4])\n2.5\n\njulia> median([1, 2, missing, 4])\nmissing\n\njulia> median(skipmissing([1, 2, missing, 4]))\n2.0\n\n\n\n\n\nmedian(A::AbstractArray; dims)\n\nCompute the median of an array along the given dimensions.\n\nExamples\n\njulia> median([1 2; 3 4], dims=1)\n1×2 Array{Float64,2}:\n 2.0  3.0\n\n\n\n\n\n"
@@ -20834,7 +20834,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.middle",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.middle",
     "category": "function",
     "text": "middle(x)\n\nCompute the middle of a scalar value, which is equivalent to x itself, but of the type of middle(x, x) for consistency.\n\n\n\n\n\nmiddle(x, y)\n\nCompute the middle of two reals x and y, which is equivalent in both value and type to computing their mean ((x + y) / 2).\n\n\n\n\n\nmiddle(range)\n\nCompute the middle of a range, which consists of computing the mean of its extrema. Since a range is sorted, the mean is performed with the first and last element.\n\njulia> middle(1:10)\n5.5\n\n\n\n\n\nmiddle(a)\n\nCompute the middle of an array a, which consists of finding its extrema and then computing their mean.\n\njulia> a = [1,2,3.6,10.9]\n4-element Array{Float64,1}:\n  1.0\n  2.0\n  3.6\n 10.9\n\njulia> middle(a)\n5.95\n\n\n\n\n\n"
@@ -20842,7 +20842,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.quantile!",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.quantile!",
     "category": "function",
     "text": "quantile!([q::AbstractArray, ] v::AbstractVector, p; sorted=false)\n\nCompute the quantile(s) of a vector v at a specified probability or vector or tuple of probabilities p on the interval [0,1]. If p is a vector, an optional output array q may also be specified. (If not provided, a new output array is created.) The keyword argument sorted indicates whether v can be assumed to be sorted; if false (the default), then the elements of v will be partially sorted in-place.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(v). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if v contains NaN or missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\njulia> x = [3, 2, 1];\n\njulia> quantile!(x, 0.5)\n2.0\n\njulia> x\n3-element Array{Int64,1}:\n 1\n 2\n 3\n\njulia> y = zeros(3);\n\njulia> quantile!(y, x, [0.1, 0.5, 0.9]) === y\ntrue\n\njulia> y\n3-element Array{Float64,1}:\n 1.2\n 2.0\n 2.8\n\n\n\n\n\n"
@@ -20850,55 +20850,55 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Statistics/#Statistics.quantile",
-    "page": "Statistics",
+    "page": "统计",
     "title": "Statistics.quantile",
     "category": "function",
     "text": "quantile(itr, p; sorted=false)\n\nCompute the quantile(s) of a collection itr at a specified probability or vector or tuple of probabilities p on the interval [0,1]. The keyword argument sorted indicates whether itr can be assumed to be sorted.\n\nQuantiles are computed via linear interpolation between the points ((k-1)/(n-1), v[k]), for k = 1:n where n = length(itr). This corresponds to Definition 7 of Hyndman and Fan (1996), and is the same as the R default.\n\nnote: Note\nAn ArgumentError is thrown if itr contains NaN or missing values. Use the skipmissing function to omit missing entries and compute the quantiles of non-missing values.\n\nHyndman, R.J and Fan, Y. (1996) \"Sample Quantiles in Statistical Packages\", The American Statistician, Vol. 50, No. 4, pp. 361-365\n\nExamples\n\njulia> quantile(0:20, 0.5)\n10.0\n\njulia> quantile(0:20, [0.1, 0.5, 0.9])\n3-element Array{Float64,1}:\n  2.0\n 10.0\n 18.0\n\njulia> quantile(skipmissing([1, 10, missing]), 0.5)\n5.5\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Statistics/#Statistics-1",
-    "page": "Statistics",
-    "title": "Statistics",
+    "location": "stdlib/Statistics/#统计-1",
+    "page": "统计",
+    "title": "统计",
     "category": "section",
-    "text": "DocTestSetup = :(using Statistics)The Statistics module contains basic statistics functionality.Statistics.std\nStatistics.stdm\nStatistics.var\nStatistics.varm\nStatistics.cor\nStatistics.cov\nStatistics.mean!\nStatistics.mean\nStatistics.median!\nStatistics.median\nStatistics.middle\nStatistics.quantile!\nStatistics.quantileDocTestSetup = nothing"
+    "text": "DocTestSetup = :(using Statistics)统计模块包含了基本的统计函数。Statistics.std\nStatistics.stdm\nStatistics.var\nStatistics.varm\nStatistics.cor\nStatistics.cov\nStatistics.mean!\nStatistics.mean\nStatistics.median!\nStatistics.median\nStatistics.middle\nStatistics.quantile!\nStatistics.quantileDocTestSetup = nothing"
 },
 
 {
     "location": "stdlib/Test/#",
-    "page": "Unit Testing",
-    "title": "Unit Testing",
+    "page": "单元测试",
+    "title": "单元测试",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "stdlib/Test/#Unit-Testing-1",
-    "page": "Unit Testing",
-    "title": "Unit Testing",
+    "location": "stdlib/Test/#单元测试-1",
+    "page": "单元测试",
+    "title": "单元测试",
     "category": "section",
     "text": "DocTestSetup = :(using Test)"
 },
 
 {
     "location": "stdlib/Test/#Base.runtests",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Base.runtests",
     "category": "function",
     "text": "Base.runtests(tests=[\"all\"]; ncores=ceil(Int, Sys.CPU_THREADS / 2),\n              exit_on_error=false, [seed])\n\nRun the Julia unit tests listed in tests, which can be either a string or an array of strings, using ncores processors. If exit_on_error is false, when one test fails, all remaining tests in other files will still be run; they are otherwise discarded, when exit_on_error == true. If a seed is provided via the keyword argument, it is used to seed the global RNG in the context where the tests are run; otherwise the seed is chosen randomly.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Test/#Testing-Base-Julia-1",
-    "page": "Unit Testing",
-    "title": "Testing Base Julia",
+    "location": "stdlib/Test/#测试-Julia-Base-库-1",
+    "page": "单元测试",
+    "title": "测试 Julia Base 库",
     "category": "section",
     "text": "Julia is under rapid development and has an extensive test suite to verify functionality across multiple platforms. If you build Julia from source, you can run this test suite with make test. In a binary install, you can run the test suite using Base.runtests().Base.runtests"
 },
 
 {
     "location": "stdlib/Test/#Test.@test",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test",
     "category": "macro",
     "text": "@test ex\n@test f(args...) key=val ...\n\nTests that the expression ex evaluates to true. Returns a Pass Result if it does, a Fail Result if it is false, and an Error Result if it could not be evaluated.\n\nExamples\n\njulia> @test true\nTest Passed\n\njulia> @test [1, 2] + [2, 1] == [3, 3]\nTest Passed\n\nThe @test f(args...) key=val... form is equivalent to writing @test f(args..., key=val...) which can be useful when the expression is a call using infix syntax such as approximate comparisons:\n\njulia> @test π ≈ 3.14 atol=0.01\nTest Passed\n\nThis is equivalent to the uglier test @test ≈(π, 3.14, atol=0.01). It is an error to supply more than one expression unless the first is a call expression and the rest are assignments (k=v).\n\n\n\n\n\n"
@@ -20906,23 +20906,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.@test_throws",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test_throws",
     "category": "macro",
     "text": "@test_throws exception expr\n\nTests that the expression expr throws exception. The exception may specify either a type, or a value (which will be tested for equality by comparing fields). Note that @test_throws does not support a trailing keyword form.\n\nExamples\n\njulia> @test_throws BoundsError [1, 2, 3][4]\nTest Passed\n      Thrown: BoundsError\n\njulia> @test_throws DimensionMismatch [1, 2, 3] + [1, 2]\nTest Passed\n      Thrown: DimensionMismatch\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Test/#Basic-Unit-Tests-1",
-    "page": "Unit Testing",
-    "title": "Basic Unit Tests",
+    "location": "stdlib/Test/#基本的单元测试-1",
+    "page": "单元测试",
+    "title": "基本的单元测试",
     "category": "section",
-    "text": "The Test module provides simple unit testing functionality. Unit testing is a way to see if your code is correct by checking that the results are what you expect. It can be helpful to ensure your code still works after you make changes, and can be used when developing as a way of specifying the behaviors your code should have when complete.Simple unit testing can be performed with the @test and @test_throws macros:Test.@test\nTest.@test_throwsFor example, suppose we want to check our new function foo(x) works as expected:julia> using Test\n\njulia> foo(x) = length(x)^2\nfoo (generic function with 1 method)如果条件为真，则返回 Pass：julia> @test foo(\"bar\") == 9\nTest Passed\n\njulia> @test foo(\"fizz\") >= 10\nTest PassedIf the condition is false, then a Fail is returned and an exception is thrown:julia> @test foo(\"f\") == 20\nTest Failed at none:1\n  Expression: foo(\"f\") == 20\n   Evaluated: 1 == 20\nERROR: There was an error during testingIf the condition could not be evaluated because an exception was thrown, which occurs in this case because length is not defined for symbols, an Error object is returned and an exception is thrown:julia> @test foo(:cat) == 1\nError During Test\n  Test threw an exception of type MethodError\n  Expression: foo(:cat) == 1\n  MethodError: no method matching length(::Symbol)\n  Closest candidates are:\n    length(::SimpleVector) at essentials.jl:256\n    length(::Base.MethodList) at reflection.jl:521\n    length(::MethodTable) at reflection.jl:597\n    ...\n  Stacktrace:\n  [...]\nERROR: There was an error during testingIf we expect that evaluating an expression should throw an exception, then we can use @test_throws to check that this occurs:julia> @test_throws MethodError foo(:cat)\nTest Passed\n      Thrown: MethodError"
+    "text": "The Test module provides simple unit testing functionality. Unit testing is a way to see if your code is correct by checking that the results are what you expect. It can be helpful to ensure your code still works after you make changes, and can be used when developing as a way of specifying the behaviors your code should have when complete.Simple unit testing can be performed with the @test and @test_throws macros:Test.@test\nTest.@test_throwsFor example, suppose we want to check our new function foo(x) works as expected:julia> using Test\n\njulia> foo(x) = length(x)^2\nfoo (generic function with 1 method)如果条件为真，则返回 Pass：julia> @test foo(\"bar\") == 9\nTest Passed\n\njulia> @test foo(\"fizz\") >= 10\nTest Passed如果条件为假，则返回 Fail 并抛出异常。julia> @test foo(\"f\") == 20\nTest Failed at none:1\n  Expression: foo(\"f\") == 20\n   Evaluated: 1 == 20\nERROR: There was an error during testingIf the condition could not be evaluated because an exception was thrown, which occurs in this case because length is not defined for symbols, an Error object is returned and an exception is thrown:julia> @test foo(:cat) == 1\nError During Test\n  Test threw an exception of type MethodError\n  Expression: foo(:cat) == 1\n  MethodError: no method matching length(::Symbol)\n  Closest candidates are:\n    length(::SimpleVector) at essentials.jl:256\n    length(::Base.MethodList) at reflection.jl:521\n    length(::MethodTable) at reflection.jl:597\n    ...\n  Stacktrace:\n  [...]\nERROR: There was an error during testingIf we expect that evaluating an expression should throw an exception, then we can use @test_throws to check that this occurs:julia> @test_throws MethodError foo(:cat)\nTest Passed\n      Thrown: MethodError"
 },
 
 {
     "location": "stdlib/Test/#Test.@testset",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@testset",
     "category": "macro",
     "text": "@testset [CustomTestSet] [option=val  ...] [\"description\"] begin ... end\n@testset [CustomTestSet] [option=val  ...] [\"description $v\"] for v in (...) ... end\n@testset [CustomTestSet] [option=val  ...] [\"description $v, $w\"] for v in (...), w in (...) ... end\n\nStarts a new test set, or multiple test sets if a for loop is provided.\n\nIf no custom testset type is given it defaults to creating a DefaultTestSet. DefaultTestSet records all the results and, if there are any Fails or Errors, throws an exception at the end of the top-level (non-nested) test set, along with a summary of the test results.\n\nAny custom testset type (subtype of AbstractTestSet) can be given and it will also be used for any nested @testset invocations. The given options are only applied to the test set where they are given. The default test set type does not take any options.\n\nThe description string accepts interpolation from the loop indices. If no description is provided, one is constructed based on the variables.\n\nBy default the @testset macro will return the testset object itself, though this behavior can be customized in other testset types. If a for loop is used then the macro collects and returns a list of the return values of the finish method, which by default will return a list of the testset objects used in each iteration.\n\nBefore the execution of the body of a @testset, there is an implicit call to Random.seed!(seed) where seed is the current seed of the global RNG. Moreover, after the execution of the body, the state of the global RNG is restored to what it was before the @testset. This is meant to ease reproducibility in case of failure, and to allow seamless re-arrangements of @testsets regardless of their side-effect on the global RNG state.\n\nExamples\n\njulia> @testset \"trigonometric identities\" begin\n           θ = 2/3*π\n           @test sin(-θ) ≈ -sin(θ)\n           @test cos(-θ) ≈ cos(θ)\n           @test sin(2θ) ≈ 2*sin(θ)*cos(θ)\n           @test cos(2θ) ≈ cos(θ)^2 - sin(θ)^2\n       end;\nTest Summary:            | Pass  Total\ntrigonometric identities |    4      4\n\n\n\n\n\n"
@@ -20930,15 +20930,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Working-with-Test-Sets-1",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Working with Test Sets",
     "category": "section",
-    "text": "Typically a large number of tests are used to make sure functions work correctly over a range of inputs. In the event a test fails, the default behavior is to throw an exception immediately. However, it is normally preferable to run the rest of the tests first to get a better picture of how many errors there are in the code being tested.The @testset macro can be used to group tests into sets. All the tests in a test set will be run, and at the end of the test set a summary will be printed. If any of the tests failed, or could not be evaluated due to an error, the test set will then throw a TestSetException.Test.@testsetWe can put our tests for the foo(x) function in a test set:julia> @testset \"Foo Tests\" begin\n           @test foo(\"a\")   == 1\n           @test foo(\"ab\")  == 4\n           @test foo(\"abc\") == 9\n       end;\nTest Summary: | Pass  Total\nFoo Tests     |    3      3Test sets can also be nested:julia> @testset \"Foo Tests\" begin\n           @testset \"Animals\" begin\n               @test foo(\"cat\") == 9\n               @test foo(\"dog\") == foo(\"cat\")\n           end\n           @testset \"Arrays $i\" for i in 1:3\n               @test foo(zeros(i)) == i^2\n               @test foo(fill(1.0, i)) == i^2\n           end\n       end;\nTest Summary: | Pass  Total\nFoo Tests     |    8      8In the event that a nested test set has no failures, as happened here, it will be hidden in the summary. If we do have a test failure, only the details for the failed test sets will be shown:julia> @testset \"Foo Tests\" begin\n           @testset \"Animals\" begin\n               @testset \"Felines\" begin\n                   @test foo(\"cat\") == 9\n               end\n               @testset \"Canines\" begin\n                   @test foo(\"dog\") == 9\n               end\n           end\n           @testset \"Arrays\" begin\n               @test foo(zeros(2)) == 4\n               @test foo(fill(1.0, 4)) == 15\n           end\n       end\n\nArrays: Test Failed\n  Expression: foo(fill(1.0, 4)) == 15\n   Evaluated: 16 == 15\n[...]\nTest Summary: | Pass  Fail  Total\nFoo Tests     |    3     1      4\n  Animals     |    2            2\n  Arrays      |    1     1      2\nERROR: Some tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken."
+    "text": "Typically a large number of tests are used to make sure functions work correctly over a range of inputs. In the event a test fails, the default behavior is to throw an exception immediately. However, it is normally preferable to run the rest of the tests first to get a better picture of how many errors there are in the code being tested.The @testset macro can be used to group tests into sets. All the tests in a test set will be run, and at the end of the test set a summary will be printed. If any of the tests failed, or could not be evaluated due to an error, the test set will then throw a TestSetException.Test.@testsetWe can put our tests for the foo(x) function in a test set:julia> @testset \"Foo Tests\" begin\n           @test foo(\"a\")   == 1\n           @test foo(\"ab\")  == 4\n           @test foo(\"abc\") == 9\n       end;\nTest Summary: | Pass  Total\nFoo Tests     |    3      3测试集可以嵌套：julia> @testset \"Foo Tests\" begin\n           @testset \"Animals\" begin\n               @test foo(\"cat\") == 9\n               @test foo(\"dog\") == foo(\"cat\")\n           end\n           @testset \"Arrays $i\" for i in 1:3\n               @test foo(zeros(i)) == i^2\n               @test foo(fill(1.0, i)) == i^2\n           end\n       end;\nTest Summary: | Pass  Total\nFoo Tests     |    8      8In the event that a nested test set has no failures, as happened here, it will be hidden in the summary. If we do have a test failure, only the details for the failed test sets will be shown:julia> @testset \"Foo Tests\" begin\n           @testset \"Animals\" begin\n               @testset \"Felines\" begin\n                   @test foo(\"cat\") == 9\n               end\n               @testset \"Canines\" begin\n                   @test foo(\"dog\") == 9\n               end\n           end\n           @testset \"Arrays\" begin\n               @test foo(zeros(2)) == 4\n               @test foo(fill(1.0, 4)) == 15\n           end\n       end\n\nArrays: Test Failed\n  Expression: foo(fill(1.0, 4)) == 15\n   Evaluated: 16 == 15\n[...]\nTest Summary: | Pass  Fail  Total\nFoo Tests     |    3     1      4\n  Animals     |    2            2\n  Arrays      |    1     1      2\nERROR: Some tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken."
 },
 
 {
     "location": "stdlib/Test/#Test.@inferred",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@inferred",
     "category": "macro",
     "text": "@inferred f(x)\n\nTests that the call expression f(x) returns a value of the same type inferred by the compiler. It is useful to check for type stability.\n\nf(x) can be any call expression. Returns the result of f(x) if the types match, and an Error Result if it finds different types.\n\njulia> f(a, b, c) = b > 1 ? 1 : 1.0\nf (generic function with 1 method)\n\njulia> typeof(f(1, 2, 3))\nInt64\n\njulia> @code_warntype f(1, 2, 3)\nBody::UNION{FLOAT64, INT64}\n1 1 ─ %1 = (Base.slt_int)(1, b)::Bool\n  └──      goto #3 if not %1\n  2 ─      return 1\n  3 ─      return 1.0\n\njulia> @inferred f(1, 2, 3)\nERROR: return type Int64 does not match inferred return type Union{Float64, Int64}\nStacktrace:\n[...]\n\njulia> @inferred max(1, 2)\n2\n\n\n\n\n\n"
@@ -20946,7 +20946,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.@test_logs",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test_logs",
     "category": "macro",
     "text": "@test_logs [log_patterns...] [keywords] expression\n\nCollect a list of log records generated by expression using collect_test_logs, check that they match the sequence log_patterns, and return the value of expression.  The keywords provide some simple filtering of log records: the min_level keyword controls the minimum log level which will be collected for the test, the match_mode keyword defines how matching will be performed (the default :all checks that all logs and patterns match pairwise; use :any to check that the pattern matches at least once somewhere in the sequence.)\n\nThe most useful log pattern is a simple tuple of the form (level,message). A different number of tuple elements may be used to match other log metadata, corresponding to the arguments to passed to AbstractLogger via the handle_message function: (level,message,module,group,id,file,line). Elements which are present will be matched pairwise with the log record fields using == by default, with the special cases that Symbols may be used for the standard log levels, and Regexs in the pattern will match string or Symbol fields using occursin.\n\nExamples\n\nConsider a function which logs a warning, and several debug messages:\n\nfunction foo(n)\n    @info \"Doing foo with n=$n\"\n    for i=1:n\n        @debug \"Iteration $i\"\n    end\n    42\nend\n\nWe can test the info message using\n\n@test_logs (:info,\"Doing foo with n=2\") foo(2)\n\nIf we also wanted to test the debug messages, these need to be enabled with the min_level keyword:\n\n@test_logs (:info,\"Doing foo with n=2\") (:debug,\"Iteration 1\") (:debug,\"Iteration 2\") min_level=Debug foo(2)\n\nThe macro may be chained with @test to also test the returned value:\n\n@test (@test_logs (:info,\"Doing foo with n=2\") foo(2)) == 42\n\n\n\n\n\n"
@@ -20954,7 +20954,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.@test_deprecated",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test_deprecated",
     "category": "macro",
     "text": "@test_deprecated [pattern] expression\n\nWhen --depwarn=yes, test that expression emits a deprecation warning and return the value of expression.  The log message string will be matched against pattern which defaults to r\"deprecated\"i.\n\nWhen --depwarn=no, simply return the result of executing expression.  When --depwarn=error, check that an ErrorException is thrown.\n\nExamples\n\n# Deprecated in julia 0.7\n@test_deprecated num2hex(1)\n\n# The returned value can be tested by chaining with @test:\n@test (@test_deprecated num2hex(1)) == \"0000000000000001\"\n\n\n\n\n\n"
@@ -20962,7 +20962,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.@test_warn",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test_warn",
     "category": "macro",
     "text": "@test_warn msg expr\n\nTest whether evaluating expr results in stderr output that contains the msg string or matches the msg regular expression.  If msg is a boolean function, tests whether msg(output) returns true.  If msg is a tuple or array, checks that the error output contains/matches each item in msg. Returns the result of evaluating expr.\n\nSee also @test_nowarn to check for the absence of error output.\n\n\n\n\n\n"
@@ -20970,23 +20970,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.@test_nowarn",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test_nowarn",
     "category": "macro",
     "text": "@test_nowarn expr\n\nTest whether evaluating expr results in empty stderr output (no warnings or other messages).  Returns the result of evaluating expr.\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Test/#Other-Test-Macros-1",
-    "page": "Unit Testing",
-    "title": "Other Test Macros",
+    "location": "stdlib/Test/#其他测试宏-1",
+    "page": "单元测试",
+    "title": "其他测试宏",
     "category": "section",
     "text": "As calculations on floating-point values can be imprecise, you can perform approximate equality checks using either @test a ≈ b (where ≈, typed via tab completion of \\approx, is the isapprox function) or use isapprox directly.julia> @test 1 ≈ 0.999999999\nTest Passed\n\njulia> @test 1 ≈ 0.999999\nTest Failed at none:1\n  Expression: 1 ≈ 0.999999\n   Evaluated: 1 ≈ 0.999999\nERROR: There was an error during testingTest.@inferred\nTest.@test_logs\nTest.@test_deprecated\nTest.@test_warn\nTest.@test_nowarn"
 },
 
 {
     "location": "stdlib/Test/#Test.@test_broken",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test_broken",
     "category": "macro",
     "text": "@test_broken ex\n@test_broken f(args...) key=val ...\n\nIndicates a test that should pass but currently consistently fails. Tests that the expression ex evaluates to false or causes an exception. Returns a Broken Result if it does, or an Error Result if the expression evaluates to true.\n\nThe @test_broken f(args...) key=val... form works as for the @test macro.\n\nExamples\n\njulia> @test_broken 1 == 2\nTest Broken\n  Expression: 1 == 2\n\njulia> @test_broken 1 == 2 atol=0.1\nTest Broken\n  Expression: ==(1, 2, atol=0.1)\n\n\n\n\n\n"
@@ -20994,23 +20994,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.@test_skip",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.@test_skip",
     "category": "macro",
     "text": "@test_skip ex\n@test_skip f(args...) key=val ...\n\nMarks a test that should not be executed but should be included in test summary reporting as Broken. This can be useful for tests that intermittently fail, or tests of not-yet-implemented functionality.\n\nThe @test_skip f(args...) key=val... form works as for the @test macro.\n\nExamples\n\njulia> @test_skip 1 == 2\nTest Broken\n  Skipped: 1 == 2\n\njulia> @test_skip 1 == 2 atol=0.1\nTest Broken\n  Skipped: ==(1, 2, atol=0.1)\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Test/#Broken-Tests-1",
-    "page": "Unit Testing",
-    "title": "Broken Tests",
+    "location": "stdlib/Test/#损坏的测试-1",
+    "page": "单元测试",
+    "title": "损坏的测试",
     "category": "section",
     "text": "If a test fails consistently it can be changed to use the @test_broken macro. This will denote the test as Broken if the test continues to fail and alerts the user via an Error if the test succeeds.Test.@test_broken@test_skip is also available to skip a test without evaluation, but counting the skipped test in the test set reporting. The test will not run but gives a Broken Result.Test.@test_skip"
 },
 
 {
     "location": "stdlib/Test/#Test.record",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.record",
     "category": "function",
     "text": "record(ts::AbstractTestSet, res::Result)\n\nRecord a result to a testset. This function is called by the @testset infrastructure each time a contained @test macro completes, and is given the test result (which could be an Error). This will also be called with an Error if an exception is thrown inside the test block but outside of a @test context.\n\n\n\n\n\n"
@@ -21018,7 +21018,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.finish",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.finish",
     "category": "function",
     "text": "finish(ts::AbstractTestSet)\n\nDo any final processing necessary for the given testset. This is called by the @testset infrastructure after a test block executes. One common use for this function is to record the testset to the parent\'s results list, using get_testset.\n\n\n\n\n\n"
@@ -21026,7 +21026,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.get_testset",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.get_testset",
     "category": "function",
     "text": "get_testset()\n\nRetrieve the active test set from the task\'s local storage. If no test set is active, use the fallback default test set.\n\n\n\n\n\n"
@@ -21034,18 +21034,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "stdlib/Test/#Test.get_testset_depth",
-    "page": "Unit Testing",
+    "page": "单元测试",
     "title": "Test.get_testset_depth",
     "category": "function",
     "text": "get_testset_depth()\n\nReturns the number of active test sets, not including the default test set\n\n\n\n\n\n"
 },
 
 {
-    "location": "stdlib/Test/#Creating-Custom-AbstractTestSet-Types-1",
-    "page": "Unit Testing",
-    "title": "Creating Custom AbstractTestSet Types",
+    "location": "stdlib/Test/#自定义-AbstractTestSet-类型-1",
+    "page": "单元测试",
+    "title": "自定义 AbstractTestSet 类型",
     "category": "section",
-    "text": "Packages can create their own AbstractTestSet subtypes by implementing the record and finish methods. The subtype should have a one-argument constructor taking a description string, with any options passed in as keyword arguments.Test.record\nTest.finishTest takes responsibility for maintaining a stack of nested testsets as they are executed, but any result accumulation is the responsibility of the AbstractTestSet subtype. You can access this stack with the get_testset and get_testset_depth methods. Note that these functions are not exported.Test.get_testset\nTest.get_testset_depthTest also makes sure that nested @testset invocations use the same AbstractTestSet subtype as their parent unless it is set explicitly. It does not propagate any properties of the testset. Option inheritance behavior can be implemented by packages using the stack infrastructure that Test provides.Defining a basic AbstractTestSet subtype might look like:import Test: record, finish\nusing Test: AbstractTestSet, Result, Pass, Fail, Error\nusing Test: get_testset_depth, get_testset\nstruct CustomTestSet <: Test.AbstractTestSet\n    description::AbstractString\n    foo::Int\n    results::Vector\n    # constructor takes a description string and options keyword arguments\n    CustomTestSet(desc; foo=1) = new(desc, foo, [])\nend\n\nrecord(ts::CustomTestSet, child::AbstractTestSet) = push!(ts.results, child)\nrecord(ts::CustomTestSet, res::Result) = push!(ts.results, res)\nfunction finish(ts::CustomTestSet)\n    # just record if we\'re not the top-level parent\n    if get_testset_depth() > 0\n        record(get_testset(), ts)\n    end\n    ts\nendAnd using that testset looks like:@testset CustomTestSet foo=4 \"custom testset inner 2\" begin\n    # this testset should inherit the type, but not the argument.\n    @testset \"custom testset inner\" begin\n        @test true\n    end\nendDocTestSetup = nothing"
+    "text": "Packages can create their own AbstractTestSet subtypes by implementing the record and finish methods. The subtype should have a one-argument constructor taking a description string, with any options passed in as keyword arguments.Test.record\nTest.finishTest takes responsibility for maintaining a stack of nested testsets as they are executed, but any result accumulation is the responsibility of the AbstractTestSet subtype. You can access this stack with the get_testset and get_testset_depth methods. Note that these functions are not exported.Test.get_testset\nTest.get_testset_depthTest also makes sure that nested @testset invocations use the same AbstractTestSet subtype as their parent unless it is set explicitly. It does not propagate any properties of the testset. Option inheritance behavior can be implemented by packages using the stack infrastructure that Test provides.定义一个基本的 AbstractTestSet 子类：import Test: record, finish\nusing Test: AbstractTestSet, Result, Pass, Fail, Error\nusing Test: get_testset_depth, get_testset\nstruct CustomTestSet <: Test.AbstractTestSet\n    description::AbstractString\n    foo::Int\n    results::Vector\n    # constructor takes a description string and options keyword arguments\n    CustomTestSet(desc; foo=1) = new(desc, foo, [])\nend\n\nrecord(ts::CustomTestSet, child::AbstractTestSet) = push!(ts.results, child)\nrecord(ts::CustomTestSet, res::Result) = push!(ts.results, res)\nfunction finish(ts::CustomTestSet)\n    # just record if we\'re not the top-level parent\n    if get_testset_depth() > 0\n        record(get_testset(), ts)\n    end\n    ts\nend使用测试集：@testset CustomTestSet foo=4 \"custom testset inner 2\" begin\n    # this testset should inherit the type, but not the argument.\n    @testset \"custom testset inner\" begin\n        @test true\n    end\nendDocTestSetup = nothing"
 },
 
 {
