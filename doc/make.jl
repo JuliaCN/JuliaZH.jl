@@ -7,8 +7,9 @@ pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
 using Pkg
 Pkg.instantiate()
 
-using Documenter
-include("../contrib/HTML_Writer.jl")
+using Documenter, DocumenterLaTeX
+include("../contrib/HTMLWriter.jl")
+include("../contrib/LaTeXWriter.jl")
 
 # Include the `build_sysimg` file.
 
@@ -21,6 +22,42 @@ end
 
 symlink_q(tgt, link) = isfile(link) || symlink(tgt, link)
 cp_q(src, dest) = isfile(dest) || cp(src, dest)
+
+"""
+    cpi18ndoc(;root, i18ndoc, stdlib)
+
+Copy i18n doc to build folder.
+"""
+function cpi18ndoc(;
+        root=joinpath(@__DIR__, ".."),
+        i18ndoc=["base", "devdocs", "manual"], stdlib=true, force=false)
+
+    # stdlib
+    if stdlib
+        cp(joinpath(root, "zh_CN", "stdlib"), joinpath(root, "stdlib"); force=force)
+    end
+
+    for each in i18ndoc
+        cp(joinpath(root, "zh_CN", "doc", "src", each), joinpath(root, "doc", "src", each); force=force)
+    end
+end
+
+"""
+    clean(;root, stdlib, i18ndoc)
+
+Clean up build i18n cache.
+"""
+function clean(;root=joinpath(@__DIR__, ".."), stdlib=true, i18ndoc=["base", "devdocs", "manual"])
+    if stdlib
+        rm(joinpath(root, "stdlib"); recursive=true)
+    end
+
+    for each in i18ndoc
+        rm(joinpath(root, "doc", "src", each); recursive=true)
+    end
+end
+
+cpi18ndoc(;force=true)
 
 # make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
 const STDLIB_DOCS = []
@@ -43,7 +80,11 @@ cd(joinpath(@__DIR__, "src")) do
 end
 
 # manual/unicode-input.md
-download("http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt", joinpath(Sys.BINDIR, "..", "UnicodeData.txt"))
+const UnicodeDataPath = joinpath(Sys.BINDIR, "..", "UnicodeData.txt")
+
+if !isfile(UnicodeDataPath)
+    download("http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt", UnicodeDataPath)
+end
 
 const PAGES = [
     "主页" => "index.md",
@@ -144,26 +185,35 @@ for stdlib in STDLIB_DOCS
 end
 
 const render_pdf = "pdf" in ARGS
+
+const format = if render_pdf
+    LaTeX(
+        platform = "texplatform=docker" in ARGS ? "docker" : "native"
+    )
+else
+    Documenter.HTML(
+        prettyurls = ("deploy" in ARGS),
+        canonical = ("deploy" in ARGS) ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
+    )
+end
+
 makedocs(
     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = true,
     doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
     linkcheck = "linkcheck=true" in ARGS,
     checkdocs = :none,
-    format    = render_pdf ? :latex : :html,
+    format    = format,
     sitename  = "Julia中文文档",
     authors   = "Julia中文社区",
     analytics = "UA-28835595-9",
     pages     = PAGES,
-    html_prettyurls = !("local" in ARGS),
-    html_canonical = "https://juliacn.github.io/JuliaZH.jl/latest/",
     assets = ["assets/julia-manual.css", ]
 )
 
 deploydocs(
     repo = "github.com/JuliaCN/JuliaZH.jl.git",
     target = "build",
-    julia = "1.0",
     deps = nothing,
     make = nothing,
 )

@@ -1,17 +1,17 @@
 # override Documenter.jl/src/Writers/HTMLWriter.jl
 
-import Documenter: Documents, Documenter, Writers
+import Documenter: Documents, Documenter, Writers, Utilities
 import Documenter.Utilities.DOM: DOM, Tag, @tags
-import Documenter.Writers.HTMLWriter: 
-    getpage, 
-    render_head, 
-    render_navmenu, 
-    render_article, 
-    open_output, 
-    mdconvert, 
-    pagetitle, 
-    navhref, 
-    render_topbar, 
+import Documenter.Writers.HTMLWriter:
+    getpage,
+    render_head,
+    render_navmenu,
+    render_article,
+    open_output,
+    mdconvert,
+    pagetitle,
+    navhref,
+    render_topbar,
     domify
 
 #=
@@ -56,7 +56,7 @@ const t_Icon = "\uf0ac" # fa-globe
 const t_Previous = "上一篇"
 const t_Next     = "下一篇"
 
-# 生成对应文件在 Transifex 上的翻译地址 
+# 生成对应文件在 Transifex 上的翻译地址
 function transifex_url(rel_path)
     # 首页源文件在 GitHub 上
     if splitdir(rel_path) == splitdir("src/index.md")
@@ -68,10 +68,10 @@ function transifex_url(rel_path)
     paths, file_name = splitdir(rel_path)
     # paths     => "src\\manual"
     # file_name => "getting-started.md"
-    
+
     _, parent_fold = splitdir(paths)
     # parent_fold => "manual"
-    
+
     page_name = replace(file_name, '.' => "")
     # page_name => "getting-startedmd"
 
@@ -80,6 +80,7 @@ function transifex_url(rel_path)
     "https://www.transifex.com/juliacn/$parent_fold-zh_cn/translate/#zh_CN/$page_name"
 end
 
+# workaround on Documenter/#977
 function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     @tags article header footer nav ul li hr span a
 
@@ -90,10 +91,14 @@ function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
 
     topnav = nav(ul(header_links))
 
-    if !ctx.doc.user.html_disable_git
-        url = transifex_url(getpage(ctx, navnode).source) # 1.3: 改 URL
+    # Set the logo and name for the "Edit on.." button.
+    host_type = Utilities.repo_host_from_url(ctx.doc.user.repo)
+
+    if !ctx.settings.disable_git # 1.3: 改 URL
+        url = transifex_url(getpage(ctx, navnode).source)
         if url !== nothing
-            push!(topnav.nodes, a[".edit-page", :href => url](span[".fa"](t_Icon), t_Edit_on_xx)) # 1.1 & 1.2: 修改编辑翻译 icon/提示语
+            # 1.1 & 1.2: 修改编辑翻译 icon/提示语
+            push!(topnav.nodes, a[".edit-page", :href => url](span[".fa"](t_Icon), t_Edit_on_xx))
         end
     end
     art_header = header(topnav, hr(), render_topbar(ctx, navnode))
@@ -101,14 +106,14 @@ function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     # build the footer with nav links
     art_footer = footer(hr())
     if navnode.prev !== nothing
-        direction = span[".direction"](t_Previous)  # 2.1: 修改翻页提示语
+        direction = span[".direction"](t_Previous) # 2.1: 修改翻页提示语
         title = span[".title"](mdconvert(pagetitle(ctx, navnode.prev); droplinks=true))
         link = a[".previous", :href => navhref(ctx, navnode.prev, navnode)](direction, title)
         push!(art_footer.nodes, link)
     end
 
     if navnode.next !== nothing
-        direction = span[".direction"](t_Next)      # 2.2: 修改翻页提示语
+        direction = span[".direction"](t_Next) # 2.1: 修改翻页提示语
         title = span[".title"](mdconvert(pagetitle(ctx, navnode.next); droplinks=true))
         link = a[".next", :href => navhref(ctx, navnode.next, navnode)](direction, title)
         push!(art_footer.nodes, link)

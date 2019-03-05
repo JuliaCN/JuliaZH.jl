@@ -1,36 +1,34 @@
-## Documentation: http://docs.travis-ci.com/user/languages/julia/
+# Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
-
-os:
-  - linux
-  - osx
-
-julia:
-  - 1.0
-  - nightly
-
+# os:
+#   - linux
+#   - osx
+# julia:
+#   - 1.0
+#   - 1.1
+#   - nightly
+# matrix:
+#   allow_failures:
+#     - julia: nightly
+#   fast_finish: true
 notifications:
   email: false
+# after_success:
+#   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
+#   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
 
-git:
-  depth: 99999999
 
-matrix:
- allow_failures:
- - julia: nightly
+env:
+  global:
+    - DOCUMENTER_DEBUG=true
 
-## uncomment the following lines to override the default test script
-script:
- # test
- - julia --project --check-bounds=yes -e 'using Pkg; Pkg.instantiate(); Pkg.build(); Pkg.test(; coverage=true)'
- # rebuild sysimg for updating stdlib path info
- - julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
- # build docs
- - cp -r zh_CN/* ./
- - julia --project=doc -e 'include("doc/make.jl")'
-
-after_success:
-  # push coverage results to Coveralls
-  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  # push coverage results to Codecov
-  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+jobs:
+  include:
+    - stage: "Documentation"
+      julia: 1.0
+      os: osx
+      script:
+        - julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
+        - julia --project=doc/ -e 'using Pkg; Pkg.instantiate(); Pkg.add(PackageSpec(path=pwd()))'
+        - julia --project=doc/ doc/make.jl deploy
+      after_success: skip

@@ -16,6 +16,7 @@ end
 
 """
     build_sysimg(sysimg_path=default_sysimg_path(), cpu_target="native", userimg_path=nothing; force=false)
+
 Rebuild the system image. Store it in `sysimg_path`, which defaults to a file named `sys.ji`
 that sits in the same folder as `libjulia.{so,dylib}`, except on Windows where it defaults
 to `Sys.BINDIR/../lib/julia/sys.ji`.  Use the cpu instruction set given by `cpu_target`.
