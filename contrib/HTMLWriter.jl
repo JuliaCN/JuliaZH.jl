@@ -81,7 +81,7 @@ function transifex_url(rel_path)
 end
 
 # workaround on Documenter/#977
-function render_article(ctx, navnode)
+function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
     @tags article header footer nav ul li hr span a
 
     header_links = map(Documents.navpath(navnode)) do nn

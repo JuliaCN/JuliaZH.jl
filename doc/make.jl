@@ -9,6 +9,7 @@ Pkg.instantiate()
 
 using Documenter, DocumenterLaTeX
 include("../contrib/HTMLWriter.jl")
+include("../contrib/LaTeXWriter.jl")
 
 # Include the `build_sysimg` file.
 
@@ -77,7 +78,11 @@ cd(joinpath(@__DIR__, "src")) do
 end
 
 # manual/unicode-input.md
-download("http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt", joinpath(Sys.BINDIR, "..", "UnicodeData.txt"))
+const UnicodeDataPath = joinpath(Sys.BINDIR, "..", "UnicodeData.txt")
+
+if !isfile(UnicodeDataPath)
+    download("http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt", UnicodeDataPath)
+end
 
 const PAGES = [
     "主页" => "index.md",
@@ -209,7 +214,6 @@ makedocs(
 deploydocs(
     repo = "github.com/JuliaCN/JuliaZH.jl.git",
     target = "build",
-    julia = "1.0",
     deps = nothing,
     make = nothing,
 )
