@@ -22,9 +22,43 @@ end
 symlink_q(tgt, link) = isfile(link) || symlink(tgt, link)
 cp_q(src, dest) = isfile(dest) || cp(src, dest)
 
+"""
+    cpi18ndoc(;root, i18ndoc, stdlib)
+
+Copy i18n doc to build folder.
+"""
+function cpi18ndoc(;
+        root=joinpath(@__DIR__, ".."),
+        i18ndoc=["base", "devdocs", "manual"], stdlib=true, force=false)
+
+    # stdlib
+    if stdlib
+        cp(joinpath(root, "zh_CN", "stdlib"), joinpath(root, "stdlib"); force=force)
+    end
+
+    for each in i18ndoc
+        cp(joinpath(root, "zh_CN", "doc", "src", each), joinpath(root, "doc", "src", each); force=force)
+    end
+end
+
+"""
+    clean(;root, stdlib, i18ndoc)
+
+Clean up build i18n cache.
+"""
+function clean(;root=joinpath(@__DIR__, ".."), stdlib=true, i18ndoc=["base", "devdocs", "manual"])
+    if stdlib
+        rm(joinpath(root, "stdlib"); recursive=true)
+    end
+
+    for each in i18ndoc
+        rm(joinpath(root, "doc", "src", each); recursive=true)
+    end
+end
+
 # make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
 const STDLIB_DOCS = []
-const STDLIB_DIR = joinpath(@__DIR__, "..", "zh_CN", "stdlib")
+const STDLIB_DIR = joinpath(@__DIR__, "..", "stdlib")
 cd(joinpath(@__DIR__, "src")) do
     Base.rm("stdlib"; recursive=true, force=true)
     mkdir("stdlib")
@@ -155,6 +189,8 @@ else
         canonical = ("deploy" in ARGS) ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
     )
 end
+
+cpi18ndoc(;force=true)
 
 makedocs(
     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
