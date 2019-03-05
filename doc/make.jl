@@ -57,6 +57,8 @@ function clean(;root=joinpath(@__DIR__, ".."), stdlib=true, i18ndoc=["base", "de
     end
 end
 
+cpi18ndoc(;force=true)
+
 # make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
 const STDLIB_DOCS = []
 const STDLIB_DIR = joinpath(@__DIR__, "..", "stdlib")
@@ -194,8 +196,6 @@ else
         canonical = ("deploy" in ARGS) ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
     )
 end
-
-cpi18ndoc(;force=true)
 
 makedocs(
     modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
