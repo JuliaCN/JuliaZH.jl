@@ -7,7 +7,7 @@ pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
 using Pkg
 Pkg.instantiate()
 
-using Documenter
+using Documenter, DocumenterLaTeX
 include("../contrib/HTMLWriter.jl")
 
 # Include the `build_sysimg` file.
