@@ -3,6 +3,7 @@ import Documenter: Documents, Documenter, Writers, Utilities
 import Documenter.Writers.LaTeXWriter: piperun, _print
 
 const LaTeX_CC="xelatex"
+const DOCKER_IMAGE_TAG = "0.1"
 
 function Documenter.Writers.LaTeXWriter.latexinline(io, math::Markdown.LaTeX)
     # Handle MathJax and TeX inconsistency since the first wants `\LaTeX` wrapped

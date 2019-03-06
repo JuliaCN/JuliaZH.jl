@@ -17,6 +17,7 @@ notifications:
 #   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
 #   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
 
+services: docker
 
 env:
   global:
@@ -31,4 +32,5 @@ jobs:
         - julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
         - julia --project=doc/ -e 'using Pkg; Pkg.instantiate(); Pkg.add(PackageSpec(path=pwd()))'
         - julia --project=doc/ doc/make.jl deploy
+        - julia --project=doc/ doc/make.jl pdf texplatform=docker
       after_success: skip
