@@ -25,7 +25,7 @@ jobs:
   include:
     - stage: "Documentation"
       julia: 1.0
-      os: osx
+      os: linux
       script:
         - docker version
         - julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
