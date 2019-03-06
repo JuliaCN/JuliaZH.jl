@@ -39,6 +39,17 @@ search: JuliaZH
   在REPL中输入 ENV["REPL_LOCALE"]="" 将恢复英文模式。再次回到中文模型请输入 ENV["REPL_LOCALE"]="zh_CN"。
 ```
 
+### 在本地编译pdf版本
+
+首先你需要安装 [latexmk](https://mg.readthedocs.io/latexmk.html) 和相应平台的 LaTeX 编译器XeLaTeX。之后确认已安装 CTex 套装。然后在这个package的根目录下，在命令行中运行
+
+```sh
+julia --project=doc doc/make.jl pdf
+```
+
+就会在 `doc/build` 中获得 `Julia中文文档.pdf` 文件。这个功能暂时还是 **实验性** 的，相关问题
+请在 [#67](https://github.com/JuliaCN/JuliaZH.jl/issues/67) 里讨论和报告。
+
 ## 贡献
 
 我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
