@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>接口 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview');
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/interfaces/index.html"/><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><a href="../../index.html"><img class="logo" src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><h1>Julia中文文档</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">主页</a></li><li><span class="toctext">手册</span><ul><li><a class="toctext" href="../getting-started/">入门</a></li><li><a class="toctext" href="../variables/">变量</a></li><li><a class="toctext" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="toctext" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="toctext" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="toctext" href="../strings/">字符串</a></li><li><a class="toctext" href="../functions/">函数</a></li><li><a class="toctext" href="../control-flow/">流程控制</a></li><li><a class="toctext" href="../variables-and-scoping/">变量作用域</a></li><li><a class="toctext" href="../types/">类型</a></li><li><a class="toctext" href="../methods/">方法</a></li><li><a class="toctext" href="../constructors/">构造函数</a></li><li><a class="toctext" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li class="current"><a class="toctext" href>接口</a><ul class="internal"><li><a class="toctext" href="#man-interface-iteration-1">迭代</a></li><li><a class="toctext" href="#索引-1">索引</a></li><li><a class="toctext" href="#man-interface-array-1">抽象数组</a></li><li><a class="toctext" href="#man-interface-strided-arrays-1">Strided 数组</a></li><li><a class="toctext" href="#man-interfaces-broadcasting-1">自定义广播</a></li></ul></li><li><a class="toctext" href="../modules/">模块</a></li><li><a class="toctext" href="../documentation/">文档</a></li><li><a class="toctext" href="../metaprogramming/">元编程</a></li><li><a class="toctext" href="../arrays/">多维数组</a></li><li><a class="toctext" href="../missing/">缺失值</a></li><li><a class="toctext" href="../networking-and-streams/">网络和流</a></li><li><a class="toctext" href="../parallel-computing/">并行计算</a></li><li><a class="toctext" href="../running-external-programs/">运行外部程序</a></li><li><a class="toctext" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="toctext" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="toctext" href="../environment-variables/">环境变量</a></li><li><a class="toctext" href="../embedding/">嵌入 Julia</a></li><li><a class="toctext" href="../code-loading/">代码加载</a></li><li><a class="toctext" href="../profile/">性能分析</a></li><li><a class="toctext" href="../stacktraces/">栈跟踪</a></li><li><a class="toctext" href="../performance-tips/">性能建议</a></li><li><a class="toctext" href="../workflow-tips/">工作流程建议</a></li><li><a class="toctext" href="../style-guide/">代码风格指南</a></li><li><a class="toctext" href="../faq/">常见问题</a></li><li><a class="toctext" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="toctext" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="toctext">Base</span><ul><li><a class="toctext" href="../../base/base/">基本功能</a></li><li><a class="toctext" href="../../base/collections/">集合和数据结构</a></li><li><a class="toctext" href="../../base/math/">数学相关</a></li><li><a class="toctext" href="../../base/numbers/">Numbers</a></li><li><a class="toctext" href="../../base/strings/">字符串</a></li><li><a class="toctext" href="../../base/arrays/">Arrays</a></li><li><a class="toctext" href="../../base/parallel/">Tasks</a></li><li><a class="toctext" href="../../base/multi-threading/">多线程</a></li><li><a class="toctext" href="../../base/constants/">常量</a></li><li><a class="toctext" href="../../base/file/">文件系统</a></li><li><a class="toctext" href="../../base/io-network/">I/O 与网络</a></li><li><a class="toctext" href="../../base/punctuation/">运算符与记号</a></li><li><a class="toctext" href="../../base/sort/">排序及相关函数</a></li><li><a class="toctext" href="../../base/iterators/">迭代相关</a></li><li><a class="toctext" href="../../base/c/">C 接口</a></li><li><a class="toctext" href="../../base/libc/">C 标准库</a></li><li><a class="toctext" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="toctext" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="toctext">Standard Library</span><ul><li><a class="toctext" href="../../stdlib/Base64/">Base64</a></li><li><a class="toctext" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="toctext" href="../../stdlib/Dates/">Dates</a></li><li><a class="toctext" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="toctext" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="toctext" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="toctext" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="toctext" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="toctext" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="toctext" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="toctext" href="../../stdlib/Logging/">日志记录</a></li><li><a class="toctext" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="toctext" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="toctext" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="toctext" href="../../stdlib/Printf/">Printf</a></li><li><a class="toctext" href="../../stdlib/Profile/">性能分析</a></li><li><a class="toctext" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="toctext" href="../../stdlib/Random/">随机数</a></li><li><a class="toctext" href="../../stdlib/SHA/">SHA</a></li><li><a class="toctext" href="../../stdlib/Serialization/">序列化</a></li><li><a class="toctext" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="toctext" href="../../stdlib/Sockets/">套接字</a></li><li><a class="toctext" href="../../stdlib/SparseArrays/">稀疏矩阵</a></li><li><a class="toctext" href="../../stdlib/Statistics/">统计</a></li><li><a class="toctext" href="../../stdlib/Test/">单元测试</a></li><li><a class="toctext" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="toctext" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="toctext">Developer Documentation</span><ul><li><a class="toctext" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><span class="toctext">Documentation of Julia&#39;s Internals</span><ul><li><a class="toctext" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="toctext" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="toctext" href="../../devdocs/types/">More about types</a></li><li><a class="toctext" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="toctext" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="toctext" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="toctext" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="toctext" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="toctext" href="../../devdocs/cartesian/">Base.Cartesian</a></li><li><a class="toctext" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="toctext" href="../../devdocs/subarrays/">SubArrays</a></li><li><a class="toctext" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="toctext" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="toctext" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="toctext" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="toctext" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="toctext" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="toctext" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="toctext" href="../../devdocs/require/">Module loading</a></li><li><a class="toctext" href="../../devdocs/inference/">Inference</a></li></ul></li><li><span class="toctext">Developing/debugging Julia&#39;s C code</span><ul><li><a class="toctext" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="toctext" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="toctext" href="../../devdocs/valgrind/">Using Valgrind with Julia</a></li><li><a class="toctext" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>手册</li><li><a href>接口</a></li></ul><a class="edit-page" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/interfacesmd"><span class="fa"></span> 完善 Transifex 上的翻译</a></nav><hr/><div id="topbar"><span>接口</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="接口-1" href="#接口-1">接口</a></h1><p>Julia 的很多能力和扩展性都来自于一些非正式的接口。通过为自定义的类型扩展一些特定的方法，自定义类型的对象不但获得那些方法的功能，而且也能够用于其它的基于那些行为而定义的通用方法中。</p><h2><a class="nav-anchor" id="man-interface-iteration-1" href="#man-interface-iteration-1">迭代</a></h2><table><tr><th>必需方法</th><th></th><th>简短描述</th></tr><tr><td><code>iterate(iter)</code></td><td></td><td>通常返回由第一项及其其初始状态组成的元组，但如果是空，则要么返回<a href="../../base/constants/#Core.nothing"><code>nothing</code></a></td></tr><tr><td><code>iterate(iter, state)</code></td><td></td><td>通常返回由下一项及其状态组成的元组，或者在没有下一项存在时返回 <code>nothing</code>。</td></tr><tr><td><strong>重要可选方法</strong></td><td><strong>默认定义</strong></td><td><strong>简短描述</strong></td></tr><tr><td><code>IteratorSize(IterType)</code></td><td><code>HasLength()</code></td><td><code>HasLength()</code> ， <code>HasShape{N}()</code> ，  <code>IsInfinite()</code> ， 或者 <code>SizeUnknown()</code> 作为合适的</td></tr><tr><td><code>IteratorEltype(IterType)</code></td><td><code>HasEltype()</code></td><td><code>EltypeUnknown()</code>  和 <code>HasEltype()</code>  都是可接受的</td></tr><tr><td><code>eltype(IterType)</code></td><td><code>Any</code></td><td>元组中第一个条目的类型由 <code>iterate()</code> 返回。</td></tr><tr><td><code>length(iter)</code></td><td>(<em>未定义</em>)</td><td>条目数，如果已知</td></tr><tr><td><code>size(iter, [dim...])</code></td><td>(<em>未定义</em>)</td><td>在各个维度上条目的数量，如果知道</td></tr></table><table><tr><th><code>IteratorSize(IterType)</code> 返回的值。</th><th>必需方法</th></tr><tr><td><code>HasLength()</code></td><td><a href="../../base/strings/#Base.length-Tuple{AbstractString}"><code>length(iter)</code></a></td></tr><tr><td><code>HasShape{N}()</code></td><td><code>length(iter)</code> 和 <code>size(iter, [dim...])</code></td></tr><tr><td><code>IsInfinite()</code></td><td>(<em>none</em>)</td></tr><tr><td><code>SizeUnknown()</code></td><td>(<em>none</em>)</td></tr></table><table><tr><th>由 <code>IteratorEltype(IterType)</code> 返回的值</th><th>必需方法</th></tr><tr><td><code>HasEltype()</code></td><td><code>eltype(IterType)</code></td></tr><tr><td><code>EltypeUnknown()</code></td><td>(<em>none</em>)</td></tr></table><p>顺序迭代由  <a href="../../base/collections/#Base.iterate"><code>iterate</code></a> 函数实现.  Julia的迭代器可以从目标外部跟踪迭代状态，而不是在迭代过程中改变目标本身。 迭代过程中的返回一个包含了当前迭代值及其状态的元组，或者在没有元素存在的情况下返回  <code>nothing</code>  。 状态对象将在下一次迭代时传递回迭代函数 并且通常被认为是可迭代对象的私有实现细节。</p><p>任何定义了这个函数的对象都是可迭代的，并且可以被应用到<a href="../../base/collections/#lib-collections-iteration-1">许多依赖迭代的函数上</a> 。 也可以直接被应用到  <a href="../../base/base/#for"><code>for</code></a> 循环中，因为根据语法：</p><pre><code class="language-julia">for i in iter   # or  &quot;for i = iter&quot;
+    # body
+end</code></pre><p>以上代码被解释为：</p><pre><code class="language-julia">next = iterate(iter)
+while next !== nothing
+    (i, state) = next
+    # body
+    next = iterate(iter, state)
+end</code></pre><p>举一个简单的例子：一组定长数据的平方数迭代序列：</p><pre><code class="language-julia-repl">julia&gt; struct Squares
+           count::Int
+       end
+
+julia&gt; Base.iterate(S::Squares, state=1) = state &gt; S.count ? nothing : (state*state, state+1)</code></pre><p>仅仅定义了 <a href="../../base/collections/#Base.iterate"><code>iterate</code></a> 函数的 <code>Squares</code> 类型就已经很强大了。我们现在可以迭代所有的元素了：</p><pre><code class="language-julia-repl">julia&gt; for i in Squares(7)
+           println(i)
+       end
+1
+4
+9
+16
+25
+36
+49</code></pre><p>我们可以利用许多内置方法来处理迭代，比如标准库 <code>Statistics</code>  中的 <a href="../../base/collections/#Base.in"><code>in</code></a>，<a href="../../stdlib/Statistics/#Statistics.mean"><code>mean</code></a> 和 <a href="../../stdlib/Statistics/#Statistics.std"><code>std</code></a> 。</p><pre><code class="language-julia-repl">julia&gt; 25 in Squares(10)
+true
+
+julia&gt; using Statistics
+
+julia&gt; mean(Squares(100))
+3383.5
+
+julia&gt; std(Squares(100))
+3024.355854282583</code></pre><p>我们可以扩展一些其它的方法，为Julia提供有关此可迭代集合的更多信息。我们知道 <code>Squares</code> 序列中的元素总是 <code>Int</code> 型的。通过扩展 <a href="../../base/collections/#Base.eltype"><code>eltype</code></a> 方法，我们可以给 Julia 过多的信息来帮助其在更复杂的方法中产生更加具体的代码。我们同时也知道我们序列中的元素数目，所以我们也同样可以扩展 <a href="../../base/collections/#Base.length"><code>length</code></a>：</p><pre><code class="language-julia-repl">julia&gt; Base.eltype(::Type{Squares}) = Int # Note that this is defined for the type
+
+julia&gt; Base.length(S::Squares) = S.count</code></pre><p>现在，当我们让Julia去  <a href="../../base/collections/#Base.collect-Tuple{Any}"><code>collect</code></a> 所有元素到一个array中时，Julia可以预分配一个 适当大小的  <code>Vector{Int}</code> ，而不是盲目地  <a href="../../base/collections/#Base.push!"><code>push!</code></a> 每一个元素到 <code>Vector{Any}</code> ：</p><pre><code class="language-julia-repl">julia&gt; collect(Squares(4))
+4-element Array{Int64,1}:
+  1
+  4
+  9
+ 16</code></pre><p>尽管大多时候我们都可以依赖于一些通用的实现，某些时候如果我们知道有一个更简单的算法的话，可以扩展出更具体的方法。例如，计算平方和有一个公式，因此可以扩展出一个更高效的解法：</p><pre><code class="language-julia-repl">julia&gt; Base.sum(S::Squares) = (n = S.count; return n*(n+1)*(2n+1)÷6)
+
+julia&gt; sum(Squares(1803))
+1955361914</code></pre><p>这种模式在Julia Base中很常见，一些必须实现的方法构成了一个小的集合，从而定义出一个非正式的接口，用于实现一些非常炫酷的操作。某些时候，类型本身知道在其应用场景中有一些更高效的算法，因而可以扩展出额外方法。</p><p>能以<em>逆序</em>迭代集合也很有用，这可通过迭代 <a href="../../base/iterators/#Base.Iterators.reverse"><code>Iterators.reverse(iterator)</code></a> 实现。但是，为了实际支持逆序迭代，迭代器类型 <code>T</code> 需要为 <code>Iterators.Reverse{T}</code> 实现 <code>iterate</code>。（给定 <code>r::Iterators.Reverse{T}</code>，类型 <code>T</code> 的底层迭代器是 <code>r.itr</code>。）在我们的 <code>Squares</code> 示例中，我们将实现 <code>Iterators.Reverse{Squares}</code> 方法：</p><pre><code class="language-julia-repl">julia&gt; Base.iterate(rS::Iterators.Reverse{Squares}, state=rS.itr.count) = state &lt; 1 ? nothing : (state*state, state-1)
+
+julia&gt; collect(Iterators.reverse(Squares(4)))
+4-element Array{Int64,1}:
+ 16
+  9
+  4
+  1</code></pre><h2><a class="nav-anchor" id="索引-1" href="#索引-1">索引</a></h2><table><tr><th>需要实现的方法</th><th>简介</th></tr><tr><td><code>getindex(X, i)</code></td><td><code>X[i]</code>，索引元素访问</td></tr><tr><td><code>setindex!(X, v, i)</code></td><td><code>X[i] = v</code>，索引元素赋值</td></tr><tr><td><code>firstindex(X)</code></td><td>第一个索引</td></tr><tr><td><code>lastindex(X)</code></td><td>最后一个索引，用于 <code>X[end]</code></td></tr></table><p>对于 <code>Squares</code> 类型而言，可以通过对第 <code>i</code> 个元素求平方计算出其中的第 <code>i</code> 个元素，可以用 <code>S[i]</code> 的索引表达式形式暴露该接口。为了支持该行为，<code>Squares</code> 只需要简单地定义 <a href="../../base/collections/#Base.getindex"><code>getindex</code></a>：</p><pre><code class="language-julia-repl">julia&gt; function Base.getindex(S::Squares, i::Int)
+           1 &lt;= i &lt;= S.count || throw(BoundsError(S, i))
+           return i*i
+       end
+
+julia&gt; Squares(100)[23]
+529</code></pre><p>另外，为了支持语法 <code>S[end]</code>，我们必须定义 <a href="../../base/collections/#Base.lastindex"><code>lastindex</code></a> 来指定最后一个有效索引。建议也定义 <a href="../../base/collections/#Base.firstindex"><code>firstindex</code></a> 来指定第一个有效索引：</p><pre><code class="language-julia-repl">julia&gt; Base.firstindex(S::Squares) = 1
+
+julia&gt; Base.lastindex(S::Squares) = length(S)
+
+julia&gt; Squares(23)[end]
+529</code></pre><p>但请注意，上面只定义了带有一个整数索引的 <a href="../../base/collections/#Base.getindex"><code>getindex</code></a>。使用除 <code>Int</code> 外的任何值进行索引会抛出 <a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>，表示没有匹配的方法。为了支持使用某个范围内的 <code>Int</code> 或 <code>Int</code> 向量进行索引，必须编写单独的方法：</p><pre><code class="language-julia-repl">julia&gt; Base.getindex(S::Squares, i::Number) = S[convert(Int, i)]
+
+julia&gt; Base.getindex(S::Squares, I) = [S[i] for i in I]
+
+julia&gt; Squares(10)[[3,4.,5]]
+3-element Array{Int64,1}:
+  9
+ 16
+ 25</code></pre><p>虽然这开始支持更多<a href="../arrays/#man-array-indexing-1">某些内置类型支持的索引操作</a>，但仍然有很多行为不支持。因为我们为 <code>Squares</code> 序列所添加的行为，它开始看起来越来越像向量。我们可以正式定义其为 <a href="../../base/arrays/#Core.AbstractArray"><code>AbstractArray</code></a> 的子类型，而不是自己定义所有这些行为。</p><h2><a class="nav-anchor" id="man-interface-array-1" href="#man-interface-array-1">抽象数组</a></h2><table><tr><th>需要实现的方法</th><th></th><th>简短描述</th></tr><tr><td><code>size(A)</code></td><td></td><td>返回包含 <code>A</code> 维度的元组</td></tr><tr><td><code>getindex(A, i::Int)</code></td><td></td><td>（如果 <code>IndexLinear</code>）线性标量索引</td></tr><tr><td><code>getindex(A, I::Vararg{Int, N})</code></td><td></td><td>（如果 <code>IndexCartesian</code>，其中 <code>N = ndims(A)</code>）N 维标量索引</td></tr><tr><td><code>setindex!(A, v, i::Int)</code></td><td></td><td>（如果 <code>IndexLinear</code>）线性索引元素赋值</td></tr><tr><td><code>setindex!(A, v, I::Vararg{Int, N})</code></td><td></td><td>（如果 <code>IndexCartesian</code>，其中 <code>N = ndims(A)</code>）N 维标量索引元素赋值</td></tr><tr><td><strong>可选方法</strong></td><td><strong>默认定义</strong></td><td><strong>简短描述</strong></td></tr><tr><td><code>IndexStyle(::Type)</code></td><td><code>IndexCartesian()</code></td><td>返回 <code>IndexLinear()</code> 或 <code>IndexCartesian()</code>。请参阅下文描述。</td></tr><tr><td><code>getindex(A, I...)</code></td><td>基于标量 <code>getindex</code> 定义</td><td><a href="../arrays/#man-array-indexing-1">多维非标量索引</a></td></tr><tr><td><code>setindex!(A, I...)</code></td><td>基于标量 <code>setindex!</code> 定义</td><td><a href="../arrays/#man-array-indexing-1">多维非标量索引元素赋值</a></td></tr><tr><td><code>iterate</code></td><td>基于标量 <code>getindex</code> 定义</td><td>Iteration</td></tr><tr><td><code>length(A)</code></td><td><code>prod(size(A))</code></td><td>元素数</td></tr><tr><td><code>similar(A)</code></td><td><code>similar(A, eltype(A), size(A))</code></td><td>返回具有相同形状和元素类型的可变数组</td></tr><tr><td><code>similar(A, ::Type{S})</code></td><td><code>similar(A, S, size(A))</code></td><td>返回具有相同形状和指定元素类型的可变数组</td></tr><tr><td><code>similar(A, dims::NTuple{Int})</code></td><td><code>similar(A, eltype(A), dims)</code></td><td>返回具有相同元素类型和大小为 <em>dims</em> 的可变数组</td></tr><tr><td><code>similar(A, ::Type{S}, dims::NTuple{Int})</code></td><td><code>Array{S}(undef, dims)</code></td><td>返回具有指定元素类型及大小的可变数组</td></tr><tr><td><strong>不遵循惯例的索引</strong></td><td><strong>默认定义</strong></td><td><strong>简短描述</strong></td></tr><tr><td><code>axes(A)</code></td><td><code>map(OneTo, size(A))</code></td><td>返回有效索引的 <code>AbstractUnitRange</code></td></tr><tr><td><code>Base.similar(A, ::Type{S}, inds::NTuple{Ind})</code></td><td><code>similar(A, S, Base.to_shape(inds))</code></td><td>返回使用特殊索引 <code>inds</code> 的可变数组（详见下文）</td></tr><tr><td><code>Base.similar(T::Union{Type,Function}, inds)</code></td><td><code>T(Base.to_shape(inds))</code></td><td>返回类似于 <code>T</code> 的使用特殊索引 <code>inds</code> 的数组（详见下文）</td></tr></table><p>如果一个类型被定义为 <code>AbstractArray</code> 的子类型，那它就继承了一大堆丰富的行为，包括构建在单元素访问之上的迭代和多维索引。有关更多支持的方法，请参阅文档 <a href="../arrays/#man-multi-dim-arrays-1">多维数组</a> 及 <a href="../../base/arrays/#lib-arrays-1">Julia Base</a>。</p><p>定义 <code>AbstractArray</code> 子类型的关键部分是 <a href="../../base/arrays/#Base.IndexStyle"><code>IndexStyle</code></a>。由于索引是数组的重要部分且经常出现在 hot loops 中，使索引和索引赋值尽可能高效非常重要。数组数据结构通常以两种方式定义：要么仅使用一个索引（即线性索引）来最高效地访问其元素，要么实际上使用由各个维度确定的索引访问其元素。这两种方式被 Julia 标记为 <code>IndexLinear()</code> 和 <code>IndexCartesian()</code>。把线性索引转换为多重索引下标通常代价高昂，因此这提供了基于 traits 机制，以便能为所有矩阵类型提供高效的通用代码。</p><p>此区别决定了该类型必须定义的标量索引方法。<code>IndexLinear()</code> 很简单：只需定义 <code>getindex(A::ArrayType, i::Int)</code>。当数组后用多维索引集进行索引时，回退 <code>getindex(A::AbstractArray, I...)()</code> 高效地将该索引转换为线性索引，然后调用上述方法。另一方面，<code>IndexCartesian()</code> 数组需要为每个支持的、使用 <code>ndims(A)</code> 个 <code>Int</code> 索引的维度定义方法。例如，<code>SparseArrays</code> 标准库里的 <a href="../../stdlib/SparseArrays/#SparseArrays.SparseMatrixCSC"><code>SparseMatrixCSC</code></a> 只支持二维，所以它只定义了 <code>getindex(A::SparseMatrixCSC, i::Int, j::Int)</code>。<a href="../../base/collections/#Base.setindex!"><code>setindex!</code></a> 也是如此。</p><p>回到上面的平方数序列，我们可以将它定义为 <code>AbstractArray{Int, 1}</code> 的子类型：</p><pre><code class="language-julia-repl">julia&gt; struct SquaresVector &lt;: AbstractArray{Int, 1}
+           count::Int
+       end
+
+julia&gt; Base.size(S::SquaresVector) = (S.count,)
+
+julia&gt; Base.IndexStyle(::Type{&lt;:SquaresVector}) = IndexLinear()
+
+julia&gt; Base.getindex(S::SquaresVector, i::Int) = i*i</code></pre><p>请注意，指定 <code>AbstractArray</code> 的两个参数非常重要；第一个参数定义了 <a href="../../base/collections/#Base.eltype"><code>eltype</code></a>，第二个则定义了 <a href="../../base/arrays/#Base.ndims"><code>ndims</code></a>。该超类型和这三个方法就足以使 <code>SquaresVector</code> 变成一个可迭代、可索引且功能齐全的数组：</p><pre><code class="language-julia-repl">julia&gt; s = SquaresVector(4)
+4-element SquaresVector:
+  1
+  4
+  9
+ 16
+
+julia&gt; s[s .&gt; 8]
+2-element Array{Int64,1}:
+  9
+ 16
+
+julia&gt; s + s
+4-element Array{Int64,1}:
+  2
+  8
+ 18
+ 32
+
+julia&gt; sin.(s)
+4-element Array{Float64,1}:
+  0.8414709848078965
+ -0.7568024953079282
+  0.4121184852417566
+ -0.2879033166650653</code></pre><p>作为一个更复杂的例子，让我们在 <a href="../../base/collections/#Base.Dict"><code>Dict</code></a> 之上定义自己的玩具性质的 N 维稀疏数组类型。</p><pre><code class="language-julia-repl">julia&gt; struct SparseArray{T,N} &lt;: AbstractArray{T,N}
+           data::Dict{NTuple{N,Int}, T}
+           dims::NTuple{N,Int}
+       end
+
+julia&gt; SparseArray(::Type{T}, dims::Int...) where {T} = SparseArray(T, dims);
+
+julia&gt; SparseArray(::Type{T}, dims::NTuple{N,Int}) where {T,N} = SparseArray{T,N}(Dict{NTuple{N,Int}, T}(), dims);
+
+julia&gt; Base.size(A::SparseArray) = A.dims
+
+julia&gt; Base.similar(A::SparseArray, ::Type{T}, dims::Dims) where {T} = SparseArray(T, dims)
+
+julia&gt; Base.getindex(A::SparseArray{T,N}, I::Vararg{Int,N}) where {T,N} = get(A.data, I, zero(T))
+
+julia&gt; Base.setindex!(A::SparseArray{T,N}, v, I::Vararg{Int,N}) where {T,N} = (A.data[I] = v)</code></pre><p>请注意，这是个 <code>IndexCartesian</code> 数组，因此我们必须在数组的维度上手动定义 <a href="../../base/collections/#Base.getindex"><code>getindex</code></a> 和 <a href="../../base/collections/#Base.setindex!"><code>setindex!</code></a>。与 <code>SquaresVector</code> 不同，我们可以定义 <a href="../../base/collections/#Base.setindex!"><code>setindex!</code></a>，这样便能更改数组：</p><pre><code class="language-julia-repl">julia&gt; A = SparseArray(Float64, 3, 3)
+3×3 SparseArray{Float64,2}:
+ 0.0  0.0  0.0
+ 0.0  0.0  0.0
+ 0.0  0.0  0.0
+
+julia&gt; fill!(A, 2)
+3×3 SparseArray{Float64,2}:
+ 2.0  2.0  2.0
+ 2.0  2.0  2.0
+ 2.0  2.0  2.0
+
+julia&gt; A[:] = 1:length(A); A
+3×3 SparseArray{Float64,2}:
+ 1.0  4.0  7.0
+ 2.0  5.0  8.0
+ 3.0  6.0  9.0</code></pre><p>索引 <code>AbstractArray</code> 的结果本身可以是数组（例如，在使用 <code>AbstractRange</code> 时）。<code>AbstractArray</code> 回退方法使用 <a href="../../base/arrays/#Base.similar"><code>similar</code></a> 来分配具有适当大小和元素类型的 <code>Array</code>，该数组使用上述的基本索引方法填充。但是，在实现数组封装器时，你通常希望也封装结果：</p><pre><code class="language-julia-repl">julia&gt; A[1:2,:]
+2×3 SparseArray{Float64,2}:
+ 1.0  4.0  7.0
+ 2.0  5.0  8.0</code></pre><p>在此例中，创建合适的封装数组通过定义 <code>Base.similar{T}(A::SparseArray, ::Type{T}, dims::Dims)</code> 来实现。（请注意，虽然 <code>similar</code> 支持 1 参数和 2 参数形式，但在大多数情况下，你只需要专门定义 3 参数形式。）为此，<code>SparseArray</code> 是可变的（支持 <code>setindex!</code>）便很重要。为 <code>SparseArray</code> 定义 <code>similar</code>、<code>getindex</code> 和 <code>setindex!</code> 也使得该数组能够 <a href="../../base/base/#Base.copy"><code>copy</code></a> 。</p><pre><code class="language-julia-repl">julia&gt; copy(A)
+3×3 SparseArray{Float64,2}:
+ 1.0  4.0  7.0
+ 2.0  5.0  8.0
+ 3.0  6.0  9.0</code></pre><p>除了上面的所有可迭代和可索引方法之外，这些类型还能相互交互，并使用在 Julia Base 中为 <code>AbstractArray</code> 定义的大多数方法：</p><pre><code class="language-julia-repl">julia&gt; A[SquaresVector(3)]
+3-element SparseArray{Float64,1}:
+ 1.0
+ 4.0
+ 9.0
+
+julia&gt; sum(A)
+45.0</code></pre><p>如果要定义允许非传统索引（索引以 1 之外的数字开始）的数组类型，你应该专门指定 <a href="../../base/arrays/#Base.axes-Tuple{Any}"><code>axes</code></a>。你也应该专门指定 <a href="../../base/arrays/#Base.similar"><code>similar</code></a>，以便 <code>dims</code> 参数（通常是大小为 <code>Dims</code> 的元组）可以接收 <code>AbstractUnitRange</code> 对象，它也许是你自己设计的 range 类型 <code>Ind</code>。有关更多信息，请参阅<a href="../../devdocs/offset-arrays/#man-custom-indices-1">使用自定义索引的数组</a>。</p><h2><a class="nav-anchor" id="man-interface-strided-arrays-1" href="#man-interface-strided-arrays-1">Strided 数组</a></h2><table><tr><th>需要实现的方法</th><th></th><th>简短描述</th></tr><tr><td><code>strides(A)</code></td><td></td><td>返回每个维度中相邻元素之间的内存距离（以内存元素数量的形式）组成的元组。如果 <code>A</code> 是 <code>AbstractArray{T,0}</code>，这应该返回空元组。</td></tr><tr><td><code>Base.unsafe_convert(::Type{Ptr{T}}, A)</code></td><td></td><td>返回数组的本地内存地址。</td></tr><tr><td><strong>可选方法</strong></td><td><strong>默认定义</strong></td><td><strong>简短描述</strong></td></tr><tr><td><code>stride(A, i::Int)</code></td><td><code>strides(A)[i]</code></td><td>返回维度 i（译注：原文为 k）上相邻元素之间的内存距离（以内存元素数量的形式）。</td></tr></table><p>Strided 数组是 <code>AbstractArray</code> 的子类型，其条目以固定步长储存在内存中。如果数组的元素类型与 BLAS 兼容，则 strided 数组可以利用 BLAS 和 LAPACK 例程来实现更高效的线性代数例程。用户定义的 strided 数组的典型示例是把标准 <code>Array</code> 用附加结构进行封装的数组。</p><p>警告：如果底层存储实际上不是 strided，则不要实现这些方法，因为这可能导致错误的结果或段错误。</p><p>下面是一些示例，用来演示哪些数组类型是 strided 数组，哪些不是：</p><pre><code class="language-julia">1:5   # not strided (there is no storage associated with this array.)
+Vector(1:5)  # is strided with strides (1,)
+A = [1 5; 2 6; 3 7; 4 8]  # is strided with strides (1,4)
+V = view(A, 1:2, :)   # is strided with strides (1,4)
+V = view(A, 1:2:3, 1:2)   # is strided with strides (2,4)
+V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not fixed.</code></pre><h2><a class="nav-anchor" id="man-interfaces-broadcasting-1" href="#man-interfaces-broadcasting-1">自定义广播</a></h2><table><tr><th>需要实现的方法</th><th>简短描述</th></tr><tr><td><code>Base.BroadcastStyle(::Type{SrcType}) = SrcStyle()</code></td><td><code>SrcType</code> 的广播行为</td></tr><tr><td><code>Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})</code></td><td>输出结果的分配</td></tr><tr><td><strong>可选方法</strong></td><td></td></tr><tr><td><code>Base.BroadcastStyle(::Style1, ::Style2) = Style12()</code></td><td>混合广播风格的优先级规则</td></tr><tr><td><code>Base.broadcast_axes(x)</code></td><td>用于广播的 <code>x</code> 的索引的声明（默认为 <a href="../../base/arrays/#Base.axes-Tuple{Any}"><code>axes(x)</code></a>）</td></tr><tr><td><code>Base.broadcastable(x)</code></td><td>将 <code>x</code> 转换为一个具有 <code>axes</code> 且支持索引的对象</td></tr><tr><td><strong>绕过默认机制</strong></td><td></td></tr><tr><td><code>Base.copy(bc::Broadcasted{DestStyle})</code></td><td><code>broadcast</code> 的自定义实现</td></tr><tr><td><code>Base.copyto!(dest, bc::Broadcasted{DestStyle})</code></td><td>专门针对 <code>DestStyle</code> 的自定义 <code>broadcast!</code> 实现</td></tr><tr><td><code>Base.copyto!(dest::DestType, bc::Broadcasted{Nothing})</code></td><td>专门针对 <code>DestStyle</code> 的自定义 <code>broadcast!</code> 实现</td></tr><tr><td><code>Base.Broadcast.broadcasted(f, args...)</code></td><td>覆盖融合表达式中的默认惰性行为</td></tr><tr><td><code>Base.Broadcast.instantiate(bc::Broadcasted{DestStyle})</code></td><td>覆盖惰性广播的 axes 的计算</td></tr></table><p><a href="../arrays/#广播-1">广播</a>可由 <code>broadcast</code> 或 <code>broadcast!</code> 的显式调用、或者像 <code>A .+ b</code> 或 <code>f.(x, y)</code> 这样的「点」操作隐式触发。任何具有 <a href="../../base/arrays/#Base.axes-Tuple{Any}"><code>axes</code></a> 且支持索引的对象都可作为参数参与广播，默认情况下，广播结果储存在 <code>Array</code> 中。这个基本框架可通过三个主要方式扩展：</p><ul><li>确保所有参数都支持广播</li><li>为给定参数集选择合适的输出数组</li><li>为给定参数集选择高效的实现</li></ul><p>不是所有类型都支持 <code>axes</code> 和索引，但许多类型便于支持广播。<a href="../../base/arrays/#Base.Broadcast.broadcastable"><code>Base.broadcastable</code></a> 函数会在每个广播参数上调用，它能返回与广播参数不同的支持 <code>axes</code> 和索引的对象。默认情况下，对于所有 <code>AbstractArray</code> 和 <code>Number</code> 来说这是 identity 函数——因为它们已经支持 <code>axes</code> 和索引了。少数其它类型（包括但不限于类型本身、函数、像 <a href="../../base/base/#Base.missing"><code>missing</code></a> 和 <a href="../../base/constants/#Core.nothing"><code>nothing</code></a> 这样的特殊单态类型以及日期）为了能被广播，<code>Base.broadcastable</code> 会返回封装在 <code>Ref</code> 的参数来充当 0 维「标量」。自定义类型可以类似地指定 <code>Base.broadcastable</code> 来定义其形状，但是它们应当遵循 <code>collect(Base.broadcastable(x)) == collect(x)</code> 的约定。一个值得注意的例外是 <code>AbstractString</code>；字符串是个特例，为了能被广播其表现为标量，尽管它们是其字符的可迭代集合（详见 <a href="manual/@id man-strings">字符串</a>）。</p><p>接下来的两个步骤（选择输出数组和实现）依赖于如何确定给定参数集的 single answer。广播必须接受其参数的所有不同类型，并把它们折叠到一个输出数组和实现。广播称此 single answer 为「风格」。每个可广播对象都有自己的首选风格，并使用类似于类型提升的系统将这些风格组合成 single answer——「目标风格」。</p><h3><a class="nav-anchor" id="广播风格-1" href="#广播风格-1">广播风格</a></h3><p>抽象类型 <code>Base.BroadcastStyle</code> 派生了所有的广播风格。其在用作函数时有两种可能的形式，分别为一元形式（单参数）和二元形式。使用一元形式表明你打算实现特定的广播行为和/或输出类型，并且不希望依赖于默认的回退 <a href="../../base/arrays/#Base.Broadcast.DefaultArrayStyle"><code>Broadcast.DefaultArrayStyle</code></a>。</p><p>为了覆盖这些默认值，你可以为对象自定义 <code>BroadcastStyle</code>：</p><pre><code class="language-julia">struct MyStyle &lt;: Broadcast.BroadcastStyle end
+Base.BroadcastStyle(::Type{&lt;:MyType}) = MyStyle()</code></pre><p>在某些情况下，无需定义 <code>MyStyle</code> 也许很方便，在这些情况下，你可以利用一个通用的广播封装器：</p><ul><li><code>Base.BroadcastStyle(::Type{&lt;:MyType}) = Broadcast.Style{MyType}()</code> 可用于任意类型。</li><li>如果 <code>MyType</code> 是 <code>AbstractArray</code>，首选是 <code>Base.BroadcastStyle(::Type{&lt;:MyType}) = Broadcast.ArrayStyle{MyType}()</code>。</li><li>对于只支持某个具体维度的 <code>AbstractArrays</code>，请创建 <code>Broadcast.AbstractArrayStyle{N}</code> 的子类型（请参阅下文）。</li></ul><p>当你的广播操作涉及多个参数，各个广播风格将合并以确定单个控制输出容器的类型的 <code>DestStyle</code>。有关更多详细信息，请参阅<a href="#writing-binary-broadcasting-rules-1">下文</a>。</p><h3><a class="nav-anchor" id="选择合适的输出数组-1" href="#选择合适的输出数组-1">选择合适的输出数组</a></h3><p>每个广播操作都会计算广播风格以便支持派发和专门化。结果数组的实际分配由 <code>similar</code> 处理，其使用 Broadcasted 对象作为其第一个参数。</p><pre><code class="language-julia">Base.similar(bc::Broadcasted{DestStyle}, ::Type{ElType})</code></pre><p>回退定义是</p><pre><code class="language-julia">similar(bc::Broadcasted{DefaultArrayStyle{N}}, ::Type{ElType}) where {N,ElType} =
+    similar(Array{ElType}, axes(bc))</code></pre><p>但是，如果需要，你可以专门化任何或所有这些参数。最后的参数 <code>bc</code> 是（还可能是融合的）广播操作的惰性表示，即 <code>Broadcasted</code> 对象。出于这些目的，该封装器中最重要的字段是 <code>f</code> 和 <code>args</code>，分别描述函数和参数列表。请注意，参数列表可以——并且经常——包含其它嵌套的 <code>Broadcasted</code> 封装器。</p><p>举个完整的例子，假设你创建了类型 <code>ArrayAndChar</code>，该类型存储一个数组和单个字符：</p><pre><code class="language-julia">struct ArrayAndChar{T,N} &lt;: AbstractArray{T,N}
+    data::Array{T,N}
+    char::Char
+end
+Base.size(A::ArrayAndChar) = size(A.data)
+Base.getindex(A::ArrayAndChar{T,N}, inds::Vararg{Int,N}) where {T,N} = A.data[inds...]
+Base.setindex!(A::ArrayAndChar{T,N}, val, inds::Vararg{Int,N}) where {T,N} = A.data[inds...] = val
+Base.showarg(io::IO, A::ArrayAndChar, toplevel) = print(io, typeof(A), &quot; with char &#39;&quot;, A.char, &quot;&#39;&quot;)</code></pre><p>你可能想要保留「元数据」<code>char</code>。为此，我们首先定义</p><pre><code class="language-julia">Base.BroadcastStyle(::Type{&lt;:ArrayAndChar}) = Broadcast.ArrayStyle{ArrayAndChar}()</code></pre><p>这意味着我们还必须定义相应的 <code>similar</code> 方法：</p><pre><code class="language-julia">function Base.similar(bc::Broadcast.Broadcasted{Broadcast.ArrayStyle{ArrayAndChar}}, ::Type{ElType}) where ElType
+    # Scan the inputs for the ArrayAndChar:
+    A = find_aac(bc)
+    # Use the char field of A to create the output
+    ArrayAndChar(similar(Array{ElType}, axes(bc)), A.char)
+end
+
+&quot;`A = find_aac(As)` returns the first ArrayAndChar among the arguments.&quot;
+find_aac(bc::Base.Broadcast.Broadcasted) = find_aac(bc.args)
+find_aac(args::Tuple) = find_aac(find_aac(args[1]), Base.tail(args))
+find_aac(x) = x
+find_aac(a::ArrayAndChar, rest) = a
+find_aac(::Any, rest) = find_aac(rest)</code></pre><p>在这些定义中，可以得到以下行为：</p><pre><code class="language-julia-repl">julia&gt; a = ArrayAndChar([1 2; 3 4], &#39;x&#39;)
+2×2 ArrayAndChar{Int64,2} with char &#39;x&#39;:
+ 1  2
+ 3  4
+
+julia&gt; a .+ 1
+2×2 ArrayAndChar{Int64,2} with char &#39;x&#39;:
+ 2  3
+ 4  5
+
+julia&gt; a .+ [5,10]
+2×2 ArrayAndChar{Int64,2} with char &#39;x&#39;:
+  6   7
+ 13  14</code></pre><h3><a class="nav-anchor" id="extending-in-place-broadcast-1" href="#extending-in-place-broadcast-1">使用自定义实现扩展广播</a></h3><p>一般来说，广播操作由一个惰性 <code>Broadcasted</code> 容器表示，该容器保存要应用的函数及其参数。这些参数可能本身是嵌套得更深的 <code>Broadcasted</code> 容器，并一起形成了一个待求值的大型表达式树。嵌套的 <code>Broadcasted</code> 容器树可由隐式的点语法直接构造；例如，<code>5 .+ 2.*x</code> 由 <code>Broadcasted(+, 5, Broadcasted(*, 2, x))</code> 暂时表示。这对于用户是不可见的，因为它是通过调用 <code>copy</code> 立即实现的，但是此容器为自定义类型的作者提供了广播可扩展性的基础。然后，内置的广播机制将根据参数确定结果的类型和大小，为它分配内存，并最终通过默认的 <code>copyto!(::AbstractArray, ::Broadcasted)</code> 方法将 <code>Broadcasted</code> 对象复制到其中。内置的回退 <code>broadcast</code> 和 <code>broadcast!</code> 方法类似地构造操作的暂时 <code>Broadcasted</code> 表示，因此它们共享相同的代码路径。这便允许自定义的数组实现通过提供它们自己的专门化 <code>copyto!</code> 来定义和优化广播。这再次由计算后的广播风格确定。此广播风格在广播操作中非常重要，以至于它被存储为 <code>Broadcasted</code> 类型的第一个类型参数，且允许派发和专门化。</p><p>对于某些类型，跨越层层嵌套的广播的「融合」操作无法实现，或者无法更高效地逐步完成。在这种情况下，你可能需要或者想要求值 <code>x .* (x .+ 1)</code>，就好像该式已被编写成 <code>broadcast(*, x, broadcast(+, x, 1))</code>，其中内部广播操作会在处理外部广播操作前进行求值。这种直接的操作以有点间接的方式得到直接支持；Julia 不会直接构造 <code>Broadcasted</code> 对象，而会将 待融合的表达式 <code>x .* (x .+ 1)</code> 降低为 <code>Broadcast.broadcasted(*, x, Broadcast.broadcasted(+, x, 1))</code>。现在，默认情况下，<code>broadcasted</code> 只会调用 <code>Broadcasted</code> 构造函数来创建待融合表达式树的惰性表示，但是你可以选择为函数和参数的特定组合覆盖它。</p><p>举个例子，内置的 <code>AbstractRange</code> 对象使用此机制优化广播表达式的片段，这些表达式片段可以只根据 start、step 和 length（或 stop）直接进行求值，而无需计算每个元素。与所有其它机制一样，<code>broadcasted</code> 也会计算并暴露其参数的组合广播风格，所以你可以为广播风格、函数和参数的任意组合专门化 <code>broadcasted(::DestStyle, f, args...)</code>，而不是专门化 <code>broadcasted(f, args...)</code>。</p><p>例如，以下定义支持 range 的负运算：</p><pre><code class="language-julia">broadcasted(::DefaultArrayStyle{1}, ::typeof(-), r::OrdinalRange) = range(-first(r), step=-step(r), length=length(r))</code></pre><h3><a class="nav-anchor" id="extending-in-place-broadcast-2" href="#extending-in-place-broadcast-2">扩展 in-place 广播</a></h3><p>In-place 广播可通过定义合适的 <code>copyto!(dest, bc::Broadcasted)</code> 方法来支持。由于你可能想要专门化 <code>dest</code> 或 <code>bc</code> 的特定子类型，为了避免包之间的歧义，我们建议采用以下约定。</p><p>如果你想要专门化特定的广播风格 <code>DestStyle</code>，请为其定义一个方法</p><pre><code class="language-julia">copyto!(dest, bc::Broadcasted{DestStyle})</code></pre><p>你可选择使用此形式，如果使用，你还可以专门化 <code>dest</code> 的类型。</p><p>如果你想专门化目标类型 <code>DestType</code> 而不专门化 <code>DestStyle</code>，那么你应该定义一个带有以下签名的方法：</p><pre><code class="language-julia">copyto!(dest::DestType, bc::Broadcasted{Nothing})</code></pre><p>这利用了 <code>copyto!</code> 的回退实现，它将该封装器转换为一个 <code>Broadcasted{Nothing}</code> 对象。因此，专门化 <code>DestType</code> 的方法优先级低于专门化 <code>DestStyle</code> 的方法。</p><p>同样，你可以使用 <code>copy(::Broadcasted)</code> 方法完全覆盖 out-of-place 广播。</p><h4><a class="nav-anchor" id="使用-Broadcasted-对象-1" href="#使用-Broadcasted-对象-1">使用 <code>Broadcasted</code> 对象</a></h4><p>当然，为了实现这样的 <code>copy</code> 或 <code>copyto!</code> 方法，你必须使用 <code>Broadcasted</code> 封装器来计算每个元素。这主要有两种方式：</p><ul><li><code>Broadcast.flatten</code> 将可能的嵌套操作重新计算为单个函数并平铺参数列表。你自己负责实现广播形状规则，但这在有限的情况下可能会有所帮助。</li><li>迭代 <code>axes(::Broadcasted)</code> 的 <code>CartesianIndices</code> 并使用所生成的 <code>CartesianIndex</code> 对象的索引来计算结果。</li></ul><h3><a class="nav-anchor" id="writing-binary-broadcasting-rules-1" href="#writing-binary-broadcasting-rules-1">编写二元广播规则</a></h3><p>广播风格的优先级规则由二元 <code>BroadcastStyle</code> 调用定义：</p><pre><code class="language-julia">Base.BroadcastStyle(::Style1, ::Style2) = Style12()</code></pre><p>其中，<code>Style12</code> 是你要为输出所选择的 <code>BroadcastStyle</code>，所涉及的参数具有 <code>Style1</code> 及 <code>Style2</code>。例如，</p><pre><code class="language-julia">Base.BroadcastStyle(::Broadcast.Style{Tuple}, ::Broadcast.AbstractArrayStyle{0}) = Broadcast.Style{Tuple}()</code></pre><p>表示 <code>Tuple</code>「胜过」零维数组（输出容器将是元组）。值得注意的是，你不需要（也不应该）为此调用的两个参数顺序下定义；无论用户提供的以何种顺序提供参数，定义一个就够了。</p><p>对于 <code>AbstractArray</code> 类型，定义 <code>BroadcastStyle</code> 将取代回退选择 <a href="../../base/arrays/#Base.Broadcast.DefaultArrayStyle"><code>Broadcast.DefaultArrayStyle</code></a>。<code>DefaultArrayStyle</code> 及其抽象超类型 <code>AbstractArrayStyle</code> 将维度存储为类型参数，以支持具有固定维度需求的特定数组类型。</p><p>由于以下方法，<code>DefaultArrayStyle</code>「输给」任何其它已定义的 <code>AbstractArrayStyle</code>：</p><pre><code class="language-julia">BroadcastStyle(a::AbstractArrayStyle{Any}, ::DefaultArrayStyle) = a
+BroadcastStyle(a::AbstractArrayStyle{N}, ::DefaultArrayStyle{N}) where N = a
+BroadcastStyle(a::AbstractArrayStyle{M}, ::DefaultArrayStyle{N}) where {M,N} =
+    typeof(a)(_max(Val(M),Val(N)))</code></pre><p>除非你想要为两个或多个非 <code>DefaultArrayStyle</code> 的类型建立优先级，否则不需要编写二元 <code>BroadcastStyle</code> 规则。</p><p>如果你的数组类型确实有固定的维度需求，那么你应该定义一个 <code>AbstractArrayStyle</code> 的子类型。例如，稀疏数组的代码中有以下定义：</p><pre><code class="language-julia">struct SparseVecStyle &lt;: Broadcast.AbstractArrayStyle{1} end
+struct SparseMatStyle &lt;: Broadcast.AbstractArrayStyle{2} end
+Base.BroadcastStyle(::Type{&lt;:SparseVector}) = SparseVecStyle()
+Base.BroadcastStyle(::Type{&lt;:SparseMatrixCSC}) = SparseMatStyle()</code></pre><p>每当你定义一个 <code>AbstractArrayStyle</code> 的子类型，你还需要定义用于组合维度的规则，这通过为你的广播风格创建带有一个 <code>Val(N)</code> 参数的构造函数。例如：</p><pre><code class="language-julia">SparseVecStyle(::Val{0}) = SparseVecStyle()
+SparseVecStyle(::Val{1}) = SparseVecStyle()
+SparseVecStyle(::Val{2}) = SparseMatStyle()
+SparseVecStyle(::Val{N}) where N = Broadcast.DefaultArrayStyle{N}()</code></pre><p>这些规则表明 <code>SparseVecStyle</code> 与 0 维或 1 维数组的组合会产生另一个 <code>SparseVecStyle</code>，与 2 维数组的组合会产生 <code>SparseMatStyle</code>，而与维度更高的数组则回退到任意维密集矩阵的框架中。这些规则允许广播为产生一维或二维输出的操作保持其稀疏表示，但为任何其它维度生成 <code>Array</code>。</p><footer><hr/><a class="previous" href="../conversion-and-promotion/"><span class="direction">上一篇</span><span class="title">类型转换和类型提升</span></a><a class="next" href="../modules/"><span class="direction">下一篇</span><span class="title">模块</span></a></footer></article></body></html>
