@@ -1,18 +1,18 @@
 # Julia 1.0 中文文档
 
-欢迎来到 Julia 1.0 中文文档。
+欢迎来到 Julia 1.0 中文文档，PDF版本可以前往[release](https://github.com/JuliaCN/JuliaZH.jl/releases/latest)页面下载。
+
 ```@eval
 using Markdown, Dates
 Markdown.parse("上次更新时间: $(now())")
 ```
 
-请先阅读 [v1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观。我们推荐刚刚开始学习Julia语言的朋友阅读中文社区提供的 [Julia入门指引](https://discourse.juliacn.com/t/topic/159)，也推荐你使用discourse对遇到的问题进行提问。
-
+请先阅读 [v1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观。我们推荐刚刚开始学习Julia语言的朋友阅读中文社区提供的 [Julia入门指引](https://discourse.juliacn.com/t/topic/159)，也推荐你使用[discourse](http://discourse.juliacn.com)对遇到的问题进行提问。
 
 !!! note "关于中文文档"
     Julia 语言相关的本地化工作是一个由社区驱动的开源项目 [JuliaZH.jl](https://github.com/JuliaCN/JuliaZH.jl)，旨在方便 Julia 的中文用户。我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
 
-### [简介](@id man-introduction)
+## [简介](@id man-introduction)
 
 科学计算对性能一直有着最高的需求，但目前相关领域的专家却大量使用比较慢的动态语言来完成他们的日常工作。
 我们相信在科学计算领域，有很多好的理由使专家们偏爱动态语言， 因此我们不会舍弃这样的特性。幸运的是，现代语言设计和编译器技术可以大大消除性能折衷（trade-off），并提供足够的单一环境来进行原型设计，而且足够高效地部署性能密集型应用程序。Julia 语言在这其中扮演了这样一个角色：它是一门灵活的动态语言，适合用于科学计算和数值计算，并且性能可与传统的静态类型语言媲美。
