@@ -185,6 +185,7 @@ for stdlib in STDLIB_DOCS
 end
 
 const render_pdf = "pdf" in ARGS
+const is_deploy = "deploy" in ARGS
 
 const format = if render_pdf
     LaTeX(
@@ -192,8 +193,8 @@ const format = if render_pdf
     )
 else
     Documenter.HTML(
-        prettyurls = ("deploy" in ARGS),
-        canonical = ("deploy" in ARGS) ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
+        prettyurls = is_deploy,
+        canonical = is_deploy ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
     )
 end
 
@@ -216,4 +217,5 @@ deploydocs(
     target = "build",
     deps = nothing,
     make = nothing,
+    branch = render_pdf ? "pdf" : "gh-pages"
 )
