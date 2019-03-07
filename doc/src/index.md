@@ -1,6 +1,6 @@
 # Julia 1.0 中文文档
 
-欢迎来到 Julia 1.0 中文文档，PDF版本可以前往[release](https://github.com/JuliaCN/JuliaZH.jl/releases/latest)页面下载。
+欢迎来到 Julia 1.0 中文文档([PDF版本](https://raw.githubusercontent.com/JuliaCN/JuliaZH.jl/pdf/dev/Julia中文文档.pdf))!
 
 ```@eval
 using Markdown, Dates
