@@ -34,6 +34,13 @@ jobs:
         - travis_wait 30 julia --project=doc/ doc/make.jl pdf texplatform=docker
       services: docker
 
+before_deploy:
+  # Set up git user name and tag this commit
+  - ls
+  - pwd
+  - echo $TRAVIS_BUILD_DIR
+  - ls $TRAVIS_BUILD_DIR
+
 deploy:
   provider: releases
   api_key:
