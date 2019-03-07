@@ -47,8 +47,13 @@ search: JuliaZH
 julia --project=doc doc/make.jl pdf
 ```
 
-就会在 `doc/build` 中获得 `Julia中文文档.pdf` 文件。这个功能暂时还是 **实验性** 的，相关问题
-请在 [#67](https://github.com/JuliaCN/JuliaZH.jl/issues/67) 里讨论和报告。
+或者，如果你已经安装了docker，可以执行
+
+```sh
+julia --project=doc/ doc/make.jl pdf texplatform=docker
+```
+
+就会在 `doc/build` 中获得 `Julia中文文档.pdf` 文件。
 
 ## 贡献
 

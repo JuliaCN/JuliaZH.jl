@@ -3,6 +3,7 @@ import Documenter: Documents, Documenter, Writers, Utilities
 import Documenter.Writers.LaTeXWriter: piperun, _print
 
 const LaTeX_CC="xelatex"
+const DOCKER_IMAGE = "tianjun2018/documenter-latex:latest"
 
 function Documenter.Writers.LaTeXWriter.latexinline(io, math::Markdown.LaTeX)
     # Handle MathJax and TeX inconsistency since the first wants `\LaTeX` wrapped
@@ -37,7 +38,7 @@ function Documenter.Writers.LaTeXWriter.compile_tex(doc::Documents.Document, set
             latexmk -f -interaction=nonstopmode -view=none -$(LaTeX_CC) -shell-escape $texfile
             """
         try
-            piperun(`docker run -itd -u zeptodoctor --name latex-container -v $(pwd()):/mnt/ --rm juliadocs/documenter-latex:$(DOCKER_IMAGE_TAG)`)
+            piperun(`docker run -itd -u zeptodoctor --name latex-container -v $(pwd()):/mnt/ --rm $(DOCKER_IMAGE)`)
             piperun(`docker exec -u zeptodoctor latex-container bash -c $(script)`)
             piperun(`docker cp latex-container:/home/zeptodoctor/build/. .`)
             return true
