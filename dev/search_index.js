@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "主页",
     "title": "Julia 1.0 中文文档",
     "category": "section",
-    "text": "欢迎来到 Julia 1.0 中文文档，PDF版本可以前往release页面下载。using Markdown, Dates\nMarkdown.parse(\"上次更新时间: $(now())\")请先阅读 v1.0 正式发布博文 以获得对这门语言的总体概观。我们推荐刚刚开始学习Julia语言的朋友阅读中文社区提供的 Julia入门指引，也推荐你使用discourse对遇到的问题进行提问。note: 关于中文文档\nJulia 语言相关的本地化工作是一个由社区驱动的开源项目 JuliaZH.jl，旨在方便 Julia 的中文用户。我们目前使用 Transifex 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到社区论坛文档区反馈。若有意参与翻译工作，请参考翻译指南。"
+    "text": "欢迎来到 Julia 1.0 中文文档(PDF版本)!using Markdown, Dates\nMarkdown.parse(\"上次更新时间: $(now())\")请先阅读 v1.0 正式发布博文 以获得对这门语言的总体概观。我们推荐刚刚开始学习Julia语言的朋友阅读中文社区提供的 Julia入门指引，也推荐你使用discourse对遇到的问题进行提问。note: 关于中文文档\nJulia 语言相关的本地化工作是一个由社区驱动的开源项目 JuliaZH.jl，旨在方便 Julia 的中文用户。我们目前使用 Transifex 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到社区论坛文档区反馈。若有意参与翻译工作，请参考翻译指南。"
 },
 
 {
@@ -15053,7 +15053,7 @@ var documenterSearchIndex = {"docs": [
     "page": "分布式计算",
     "title": "Base.wait",
     "category": "function",
-    "text": "wait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\nwait(r::Future)\n\nWait for a value to become available for the specified Future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified RemoteChannel.\n\n\n\n\n\n"
+    "text": "wait(r::Future)\n\nWait for a value to become available for the specified Future.\n\n\n\n\n\nwait(r::RemoteChannel, args...)\n\nWait for a value to become available on the specified RemoteChannel.\n\n\n\n\n\nwait([x])\n\nBlock the current task until some event occurs, depending on the type of the argument:\n\nChannel: Wait for a value to be appended to the channel.\nCondition: Wait for notify on a condition.\nProcess: Wait for a process or process chain to exit. The exitcode field of a process can be used to determine success or failure.\nTask: Wait for a Task to finish. If the task fails with an exception, the exception is propagated (re-thrown in the task that called wait).\nRawFD: Wait for changes on a file descriptor (see the FileWatching package).\n\nIf no argument is passed, the task blocks for an undefined period. A task can only be restarted by an explicit call to schedule or yieldto.\n\nOften wait is called within a while loop to ensure a waited-for condition is met before proceeding.\n\n\n\n\n\n"
 },
 
 {
