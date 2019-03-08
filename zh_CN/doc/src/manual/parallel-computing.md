@@ -632,7 +632,7 @@ julia> addprocs(2)
 
 [`fetch`](@ref) 可以看作是显式地转移数据的操作，因为它直接要求获取数据到本地机器。[`@spawn`](@ref)（以及相关的操作）也会移动数据，不过不那么明显，因此称作隐式地数据转移操作。比较以下两种方式，构造一个随机矩阵并求平方：
 
-方法1：
+方法一：
 
 ```julia-repl
 julia> A = rand(1000,1000);
@@ -644,7 +644,7 @@ julia> Bref = @spawn A^2;
 julia> fetch(Bref);
 ```
 
-Method 2:
+方法二：
 
 ```julia-repl
 julia> Bref = @spawn rand(1000,1000)^2;
