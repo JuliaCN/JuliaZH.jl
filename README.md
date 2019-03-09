@@ -9,7 +9,7 @@
 ## 安装
 
 ```
-pkg> add https://github.com/JuliaCN/JuliaZH.jl.git
+pkg> add JuliaZH
 ```
 
 ## 使用
