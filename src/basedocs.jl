@@ -303,3 +303,486 @@ add(a, b) = a + b
 [`return`](@ref)关键词的使用方法和其它语言完全一样，但是常常是不使用的。一个没有显示声明`return`的函数将返回函数体最后一个表达式。
 """
 kw"function"
+
+"""
+    return
+
+`return` can be used in function bodies to exit early and return a given value, e.g.
+
+```julia
+function compare(a, b)
+    a == b && return "equal to"
+    a < b ? "less than" : "greater than"
+end
+```
+In general you can place a `return` statement anywhere within a function body, including
+within deeply nested loops or conditionals, but be careful with `do` blocks. For
+example:
+
+```julia
+function test1(xs)
+    for x in xs
+        iseven(x) && return 2x
+    end
+end
+
+function test2(xs)
+    map(xs) do x
+        iseven(x) && return 2x
+        x
+    end
+end
+```
+In the first example, the return breaks out of its enclosing function as soon as it hits
+an even number, so `test1([5,6,7])` returns `12`.
+
+You might expect the second example to behave the same way, but in fact the `return`
+there only breaks out of the *inner* function (inside the `do` block) and gives a value
+back to `map`. `test2([5,6,7])` then returns `[5,12,7]`.
+"""
+kw"return"
+
+"""
+    if/elseif/else
+
+`if`/`elseif`/`else` performs conditional evaluation, which allows portions of code to
+be evaluated or not evaluated depending on the value of a boolean expression. Here is
+the anatomy of the `if`/`elseif`/`else` conditional syntax:
+
+```julia
+if x < y
+    println("x is less than y")
+elseif x > y
+    println("x is greater than y")
+else
+    println("x is equal to y")
+end
+```
+If the condition expression `x < y` is true, then the corresponding block is evaluated;
+otherwise the condition expression `x > y` is evaluated, and if it is true, the
+corresponding block is evaluated; if neither expression is true, the `else` block is
+evaluated. The `elseif` and `else` blocks are optional, and as many `elseif` blocks as
+desired can be used.
+"""
+kw"if", kw"elseif", kw"else"
+
+"""
+    for
+
+`for` loops repeatedly evaluate the body of the loop by
+iterating over a sequence of values.
+
+# Examples
+```jldoctest
+julia> for i in [1, 4, 0]
+           println(i)
+       end
+1
+4
+0
+```
+"""
+kw"for"
+
+"""
+    while
+
+`while` loops repeatedly evaluate a conditional expression, and continues evaluating the
+body of the while loop so long as the expression remains `true`. If the condition
+expression is false when the while loop is first reached, the body is never evaluated.
+
+# Examples
+```jldoctest
+julia> i = 1
+1
+
+julia> while i < 5
+           println(i)
+           global i += 1
+       end
+1
+2
+3
+4
+```
+"""
+kw"while"
+
+"""
+    end
+
+`end` marks the conclusion of a block of expressions, for example
+[`module`](@ref), [`struct`](@ref), [`mutable struct`](@ref),
+[`begin`](@ref), [`let`](@ref), [`for`](@ref) etc.
+`end` may also be used when indexing into an array to represent
+the last index of a dimension.
+
+# Examples
+```jldoctest
+julia> A = [1 2; 3 4]
+2×2 Array{Int64,2}:
+ 1  2
+ 3  4
+
+julia> A[end, :]
+2-element Array{Int64,1}:
+ 3
+ 4
+```
+"""
+kw"end"
+
+"""
+    try/catch
+
+A `try`/`catch` statement allows for `Exception`s to be tested for. For example, a
+customized square root function can be written to automatically call either the real or
+complex square root method on demand using `Exception`s:
+
+```julia
+f(x) = try
+    sqrt(x)
+catch
+    sqrt(complex(x, 0))
+end
+```
+
+`try`/`catch` statements also allow the `Exception` to be saved in a variable, e.g. `catch y`.
+
+The power of the `try`/`catch` construct lies in the ability to unwind a deeply
+nested computation immediately to a much higher level in the stack of calling functions.
+"""
+kw"try", kw"catch"
+
+"""
+    finally
+
+Run some code when a given block of code exits, regardless
+of how it exits. For example, here is how we can guarantee that an opened file is
+closed:
+
+```julia
+f = open("file")
+try
+    operate_on_file(f)
+finally
+    close(f)
+end
+```
+
+When control leaves the [`try`](@ref) block (for example, due to a [`return`](@ref), or just finishing
+normally), [`close(f)`](@ref) will be executed. If the `try` block exits due to an exception,
+the exception will continue propagating. A `catch` block may be combined with `try` and
+`finally` as well. In this case the `finally` block will run after `catch` has handled
+the error.
+"""
+kw"finally"
+
+"""
+    break
+
+Break out of a loop immediately.
+
+# Examples
+```jldoctest
+julia> i = 0
+0
+
+julia> while true
+           global i += 1
+           i > 5 && break
+           println(i)
+       end
+1
+2
+3
+4
+5
+```
+"""
+kw"break"
+
+"""
+    continue
+
+Skip the rest of the current loop iteration.
+
+# Examples
+```jldoctest
+julia> for i = 1:6
+           iseven(i) && continue
+           println(i)
+       end
+1
+3
+5
+```
+"""
+kw"continue"
+
+"""
+    do
+
+Create an anonymous function. For example:
+
+```julia
+map(1:10) do x
+    2x
+end
+```
+
+is equivalent to `map(x->2x, 1:10)`.
+
+Use multiple arguments like so:
+
+```julia
+map(1:10, 11:20) do x, y
+    x + y
+end
+```
+"""
+kw"do"
+
+"""
+    ...
+
+The "splat" operator, `...`, represents a sequence of arguments.
+`...` can be used in function definitions, to indicate that the function
+accepts an arbitrary number of arguments.
+`...` can also be used to apply a function to a sequence of arguments.
+
+# Examples
+```jldoctest
+julia> add(xs...) = reduce(+, xs)
+add (generic function with 1 method)
+
+julia> add(1, 2, 3, 4, 5)
+15
+
+julia> add([1, 2, 3]...)
+6
+
+julia> add(7, 1:100..., 1000:1100...)
+111107
+```
+"""
+kw"..."
+
+"""
+    ;
+
+`;` has a similar role in Julia as in many C-like languages, and is used to delimit the
+end of the previous statement. `;` is not necessary after new lines, but can be used to
+separate statements on a single line or to join statements into a single expression.
+`;` is also used to suppress output printing in the REPL and similar interfaces.
+
+# Examples
+```julia
+julia> function foo()
+           x = "Hello, "; x *= "World!"
+           return x
+       end
+foo (generic function with 1 method)
+
+julia> bar() = (x = "Hello, Mars!"; return x)
+bar (generic function with 1 method)
+
+julia> foo();
+
+julia> bar()
+"Hello, Mars!"
+```
+"""
+kw";"
+
+"""
+    x && y
+
+Short-circuiting boolean AND.
+"""
+kw"&&"
+
+"""
+    x || y
+
+Short-circuiting boolean OR.
+"""
+kw"||"
+
+"""
+    ccall((function_name, library), returntype, (argtype1, ...), argvalue1, ...)
+    ccall(function_name, returntype, (argtype1, ...), argvalue1, ...)
+    ccall(function_pointer, returntype, (argtype1, ...), argvalue1, ...)
+
+Call a function in a C-exported shared library, specified by the tuple `(function_name, library)`,
+where each component is either a string or symbol. Instead of specifying a library,
+one can also use a `function_name` symbol or string, which is resolved in the current process.
+Alternatively, `ccall` may also be used to call a function pointer `function_pointer`, such as one returned by `dlsym`.
+
+Note that the argument type tuple must be a literal tuple, and not a tuple-valued
+variable or expression.
+
+Each `argvalue` to the `ccall` will be converted to the corresponding
+`argtype`, by automatic insertion of calls to `unsafe_convert(argtype,
+cconvert(argtype, argvalue))`. (See also the documentation for
+[`unsafe_convert`](@ref Base.unsafe_convert) and [`cconvert`](@ref Base.cconvert) for further details.)
+In most cases, this simply results in a call to `convert(argtype, argvalue)`.
+"""
+kw"ccall"
+
+"""
+    begin
+
+`begin...end` denotes a block of code.
+
+```julia
+begin
+    println("Hello, ")
+    println("World!")
+end
+```
+
+Usually `begin` will not be necessary, since keywords such as [`function`](@ref) and [`let`](@ref)
+implicitly begin blocks of code. See also [`;`](@ref).
+"""
+kw"begin"
+
+"""
+    struct
+
+The most commonly used kind of type in Julia is a struct, specified as a name and a
+set of fields.
+
+```julia
+struct Point
+    x
+    y
+end
+```
+
+Fields can have type restrictions, which may be parameterized:
+
+```julia
+    struct Point{X}
+        x::X
+        y::Float64
+    end
+```
+
+A struct can also declare an abstract super type via `<:` syntax:
+
+```julia
+struct Point <: AbstractPoint
+    x
+    y
+end
+```
+
+`struct`s are immutable by default; an instance of one of these types cannot
+be modified after construction. Use [`mutable struct`](@ref) instead to declare a
+type whose instances can be modified.
+
+See the manual section on [Composite Types](@ref) for more details,
+such as how to define constructors.
+"""
+kw"struct"
+
+"""
+    mutable struct
+
+`mutable struct` is similar to [`struct`](@ref), but additionally allows the
+fields of the type to be set after construction. See the manual section on
+[Composite Types](@ref) for more information.
+"""
+kw"mutable struct"
+
+"""
+    new
+
+Special function available to inner constructors which created a new object
+of the type.
+See the manual section on [Inner Constructor Methods](@ref) for more information.
+"""
+kw"new"
+
+"""
+    where
+
+The `where` keyword creates a type that is an iterated union of other types, over all
+values of some variable. For example `Vector{T} where T<:Real` includes all [`Vector`](@ref)s
+where the element type is some kind of `Real` number.
+
+The variable bound defaults to `Any` if it is omitted:
+
+```julia
+Vector{T} where T    # short for `where T<:Any`
+```
+Variables can also have lower bounds:
+
+```julia
+Vector{T} where T>:Int
+Vector{T} where Int<:T<:Real
+```
+There is also a concise syntax for nested `where` expressions. For example, this:
+
+```julia
+Pair{T, S} where S<:Array{T} where T<:Number
+```
+can be shortened to:
+
+```julia
+Pair{T, S} where {T<:Number, S<:Array{T}}
+```
+This form is often found on method signatures.
+
+Note that in this form, the variables are listed outermost-first. This matches the
+order in which variables are substituted when a type is "applied" to parameter values
+using the syntax `T{p1, p2, ...}`.
+"""
+kw"where"
+
+"""
+    ans
+
+A variable referring to the last computed value, automatically set at the interactive prompt.
+"""
+kw"ans"
+
+"""
+    Union{}
+
+`Union{}`, the empty [`Union`](@ref) of types, is the type that has no values. That is, it has the defining
+property `isa(x, Union{}) == false` for any `x`. `Base.Bottom` is defined as its alias and the type of `Union{}`
+is `Core.TypeofBottom`.
+
+# Examples
+```jldoctest
+julia> isa(nothing, Union{})
+false
+```
+"""
+kw"Union{}", Base.Bottom
+
+"""
+    ::
+
+With the `::`-operator type annotations are attached to expressions and variables in programs.
+See the manual section on [Type Declarations](@ref).
+
+Outside of declarations `::` is used to assert that expressions and variables in programs have a given type.
+
+# Examples
+```jldoctest
+julia> (1+2)::AbstractFloat
+ERROR: TypeError: typeassert: expected AbstractFloat, got Int64
+
+julia> (1+2)::Int
+3
+```
+"""
+kw"::"
+
+"""
+The base library of Julia.
+"""
+kw"Base"
