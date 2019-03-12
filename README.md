@@ -9,7 +9,7 @@
 ## 安装
 
 ```
-pkg> add https://github.com/JuliaCN/JuliaZH.jl.git
+pkg> add JuliaZH
 ```
 
 ## 使用
@@ -22,22 +22,38 @@ julia> using JuliaZH
 help?> julia
 search: JuliaZH
 
-  欢迎来到Julia 0.7.0-beta2.33. 完整的手册（英文）可以在这里找到
+  欢迎来到Julia 1.1.0. 完整的中文手册可以在这里找到
 
-  https://docs.julialang.org/
-
-  同样下面的网址也列出了很多的入门教程和课程
-
-  https://julialang.org/learning/
+  https://docs.juliacn.com/
 
   更多中文资料和教程，也请关注Julia中文社区
 
-  https://juliacn.github.io (境内域名 juliacn.com 还在备案中)
+  https://cn.julialang.org
+
+  新手请参考中文discourse上的新手指引
+
+  https://discourse.juliacn.com/t/topic/159
 
   输入 ?， 然后输入你想要查看帮助文档的函数或者宏名称就可以查看它们的文档。例如?cos, 或者 ?@time 然后按回车键即可。
 
-  退出REPL之后，重新进入将恢复英文模式。
+  在REPL中输入 ENV["REPL_LOCALE"]="" 将恢复英文模式。再次回到中文模型请输入 ENV["REPL_LOCALE"]="zh_CN"。
 ```
+
+### 在本地编译pdf版本
+
+首先你需要安装 [latexmk](https://mg.readthedocs.io/latexmk.html) 和相应平台的 LaTeX 编译器XeLaTeX。之后确认已安装 CTex 套装。然后在这个package的根目录下，在命令行中运行
+
+```sh
+julia --project=doc doc/make.jl pdf
+```
+
+或者，如果你已经安装了docker，可以执行
+
+```sh
+julia --project=doc/ doc/make.jl pdf texplatform=docker
+```
+
+就会在 `doc/build` 中获得 `Julia中文文档.pdf` 文件。
 
 ## 贡献
 
