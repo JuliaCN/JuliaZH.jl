@@ -307,7 +307,7 @@ kw"function"
 """
     return
 
-`return` can be used in function bodies to exit early and return a given value, e.g.
+`return` 可以用来在函数体中立即退出并返回给定值，例如
 
 ```julia
 function compare(a, b)
@@ -315,9 +315,8 @@ function compare(a, b)
     a < b ? "less than" : "greater than"
 end
 ```
-In general you can place a `return` statement anywhere within a function body, including
-within deeply nested loops or conditionals, but be careful with `do` blocks. For
-example:
+
+通常，你可以在函数体的任意位置放置 `return` 语句，包括在多层嵌套的循环和条件表达式中，但要注意 `do` 块。例如：
 
 ```julia
 function test1(xs)
@@ -333,21 +332,18 @@ function test2(xs)
     end
 end
 ```
-In the first example, the return breaks out of its enclosing function as soon as it hits
-an even number, so `test1([5,6,7])` returns `12`.
 
-You might expect the second example to behave the same way, but in fact the `return`
-there only breaks out of the *inner* function (inside the `do` block) and gives a value
-back to `map`. `test2([5,6,7])` then returns `[5,12,7]`.
+在第一个例子中，return 一碰到偶数就跳出包含它的函数，因此 `test1([5,6,7])` 返回 `12`。
+
+你可能希望第二个例子的行为与此相同，但实际上，这里的 `return` 只会跳出（在 `do` 块中的）*内部*函数并把值返回给 `map`。于是，`test2([5,6,7])` 返回 `[5,12,7]`。
 """
 kw"return"
 
+# 仿照 https://docs.juliacn.com/latest/manual/control-flow/#man-conditional-evaluation-1
 """
     if/elseif/else
 
-`if`/`elseif`/`else` performs conditional evaluation, which allows portions of code to
-be evaluated or not evaluated depending on the value of a boolean expression. Here is
-the anatomy of the `if`/`elseif`/`else` conditional syntax:
+`if`/`elseif`/`else` 执行条件表达式（Conditional evaluation）可以根据布尔表达式的值，让部分代码被执行或者不被执行。下面是对 `if`-`elseif`-`else` 条件语法的分析：
 
 ```julia
 if x < y
@@ -358,21 +354,17 @@ else
     println("x is equal to y")
 end
 ```
-If the condition expression `x < y` is true, then the corresponding block is evaluated;
-otherwise the condition expression `x > y` is evaluated, and if it is true, the
-corresponding block is evaluated; if neither expression is true, the `else` block is
-evaluated. The `elseif` and `else` blocks are optional, and as many `elseif` blocks as
-desired can be used.
+
+如果表达式 `x < y` 是 `true`，那么对应的代码块会被执行；否则判断条件表达式 `x > y`，如果它是 `true`，则执行对应的代码块；如果没有表达式是 true，则执行 `else` 代码块。`elseif` 和 `else` 代码块是可选的，并且可以使用任意多个 `elseif` 代码块。
 """
 kw"if", kw"elseif", kw"else"
 
 """
     for
 
-`for` loops repeatedly evaluate the body of the loop by
-iterating over a sequence of values.
+`for` 循环通过迭代一系列值来重复计算循环体。
 
-# Examples
+# 例子
 ```jldoctest
 julia> for i in [1, 4, 0]
            println(i)
@@ -384,15 +376,14 @@ julia> for i in [1, 4, 0]
 """
 kw"for"
 
+# 仿照 https://docs.juliacn.com/latest/manual/control-flow/#man-loops-1
 """
     while
 
-`while` loops repeatedly evaluate a conditional expression, and continues evaluating the
-body of the while loop so long as the expression remains `true`. If the condition
-expression is false when the while loop is first reached, the body is never evaluated.
+`while` 循环会重复执行条件表达式，并在该表达式为 `true` 时继续执行 while 循环的主体部分。当 while 循环第一次执行时，如果条件表达式为 false，那么主体代码就一次也不会被执行。
 
-# Examples
-```jldoctest
+# 例子
+jldoctest
 julia> i = 1
 1
 
@@ -411,13 +402,9 @@ kw"while"
 """
     end
 
-`end` marks the conclusion of a block of expressions, for example
-[`module`](@ref), [`struct`](@ref), [`mutable struct`](@ref),
-[`begin`](@ref), [`let`](@ref), [`for`](@ref) etc.
-`end` may also be used when indexing into an array to represent
-the last index of a dimension.
+`end` 标记一个表达式块的结束，例如 [`module`](@ref)、[`struct`](@ref)、[`mutable struct`](@ref)、[`begin`](@ref)、[`let`](@ref)、[`for`](@ref) 等。`end` 在索引数组时也可以用来表示维度的最后一个索引。
 
-# Examples
+# 例子
 ```jldoctest
 julia> A = [1 2; 3 4]
 2×2 Array{Int64,2}:
@@ -432,12 +419,11 @@ julia> A[end, :]
 """
 kw"end"
 
+# 仿照 https://docs.juliacn.com/latest/manual/control-flow/#try/catch-%E8%AF%AD%E5%8F%A5-1
 """
     try/catch
 
-A `try`/`catch` statement allows for `Exception`s to be tested for. For example, a
-customized square root function can be written to automatically call either the real or
-complex square root method on demand using `Exception`s:
+`try/catch` 语句可以用来捕获 `Exception`，并进行异常处理。例如，一个自定义的平方根函数可以通过 `Exception` 来实现自动按需调用求解实数或者复数平方根的方法：
 
 ```julia
 f(x) = try
@@ -447,19 +433,17 @@ catch
 end
 ```
 
-`try`/`catch` statements also allow the `Exception` to be saved in a variable, e.g. `catch y`.
+`try/catch` 语句允许保存 `Exception` 到一个变量中，例如 `catch y`。
 
-The power of the `try`/`catch` construct lies in the ability to unwind a deeply
-nested computation immediately to a much higher level in the stack of calling functions.
+`try/catch` 组件的强大之处在于能够将高度嵌套的计算立刻解耦成更高层次地调用函数。
 """
 kw"try", kw"catch"
 
+# 仿照 https://docs.juliacn.com/latest/manual/control-flow/#finally-%E5%AD%90%E5%8F%A5-1
 """
     finally
 
-Run some code when a given block of code exits, regardless
-of how it exits. For example, here is how we can guarantee that an opened file is
-closed:
+无论代码块是如何退出的，都让代码块在退出时运行某段代码。这里是一个确保一个打开的文件被关闭的例子：
 
 ```julia
 f = open("file")
@@ -470,20 +454,16 @@ finally
 end
 ```
 
-When control leaves the [`try`](@ref) block (for example, due to a [`return`](@ref), or just finishing
-normally), [`close(f)`](@ref) will be executed. If the `try` block exits due to an exception,
-the exception will continue propagating. A `catch` block may be combined with `try` and
-`finally` as well. In this case the `finally` block will run after `catch` has handled
-the error.
+当控制流离开 `try` 代码块（例如，遇到 `return`，或者正常结束），`close(f)` 就会被执行。如果 `try` 代码块由于异常退出，这个异常会继续传递。`catch` 代码块可以和 `try` 还有 `finally` 配合使用。这时 `finally` 代码块会在 `catch` 处理错误之后才运行。
 """
 kw"finally"
 
 """
     break
 
-Break out of a loop immediately.
+立即跳出当前循环。
 
-# Examples
+# 例子
 ```jldoctest
 julia> i = 0
 0
@@ -505,9 +485,9 @@ kw"break"
 """
     continue
 
-Skip the rest of the current loop iteration.
+跳过当前循环迭代的剩余部分。
 
-# Examples
+# 例子
 ```jldoctest
 julia> for i = 1:6
            iseven(i) && continue
@@ -523,7 +503,7 @@ kw"continue"
 """
     do
 
-Create an anonymous function. For example:
+创建一个匿名函数。例如：
 
 ```julia
 map(1:10) do x
@@ -531,9 +511,9 @@ map(1:10) do x
 end
 ```
 
-is equivalent to `map(x->2x, 1:10)`.
+等价于 `map(x->2x, 1:10)`。
 
-Use multiple arguments like so:
+像这样便可使用多个参数：
 
 ```julia
 map(1:10, 11:20) do x, y
@@ -546,12 +526,9 @@ kw"do"
 """
     ...
 
-The "splat" operator, `...`, represents a sequence of arguments.
-`...` can be used in function definitions, to indicate that the function
-accepts an arbitrary number of arguments.
-`...` can also be used to apply a function to a sequence of arguments.
+「splat」运算符 `...` 表示参数序列。`...` 可以在函数定义中用来表示该函数接受任意数量的参数。`...` 也可以用来将函数作用于参数序列。
 
-# Examples
+# 例子
 ```jldoctest
 julia> add(xs...) = reduce(+, xs)
 add (generic function with 1 method)
@@ -571,12 +548,9 @@ kw"..."
 """
     ;
 
-`;` has a similar role in Julia as in many C-like languages, and is used to delimit the
-end of the previous statement. `;` is not necessary after new lines, but can be used to
-separate statements on a single line or to join statements into a single expression.
-`;` is also used to suppress output printing in the REPL and similar interfaces.
+`;` 在 Julia 中具有与许多类 C 语言相似的作用，用于分隔前一个语句的结尾。`;` 在换行中不是必要的，但可以用于在单行中分隔语句或者将多个表达式连接为单个表达式。`;` 也用于抑制 REPL 和类似界面中的输出打印。
 
-# Examples
+# 例子
 ```julia
 julia> function foo()
            x = "Hello, "; x *= "World!"
@@ -598,14 +572,14 @@ kw";"
 """
     x && y
 
-Short-circuiting boolean AND.
+短路布尔 AND。
 """
 kw"&&"
 
 """
     x || y
 
-Short-circuiting boolean OR.
+短路布尔 OR。
 """
 kw"||"
 
@@ -614,26 +588,18 @@ kw"||"
     ccall(function_name, returntype, (argtype1, ...), argvalue1, ...)
     ccall(function_pointer, returntype, (argtype1, ...), argvalue1, ...)
 
-Call a function in a C-exported shared library, specified by the tuple `(function_name, library)`,
-where each component is either a string or symbol. Instead of specifying a library,
-one can also use a `function_name` symbol or string, which is resolved in the current process.
-Alternatively, `ccall` may also be used to call a function pointer `function_pointer`, such as one returned by `dlsym`.
+调用由 C 导出的共享库里的函数，该函数由元组 `(function_name, library)` 指定，其中的每个组件都是字符串或符号。若不指定库，还可以使用 `function_name` 的符号或字符串，它会在当前进程中解析。另外，`ccall` 也可用于调用函数指针 `function_pointer`，比如 `dlsym` 返回的函数指针。
 
-Note that the argument type tuple must be a literal tuple, and not a tuple-valued
-variable or expression.
+请注意参数类型元组必须是字面上的元组，而不是元组类型的变量或表达式。
 
-Each `argvalue` to the `ccall` will be converted to the corresponding
-`argtype`, by automatic insertion of calls to `unsafe_convert(argtype,
-cconvert(argtype, argvalue))`. (See also the documentation for
-[`unsafe_convert`](@ref Base.unsafe_convert) and [`cconvert`](@ref Base.cconvert) for further details.)
-In most cases, this simply results in a call to `convert(argtype, argvalue)`.
+通过自动插入对 `unsafe_convert(argtype, cconvert(argtype, argvalue))` 的调用，每个传给 `ccall` 的 `argvalue` 将被类型转换为对应的 `argtype`。（有关的详细信息，请参阅 [`unsafe_convert`](@ref Base.unsafe_convert) 和 [`cconvert`](@ref Base.cconvert) 的文档。）在大多数情况下，这只会简单地调用 `convert(argtype, argvalue)`。
 """
 kw"ccall"
 
 """
     begin
 
-`begin...end` denotes a block of code.
+`begin...end` 表示一个代码块。
 
 ```julia
 begin
@@ -642,16 +608,14 @@ begin
 end
 ```
 
-Usually `begin` will not be necessary, since keywords such as [`function`](@ref) and [`let`](@ref)
-implicitly begin blocks of code. See also [`;`](@ref).
+通常，`begin` 不会是必需的，因为诸如 [`function`](@ref) and [`let`](@ref) 之类的关键字会隐式地开始代码块。另请参阅 [`;`](@ref)。
 """
 kw"begin"
 
 """
     struct
 
-The most commonly used kind of type in Julia is a struct, specified as a name and a
-set of fields.
+struct 是 Julia 中最常用的数据类型，由名称和一组字段指定。
 
 ```julia
 struct Point
@@ -660,7 +624,7 @@ struct Point
 end
 ```
 
-Fields can have type restrictions, which may be parameterized:
+可对字段施加类型限制，该限制也可被参数化：
 
 ```julia
     struct Point{X}
@@ -669,6 +633,7 @@ Fields can have type restrictions, which may be parameterized:
     end
 ```
 
+struct 可以通过 `<:` 语法声明一个抽象超类型：
 A struct can also declare an abstract super type via `<:` syntax:
 
 ```julia
@@ -678,84 +643,75 @@ struct Point <: AbstractPoint
 end
 ```
 
-`struct`s are immutable by default; an instance of one of these types cannot
-be modified after construction. Use [`mutable struct`](@ref) instead to declare a
-type whose instances can be modified.
+`struct` 默认是不可变的；这些类型的实例在构造后不能被修改。如需修改实例，请使用 [`mutable struct`](@ref) 来声明一个可以修改其实例的类型。
 
-See the manual section on [Composite Types](@ref) for more details,
-such as how to define constructors.
+有关更多细节，比如怎么定义构造函数，请参阅手册的 [复合类型](@ref) 章节。
 """
 kw"struct"
 
 """
     mutable struct
 
-`mutable struct` is similar to [`struct`](@ref), but additionally allows the
-fields of the type to be set after construction. See the manual section on
-[Composite Types](@ref) for more information.
+`mutable struct` 类似于 [`struct`](@ref)，但另外允许在构造后设置类型的字段。有关详细信息，请参阅 [复合类型](@ref)。
 """
 kw"mutable struct"
 
 """
     new
 
-Special function available to inner constructors which created a new object
-of the type.
-See the manual section on [Inner Constructor Methods](@ref) for more information.
+仅在内部构造函数中可用的特殊函数，用来创建该类型的对象。有关更多信息，请参阅手册的 [内部构造方法](@ref) 章节。
 """
 kw"new"
 
 """
     where
 
-The `where` keyword creates a type that is an iterated union of other types, over all
-values of some variable. For example `Vector{T} where T<:Real` includes all [`Vector`](@ref)s
-where the element type is some kind of `Real` number.
+`where` 关键字创建一个类型，该类型是其他类型在一些变量上所有值的迭代并集。例如 `Vector{T} where T<:Real` 包含所有元素类型是某种 `Real` 的 [`Vector`](@ref)。
 
-The variable bound defaults to `Any` if it is omitted:
+如果省略，变量上界默认为 `Any`：
 
 ```julia
 Vector{T} where T    # short for `where T<:Any`
 ```
-Variables can also have lower bounds:
+
+变量也可以具有下界：
 
 ```julia
 Vector{T} where T>:Int
 Vector{T} where Int<:T<:Real
 ```
-There is also a concise syntax for nested `where` expressions. For example, this:
+
+嵌套的 `where` 也有简洁的语法。例如，这行代码：
 
 ```julia
 Pair{T, S} where S<:Array{T} where T<:Number
 ```
-can be shortened to:
+
+可以缩写为：
 
 ```julia
 Pair{T, S} where {T<:Number, S<:Array{T}}
 ```
-This form is often found on method signatures.
 
-Note that in this form, the variables are listed outermost-first. This matches the
-order in which variables are substituted when a type is "applied" to parameter values
-using the syntax `T{p1, p2, ...}`.
+这种形式常见于方法签名：
+
+请注意，在这种形式中，最外层变量列在最前面。这与使用语法 `T{p1, p2, ...}` 将类型「作用」于参数值时所替换变量的次序相匹配。
 """
 kw"where"
 
 """
     ans
 
-A variable referring to the last computed value, automatically set at the interactive prompt.
+一个引用最后一次计算结果的变量，在交互式提示符中会自动设置。
 """
 kw"ans"
 
 """
     Union{}
 
-`Union{}`, the empty [`Union`](@ref) of types, is the type that has no values. That is, it has the defining
-property `isa(x, Union{}) == false` for any `x`. `Base.Bottom` is defined as its alias and the type of `Union{}`
-is `Core.TypeofBottom`.
+`Union{}`，即空的类型 [`Union`](@ref)，是没有值的类型。也就是说，它具有决定性性质：对于任何 `x`，`isa(x, Union{}) == false`。`Base.Bottom` 被定义为其别名，`Union{}` 的类型是 `Core.TypeofBottom`。
 
-# Examples
+# 例子
 ```jldoctest
 julia> isa(nothing, Union{})
 false
@@ -766,12 +722,11 @@ kw"Union{}", Base.Bottom
 """
     ::
 
-With the `::`-operator type annotations are attached to expressions and variables in programs.
-See the manual section on [Type Declarations](@ref).
+`::` 运算符用于类型声明，在程序中可被附加到表达式和变量后。详见手册的 [类型声明](@ref) 章节
 
-Outside of declarations `::` is used to assert that expressions and variables in programs have a given type.
+在类型声明外，`::` 用于断言程序中的表达式和变量具有给定类型。
 
-# Examples
+# 例子
 ```jldoctest
 julia> (1+2)::AbstractFloat
 ERROR: TypeError: typeassert: expected AbstractFloat, got Int64
@@ -783,6 +738,6 @@ julia> (1+2)::Int
 kw"::"
 
 """
-The base library of Julia.
+Julia 的基础库。
 """
 kw"Base"
