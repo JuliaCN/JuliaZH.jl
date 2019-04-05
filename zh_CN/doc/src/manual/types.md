@@ -403,10 +403,10 @@ false
 
 换成类型理论说法，Julia 的类型参数是*不变的*，而不是[协变的（或甚至是逆变的）](https://en.wikipedia.org/wiki/Covariance_and_contravariance_%28computer_science%29)。这是出于实际原因：虽然任何 `Point{Float64}` 的实例在概念上也可能像是 `Point{Real}` 的实例，但这两种类型在内存中有不同的表示：
 
-  * `Point{Float64}` 的实例可以紧凑而高效地表示为相近的一对 64 位值；
+  * `Point{Float64}` 的实例可以紧凑而高效地表示为一对 64 位立即数；
   * `Point{Real}` 的实例必须能够保存任何一对 [`Real`](@ref) 的实例。由于 `Real` 实例的对象可以具有任意的大小和结构，`Point{Real}` 的实例实际上必须表示为一对指向单独分配的 `Real` 对象的指针。
 
-在数组的情况下，能够以相近值存储 `Point{Float64}` 对象会极大地提高效率：`Array{Float64}` 可以存储为一段 64 位浮点值组成的连续内存块，而 `Array{Real}` 必须是一个由指向单独分配的 [`Real`](@ref) 的指针组成的数组——这可能是 [boxed](https://en.wikipedia.org/wiki/Object_type_%28object-oriented_programming%29#Boxing) 64 位浮点值，但也可能是任意庞大和复杂的对象，且其被声明为 `Real` 抽象类型的表示。
+在数组的情况下，能够以立即数存储 `Point{Float64}` 对象会极大地提高效率：`Array{Float64}` 可以存储为一段 64 位浮点值组成的连续内存块，而 `Array{Real}` 必须是一个由指向单独分配的 [`Real`](@ref) 的指针组成的数组——这可能是 [boxed](https://en.wikipedia.org/wiki/Object_type_%28object-oriented_programming%29#Boxing) 64 位浮点值，但也可能是任意庞大和复杂的对象，且其被声明为 `Real` 抽象类型的表示。
 
 由于 `Point{Float64}` 不是 `Point{Real}` 的子类型，下面的方法不适用于类型为 `Point{Float64}` 的参数：
 
