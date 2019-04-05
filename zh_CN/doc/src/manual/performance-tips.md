@@ -123,7 +123,7 @@ Julia 和其包生态圈包含了能帮助你诊断问题和提高你的代码�
 
 ## 避免拥有抽象类型参数的容器
 
-当处理参数化类型，包括数组，时，最好尽可能避免通过抽象类型进行参数化。
+当处理参数化类型，包括数组时，最好尽可能避免通过抽象类型进行参数化。
 
 考虑一下下面的代码：
 
@@ -161,7 +161,7 @@ julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
 
 ### 避免有抽象类型的字段
 
-类型能在不指定其域的类型的情况下被声明：
+类型能在不指定其字段的类型的情况下被声明：
 
 ```jldoctest myambig
 julia> struct MyAmbiguousType
@@ -185,11 +185,7 @@ julia> typeof(c)
 MyAmbiguousType
 ```
 
-The values of `b` and `c` have the same type, yet their underlying representation of data in memory is very
-different. Even if you stored just numeric values in field `a`, the fact that the memory representation
-of a [`UInt8`](@ref) differs from a [`Float64`](@ref) also means that the CPU needs to handle
-them using two different kinds of instructions. Since the required information is not available
-in the type, such decisions have to be made at run-time. This slows performance.
+`b` 和 `c` 的值具有相同类型，但它们在内存中的数据的底层表示十分不同。即使你只在字段 `a` 中存储数值，[`UInt8`](@ref) 的内存表示与 [`Float64`](@ref) 也是不同的，这也意味着 CPU 需要使用两种不同的指令来处理它们。因为该类型中不提供所需的信息，所以必须在运行时进行这些判断。而这会降低性能。
 
 通过声明 `a` 的类型，你能够做得更好。这里我们关注 `a` 可能是几种类型中任意一种的情况，在这种情况下，自然的一个解决方法是使用参数。例如：
 
@@ -224,7 +220,7 @@ julia> typeof(t)
 MyStillAmbiguousType
 ```
 
-域 `a` 的类型可以很容易地通过 `m` 的类型确定，而不是通过 `t` 的类型确定。事实上，在 `t` 中是可以改变域 `a` 的类型的：
+字段 `a` 的类型可以很容易地通过 `m` 的类型确定，而不是通过 `t` 的类型确定。事实上，在 `t` 中是可以改变字段 `a` 的类型的：
 
 ```jldoctest myambig2
 julia> typeof(t.a)
@@ -340,11 +336,9 @@ julia> foo(x::AbstractFloat) = round(x)
 foo (generic function with 2 methods)
 ```
 
-This keeps things simple, while allowing the compiler to generate optimized code in all cases.
+这使事情变得简单，同时也允许编译器在所有情况下生成经过优化的代码。
 
-However, there are cases where you may need to declare different versions of the outer function
-for different element types or types of the `AbstractVector` of the field `a` in `MySimpleContainer`.
-You could do it like this:
+但是，在某些情况下，你可能需要声明外部函数的不同版本，这可能是为了不同的元素类型，也可能是为了 `MySimpleContainer` 中的字段 `a` 所具有的不同 `AbstractVector` 类型。你可以这样做：
 
 ```jldoctest containers
 julia> function myfunc(c::MySimpleContainer{<:AbstractArray{<:Integer}})
@@ -428,9 +422,9 @@ c = (b + 1.0f0)::Complex{T}
 does not hinder performance (but does not help either) since the compiler can determine the type of `c`
 at the time `k` is compiled.
 
-### 声明关键参数的类型
+### 声明关键字参数的类型
 
-关键参数可以声明类型：
+关键字参数可以声明类型：
 
 ```julia
 function with_keyword(x; name::Int = 1)
@@ -438,12 +432,9 @@ function with_keyword(x; name::Int = 1)
 end
 ```
 
-Functions are specialized on the types of keyword arguments, so these declarations will not affect
-performance of code inside the function. However, they will reduce the overhead of calls to the
-function that include keyword arguments.
+函数会针对关键字参数的类型进行专门化，因此这些声明不会影响函数内部代码的性能。然而，它们将减少对包含关键字参数的函数的调用的开销。
 
-Functions with keyword arguments have near-zero overhead for call sites that pass only positional
-arguments.
+具有关键字参数的函数对于仅传递位置参数的调用点的开销几乎为零。
 
 在性能敏感的代码中应当避免传递像 `f(x; keywords...)` 的动态列表参数。
 
@@ -1249,8 +1240,7 @@ a = rand(Float32,1000) * 1.f-9
 
 ## [[`@code_warntype`](@ref)](@id man-code-warntype)
 
-The macro [`@code_warntype`](@ref) (or its function variant [`code_warntype`](@ref)) can sometimes
-be helpful in diagnosing type-related problems. Here's an example:
+宏 [`@code_warntype`](@ref)（或其函数变体 [`code_warntype`](@ref)）有时可以帮助诊断类型相关的问题。这是一个例子：
 
 ```julia-repl
 julia> @noinline pos(x) = x < 0 ? 0 : x;
@@ -1282,58 +1272,32 @@ Body::Float64
   └──       return %17
 ```
 
-Interpreting the output of [`@code_warntype`](@ref), like that of its cousins [`@code_lowered`](@ref),
-[`@code_typed`](@ref), [`@code_llvm`](@ref), and [`@code_native`](@ref), takes a little practice.
-Your code is being presented in form that has been heavily digested on its way to generating
-compiled machine code. Most of the expressions are annotated by a type, indicated by the `::T`
-(where `T` might be [`Float64`](@ref), for example). The most important characteristic of [`@code_warntype`](@ref)
-is that non-concrete types are displayed in red; in the above example, such output is shown in
-uppercase.
+解释 [`@code_warntype`](@ref) 的输出，就像其兄弟 [`@code_lowered`](@ref)、[`@code_typed`](@ref)、[`@code_llvm`](@ref) 和 [`@code_native`](@ref)，需要通过一点练习。你的代码是以其在生成经过编译的机器码的过程中被大量处理的形式呈现的。大多数表达式都会被类型标注，其由 `::T` 表示（例如，`T` 可能是 [`Float64`](@ref)）。[`@code_warntype`](@ref) 最重要的特征是非具体类型会以红色显示；在上例中，这种输出以大写字母显示。
 
-At the top, the inferred return type of the function is shown as `Body::Float64`.
-The next lines represent the body of `f` in Julia's SSA IR form.
-The numbered boxes are labels and represent targets for jumps (via `goto`) in your code.
-Looking at the body, you can see that the first thing that happens is that `pos` is called and the
-return value has been inferred as the `Union` type `UNION{FLOAT64, INT64}` shown in uppercase since
-it is a non-concrete type. This means that we cannot know the exact return type of `pos` based on the
-input types. However, the result of `y*x`is a `Float64` no matter if `y` is a `Float64` or `Int64`
-The net result is that `f(x::Float64)` will not be type-unstable
-in its output, even if some of the intermediate computations are type-unstable.
+在顶部，该函数类型推导后的返回类型显示为 `Body::Float64`。下一行以 Julia 的 SSA IR 形式表示了 `f` 的主体。被数字标记的方块表示代码中（通过 `goto`）跳转的目标。查看主体，你会看到首先调用了 `pos`，其返回值经类型推导为 `Union` 类型 `UNION{FLOAT64, INT64}` 并以大写字母显示，因为它是非具体类型。这意味着我们无法根据输入类型知道 `pos` 的确切返回类型。但是，无论 `y` 是 `Float64` 还是 `Int64`，`y*x` 的结果都是 `Float64`。最终的结果是 `f(x::Float64)` 在其输出中不会是类型不稳定的，即使有些中间计算是类型不稳定的。
 
-How you use this information is up to you. Obviously, it would be far and away best to fix `pos`
-to be type-stable: if you did so, all of the variables in `f` would be concrete, and its performance
-would be optimal. However, there are circumstances where this kind of *ephemeral* type instability
-might not matter too much: for example, if `pos` is never used in isolation, the fact that `f`'s
-output is type-stable (for [`Float64`](@ref) inputs) will shield later code from the propagating
-effects of type instability. This is particularly relevant in cases where fixing the type instability
-is difficult or impossible. In such cases, the tips above (e.g., adding type annotations and/or
-breaking up functions) are your best tools to contain the "damage" from type instability.
-Also, note that even Julia Base has functions that are type unstable.
-For example, the function [`findfirst`](@ref) returns the index into an array where a key is found,
-or `nothing` if it is not found, a clear type instability. In order to make it easier to find the
-type instabilities that are likely to be important, `Union`s containing either `missing` or `nothing`
-are color highlighted in yellow, instead of red.
+如何使用这些信息取决于你。显然，最好将 `pos` 修改为类型稳定的：如果这样做，`f` 中的所有变量都是具体的，其性能将是最佳的。但是，在某些情况下，这种*短暂的*类型不稳定性可能无关紧要：例如，如果 `pos` 从不单独使用，那么 `f` 的输出（对于 [`Float64`](@ref) 输入）是类型稳定的这一事实将保护之后的代码免受类型不稳定性的传播影响。这与类型不稳定性难以或不可能修复的情况密切相关。在这些情况下，上面的建议（例如，添加类型注释并/或分解函数）是你控制类型不稳定性的「损害」的最佳工具。另请注意，即使是 Julia Base 也有类型不稳定的函数。例如，函数 [`findfirst`](@ref) 如果找到键则返回数组索引，如果没有找到键则返回 `nothing`，这是明显的类型不稳定性。为了更易于找到可能很重要的类型不稳定性，包含 `missing` 或 `nothing` 的 `Union` 会用黄色着重显示，而不是用红色。
 
-The following examples may help you interpret expressions marked as containing non-leaf types:
+以下示例可以帮助你解释被标记为包含非叶类型的表达式：
 
-  * Function body starting with `Body::UNION{T1,T2})`
-      * Interpretation: function with unstable return type
-      * Suggestion: make the return value type-stable, even if you have to annotate it
+  * 函数体以 `Body::UNION{T1,T2})` 开头
+      * 解释：函数具有不稳定返回类型
+      * 建议：使返回值类型稳定，即使你必须对其进行类型注释
 
   * `invoke Main.g(%%x::Int64)::UNION{FLOAT64, INT64}`
-      * Interpretation: call to a type-unstable function `g`.
-      * Suggestion: fix the function, or if necessary annotate the return value
+      * 解释：调用类型不稳定的函数 `g`。
+      * 建议：修改该函数，或在必要时对其返回值进行类型注释
 
   * `invoke Base.getindex(%%x::Array{Any,1}, 1::Int64)::ANY`
-      * Interpretation: accessing elements of poorly-typed arrays
-      * Suggestion: use arrays with better-defined types, or if necessary annotate the type of individual
-        element accesses
+      * 解释：访问缺乏类型信息的数组的元素
+      * 建议：使用具有更佳定义的类型的数组，或在必要时对访问的单个元素进行类型注释
+         
 
   * `Base.getfield(%%x, :(:data))::ARRAY{FLOAT64,N} WHERE N`
-      * Interpretation: getting a field that is of non-leaf type. In this case, `ArrayContainer` had a
-        field `data::Array{T}`. But `Array` needs the dimension `N`, too, to be a concrete type.
-      * Suggestion: use concrete types like `Array{T,3}` or `Array{T,N}`, where `N` is now a parameter
-        of `ArrayContainer`
+      * 解释：获取值为非叶类型的字段。在这种情况下，`ArrayContainer` 具有字段 `data::Array{T}`。但是 `Array` 也需要维度 `N` 来成为具体类型。
+         
+      * 建议：使用类似于 `Array{T,3}` 或 `Array{T,N}` 的具体类型，其中的 `N` 现在是 `ArrayContainer` 的参数
+         
 
 ## [被捕获变量的性能](@id man-performance-captured)
 

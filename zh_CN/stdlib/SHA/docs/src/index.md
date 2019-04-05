@@ -9,7 +9,7 @@ julia> bytes2hex(sha256("test"))
 "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
 ```
 
-Each exported function (at the time of this writing, SHA-1, SHA-2 224, 256, 384 and 512, and SHA-3 224, 256, 384 and 512 functions are implemented) takes in either an `Array{UInt8}`, a `ByteString` or an `IO` object.  This makes it trivial to checksum a file:
+每个导出函数（SHA-1, SHA-2 224, 256, 384, 512, 以及 SHA-3 224, 256, 384, 512 函数在本文撰写时都已实现）都可以接受 `Array{UInt8}`, `ByteString` 或 `IO` 对象。这使计算文件校验和变得轻而易举：
 
 ```julia
 shell> cat /tmp/test.txt
@@ -38,10 +38,10 @@ julia> open("/tmp/test.txt") do f
  0x08
 ```
 
-Note the lack of a newline at the end of `/tmp/text.txt`.  Julia automatically inserts a newline before the `julia>` prompt.
+注意 `/tmp/text.txt` 文件结尾缺少换行符。Julia 会自动在 `julia>` 提示符前插入换行符。
 
-Due to the colloquial usage of `sha256` to refer to `sha2_256`, convenience functions are provided, mapping `shaxxx()` function calls to `sha2_xxx()`.  For SHA-3, no such colloquialisms exist and the user must use the full `sha3_xxx()` names.
+由于 `sha256` 通常指的是 `sha2_256`，因此提供了函数名简写，将 `shaxxx()` 函数调用映射到 `sha2_xxx()`。SHA-3 不存在这样的俗称，用户必须使用完整的函数名 `sha3_xxx()`。
 
-`shaxxx()` takes `AbstractString` and array-like objects (`NTuple` and `Array`) with elements of type `UInt8`.
+`shaxxx()` 接受 `UInt8` 类型的 `AbstractString` 和类数组对象（`NTuple` 和 `Array`）。
 
-Note that, at the time of this writing, the SHA3 code is not optimized, and as such is roughly an order of magnitude slower than SHA2.
+请注意，在本文撰写时，SHA-3 代码还未进行优化，因此会比 SHA-2 慢大约一个数量级。

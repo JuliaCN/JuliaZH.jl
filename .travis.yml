@@ -31,5 +31,5 @@ jobs:
         - julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
         - julia --project=doc/ -e 'using Pkg; Pkg.instantiate(); Pkg.add(PackageSpec(path=pwd()))'
         - julia --project=doc/ doc/make.jl deploy
-        - travis_wait 30 julia --project=doc/ doc/make.jl pdf texplatform=docker
+        - travis_wait 50 julia --project=doc/ doc/make.jl pdf texplatform=docker
       services: docker
