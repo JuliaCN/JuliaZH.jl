@@ -298,13 +298,13 @@ RemoteChannel{Channel{Any}}(2, 1, 13)</code></pre><p>文件代码还可以在启
 julia&gt; addprocs(2)
 2-element Array{Int64,1}:
  2
- 3</code></pre><p>在 master 主线程中，<code>Distributed</code> 模块必须显式地在调用 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a> 之前载入，该模块会自动在其它进程中可见。</p><p>需要注意的时，worker 进程并不会执行 <code>~/.julia/config/startup.jl</code> 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。</p><p>其它类型的集群可以通过自己写一个 <code>ClusterManager</code> 来实现，下面 <a href="#集群管理器-1">集群管理器</a> 部分会介绍。</p><h2><a class="nav-anchor" id="数据转移-1" href="#数据转移-1">数据转移</a></h2><p>分布式程序的性能瓶颈主要是由发送消息和数据转移造成的，减少发送消息和转移数据的数量对于获取高性能和可扩展性至关重要，因此，深入了解 Julia 分布式程序是如何转移数据的非常有必要。</p><p><a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> 可以看作是显式地转移数据的操作，因为它直接要求获取数据到本地机器。<a href="../../stdlib/Distributed/#Distributed.@spawn"><code>@spawn</code></a>（以及相关的操作）也会移动数据，不过不那么明显，因此称作隐式地数据转移操作。比较以下两种方式，构造一个随机矩阵并求平方：</p><p>方法1：</p><pre><code class="language-julia-repl">julia&gt; A = rand(1000,1000);
+ 3</code></pre><p>在 master 主线程中，<code>Distributed</code> 模块必须显式地在调用 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a> 之前载入，该模块会自动在其它进程中可见。</p><p>需要注意的时，worker 进程并不会执行 <code>~/.julia/config/startup.jl</code> 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。</p><p>其它类型的集群可以通过自己写一个 <code>ClusterManager</code> 来实现，下面 <a href="#集群管理器-1">集群管理器</a> 部分会介绍。</p><h2><a class="nav-anchor" id="数据转移-1" href="#数据转移-1">数据转移</a></h2><p>分布式程序的性能瓶颈主要是由发送消息和数据转移造成的，减少发送消息和转移数据的数量对于获取高性能和可扩展性至关重要，因此，深入了解 Julia 分布式程序是如何转移数据的非常有必要。</p><p><a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> 可以看作是显式地转移数据的操作，因为它直接要求获取数据到本地机器。<a href="../../stdlib/Distributed/#Distributed.@spawn"><code>@spawn</code></a>（以及相关的操作）也会移动数据，不过不那么明显，因此称作隐式地数据转移操作。比较以下两种方式，构造一个随机矩阵并求平方：</p><p>方法一：</p><pre><code class="language-julia-repl">julia&gt; A = rand(1000,1000);
 
 julia&gt; Bref = @spawn A^2;
 
 [...]
 
-julia&gt; fetch(Bref);</code></pre><p>Method 2:</p><pre><code class="language-julia-repl">julia&gt; Bref = @spawn rand(1000,1000)^2;
+julia&gt; fetch(Bref);</code></pre><p>方法二：</p><pre><code class="language-julia-repl">julia&gt; Bref = @spawn rand(1000,1000)^2;
 
 [...]
 
