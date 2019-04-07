@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Julia REPL · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview');
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/stdlib/REPL/index.html"/><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><a href="../../index.html"><img class="logo" src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><h1>Julia中文文档</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">主页</a></li><li><span class="toctext">手册</span><ul><li><a class="toctext" href="../../manual/getting-started/">入门</a></li><li><a class="toctext" href="../../manual/variables/">变量</a></li><li><a class="toctext" href="../../manual/integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="toctext" href="../../manual/mathematical-operations/">数学运算和初等函数</a></li><li><a class="toctext" href="../../manual/complex-and-rational-numbers/">复数和有理数</a></li><li><a class="toctext" href="../../manual/strings/">字符串</a></li><li><a class="toctext" href="../../manual/functions/">函数</a></li><li><a class="toctext" href="../../manual/control-flow/">流程控制</a></li><li><a class="toctext" href="../../manual/variables-and-scoping/">变量作用域</a></li><li><a class="toctext" href="../../manual/types/">类型</a></li><li><a class="toctext" href="../../manual/methods/">方法</a></li><li><a class="toctext" href="../../manual/constructors/">构造函数</a></li><li><a class="toctext" href="../../manual/conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="toctext" href="../../manual/interfaces/">接口</a></li><li><a class="toctext" href="../../manual/modules/">模块</a></li><li><a class="toctext" href="../../manual/documentation/">文档</a></li><li><a class="toctext" href="../../manual/metaprogramming/">元编程</a></li><li><a class="toctext" href="../../manual/arrays/">多维数组</a></li><li><a class="toctext" href="../../manual/missing/">缺失值</a></li><li><a class="toctext" href="../../manual/networking-and-streams/">网络和流</a></li><li><a class="toctext" href="../../manual/parallel-computing/">并行计算</a></li><li><a class="toctext" href="../../manual/running-external-programs/">运行外部程序</a></li><li><a class="toctext" href="../../manual/calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="toctext" href="../../manual/handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="toctext" href="../../manual/environment-variables/">环境变量</a></li><li><a class="toctext" href="../../manual/embedding/">嵌入 Julia</a></li><li><a class="toctext" href="../../manual/code-loading/">代码加载</a></li><li><a class="toctext" href="../../manual/profile/">性能分析</a></li><li><a class="toctext" href="../../manual/stacktraces/">栈跟踪</a></li><li><a class="toctext" href="../../manual/performance-tips/">性能建议</a></li><li><a class="toctext" href="../../manual/workflow-tips/">工作流程建议</a></li><li><a class="toctext" href="../../manual/style-guide/">代码风格指南</a></li><li><a class="toctext" href="../../manual/faq/">常见问题</a></li><li><a class="toctext" href="../../manual/noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="toctext" href="../../manual/unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="toctext">Base</span><ul><li><a class="toctext" href="../../base/base/">基本功能</a></li><li><a class="toctext" href="../../base/collections/">集合和数据结构</a></li><li><a class="toctext" href="../../base/math/">数学相关</a></li><li><a class="toctext" href="../../base/numbers/">Numbers</a></li><li><a class="toctext" href="../../base/strings/">字符串</a></li><li><a class="toctext" href="../../base/arrays/">Arrays</a></li><li><a class="toctext" href="../../base/parallel/">Tasks</a></li><li><a class="toctext" href="../../base/multi-threading/">多线程</a></li><li><a class="toctext" href="../../base/constants/">常量</a></li><li><a class="toctext" href="../../base/file/">文件系统</a></li><li><a class="toctext" href="../../base/io-network/">I/O 与网络</a></li><li><a class="toctext" href="../../base/punctuation/">运算符与记号</a></li><li><a class="toctext" href="../../base/sort/">排序及相关函数</a></li><li><a class="toctext" href="../../base/iterators/">迭代相关</a></li><li><a class="toctext" href="../../base/c/">C 接口</a></li><li><a class="toctext" href="../../base/libc/">C 标准库</a></li><li><a class="toctext" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="toctext" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="toctext">Standard Library</span><ul><li><a class="toctext" href="../Base64/">Base64</a></li><li><a class="toctext" href="../CRC32c/">CRC32c</a></li><li><a class="toctext" href="../Dates/">Dates</a></li><li><a class="toctext" href="../DelimitedFiles/">分隔符文件</a></li><li><a class="toctext" href="../Distributed/">分布式计算</a></li><li><a class="toctext" href="../FileWatching/">文件相关事件</a></li><li><a class="toctext" href="../InteractiveUtils/">交互式组件</a></li><li><a class="toctext" href="../LibGit2/">LibGit2</a></li><li><a class="toctext" href="../Libdl/">动态链接器</a></li><li><a class="toctext" href="../LinearAlgebra/">线性代数</a></li><li><a class="toctext" href="../Logging/">日志记录</a></li><li><a class="toctext" href="../Markdown/">Markdown</a></li><li><a class="toctext" href="../Mmap/">内存映射 I/O</a></li><li><a class="toctext" href="../Pkg/">Pkg</a></li><li><a class="toctext" href="../Printf/">Printf</a></li><li><a class="toctext" href="../Profile/">性能分析</a></li><li class="current"><a class="toctext" href>Julia REPL</a><ul class="internal"><li><a class="toctext" href="#不同的提示符模式-1">不同的提示符模式</a></li><li><a class="toctext" href="#按键绑定-1">按键绑定</a></li><li><a class="toctext" href="#Tab-补全-1">Tab 补全</a></li><li><a class="toctext" href="#自定义配色-1">自定义配色</a></li><li class="toplevel"><a class="toctext" href="#TerminalMenus-1">TerminalMenus</a></li><li><a class="toctext" href="#Examples-1">Examples</a></li><li><a class="toctext" href="#Customization-/-Configuration-1">Customization / Configuration</a></li><li class="toplevel"><a class="toctext" href="#References-1">References</a></li></ul></li><li><a class="toctext" href="../Random/">随机数</a></li><li><a class="toctext" href="../SHA/">SHA</a></li><li><a class="toctext" href="../Serialization/">序列化</a></li><li><a class="toctext" href="../SharedArrays/">共享数组</a></li><li><a class="toctext" href="../Sockets/">套接字</a></li><li><a class="toctext" href="../SparseArrays/">稀疏矩阵</a></li><li><a class="toctext" href="../Statistics/">统计</a></li><li><a class="toctext" href="../Test/">单元测试</a></li><li><a class="toctext" href="../UUIDs/">UUIDs</a></li><li><a class="toctext" href="../Unicode/">Unicode</a></li></ul></li><li><span class="toctext">Developer Documentation</span><ul><li><a class="toctext" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><span class="toctext">Documentation of Julia&#39;s Internals</span><ul><li><a class="toctext" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="toctext" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="toctext" href="../../devdocs/types/">More about types</a></li><li><a class="toctext" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="toctext" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="toctext" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="toctext" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="toctext" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="toctext" href="../../devdocs/cartesian/">Base.Cartesian</a></li><li><a class="toctext" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="toctext" href="../../devdocs/subarrays/">SubArrays</a></li><li><a class="toctext" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="toctext" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="toctext" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="toctext" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="toctext" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="toctext" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="toctext" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="toctext" href="../../devdocs/require/">Module loading</a></li><li><a class="toctext" href="../../devdocs/inference/">Inference</a></li></ul></li><li><span class="toctext">Developing/debugging Julia&#39;s C code</span><ul><li><a class="toctext" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="toctext" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="toctext" href="../../devdocs/valgrind/">Using Valgrind with Julia</a></li><li><a class="toctext" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Standard Library</li><li><a href>Julia REPL</a></li></ul><a class="edit-page" href="https://www.transifex.com/juliacn/stdlib-zh_cn/translate/#zh_CN/REPLmd"><span class="fa"></span> 完善 Transifex 上的翻译</a></nav><hr/><div id="topbar"><span>Julia REPL</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Julia-REPL-1" href="#Julia-REPL-1">Julia REPL</a></h1><p>Julia 附带了一个全功能的交互式命令行 REPL（read-eval-print loop），其内置于 <code>julia</code> 可执行文件中。它除了允许快速简便地执行 Julia 语句外，还具有可搜索的历史记录，tab 补全，许多有用的按键绑定以及专用的 help 和 shell 模式。只需不附带任何参数地调用 <code>julia</code> 或双击可执行文件即可启动 REPL：</p><pre><code class="language-none">$ julia
+               _
+   _       _ _(_)_     |  A fresh approach to technical computing
+  (_)     | (_) (_)    |  Documentation: https://docs.julialang.org
+   _ _   _| |_  __ _   |  Type &quot;?help&quot; for help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 0.6.0-dev.2493 (2017-01-31 18:53 UTC)
+ _/ |\__&#39;_|_|_|\__&#39;_|  |  Commit c99e12c* (0 days old master)
+|__/                   |  x86_64-linux-gnu
+
+julia&gt;</code></pre><p>要退出交互式会话，在空白行上键入 <code>^D</code>——control 键和 <code>d</code> 键，或者先键入 <code>quit()</code>，然后键入 return 或 enter 键。REPL 用横幅和 <code>julia&gt;</code> 提示符欢迎你。</p><h2><a class="nav-anchor" id="不同的提示符模式-1" href="#不同的提示符模式-1">不同的提示符模式</a></h2><h3><a class="nav-anchor" id="Julian-模式-1" href="#Julian-模式-1">Julian 模式</a></h3><p>REPL 有四种主要的操作模式。第一个也是最常见的是 Julian 提示符。这是默认的操作模式；每个新行最初都以 <code>julia&gt;</code> 开头。就在这里，你可以输入 Julia 表达式。在输入完整表达式后按下 return 或 enter 将执行该表达式，并显示最后一个表达式的结果。</p><pre><code class="language-julia-repl">julia&gt; string(1 + 2)
+&quot;3&quot;</code></pre><p>交互式运行有许多独特的实用功能。除了显示结果外，REPL 还将结果绑定到变量 <code>ans</code> 上。一行的尾随分号可用作禁止显示结果的标志。</p><pre><code class="language-julia-repl">julia&gt; string(3 * 4);
+
+julia&gt; ans
+&quot;12&quot;</code></pre><p>Julia 模式中，REPL 支持称为 <em>prompt pasting</em> 的功能。当粘贴以 <code>julia&gt;</code> 文本到 REPL 中时才会激活此功能。在这种情况下，只有以 <code>julia&gt;</code> 开头的表达式才被解析，其它的表达式则被删除。这使得可以粘贴从 REPL 会话中复制的一大块代码，而无需擦除提示和输出。默认情况下启用此功能，但可以使用<code>Base.REPL.enable_promptpaste(::Bool)</code> 任意禁用或启用此功能。如果它已启用，您可以通过将本段上方的代码块直接粘贴到 REPL 中来尝试。此功能在标准的 Windows 命令提示符下不起作用，由于它在检测粘贴何时发生上的限制。</p><h3><a class="nav-anchor" id="帮助模式-1" href="#帮助模式-1">帮助模式</a></h3><p>当光标在行首时，提示符可以通过键入 <code>?</code> 改变为帮助模式。Julia 将尝试打印在帮助模式中输入的任何内容的帮助或文档：</p><pre><code class="language-julia-repl">julia&gt; ? # upon typing ?, the prompt changes (in place) to: help?&gt;
+
+help?&gt; string
+search: string String Cstring Cwstring RevString randstring bytestring SubString
+
+  string(xs...)
+
+  Create a string from any values using the print function.</code></pre><p>还可以查询宏，类型和变量：</p><pre><code class="language-none">help?&gt; @time
+  @time
+
+  A macro to execute an expression, printing the time it took to execute, the number of allocations,
+  and the total number of bytes its execution caused to be allocated, before returning the value of the
+  expression.
+
+  See also @timev, @timed, @elapsed, and @allocated.
+
+help?&gt; Int32
+search: Int32 UInt32
+
+  Int32 &lt;: Signed
+
+  32-bit signed integer type.</code></pre><p>通过在行的开头按退格键可以退出帮助模式。</p><h3><a class="nav-anchor" id="man-shell-mode-1" href="#man-shell-mode-1">Shell 模式</a></h3><p>正如帮助模式对快速访问文档很有用，另一个常见任务是使用系统 shell 执行系统命令。就像 <code>?</code> 进入帮助模式，在行的开头，分号（<code>;</code>）将进入 shell 模式。并且通过在行的开头按退格键可以退出 shell 模式。</p><pre><code class="language-julia-repl">julia&gt; ; # upon typing ;, the prompt changes (in place) to: shell&gt;
+
+shell&gt; echo hello
+hello</code></pre><h3><a class="nav-anchor" id="搜索模式-1" href="#搜索模式-1">搜索模式</a></h3><p>在所有上述模式中，执行过的行被保存到历史文件中，该文件可以被搜索。要通过之前的历史记录启动增量搜索，请键入 <code>^R</code>——control 键和 <code>r</code> 键。提示符会变为 <code>(reverse-i-search)`&#39;:</code>，搜索查询在你输入时出现在引号中。匹配查询的最近结果会在输入更多内容时动态更新到冒号右侧。要使用相同的查询查找更旧的结果，只需再次键入 <code>^R</code>。</p><p>正如 <code>^R</code> 是反向搜索，<code>^S</code> 是前向搜索，带有提示符 <code>(i-search)`&#39;:</code>。这两者可以彼此结合使用以分别移动至前一个或下一个匹配结果。</p><h2><a class="nav-anchor" id="按键绑定-1" href="#按键绑定-1">按键绑定</a></h2><p>Julia REPL 充分利用了按键绑定。上面已经介绍了几个 control 键绑定（<code>^D</code> 退出，<code>^R</code> 和 <code>^S</code>用于搜索），但还有更多按键绑定。除 control 键之外，还有 meta 键绑定。这些因平台而异，但大多数终端默认使用按住 alt- 或 option- 和一个键发送 meta 键（或者可以配置为执行此操作）。</p><table><tr><th style="text-align: left">按键绑定</th><th style="text-align: left">描述</th></tr><tr><td style="text-align: left"><strong>程序控制</strong></td><td style="text-align: left"></td></tr><tr><td style="text-align: left"><code>^D</code></td><td style="text-align: left">退出（当缓冲区为空）</td></tr><tr><td style="text-align: left"><code>^C</code></td><td style="text-align: left">中断或取消</td></tr><tr><td style="text-align: left"><code>^L</code></td><td style="text-align: left">清空控制台屏幕</td></tr><tr><td style="text-align: left">Return/Enter, <code>^J</code></td><td style="text-align: left">插入新行，如果行是完整的则执行之</td></tr><tr><td style="text-align: left">meta-Return/Enter</td><td style="text-align: left">插入新行而不执行它</td></tr><tr><td style="text-align: left"><code>?</code> 或 <code>;</code></td><td style="text-align: left">进入帮助或 shell 模式（当在行首时）</td></tr><tr><td style="text-align: left"><code>^R</code>, <code>^S</code></td><td style="text-align: left">增量历史搜索，如上所述</td></tr><tr><td style="text-align: left"><strong>光标移动</strong></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Right arrow, <code>^F</code></td><td style="text-align: left">向右移动一个字符</td></tr><tr><td style="text-align: left">Left arrow, <code>^B</code></td><td style="text-align: left">向左移动一个字符</td></tr><tr><td style="text-align: left">ctrl-Right, <code>meta-F</code></td><td style="text-align: left">向右移动一个单词</td></tr><tr><td style="text-align: left">ctrl-Left, <code>meta-B</code></td><td style="text-align: left">向左移动一个单词</td></tr><tr><td style="text-align: left">Home, <code>^A</code></td><td style="text-align: left">移动至行首</td></tr><tr><td style="text-align: left">End, <code>^E</code></td><td style="text-align: left">移动至行尾</td></tr><tr><td style="text-align: left">Up arrow, <code>^P</code></td><td style="text-align: left">向上移动一行（或更改为与光标前文本相匹配的上一条历史记录）</td></tr><tr><td style="text-align: left">Down arrow, <code>^N</code></td><td style="text-align: left">向下移动一行（或更改为与光标前文本相匹配的下一条历史记录）</td></tr><tr><td style="text-align: left">Shift-Arrow Key</td><td style="text-align: left">Move cursor according to the direction of the Arrow key, while activating the region (&quot;shift selection&quot;)</td></tr><tr><td style="text-align: left">Page-up, <code>meta-P</code></td><td style="text-align: left">更改为上一条历史记录</td></tr><tr><td style="text-align: left">Page-down, <code>meta-N</code></td><td style="text-align: left">更改为下一条历史记录</td></tr><tr><td style="text-align: left"><code>meta-&lt;</code></td><td style="text-align: left">更改为（当前会话的）第一条历史记录（如果其在历史记录中位于当前位置之前）</td></tr><tr><td style="text-align: left"><code>meta-&gt;</code></td><td style="text-align: left">更改为最后一条历史记录</td></tr><tr><td style="text-align: left"><code>^-Space</code></td><td style="text-align: left">Set the &quot;mark&quot; in the editing region (and de-activate the region if it&#39;s active)</td></tr><tr><td style="text-align: left"><code>^-Space ^-Space</code></td><td style="text-align: left">Set the &quot;mark&quot; in the editing region and make the region &quot;active&quot;, i.e. highlighted</td></tr><tr><td style="text-align: left"><code>^G</code></td><td style="text-align: left">De-activate the region (i.e. make it not highlighted)</td></tr><tr><td style="text-align: left"><code>^X^X</code></td><td style="text-align: left">Exchange the current position with the mark</td></tr><tr><td style="text-align: left"><strong>编辑</strong></td><td style="text-align: left"></td></tr><tr><td style="text-align: left">Backspace, <code>^H</code></td><td style="text-align: left">Delete the previous character, or the whole region when it&#39;s active</td></tr><tr><td style="text-align: left">Delete, <code>^D</code></td><td style="text-align: left">删除下一个字符（当缓冲区还有文本）</td></tr><tr><td style="text-align: left">meta-Backspace</td><td style="text-align: left">删除上一个单词</td></tr><tr><td style="text-align: left"><code>meta-d</code></td><td style="text-align: left">删除下一个单词</td></tr><tr><td style="text-align: left"><code>^W</code></td><td style="text-align: left">删除前一段文本直到最近的空格</td></tr><tr><td style="text-align: left"><code>meta-w</code></td><td style="text-align: left">Copy the current region in the kill ring</td></tr><tr><td style="text-align: left"><code>meta-W</code></td><td style="text-align: left">&quot;Kill&quot; the current region, placing the text in the kill ring</td></tr><tr><td style="text-align: left"><code>^K</code></td><td style="text-align: left">&quot;Kill&quot; to end of line, placing the text in the kill ring</td></tr><tr><td style="text-align: left"><code>^Y</code></td><td style="text-align: left">&quot;Yank&quot; insert the text from the kill ring</td></tr><tr><td style="text-align: left"><code>meta-y</code></td><td style="text-align: left">Replace a previously yanked text with an older entry from the kill ring</td></tr><tr><td style="text-align: left"><code>^T</code></td><td style="text-align: left">颠倒光标左右两侧的字符</td></tr><tr><td style="text-align: left"><code>meta-Up arrow</code></td><td style="text-align: left">颠倒当前行和上一行</td></tr><tr><td style="text-align: left"><code>meta-Down arrow</code></td><td style="text-align: left">颠倒当前行和下一行</td></tr><tr><td style="text-align: left"><code>meta-u</code></td><td style="text-align: left">将下一个单词更改为大写</td></tr><tr><td style="text-align: left"><code>meta-c</code></td><td style="text-align: left">将下一个单词更改为首字母大写</td></tr><tr><td style="text-align: left"><code>meta-l</code></td><td style="text-align: left">将下一个单词更改为小写</td></tr><tr><td style="text-align: left"><code>^/</code>, <code>^_</code></td><td style="text-align: left">撤消上一个编辑操作</td></tr><tr><td style="text-align: left"><code>^Q</code></td><td style="text-align: left">Write a number in REPL and press <code>^Q</code> to open editor at corresponding stackframe or method</td></tr><tr><td style="text-align: left"><code>meta-Left Arrow</code></td><td style="text-align: left">indent the current line on the left</td></tr><tr><td style="text-align: left"><code>meta-Right Arrow</code></td><td style="text-align: left">indent the current line on the right</td></tr></table><h3><a class="nav-anchor" id="自定义按键绑定-1" href="#自定义按键绑定-1">自定义按键绑定</a></h3><p>通过将字典传递给 <code>REPL.setup_interface</code>，Julia 的 REPL 按键绑定可以完全根据用户的喜好进行自定义。该字典的键可以是字符或字符串。键 <code>&#39;*&#39;</code> 表示默认操作。Control 键加字符 <code>x</code> 的绑定用 <code>&quot;^x&quot;</code> 表示。Meta 加 <code>x</code> 可以写成 <code>&quot;\\Mx&quot;</code>。自定义按键映射必须为 <code>nothing</code>（表示输入应被忽略）或接受签名的函数  <code>(PromptState, AbstractREPL, Char)</code>。必须在 REPL 初始化前调用 <code>REPL.setup_interface</code> 函数，方法是通过 <a href="#Base.atreplinit"><code>atreplinit</code></a> 注册操作。例如，要绑定上和下方向键在没有前缀搜索的情况下浏览历史记录，可以将以下代码放在 <code>~/.julia/config/startup.jl</code> 中：</p><pre><code class="language-julia">import REPL
+import REPL.LineEdit
+
+const mykeys = Dict{Any,Any}(
+    # Up Arrow
+    &quot;\e[A&quot; =&gt; (s,o...)-&gt;(LineEdit.edit_move_up(s) || LineEdit.history_prev(s, LineEdit.mode(s).hist)),
+    # Down Arrow
+    &quot;\e[B&quot; =&gt; (s,o...)-&gt;(LineEdit.edit_move_up(s) || LineEdit.history_next(s, LineEdit.mode(s).hist))
+)
+
+function customize_keys(repl)
+    repl.interface = REPL.setup_interface(repl; extra_repl_keymap = mykeys)
+end
+
+atreplinit(customize_keys)</code></pre><p>用户应该参考 <code>LineEdit.jl</code> 来发现输入按键的可用操作。</p><h2><a class="nav-anchor" id="Tab-补全-1" href="#Tab-补全-1">Tab 补全</a></h2><p>在 REPL 的 Julian 和帮助模式中，可以先输入函数或类型的前几个字符，接着按 tab 键来获取所有匹配的列表：</p><pre><code class="language-julia-repl">julia&gt; stri[TAB]
+stride     strides     string      strip
+
+julia&gt; Stri[TAB]
+StridedArray    StridedMatrix    StridedVecOrMat  StridedVector    String</code></pre><p>Tab 键也可用于将 LaTeX 数学符号替换为其 Unicode 等价字符，也可用于获取 LaTeX 匹配的列表：</p><pre><code class="language-julia-repl">julia&gt; \pi[TAB]
+julia&gt; π
+π = 3.1415926535897...
+
+julia&gt; e\_1[TAB] = [1,0]
+julia&gt; e₁ = [1,0]
+2-element Array{Int64,1}:
+ 1
+ 0
+
+julia&gt; e\^1[TAB] = [1 0]
+julia&gt; e¹ = [1 0]
+1×2 Array{Int64,2}:
+ 1  0
+
+julia&gt; \sqrt[TAB]2     # √ is equivalent to the sqrt function
+julia&gt; √2
+1.4142135623730951
+
+julia&gt; \hbar[TAB](h) = h / 2\pi[TAB]
+julia&gt; ħ(h) = h / 2π
+ħ (generic function with 1 method)
+
+julia&gt; \h[TAB]
+\hat              \hermitconjmatrix  \hkswarow          \hrectangle
+\hatapprox        \hexagon           \hookleftarrow     \hrectangleblack
+\hbar             \hexagonblack      \hookrightarrow    \hslash
+\heartsuit        \hksearow          \house             \hspace
+
+julia&gt; α=&quot;\alpha[TAB]&quot;   # LaTeX completion also works in strings
+julia&gt; α=&quot;α&quot;</code></pre><p>Tab 补全的完整列表可以在手册的 <a href="../../manual/unicode-input/#Unicode-输入表-1">Unicode 输入表</a>章节中找到。</p><p>路径补全适用于字符串和 julia 的 shell 模式：</p><pre><code class="language-julia-repl">julia&gt; path=&quot;/[TAB]&quot;
+.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/
+.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/
+shell&gt; /[TAB]
+.dockerenv  .juliabox/   boot/        etc/         lib/         media/       opt/         root/        sbin/        sys/         usr/
+.dockerinit bin/         dev/         home/        lib64/       mnt/         proc/        run/         srv/         tmp/         var/</code></pre><p>Tab 补全可以帮助查找与输入参数相匹配的可用方法：</p><pre><code class="language-julia-repl">julia&gt; max([TAB] # All methods are displayed, not shown here due to size of the list
+
+julia&gt; max([1, 2], [TAB] # All methods where `Vector{Int}` matches as first argument
+max(x, y) in Base at operators.jl:215
+max(a, b, c, xs...) in Base at operators.jl:281
+
+julia&gt; max([1, 2], max(1, 2), [TAB] # All methods matching the arguments.
+max(x, y) in Base at operators.jl:215
+max(a, b, c, xs...) in Base at operators.jl:281</code></pre><p>关键字也会在建议的方法中显示在 <code>;</code> 之后，请看下面，其中 <code>limit</code> 和 <code>keepempty</code> 是关键字参数：</p><pre><code class="language-julia-repl">julia&gt; split(&quot;1 1 1&quot;, [TAB]
+split(str::AbstractString; limit, keepempty) in Base at strings/util.jl:302
+split(str::T, splitter; limit, keepempty) where T&lt;:AbstractString in Base at strings/util.jl:277</code></pre><p>方法的补全使用类型推断，因此即使参数是函数的输出，也可以查看参数是否匹配。函数需要是类型稳定的，这样补全才能删除不匹配的方法。</p><p>Tab 补全也可以帮助补全字段：</p><pre><code class="language-julia-repl">julia&gt; import UUIDs
+
+julia&gt; UUIDs.uuid[TAB]
+uuid1        uuid4         uuid_version</code></pre><p>函数输出的字段也可以补全：</p><pre><code class="language-julia-repl">julia&gt; split(&quot;&quot;,&quot;&quot;)[1].[TAB]
+lastindex  offset  string</code></pre><p>函数输出的字段补全使用类型推断，它只能在函数是类型稳定时建议字段。</p><h2><a class="nav-anchor" id="自定义配色-1" href="#自定义配色-1">自定义配色</a></h2><p>Julia 和 REPL 使用的配色也可以被自定义。为了修改 Julia 提示符的颜色，你可以在你的 <code>~/.julia/config/startup.jl</code> 文件中添加以下内容，该文件在你的家目录中：</p><pre><code class="language-julia">function customize_colors(repl)
+    repl.prompt_color = Base.text_colors[:cyan]
+end
+
+atreplinit(customize_colors)</code></pre><p>可用的颜色键通过在 REPL 的帮助模式中输入 <code>Base.text_colors</code> 可以看到。此外，从 0 到 255 的整数可用作具有 256 色支持的终端的颜色键。</p><p>你也可以改变帮助、shell 提示符、输入和输出的文本颜色，这通过在上面的 <code>customize_colors</code> 函数中设置 <code>repl</code> 的相应字段（分别为 <code>help_color</code>、<code>shell_color</code>、<code>input_color</code> 和 <code>answer_color</code>）。对于后两个字段，请确定 <code>envcolors</code> 字段也设置为 false。</p><p>通过将 <code>Base.text_colors[:bold]</code> 用作颜色，也可以使用粗体格式。例如，要以粗体字体打印输出，可以将以下内容作为 <code>~/.julia/config/startup.jl</code>：</p><pre><code class="language-julia">function customize_colors(repl)
+    repl.envcolors = false
+    repl.answer_color = Base.text_colors[:bold]
+end
+
+atreplinit(customize_colors)</code></pre><p>你还可以自定义用于呈现 warning 和 informational 消息的颜色，这通过设置相应的环境变量。例如，要分别以 magenta、yellow 和 cyan 呈现 error、warning 和 informational 消息，你可以在你的 <code>~/.julia/config/startup.jl</code> 文件中添加以下内容：</p><pre><code class="language-julia">ENV[&quot;JULIA_ERROR_COLOR&quot;] = :magenta
+ENV[&quot;JULIA_WARN_COLOR&quot;] = :yellow
+ENV[&quot;JULIA_INFO_COLOR&quot;] = :cyan</code></pre><h1><a class="nav-anchor" id="TerminalMenus-1" href="#TerminalMenus-1">TerminalMenus</a></h1><p>TerminalMenus is a submodule of the Julia REPL and enables small, low-profile interactive menus in the terminal.</p><h2><a class="nav-anchor" id="Examples-1" href="#Examples-1">Examples</a></h2><pre><code class="language-julia">import REPL
+using REPL.TerminalMenus
+
+options = [&quot;apple&quot;, &quot;orange&quot;, &quot;grape&quot;, &quot;strawberry&quot;,
+            &quot;blueberry&quot;, &quot;peach&quot;, &quot;lemon&quot;, &quot;lime&quot;]
+</code></pre><h3><a class="nav-anchor" id="RadioMenu-1" href="#RadioMenu-1">RadioMenu</a></h3><p>The RadioMenu allows the user to select one option from the list. The <code>request</code> function displays the interactive menu and returns the index of the selected choice. If a user presses &#39;q&#39; or <code>ctrl-c</code>, <code>request</code> will return a <code>-1</code>.</p><pre><code class="language-julia"># `pagesize` is the number of items to be displayed at a time.
+#  The UI will scroll if the number of options is greater
+#   than the `pagesize`
+menu = RadioMenu(options, pagesize=4)
+
+# `request` displays the menu and returns the index after the
+#   user has selected a choice
+choice = request(&quot;Choose your favorite fruit:&quot;, menu)
+
+if choice != -1
+    println(&quot;Your favorite fruit is &quot;, options[choice], &quot;!&quot;)
+else
+    println(&quot;Menu canceled.&quot;)
+end
+</code></pre><p>Output:</p><pre><code class="language-none">Choose your favorite fruit:
+^  grape
+   strawberry
+ &gt; blueberry
+v  peach
+Your favorite fruit is blueberry!</code></pre><h3><a class="nav-anchor" id="MultiSelectMenu-1" href="#MultiSelectMenu-1">MultiSelectMenu</a></h3><p>The MultiSelectMenu allows users to select many choices from a list.</p><pre><code class="language-julia"># here we use the default `pagesize` 10
+menu = MultiSelectMenu(options)
+
+# `request` returns a `Set` of selected indices
+# if the menu us canceled (ctrl-c or q), return an empty set
+choices = request(&quot;Select the fruits you like:&quot;, menu)
+
+if length(choices) &gt; 0
+    println(&quot;You like the following fruits:&quot;)
+    for i in choices
+        println(&quot;  - &quot;, options[i])
+    end
+else
+    println(&quot;Menu canceled.&quot;)
+end</code></pre><p>Output:</p><pre><code class="language-none">Select the fruits you like:
+[press: d=done, a=all, n=none]
+   [ ] apple
+ &gt; [X] orange
+   [X] grape
+   [ ] strawberry
+   [ ] blueberry
+   [X] peach
+   [ ] lemon
+   [ ] lime
+You like the following fruits:
+  - orange
+  - grape
+  - peach</code></pre><h2><a class="nav-anchor" id="Customization-/-Configuration-1" href="#Customization-/-Configuration-1">Customization / Configuration</a></h2><p>All interface customization is done through the keyword only <code>TerminalMenus.config()</code> function.</p><h3><a class="nav-anchor" id="Arguments-1" href="#Arguments-1">Arguments</a></h3><ul><li><code>charset::Symbol=:na</code>: ui characters to use (<code>:ascii</code> or <code>:unicode</code>); overridden by other arguments</li><li><code>cursor::Char=&#39;&gt;&#39;|&#39;→&#39;</code>: character to use for cursor</li><li><code>up_arrow::Char=&#39;^&#39;|&#39;↑&#39;</code>: character to use for up arrow</li><li><code>down_arrow::Char=&#39;v&#39;|&#39;↓&#39;</code>: character to use for down arrow</li><li><code>checked::String=&quot;[X]&quot;|&quot;✓&quot;</code>: string to use for checked</li><li><code>unchecked::String=&quot;[ ]&quot;|&quot;⬚&quot;)</code>: string to use for unchecked</li><li><code>scroll::Symbol=:na</code>: If <code>:wrap</code> then wrap the cursor around top and bottom, if :<code>nowrap</code> do not wrap cursor</li><li><code>supress_output::Bool=false</code>: For testing. If true, menu will not be printed to console.</li><li><code>ctrl_c_interrupt::Bool=true</code>: If <code>false</code>, return empty on ^C, if <code>true</code> throw InterruptException() on ^C</li></ul><h3><a class="nav-anchor" id="Examples-2" href="#Examples-2">Examples</a></h3><pre><code class="language-julia">julia&gt; menu = MultiSelectMenu(options, pagesize=5);
+
+julia&gt; request(menu) # ASCII is used by default
+[press: d=done, a=all, n=none]
+   [ ] apple
+   [X] orange
+   [ ] grape
+ &gt; [X] strawberry
+v  [ ] blueberry
+Set([4, 2])
+
+julia&gt; TerminalMenus.config(charset=:unicode)
+
+julia&gt; request(menu)
+[press: d=done, a=all, n=none]
+   ⬚ apple
+   ✓ orange
+   ⬚ grape
+ → ✓ strawberry
+↓  ⬚ blueberry
+Set([4, 2])
+
+julia&gt; TerminalMenus.config(checked=&quot;YEP!&quot;, unchecked=&quot;NOPE&quot;, cursor=&#39;⧐&#39;)
+
+julia&gt; request(menu)
+[press: d=done, a=all, n=none]
+   NOPE apple
+   YEP! orange
+   NOPE grape
+ ⧐ YEP! strawberry
+↓  NOPE blueberry
+Set([4, 2])
+</code></pre><h1><a class="nav-anchor" id="References-1" href="#References-1">References</a></h1><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.atreplinit" href="#Base.atreplinit"><code>Base.atreplinit</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">atreplinit(f)</code></pre><p>Register a one-argument function to be called before the REPL interface is initialized in interactive sessions; this is useful to customize the interface. The argument of <code>f</code> is the REPL object. This function should be called from within the <code>.julia/config/startup.jl</code> initialization file.</p></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaLang/julia/blob/099e826241fca365a120df9bac9a9fede6e7bae4/base/client.jl#L298-L305">source</a></section><footer><hr/><a class="previous" href="../Profile/"><span class="direction">上一篇</span><span class="title">性能分析</span></a><a class="next" href="../Random/"><span class="direction">下一篇</span><span class="title">随机数</span></a></footer></article></body></html>

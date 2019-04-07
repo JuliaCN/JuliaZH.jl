@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>文档 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview');
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/documentation/index.html"/><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><a href="../../index.html"><img class="logo" src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><h1>Julia中文文档</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">主页</a></li><li><span class="toctext">手册</span><ul><li><a class="toctext" href="../getting-started/">入门</a></li><li><a class="toctext" href="../variables/">变量</a></li><li><a class="toctext" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="toctext" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="toctext" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="toctext" href="../strings/">字符串</a></li><li><a class="toctext" href="../functions/">函数</a></li><li><a class="toctext" href="../control-flow/">流程控制</a></li><li><a class="toctext" href="../variables-and-scoping/">变量作用域</a></li><li><a class="toctext" href="../types/">类型</a></li><li><a class="toctext" href="../methods/">方法</a></li><li><a class="toctext" href="../constructors/">构造函数</a></li><li><a class="toctext" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="toctext" href="../interfaces/">接口</a></li><li><a class="toctext" href="../modules/">模块</a></li><li class="current"><a class="toctext" href>文档</a><ul class="internal"><li><a class="toctext" href="#访问文档-1">访问文档</a></li><li><a class="toctext" href="#函数与方法-1">函数与方法</a></li><li><a class="toctext" href="#进阶用法-1">进阶用法</a></li><li><a class="toctext" href="#语法指南-1">语法指南</a></li><li><a class="toctext" href="#Markdown语法-1">Markdown语法</a></li><li><a class="toctext" href="#Markdown语法扩展-1">Markdown语法扩展</a></li></ul></li><li><a class="toctext" href="../metaprogramming/">元编程</a></li><li><a class="toctext" href="../arrays/">多维数组</a></li><li><a class="toctext" href="../missing/">缺失值</a></li><li><a class="toctext" href="../networking-and-streams/">网络和流</a></li><li><a class="toctext" href="../parallel-computing/">并行计算</a></li><li><a class="toctext" href="../running-external-programs/">运行外部程序</a></li><li><a class="toctext" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="toctext" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="toctext" href="../environment-variables/">环境变量</a></li><li><a class="toctext" href="../embedding/">嵌入 Julia</a></li><li><a class="toctext" href="../code-loading/">代码加载</a></li><li><a class="toctext" href="../profile/">性能分析</a></li><li><a class="toctext" href="../stacktraces/">栈跟踪</a></li><li><a class="toctext" href="../performance-tips/">性能建议</a></li><li><a class="toctext" href="../workflow-tips/">工作流程建议</a></li><li><a class="toctext" href="../style-guide/">代码风格指南</a></li><li><a class="toctext" href="../faq/">常见问题</a></li><li><a class="toctext" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="toctext" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="toctext">Base</span><ul><li><a class="toctext" href="../../base/base/">基本功能</a></li><li><a class="toctext" href="../../base/collections/">集合和数据结构</a></li><li><a class="toctext" href="../../base/math/">数学相关</a></li><li><a class="toctext" href="../../base/numbers/">Numbers</a></li><li><a class="toctext" href="../../base/strings/">字符串</a></li><li><a class="toctext" href="../../base/arrays/">Arrays</a></li><li><a class="toctext" href="../../base/parallel/">Tasks</a></li><li><a class="toctext" href="../../base/multi-threading/">多线程</a></li><li><a class="toctext" href="../../base/constants/">常量</a></li><li><a class="toctext" href="../../base/file/">文件系统</a></li><li><a class="toctext" href="../../base/io-network/">I/O 与网络</a></li><li><a class="toctext" href="../../base/punctuation/">运算符与记号</a></li><li><a class="toctext" href="../../base/sort/">排序及相关函数</a></li><li><a class="toctext" href="../../base/iterators/">迭代相关</a></li><li><a class="toctext" href="../../base/c/">C 接口</a></li><li><a class="toctext" href="../../base/libc/">C 标准库</a></li><li><a class="toctext" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="toctext" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="toctext">Standard Library</span><ul><li><a class="toctext" href="../../stdlib/Base64/">Base64</a></li><li><a class="toctext" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="toctext" href="../../stdlib/Dates/">Dates</a></li><li><a class="toctext" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="toctext" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="toctext" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="toctext" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="toctext" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="toctext" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="toctext" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="toctext" href="../../stdlib/Logging/">日志记录</a></li><li><a class="toctext" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="toctext" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="toctext" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="toctext" href="../../stdlib/Printf/">Printf</a></li><li><a class="toctext" href="../../stdlib/Profile/">性能分析</a></li><li><a class="toctext" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="toctext" href="../../stdlib/Random/">随机数</a></li><li><a class="toctext" href="../../stdlib/SHA/">SHA</a></li><li><a class="toctext" href="../../stdlib/Serialization/">序列化</a></li><li><a class="toctext" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="toctext" href="../../stdlib/Sockets/">套接字</a></li><li><a class="toctext" href="../../stdlib/SparseArrays/">稀疏矩阵</a></li><li><a class="toctext" href="../../stdlib/Statistics/">统计</a></li><li><a class="toctext" href="../../stdlib/Test/">单元测试</a></li><li><a class="toctext" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="toctext" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="toctext">Developer Documentation</span><ul><li><a class="toctext" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><span class="toctext">Documentation of Julia&#39;s Internals</span><ul><li><a class="toctext" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="toctext" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="toctext" href="../../devdocs/types/">More about types</a></li><li><a class="toctext" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="toctext" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="toctext" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="toctext" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="toctext" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="toctext" href="../../devdocs/cartesian/">Base.Cartesian</a></li><li><a class="toctext" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="toctext" href="../../devdocs/subarrays/">SubArrays</a></li><li><a class="toctext" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="toctext" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="toctext" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="toctext" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="toctext" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="toctext" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="toctext" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="toctext" href="../../devdocs/require/">Module loading</a></li><li><a class="toctext" href="../../devdocs/inference/">Inference</a></li></ul></li><li><span class="toctext">Developing/debugging Julia&#39;s C code</span><ul><li><a class="toctext" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="toctext" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="toctext" href="../../devdocs/valgrind/">Using Valgrind with Julia</a></li><li><a class="toctext" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>手册</li><li><a href>文档</a></li></ul><a class="edit-page" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/documentationmd"><span class="fa"></span> 完善 Transifex 上的翻译</a></nav><hr/><div id="topbar"><span>文档</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="文档-1" href="#文档-1">文档</a></h1><p>自Julia 0.4 开始，Julia 允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。</p><p>基础语法很简单：紧接在对象（函数，宏，类型和实例）之前的字符串都会被认为是对应对象的文档（称作 <em>docstrings</em>）。 注意不要在 docstring 和文档对象之间有空行或者注释。 这里有个基础的例子：</p><pre><code class="language-julia">&quot;Tell whether there are too foo items in the array.&quot;
+foo(xs::Array) = ...</code></pre><p>文档会被翻译成 <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>，所以你可以 使用缩进和代码块来分隔代码示例和文本。从技术上来说，任何对象 都可以作为 metadata 与任何其他对象关联；Markdown 是默认的，但是可以创建 其它字符串宏并传递给 <code>@doc</code> 宏来使用其他格式。</p><p>这里是一个更加复杂的例子，但仍然使用 Markdown：</p><pre><code class="language-julia">&quot;&quot;&quot;
+    bar(x[, y])
+
+Compute the Bar index between `x` and `y`. If `y` is missing, compute
+the Bar index between all pairs of columns of `x`.
+
+# Examples
+```julia-repl
+julia&gt; bar([1, 2], [1, 2])
+1
+```
+&quot;&quot;&quot;
+function bar(x, y) ...</code></pre><p>如上例所示，我们推荐在写文档时遵守一些简单约定：</p><ol><li><p>始终在文档顶部显示函数的签名，带有四空格缩进 以便能够显示成 Julia 代码。</p><p>这和在 Julia 代码中的签名是一样的（像 <code>mean(x::AbstractArray)</code>）， 或是简化版。可选参数应该尽可能与默认值一同显示（例如 <code>f(x, y=1)</code>），与实际的 Julia 语法一致。没有默认值的 可选参数应该放在括号中（例如 <code>f(x[, y])</code> 和 <code>f(x[, y[, z]]</code>)）。可选的解决方法是 使用多行：一个没有可选参数，其他的拥有可选参数（或者多个可选参数）。 这个解决方案也可以用作给某个函数的多个方法来写文档。当一个函数 接收到多个关键字参数，只在签名中包含占位符<code>&lt;keyword arguments&gt;</code> （例如 <code>f(x; &lt;keyword arguments&gt;)</code>），并在<code># 参数</code>章节给出完整列表 （参照下列点4）。</p></li><li><p>在简化的签名块后请包含一个描述函数能做什么或者对象代表什么的 单行句。如果需要的话，在一个空行之后，在第二段 提供更详细的信息。</p><p>撰写函数的文档时，单行语句应使用祈使结构（“Do this”，“Return that”） 而非第三人称（不要写“Returns the length...”）。 并且应以句号结尾。如果函数的意义不能简单地总结，有利的方法是分成 分开的组合句（虽然这个不应被看做是对于每个事例 的绝对要求）。</p></li><li><p>不要自我重复。</p><p>因为签名给出了函数名，所以没有必要用 &quot;The function <code>bar</code>...&quot;开始文档：直接说要点。相似地，如果签名指定了 参数的类型，在描述中提到这些是多余的。</p></li><li><p>只在确实必要时提供参数列表。</p><p>对于简单函数，直接在函数的目的描述中提到参数的作用 常常更加清楚。参数列表应只重复再其他地方提供过的 信息。然而提供一个参数列表对于拥有多个参数的复杂函数 是的好想法（特别是含有关键字参数的情况）。在这些事例中，请在函数的一般描述后 插入参数列表，在标题<code># Arguments</code> 之后，每个参数之前有一个项目符号<code>-</code>。 参数列表应该提到参数的类型和默认值（如果有）：</p><pre><code class="language-julia">&quot;&quot;&quot;
+...
+# Arguments
+- `n::Integer`: the number of elements to compute.
+- `dim::Integer=1`: the dimensions along which to perform the computation.
+...
+&quot;&quot;&quot;</code></pre></li><li><p>给相关函数提供提示。</p><p>有时会存在具有功能相联系的函数。为了提供可探索性请提供 一个相关函数的小列表，在段落<code>See also:</code>中。</p><pre><code class="language-none">See also: [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref)</code></pre></li><li><p>请在<code># Examples</code>中包含一些代码例子。</p><p>例子应尽可能按照<em>doctest</em>来写。<em>doctest</em>是一个栅栏分隔开的代码块 （请参阅<a href="#代码块-1">代码块</a>）以 <code>```jldoctest</code> 开头并包含任意数量的提示符 <code>julia&gt;</code> 与输入和预期输出用来模拟Julia REPL。</p><p>例如在下面的docstring中定义了变量<code>a</code>，期待的输出 ，跟在Julia REPL中打印的一样，出现在后面。</p><pre><code class="language-julia">&quot;&quot;&quot;
+Some nice documentation here.
+
+# Examples
+```jldoctest
+julia&gt; a = [1 2; 3 4]
+2×2 Array{Int64,2}:
+ 1  2
+ 3  4
+```
+&quot;&quot;&quot;</code></pre><div class="admonition warning"><div class="admonition-title">Warning</div><div class="admonition-text"><p>Calling <code>rand</code> and other RNG-related functions should be avoided in doctests since they will not produce consistent outputs during different Julia sessions. If you would like to show some random number generation related functionality, one option is to explicitly construct and seed your own <a href="../../stdlib/Random/#Random.MersenneTwister"><code>MersenneTwister</code></a> (or other pseudorandom number generator) and pass it to the functions you are doctesting.</p><p>Operating system word size (<a href="../../base/numbers/#Core.Int32"><code>Int32</code></a> or <a href="../../base/numbers/#Core.Int64"><code>Int64</code></a>) as well as path separator differences (<code>/</code> or <code>\</code>) will also affect the reproducibility of some doctests.</p><p>Note that whitespace in your doctest is significant! The doctest will fail if you misalign the output of pretty-printing an array, for example.</p></div></div><p>你可以运行 <code>make -C doc doctest=true</code> 来运行在Julia手册和API文档中的doctests, 这样可以确保你的例子都能正常运行。</p><p>为了表示输出结果被截断了，你应该在校验 应该停止的一行写上<code>[...]</code>。这个在当 doctest显示有个异常被抛出时隐藏堆栈跟踪时很有用（堆栈跟踪包含 对julia代码的行的非永久引用）, 例如：</p><pre><code class="language-julia">```jldoctest
+julia&gt; div(1, 0)
+ERROR: DivideError: integer division error
+[...]
+```</code></pre><p>Julia那些不能进行测试的例子应该写在以<code>```julia</code>开头的栅栏分隔的代码块中 以便在生成的文档中正确地高光显示。</p><div class="admonition tip"><div class="admonition-title">Tip</div><div class="admonition-text"><p>例子应尽可能<strong>独立</strong>和<strong>可运行</strong>以便读者可以在不需要引入任何依赖的情况下对它们进行实验。</p></div></div></li><li><p>使用倒引号来标识代码和方程。</p><p>Julia标识符和代码摘录应该出现在倒引号<code>`</code>之间来使其能 高光显示。LaTeX语法下的方程应该插入到双倒引号 <code>``</code>之间。 请使用Unicode字符而非LaTeX转义序列，比如 <code>``α = 1``</code> 而非 <code>``\\alpha = 1``</code>。</p></li><li><p>请将起始和结束的<code>&quot;&quot;&quot;</code>符号单独成行。</p><p>也就是说，请写：</p><pre><code class="language-julia">&quot;&quot;&quot;
+...
+
+...
+&quot;&quot;&quot;
+f(x, y) = ...</code></pre><p>而非：</p><pre><code class="language-julia">&quot;&quot;&quot;...
+
+...&quot;&quot;&quot;
+f(x, y) = ...</code></pre><p>这将让docstring的起始和结束位置更加清楚。</p></li><li><p>请在代码中遵守单行长度限制。</p><p>Docstring是使用与代码相同的工具编辑的。所以应运用同样的约定。 建议一行92个字符后换行。</p></li><li><p>请提供允许自定义类型来为此函数实现接口的信息， 在一个<code># Implementation</code>章节。这些为了开发者而非用户的 解释了例如哪些函数应该被重写和哪些函数自动使用恰当的备用等信息的 接口信息最好与描述函数的主体描述 分开。</p></li></ol><h2><a class="nav-anchor" id="访问文档-1" href="#访问文档-1">访问文档</a></h2><p>文档可以在REPL中访问，也可以在 <a href="https://github.com/JuliaLang/IJulia.jl">IJulia</a> 中通过键入<code>?</code>紧接函数或者宏的名字并按下<code>Enter</code>访问。例如，</p><pre><code class="language-julia">?cos
+?@time
+?r&quot;&quot;</code></pre><p>会分别为相应的函数，宏或者字符显示文档。在<a href="http://junolab.org">Juno</a> 中，使用<code>Ctrl-J, Ctrl-D</code>会为光标处的对象显示文档。</p><h2><a class="nav-anchor" id="函数与方法-1" href="#函数与方法-1">函数与方法</a></h2><p>在Julia中函数可能有多种实现，被称为方法。虽然通用函数 一般只有一个目的，Julia允许在必要时可以对方法独立写文档。 通常，应该只有最通用的方法才有文档，或者甚至只是函数本身 （也就是在<code>function bar end</code>之前没有任何方法的对象）。特定方法应该 只因为其行为与其他通用方法有所区别才写文档。在任何情况下都不应 重复其他地方有的信息。例如</p><pre><code class="language-julia">&quot;&quot;&quot;
+    *(x, y, z...)
+
+Multiplication operator. `x * y * z *...` calls this function with multiple
+arguments, i.e. `*(x, y, z...)`.
+&quot;&quot;&quot;
+function *(x, y, z...)
+    # ... [implementation sold separately] ...
+end
+
+&quot;&quot;&quot;
+    *(x::AbstractString, y::AbstractString, z::AbstractString...)
+
+When applied to strings, concatenates them.
+&quot;&quot;&quot;
+function *(x::AbstractString, y::AbstractString, z::AbstractString...)
+    # ... [insert secret sauce here] ...
+end
+
+help?&gt; *
+search: * .*
+
+  *(x, y, z...)
+
+  Multiplication operator. x * y * z *... calls this function with multiple
+  arguments, i.e. *(x,y,z...).
+
+  *(x::AbstractString, y::AbstractString, z::AbstractString...)
+
+  When applied to strings, concatenates them.</code></pre><p>当从通用函数里抽取文档时，每个方法的元数据会用函数<code>catdoc</code>拼接，其当然可以被自定义类型重写。</p><h2><a class="nav-anchor" id="进阶用法-1" href="#进阶用法-1">进阶用法</a></h2><p><code>@doc</code>宏在叫做<code>META</code>的每个模块的字典中连接他的第一个和第二个参数。默认地，文档希望是用Markdown写成，并且<code>doc&quot;&quot;&quot;</code>字符串宏简单地创造一个代表了Markdown内容的对象。在未来，有可能支持更多的进阶功能比如考虑到相关的图像或者链接路径。</p><p>为了让写文档更加简单，语法分析器对宏名<code>@doc</code>特殊对待：如果<code>@doc</code>的调用只有一个参数，但是在下一行出现了另外一个表达式，那么这个表达式就会追加为宏的参数。所以接下来的语法会被分析成<code>@doc</code>的2个参数的调用：</p><pre><code class="language-julia">@doc raw&quot;&quot;&quot;
+...
+&quot;&quot;&quot;
+f(x) = x</code></pre><p>这就让使用任意对象（这里指的是<code>原始</code>字符串）作为docstring变得简单。</p><p>当<code>@doc</code>宏（或者<code>doc</code>函数）用作抽取文档时，他会在所有的<code>META</code>字典寻找与对象相关的元数据并且返回。返回的对象（例如一些Markdown内容）会默认智能地显示。这个设计也让以编程方法使用文档系统变得容易；例如，在一个函数的不同版本中重用文档：</p><pre><code class="language-julia">@doc &quot;...&quot; foo!
+@doc (@doc foo!) foo</code></pre><p>或者与Julia的元编程功能一起使用：</p><pre><code class="language-julia">for (f, op) in ((:add, :+), (:subtract, :-), (:multiply, :*), (:divide, :/))
+    @eval begin
+        $f(a,b) = $op(a,b)
+    end
+end
+@doc &quot;`add(a,b)` adds `a` and `b` together&quot; add
+@doc &quot;`subtract(a,b)` subtracts `b` from `a`&quot; subtract</code></pre><p>写在非顶级块，比如<code>begin</code>, <code>if</code>, <code>for</code>, 和 <code>let</code>，中的文档会根据块的评估情况加入文档系统中，例如：</p><pre><code class="language-julia">if condition()
+    &quot;...&quot;
+    f(x) = x
+end</code></pre><p>会被加到<code>f(x)</code>的文档中，当<code>condition()</code>是<code>true</code>的时候。注意即使<code>f(x)</code>在块的末尾离开了作用域，他的文档还会保留。</p><h3><a class="nav-anchor" id="动态写文档-1" href="#动态写文档-1">动态写文档</a></h3><p>有些时候类型的实例的合适的文档并非只取决于类型本身，也取决于实例的值。在这些情况下，你可以添加一个方法给自定义类型的<code>Docs.getdoc</code>函数，返回基于每个实例的文档。例如，</p><pre><code class="language-julia">struct MyType
+    value::String
+end
+
+Docs.getdoc(t::MyType) = &quot;Documentation for MyType with value $(t.value)&quot;
+
+x = MyType(&quot;x&quot;)
+y = MyType(&quot;y&quot;)</code></pre><p>输入<code>?x</code>会显示&quot;Documentation for MyType with value x&quot;，输入<code>?y</code>则会显示&quot;Documentation for MyType with value y&quot;。</p><h2><a class="nav-anchor" id="语法指南-1" href="#语法指南-1">语法指南</a></h2><p>对于所有的可写文档的Julia语法的总览。</p><p>在下述例子中<code>&quot;...&quot;</code>用来表示任意的docstring。</p><p><code>doc&quot;&quot;</code>只应用在如下情况下：docstring包含不应被Julia分析的<code>$</code>或者<code>\</code>字符，比如LaTeX语法；Julia源码中包含插值。</p><h3><a class="nav-anchor" id="函数与方法-2" href="#函数与方法-2">函数与方法</a></h3><pre><code class="language-julia">&quot;...&quot;
+function f end
+
+&quot;...&quot;
+f</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了函数 <code>f</code>。首选的语法是第一种，虽然两者是等价的。</p><pre><code class="language-julia">&quot;...&quot;
+f(x) = x
+
+&quot;...&quot;
+function f(x)
+    x
+end
+
+&quot;...&quot;
+f(x)</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了方法 <code>f(::Any)</code>。</p><pre><code class="language-julia">&quot;...&quot;
+f(x, y = 1) = x + y</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了两个方法，分别为 <code>f(::Any)</code> 和 <code>f(::Any, ::Any)</code>。</p><h3><a class="nav-anchor" id="宏-1" href="#宏-1">宏</a></h3><pre><code class="language-julia">&quot;...&quot;
+macro m(x) end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了宏 <code>@m(::Any)</code> 的定义。</p><pre><code class="language-julia">&quot;...&quot;
+:(@m)</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了名为 <code>@m</code> 的宏。</p><h3><a class="nav-anchor" id="类型-1" href="#类型-1">类型</a></h3><pre><code class="language-none">&quot;...&quot;
+abstract type T1 end
+
+&quot;...&quot;
+mutable struct T2
+    ...
+end
+
+&quot;...&quot;
+struct T3
+    ...
+end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了类型 <code>T1</code>、<code>T2</code> 和 <code>T3</code>。</p><pre><code class="language-julia">&quot;...&quot;
+struct T
+    &quot;x&quot;
+    x
+    &quot;y&quot;
+    y
+end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了类型 <code>T</code>，<code>&quot;x&quot;</code> 添加给字段 <code>T.x</code>，<code>&quot;y&quot;</code> 添加给字段 <code>T.y</code>。也可以运用于<code>mutable struct</code> 类型。</p><h3><a class="nav-anchor" id="模块-1" href="#模块-1">模块</a></h3><pre><code class="language-julia">&quot;...&quot;
+module M end
+
+module M
+
+&quot;...&quot;
+M
+
+end</code></pre><p>把 docstring <code>&quot;...&quot;</code> 添加给了模块 <code>M</code>。首选的语法是在模块之前添加 docstring，虽然两者是等价的。</p><pre><code class="language-julia">&quot;...&quot;
+baremodule M
+# ...
+end
+
+baremodule M
+
+import Base: @doc
+
+&quot;...&quot;
+f(x) = x
+
+end</code></pre><p>通过把 docstring 放在表达式之上来给一个 <code>baremodule</code> 写文档会在模块中自动引入 <code>@doc</code>。它在模块表达式并没有文档时必须手动引入。空的 <code>baremodule</code> 不能有文档。</p><h3><a class="nav-anchor" id="全局变量-1" href="#全局变量-1">全局变量</a></h3><pre><code class="language-julia">&quot;...&quot;
+const a = 1
+
+&quot;...&quot;
+b = 2
+
+&quot;...&quot;
+global c = 3</code></pre><p>把docstring<code>&quot;...&quot;</code>添加给了<code>绑定</code> <code>a</code>，<code>b</code>和<code>c</code>。</p><p><code>绑定</code>是用来在<code>模块</code>中存储对于特定<code>符号</code>的引用而非存储被引用的值本身。</p><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>当一个 <code>const</code> 定义只是用作定义另外一个定义的别名时，比如函数 <code>div</code> 和其在 <code>Base</code> 中的别名 <code>÷</code>，并不要为别名写文档，转而去为实际的函数写文档。</p><p>如果别名写了文档而实际定义没有，那么文档系统（<code>?</code> 模式）在寻找实际定义的文档时将不会返回别名的对应文档。</p><p>比如你应该写</p><pre><code class="language-julia">&quot;...&quot;
+f(x) = x + 1
+const alias = f</code></pre><p>而非</p><pre><code class="language-julia">f(x) = x + 1
+&quot;...&quot;
+const alias = f</code></pre></div></div><pre><code class="language-julia">&quot;...&quot;
+sym</code></pre><p>把docstring <code>&quot;...&quot;</code>添加给值<code>sym</code>。用户应首选在<code>sym</code>定义处写文档。</p><h3><a class="nav-anchor" id="多重对象-1" href="#多重对象-1">多重对象</a></h3><pre><code class="language-julia">&quot;...&quot;
+a, b</code></pre><p>把docstring <code>&quot;...&quot;</code> 添加给<code>a</code>和<code>b</code>，两个都应该是可以写文档的表达式。这个语法等价于</p><pre><code class="language-julia">&quot;...&quot;
+a
+
+&quot;...&quot;
+b</code></pre><p>这种方法可以给任意数量的表达式写文档。当两个函数相关，比如非变版本<code>f</code>和可变版本<code>f!</code>，这个语法是有用的。</p><h3><a class="nav-anchor" id="宏生成代码-1" href="#宏生成代码-1">宏生成代码</a></h3><pre><code class="language-julia">&quot;...&quot;
+@m expression</code></pre><p>把docstring <code>&quot;...&quot;</code> 添加给通过展开<code>@m expression</code>生成的表达式。这就允许由<code>@inline</code>,<code>@noinline</code>,<code>@generated</code>或者任意其他宏装饰的表达式能和没有装饰的表达式以同样的方式写文档。</p><p>宏作者应该注意到只有只生成单个表达式的宏才会自动支持docstring。如果宏返回的是含有多个子表达式的块，需要写文档的子表达式应该使用宏 <a href="#Core.@__doc__"><code>@__doc__</code></a> 标记。</p><p><code>@enum</code>宏使用了<code>@__doc__</code>来允许给<code>Enum</code>写文档。检查其定义可以作为如何正确使用<code>@__doc__</code>的范例。</p><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Core.@__doc__" href="#Core.@__doc__"><code>Core.@__doc__</code></a> — <span class="docstring-category">Macro</span>.</div><div><div><pre><code class="language-julia">@__doc__(ex)</code></pre><p>Low-level macro used to mark expressions returned by a macro that should be documented. If more than one expression is marked then the same docstring is applied to each expression.</p><pre><code class="language-none">macro example(f)
+    quote
+        $(f)() = 0
+        @__doc__ $(f)(x) = 1
+        $(f)(x, y) = 2
+    end |&gt; esc
+end</code></pre><p><code>@__doc__</code> has no effect when a macro that uses it is not documented.</p></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaLang/julia/blob/099e826241fca365a120df9bac9a9fede6e7bae4/base/docs/Docs.jl#L420-L435">source</a></section><h2><a class="nav-anchor" id="Markdown语法-1" href="#Markdown语法-1">Markdown语法</a></h2><p>Julia支持下列的markdown语法。</p><h3><a class="nav-anchor" id="内联元素-1" href="#内联元素-1">内联元素</a></h3><p>这里&quot;内联&quot;指存在于文本块，如段落，中的元素，包括以下元素：</p><h4><a class="nav-anchor" id="粗体-1" href="#粗体-1">粗体</a></h4><p>使用两个星号<code>**</code>包围单词，用来以粗体显示被包围的文本。</p><pre><code class="language-none">A paragraph containing a **bold** word.</code></pre><h4><a class="nav-anchor" id="斜体-1" href="#斜体-1">斜体</a></h4><p>使用一个星号<code>*</code>包围单词，用来以斜体显示被包围的文本。</p><pre><code class="language-none">A paragraph containing an *emphasised* word.</code></pre><h4><a class="nav-anchor" id="字面值-1" href="#字面值-1">字面值</a></h4><p>使用单倒引号<code>`</code>包围单词，用来正确显示文本。</p><pre><code class="language-none">A paragraph containing a `literal` word.</code></pre><p>当编写引用变量和函数名字或者Julia程序的部分内容的文本时，应使用字面量。</p><div class="admonition tip"><div class="admonition-title">Tip</div><div class="admonition-text"><p>为了在字面量文本中包含一个倒引号，使用三个倒引号来包围文本，而非单倒引号。</p><pre><code class="language-none">A paragraph containing a ``` `backtick` character ```.</code></pre><p>By extension any odd number of backticks may be used to enclose a lesser number of backticks.</p></div></div><h4><a class="nav-anchor" id="\\LaTeX-1" href="#\\LaTeX-1"><span>$\LaTeX$</span></a></h4><p>使用<span>$\LaTeX$</span>语法和双倒引号<code>``</code>包围文本，以便以数学表达式的方式显示。</p><pre><code class="language-none">A paragraph containing some ``\LaTeX`` markup.</code></pre><div class="admonition tip"><div class="admonition-title">Tip</div><div class="admonition-text"><p>如同上一节的字面量，如果字面倒引号需要写在双倒引号中，请写数量为大于2的偶数的倒引号。注意如果在 <span>$\LaTeX$</span> 标记中包含一个字面倒引号，两个闭合的倒引号就足够了。</p></div></div><h4><a class="nav-anchor" id="链接-1" href="#链接-1">链接</a></h4><p>链接到外部或者内部的地址的链接应该按照下列的语法编写：中括号<code>[ ]</code>围绕的文本是链接的名字，小括号<code>( )</code>围绕的文本是URL。</p><pre><code class="language-none">A paragraph containing a link to [Julia](http://www.julialang.org).</code></pre><p>在Julia文档中对其他的有文档的函数/方法/变量进行交叉引用是可以的。例如：</p><pre><code class="language-julia">&quot;&quot;&quot;
+    accumulate!(op, y, x)
+
+Cumulative operation `op` on a vector `x`, storing the result in `y`. See also [`accumulate`](@ref).
+&quot;&quot;&quot;</code></pre><p>这会在生成的文档中生成指向 <code>accumulate</code> 文档的一个链接（含有更多的关于函数实际的功能的信息）。在函数的可变/不变版本中包含交叉引用或者在两个看起来相似地函数中间高光其区别是鼓励的。</p><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>上述的交叉引用<em>不是</em>Markdown的特色，其依赖于 <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>，这个包用来构建基础的Julia文档。</p></div></div><h4><a class="nav-anchor" id="脚注引用-1" href="#脚注引用-1">脚注引用</a></h4><p>命名的和编号的脚注引用应按照下列的语法编写：脚注名必须是没有截断的只有字母或者数字的单个单词。</p><pre><code class="language-none">A paragraph containing a numbered footnote [^1] and a named one [^named].</code></pre><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>与脚注相关的文本能写在脚注链接同一页的任意地方。用于定义脚注文本的语法在下面的<a href="#脚注-1">脚注</a>章节中讨论。</p></div></div><h3><a class="nav-anchor" id="顶层元素-1" href="#顶层元素-1">顶层元素</a></h3><p>下列元素可以写在文档的&quot;顶层&quot;或者&quot;顶层&quot;元素之中。</p><h4><a class="nav-anchor" id="段落-1" href="#段落-1">段落</a></h4><p>段落是一个纯文本的块，可能包含任意数量的在上面的<a href="#内联元素-1">内联元素</a>章节中定义的内联元素，在段落前后会拥有一个或者多个空行。</p><pre><code class="language-none">This is a paragraph.
+
+And this is *another* one containing some emphasised text.
+A new line, but still part of the same paragraph.</code></pre><h4><a class="nav-anchor" id="标题-1" href="#标题-1">标题</a></h4><p>文档可以使用标题分成不同的章节。标题使用的是下列的语法：</p><pre><code class="language-julia"># Level One
+## Level Two
+### Level Three
+#### Level Four
+##### Level Five
+###### Level Six</code></pre><p>如同段落一样，标题行可以包含任意的内联语法。</p><div class="admonition tip"><div class="admonition-title">Tip</div><div class="admonition-text"><p>尽量避免单个文档中使用过多层级的标题。重度嵌套的文档会给人以有将其重建或者分离成包含不同主题的多页的需要的印象。</p></div></div><h4><a class="nav-anchor" id="代码块-1" href="#代码块-1">代码块</a></h4><p>源代码会以带有四空格缩进的字面量块的形式显示，如下列所示。</p><pre><code class="language-none">This is a paragraph.
+
+    function func(x)
+        # ...
+    end
+
+Another paragraph.</code></pre><p>另外，代码块可以由三个倒引号包围起来，并有可选的「语言」来指定块中代码的高光方式。</p><pre><code class="language-none">A code block without a &quot;language&quot;:
+
+```
+function func(x)
+    # ...
+end
+```
+
+and another one with the &quot;language&quot; specified as `julia`:
+
+```julia
+function func(x)
+    # ...
+end
+```</code></pre><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>「栅栏分隔」的代码块，如同最近的例子，应该比缩进代码块更优选因为在缩进代码块中无法指定语言。</p></div></div><h4><a class="nav-anchor" id="块引用-1" href="#块引用-1">块引用</a></h4><p>来自外部源的文本，比如来自书本或者网站的引用，应该在每行之前使用<code>&gt;</code>字符来引用，如下所示。</p><pre><code class="language-none">Here&#39;s a quote:
+
+&gt; Julia is a high-level, high-performance dynamic programming language for
+&gt; technical computing, with syntax that is familiar to users of other
+&gt; technical computing environments.</code></pre><p>注意每行的<code>&gt;</code>字符之后一定要有单个空格。引用块可能自己含有其他的顶层或者内联元素。</p><h4><a class="nav-anchor" id="图片-1" href="#图片-1">图片</a></h4><p>图片的语法与之前提到的链接语法相类似。在链接前加一个<code>!</code>字符就可以从指定的URL显示图片而非链接。</p><pre><code class="language-julia">![alternative text](link/to/image.png)</code></pre><h4><a class="nav-anchor" id="列表-1" href="#列表-1">列表</a></h4><p>无序列表可以通过在列表的每项前加<code>*</code>,<code>+</code>或<code>-</code>来编写。</p><pre><code class="language-none">A list of items:
+
+  * item one
+  * item two
+  * item three</code></pre><p>注意每个<code>*</code>之前有两个空格，之后有一个空格。</p><p>列表可以包含其他的嵌套顶层元素，比如列表，代码块或者引用块。如果列表中包含任意顶级元素，请在每个列表项之间流出一个空行。</p><pre><code class="language-none">Another list:
+
+  * item one
+
+  * item two
+
+    ```
+    f(x) = x
+    ```
+
+  * 一个子列表：
+
+      + 子项一
+      + 子项二</code></pre><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>列表里的每一项的内容必须与项的第一行对齐。在上面的例子中栅栏分隔的代码块必须缩进四个空格以便于 <code>item two</code> 中的 <code>i</code> 对齐。</p></div></div><p>有序列表可以通过用正整数加<code>.</code>或者<code>)</code>来替代&quot;项目&quot;符号，<code>*</code>，<code>+</code>或者<code>-</code>，来编写。</p><pre><code class="language-none">Two ordered lists:
+
+ 1. item one
+ 2. item two
+ 3. item three
+
+ 5) item five
+ 6) item six
+ 7) item seven</code></pre><p>一个有序列表可以不从1开始编号，如同上例的第二个列表所示，这个列表从5开始编号。如同无序列表一样，有序列表可以包含嵌套的顶层元素。</p><h4><a class="nav-anchor" id="显示方程-1" href="#显示方程-1">显示方程</a></h4><p>大型的<span>$\LaTeX$</span>方程无法放进段落的行列中，可以使用&quot;语言&quot;为<code>math</code>的栅栏分隔的代码块将其写成显示方程，如同下列例子：</p><pre><code class="language-julia">```math
+f(a) = \frac{1}{2\pi}\int_{0}^{2\pi} (\alpha+R\cos(\theta))d\theta
+```</code></pre><h4><a class="nav-anchor" id="脚注-1" href="#脚注-1">脚注</a></h4><p>这个语法是与<a href="#脚注引用-1">脚注引用</a>内联语法相配合的。请确认也读过那个章节。</p><p>与脚注引用语法相似，脚注文本使用如下语法定义，不包括脚注标签之后的<code>:</code>字符：</p><pre><code class="language-none">[^1]: Numbered footnote text.
+
+[^note]:
+
+    Named footnote text containing several toplevel elements.
+
+      * item one
+      * item two
+      * item three
+
+    ```julia
+    function func(x)
+        # ...
+    end
+    ```</code></pre><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>在语法分析中并没有校验所有的脚注引用是否都有对应的脚注。</p></div></div><h4><a class="nav-anchor" id="横向法则-1" href="#横向法则-1">横向法则</a></h4><p>HTML标签<code>&lt;hr&gt;</code>等效于下列语法：</p><pre><code class="language-none">该行之上的文本
+
+---
+
+和该行之下的文本。</code></pre><h4><a class="nav-anchor" id="表格-1" href="#表格-1">表格</a></h4><p>基础表格可以使用下列语法编写。注意Markdown表格只有有限的特征，不像上述讨论的其他元素，不能包含嵌套的顶层元素 – 只允许内联元素。表格必须包含有列名的标题行。表格单元格不能够跨行或者跨列。</p><pre><code class="language-none">| 列一 | 列二 | 列三 |
+|:---------- | ---------- |:------------:|
+| 行 `1`    | 列 `2` |              |
+| *行* 2    | **行** 2  | 列 ``3`` |</code></pre><div class="admonition note"><div class="admonition-title">Note</div><div class="admonition-text"><p>如同上例中所示，每列的 <code>|</code> 字符必须纵向对齐。</p><p>在每列的标题分隔符（含有 <code>-</code> 字符的行）两边中一边出现的 <code>:</code> 字符指定这一行是左对齐，右对齐还是（当两边都出现 <code>:</code>）居中对齐。没有 <code>:</code> 字符时默认右对齐。</p></div></div><h4><a class="nav-anchor" id="警告-1" href="#警告-1">警告</a></h4><p>特殊格式的块，被称为警告，可用来高光特殊的备注。它们可以使用下列的 <code>!!!</code> 语法定义：</p><pre><code class="language-none">!!! note
+
+    这是笔记的内容。
+
+!!! warning &quot;Beware!&quot;
+
+    这是另外一个。
+
+    warning 警告有一个自定义标题：`&quot;Beware!&quot;`。</code></pre><p>警告的类型可以是任意单词，但是有些类型会产生特殊的类型化，名为（按严重程度降序）: <code>danger</code>，<code>warning</code>，<code>info</code>/<code>note</code>，和<code>tip</code>。</p><p>盒子的自定义标题可以以警告类型之后的字符串（以双重引用形式）形式提供。如果在警告类型后没有指定标题文本，块的类型将用作标题，也就是说<code>note</code>警告时会使用<code>&quot;Note&quot;</code>作为标题。</p><p>警告，和大部分其他顶层元素一样，也可以包含其他顶层元素。</p><h2><a class="nav-anchor" id="Markdown语法扩展-1" href="#Markdown语法扩展-1">Markdown语法扩展</a></h2><p>Julia 的 Markdown 支持插值，与基础的字符串字面值非常相似，区别是它会将对象本身存储到一个 Markdown 树（对应的是直接转换成字符串）。当 Markdown 内容渲染时，常用的 <code>show</code> 方法会被调用，也会照例重写。这个设计允许在不把基础语法搞杂乱的情况下可以扩展出任意的复杂的特征（比如引用）。</p><p>原则上，Markdown语法分析器自己可以通过包来进行任意扩展，或者可以使用完整的自定义的Markdown风味，但是这通常应该是非必须的。</p><footer><hr/><a class="previous" href="../modules/"><span class="direction">上一篇</span><span class="title">模块</span></a><a class="next" href="../metaprogramming/"><span class="direction">下一篇</span><span class="title">元编程</span></a></footer></article></body></html>
