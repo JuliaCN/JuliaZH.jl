@@ -15,7 +15,7 @@ import Base.BaseDocs: @kw_str
 
 输入 `?`， 然后输入你想要查看帮助文档的函数或者宏名称就可以查看它们的文档。例如 `?cos`, 或者 `?@time` 然后按回车键即可。
 
-在 REPL 中输入 `ENV["REPL_LOCALE"]=""` 将恢复英文模式。再次回到中文模型请输入 `ENV["REPL_LOCALE"]="zh_CN"`。
+在 REPL 中输入 `ENV["REPL_LOCALE"]=""` 将恢复英文模式。再次回到中文模式请输入 `ENV["REPL_LOCALE"]="zh_CN"`。
 """
 kw"help", kw"?", kw"julia", kw""
 
