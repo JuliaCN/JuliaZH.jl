@@ -109,7 +109,7 @@ julia> x
     julia> x = 0x01; typeof(x)
     UInt8
 
-    julia> x *= 2 # Same as x = x * 2
+    julia> x *= 2 # 与 x = x * 2 相同
     2
 
     julia> typeof(x)
@@ -326,7 +326,7 @@ Julia 提供了强大的数学函数和运算符集合。这些数学运算定�
 julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)
 (11, 13, 17)
 
-julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)
+julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  #（请注意 `:(=)` 中的括号是必要的）
 (0, 1, 1)
 ```
 
@@ -372,12 +372,12 @@ julia> Int8(127.0)
 127
 
 julia> Int8(3.14)
-ERROR: InexactError: Int8(Int8, 3.14)
+ERROR: InexactError: Int8(3.14)
 Stacktrace:
 [...]
 
 julia> Int8(128.0)
-ERROR: InexactError: Int8(Int8, 128.0)
+ERROR: InexactError: Int8(128.0)
 Stacktrace:
 [...]
 

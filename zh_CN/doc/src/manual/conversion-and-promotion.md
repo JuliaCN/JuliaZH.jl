@@ -193,7 +193,7 @@ promote_rule(::Type{Float64}, ::Type{Float32}) = Float64
 声明当同时类型提升 64 位和 32 位浮点值时，它们应该被类型提升为 64 位浮点数。但是，提升类型不需要是参数类型之一；在 Julia Base 中有以下类型提升规则：
 
 ```julia
-promote_rule(::Type{UInt8}, ::Type{Int8}) = Int
+promote_rule(::Type{BigInt}, ::Type{Float64}) = BigFloat
 promote_rule(::Type{BigInt}, ::Type{Int8}) = BigInt
 ```
 

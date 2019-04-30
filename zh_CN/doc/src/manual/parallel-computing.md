@@ -7,15 +7,11 @@
 2. 多线程
 3. 多核心或分布式处理
 
-我们首先考虑 Julia 任务 [Tasks（也就是协程）](@ref man-tasks)以及其它依赖于 Julia  运行时库的模块。通过运行时库无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对任务间的通信拥有完全控制。
-Julia 同样允许利用一些操作在任务间进行通信，比如 [`wait`](@ref) 以及 [`fetch`](@ref)。
-另外，通信和数据同步是通过管道 [`Channel`](@ref) 完成的，它也是实现任务间通信的基石。
+我们首先考虑 Julia 任务 [Task（也就是协程）](@ref man-tasks)以及其它依赖于 Julia  运行时库的模块，通过运行时库，我们无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对 `Task` 间内部通信拥有完全控制。Julia 同样支持利用一些操作在 `Task` 间进行通信，比如 [`wait`](@ref) 以及 [`fetch`](@ref)。另外，通信和数据同步是通过管道 [`Channel`](@ref) 完成的，它也为 `Task` 间内部通信提供了渠道。
 
-Julia 还支持实验性的多线程功能，在执行时通过分叉(fork)，然后有一个匿名函数在所有线程上运行。由于是一种*分叉-汇合*(fork-join)的方式，并行执行的线程必须在分叉之后，汇合到 Julia 主线程上，从而继续串行执行。多线程功能是通过 `Base.Threads` 模块提供的，目前仍然是实验性的，因为目前Julia 还不是完全线程安全的。尤其是在进行 I/O 操作和协程切换的时候可能会有段错误出现。最新的进展请关注 [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading)。多线程应该只在你考虑全局变量、锁以及原子操作的时候使用，后面我们会详细讲解。
+Julia 还支持实验性的多线程功能，在执行时通过分叉（fork），然后有一个匿名函数在所有线程上运行。由于是一种*分叉-汇合*（fork-join）的方式，并行执行的线程必须在独立执行之后，最终汇合到 Julia 主线程上，以便能够继续串行执行。多线程功能是通过 `Base.Threads` 模块提供的，目前仍然是实验性的，因为目前 Julia 还不是完全线程安全的。尤其是在进行 I/O 操作和协程切换的时候可能会有段错误出现。最新的进展请关注 [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading)。多线程应该只在你考虑全局变量、锁以及原子操作的时候使用，后面我们都会详细讲解。
 
-最后我们将介绍 Julia 的分布式和并行计算的实现方法。鉴于以科学计算为主要目的，
-Julia 底层实现上提供了通过多核或多机器对任务并行的接口。
-同时我们还将介绍一些有用的分布式编程的外部包，比如 `MPI.jl` 以及 `DistributedArrays.jl`。
+最后我们将介绍 Julia 的分布式和并行计算的实现方法。鉴于以科学计算为主要目的，Julia 底层实现上提供了跨多核或多机器对任务并行的接口。同时我们还将介绍一些有用的分布式编程的外部包，比如 `MPI.jl` 以及 `DistributedArrays.jl`。
 
 # 协程
 
@@ -42,7 +38,7 @@ Julia 的并行编程平台采用协程任务 [Tasks (aka Coroutines)](@ref man-
     c1 = Channel(32)
     c2 = Channel(32)
 
-    # and a function `foo` which reads items from from c1, processes the item read
+    # and a function `foo` which reads items from c1, processes the item read
     # and writes a result to c2,
     function foo()
         while true
@@ -54,7 +50,7 @@ Julia 的并行编程平台采用协程任务 [Tasks (aka Coroutines)](@ref man-
 
     # we can schedule `n` instances of `foo` to be active concurrently.
     for _ in 1:n
-        @schedule foo()
+        @async foo()
     end
     ```
 * Channe l可以通过 `Channel{T}(sz)` 构造，得到的 channel 只能存储类型 `T` 的数据。如果 `T` 没有指定，那么 channel 可以存任意类型。`sz` 表示该 channel 能够存储的最大元素个数。比如 `Channel(32)` 得到的 channel 最多可以存储32个元素。而 `Channel{MyType}(64)` 则可以最多存储64个 `MyType` 类型的数据。
@@ -131,7 +127,7 @@ julia> data = [i for i in c]
  3
 ```
 
-考虑这样一个用 channel 做 task 之间通信的例子。首先，起4个 task 来处理一个 `jobs` channel 中的数据。`jobs` 中的每个任务通过 `job_id` 来表示，然后每个 task 模拟读取一个 `job_id`，然后随机等待一会儿，然后往一个 `results` channel 中写入一个 Tuple，分别包含 `job_id` 和执行的时间，最后将结果打印出来：
+考虑这样一个用 channel 做 task 之间通信的例子。首先，起 4 个 task 来处理一个 `jobs` channel 中的数据。`jobs` 中的每个任务通过 `job_id` 来表示，然后每个 task 模拟读取一个 `job_id`，然后随机等待一会儿，然后往一个 results channel 中写入一个元组，它分别包含 `job_id` 和执行的时间，最后将结果打印出来：
 
 ```julia-repl
 julia> const jobs = Channel{Int}(32);
@@ -155,16 +151,16 @@ julia> function make_jobs(n)
 
 julia> n = 12;
 
-julia> @schedule make_jobs(n); # feed the jobs channel with "n" jobs
+julia> @async make_jobs(n); # feed the jobs channel with "n" jobs
 
 julia> for i in 1:4 # start 4 tasks to process requests in parallel
-           @schedule do_work()
+           @async do_work()
        end
 
 julia> @elapsed while n > 0 # print out results
            job_id, exec_time = take!(results)
-           println("$job_id finished in $(round(exec_time,2)) seconds")
-           n = n - 1
+           println("$job_id finished in $(round(exec_time; digits=2)) seconds")
+           global n = n - 1
        end
 4 finished in 0.22 seconds
 3 finished in 0.45 seconds
@@ -408,7 +404,7 @@ julia> function g_fix(r)
 g_fix (generic function with 1 method)
 
 julia>  r = let m = MersenneTwister(1)
-                [m; accumulate(Future.randjump, m, fill(big(10)^20, nthreads()-1))]
+                [m; accumulate(Future.randjump, fill(big(10)^20, nthreads()-1), init=m)]
             end;
 
 julia> g_fix(r)
@@ -510,7 +506,7 @@ julia> fetch(s)
 
 有一点一定要注意，一旦执行了 `fetch`，[`Future`](@ref) 就会将结果缓存起来，之后执行 [`fetch`](@ref) 的时候就不涉及到网络传输了。一旦所有的 [`Future`](@ref) 都获取到了值，那么远端存储的值就会被删掉。
 
-[`@async`](@ref) 跟 [`@spawn`](@ref) 有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个**喂养**的 task，每个 task 都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task 并不会立即执行，只有在执行到 [`@sync`](@ref) 结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。在v0.7之后，所有的喂养 task 都能够通过 `nextidx` 共享状态，因为他们都在同一个进程中。尽管 `Tasks` 是协调调度的，但在某些情况下仍然有可能发送死锁，如 [asynchronous I\O](https://docs.julialang.org/en/stable/manual/faq/#Asynchronous-IO-and-concurrent-synchronous-writes-1)。上下文只会在特定时候发生切换，在这里就是执行 [`remotecall_fetch`](@ref)。当然，这是当前版本（dev v0.7）的实现，未来版本中可能会改变，有望在 M 个进程中最多跑 N 个 task，即 [M:N 线程](https://en.wikipedia.org/wiki/Thread_(computing)#Models)。然后，`nextidx` 需要加锁，从而让多个进程能够安全地对一个资源同时进行读写。
+[`@async`](@ref) 跟 [`@spawn`](@ref) 有点类似，不过只在当前局部线程中执行。通过它来给每个进程创建一个「喂养」task，每个 task 都选取下一个将要计算的索引，然后等待其执行结束，然后重复该过程，直到索引超出边界。需要注意的是，task 并不会立即执行，只有在执行到 [`@sync`](@ref) 结束时才会开始执行，此时，当前线程交出控制权，直到所有的任务都完成了。在v0.7 之后，所有的喂养 task 都能够通过 `nextidx` 共享状态，因为他们都在同一个进程中。尽管 `Tasks` 是协调调度的，但在某些情况下仍然有可能发送死锁，如 [asynchronous I/O](@ref faq-async-io)。上下文只会在特定时候发生切换，在这里就是执行 [`remotecall_fetch`](@ref)。当然，这是当前版本的实现状态，未来的 Julia 版本中可能会改变，有望在 M 个进程中最多跑 N 个 task，即 [M:N 线程](https://en.wikipedia.org/wiki/Thread_(computing)#Models)。然后，`nextidx` 需要加锁，从而让多个进程能够安全地对一个资源同时进行读写。
 
 
 
@@ -706,7 +702,7 @@ julia> let B = B
            remotecall_fetch(()->B, 2)
        end;
 
-julia> @fetchfrom 2 varinfo()
+julia> @fetchfrom 2 InteractiveUtils.varinfo()
 name           size summary
 ––––––––– ––––––––– ––––––––––––––––––––––
 A         800 bytes 10×10 Array{Float64,2}
@@ -818,7 +814,7 @@ Julia 中的 [`pmap`](@ref) 是被设计用来处理一些计算量比较复杂�
 
 针对 [`RemoteChannel`](@ref) 的 [`put!`](@ref), [`take!`](@ref), [`fetch`](@ref), [`isready`](@ref) 和 [`wait`](@ref) 方法会被重定向到其底层存储着 channel 的进程。
 
-因此，[`RemoteChannel`](@ref) 可以用来引用用户自定义的 `AbstractChannel` 对象。在 [Examples repository](https://github.com/JuliaArchive/Examples) 中的 `dictchannel.jl` 文件中有一个简单的例子，其中使用了一个字典用于远端存储。
+因此，[`RemoteChannel`](@ref) 可以用来引用用户自定义的 `AbstractChannel` 对象。在 [Examples repository](https://github.com/JuliaAttic/Examples) 中的 `dictchannel.jl` 文件中有一个简单的例子，其中使用了一个字典用于远端存储。
 
 
 ## Channel 和 RemoteChannel
@@ -874,7 +870,7 @@ julia> for p in workers() # start tasks on the workers to process requests in pa
 
 julia> @elapsed while n > 0 # print out results
            job_id, exec_time, where = take!(results)
-           println("$job_id finished in $(round(exec_time,2)) seconds on worker $where")
+           println("$job_id finished in $(round(exec_time; digits=2)) seconds on worker $where")
            n = n - 1
        end
 1 finished in 0.18 seconds on worker 4
@@ -1262,8 +1258,7 @@ kill(manager::FooManager, pid::Int, config::WorkerConfig)
 
 `BufferStream` 是一个内存中的 [`IOBuffer`](@ref)，其表现很像 `IO`，就是一个**流**（stream），可以异步地处理。
 
-在 [Examples repository](https://github.com/JuliaArchive/Examples)的 `clustermanager/0mq` 目录中，包含一个使用 ZeroMQ 连接 Julia worker 的例子，用的是星型拓补结构。需要注意的是：Julia 的进程仍然是**逻辑上**相互连接的，任意 worker 都可以与其它 worker 直接相连而无需感知到 0MQ 作为传输层的存在。
-
+在 [Examples repository](https://github.com/JuliaAttic/Examples) 的 `clustermanager/0mq` 目录中，包含一个使用 ZeroMQ 连接 Julia worker 的例子，用的是星型拓补结构。需要注意的是：Julia 的进程仍然是**逻辑上**相互连接的，任意 worker 都可以与其它 worker 直接相连而无需感知到 0MQ 作为传输层的存在。
 
 在使用自定义传输的时候：
 
@@ -1305,7 +1300,7 @@ Julia 集群设计的时候，默认是在一个安全的环境中执行，比�
     运行 Julia ERPL （做为 master）和云上的其他机器，比如 Amazon EC2，构成集群。
     这时候远程机器只要开启 22 端口就可以，然后要有 SSH 客户端
     通过公约基础设施（PKI）认证过。授权信息可以通过
-    `sshflags` 生效，比如 ``` sshflags=`-e<keyfile>` ```。
+    `sshflags` 生效，比如 ```sshflags=`-i <keyfile>` ```。
 
     在一个所有节点联通的拓扑网中（默认情况下是这样的），所有的 worker 节点都通过普通 TCP socket 通信互相连接。
     这样集群的安全策略就必须允许 worker 节点间
@@ -1347,7 +1342,7 @@ Julia 集群设计的时候，默认是在一个安全的环境中执行，比�
 
 ## 一些值得关注的外部库
 
-除了 Julia 自带的并行机制之外，还有许多外部的库值得一提。例如 [MPI.jl](https://github.com/JuliaParallel/MPI.jl) 提供了一个 `MPI` 协议的 Julia 的封装，或者是在 [共享数组](@ref) 提到的 [DistributedArrays.jl](https://github.com/JuliaParallel/Distributedarrays.jl)，此外尤其值得一提的是 Julia 的 GPU 编程生态，包括：
+除了 Julia 自带的并行机制之外，还有许多外部的库值得一提。例如 [MPI.jl](https://github.com/JuliaParallel/MPI.jl) 提供了一个 `MPI` 协议的 Julia 的封装，或者是在 [共享数组](@ref) 提到的 [DistributedArrays.jl](https://github.com/JuliaParallel/Distributedarrays.jl)，此外尤其值得一提的是 Julia 的 GPU 编程生态，其包括：
 
 1. 底层（C内核）的 [OpenCL.jl](https://github.com/JuliaGPU/OpenCL.jl) 和 [CUDAdrv.jl](https://github.com/JuliaGPU/CUDAdrv.jl)，分别提供了 OpenCL 和 CUDA 的封装。
 
@@ -1484,10 +1479,10 @@ mpirun -np 4 ./julia example.jl
 ```
 
 [^1]:
-    in this context, mpi refers to the mpi-1 standard. beginning with mpi-2, the mpi standards committee
-    introduced a new set of communication mechanisms, collectively referred to as remote memory access
-    (rma). the motivation for adding rma to the mpi standard was to facilitate one-sided communication
-    patterns. for additional information on the latest mpi standard, see [http://mpi-forum.org/docs](http://mpi-forum.org/docs/).
+    In this context, MPI refers to the MPI-1 standard. Beginning with MPI-2, the MPI standards committee
+    introduced a new set of communication mechanisms, collectively referred to as Remote Memory Access
+    (RMA). The motivation for adding rma to the MPI standard was to facilitate one-sided communication
+    patterns. For additional information on the latest MPI standard, see <https://mpi-forum.org/docs>.
 
 [^2]:
     [Julia GPU 手册](http://juliagpu.github.io/CUDAnative.jl/stable/man/usage.html#Julia-support-1)

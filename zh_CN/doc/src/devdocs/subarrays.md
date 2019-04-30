@@ -1,9 +1,8 @@
-# SubArrays
+# 子数组
 
-Julia's `SubArray` type is a container encoding a "view" of a parent [`AbstractArray`](@ref).  This page
-documents some of the design principles and implementation of `SubArray`s.
+Julia 的 `SubArray` 类型是编码父类型 [`AbstractArray`] 的“视图”的一个容器。本页介绍了 `SubArray` 的一些设计原则和实现。
 
-## Indexing: cartesian vs. linear indexing
+## 索引：笛卡尔索引与线性索引
 
 Broadly speaking, there are two main ways to access data in an array. The first, often called
 cartesian indexing, uses `N` indices for an `N` -dimensional `AbstractArray`.  For example, a
@@ -32,7 +31,7 @@ addition), converting from a linear index to a cartesian index is very slow: it 
  For this reason, any code that deals with `AbstractArray` types is best designed in terms of
 cartesian, rather than linear, indexing.
 
-## Index replacement
+## 索引替换
 
 Consider making 2d slices of a 3d array:
 
@@ -65,7 +64,7 @@ with `A[i,1,(2:3)[j]]` and `S2[i,j]` with `A[1,i,(2:3)[j]]`.
 The key feature of the design of SubArrays is that this index replacement can be performed without
 any runtime overhead.
 
-## SubArray design
+## 子数组设计
 
 ### Type parameters and fields
 
@@ -144,7 +143,7 @@ for any pair of indices `(i,j)` (except [`CartesianIndex`](@ref)s and arrays the
 This is the core of a `SubArray`; indexing methods depend upon `reindex` to do this index translation.
 Sometimes, though, we can avoid the indirection and make it even faster.
 
-### Linear indexing
+### 线性索引
 
 Linear indexing can be implemented efficiently when the entire array has a single stride that
 separates successive elements, starting from some offset. This means that we can pre-compute these

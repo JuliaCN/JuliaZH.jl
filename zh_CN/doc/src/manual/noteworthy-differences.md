@@ -51,7 +51,7 @@
   * Julia 不鼓励使用分号来结束语句。语句的结果不会自动打印（除了在 REPL 中），并且代码的一行不必使用分号结尾。[`println`](@ref) 或者 [`@printf`](@ref) 能用来打印特定输出。
      
      
-  * 在 Julia 中，如果 `A` 和 `B` 是数组，像 `A == B` 这样的逻辑比较运算符不会返回布尔值数组。相反地，请使用 `A .== B`。对于其他的像是 [`<`](@ref)、[`>`](@ref) 和 `=` 的布尔运算符同理。
+  * 在 Julia 中，如果 `A` 和 `B` 是数组，像 `A == B` 这样的逻辑比较运算符不会返回布尔值数组。相反地，请使用 `A .== B`。对于其他的像是 [`<`](@ref)、[`>`](@ref) 的布尔运算符同理。
      
      
   * 在 Julia 中，运算符[`&`](@ref)、[`|`](@ref) 和 [`⊻`](@ref xor)（[`xor`](@ref)）进行按位操作，分别与MATLAB中的`and`、`or` 和 `xor` 等价，并且优先级与 Python 的按位运算符相似（不像 C）。他们可以对标量运算或者数组中逐元素运算，可以用来合并逻辑数组，但是注意运算顺序的区别：括号可能是必要的（例如，选择 `A` 中等于 1 或 2 的元素可使用 `(A .== 1) .| (A .== 2)`）。
@@ -141,7 +141,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
 
       * 与概率分布相关的函数由 [Distributions 包](https://github.com/JuliaStats/Distributions.jl)提供。
-      * [DataFrames 包](https://github.com/JuliaStats/DataFrames.jl)提供数据帧。
+      * [DataFrames 包](https://github.com/JuliaData/DataFrames.jl)提供数据帧。
       * 广义线性模型由 [GLM 包](https://github.com/JuliaStats/GLM.jl)提供。
   * Julia 提供了元组和真正的哈希表，但不提供 R 风格的列表。在返回多个项时，通常应使用元组或具名元组：请使用 `(1, 2)` 或 `(a=1, b=2)` 代替 `list(a = 1, b = 2)`。
      
@@ -160,8 +160,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
   * Julia 的 [`max`](@ref) 和 [`min`](@ref) 分别等价于 R 中的 `pmax` 和 `pmin`，但两者的参数都需要具有相同的维度。虽然 [`maximum`](@ref) 和 [`minimum`](@ref) 代替了 R 中的 `max` 和 `min`，但它们之间有重大区别。
      
      
-  * Julia 的 [`sum`](@ref)、[`prod`](@ref)、[`maximum`](@ref) 和 [`minimum`](@ref) 与它们在 R 中的对应物不同。它们都接受一个或两个参数。第一个参数是可迭代集合，比如数组。如果有第二个参数，则该参数表示执行操作的维度。例如，在 Julia 中令 `A = [1 2; 3 4]`，在 R 中令 `B <- rbind(c(1,2),c(3,4))` 是与之相同的矩阵。然后 `sum(A)` 得到与 `sum(B)` 相同的结果，但 `sum(A, dims=1)` 是一个包含每一列总和的行向量，`sum(A, dims=2)` 是一个包含每一行总和的列向量。这与 R 的行为形成了对比，在 R 中，单独的 `colSums(B)` 和 `rowSums(B)` 提供了这些功能。如果 `dims` 关键字参数是向量，则它指定执行求和的所有维度，并同时保持待求和数组的维数，例如 `sum(A, dims=(1,2)) == hcat(10)`。应该注意的是，没有针对第二个参数的错误检查。
-     
+  * Julia 的 [`sum`](@ref)、[`prod`](@ref)、[`maximum`](@ref) 和 [`minimum`](@ref) 与它们在 R 中的对应物不同。它们都接受一个可选的关键字参数 `dims`，它表示执行操作的维度。例如，在 Julia 中令 `A = [1 2; 3 4]`，在 R 中令 `B <- rbind(c(1,2),c(3,4))` 是与之相同的矩阵。然后 `sum(A)` 得到与 `sum(B)` 相同的结果，但 `sum(A, dims=1)` 是一个包含每一列总和的行向量，`sum(A, dims=2)` 是一个包含每一行总和的列向量。这与 R 的行为形成了对比，在 R 中，单独的 `colSums(B)` 和 `rowSums(B)` 提供了这些功能。如果 `dims` 关键字参数是向量，则它指定执行求和的所有维度，并同时保持待求和数组的维数，例如 `sum(A, dims=(1,2)) == hcat(10)`。应该注意的是，没有针对第二个参数的错误检查。
      
      
      
@@ -177,9 +176,10 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
   * Julia 是立即求值的，不支持 R 风格的惰性求值。对于大多数用户来说，这意味着很少有未引用的表达式或列名。
      
-  * Julia 不支持 `NULL` 类型。最接近的等价物是 [`nothing`](@ref)，但它的行为类似于标量值而不是列表。请使用 `x == nothing` 代替 `is.null(x)`。
+  * Julia 不支持 `NULL` 类型。最接近的等价物是 [`nothing`](@ref)，但它的行为类似于标量值而不是列表。请使用 `x === nothing` 代替 `is.null(x)`。
      
-  * 在 Julia 中，缺失值由 [`missing`](@ref) 表示，而不是由 `NA` 表示。请使用 [`ismissing(x)`](@ref) 代替 `isna(x)`。通常使用 [`skipmissing`](@ref) 代替 `na.rm=TRUE`（尽管在某些特定情况下函数接受 `skipmissing` 参数）。
+  * 在 Julia 中，缺失值由 [`missing`](@ref) 表示，而不是由 `NA` 表示。请使用 [`ismissing(x)`](@ref)（或者在向量上使用逐元素操作 `ismissing.(x)`）代替 `isna(x)`。通常使用 [`skipmissing`](@ref) 代替 `na.rm=TRUE`（尽管在某些特定情况下函数接受 `skipmissing` 参数）。
+     
      
      
      
@@ -294,7 +294,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
      
      
-  * Julia 现在有一个枚举类型，使用宏 `@enum(name, value1, value2, ...)` 来表示，例如：`@enum(Fruit, banana=1, apple, pear)`。
+  * Julia 有一个枚举类型，使用宏 `@enum(name, value1, value2, ...)` 来表示，例如：`@enum(Fruit, banana=1, apple, pear)`。
      
   * 按照惯例，修改其参数的函数在名称的末尾有个 `!`，例如 `push!`。
      

@@ -1,4 +1,4 @@
-# Base.Cartesian
+# 笛卡尔
 
 The (non-exported) Cartesian module provides macros that facilitate writing multidimensional algorithms.
 It is hoped that Cartesian will not, in the long term, be necessary; however, at present it is
@@ -31,7 +31,7 @@ the nested loops in this example.  Other applications include repeated expressio
 unwinding) or creating function calls with variable numbers of arguments without using the "splat"
 construct (`i...`).
 
-## Basic syntax
+## 基本语法
 
 The (basic) syntax of `@nloops` is as follows:
 

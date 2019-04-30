@@ -4,6 +4,9 @@
 
 ## 高级别嵌入
 
+__Note__: This section covers embedding Julia code in C on Unix-like operating systems. For doing
+this on Windows, please see the section following this.
+
 我们从一个简单的 C 程序开始初始化 Julia 并调用一些 Julia 代码：
 
 ```c
@@ -107,6 +110,51 @@ all: embed_example
 ```
 
 现在构建的命令就只需要简简单单的`make`了。
+
+## High-Level Embedding on Windows with Visual Studio
+
+If the `JULIA_DIR` environment variable hasn't been setup, add it using the System panel before
+starting Visual Studio. The `bin` folder under JULIA_DIR should be on the system PATH.
+
+We start by opening Visual Studio and creating a new Console Application project. To the 'stdafx.h'
+header file, add the following lines at the end:
+
+```c
+#define JULIA_ENABLE_THREADING
+#include <julia.h>
+```
+
+Then, replace the main() function in the project with this code:
+
+```c
+int main(int argc, char *argv[])
+{
+    /* required: setup the Julia context */
+    jl_init();
+
+    /* run Julia commands */
+    jl_eval_string("print(sqrt(2.0))");
+
+    /* strongly recommended: notify Julia that the
+         program is about to terminate. this allows
+         Julia time to cleanup pending write requests
+         and run all finalizers
+    */
+    jl_atexit_hook(0);
+    return 0;
+}
+```
+
+The next step is to set up the project to find the Julia include files and the libraries. It's important to
+know whether the Julia installation is 32- or 64-bits. Remove any platform configuration that doesn't correspond
+to the Julia installation before proceeding.
+
+Using the project Properties dialog, go to `C/C++` | `General` and add `$(JULIA_DIR)\include\julia\` to the
+Additional Include Directories property. Then, go to the `Linker` | `General` section and add `$(JULIA_DIR)\lib`
+to the Additional Library Directories property. Finally, under `Linker` | `Input`, add `libjulia.dll.a;libopenlibm.dll.a;`
+to the list of libraries.
+
+At this point, the project should build and run.
 
 ## 转换类型
 

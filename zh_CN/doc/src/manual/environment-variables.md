@@ -2,7 +2,11 @@
 
 Julia 可以配置许多环境变量，一种常见的方式是直接配置操作系统环境变量，另一种更便携的方式是在 Julia 中配置。假设你要将环境变量 `JULIA_EDITOR` 设置为 `vim`，可以直接在 REPL 中输入 `ENV["JULIA_EDITOR"] = "vim"`（请根据具体情况对此进行修改），也可以将其添加到用户主目录中的配置文件 `~/.julia/config/startup.jl`，这样做会使其永久生效。环境变量的当前值是通过执行 `ENV["JULIA_EDITOR"]` 来确定的。
 
-Julia 使用的环境变量通常以 `JULIA` 开头。如果调用 [`InteractiveUtils.versioninfo`](@ref) 时将参数 `verbose` 设为 `true`，那么输出的结果将列出与 Julia 相关的已定义环境变量，即包括那些名称中包含 `JULIA` 的环境变量。
+Julia 使用的环境变量通常以 `JULIA` 开头。如果调用 [`InteractiveUtils.versioninfo`](@ref) 时关键字参数 `verbose = true`，那么输出的结果将列出与 Julia 相关的已定义环境变量，即包括那些名称中包含 `JULIA` 的环境变量。
+
+!!! note
+
+    某些变量需要在 Julia 启动之前设置，比如 `JULIA_NUM_THREADS` 和 `JULIA_PROJECT`，因为在启动过程中将这些变量添加到 `~/.julia/config/startup.jl` 中为时已晚。在 Bash 中，环境变量可以手动设置，这可通过在 Julia 启动前运行诸如 `export JULIA_NUM_THREADS=4` 的命令，亦可通过向 `-/.bashrc` 或 `~/.bash_profile` 添加相同命令来在 Bash 每次启动时设置该变量。
 
 ## 文件位置
 
@@ -48,9 +52,17 @@ $JULIA_BINDIR/../etc/julia/startup.jl
 /etc/julia/startup.jl
 ```
 
+### `JULIA_PROJECT`
+
+指向当前 Julia 项目的目录路径。设置此环境变量与指定 `--project` 启动选项效果相同，但 `--project` 的优先级更高。如果此变量被设置为 `@.`，那么 Julia 会尝试在当前目录及其父目录中寻找包含 `Project.toml` 或 `JuliaProject.toml` 文件的目录。另请参阅 [代码加载](@ref) 一章。
+
+!!! note
+
+    `JULIA_PROJECT` 必须在启动 julia 前定义；在启动过程中于 `startup.jl` 中定义它为时已晚。
+
 ### `JULIA_LOAD_PATH`
 
-一个会被附加到变量 [`LOAD_PATH`](@ref) 的绝对路径组成的分隔列表（在类 Unix 系统中，路径分隔符为 `:`；在 Windows 系统中，路径分隔符为 `;`）。`LOAD_PATH` 变量是 [`Base.require`](@ref) 和 `Base.load_in_path()` 寻找代码的地方。它默认为绝对路径 `$JULIA_HOME/../share/julia/stdlib/v$(VERSION.major).$(VERSION.minor)`，例如，操作系统为 Linux，Julia 版本为 0.7，Julia 可执行文件的路径为 `/bin/julia`，此时 `LOAD_PATH` 将默认为 `/share/julia/stdlib/v0.7`。
+一个会被附加到变量 [`LOAD_PATH`](@ref) 的绝对路径组成的分隔列表（在类 Unix 系统中，`:` 为路径分隔符；在 Windows 系统中，`;` 为路径分隔符）。`LOAD_PATH` 变量是 [`Base.require`](@ref) 和 `Base.load_in_path()` 寻找代码的地方。它默认为绝对路径 `$JULIA_HOME/../share/julia/stdlib/v$(VERSION.major).$(VERSION.minor)`，例如，假设操作系统为 Linux、Julia 版本为 0.7、Julia 可执行文件的路径为 `/bin/julia`，那么 `LOAD_PATH` 默认为 `/share/julia/stdlib/v0.7`。
 
 ### `JULIA_HISTORY`
 
@@ -94,11 +106,15 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 ### `JULIA_WORKER_TIMEOUT`
 
-一个 [`Float64`](@ref) 值，用来确定 `Base.worker_timeout()` 的值（默认：`60.0`）。此函数提供 worker 进程在死亡之前等待主进程建立连接的秒数。
+一个 [`Float64`](@ref) 值，用来确定 `Distributed.worker_timeout()` 的值（默认：`60.0`）。此函数提供 worker 进程在死亡之前等待 master 进程建立连接的秒数。
 
 ### `JULIA_NUM_THREADS`
 
 一个无符号 64 位整数（`uint64_t`），用来设置 Julia 可用线程的最大数。如果 `$JULIA_NUM_THREADS` 超过可用的物理 CPU 核心数，那么线程数设置为核心数。如果 `$JULIA_NUM_THREADS` 不是正数或没有设置，或者无法通过系统调用确定 CPU 核心数，那么线程数就会被设置为 `1`。
+
+!!! note
+
+    `JULIA_NUM_THREADS` 必须在启动 julia 前定义；在启动过程中于 `startup.jl` 中定义它为时已晚。
 
 ### `JULIA_THREAD_SLEEP_THRESHOLD`
 
@@ -110,7 +126,7 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 ## REPL 格式化输出
 
-决定 REPL 应当如何格式化输出的环境变量。通常，这些变量应当被设置为 [ANSI 终端转义序列](http://ascii-table.com/ansi-escape-sequences.php)。Julia 提供了具有相同功能的高级接口：请参阅 [Julia REPL](@ref)。
+决定 REPL 应当如何格式化输出的环境变量。通常，这些变量应当被设置为 [ANSI 终端转义序列](http://ascii-table.com/ansi-escape-sequences.php)。Julia 提供了具有相同功能的高级接口；请参阅 [Julia REPL](@ref) 章节。
 
 ### `JULIA_ERROR_COLOR`
 
@@ -185,12 +201,9 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 !!! note
 
-    此变量生效要求 Julia 编译时带有 JIT 性能分析支持，使用
-
-*   英特尔的 [VTune™ Amplifier](https://software.intel.com/en-us/intel-vtune-amplifier-xe)（在构建配置中将 `USE_INTEL_JITEVENTS` 设置为 `1`）或
-     
-*   [OProfile](http://oprofile.sourceforge.net/news/)（在构建配置中将 `USE_OPROFILE_JITEVENTS` 设置为 `1`）。
-     
+    此变量生效要求 Julia 编译时带有 JIT 性能分析支持，请使用
+    * 英特尔的 [VTune™ Amplifier](https://software.intel.com/en-us/intel-vtune-amplifier-xe)（在构建配置中将 `USE_INTEL_JITEVENTS` 设置为 `1`），或
+    * [OProfile](http://oprofile.sourceforge.net/news/)（在构建配置中将 `USE_OPROFILE_JITEVENTS` 设置为 `1`）。
 
 ### `JULIA_LLVM_ARGS`
 

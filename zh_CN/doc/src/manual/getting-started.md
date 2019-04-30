@@ -48,6 +48,8 @@ bar
 $ julia --color=yes -O -- foo.jl arg1 arg2..
 ```
 
+有关编写 Julia 脚本的更多信息，请参阅 [脚本](@ref man-scripting)。
+
 使用选项 `-p` 或者 `--machine-file` 可以在并行模式下启动 Julia。
 `-p n` 会启动额外的 `n` 个 worker，使用 `--machine-file file` 会为 `file` 文件中的每一行启动一个 worker。
 定义在 `file` 中的机器必须能够通过一个不需要密码的 `ssh` 登陆访问到，且 Julia 的安装位置需要和当前主机相同。
@@ -77,6 +79,7 @@ julia [switches] -- [programfile] [args...]
 |:---                                   |:---|
 |`-v`, `--version`                      |显示版本信息|
 |`-h`, `--help`                         |打印本条帮助信息|
+|`--project[={<dir>\|@.}]`              |将 <dir> 设置为主项目/环境。默认的 @. 选项将搜索父目录，直至找到 Project.toml 或 JuliaProject.toml 文件。|
 |`-J`, `--sysimage <file>`              |用指定的镜像文件（system image file）启动|
 |`-H`, `--home <dir>`                   |设置 `julia` 可执行文件的路径|
 |`--startup-file={yes\|no}`             |是否载入 `~/.julia/config/startup.jl`|
@@ -95,7 +98,7 @@ julia [switches] -- [programfile] [args...]
 |`--history-file={yes\|no}`             |载入或导出历史记录|
 |`--depwarn={yes\|no\|error}`           |开启或关闭语法弃用警告，`error` 表示将弃用警告转换为错误。|
 |`--warn-overwrite={yes\|no}`           |开启或关闭“method overwrite”警告|
-|`-C`, `--cpu-target <target>`          |设置 <target> 来限制使用 CPU 的某些特性；设置为 `help` 可以查看可用的选项|
+|`-C`, `--cpu-target <target>`          |设置 `<target>` 来限制使用 CPU 的某些特性；设置为 `help` 可以查看可用的选项|
 |`-O`, `--optimize={0,1,2,3}`           |设置编译器优化级别(若未配置此选项，则默认等级为2；若配置了此选项却没指定具体级别，则默认级别为3)。|
 |`-g`, `-g <level>`                     |开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。|
 |`--inline={yes\|no}`                   |控制是否允许函数内联，此选项会覆盖源文件中的 `@inline` 声明|
@@ -105,6 +108,9 @@ julia [switches] -- [programfile] [args...]
 |`--code-coverage`                      |等价于 `--code-coverage=user`|
 |`--track-allocation={none\|user\|all}` |对源文件中每行代码的内存分配计数，单位 byte|
 |`--track-allocation`                   |等价于 `--track-allocation=user`|
+
+!!! compat "Julia 1.1"
+    在 Julia 1.0 中，默认的 `--project=@.` 选项不会在 Git 仓库的根目录中寻找 `Project.toml` 文件。从 Julia 1.1 开始，此选项会在其中寻找该文件。
 
 ## 资源
 

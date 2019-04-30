@@ -695,7 +695,7 @@ catch
 end
 ```
 
-`try/catch` 组件的强大之处在于能够将高度嵌套的计算立刻解耦成更高层次地调用函数。有时没有错误产生，但需要能够解耦堆栈，并传值到上层。Julia 提供了 [`rethrow`](@ref), [`backtrace`](@ref) 和 [`catch_backtrace`](@ref) 函数进行更高级的错误处理。
+`try/catch` 组件的强大之处在于能够将高度嵌套的计算立刻解耦成更高层次地调用函数。有时没有错误产生，但需要能够解耦堆栈，并传值到上层。Julia 提供了 [`rethrow`](@ref)、[`backtrace`](@ref)、[`catch_backtrace`](@ref) 和 [`Base.catch_stack`](@ref) 函数进行更高级的错误处理。
 
 ### `finally` 子句
 

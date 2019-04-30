@@ -17,11 +17,16 @@ Julia 可以直接调用 C/Fortran 的函数，不需要任何"胶水"代码，�
 
    或
 
+   a `:function` name symbol or `"function"` name string, which is resolved in the
+   current process,
+
+   或
+
    一个函数指针（例如，从 `dlsym` 获得的指针）。
 
 2. 返回类型（参见下文，将声明的 C 类型对应到 Julia）
 
-     * 当包含的函数已经定义时，此参数将会在编译期执行。
+     * 当包含的函数已经定义时，参数将会在编译期执行。
 
 3. 输入类型的元组。元组中的类型必须为字面量，而不能是变量或者表达式。
     
@@ -90,11 +95,11 @@ getenv: undefined variable: FOOBAR
 
 ```julia
 function gethostname()
-    hostname = Vector{UInt8}(128)
+    hostname = Vector{UInt8}(undef, 128)
     ccall((:gethostname, "libc"), Int32,
           (Ptr{UInt8}, Csize_t),
           hostname, sizeof(hostname))
-    hostname[end] = 0; # 保证以 null 结尾
+    hostname[end] = 0; # ensure null-termination
     return unsafe_string(pointer(hostname))
 end
 ```
@@ -216,7 +221,7 @@ it to be freed prematurely.
 
 | 语法 / 关键字              | 例子                                     | 描述                                                                                                                                                                                                                                                                    |
 |:----------------------------- |:------------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `mutable struct`              | `String`                                    | `Leaf Type`：包含 `type-tag` 的一组相关数据，由 Julia GC 管理，通过 `object-identity` 来定义。为了保证实例可以被构造，`Leaf Type` 必须是完整定义的，即不允许使用 `TypeVars`。              |
+| `mutable struct`              | `BitSet`                                    | `Leaf Type`：包含 `type-tag` 的一组相关数据，由 Julia GC 管理，通过 `object-identity` 来定义。为了保证实例可以被构造，`Leaf Type` 必须是完整定义的，即不允许使用 `TypeVars`。              |
 | `abstract type`               | `Any`, `AbstractArray{T, N}`, `Complex{T}`  | `Super Type`：用于描述一组类型，它不是 `Leaf-Type`，也无法被实例化。                                                                                                                                                      |
 | `T{A}`                        | `Vector{Int}`                               | `Type Parameter`：某种类型的一种具体化，通常用于分派或存储优化。                                                                                                                                                                          |
 |                               |                                             | `TypeVar`：`Type parameter` 声明中的 `T` 是一个 `TypeVar`，它是类型变量的简称。                                                                                                                                                                  |
@@ -324,7 +329,7 @@ checks and is only meant to improve readability of the call.
 
 **依赖于系统的：**
 
-| C name          | Standard Julia Alias | Julia Base Type                              |
+| C 类型          | 标准 Julia 别名 | Julia 基本类型                              |
 |:--------------- |:-------------------- |:-------------------------------------------- |
 | `char`          | `Cchar`              | `Int8` (x86, x86_64), `UInt8` (powerpc, arm) |
 | `long`          | `Clong`              | `Int` (UNIX), `Int32` (Windows)              |
@@ -425,18 +430,19 @@ the Julia field to be only of that type.
 
 Arrays of parameters can be expressed with `NTuple`:
 
-```
 in C:
+```c
 struct B {
     int A[3];
 };
 b_a_2 = B.A[2];
-
+```
 in Julia:
+```julia
 struct B
-    A::NTuple{3, CInt}
+    A::NTuple{3, Cint}
 end
-b_a_2 = B.A[3]  # note the difference in indexing (1-based in Julia, 0-based in C)
+b_a_2 = B.A[3]  # 请注意索引上的不同（Julia 中为 1-based 索引，C 中为 0-based 索引)
 ```
 
 Arrays of unknown size (C99-compliant variable length structs specified by `[]` or `[0]`) are not directly supported.
@@ -759,7 +765,7 @@ function sf_bessel_Jn_array(nmin::Integer, nmax::Integer, x::Real)
     if nmax < nmin
         throw(DomainError())
     end
-    result_array = Vector{Cdouble}(nmax - nmin + 1)
+    result_array = Vector{Cdouble}(undef, nmax - nmin + 1)
     errorcode = ccall(
         (:gsl_sf_bessel_Jn_array, :libgsl), # name of C function and library
         Cint,                               # output type
@@ -912,7 +918,7 @@ Other supported conventions are: `stdcall`, `cdecl`, `fastcall`, and `thiscall` 
 signature for Windows:
 
 ```julia
-hn = Vector{UInt8}(256)
+hn = Vector{UInt8}(undef, 256)
 err = ccall(:gethostname, stdcall, Int32, (Ptr{UInt8}, UInt32), hn, length(hn))
 ```
 

@@ -231,3 +231,34 @@ Profile.init(n = 10^7, delay = 0.01)
 为了逐行测量内存分配，启动 Julia 时请使用命令行选项 `--track-allocation=<setting>`，该选项的可选值有 `none`（默认值，不测量内存分配）、`user`（测量除 Julia core 代码之外的所有代码的内存分配）或 `all`（测量 Julia 代码中每一行的内存分配）。这会为每行已编译的代码测量内存。在退出 Julia 时，累积的结果将写入到文本文件中，此文本文件名称为该文件名称后加 `.mem`，并与源文件位于同一目录下。该文件的每行列出内存分配的总字节数。[`Coverage` 包](https://github.com/JuliaCI/Coverage.jl)包括了一些基本分析工具，例如，按照内存分配的字节数对行进行排序的工具。
 
 在解释结果时，有一些需要注意的细节。在 `user` 设定下，直接从 REPL 调用的任何函数的第一行都将会显示内存分配，这是由发生在 REPL 代码本身的事件造成的。更重要的是，JIT 编译也会添加内存分配计数，因为 Julia 的编译器大部分是用 Julia 编写的（并且编译通常需要内存分配）。建议的分析过程是先通过执行待分析的所有命令来强制编译，然后调用 [`Profile.clear_malloc_data()`](@ref) 来重置所有内存计数器。最后，执行所需的命令并退出 Julia 以触发 `.mem` 文件的生成。
+
+# External Profiling
+
+Currently Julia supports `Intel VTune`, `OProfile` and `perf` as external profiling tools.
+
+Depending on the tool you choose, compile with `USE_INTEL_JITEVENTS`, `USE_OPROFILE_JITEVENTS` and
+`USE_PERF_JITEVENTS` set to 1 in `Make.user`. Multiple flags are supported.
+
+Before running Julia set the environment variable `ENABLE_JITPROFILING` to 1.
+
+Now you have a multitude of ways to employ those tools!
+For example with `OProfile` you can try a simple recording :
+
+```
+>ENABLE_JITPROFILING=1 sudo operf -Vdebug ./julia test/fastmath.jl
+>opreport -l `which ./julia`
+```
+
+Or similary with with `perf` :
+
+```
+$ ENABLE_JITPROFILING=1 perf record -o /tmp/perf.data --call-graph dwarf ./julia /test/fastmath.jl
+$ perf report --call-graph -G
+```
+
+There are many more interesting things that you can measure about your program, to get a comprehensive list
+please read the [Linux perf examples page](http://www.brendangregg.com/perf.html).
+
+Remember that perf saves for each execution a `perf.data` file that, even for small programs, can get
+quite large. Also the perf LLVM module saves temporarily debug objects in `~/.debug/jit`, remember
+to clean that folder frequently.

@@ -1,4 +1,4 @@
-# Inference
+# 类型推断
 
 ## How inference works
 
