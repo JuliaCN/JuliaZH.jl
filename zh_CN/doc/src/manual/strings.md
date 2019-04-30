@@ -256,6 +256,7 @@ Stacktrace:
 
 julia> s[1:4]
 "∀ "
+
 ```
 
 由于可变长度的编码，字符串中的字符数（由 [`length(s)`](@ref) 给出）并不总是等于最后一个索引的数字。如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。因此总有 `length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s` 的字符进行迭代的一个冗长而低效的方式：
@@ -265,7 +266,7 @@ julia> for i = firstindex(s):lastindex(s)
            try
                println(s[i])
            catch
-               # ignore the index error
+               # 忽略索引错误
            end
        end
 ∀
@@ -329,10 +330,9 @@ julia> foreach(display, s2)
 
 我们可以看到字符串 `s` 中的前两个代码单元形成了一个过长的空格字符编码。这是无效的，但是在字符串中作为单个字符是可以接受的。接下来的两个代码单元形成了一个有效的 3 位 UTF-8 序列开头。然而，第五个代码单元 `\xe2` 不是它的有效延续，所以代码单元 3 和 4 在这个字符串中也被解释为格式错误的字符。同理，由于 `|` 不是它的有效延续，代码单元 5 形成了一个格式错误的字符。最后字符串 `s2` 包含了一个太高的代码。
 
-Julia 默认使用 UTF-8 编码，对于新编码的支持可以通过包加上。例如，[LegacyStrings.jl](https://github.com/JuliaArchive/LegacyStrings.jl) 包实现了 `UTF16String` 和 `UTF32String` 类型。关于其它编码的额外讨论以及如何实现对它们的支持暂时超过了这篇文档的讨论范围。UTF-8 编码相关问题的进一步讨论参见下面的[字节数组字面量](@ref)章节。[`transcode`](@ref) 函数可在各种 UTF-xx 编码之间转换，主要用于外部数据和包。
+Julia 默认使用 UTF-8 编码，对于新编码的支持可以通过包加上。例如，[LegacyStrings.jl](https://github.com/JuliaStrings/LegacyStrings.jl) 包实现了 `UTF16String` 和 `UTF32String` 类型。关于其它编码的额外讨论以及如何实现对它们的支持暂时超过了这篇文档的讨论范围。UTF-8 编码相关问题的进一步讨论参见下面的[字节数组字面量](@ref man-byte-array-literals)章节。[`transcode`](@ref) 函数可在各种 UTF-xx 编码之间转换，主要用于外部数据和包。
 
-
-## 级联
+## [拼接](@id man-concatenation)
 
 最常见最有用的字符串操作是级联：
 
@@ -378,16 +378,15 @@ julia> greet * ", " * whom * ".\n"
 "Hello, world.\n"
 ```
 
-尽管对于提供 `+` 函数用于字符串串联的语言使用者而言，`*` 似乎是一个令人惊讶的选择，但 `*` 的这种用法在数学中早有先例，尤其是在抽象代数中。
+尽管对于提供 `+` 函数用于字符串拼接的语言使用者而言，`*` 似乎是一个令人惊讶的选择，但 `*` 的这种用法在数学中早有先例，尤其是在抽象代数中。
 
-在数学上，`+` 通常表示可交换运算（*commutative* operation）——运算对象的顺序不重要。一个例子是矩阵加法：对于任何形状相同的矩阵 `A` 和 `B`，都有 `A + B == B + A`。与之相反，`＊` 通常表示不可交换运算——运算对象的顺序很重要。例如，对于矩阵乘法，一般 `A * B != B * A`。同矩阵乘法类似，字符串串联是非对易的：`greet * whom != whom * greet`。在这一点上，对于插入字符串的串联操作，`*` 是一个自然而然的选择，与它在数学中的用法一致。
+在数学上，`+` 通常表示可交换运算（*commutative* operation）——运算对象的顺序不重要。一个例子是矩阵加法：对于任何形状相同的矩阵 `A` 和 `B`，都有 `A + B == B + A`。与之相反，`*` 通常表示不可交换运算——运算对象的顺序很重要。例如，对于矩阵乘法，一般 `A * B != B * A`。同矩阵乘法类似，字符串拼接是不可交换的：`greet * whom != whom * greet`。在这一点上，对于插入字符串的拼接操作，`*` 是一个自然而然的选择，与它在数学中的用法一致。
 
-
-更确切地说，有限长度字符串集合 *S* 和字符串级联操作 `*` 构成了一个自由群 (*S*, `*`)。该集合的单位元是空字符串，`""`。当一个自由群非对易时，它的运算通常表示为 `\cdot`，`*`，或者类似的符号，而非暗示对易性的 `+`。
+更确切地说，有限长度字符串集合 *S* 和字符串拼接操作 `*` 构成了一个[自由幺半群](https://en.wikipedia.org/wiki/Free_monoid) (*S*, `*`)。该集合的单位元是空字符串，`""`。当一个自由幺半群不是交换的时，它的运算通常表示为 `\cdot`，`*`，或者类似的符号，而非暗示交换性的 `+`。
 
 ## [插值](@id string-interpolation)
 
-级联构造字符串的方式有时有些麻烦。为了减少对于 [`string`](@ref) 的冗余调用或者重复地做乘法，Julia 允许像 Perl 中一样使用 `$` 对字符串字面量进行插值：
+拼接构造字符串的方式有时有些麻烦。为了减少对于 [`string`](@ref) 的冗余调用或者重复地做乘法，Julia 允许像 Perl 中一样使用 `$` 对字符串字面量进行插值：
 
 
 ```jldoctest stringconcat
@@ -516,19 +515,19 @@ julia> "1 + 2 = 3" == "1 + 2 = $(1 + 2)"
 true
 ```
 
-你可以使用 [`findfirst`](@ref) 函数搜索特定字符的索引：
+你可以使用 [`findfirst`](@ref) 与 [`findlast`](@ref) 函数搜索特定字符的索引：
 
 ```jldoctest
-julia> findfirst(isequal('x'), "xylophone")
-1
+julia> findfirst(isequal('o'), "xylophone")
+4
 
-julia> findfirst(isequal('p'), "xylophone")
-5
+julia> findlast(isequal('o'), "xylophone")
+7
 
 julia> findfirst(isequal('z'), "xylophone")
 ```
 
-你可以带上第三个参数，用 [`findnext`](@ref) 函数在给定偏移量处搜索字符。
+你可以带上第三个参数，用 [`findnext`](@ref) 与 [`findprev`](@ref) 函数来在给定偏移量处搜索字符：
 
 ```jldoctest
 julia> findnext(isequal('o'), "xylophone", 1)
@@ -536,6 +535,9 @@ julia> findnext(isequal('o'), "xylophone", 1)
 
 julia> findnext(isequal('o'), "xylophone", 5)
 7
+
+julia> findprev(isequal('o'), "xylophone", 5)
+4
 
 julia> findnext(isequal('o'), "xylophone", 8)
 ```
@@ -721,7 +723,7 @@ julia> m[2]
 "45"
 ```
 
-使用 [`replace`](@ref) 时利用 `\n` 引用第 n 个捕获组和给替换字符串加上 `s` 的前缀，可以实现替换字符串中对捕获的引用。捕获组 0 指的是整个匹配对象。可在替换中用 `g<groupname>` 对命名捕获组进行引用。例如：
+使用 [`replace`](@ref) 时利用 `\n` 引用第 n 个捕获组和给替换字符串加上 `s` 的前缀，可以实现替换字符串中对捕获的引用。捕获组 0 指的是整个匹配对象。可在替换中用 `\g<groupname>` 对命名捕获组进行引用。例如：
 
 ```jldoctest
 julia> replace("first second", r"(\w+) (?<agroup>\w+)" => s"\g<agroup> \1")
@@ -781,6 +783,33 @@ ERROR: syntax: invalid escape sequence
 ```
 
 Julia 也支持 `r"""..."""` 形式的三引号正则表达式字符串（或许便于处理包含引号和换行符的正则表达式）。
+
+`Regex()` 构造函数可以用于以编程方式创建合法的正则表达式字符串。这允许在构造正则表达式字符串时使用字符串变量的内容和其他字符串操作。上面的任何正则表达式代码可以在 `Regex()` 的单字符串参数中使用。下面是一些例子：
+
+```jldoctest
+julia> using Dates
+
+julia> d = Date(1962,7,10)
+1962-07-10
+
+julia> regex_d = Regex("Day " * string(day(d)))
+r"Day 10"
+
+julia> match(regex_d, "It happened on Day 10")
+RegexMatch("Day 10")
+
+julia> name = "Jon"
+"Jon"
+
+julia> regex_name = Regex("[\"( ]$name[\") ]")  # 插入 name 的值
+r"[\"( ]Jon[\") ]"
+
+julia> match(regex_name," Jon ")
+RegexMatch(" Jon ")
+
+julia> match(regex_name,"[Jon]") === nothing
+true
+```
 
 ## 字节数组字面量
 
@@ -856,13 +885,13 @@ julia> b"\uff"
 
 ## [版本号字面量](@id man-version-number-literals)
 
-版本号很容易用 [`v"..."`](@ref) 形式的非标准字符串字面量表示。版本号字面量生成遵循[语义版本](http://semver.org)规范的 [`VersionNumber`](@ref) 对象，因此由主、次、补丁号构成，后跟预发行 (pre-release) 和生成阿尔法数注释 (build alpha-numeric)。例如，`v"0.2.1-rc1+win64"` 可分为主版本号 `0`，次版本号 `2`，补丁版本号 `1`，预发行版号 `rc1`，以及生成版本 `win64`。输入版本字面量时，除了主版本号以外所有内容都是可选的，因此 `v"0.2"` 等效于 `v"0.2.0"` (预发行号和生成注释为空), `v"2"` 等效于 `v"2.0.0"`，等等。
+版本号很容易用 [`v"..."`](@ref) 形式的非标准字符串字面量表示。版本号字面量生成遵循[语义版本](https://semver.org/)规范的 [`VersionNumber`](@ref) 对象，因此由主、次、补丁号构成，后跟预发行 (pre-release) 和生成阿尔法数注释（build alpha-numeric）。例如，`v"0.2.1-rc1+win64"` 可分为主版本号 `0`，次版本号 `2`，补丁版本号 `1`，预发行版号 `rc1`，以及生成版本 `win64`。输入版本字面量时，除了主版本号以外所有内容都是可选的，因此 `v"0.2"` 等效于 `v"0.2.0"`（预发行号和生成注释为空），`v"2"` 等效于 `v"2.0.0"`，等等。
 
 `VersionNumber` 对象在轻松正确地比较两个（或更多）版本时非常有用。例如，常数 `VERSION` 把 Julia 的版本号保留为一个 `VersionNumber` 对象，因此可以像下面这样用简单的声明定义一些特定版本的行为：
 
 ```julia
 if v"0.2" <= VERSION < v"0.3-"
-    # do something specific to 0.2 release series
+    # 针对 0.2 发行版系列做些事情
 end
 ```
 

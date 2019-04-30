@@ -1,13 +1,13 @@
 # 复数和有理数
 
-Julia 语言自带预定义的表示复数与分数的类型，并且支持它们的各种[数学运算和初等函数](@ref)。由于也定义了复数与分数的[转换与提升](@ref conversion-and-promotion)，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。
+Julia 语言包含了预定义的复数和有理数类型，并且支持它们的各种标准[数学运算和初等函数](@ref)。由于也定义了复数与分数的[类型转换与类型提升](@ref conversion-and-promotion)，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。
 
 ## 复数
 
-在Julia中,全局常量 [`im`](@ref) 被绑定到复数 *i*，表示 -1 的主平方根。由于 `i` 是一个很流行的用作索引的变量名，所以直接把它作为全局常量被认为是很危险的。由于 Julia 允许数值文本[作为系数与标识符并置](@ref man-numeric-literal-coefficients)，这种绑定就足够为复数提供很方便的语法，类似于传统的数学记法：
+在Julia中,全局常量 [`im`](@ref) 被绑定到复数 *i*，表示 -1 的主平方根。（不应使用数学家习惯的 `i` 或工程师习惯的 `j` 来表示此全局常量，因为它们是非常常用的索引变量名。）由于 Julia 允许数值字面量[作为系数与标识符并置](@ref man-numeric-literal-coefficients)，这种绑定就足够为复数提供很方便的语法，类似于传统的数学记法：
 
 ```jldoctest
-julia> 1 + 2im
+julia> 1+2im
 1 + 2im
 ```
 
@@ -84,26 +84,25 @@ Julia 提供了一些操作复数的标准函数：
 julia> z = 1 + 2im
 1 + 2im
 
-julia> real(1 + 2im) # real part of z
+julia> real(1 + 2im) # z 的实部
 1
 
-julia> imag(1 + 2im) # imaginary part of z
+julia> imag(1 + 2im) # z 的虚部
 2
 
-julia> conj(1 + 2im) # complex conjugate of z
+julia> conj(1 + 2im) # z 的复共轭
 1 - 2im
 
-julia> abs(1 + 2im) # absolute value of z
+julia> abs(1 + 2im) # z 的绝对值
 2.23606797749979
 
-julia> abs2(1 + 2im) # squared absolute value
+julia> abs2(1 + 2im) # 取平方后的绝对值
 5
 
-julia> angle(1 + 2im) # phase angle in radians
-1.1071487177940904
-```
+julia> angle(1 + 2im) # 以弧度为单位的相位角
+1.1071487177940904```
 
-按照惯例，复数的绝对值（[`abs`](@ref)）是从零点到它的距离。[`abs2`](@ref) 给出绝对值的平方，作用于复数上时非常有用，可以避免做平方根的操作。[`angle`](@ref) 返回以弧度为单位的相位角（这也被称为辐角函数）。所有其它的[初等函数](@ref)在复数上也都有完整的定义：
+按照惯例，复数的绝对值（[`abs`](@ref)）是从零点到它的距离。[`abs2`](@ref) 给出绝对值的平方，作用于复数上时非常有用，因为它避免了取平方根。[`angle`](@ref) 返回以弧度为单位的相位角（这也被称为辐角函数）。所有其它的[初等函数](@ref)在复数上也都有完整的定义：
 
 ```jldoctest
 julia> sqrt(1im)
@@ -142,7 +141,7 @@ julia> a = 1; b = 2; a + b*im
 1 + 2im
 ```
 
-然而，我们**并不**推荐这样做，而应改为使用 [`complex`](@ref) 函数直接通过实部与虚部构建一个复数值：
+然而，我们**并不**推荐这样做，而应改为使用更高效的 [`complex`](@ref) 函数直接通过实部与虚部构建一个复数值：
 
 ```jldoctest
 julia> a = 1; b = 2; complex(a, b)

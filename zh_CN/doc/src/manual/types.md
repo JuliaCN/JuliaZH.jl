@@ -216,7 +216,7 @@ Foo
 
 ```jldoctest footype
 julia> Foo((), 23.5, 1)
-ERROR: InexactError: Int64(Int64, 23.5)
+ERROR: InexactError: Int64(23.5)
 Stacktrace:
 [...]
 ```
@@ -814,7 +814,7 @@ end
 
 当然，这依赖于 `Int` 的别名，但它被预定义成正确的类型—— [`Int32`](@ref) 或 [`Int64`](@ref)。
 
-（注意，与 `Int` 不同，`Float` 不作为特定大小的 [`AbstractFloat`](@ref) 类型的别名而存在。与整数寄存器不同，浮点数寄存器大小由 IEEE-754 标准指定。而 `Int` 的大小反映了该机器上本地指针的大小。）
+（注意，与 `Int` 不同，`Float` 不作为特定大小的 [`AbstractFloat`](@ref) 类型的别名而存在。与整数寄存器不同，浮点数寄存器大小由 IEEE-754 标准指定，而 `Int` 的大小反映了该机器上本地指针的大小。）
 
 ## 类型操作
 
@@ -834,9 +834,6 @@ false
 
 ```jldoctest
 julia> typeof(Rational{Int})
-DataType
-
-julia> typeof(Union{Real,Float64,Rational})
 DataType
 
 julia> typeof(Union{Real,String})

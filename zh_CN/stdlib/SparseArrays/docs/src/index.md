@@ -1,10 +1,10 @@
-# 稀疏矩阵
+# 稀疏数组
 
 ```@meta
 DocTestSetup = :(using SparseArrays, LinearAlgebra)
 ```
 
-Julia在`SparseArrays`标准库模块中支持稀疏向量和[稀疏矩阵](https://en.wikipedia.org/wiki/Sparse_matrix)。相对于稠密数组，稀疏数组是包含很多零值的数组，将这些零值在一种特殊的数据结构中存储可以节省很大的空间和运算时间。
+Julia 在 `SparseArrays` 标准库模块中提供了对稀疏向量和[稀疏矩阵](https://en.wikipedia.org/wiki/Sparse_matrix)的支持。与稠密数组相比，包含足够多零值的稀疏数组在以特殊的数据结构存储时可以节省大量的空间和运算时间。
 
 ## [压缩稀疏列(CSC)稀疏矩阵存储](@id man-csc)
 

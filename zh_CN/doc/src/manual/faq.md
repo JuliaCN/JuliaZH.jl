@@ -32,6 +32,47 @@ obj3 = MyModule.someotherfunction(obj2, c)
 ...
 ```
 
+## [Scripting](@id man-scripting)
+
+### 该如何检查当前文件是否正在以主脚本运行？
+
+当一个文件通过使用`julia file.jl`来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查`abspath(PROGRAM_FILE) == @__FILE__`是不是`true`。
+
+### How do I catch CTRL-C in a script?
+
+Running a Julia script using `julia file.jl` does not throw
+[`InterruptException`](@ref) when you try to terminate it with CTRL-C
+(SIGINT).  To run a certain code before terminating a Julia script,
+which may or may not be caused by CTRL-C, use [`atexit`](@ref).
+Alternatively, you can use `julia -e 'include(popfirst!(ARGS))'
+file.jl` to execute a script while being able to catch
+`InterruptException` in the [`try`](@ref) block.
+
+### How do I pass options to `julia` using `#!/usr/bin/env`?
+
+Passing options to `julia` in so-called shebang by, e.g.,
+`#!/usr/bin/env julia --startup-file=no` may not work in some
+platforms such as Linux.  This is because argument parsing in shebang
+is platform-dependent and not well-specified.  In a Unix-like
+environment, a reliable way to pass options to `julia` in an
+executable script would be to start the script as a `bash` script and
+use `exec` to replace the process to `julia`:
+
+```julia
+#!/bin/bash
+#=
+exec julia --color=yes --startup-file=no -e 'include(popfirst!(ARGS))' \
+    "${BASH_SOURCE[0]}" "$@"
+=#
+
+@show ARGS  # put any Julia code here
+```
+
+In the example above, the code between `#=` and `=#` is run as a `bash`
+script.  Julia ignores this part since it is a multi-line comment for
+Julia.  The Julia code after `=#` is ignored by `bash` since it stops
+parsing the file once it reaches to the `exec` statement.
+
 ## 函数
 
 ### 向函数传递了参数 `x`，在函数中做了修改，但是在函数外变量 `x` 的值还是没有变。为什么？
@@ -492,6 +533,17 @@ julia> remotecall_fetch(anon_bar, 2)
 1
 ```
 
+### Why does Julia use `*` for string concatenation? Why not `+` or something else?
+
+The [main argument](@ref man-concatenation) against `+` is that string concatenation is not
+commutative, while `+` is generally used as a commutative operator. While the Julia community
+recognizes that other languages use different operators and `*` may be unfamiliar for some
+users, it communicates certain algebraic properties.
+
+Note that you can also use `string(...)` to concatenate strings (and other values converted
+to strings); similarly, `repeat` can be used instead of `^` to repeat strings. The
+[interpolation syntax](@ref string-interpolation) is also useful for constructing strings.
+
 ## 包和模块
 
 ### "using"和"import"的区别是什么？
@@ -515,11 +567,6 @@ julia> remotecall_fetch(anon_bar, 2)
 空元组（`()`）是空值的另一个表示方式。但是这不应该真的被认为是空值，而应被认为是零值的元组。
 
 空（或者"底层"）类型，写作`Union{}`（空的union类型）是没有值和子类型（除了自己）的类型。通常你没有必要用这个类型。
-
-
-### 该如何检查当前文件是否正在以主脚本运行？
-
-当一个文件通过使用`julia file.jl`来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查`abspath(PROGRAM_FILE) == @__FILE__`是不是`true`。
 
 ## 内存
 
@@ -553,7 +600,7 @@ end
 
 因为支持范用计算被认为比能使用其他方法完成的潜在的性能优化（比如使用显式循环）更加重要，所以像`+=`和`*=`运算符以绑定新值的方式工作。
 
-## 异步IO与并发同步写入
+## [异步 IO 与并发同步写入](@id faq-async-io)
 
 ### 为什么对于同一个流的并发写入会导致相互混合的输出？
 

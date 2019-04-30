@@ -10,54 +10,54 @@
 
 最基本的 Julia 工作流程是将一个文本编辑器配合 `julia` 的命令行使用。一般会包含下面一些步骤：
 
-  * **把还在开发中的代码放到一个临时的模块中。**新建一个文件，例如 `Tmp.jl`，
-    并放到模块中。
+  * **把还在开发中的代码放到一个临时的模块中。**新建一个文件，例如 `Tmp.jl`，并放到模块中。
+     
 
-    ```
+    ```julia
     module Tmp
+    export say_hello
 
-    <your definitions here>
+    say_hello() = println("Hello!")
+
+    # your other definitions here
 
     end
     ```
   * **把测试代码放到另一个文件中。**新建另一个文件，例如 `tst.jl`，开头为
 
     ```julia
-    import Tmp
+    include("Tmp.jl")
+    import .Tmp
+    # using .Tmp # we can use `using` to bring the exported symbols in `Tmp` into our namespace
+
+    Tmp.say_hello()
+    # say_hello()
+
+    # your other test code here
     ```
 
-    并把测试作为 `Tmp` 的内容。
-    或者，你可以把测试文件的内容打包到一个模块中，例如
+    并把测试作为 `Tmp` 的内容。或者，你可以把测试文件的内容打包到一个模块中，例如
+     
 
-    ```
+    ```julia
     module Tst
-        using Tmp
+        include("Tmp.jl")
+        import .Tmp
+        #using .Tmp
 
-        <scratch work>
+        Tmp.say_hello()
+        # say_hello()
 
+        # your other test code here
     end
     ```
 
-    优点是你可以用在你的测试代码中用 `using Tmp`，而且能避免在任一开头处都加上 `Tmp`。缺点是代码就不能不加修改的有选择性地被复制到 REPL 中。
+    优点是你的测试代码现在包含在一个模块中，并且不会在 `Main` 的全局作用域中引入新定义，这样更加整洁。
      
-     
-  * **打肥皂，冲洗，重复。**（译者注：此为英语幽默，被称为[“洗发算法”](https://en.wikipedia.org/wiki/Lather,_rinse,_repeat）描述洗头发的过程)在 `julia` REPL 中摸索不同的想法，把好的想法存入 `tst.jl`。
 
-### 简化初始化
+  * 使用 `include("tst.jl")` 来在 Julia REPL 中 `include` `tst.jl` 文件。
 
-为了简化重启 REPL，可以把项目相关的初始化代码放到一个文件中，例如 `_init.jl`，并在启动时输入命令：
-
-```
-julia -L _init.jl
-```
-
-如果进一步把下面的代码加入到 `~/.julia/config/startup.jl` 文件中
-
-```julia
-isfile("_init.jl") && include(joinpath(pwd(), "_init.jl"))
-```
-
-之后在那个目录下调用 `julia` 就可以自动执行初始化代码，而不需要加入额外的命令行参数。
+  * **打肥皂，冲洗，重复。**（译者注：此为英语幽默，被称为[“洗发算法”](https://en.wikipedia.org/wiki/Lather,_rinse,_repeat）描述洗头发的过程)在 `julia` REPL 中摸索不同的想法，把好的想法存入 `tst.jl`。要在 `tst.jl` 被更改后执行它，只需再次 `include` 它。
 
 ## 基于浏览器的工作流程
 

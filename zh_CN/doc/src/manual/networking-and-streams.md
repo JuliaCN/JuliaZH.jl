@@ -177,29 +177,29 @@ Task (runnable) @0x00007fd31dc11ae0
 对于那些熟悉 Unix 套接字 API 的人，这些方法名称会让人感觉很熟悉，可是它们的用法比原始的 Unix 套接字 API 要简单些。在本例中，首次调用 [`listen`](@ref) 会创建一个服务器，等待传入指定端口（2000）的连接。
 
 ```julia-repl
-julia> listen(2000) # Listens on localhost:2000 (IPv4)
-Base.TCPServer(active)
+julia> listen(2000) # 监听（IPv4 下的）localhost:2000
+Sockets.TCPServer(active)
 
-julia> listen(ip"127.0.0.1",2000) # Equivalent to the first
-Base.TCPServer(active)
+julia> listen(ip"127.0.0.1",2000) # 等价于第一个
+Sockets.TCPServer(active)
 
-julia> listen(ip"::1",2000) # Listens on localhost:2000 (IPv6)
-Base.TCPServer(active)
+julia> listen(ip"::1",2000) # 监听（IPv6 下的）localhost:2000
+Sockets.TCPServer(active)
 
-julia> listen(IPv4(0),2001) # Listens on port 2001 on all IPv4 interfaces
-Base.TCPServer(active)
+julia> listen(IPv4(0),2001) # 监听所有 IPv4 接口的端口 2001
+Sockets.TCPServer(active)
 
-julia> listen(IPv6(0),2001) # Listens on port 2001 on all IPv6 interfaces
-Base.TCPServer(active)
+julia> listen(IPv6(0),2001) # 监听所有 IPv6 接口的端口 2001
+Sockets.TCPServer(active)
 
-julia> listen("testsocket") # Listens on a UNIX domain socket
-Base.PipeServer(active)
+julia> listen("testsocket") # 监听 UNIX 域套接字
+Sockets.PipeServer(active)
 
-julia> listen("\\\\.\\pipe\\testsocket") # Listens on a Windows named pipe
-Base.PipeServer(active)
+julia> listen("\\\\.\\pipe\\testsocket") # 监听 Windows 命名管道
+Sockets.PipeServer(active)
 ```
 
-请注意，最后一次调用返回的类型是不同的。这是因为此服务器不监听 TCP，而是监听命名管道（Windows）或 UNIX 域套接字。还请注意 Windows 命名管道格式必须具有特定的模式，即名称前缀（`\\.\pipe\`），以便唯一标识[文件类型](https://msdn.microsoft.com/en-us/library/windows/desktop/aa365783(v=vs.85).aspx)。TCP 和命名管道或 UNIX 域套接字之间的区别是微妙的，这与 [`accept`](@ref) 和 [`connect`](@ref) 方法有关。[`accept`](@ref) 方法检索到连接到我们刚创建的服务器的客户端的连接，而 [`connect`](@ref) 函数使用指定的方法连接到服务器。[`connect`](@ref) 函数接收与 [`listen`](@ref) 相同的参数，因此，假设环境（即 host、cwd 等）相同，你应该能够将相同的参数传递给 [`connect`](@ref)，就像你在监听建立连接时所做的那样。那么让我们尝试一下（在创建上面的服务器之后）：
+请注意，最后一次调用返回的类型是不同的。这是因为此服务器不监听 TCP，而是监听命名管道（Windows）或 UNIX 域套接字。还请注意 Windows 命名管道格式必须具有特定的模式，即名称前缀（`\\.\pipe\`），以便唯一标识[文件类型](https://docs.microsoft.com/en-us/windows/desktop/ipc/pipe-names)。TCP 和命名管道或 UNIX 域套接字之间的区别是微妙的，这与 [`accept`](@ref) 和 [`connect`](@ref) 方法有关。[`accept`](@ref) 方法检索到连接到我们刚创建的服务器的客户端的连接，而 [`connect`](@ref) 函数使用指定的方法连接到服务器。[`connect`](@ref) 函数接收与 [`listen`](@ref) 相同的参数，因此，假设环境（即 host、cwd 等）相同，你应该能够将相同的参数传递给 [`connect`](@ref)，就像你在监听建立连接时所做的那样。那么让我们尝试一下（在创建上面的服务器之后）：
 
 ```julia-repl
 julia> connect(2000)

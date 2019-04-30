@@ -1,4 +1,4 @@
-# [Arrays](@id lib-arrays)
+# [数组](@id lib-arrays)
 
 ## 构造函数与类型
 

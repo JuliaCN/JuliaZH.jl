@@ -368,11 +368,9 @@ julia> myfunc(MySimpleContainer([1:3;]))
 4
 ```
 
-### Annotate values taken from untyped locations
+### 对从无类型位置获取的值进行类型注释
 
-It is often convenient to work with data structures that may contain values of any type (arrays
-of type `Array{Any}`). But, if you're using one of these structures and happen to know the type
-of an element, it helps to share this knowledge with the compiler:
+使用可能包含任何类型的值的数据结构（如类型为 `Array{Any}` 的数组）经常是很方便的。但是，如果你正在使用这些数据结构之一，并且恰巧知道某个元素的类型，那么让编译器也知道这一点会有所帮助：
 
 ```julia
 function foo(a::Array{Any,1})
@@ -382,21 +380,11 @@ function foo(a::Array{Any,1})
 end
 ```
 
-Here, we happened to know that the first element of `a` would be an [`Int32`](@ref). Making
-an annotation like this has the added benefit that it will raise a run-time error if the
-value is not of the expected type, potentially catching certain bugs earlier.
+在这里，我们恰巧知道 `a` 的第一个元素是个 [`Int32`](@ref)。留下这样的注释还有另外的好处，它将在该值不是预期类型时引发运行时错误，而这可能会更早地捕获某些错误。
 
-In the case that the type of `a[1]` is not known precisely, `x` can be declared via
-`x = convert(Int32, a[1])::Int32`. The use of the [`convert`](@ref) function allows `a[1]`
-to be any object convertible to an `Int32` (such as `UInt8`), thus increasing the genericity
-of the code by loosening the type requirement. Notice that `convert` itself needs a type
-annotation in this context in order to achieve type stability. This is because the compiler
-cannot deduce the type of the return value of a function, even `convert`, unless the types of
-all the function's arguments are known.
+在没有确切知道 `a[1]` 的类型的情况下，`x` 可以通过 `x = convert(Int32, a[1])::Int32` 来声明。使用 [`convert`](@ref) 函数则允许 `a[1]` 是可转换为 `Int32` 的任何对象（比如 `UInt8`），从而通过放松类型限制来提高代码的通用性。请注意，`convert` 本身在此上下文中需要类型注释才能实现类型稳定性。这是因为除非该函数所有参数的类型都已知，否则编译器无法推导出该函数返回值的类型，即使其为 `convert`。
 
-Type annotation will not enhance (and can actually hinder) performance if the type is constructed
-at run-time. This is because the compiler cannot use the annotation to specialize the subsequent
-code, and the type-check itself takes time. For example, in the code:
+如果类型注释中的类型是在运行时构造的，那么类型注释不会增强（并且实际上可能会降低）性能。这是因为编译器无法使用该类型注释来专门化代码，而类型检查本身又需要时间。例如，在以下代码中：
 
 ```julia
 function nr(a, prec)
@@ -408,7 +396,7 @@ end
 ```
 
 the annotation of `c` harms performance. To write performant code involving types constructed at
-run-time, use the [function-barrier technique](@ref kernal-functions) discussed below, and ensure
+run-time, use the [function-barrier technique](@ref kernel-functions) discussed below, and ensure
 that the constructed type appears among the argument types of the kernel function so that the kernel
 operations are properly specialized by the compiler. For example, in the above snippet, as soon as
 `b` is constructed, it can be passed to another function `k`, the kernel. If, for example, function
@@ -419,24 +407,7 @@ appearing in an assignment statement within `k` of the form:
 c = (b + 1.0f0)::Complex{T}
 ```
 
-does not hinder performance (but does not help either) since the compiler can determine the type of `c`
-at the time `k` is compiled.
-
-### 声明关键字参数的类型
-
-关键字参数可以声明类型：
-
-```julia
-function with_keyword(x; name::Int = 1)
-    ...
-end
-```
-
-函数会针对关键字参数的类型进行专门化，因此这些声明不会影响函数内部代码的性能。然而，它们将减少对包含关键字参数的函数的调用的开销。
-
-具有关键字参数的函数对于仅传递位置参数的调用点的开销几乎为零。
-
-在性能敏感的代码中应当避免传递像 `f(x; keywords...)` 的动态列表参数。
+不会降低性能（但也不会提高），因为编译器可以在编译 `k` 时确定 `c` 的类型。
 
 ## Break functions into multiple definitions
 
@@ -505,7 +476,7 @@ end
   * 使用显式的类型转换：`x = oneunit(Float64)`
   * 使用第一个循环迭代初始化，即 `x = 1 / rand()`，接着循环 `for i = 2:10`
 
-## [Separate kernel functions (aka, function barriers)](@id kernal-functions)
+## [Separate kernel functions (aka, function barriers)](@id kernel-functions)
 
 Many functions follow a pattern of performing some set-up work, and then running many iterations
 to perform a core computation. Where possible, it is a good idea to put these core computations
@@ -595,10 +566,10 @@ julia> array3(5.0, 2)
 
 这确实有用，但是（你可以自己使用 `@code_warntype array3(5.0, 2)` 来验证）问题是输出地类型不能被推断出来：参数 `N` 是一个 `Int` 类型的**值**，而且类型推断不会（也不能）提前预测它的值。这意味着使用这个函数的结果的代码在每次获取 `A` 时都不得不保守地检查其类型；这样的代码将会是非常缓慢的。
 
-Now, one very good way to solve such problems is by using the [function-barrier technique](@ref kernal-functions).
+Now, one very good way to solve such problems is by using the [function-barrier technique](@ref kernel-functions).
 However, in some cases you might want to eliminate the type-instability altogether. In such cases,
 one approach is to pass the dimensionality as a parameter, for example through `Val{T}()` (see
-[值类型](@ref)):
+["Value types"](@ref)):
 
 ```jldoctest
 julia> function array3(fillval, ::Val{N}) where N
@@ -647,7 +618,7 @@ type-domain.
 
 ## The dangers of abusing multiple dispatch (aka, more on types with values-as-parameters)
 
-Once one learns to appreciate multiple dispatch, there's an understandable tendency to go crazy
+Once one learns to appreciate multiple dispatch, there's an understandable tendency to go overboard
 and try to use it for everything. For example, you might imagine using it to store information,
 e.g.
 
@@ -957,7 +928,7 @@ using Distributed
 responses = Vector{Any}(undef, nworkers())
 @sync begin
     for (idx, pid) in enumerate(workers())
-        @async responses[idx] = remotecall_fetch(pid, foo, args...)
+        @async responses[idx] = remotecall_fetch(foo, pid, args...)
     end
 end
 ```
@@ -1015,9 +986,9 @@ Sometimes you can enable better optimization by promising certain program proper
 
 The common idiom of using 1:n to index into an AbstractArray is not safe if the Array uses unconventional indexing,
 and may cause a segmentation fault if bounds checking is turned off. Use `LinearIndices(x)` or `eachindex(x)`
-instead (see also [offset-arrays](https://docs.julialang.org/en/latest/devdocs/offset-arrays)).
+instead (see also [offset-arrays](https://docs.julialang.org/en/latest/devdocs/offset-arrays/)).
 
-!!!note
+!!! note
     While `@simd` needs to be placed directly in front of an innermost `for` loop, both `@inbounds` and `@fastmath`
     can be applied to either single expressions or all the expressions that appear within nested blocks of code, e.g.,
     using `@inbounds begin` or `@inbounds for ...`.
@@ -1075,7 +1046,7 @@ of a one-dimensional array, and then evaluates the L2-norm of the result:
 function init!(u::Vector)
     n = length(u)
     dx = 1.0 / (n-1)
-    @fastmath @inbounds @simd for i in 1:n #by asserting that `u` is a `Vector` we can assume it has 1-based indexing
+    @fastmath @inbounds @simd for i in 1:n # 通过断言 `u` 是一个 `Vector`，我们可以假定它具有 1-based 索引
         u[i] = sin(2pi*dx*i)
     end
 end
@@ -1097,7 +1068,7 @@ function mynorm(u::Vector)
     @fastmath @inbounds @simd for i in 1:n
         s += u[i]^2
     end
-    @fastmath @inbounds return sqrt(s/n)
+    @fastmath @inbounds return sqrt(s)
 end
 
 function main()

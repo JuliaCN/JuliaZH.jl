@@ -47,11 +47,11 @@ julia> 1234
 整型字面量的默认类型取决于目标系统是 32 位还是 64 位架构：
 
 ```julia-repl
-# 32-bit system:
+# 32 位系统：
 julia> typeof(1)
 Int32
 
-# 64-bit system:
+# 64 位系统：
 julia> typeof(1)
 Int64
 ```
@@ -59,11 +59,11 @@ Int64
 Julia 的内置变量 [`Sys.WORD_SIZE`](@ref) 表明了目标系统是 32 位还是 64 位架构：
 
 ```julia-repl
-# 32-bit system:
+# 32 位系统：
 julia> Sys.WORD_SIZE
 32
 
-# 64-bit system:
+# 64 位系统：
 julia> Sys.WORD_SIZE
 64
 ```
@@ -71,13 +71,13 @@ julia> Sys.WORD_SIZE
 Julia 也定义了 `Int` 与 `UInt` 类型，它们分别是系统有符号和无符号的原生整数类型的别名。
 
 ```julia-repl
-# 32-bit system:
+# 32 位系统：
 julia> Int
 Int32
 julia> UInt
 UInt32
 
-# 64-bit system:
+# 64 位系统：
 julia> Int
 Int64
 julia> UInt
@@ -87,7 +87,7 @@ UInt64
 那些超过 32 位表示范围的大整数，如果能用 64 位表示，那么无论是什么系统都会用 64 位表示：
 
 ```jldoctest
-# 32-bit or 64-bit system:
+# 32 位或 64 位系统：
 julia> typeof(3000000000)
 Int64
 ```
@@ -152,7 +152,7 @@ julia> typeof(ans)
 UInt128
 ```
 
-二进制、八进制和十六进制的字面量都会产生无符号的整数类型。当字面量不是开头全是 0 时，它们二进制数据项的位数会是最少需要的位数。当开头都是 0 时，位数取决于一个字面量需要的最少位数，这里的字面量指的是一个有着同样长度但开头都为 `1` 的数。这样用户就可以控制位数了。那些无法使用 `UInt128` 类型存储下的值无法写成这样的字面量。
+二进制、八进制和十六进制的字面量都会产生无符号的整数类型。当字面量不是开头全是 0 时，它们二进制数据项的位数会是最少需要的位数。当开头都是 `0` 时，位数取决于一个字面量需要的最少位数，这里的字面量指的是一个有着同样长度但开头都为 `1` 的数。这样用户就可以控制位数了。那些无法使用 `UInt128` 类型存储下的值无法写成这样的字面量。
 
 二进制、八进制和十六进制的字面量可以在前面紧接着加一个负号 `-`，这样可以产生一个和原字面量有着同样位数而值为原数的补码的数（二补数）：
 
@@ -185,7 +185,7 @@ julia> for T in [Int8,Int16,Int32,Int64,Int128,UInt8,UInt16,UInt32,UInt64,UInt12
 UInt128: [0,340282366920938463463374607431768211455]
 ```
 
-[`typemin`](@ref) 和 [`typemax`](@ref) 返回的值的类型总与所给参数的类型相同。（上面的表达式用了一些我们目前还没有介绍的功能，包括 [for 循环](@ref man-loops)、[字符串](@ref man-strings)和[插值](@ref)，但对于已有一些编程经验的用户应该是很容易理解的。）
+[`typemin`](@ref) 和 [`typemax`](@ref) 返回的值的类型总与所给参数的类型相同。（上面的表达式用了一些目前还没有介绍的功能，包括 [for 循环](@ref man-loops)、[字符串](@ref man-strings)和[插值](@ref)，但对于已有一些编程经验的用户应该是很容易理解的。）
 
 ### 溢出行为
 
@@ -384,7 +384,7 @@ julia> eps(Float32)
 julia> eps(Float64)
 2.220446049250313e-16
 
-julia> eps() # same as eps(Float64)
+julia> eps() # 与 eps(Float64) 相同
 2.220446049250313e-16
 ```
 
@@ -440,7 +440,7 @@ Julia 所使用的默认模式总是 [`RoundNearest`](@ref)，指舍入到最接
 
 浮点算术带来了很多微妙之处，它们可能对于那些不熟悉底层实现细节的用户会是很出人意料的。然而，这些微妙之处在大部分科学计算的书籍中以及以下的参考资料中都有详细介绍:
 
-  * 浮点算术的权威指南是 [IEEE 754-2008 标准](http://standards.ieee.org/findstds/standard/754-2008.html)；
+  * 浮点数算术的权威指南是 [IEEE 754-2008 标准](https://standards.ieee.org/standard/754-2008.html)；
     然而这篇标准在网上无法免费获得。
   * 关于浮点数是如何表示的，想要一个简单而明白的介绍的话，可以看 John D. Cook 的[文章](https://www.johndcook.com/blog/2009/04/06/anatomy-of-a-floating-point-number/)以及他关于从这种表示与实数理想的抽象化的差别中产生的一些问题的[介绍](https://www.johndcook.com/blog/2009/04/06/numbers-are-a-leaky-abstraction/)
      
@@ -457,7 +457,7 @@ Julia 所使用的默认模式总是 [`RoundNearest`](@ref)，指舍入到最接
 
 ## 任意精度算术
 
-为了允许使用任意精度的整数与浮点数，Julia 分别包装了 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org) 以及 [GNU MPFR Library](http://www.mpfr.org)。Julia 中的 [`BigInt`](@ref) 与 [`BigFloat`](@ref) 两种类型分别提供了任意精度的整数和浮点数。
+为了允许使用任意精度的整数与浮点数，Julia 分别包装了 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org) 以及 [GNU MPFR Library](https://www.mpfr.org)。Julia 中的 [`BigInt`](@ref) 与 [`BigFloat`](@ref) 两种类型分别提供了任意精度的整数和浮点数。
 
 存在从原始数字类型创建它们的构造器，也可以使用 [`parse`](@ref) 从 `AbstractString` 来构造它们。一旦被创建，它们就可以像所有其它数值类型一样参与算术（也是多亏了 Julia 的[类型提升和转换机制](@ref conversion-and-promotion)）。
 
@@ -578,10 +578,10 @@ ERROR: MethodError: objects of type Int64 are not callable
 并列的字面量系数语法可能和两种数值字面量语法产生冲突：十六进制整数字面量以及浮点字面量的工程表示法。下面是几种会产生语法冲突的情况：
 
   * 十六进制整数字面量 `0xff` 可能被解释成数值字面量 `0` 乘以变量 `xff`。
-  * 浮点字面量表达式 `1e10` 可以被解释成 `1` 乘以变量 `e10`，与之等价的 `E`-表示法也存在类似的情况。
-  * 32-bit 的浮点数字面量 `1.5f22` 被解释成数值 `1.5` 乘以变量 `f22`。
+  * 浮点字面量表达式 `1e10` 可以被解释成数值字面量 `1` 乘以变量 `e10`，与之等价的 `E`-表示法也存在类似的情况。
+  * 32-bit 的浮点数字面量 `1.5f22` 被解释成数值字面量 `1.5` 乘以变量 `f22`。
 
-在这些所有的情况中，都使用这样的解释方法来解决二义性：
+在这些所有的情况中，都使用这样的解释方式来解决歧义：
 
   * `0x` 开头的表达式总是十六进制字面量。
   * 数值开头跟着 `e` 和 `E` 的表达式总是浮点字面量。
