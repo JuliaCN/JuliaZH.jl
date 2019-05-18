@@ -6,14 +6,14 @@
 
 ### [作用域结构](@id man-scope-table)
 
-结构 | 作用域类型 | Scope blocks it may be nested in
+结构 | 作用域类型 | 可嵌入的作用域块
 ------------ | -------------  |---------------------------
-[`module`](@ref), [`baremodule`](@ref)            | global | global
-interactive prompt (REPL)                         | global | global
-(mutable) [`struct`](@ref), [`macro`](@ref)       | local  | global
-[`for`](@ref), [`while`](@ref), [`try-catch-finally`](@ref try), [`let`](@ref) |local | global or local
-函数（语法，匿名或者do语法块） | local | global or local
-推导式，broadcast-fusing                 | local | global or local
+[`module`](@ref), [`baremodule`](@ref)            | 全局 | 全局
+交互式提示符（REPL）                         | 全局 | 全局
+(mutable) [`struct`](@ref), [`macro`](@ref)       | 局部  | 全局
+[`for`](@ref), [`while`](@ref), [`try-catch-finally`](@ref try), [`let`](@ref) |局部 | 全局或局部
+函数（语法，匿名或者do语法块） | 局部 | 全局或局部
+推导式，broadcast-fusing                 | 局部 | 全局或局部
 
 值得注意的是，这个表内没有的是[ begin 块](@ref man-compound-experessions)和[ if 块](@ref man-conditional-evaluation)，这两个块*不会*引进新的作用域块。这两种作用域遵循的规则有点不一样，会在下面解释。
 

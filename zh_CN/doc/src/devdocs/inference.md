@@ -1,15 +1,13 @@
-# 类型推断
+# 类型推导
 
-## How inference works
+## 类型推导是如何工作的
 
-[Type inference](https://en.wikipedia.org/wiki/Type_inference) refers
-to the process of deducing the types of later values from the types of
-input values. Julia's approach to inference has been described in blog
-posts
-([1](https://juliacomputing.com/blog/2016/04/04/inference-convergence.html),
-[2](https://juliacomputing.com/blog/2017/05/15/inference-converage2.html)).
+[类型推导](https://en.wikipedia.org/wiki/Type_inference)指的是由输入值的类型推导其他值得类型得过程。
 
-## Debugging compiler.jl
+这两篇博客 ([1](https://juliacomputing.com/blog/2016/04/04/inference-convergence.html),
+[2](https://juliacomputing.com/blog/2017/05/15/inference-converage2.html)) 描述了 Julia 的类型推导实现。
+
+## 调试 compiler.jl
 
 You can start a Julia session, edit `compiler/*.jl` (for example to
 insert `print` statements), and then replace `Core.Compiler` in your
@@ -21,17 +19,17 @@ A convenient entry point into inference is `typeinf_code`. Here's a
 demo running inference on `convert(Int, UInt(1))`:
 
 ```julia
-# Get the method
-atypes = Tuple{Type{Int}, UInt}  # argument types
-mths = methods(convert, atypes)  # worth checking that there is only one
+# 获取方法
+atypes = Tuple{Type{Int}, UInt}  # 参数类型
+mths = methods(convert, atypes)  # 值得检验一下是否只有唯一一个方法
 m = first(mths)
 
-# Create variables needed to call `typeinf_code`
-params = Core.Compiler.Params(typemax(UInt))  # parameter is the world age,
-                                                        #   typemax(UInt) -> most recent
-sparams = Core.svec()      # this particular method doesn't have type-parameters
-optimize = true            # run all inference optimizations
-cached = false             # force inference to happen (do not use cached results)
+# 为 `typeinf_code` 调用创建所需的变量
+params = Core.Compiler.Params(typemax(UInt))  # 参数是世界时间,
+                                                        #   typemax(UInt) -> 最近
+sparams = Core.svec()      # 这个特别的方法没有类型参数 
+optimize = true            # 运行所有的推断优化
+cached = false             # 强制执行推断（不使用缓存的结果）
 Core.Compiler.typeinf_code(m, atypes, sparams, optimize, cached, params)
 ```
 
@@ -39,11 +37,11 @@ If your debugging adventures require a `MethodInstance`, you can look it up by
 calling `Core.Compiler.code_for_method` using many of the variables above.
 A `CodeInfo` object may be obtained with
 ```julia
-# Returns the CodeInfo object for `convert(Int, ::UInt)`:
+# 返回 `convert(Int, ::UInt)` 的 CodeInfo 对象:
 ci = (@code_typed convert(Int, UInt(1)))[1]
 ```
 
-## The inlining algorithm (inline_worthy)
+## 内联算法 (inline_worthy)
 
 Much of the hardest work for inlining runs in
 `inlining_pass`. However, if your question is "why didn't my function
@@ -94,9 +92,9 @@ Each statement gets analyzed for its total cost in a function called
 
 ```julia
 params = Core.Compiler.Params(typemax(UInt))
-# Get the CodeInfo object
-ci = (@code_typed fill(3, (5, 5)))[1]  # we'll try this on the code for `fill(3, (5, 5))`
-# Calculate cost of each statement
+# 获取 CodeInfo 对象
+ci = (@code_typed fill(3, (5, 5)))[1]  # 我们将再 `fill(3, (5, 5))` 上尝试代码
+# 计算每条语句得成本
 cost(stmt) = Core.Compiler.statement_cost(stmt, ci, Base, params)
 cst = map(cost, ci.code)
 ```

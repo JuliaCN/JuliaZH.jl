@@ -1,9 +1,9 @@
 # 代码加载
 
 !!! note
-    This chapter covers the technical details of package loading. To install packages, use [`Pkg`](@ref Pkg), Julia's built-in package manager, to add packages to your active environment. To use packages already in your active environment, write `import X` or `using X`, as described in the [Modules documentation](@ref modules).
+    这一章包含了加载包的技术细节。如果要安装包，使用 Julia 的内置包管理器[`Pkg`](@ref Pkg)将包加入到你的活跃环境中。如果要使用已经在你的活跃环境中的包，使用 `import X` 或 `using X`，正如在[模块](@ref 模块)中所描述的那样。
 
-## Definitions
+## 定义
 
 Julia加载代码有两种机制：
 
@@ -19,7 +19,7 @@ These questions are answered by searching through the project environments liste
 
 ## 包的联合
 
-Most of the time, a package is uniquely identifiable simply from its name. However, sometimes a project might encounter a situation where it needs to use two different packages that share the same name. While you might be able fix this by renaming one of the packages, being forced to do so can be highly disruptive in a large, shared code base. Instead, Julia's code loading mechanism allows the same package name to refer to different packages in different components of an application.
+大多数时候，一个包可以通过它的名字唯一确定。但有时在一个项目中，可能需要使用两个有着相同名字的不同的包。尽管你可以通过重命名其中一个包来解决这个问题，但在一个大型的、共享的代码库中被迫做这件事可能是有高度破坏性的。相反，Julia的包加载机制允许相同的包名在一个应用的不同部分指向不同的包。
 
 Julia 支持联合的包管理，这意味着多个独立的部分可以维护公有包、私有包以及包的注册表，并且项目可以依赖于一系列来自不同注册表的公有包和私有包。您也可以使用一组通用工具和工作流（workflow）来安装和管理来自各种注册表的包。Julia 附带的 `Pkg` 软件包管理器允许安装和管理项目的依赖项，它会帮助创建并操作项目文件（其描述了项目所依赖的其他项目）和清单文件（其为项目完整依赖库的确切版本的快照）。
 
@@ -209,9 +209,9 @@ This example map includes three different kinds of package locations (the first 
 3. The `Pub` package is in the user depot, where packages installed by the user live. These are only available to the user who installed them.
 
 
-### Package directories
+### 包目录
 
-Package directories provide a simpler kind of environment without the ability to handle name collisions. In a package directory, the set of top-level packages is the set of subdirectories that "look like" packages. A package `X` is exists in a package directory if the directory contains one of the following "entry point" files:
+包目录提供一种更简单的，不能处理名称冲突的环境。
 
 - `X.jl`
 - `X/src/X.jl`
