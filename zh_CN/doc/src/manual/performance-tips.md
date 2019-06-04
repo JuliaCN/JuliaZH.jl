@@ -848,17 +848,11 @@ julia> @time fview(x);
 
 请注意，该函数的 `fview` 版本提速了 3 倍且减少了内存分配。
 
-## Copying data is not always bad
+## 复制数据不总是坏的
 
-Arrays are stored contiguously in memory, lending themselves to CPU vectorization
-and fewer memory accesses due to caching. These are the same reasons that it is recommended
-to access arrays in column-major order (see above). Irregular access patterns and non-contiguous views
-can drastically slow down computations on arrays because of non-sequential memory access.
+数组被连续地存储在内存中，这使其可被 CPU 向量化，并且会由于缓存减少内存访问。这与建议以列序优先方式访问数组的原因相同（请参见上文）。由于不按顺序访问内存，无规律的访问方式和不连续的视图可能会大大减慢数组上的计算速度。
 
-Copying irregularly-accessed data into a contiguous array before operating on it can result
-in a large speedup, such as in the example below. Here, a matrix and a vector are being accessed at
-800,000 of their randomly-shuffled indices before being multiplied. Copying the views into
-plain arrays speeds up the multiplication even with the cost of the copying operation.
+在对无规律访问的数据进行操作前，将其复制到连续的数组中可能带来巨大的加速，正如下例所示。其中，矩阵和向量在相乘前会访问其 800,000 个已被随机混洗的索引处的值。将视图复制到普通数组会加速乘法，即使考虑了复制操作的成本。
 
 ```julia-repl
 julia> using Random
@@ -886,13 +880,11 @@ julia> @time begin
 -4256.759568345134
 ```
 
-Provided there is enough memory for the copies, the cost of copying the view to an array is
-far outweighed by the speed boost from doing the matrix multiplication on a contiguous array.
+倘若副本本身的内存足够大，那么将视图复制到数组的成本可能远远超过在连续数组上执行矩阵乘法所带来的加速。
 
-## Avoid string interpolation for I/O
+## 避免 I/0 中的字符串插值
 
-When writing data to a file (or other I/O device), forming extra intermediate strings is a source
-of overhead. Instead of:
+将数据写入到文件（或其他 I/0 设备）中时，生成额外的中间字符串会带来开销。请不要写成这样：
 
 ```julia
 println(file, "$a $b")
@@ -904,15 +896,13 @@ println(file, "$a $b")
 println(file, a, " ", b)
 ```
 
-The first version of the code forms a string, then writes it to the file, while the second version
-writes values directly to the file. Also notice that in some cases string interpolation can be
-harder to read. Consider:
+第一个版本的代码生成一个字符串，然后将其写入到文件中，而第二个版本直接将值写入到文件中。另请注意，在某些情况下，字符串插值可能更难阅读。请考虑：
 
 ```julia
 println(file, "$(f(a))$(f(b))")
 ```
 
-versus:
+与：
 
 ```julia
 println(file, f(a), f(b))
@@ -966,35 +956,30 @@ These are some minor points that might help in tight inner loops.
   * Use [`div(x,y)`](@ref) for truncating division of integers instead of [`trunc(x/y)`](@ref), [`fld(x,y)`](@ref)
     instead of [`floor(x/y)`](@ref), and [`cld(x,y)`](@ref) instead of [`ceil(x/y)`](@ref).
 
-## [Performance Annotations](@id man-performance-annotations)
+## [性能标注](@id man-performance-annotations)
 
-Sometimes you can enable better optimization by promising certain program properties.
+有时，你可以通过承诺某些程序性质来启用更好的优化。
 
-  * Use [`@inbounds`](@ref) to eliminate array bounds checking within expressions. Be certain before doing
-    如果下标越界，会发生崩溃或潜在的故障
-  * Use [`@fastmath`](@ref) to allow floating point optimizations that are correct for real numbers, but lead
-    to differences for IEEE numbers. Be careful when doing this, as this may change numerical results.
-    This corresponds to the `-ffast-math` option of clang.
-  * Write [`@simd`](@ref) in front of `for` loops to promise that the iterations are independent and may be
-    reordered.  Note that in many cases, Julia can automatically vectorize code without the `@simd` macro;
-    it is only beneficial in cases where such a transformation would otherwise be illegal, including cases
-    like allowing floating-point re-associativity and ignoring dependent memory accesses (`@simd ivdep`).
-    Again, be very careful when asserting `@simd` as erroneously annotating a loop with dependent iterations
-    may result in unexpected results. In particular, note that `setindex!` on some `AbstractArray` subtypes is
-    inherently dependent upon iteration order. **This feature is experimental**
-    and could change or disappear in future versions of Julia.
+  * 使用 [`@inbounds`](@ref) 来取消表达式中的数组边界检查。使用前请再三确定，如果下标越界，可能会发生崩溃或潜在的故障。
+     
+  * 使用 [`@fastmath`](@ref) 来允许对于实数是正确的、但是对于 IEEE 数字会导致差异的浮点数优化。使用时请多多小心，因为这可能改变数值结果。这对应于 clang 的 `-ffast-math` 选项。
+     
+     
+  * 在 `for` 循环前编写 [`@simd`](@ref) 来承诺迭代是相互独立且可以重新排序的。请注意，在许多情况下，Julia 可以在没有 `@simd` 宏的情况下自动向量化代码；只有在这种转换原本是非法的情况下才有用，包括允许浮点数重新结合和忽略相互依赖的内存访问（`@simd ivdep`）等情况。此外，在断言 `@simd` 时要十分小心，因为错误地标注一个具有相互依赖的迭代的循环可能导致意外结果。尤其要注意的是，某些 `AbstractArray` 子类型的 `setindex!` 本质上依赖于迭代顺序。**此功能是实验性的**，在 Julia 未来的版本中可能会更改或消失。
+     
+     
+     
+     
+     
+     
+     
 
-The common idiom of using 1:n to index into an AbstractArray is not safe if the Array uses unconventional indexing,
-and may cause a segmentation fault if bounds checking is turned off. Use `LinearIndices(x)` or `eachindex(x)`
-instead (see also [offset-arrays](https://docs.julialang.org/en/latest/devdocs/offset-arrays/)).
+使用 1:n 索引 AbstractArray 这一常见习惯在该数组使用非传统索引时是不安全的，并且在关闭边界检查时可能导致段错误。请改用 `LinearIndices(x)` 或 `eachindex(x)`（参阅 [offset-arrays](https://docs.julialang.org/en/latest/devdocs/offset-arrays/)）。
 
 !!! note
-    While `@simd` needs to be placed directly in front of an innermost `for` loop, both `@inbounds` and `@fastmath`
-    can be applied to either single expressions or all the expressions that appear within nested blocks of code, e.g.,
-    using `@inbounds begin` or `@inbounds for ...`.
+    虽然 `@simd` 需要直接放在最内层 `for` 循环前面，但 `@inbounds` 和 `@fastmath` 都可作用于单个表达式或在嵌套代码块中出现的所有表达式，例如，可使用 `@inbounds begin` 或 `@inbounds for ...`。
 
-Here is an example with both `@inbounds` and `@simd` markup (we here use `@noinline` to prevent
-the optimizer from trying to be too clever and defeat our benchmark):
+下面是一个具有 `@inbounds` 和 `@simd` 标记的例子（我们这里使用 `@noinline` 来防止因优化器过于智能而破坏我们的基准测试）：
 
 ```julia
 @noinline function inner(x, y)
@@ -1030,17 +1015,16 @@ end
 timeit(1000, 1000)
 ```
 
-On a computer with a 2.4GHz Intel Core i5 processor, this produces:
+在配备 2.4GHz Intel Core i5 处理器的计算机上，其结果为：
 
 ```
 GFlop/sec        = 1.9467069505224963
 GFlop/sec (SIMD) = 17.578554163920018
 ```
 
-(`GFlop/sec` measures the performance, and larger numbers are better.)
+（`GFlop/sec` 用来测试性能，数值越大越好。）
 
-Here is an example with all three kinds of markup. This program first calculates the finite difference
-of a one-dimensional array, and then evaluates the L2-norm of the result:
+下面是一个具有三种标记的例子。此程序首先计算一个一维数组的有限差分，然后计算结果的 L2 范数：
 
 ```julia
 function init!(u::Vector)
@@ -1091,7 +1075,7 @@ end
 main()
 ```
 
-On a computer with a 2.7 GHz Intel Core i7 processor, this produces:
+在配备 2.7 GHz Intel Core i7 处理器的计算机上，其结果为：
 
 ```
 $ julia wave.jl;
@@ -1103,26 +1087,13 @@ $ julia --math-mode=ieee wave.jl;
 4.443986180758249
 ```
 
-Here, the option `--math-mode=ieee` disables the `@fastmath` macro, so that we can compare results.
+在这里，选项 `--math-mode=ieee` 禁用 `@fastmath` 宏，好让我们可以比较结果。
 
-In this case, the speedup due to `@fastmath` is a factor of about 3.7. This is unusually large
-– in general, the speedup will be smaller. (In this particular example, the working set of the
-benchmark is small enough to fit into the L1 cache of the processor, so that memory access latency
-does not play a role, and computing time is dominated by CPU usage. In many real world programs
-this is not the case.) Also, in this case this optimization does not change the result – in
-general, the result will be slightly different. In some cases, especially for numerically unstable
-algorithms, the result can be very different.
+在这种情况下，`@fastmath` 加速了大约 3.7 倍。这非常大——通常来说，加速会更小。（在这个特定的例子中，基准测试的工作集足够小，可以放在该处理器的 L1 缓存中，因此内存访问延迟不起作用，计算时间主要由 CPU 使用率决定。在许多现实世界的程序中，情况并非如此。）此外，在这种情况下，此优化不会改变计算结果——通常来说，结果会略有不同。在某些情况下，尤其是数值不稳定的算法，计算结果可能会差很多。
 
-The annotation `@fastmath` re-arranges floating point expressions, e.g. changing the order of
-evaluation, or assuming that certain special cases (inf, nan) cannot occur. In this case (and
-on this particular computer), the main difference is that the expression `1 / (2*dx)` in the function
-`deriv` is hoisted out of the loop (i.e. calculated outside the loop), as if one had written
-`idx = 1 / (2*dx)`. In the loop, the expression `... / (2*dx)` then becomes `... * idx`, which
-is much faster to evaluate. Of course, both the actual optimization that is applied by the compiler
-as well as the resulting speedup depend very much on the hardware. You can examine the change
-in generated code by using Julia's [`code_native`](@ref) function.
+标注 `@fastmath` 会重新排列浮点数表达式，例如更改求值顺序，或者假设某些特殊情况（如 inf、nan）不出现。在这种情况中（以及在这个特定的计算机上），主要区别是函数 `deriv` 中的表达式 `1 / (2*dx)` 会被提升出循环（即在循环外计算），就像编写了 `idx = 1 / (2*dx)`，然后，在循环中，表达式 `... / (2*dx)` 变为 `... * idx`，后者计算起来快得多。当然，编译器实际上采用的优化以及由此产生的加速都在很大程度上取决于硬件。你可以使用 Julia 的 [`code_native`](@ref) 函数来检查所生成代码的更改。
 
-Note that `@fastmath` also assumes that `NaN`s will not occur during the computation, which can lead to surprising behavior:
+请注意，`@fastmath` 也假设了在计算中不会出现 `NaN`，这可能导致意想不到的行为：
 
 ```julia-repl
 julia> f(x) = isnan(x);

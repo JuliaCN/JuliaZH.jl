@@ -257,7 +257,7 @@ julia> Point(x::T, y::T) where {T<:Real} = Point{T}(x,y);
 
 注意，每个构造函数定义的方式与调用它们的方式是一样的。调用 `Point{Int64}(1,2)` 会触发 `struct` 块内部的 `Point{T}(x,y)`。另一方面，外部构造函数声明的 `Point` 构造函数只会被同类型的实数对触发，它使得我们可以直接以 `Point(1,2)` 和 `Point(1.0,2.5)` 这种方式来创建实例，而不需要显示地使用类型参数。由于此方法的声明方式已经对输入参数的类型施加了约束，像 `Point(1,2.5)` 这种调用自然会导致 "no method" 错误。
 
-假如我们想让l `Point(1,2.5)` 这种调用方式正常工作，比如，通过将整数 1 自动“提升”为浮点数 `1.0`，最简单的方法是像下面这样定义一个额外的外部构造函数：
+假如我们想让 `Point(1,2.5)` 这种调用方式正常工作，比如，通过将整数 `1` 自动「提升」为浮点数 `1.0`，最简单的方法是像下面这样定义一个额外的外部构造函数：
 
 ```jldoctest parametric2
 julia> Point(x::Int64, y::Float64) = Point(convert(Float64,x),y);
@@ -373,8 +373,7 @@ julia> typeof(z) <: Complex{OurRational}
 false
 ```
 
-因此，尽管 `⊘` 算符通常会返回一个 `OurRational` 的实例，但倘若其中一个操作数是复整数，那么就会返回 `Complex{OurRational}`。感兴趣的话可以
-读一读 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl)：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自包涵的。
+因此，尽管 `⊘` 算符通常会返回一个 `OurRational` 的实例，但倘若其中一个操作数是复整数，那么就会返回 `Complex{OurRational}`。感兴趣的话可以读一读 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl)：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自包涵的。
 
 ## Outer-only constructors
 

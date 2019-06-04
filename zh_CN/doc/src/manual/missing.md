@@ -218,7 +218,7 @@ julia> sum(skipmissing([1, missing]))
 1
 ```
 
-下面这个函数很方便，它返回一个迭代器，能高效地过滤掉 `missing` 值。因此，它可与任何支持迭代器的函数一起使用
+这个函数方便地返回一个迭代器，能高效地过滤掉 `missing` 值。因此，它可与任何支持迭代器的函数一起使用
 ```jldoctest; setup = :(using Statistics)
 julia> maximum(skipmissing([3, missing, 2, 1]))
 3
@@ -241,7 +241,7 @@ julia> collect(skipmissing([3, missing, 2, 1]))
 
 ## 数组上的逻辑运算
 
-上面描述的逻辑运算符的三值逻辑也适用于针对数组的函数。因此，使用 [`==`](@ref) 运算符的数组相等性测试一旦其结果无法在不知道 `missing` 条目实际值的情况下确定，就返回 `missing`。在应用中，这意味着在待比较数组的所有非缺失值都相等，但某个或全部数组包含缺失值（也许在不同位置）时会返回 `missing`。
+上面描述的逻辑运算符的三值逻辑也适用于针对数组的函数。因此，使用 [`==`](@ref) 运算符的数组相等性测试中，若在未知 `missing` 条目实际值时无法确定结果，就返回 `missing`。在实际应用中意味着，在待比较数组中所有非缺失值都相等，且某个或全部数组包含缺失值（也许在不同位置）时会返回 `missing`。
 ```jldoctest
 julia> [1, missing] == [2, missing]
 false
