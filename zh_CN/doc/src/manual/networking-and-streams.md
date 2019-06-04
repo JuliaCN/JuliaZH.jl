@@ -67,7 +67,7 @@ for line in eachline(stdin)
 end
 ```
 
-或者如果你想要用字符读取的话，使用 [`read`](@ref) ：
+或者如果你想要按字符读取的话，使用 [`read`](@ref) ：
 
 ```julia
 while !eof(stdin)
@@ -148,7 +148,7 @@ julia> open(read_and_capitalize, "hello.txt")
 
 来打开 `hello.txt`，对它调用 `read_and_capitalize`，关闭 `hello.txt` 并返回大写的内容。
 
-为了避免甚至必须定义一个命名函数，你可以使用 `do` 语法，它可以动态地创建匿名函数：
+为了避免被迫定义一个命名函数，你可以使用 `do` 语法，它可以动态地创建匿名函数：
 
 ```julia-repl
 julia> open("hello.txt") do f

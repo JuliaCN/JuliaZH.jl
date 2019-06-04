@@ -848,17 +848,11 @@ julia> @time fview(x);
 
 请注意，该函数的 `fview` 版本提速了 3 倍且减少了内存分配。
 
-## Copying data is not always bad
+## 复制数据不总是坏的
 
-Arrays are stored contiguously in memory, lending themselves to CPU vectorization
-and fewer memory accesses due to caching. These are the same reasons that it is recommended
-to access arrays in column-major order (see above). Irregular access patterns and non-contiguous views
-can drastically slow down computations on arrays because of non-sequential memory access.
+数组被连续地存储在内存中，这使其可被 CPU 向量化，并且会由于缓存减少内存访问。这与建议以列序优先方式访问数组的原因相同（请参见上文）。由于不按顺序访问内存，无规律的访问方式和不连续的视图可能会大大减慢数组上的计算速度。
 
-Copying irregularly-accessed data into a contiguous array before operating on it can result
-in a large speedup, such as in the example below. Here, a matrix and a vector are being accessed at
-800,000 of their randomly-shuffled indices before being multiplied. Copying the views into
-plain arrays speeds up the multiplication even with the cost of the copying operation.
+在对无规律访问的数据进行操作前，将其复制到连续的数组中可能带来巨大的加速，正如下例所示。其中，矩阵和向量在相乘前会访问其 800,000 个已被随机混洗的索引处的值。将视图复制到普通数组会加速乘法，即使考虑了复制操作的成本。
 
 ```julia-repl
 julia> using Random
@@ -886,13 +880,11 @@ julia> @time begin
 -4256.759568345134
 ```
 
-Provided there is enough memory for the copies, the cost of copying the view to an array is
-far outweighed by the speed boost from doing the matrix multiplication on a contiguous array.
+倘若副本本身的内存足够大，那么将视图复制到数组的成本可能远远超过在连续数组上执行矩阵乘法所带来的加速。
 
-## Avoid string interpolation for I/O
+## 避免 I/0 中的字符串插值
 
-When writing data to a file (or other I/O device), forming extra intermediate strings is a source
-of overhead. Instead of:
+将数据写入到文件（或其他 I/0 设备）中时，生成额外的中间字符串会带来开销。请不要写成这样：
 
 ```julia
 println(file, "$a $b")
@@ -904,15 +896,13 @@ println(file, "$a $b")
 println(file, a, " ", b)
 ```
 
-The first version of the code forms a string, then writes it to the file, while the second version
-writes values directly to the file. Also notice that in some cases string interpolation can be
-harder to read. Consider:
+第一个版本的代码生成一个字符串，然后将其写入到文件中，而第二个版本直接将值写入到文件中。另请注意，在某些情况下，字符串插值可能更难阅读。请考虑：
 
 ```julia
 println(file, "$(f(a))$(f(b))")
 ```
 
-versus:
+与：
 
 ```julia
 println(file, f(a), f(b))

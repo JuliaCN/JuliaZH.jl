@@ -96,7 +96,7 @@ ERROR: MethodError: Cannot `convert` an object of type String to an object of ty
 
 #### 封装器类型
 
-对于某些「封装」其它值的类型，构造函数可以其参数封装在一个新对象中，即使它已经是所请求的类型。例如，`Some(x)` 封装 `x` 表示存在一个值（在结果可能是 `Some` 或 `nothing` 的上下文中）。但是，`x` 本身可能是对象 `Some(y)`，在这种情况下，结果为 `Some(Some(y))`，封装了两层。另一方面，`convert(Some, x)` 只会返回 `x`，因为它已经是 `Some` 的实例了。
+对于某些「封装」其它值的类型，构造函数可能会将其参数封装在一个新对象中，即使它已经是所请求的类型。例如，用 `Some(x)` 表示封装了一个 `x` 值（在上下文中，其结果可能是一个 `Some` 或 `nothing`）。但是，`x` 本身可能是对象 `Some(y)`，在这种情况下，结果为 `Some(Some(y))`，封装了两层。然而，`convert(Some, x)` 只会返回 `x`，因为它已经是 `Some` 的实例了。
 
 #### 不返回自身类型的实例的构造函数
 
