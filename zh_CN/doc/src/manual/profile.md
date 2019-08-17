@@ -232,33 +232,28 @@ Profile.init(n = 10^7, delay = 0.01)
 
 在解释结果时，有一些需要注意的细节。在 `user` 设定下，直接从 REPL 调用的任何函数的第一行都将会显示内存分配，这是由发生在 REPL 代码本身的事件造成的。更重要的是，JIT 编译也会添加内存分配计数，因为 Julia 的编译器大部分是用 Julia 编写的（并且编译通常需要内存分配）。建议的分析过程是先通过执行待分析的所有命令来强制编译，然后调用 [`Profile.clear_malloc_data()`](@ref) 来重置所有内存计数器。最后，执行所需的命令并退出 Julia 以触发 `.mem` 文件的生成。
 
-# External Profiling
+# 外部性能分析
 
-Currently Julia supports `Intel VTune`, `OProfile` and `perf` as external profiling tools.
+Julia 目前支持的外部性能分析工具有 `Intel VTune`、`OProfile` 和 `perf`。
 
-Depending on the tool you choose, compile with `USE_INTEL_JITEVENTS`, `USE_OPROFILE_JITEVENTS` and
-`USE_PERF_JITEVENTS` set to 1 in `Make.user`. Multiple flags are supported.
+根据你所选择的工具，编译时请在 `Make.user` 中将 `USE_INTEL_JITEVENTS`、`USE_OPROFILE_JITEVENTS` 和 `USE_PERF_JITEVENTS` 设置为 1。多个上述编译标志是支持的。
 
-Before running Julia set the environment variable `ENABLE_JITPROFILING` to 1.
+在运行 Julia 前，请将环境变量 `ENABLE_JITPROFILING` 设置为 1。
 
-Now you have a multitude of ways to employ those tools!
-For example with `OProfile` you can try a simple recording :
+现在，你可以通过多种方式使用这些工具！例如，可以使用 `OProfile` 来尝试做个简单的记录：
 
 ```
 >ENABLE_JITPROFILING=1 sudo operf -Vdebug ./julia test/fastmath.jl
 >opreport -l `which ./julia`
 ```
 
-Or similary with with `perf` :
+或者类似地使用 `perf`：
 
 ```
 $ ENABLE_JITPROFILING=1 perf record -o /tmp/perf.data --call-graph dwarf ./julia /test/fastmath.jl
 $ perf report --call-graph -G
 ```
 
-There are many more interesting things that you can measure about your program, to get a comprehensive list
-please read the [Linux perf examples page](http://www.brendangregg.com/perf.html).
+你可以测量关于程序的更多有趣数据，若要获得详尽的列表，请阅读 [Linux perf 示例页面](http://www.brendangregg.com/perf.html)。
 
-Remember that perf saves for each execution a `perf.data` file that, even for small programs, can get
-quite large. Also the perf LLVM module saves temporarily debug objects in `~/.debug/jit`, remember
-to clean that folder frequently.
+请记住，perf 会为每次执行保存一个 `perf.data` 文件，即使对于小程序，它也可能变得非常大。此外，perf LLVM 模块会将调试对象保存在 `~/.debug/jit` 中，记得经常清理该文件夹。

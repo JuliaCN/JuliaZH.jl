@@ -243,27 +243,27 @@ Julia 函数`cfunction`和`pointer` 的返回值。
 此处为预编译中的操作附加了若干限制，以帮助用户避免其他误操作：
 
 1. 调用 [`eval`](@ref) 来在另一个模块中引发副作用。当增量预编译被标记时，该操作同时会导致抛出一个警告。
-   emitted when the incremental precompile flag is set.
+    
 2. 当 `__init__()` 已经开始执行后，在局部作用域中声明 `global const`（见 issue #12010，计划为此情况添加一个错误提示）
-   for plans to add an error for this)
+    
 3. 在增量预编译时替换模块是一个运行期间的错误。
 
 一些其他需要注意的点：
 
 1. 在源代码文件本身被修改之后，不会执行代码重载或缓存失效化处理（包括由 [`Pkg.update`] 执行的修改，此外在 [`Pkg.rm`] 执行后也没有清理操作）
-   (including by [`Pkg.update`], and no cleanup is done after [`Pkg.rm`]
+    
 2. 变形数组的内存共享特性会被预编译忽略（每个数组样貌都会获得一个拷贝）
-   its own copy)
-3. 文件系统在编译期间和运行期间被假设为不变，如使用 [`@__FILE__`](@ref)/`source_path()` 在运行期间寻找资源，或使用 BinDeps 宏 `@checked_lib`。有时这是不可避免的。
-   to find resources at runtime, or the BinDeps `@checked_lib` macro. Sometimes this is unavoidable.
-   但是可能的话，在编译期将资源复制到模块里面是个好做法，
-   这样在运行期间，程序就不需要去寻找它们了。
+    
+3. 文件系统在编译期间和运行期间被假设为不变的，比如使用 [`@__FILE__`](@ref)/`source_path()` 在运行期间寻找资源、或使用 BinDeps 宏 `@checked_lib`。有时这是不可避免的。但是可能的话，在编译期将资源复制到模块里面是个好做法，这样在运行期间，就不需要去寻找它们了。
+    
+    
+    
 4. `WeakRef` 对象和完成器目前在序列化器中无法被恰当地处理（在接下来的发行版中将修复）。
-   be fixed in an upcoming release).
+    
 5. 通常，最好避免去捕捉内部元数据对象的引用，如 `Method`、`MethodInstance`、`TypeMapLevel`、`TypeMapEntry` 及这些对象的字段，因为这会迷惑序列化器，且可能会引发你不想要的结果。此操作不足以成为一个错误，但你需做好准备：系统会尝试拷贝一部分，然后创建其余部分的单个独立对象。
-   as `Method`, `MethodInstance`, `MethodTable`, `TypeMapLevel`, `TypeMapEntry` and fields of those objects,
-   as this can confuse the serializer and may not lead to the outcome you desire. It is not necessarily
-   an error to do this, but you simply need to be prepared that the system will try to copy some
-   of these and to create a single unique instance of others.
+    
+    
+    
+    
 
 在开发模块时，关闭增量预编译可能会有所帮助。命令行标记 `--compiled-modules={yes|no}` 可以让你切换预编译的开启和关闭。当 Julia 附加 `--compiled-modules=no` 启动，在载入模块和模块依赖时，编译缓存中的序列化模块会被忽略。`Base.compilecache` 仍可以被手动调用。此命令行标记的状态会被传递给 `Pkg.build`，禁止其在安装、更新、显式建立包时触发自动预编译。

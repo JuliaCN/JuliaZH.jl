@@ -4,17 +4,17 @@
 
 ## 避免全局变量
 
-全局变量的值和类型随时都会发生变化。 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。
+全局变量的值和类型随时都会发生变化， 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。
 
 任何注重性能或者需要测试性能的代码都应该被放置在函数之中。
 
-我们发现全局变量经常是常量，将它们声明为常量可以巨大的提升性能。
+我们发现全局变量经常是常量，将它们声明为常量可大幅提升性能。
 
 ```julia
 const DEFAULT_VAL = 0
 ```
 
-对于非常量的全局变量可以通过在使用的地方标注它们的类型来优化效率。
+对于非常量的全局变量可以通过在使用的时候标注它们的类型来优化。
 
 ```julia
 global x = rand(1000)
@@ -39,7 +39,7 @@ end
 julia> x = 1.0
 ```
 
-等价于
+等价于：
 
 ```julia-repl
 julia> global x = 1.0
@@ -71,9 +71,9 @@ julia> @time sum_global()
 496.84883432553846
 ```
 
-在第一次调用函数(`@time sum_global()`)的时候，它会被编译。（如果你这次会话中还没有使用过[`@time`](@ref)，这时也会编译计时需要的相关函数。）你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64比特浮点向量元素和，因此这里应该没有申请内存的必要的（至少不用在`@time`报告的堆上申请内存）。
+在第一次调用函数(`@time sum_global()`)的时候，它会被编译。如果你这次会话中还没有使用过[`@time`](@ref)，这时也会编译计时需要的相关函数。你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64位浮点向量元素和，因此这里应该没有申请内存的必要（至少不用在`@time`报告的堆上申请内存）。
 
-未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数没有生成最佳的代码。认真对待这些现象，遵循接下来的建议。
+未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数远没有生成性能良好的代码。认真对待这些现象，遵循接下来的建议。
 
 如果你换成将`x`作为参数传给函数，就可以避免内存的分配（这里报告的内存分配是由于在全局作用域中运行`@time`导致的），而且在第一次运行之后运行速度也会得到显著的提高。
 
@@ -97,7 +97,7 @@ julia> @time sum_arg(x)
 496.84883432553846
 ```
 
-这里出现的5个内存分配是由于在全局作用域中运行`@time`宏导致的。如果我们在函数中运行时间测试，我们将发现事实上并没有发生任何内存分配。
+这里出现的5个内存分配是由于在全局作用域中运行`@time`宏导致的。如果我们在函数内运行时间测试，我们将发现事实上并没有发生任何内存分配。
 
 ```jldoctest sumarg; filter = r"[0-9\.]+ seconds"
 julia> time_sum(x) = @time sum_arg(x);
@@ -409,7 +409,7 @@ c = (b + 1.0f0)::Complex{T}
 
 不会降低性能（但也不会提高），因为编译器可以在编译 `k` 时确定 `c` 的类型。
 
-## Break functions into multiple definitions
+## 将函数拆分为多个定义
 
 将一个函数写成许多小的定义能让编译器直接调用最适合的代码，甚至能够直接将它内联。
 
@@ -436,8 +436,7 @@ norm(x::Vector) = sqrt(real(dot(x, x)))
 norm(A::Matrix) = maximum(svdvals(A))
 ```
 
-It should however be noted that the compiler is quite efficient at optimizing away the dead branches in code
-written as the `mynorm` example.
+然而，应该注意的是，编译器会十分高效地优化掉编写得如同 `mynorm` 例子的代码中的死分支。
 
 ## 编写「类型稳定的」函数
 
@@ -478,10 +477,7 @@ end
 
 ## [Separate kernel functions (aka, function barriers)](@id kernel-functions)
 
-Many functions follow a pattern of performing some set-up work, and then running many iterations
-to perform a core computation. Where possible, it is a good idea to put these core computations
-in separate functions. For example, the following contrived function returns an array of a randomly-chosen
-type:
+许多函数遵循这一模式：先执行一些设置工作，再通过多次迭代来执行核心计算。如果可行，将这些核心计算放在单独的函数中是个好主意。例如，以下做作的函数返回一个数组，其类型是随机选择的。
 
 ```jldoctest; setup = :(using Random; Random.seed!(1234))
 julia> function strange_twos(n)
@@ -521,19 +517,13 @@ julia> strange_twos(3)
  2.0
 ```
 
-Julia's compiler specializes code for argument types at function boundaries, so in the original
-implementation it does not know the type of `a` during the loop (since it is chosen randomly).
-Therefore the second version is generally faster since the inner loop can be recompiled as part
-of `fill_twos!` for different types of `a`.
+Julia 的编译器会在函数边界处针对参数类型特化代码，因此在原始的实现中循环期间无法得知 `a` 的类型（因为它是随即选择的）。于是，第二个版本通常更快，因为对于不同类型的 `a`，内层循环都可被重新编译为 `fill_twos!` 的一部分。
 
 第二种形式通常是更好的风格，并且可以带来更多的代码的重复利用。
 
-This pattern is used in several places in Julia Base. For example, see `vcat` and `hcat`
-in [`abstractarray.jl`](https://github.com/JuliaLang/julia/blob/40fe264f4ffaa29b749bcf42239a89abdcbba846/base/abstractarray.jl#L1205-L1206),
-or the [`fill!`](@ref) function, which we could have used instead of writing our own `fill_twos!`.
+这个模式在 Julia Base 的几个地方中有使用。相关的例子，请参阅 [`abstractarray.jl`](https://github.com/JuliaLang/julia/blob/40fe264f4ffaa29b749bcf42239a89abdcbba846/base/abstractarray.jl#L1205-L1206) 中的 `vcat` 和 `hcat`，或者 [`fill!`](@ref) 函数，我们可使用该函数而不是编写自己的 `fill_twos!`。
 
-Functions like `strange_twos` occur when dealing with data of uncertain type, for example data
-loaded from an input file that might contain either integers, floats, strings, or something else.
+诸如 `strange_twos` 的函数会在处理具有不确定类型的数据时出现，例如从可能包含整数、浮点数、字符串或其它内容的输入文件中加载的数据。
 
 ## Types with values-as-parameters
 
@@ -908,9 +898,9 @@ println(file, "$(f(a))$(f(b))")
 println(file, f(a), f(b))
 ```
 
-## Optimize network I/O during parallel execution
+## 并发执行时优化网络 I/O
 
-When executing a remote function in parallel:
+当并发地执行一个远程函数时：
 
 ```julia
 using Distributed
@@ -923,7 +913,7 @@ responses = Vector{Any}(undef, nworkers())
 end
 ```
 
-is faster than:
+会快于：
 
 ```julia
 using Distributed
@@ -935,26 +925,24 @@ end
 responses = [fetch(r) for r in refs]
 ```
 
-The former results in a single network round-trip to every worker, while the latter results in
-two network calls - first by the [`@spawnat`](@ref) and the second due to the [`fetch`](@ref)
-(or even a [`wait`](@ref)).
-The [`fetch`](@ref)/[`wait`](@ref) is also being executed serially resulting in an overall poorer performance.
+第一种方式导致每个worker一次网络往返，而第二种方式是两次网络调用：一次 [`@spawnat`](@ref) 一次[`fetch`](@ref)
+（甚至是 [`wait`](@ref)）。
+[`fetch`](@ref) 和[`wait`](@ref) 都是同步执行，会导致较差的性能。
 
-## Fix deprecation warnings
+## 修复过期警告
 
-A deprecated function internally performs a lookup in order to print a relevant warning only once.
-This extra lookup can cause a significant slowdown, so all uses of deprecated functions should
-be modified as suggested by the warnings.
+过期的函数在内部会执行查找，以便仅打印一次相关警告。
+这种额外查找可能会显著影响性能，因此应根据警告建议修复掉过期函数的所有使用。
 
-## Tweaks
+## 小技巧
 
-These are some minor points that might help in tight inner loops.
+有一些小的注意事项可能会帮助改善循环性能。
 
-  * Avoid unnecessary arrays. For example, instead of [`sum([x,y,z])`](@ref) use `x+y+z`.
-  * Use [`abs2(z)`](@ref) instead of [`abs(z)^2`](@ref) for complex `z`. In general, try to rewrite
-    code to use [`abs2`](@ref) instead of [`abs`](@ref) for complex arguments.
-  * Use [`div(x,y)`](@ref) for truncating division of integers instead of [`trunc(x/y)`](@ref), [`fld(x,y)`](@ref)
-    instead of [`floor(x/y)`](@ref), and [`cld(x,y)`](@ref) instead of [`ceil(x/y)`](@ref).
+  * 避免使用不必要的数组。比如，使用 `x+y+z` 而不是 [`sum([x,y,z])`](@ref)。
+  * 对于复数 `z`，使用 [`abs2(z)`](@ref) 而不是 [`abs(z)^2`](@ref)。一般的，
+    对于复数参数，用 [`abs2`](@ref) 代替[`abs`](@ref)。
+  * 对于直接截断的整除，使用 [`div(x,y)`](@ref) 而不是 [`trunc(x/y)`](@ref)，使用[`fld(x,y)`](@ref)
+    而不是 [`floor(x/y)`](@ref)，使用 [`cld(x,y)`](@ref) 而不是 [`ceil(x/y)`](@ref)。
 
 ## [性能标注](@id man-performance-annotations)
 

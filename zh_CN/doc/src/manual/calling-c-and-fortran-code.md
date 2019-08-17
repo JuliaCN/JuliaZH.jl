@@ -18,7 +18,7 @@ Julia 可以直接调用 C/Fortran 的函数，不需要任何"胶水"代码，�
    或
 
    a `:function` name symbol or `"function"` name string, which is resolved in the
-   current process,
+   当前进程，
 
    或
 
@@ -238,29 +238,29 @@ same:
 
   * `Float32`
 
-    Exactly corresponds to the `float` type in C (or `REAL*4` in Fortran).
+    和C语言中的 `float` 类型完全对应（以及Fortran中的 `REAL*4` ）
 
   * `Float64`
 
-    Exactly corresponds to the `double` type in C (or `REAL*8` in Fortran).
+    和C语言中的 `double` 类型完全对应（以及Fortran中的 `REAL*8` ）
 
   * `ComplexF32`
 
-    Exactly corresponds to the `complex float` type in C (or `COMPLEX*8` in Fortran).
+    和C语言中的 `complex float` 类型完全对应（以及Fortran中的 `COMPLEX*8` ）
 
   * `ComplexF64`
 
-    Exactly corresponds to the `complex double` type in C (or `COMPLEX*16` in Fortran).
+    和C语言中的 `complex double` 类型完全对应（以及Fortran中的 `COMPLEX*16` ）
 
   * `Signed`
 
-    Exactly corresponds to the `signed` type annotation in C (or any `INTEGER` type in Fortran).
-    Any Julia type that is not a subtype of [`Signed`](@ref) is assumed to be unsigned.
+    和C语言中的 `signed` 类型标识完全对应（以及Fortran中的任意 `INTEGER` 类型）
+    Julia中任何不是[`Signed`](@ref) 的子类型的类型，都会被认为是unsigned类型。
 
 
   * `Ref{T}`
 
-    Behaves like a `Ptr{T}` that can manage its memory via the Julia GC.
+    和 `Ptr{T}` 行为相同，能通过Julia的GC管理其内存。
 
 
   * `Array{T,N}`
@@ -268,22 +268,20 @@ same:
     When an array is passed to C as a `Ptr{T}` argument, it is not reinterpret-cast: Julia requires
     that the element type of the array matches `T`, and the address of the first element is passed.
 
-    Therefore, if an `Array` contains data in the wrong format, it will have to be explicitly converted
-    using a call such as `trunc(Int32, a)`.
+    因此，如果一个 `Array` 中的数据格式不正确，它必须被显式地转换
+    ，通过类似 `trunc(Int32, a)` 的函数。
 
-    To pass an array `A` as a pointer of a different type *without* converting the data beforehand
-    (for example, to pass a `Float64` array to a function that operates on uninterpreted bytes), you
-    can declare the argument as `Ptr{Cvoid}`.
+    若要将一个数组 `A` 以不同类型的指针传递，而*不提前转换数据*，
+    （比如，将一个 `Float64` 数组传给一个处理原生字节的函数时），你
+    可以将这一参数声明为 `Ptr{Cvoid}` 。
 
-    If an array of eltype `Ptr{T}` is passed as a `Ptr{Ptr{T}}` argument, [`Base.cconvert`](@ref)
-    will attempt to first make a null-terminated copy of the array with each element replaced by its
-    [`Base.cconvert`](@ref) version. This allows, for example, passing an `argv` pointer array of type
-    `Vector{String}` to an argument of type `Ptr{Ptr{Cchar}}`.
+    如果一个元素类型为 `Ptr{T}` 的数组作为 `Ptr{Ptr{T}}` 类型的参数传递， [`Base.cconvert`](@ref) 
+    将会首先尝试进行 null-terminated copy（即直到下一个元素为null才停止复制），并将每一个元素使用其通过 [`Base.cconvert`](@ref) 转换后的版本替换。
+    这允许，比如，将一个 `argv` 的指针数组，其类型为
+    `Vector{String}` ，传递给一个类型为 `Ptr{Ptr{Cchar}}` 的参数。
 
-On all systems we currently support, basic C/C++ value types may be translated to Julia types
-as follows. Every C type also has a corresponding Julia type with the same name, prefixed by C.
-This can help for writing portable code (and remembering that an `int` in C is not the same as
-an `Int` in Julia).
+在所有我们当前支持的系统上，C/C++中的基本值类型都能以如下的方式对应到Julia类型。每一个C类型也有一个对应的同名Julia类型，添加一个‘C’前缀。
+这在写可移植代码时将非常有用（注意到，C中的 `int` 类型和Julia的 `Int` 不同）。
 
 
 **与系统独立的：**
