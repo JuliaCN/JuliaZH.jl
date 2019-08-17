@@ -577,7 +577,7 @@ julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
   * [`lastindex(str)`](@ref) 给出可用来索引到 `str` 的最大（字节）索引。
   * [`length(str)`](@ref)，`str` 中的字符个数。
   * [`length(str, i, j)`](@ref)，`str` 中从 `i` 到 `j` 的有效字符索引个数。
-  * [`ncodeunits(str)`](@ref)，字符串中[代码单元](https://en.wikipedia.org/wiki/Character_encoding#Terminology)的数目。
+  * [`ncodeunits(str)`](@ref)，字符串中[代码单元](https://en.wikipedia.org/wiki/Character_encoding#Terminology)（[码元](https://zh.wikipedia.org/wiki/字符编码#字符集、代码页，与字符映射)）的数目。
   * [`codeunit(str, i)`](@ref) 给出在字符串 `str` 中索引为 `i` 的代码单元值。
   * [`thisind(str, i)`](@ref)，给定一个字符串的任意索引，查找索引点所在的首个索引。
   * [`nextind(str, i, n=1)`](@ref) 查找在索引 `i` 之后第 `n` 个字符的开头。
