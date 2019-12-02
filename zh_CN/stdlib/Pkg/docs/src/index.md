@@ -164,12 +164,7 @@ managed by system administrators.
   [8dfed614] + Test
 ```
 
-Here we added the package Example to the current project. In this example, we are using a fresh Julia installation,
-and this is our first time adding a package using Pkg. By default, Pkg clones Julia's General registry,
-and uses this registry to look up packages requested for inclusion in the current environment.
-The status update shows a short form of the package UUID to the left, then the package name, and the version.
-Since standard libraries (e.g. `Test`) are shipped with Julia, they do not have a version. The project status contains the packages
-you have added yourself, in this case, `Example`:
+在这里，我们将包 Example 添加到当前项目中。此例中，我们使用的是全新的 Julia 安装，并且这是我们第一次使用 Pkg 添加包。默认情况下，Pkg 会克隆 Julia 的 General 注册表，并使用此注册表来查找需要包含在当前环境中的包。状态更新在左侧显示了简短形式的包 UUID，接着是包名称和版本号。因为标准库（例如 `Test`）随 Julia 一起提供，所以它们没有版本号。项目状态包含你自己添加的包，在此例中为 `Example`：
 
 ```
 (v0.7) pkg> st
@@ -177,7 +172,7 @@ you have added yourself, in this case, `Example`:
   [7876af07] Example v0.5.1
 ```
 
-The manifest status, in addition, includes the dependencies of explicitly added packages.
+此外，清单状态包含了显式添加的包的依赖项。
 
 ```
 (v0.7) pkg> st --manifest
@@ -186,9 +181,9 @@ The manifest status, in addition, includes the dependencies of explicitly added 
   [8dfed614] Test
 ```
 
-It is possible to add multiple packages in one command as `pkg> add A B C`.
+可以在一次命令中添加多个包，例如 `pkg> add A B C`。
 
-After a package is added to the project, it can be loaded in Julia:
+在包已添加进项目中后，可在 Julia 中加载它：
 
 ```
 julia> using Example
@@ -197,7 +192,7 @@ julia> Example.hello("User")
 "Hello, User"
 ```
 
-A specific version can be installed by appending a version after a `@` symbol, e.g. `@v0.4`, to the package name:
+可以通过在 `@` 符号后附加版本号来安装特定版本，例如在包名称后附加 `@v0.4`：
 
 ```
 (v0.7) pkg> add Example@0.4
@@ -208,8 +203,7 @@ A specific version can be installed by appending a version after a `@` symbol, e
   [7876af07] + Example v0.4.1
 ```
 
-If the master branch (or a certain commit SHA) of `Example` has a hotfix that has not yet included in a registered version,
-we can explicitly track a branch (or commit) by appending `#branch` (or `#commit`) to the package name:
+如果 `Example` 的主分支（或某个提交 SHA）有尚未包含在已注册版本中的修补程序，我们可以通过在包名称后附加 `#branch`（或 `#commit`）来显式跟踪该分支（或提交）：
 
 ```
 (v0.7) pkg> add Example#master
@@ -221,10 +215,9 @@ we can explicitly track a branch (or commit) by appending `#branch` (or `#commit
   [7876af07] ~ Example v0.5.1 ⇒ v0.5.1+ #master (https://github.com/JuliaLang/Example.jl.git)
 ```
 
-The status output now shows that we are tracking the `master` branch of `Example`.
-When updating packages, we will pull updates from that branch.
+状态输出现在显示我们正在跟踪 `Example` 的 `master` 分支。在更新包时，我们将从该分支中拉取更新。
 
-To go back to tracking the registry version of `Example`, the command `free` is used:
+要返回到跟踪 `Example` 的注册表版本，请使用 `free` 命令：
 
 ```
 (v0.7) pkg> free Example
@@ -236,9 +229,9 @@ To go back to tracking the registry version of `Example`, the command `free` is 
 ```
 
 
-#### Adding unregistered packages
+#### 添加未注册包
 
-If a package is not in a registry, it can still be added by instead of the package name giving the URL to the repository to `add`.
+如果某个包不在注册表中，通过将其存储库的 URL 传给 `add` 而不是包名称，仍然可以添加它。
 
 ```
 (v0.7) pkg> add https://github.com/fredrikekre/ImportMacros.jl
@@ -252,26 +245,18 @@ Downloaded MacroTools ─ v0.4.1
   [1914dd2f] + MacroTools v0.4.1
 ```
 
-The dependencies of the unregistered package (here `MacroTools`) got installed.
-For unregistered packages we could have given a branch (or commit SHA) to track using `#`, just like for registered packages.
+可以看到，未注册包的依赖项（此处为 `MacroTools`）已被添加。对于未注册包，我们可以使用 `#` 来给定一个分支（或 commit SHA）来进行跟踪，就像已注册包一样。
 
 
-#### Adding a local package
+#### 添加本地包
 
-Instead of giving a URL of a git repo to `add` we could instead have given a local path to a git repo.
-This works similarly to adding a URL. The local repository will be tracked (at some branch) and updates
-from that local repo are pulled when packages are updated.
-Note that changes to files in the local package repository will not immediately be reflected when loading that package.
-The changes would have to be committed and the packages updated in order to pull in the changes.
+我们可以将一个 git 存储库的本地路径传给 `add` 而不是其 URL，其效果类似于传 URL。该本地存储库（的某个分支）会被跟踪，并在包更新时从已拉取的本地存储库中获取更新。请注意，本地包存储库中的文件更改不会在包加载时立即反映出来。为了拉取更改，必须提交该更改并更新包。
 
-#### Developing packages
+#### 开发包
 
-By only using `add` your Manifest will always have a "reproducible state", in other words, as long as the repositories and registries used are still accessible
-it is possible to retrieve the exact state of all the dependencies in the project. This has the advantage that you can send your project (`Project.toml`
-and `Manifest.toml`) to someone else and they can "instantiate" that project in the same state as you had it locally.
-However, when you are developing a package, it is more convenient to load packages at their current state at some path. For this reason, the `dev` command exists.
+仅使用 `add` 会让你的清单始终为「可再现状态」，换句话说，只要所使用的存储库和注册表仍然可以访问，就可以检索出项目中所有依赖项的确切状态。这样做的好处是你可以将你的项目（`Project.toml` 和 `Manifest.toml`）发送该其他人，然后他们可以该项目「实例化」到与你本地项目相同的状态。但是，当你在开发包时，在某个路径上以当前状态加载包会更方便。因此，命令 `dev` 有存在必要。
 
-Let's try to `dev` a registered package:
+让我们来尝试 `dev` 一个已注册的包：
 
 ```
 (v0.7) pkg> dev Example
@@ -283,12 +268,7 @@ Let's try to `dev` a registered package:
   [7876af07] + Example v0.5.1+ [`~/.julia/dev/Example`]
 ```
 
-The `dev` command fetches a full clone of the package to `~/.julia/dev/` (the path can be changed by setting the environment variable `JULIA_PKG_DEVDIR`).
-When importing `Example` julia will now import it from `~/.julia/dev/Example` and whatever local changes have been made to the files in that path are consequently
-reflected in the code loaded. When we used `add` we said that we tracked the package repository, we here say that we track the path itself.
-Note that the package manager will never touch any of the files at a tracked path. It is therefore up to you to pull updates, change branches etc.
-If we try to `dev` a package at some branch that already exists at `~/.julia/dev/` the package manager we will simply use the existing path.
-For example:
+`dev` 命令会获取包的完整克隆到 `~/.julia/dev/` 目录下（可通过设置环境变量 `JULIA_PKG_DEVDIR` 来更改此路径）。在导入 `Example` 时，julia 现在将从 `~/.julia/dev/Example` 导入它，并且该路径下文件的所有本地更改都将反映在加载的代码中。在使用 `add` 时，我们说我们跟踪了包存储库，在这里则说我们跟踪了路径本身。请注意，包管理器永远不会触碰已跟踪路径上的任何文件。因此，需要你自己拉取更新、更改分支等。如果我们尝试 `dev` 包的某个已经存在于 `~/.julia/dev/` 里的分支，则包管理器只会使用已存在的路径。例如：
 
 ```
 (v0.7) pkg> dev Example
@@ -296,13 +276,11 @@ For example:
 [ Info: Path `/Users/kristoffer/.julia/dev/Example` exists and looks like the correct package, using existing path instead of cloning
 ```
 
-Note the info message saying that it is using the existing path. As a general rule, the package manager will
-never touch files that are tracking a path.
+请注意，info 信息表明它正在使用现有路径。一般来说，包管理器不会触碰正在跟踪的路径文件。
 
-If `dev` is used on a local path, that path to that package is recorded and used when loading that package.
-The path will be recorded relative to the project file, unless it is given as an absolute path.
+如果在本地路径上使用 `dev`，则该包的路径会被记录并在该包加载时使用之。除非该路径以绝对路径的形式给出，否则它会以相对于项目文件的形式记录下来。
 
-To stop tracking a path and use the registered version again, use `free`
+要停止跟踪路径并再次使用已注册版本，请使用 `free`
 
 ```
 (v0.7) pkg> free Example
@@ -313,38 +291,31 @@ To stop tracking a path and use the registered version again, use `free`
   [7876af07] ↓ Example v0.5.1+ [`~/.julia/dev/Example`] ⇒ v0.5.1
 ```
 
-It should be pointed out that by using `dev` your project is now inherently stateful.
-Its state depends on the current content of the files at the path and the manifest cannot be "instantiated" by someone else without
-knowing the exact content of all the packages that are tracking a path.
+值得提及的是，通过使用 `dev`，你的项目现在具有其内在状态。其状态取决于该路径中文件的当前内容，并且在不知道所跟踪路径中所有包的确切内容的情况下，其他人无法「实例化」清单。
 
 Note that if you add a dependency to a package that tracks a local path, the Manifest (which contains the whole dependency graph) will become
 out of sync with the actual dependency graph. This means that the package will not be able to load that dependency since it is not recorded
 in the Manifest. To update sync the Manifest, use the REPL command `resolve`.
 
-### Removing packages
+### 删除包
 
-Packages can be removed from the current project by using `pkg> rm Package`.
-This will only remove packages that exist in the project, to remove a package that only
-exists as a dependency use `pkg> rm --manifest DepPackage`.
-Note that this will remove all packages that depends on `DepPackage`.
+通过使用 `pkg> rm Package`，可从当前项目中删除包。这只会删除已存在于项目中的包，要删除仅作为依赖项的包，请使用 `pkg> rm --manifest DepPackage`。请注意，这会删除所有依赖于 `DepPackage` 的包。
 
-### Updating packages
+### 更新包
 
-When new versions of packages the project is using are released, it is a good idea to update. Simply calling `up` will try to update *all* the dependencies of the project
-to the latest compatible version. Sometimes this is not what you want. You can specify a subset of the dependencies to upgrade by giving them as arguments to `up`, e.g:
+当项目正在使用的包发布新版本时，最好进行更新。简单地调用 `up` 会尝试将项目的*所有*依赖项更新到最新的兼容版本。有时这并不是你想要的。通过将依赖项子集作为参数传给 `up`，你可以指定要升级的依赖项，例如
 
 ```
 (v0.7) pkg> up Example
 ```
 
-The version of all other packages direct dependencies will stay the same. If you only want to update the minor version of packages, to reduce the risk that your project breaks, you can give the `--minor` flag, e.g:
+所有其他包直接依赖项的版本会保持不变。如果你为了降低项目中断的风险，只想要更新包的次版本号，你可以加上 `--minor` 标志，例如：
 
 ```
 (v0.7) pkg> up --minor Example
 ```
 
-Packages that track a repository are not updated when a minor upgrade is done.
-Packages that track a path are never touched by the package manager.
+跟踪存储库的包在进行次要更新时不会被更新，而跟踪路径的包永远不会被包管理器所触及。
 
 ### Pinning a package
 
@@ -369,9 +340,9 @@ Note the pin symbol `⚲` showing that the package is pinned. Removing the pin i
   [7876af07] ~ Example v0.5.1 ⚲ ⇒ v0.5.1
 ```
 
-### Testing packages
+### 测试包
 
-The tests for a package can be run using `test`command:
+包的测试可通过 `test` 命令来运行：
 
 ```
 (v0.7) pkg> test Example
@@ -379,11 +350,9 @@ The tests for a package can be run using `test`command:
    Testing Example tests passed
 ```
 
-### Building packages
+### 构建包
 
-The build step of a package is automatically run when a package is first installed.
-The output of the build process is directed to a file.
-To explicitly run the build step for a package the `build` command is used:
+第一次安装某个包时，会自动执行该包的构建步骤。构建过程的输出会被重定向到文件中。要显式执行包的构建步骤，请使用 `build` 命令：
 
 ```
 (v0.7) pkg> build MbedTLS
@@ -453,13 +422,9 @@ uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 This new environment is completely separate from the one we used earlier.
 
-## Garbage collecting old, unused packages
+## 垃圾收集旧的、不再使用的包
 
-As packages are updated and projects are deleted, installed packages that were once used will inevitably
-become old and not used from any existing project.
-Pkg keeps a log of all projects used so it can go through the log and see exactly which projects still exist
-and what packages those projects used. The rest can be deleted.
-This is done with the `gc` command:
+随着包的更新和项目被删除，曾经使用的已安装的包将不可避免地变旧，并且不被用于任何现有项目。Pkg 会记录所有已使用项目的日志，这样便可通过遍历日志，明确知道哪些项目仍然存在以及这些项目使用了哪些包，剩下的包则会被删除。命令 `gc` 可执行此操作：
 
 ```
 (v0.7) pkg> gc
@@ -474,7 +439,7 @@ This is done with the `gc` command:
    Deleted 36 package installations: 113.205 MiB
 ```
 
-Note that only packages in `~/.julia/packages` are deleted.
+请注意，只有在 `~/.julia/packages` 中的包才会被删除。
 
 ## Creating your own packages
 
@@ -736,37 +701,35 @@ Inequalities can also be used to specify version ranges:
 ```
 
 
-## Precompiling a project
+## 预编译项目
 
-The REPL command `precompile` can be used to precompile all the dependencies in the project. You can for example do
+REPL 命令 `precompile` 可用于预编译项目中的所有依赖。例如，这样做可以
 
 ```
 (HelloWorld) pkg> update; precompile
 ```
 
-to update the dependencies and then precompile them.
+更新依赖项，然后预编译它们。
 
-## Preview mode
+## 预览模式
 
-If you just want to see the effects of running a command, but not change your state you can `preview` a command.
-For example:
+如果你只想查看某个命令运行的效果，但不想更改包的状态，则可以 `preview` 该命令。例如：
 
 ```
 (HelloWorld) pkg> preview add Plots
 ```
 
-or
+或
 
 ```
 (HelloWorld) pkg> preview up
 ```
 
-will show you the effects of adding `Plots`, or doing a full upgrade, respectively, would have on your project.
-However, nothing would be installed and your `Project.toml` and `Manifest.toml` are untouched.
+将向你展示添加 `Plots`、或者进行完全升级分别会对你的项目产生的影响。但是，这没有安装任何东西，也不会触及你的 `Project.toml` 和 `Manifest.toml`。
 
-## Using someone else's project
+## 使用别人的项目
 
-Simply clone their project using e.g. `git clone`, `cd` to the project directory and call
+只需使用诸如 `git clone` 来克隆项目，接着 `cd` 到项目目录并调用
 
 ```
 (v0.7) pkg> activate .
@@ -774,8 +737,7 @@ Simply clone their project using e.g. `git clone`, `cd` to the project directory
 (SomeProject) pkg> instantiate
 ```
 
-If the project contains a manifest, this will install the packages in the same state that is given by that manifest.
-Otherwise, it will resolve the latest versions of the dependencies compatible with the project.
+如果该项目包含了清单，则会以与该清单给定的相同状态安装包。否则，它将解析为与项目兼容的最新版本的依赖项。
 
 ## References
 

@@ -137,8 +137,7 @@ julia> const results = Channel{Tuple}(32);
 julia> function do_work()
            for job_id in jobs
                exec_time = rand()
-               sleep(exec_time)                # simulates elapsed time doing actual work
-                                               # typically performed externally.
+               sleep(exec_time)                # 模拟执行实际外部工作所需的时间
                put!(results, (job_id, exec_time))
            end
        end;
@@ -151,13 +150,13 @@ julia> function make_jobs(n)
 
 julia> n = 12;
 
-julia> @async make_jobs(n); # feed the jobs channel with "n" jobs
+julia> @async make_jobs(n); # 用 "n" 个 jobs 填充 jobs channel
 
-julia> for i in 1:4 # start 4 tasks to process requests in parallel
+julia> for i in 1:4 # 启动 4 个 tasks 来并行的处理请求
            @async do_work()
        end
 
-julia> @elapsed while n > 0 # print out results
+julia> @elapsed while n > 0 # 打印结果
            job_id, exec_time = take!(results)
            println("$job_id finished in $(round(exec_time; digits=2)) seconds")
            global n = n - 1

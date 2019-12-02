@@ -89,7 +89,7 @@ julia [switches] -- [programfile] [args...]
 |`-e`, `--eval <expr>`                  |执行 `<expr>`|
 |`-E`, `--print <expr>`                 |执行 `<expr>` 并显示结果|
 |`-L`, `--load <file>`                  |立即在所有进程中载入 `<file>` |
-|`-p`, `--procs {N\|auto`}              |这里的整数 N 表示启动 N 个额外的工作进程；`auto` 表示启动与 CPU 线程数目（logical cores）一样多的进程|
+|`-p`, `--procs {N\|auto}`              |这里的整数 N 表示启动 N 个额外的工作进程；`auto` 表示启动与 CPU 线程数目（logical cores）一样多的进程|
 |`--machine-file <file>`                |在 `<file>` 中列出的主机上运行进程|
 |`-i`                                   |交互式模式；REPL 运行且 `isinteractive()` 为 true|
 |`-q`, `--quiet`                        |安静的启动；REPL 启动时无横幅，不显示警告|

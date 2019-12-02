@@ -32,31 +32,22 @@ obj3 = MyModule.someotherfunction(obj2, c)
 ...
 ```
 
-## [Scripting](@id man-scripting)
+## [脚本](@id man-scripting)
 
 ### 该如何检查当前文件是否正在以主脚本运行？
 
-当一个文件通过使用`julia file.jl`来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查`abspath(PROGRAM_FILE) == @__FILE__`是不是`true`。
+当一个文件通过使用 `julia file.jl` 来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查 `abspath(PROGRAM_FILE) == @__FILE__` 是不是 `true`。
 
-### How do I catch CTRL-C in a script?
+### 怎样在脚本中捕获 CTRL-C ？
 
-Running a Julia script using `julia file.jl` does not throw
-[`InterruptException`](@ref) when you try to terminate it with CTRL-C
-(SIGINT).  To run a certain code before terminating a Julia script,
-which may or may not be caused by CTRL-C, use [`atexit`](@ref).
-Alternatively, you can use `julia -e 'include(popfirst!(ARGS))'
-file.jl` to execute a script while being able to catch
-`InterruptException` in the [`try`](@ref) block.
+通过 `julia file.jl` 方式运行的 Julia 脚本，在你尝试按 CTRL-C (SIGINT) 中止它时，并不会抛出 [`InterruptException`](@ref)。如果希望在脚本终止之后运行一些代码，请使用 [`atexit`](@ref)，注意：脚本的中止不一定是由 CTRL-C 导致的。
+另外你也可以通过 `julia -e 'include(popfirst!(ARGS))' file.jl` 命令运行脚本，然后可以通过 [`try`](@ref) 捕获 `InterruptException`。
 
-### How do I pass options to `julia` using `#!/usr/bin/env`?
 
-Passing options to `julia` in so-called shebang by, e.g.,
-`#!/usr/bin/env julia --startup-file=no` may not work in some
-platforms such as Linux.  This is because argument parsing in shebang
-is platform-dependent and not well-specified.  In a Unix-like
-environment, a reliable way to pass options to `julia` in an
-executable script would be to start the script as a `bash` script and
-use `exec` to replace the process to `julia`:
+### 怎样通过 `#!/usr/bin/env` 传递参数给 `julia`？
+
+通过类似 `#!/usr/bin/env julia --startup-file=no` 的方式，使用 shebang 传递选项给 Julia 的方法，可能在像 Linux 这样的平台上无法正常工作。这是因为各平台上 shebang 的参数解析是平台相关的，并且尚未标准化。
+在类 Unix 的环境中，可以通过以 `bash` 脚本作为可执行脚本的开头，并使用 `exec` 代替给 `julia` 传递选项的过程，来可靠的为 `julia` 传递选项。
 
 ```julia
 #!/bin/bash
@@ -65,13 +56,12 @@ exec julia --color=yes --startup-file=no -e 'include(popfirst!(ARGS))' \
     "${BASH_SOURCE[0]}" "$@"
 =#
 
-@show ARGS  # put any Julia code here
+@show ARGS  # 把你的 Julia 代码放在这里
 ```
 
-In the example above, the code between `#=` and `=#` is run as a `bash`
-script.  Julia ignores this part since it is a multi-line comment for
-Julia.  The Julia code after `=#` is ignored by `bash` since it stops
-parsing the file once it reaches to the `exec` statement.
+在以上例子中，位于 `#=` 和 `=#` 之间的代码可以当作一个 `bash` 脚本。
+因为这些代码放在 Julia 的多行注释中，所以 Julia 会忽略它们。
+在 `=#` 之后的 Julia 代码会被 `bash` 忽略，J因为当文件解析到 `exec` 语句时会停止解析，开始执行命令。
 
 ## 函数
 
@@ -533,16 +523,13 @@ julia> remotecall_fetch(anon_bar, 2)
 1
 ```
 
-### Why does Julia use `*` for string concatenation? Why not `+` or something else?
+### 为什么 Julia 使用 `*` 进行字符串拼接？而不是使用 `+` 或其他符号？
 
-The [main argument](@ref man-concatenation) against `+` is that string concatenation is not
-commutative, while `+` is generally used as a commutative operator. While the Julia community
-recognizes that other languages use different operators and `*` may be unfamiliar for some
-users, it communicates certain algebraic properties.
+使用 `+`  的[主要依据](@ref man-concatenation)是：字符串拼接是不可交换的操作，而 `+` 通常是一个具有可交换性的操作符。Julia 社区也意识到其他语言使用了不同的操作符，一些用户也可能不熟悉 `*` 包含的特定代数性值。
 
-Note that you can also use `string(...)` to concatenate strings (and other values converted
-to strings); similarly, `repeat` can be used instead of `^` to repeat strings. The
-[interpolation syntax](@ref string-interpolation) is also useful for constructing strings.
+注意：你也可以用 `string(...)` 来拼接字符串和其他能转换成字符串的值；
+类似的 `repeat` 函数可以用于替代用于重复字符串的 `^` 操作符。
+[字符串插值语法](@ref string-interpolation)在构造字符串时也很常用。
 
 ## 包和模块
 
@@ -580,7 +567,7 @@ to strings); similarly, `repeat` can be used instead of `^` to repeat strings. T
 
 ```julia
 function power_by_squaring(x, n::Int)
-    ispow2(n) || error("This implementation only works for powers of 2")
+    ispow2(n) || error("此实现只适用于2的幂")
     while n >= 2
         x *= x
         n >>= 1

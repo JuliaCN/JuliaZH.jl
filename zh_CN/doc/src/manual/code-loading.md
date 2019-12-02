@@ -14,7 +14,7 @@ Julia加载代码有两种机制：
 
 一个 *包（package）* 就是一个源码树，其标准布局中提供了其他 Julia 项目可以复用的功能。包可以使用 `import X` 或 `using X` 语句加载，名为 `X` 的模块在加载包代码时生成，并在包含该 import 语句的模块中可用。`import X` 中 `X` 的含义与上下文有关：程序加载哪个 `X` 包取决于 import 语句出现的位置。因此，处理 `import X` 分为两步：首先，确定在此上下文中是**哪个**包被定义为 `X`；其次，确定到**哪里**找特定的 `X` 包。
 
-These questions are answered by searching through the project environments listed in [`LOAD_PATH`](@ref) for project files (`Project.toml` or `JuliaProject.toml`), manifest files (`Manifest.toml` or `JuliaManifest.toml`), or folders of source files.
+这些问题可通过查询各项目文件（`Project.toml` 或 `JuliaProject.toml`）、清单文件（`Manifest.toml` 或 `JuliaManifest.toml`），或是源文件的文件夹列在[`LOAD_PATH`](@ref) 中的项目环境解决。
 
 
 ## 包的联合
@@ -153,22 +153,22 @@ graph = Dict(
 graph[UUID("c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1")][:Priv]
 ```
 
-and gets `2d15fe94-a1f7-436c-a4d8-07a9a496e01c`, which indicates that in the context of the `Pub` package, `import Priv` refers to the public `Priv` package, rather than the private one which the app depends on directly. This is how the name `Priv` can refer to different packages in the main project than it does in one of its package's dependencies, which allows for duplicate names in the package ecosystem.
+会得到 `2d15fe94-a1f7-436c-a4d8-07a9a496e01c`，这意味着 `Pub` 包中的内容，`import Priv` 指代的是公有的 `Priv` 内容，而非应用程序直接依赖的私有包。这也是为何 `Priv` 在主项目中可指代不同的包，而不像其在某个依赖包中另有含义。在包生态中，该特性允许重名的出现。
 
-What happens if `import Zebra` is evaluated in the main `App` code base? Since `Zebra` does not appear in the project file, the import will fail even though `Zebra` *does* appear in the manifest file. Moreover, if `import Zebra` occurs in the public `Priv` package—the one with UUID `2d15fe94-a1f7-436c-a4d8-07a9a496e01c`—then that would also fail since that `Priv` package has no declared dependencies in the manifest file and therefore cannot load any packages. The `Zebra` package can only be loaded by packages for which it appear as an explicit dependency in the manifest file: the  `Pub` package and one of the `Priv` packages.
+如果在 `App` 主代码库中 `import Zebra` 会如何？因为`Zebra` 不存在于项目文件，即使它 *确实* 存在于清单文件中，其导入会是失败的。此外，`import Zebra` 这个行为若发生在公有的 `Priv` 包——UUID 为 `2d15fe94-a1f7-436c-a4d8-07a9a496e01c` 的包中，同样会失败。因为公有的 `Priv` 包未在清单文件中声明依赖，故而无法加载包。仅有在清单文件：`Pub` 包和一个 `Priv` 包中作为显式依赖的包可用于加载 `Zebra`。
 
-**The paths map** of a project environment is extracted from the manifest file. The path of a package `uuid` named `X` is determined by these rules (in order):
+项目环境的 **路径映射** 从 manifest 文件中提取得到。而包的路径 `uuid` 和名称 `X` 则 (循序) 依据这些规则确定。
 
-1. If the project file in the directory matches `uuid` and name `X`, then either:
-  - It has a toplevel `path` entry, then `uuid` will be mapped to that path, interpreted relative to the directory containing the project file.
-  - Otherwise, `uuid` is mapped to  `src/X.jl` relative to the directory containing the project file.
-2. If the above is not the case and the project file has a corresponding manifest file and the manifest contains a stanza matching `uuid` then:
-  - If it has a `path` entry, use that path (relative to the directory containing the manifest file).
-  - If it has a `git-tree-sha1` entry, compute a deterministic hash function of `uuid` and `git-tree-sha1`—call it `slug`—and look for a directory named `packages/X/$slug` in each directory in the Julia `DEPOT_PATH` global array. Use the first such directory that exists.
+1. 如果目录中的项目文件与要求的 `uuid` 以及名称 `X` 匹配，那么可能出现以下情况的一种：
+  - 若该文件具有顶层 `路径` 入口，则 `uuid` 会被映射到该路径，文件的执行与包含项目文件的目录相关。
+  - 此外，`uuid` 依照包含项目文件的目录，映射至与`src/X.jl`。
+2. 若非上述情况，且项目文件具有对应的清单文件，且该清单文件包含匹配 `uuid` 的节（stanza），那么：
+  - 若其具有一个 `路径` 入口，则使用该路径（与包含清单文件的目录相关）。
+  - 若其具有一个 `git-tree-sha1` 入口，计算一个确定的 `uuid` 与 `git-tree-sha1` 函数——我们把这个函数称为 `slug`——并在每个 Julia `DEPOT_PATH` 的全局序列中的目录查询名为 `packages/X/$slug` 的目录。使用存在的第一个此类目录。
 
-If any of these result in success, the path to the source code entry point will be either that result, the relative path from that result plus `src/X.jl`; otherwise, there is no path mapping for `uuid`. When loading `X`, if no source code path is found, the lookup will fail, and the user may be prompted to install the appropriate package version or to take other corrective action (e.g. declaring `X` as a dependency).
+若某些结果成功，源码入口点的路径会是这些结果中的某个，结果的相对路径+`src/X.jl`；否则，`uuid` 不存在路径映射。当加载 `X` 时，如果没找到源码路径，查找即告失败，用户可能会被提示安装适当的包版本或采取其他纠正措施（例如，将 `X` 声明为某种依赖性）。
 
-In the example manifest file above, to find the path of the first `Priv` package—the one with UUID `ba13f791-ae1d-465a-978b-69c3ad90f72b`—Julia looks for its stanza in the manifest file, sees that it has a `path` entry, looks at `deps/Priv` relative to the `App` project directory—let's suppose the `App` code lives in `/home/me/projects/App`—sees that `/home/me/projects/App/deps/Priv` exists and therefore loads `Priv` from there.
+在上述样例清单文件中，为找到首个 `Priv` 包的路径——该包 UUID 为 `ba13f791-ae1d-465a-978b-69c3ad90f72b`——Julia 寻找其在清单中的节（stanza）。发现其有 路径` 入口，查看 `App` 项目目录中相关的 `deps/Priv`——不妨设`App` 代码在 `/home/me/projects/App` 中—则 Julia 发现 `/home/me/projects/App/deps/Priv` 存在，并因此从中加载  `Priv`。
 
 If, on the other hand, Julia was loading the *other* `Priv` package—the one with UUID `2d15fe94-a1f7-436c-a4d8-07a9a496e01c`—it finds its stanza in the manifest, see that it does *not* have a `path` entry, but that it does have a `git-tree-sha1` entry. It then computes the `slug` for this UUID/SHA-1 pair, which is `HDkrT` (the exact details of this computation aren't important, but it is consistent and deterministic). This means that the path to this `Priv` package will be `packages/Priv/HDkrT/src/Priv.jl` in one of the package depots. Suppose the contents of `DEPOT_PATH` is `["/home/me/.julia", "/usr/local/julia"]`, then Julia will look at the following paths to see if they exist:
 

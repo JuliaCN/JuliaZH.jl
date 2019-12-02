@@ -172,17 +172,14 @@ ERROR: Whoops!
 [...]
 ```
 
-## Exception stacks and `catch_stack`
+## 异常栈与`catch_stack`
 
 !!! compat "Julia 1.1"
-    Exception stacks requires at least Julia 1.1.
+    异常栈需要 Julia 1.1 及以上版本。
 
-While handling an exception further exceptions may be thrown. It can be useful to inspect all these exceptions to
-identify the root cause of a problem. The julia runtime supports this by pushing each exception onto an internal
-*exception stack* as it occurs. When the code exits a `catch` normally, any exceptions which were pushed onto the stack
-in the associated `try` are considered to be successfully handled and are removed from the stack.
+在处理一个异常时，后续的异常同样可能被抛出。观察这些异常对定位问题的源头极有帮助。Julia runtime 支持将每个异常发生后推入一个内部的*异常栈*。当代码正常退出一个`catch`语句，可认为所有被推入栈中的异常在相应的`try`语句中被成功处理并已从栈中移除。
 
-The stack of current exceptions can be accessed using the experimental [`Base.catch_stack`](@ref) function. For example,
+存放当前异常的栈可通过测试函数 [`Base.catch_stack`](@ref) 获取，例如
 
 ```julia-repl
 julia> try
@@ -215,12 +212,9 @@ Stacktrace:
  [6] (::getfield(REPL, Symbol("##26#27")){REPL.REPLBackend})() at task.jl:259
 ```
 
-In this example the root cause exception (A) is first on the stack, with a further exception (B) following it. After
-exiting both catch blocks normally (i.e., without throwing a further exception) all exceptions are removed from the stack
-and are no longer accessible.
+在本例中，根源异常（A）排在栈头，其后放置着延伸异常（B)。 在正常退出（例如，不抛出新异常）两个 catch 块后，所有异常都被移除出栈，无法访问。
 
-The exception stack is stored on the `Task` where the exceptions occurred. When a task fails with uncaught exceptions,
-`catch_stack(task)` may be used to inspect the exception stack for that task.
+异常栈被存放于发生异常的 `Task` 处。当某个任务失败，出现意料外的异常时，`catch_stack(task)` 可能会被用于观察该任务的异常栈。
 
 ## [`stacktrace`](@ref) 与 [`backtrace`](@ref) 的比较
 
@@ -252,7 +246,7 @@ julia> stacktrace(trace)
  (::getfield(REPL, Symbol("##28#29")){REPL.REPLBackend})() at event.jl:92
 ```
 
-需要注意的是，[`backtrace`](@ref) 返回的数组有 18 个元素，而经过 [`stacktrace`](@ref) 转化后仅剩 6 个。这是因为 [`stacktrace`](@ref) 在默认情况下会移除所有底层 C 函数的栈信息。如果你想显示 C 函数调用的栈帧，可以这样做：
+需要注意的是，[`backtrace`](@ref) 返回的向量有 18 个元素，而 [`stacktrace`](@ref) 返回的向量只包含6 个元素。这是因为 [`stacktrace`](@ref) 在默认情况下会移除所有底层 C 函数的栈信息。如果你想显示 C 函数调用的栈帧，可以这样做：
 
 ```julia-repl
 julia> stacktrace(trace, true)
@@ -280,7 +274,7 @@ julia> stacktrace(trace, true)
  ip:0xffffffffffffffff
 ```
 
-我们也可以将 [`backtrace`](@ref) 返回的单个指针传递给[`StackTraces.lookup`](@ref) 来转化成 [`StackTraces.StackFrame`](@ref)：
+[`backtrace`](@ref) 返回的单个指针可以通过 [`StackTraces.lookup`](@ref) 来转化成一组 [`StackTraces.StackFrame`](@ref)：
 
 ```julia-repl
 julia> pointer = backtrace()[1];

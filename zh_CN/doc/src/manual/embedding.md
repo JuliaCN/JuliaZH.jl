@@ -4,8 +4,7 @@
 
 ## 高级别嵌入
 
-__Note__: This section covers embedding Julia code in C on Unix-like operating systems. For doing
-this on Windows, please see the section following this.
+__Note__: 本节包含可运行在类 Unix 系统上的、使用 C 编写的嵌入式 Julia 代码。Windows 平台请参阅下一节。
 
 我们从一个简单的 C 程序开始初始化 Julia 并调用一些 Julia 代码：
 
@@ -111,7 +110,7 @@ all: embed_example
 
 现在构建的命令就只需要简简单单的`make`了。
 
-## High-Level Embedding on Windows with Visual Studio
+## 在 Windows 使用 Visual Studio 进行高级别嵌入
 
 If the `JULIA_DIR` environment variable hasn't been setup, add it using the System panel before
 starting Visual Studio. The `bin` folder under JULIA_DIR should be on the system PATH.

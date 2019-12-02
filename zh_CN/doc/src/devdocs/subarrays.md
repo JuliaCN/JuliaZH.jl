@@ -1,6 +1,6 @@
 # 子数组
 
-Julia 的 `SubArray` 类型是编码父类型 [`AbstractArray`] 的“视图”的一个容器。本页介绍了 `SubArray` 的一些设计原则和实现。
+Julia 的 `SubArray` 类型是编码父类型 [`AbstractArray`](@ref) 的“视图”的一个容器。本页介绍了 `SubArray` 的一些设计原则和实现。
 
 ## 索引：笛卡尔索引与线性索引
 
