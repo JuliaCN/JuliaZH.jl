@@ -629,24 +629,24 @@ Stacktrace:
 
 ### `try/catch` 语句
 
-`try/catch` 语句可以用来捕获 `Exception`，并进行异常处理。例如，一个自定义的平方根函数可以通过 `Exception` 来实现自动按需调用求解实数或者复数平方根的方法：
+The `try/catch` statement allows for `Exception`s to be tested for, and for the
+graceful handling of things that may ordinarily break your application. For example,
+in the below code the function for square root would normally throw an exception. By
+placing a `try/catch` block around it we can mitigate that here. You may choose how
+you wish to handle this exception, whether logging it, return a placeholder value or
+as in the case below where we just printed out a statement. One thing to think about
+when deciding how to handle unexpected situations is that using a `try/catch` block is
+much slower than using conditional branching to handle those situations.
+Below there are more examples of handling exceptions with a `try/catch` block:
 
 ```jldoctest
-julia> f(x) = try
-           sqrt(x)
-       catch
-           sqrt(complex(x, 0))
+julia> try
+           sqrt("ten")
+       catch e
+           println("You should have entered a numeric value")
        end
-f (generic function with 1 method)
-
-julia> f(1)
-1.0
-
-julia> f(-1)
-0.0 + 1.0im
+You should have entered a numeric value
 ```
-
-值得注意的是，在实际用这个函数的时候，应该比较 `x` 与 0 的大小，而不是捕获一个异常，异常比直接使用判断分支慢得多。
 
 `try/catch` 语句允许保存 `Exception` 到一个变量中。在下面这个做作的例子中，如果 `x` 是可索引的，则计算 `x` 的第二项的平方根，否则就假设 `x` 是一个实数，并返回它的平方根：
 
@@ -821,8 +821,6 @@ taskHdl = @task mytask(7)
 
 | 符号      | 含义                                            |
 |:----------- |:-------------------------------------------------- |
-| `:runnable` | 正在运行，或者可以被切换到  |
-| `:waiting`  | 被阻塞，等待一个特定事件               |
-| `:queued`   | 处在调度器中的运行队列中，即将被重启 |
+| `:runnable` | Currently running, or able to run                  |
 | `:done`     | 成功结束执行                    |
 | `:failed`   | 以一个没被捕获的异常结束                |

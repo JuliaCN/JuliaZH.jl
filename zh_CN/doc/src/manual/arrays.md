@@ -337,15 +337,6 @@ julia> x[1, [2 3; 4 1]]
  13  1
 ```
 
-形式为 `n:n-1` 的空范围有时用于表示 `n-1` 和 `n` 之间的索引间位置。例如，[`searchsorted`](@ref) 函数利用这个惯例来表示一个值的插入位置在有序数组中未找到：
-
-```jldoctest
-julia> a = [1,2,5,6,7];
-
-julia> searchsorted(a, 4)
-3:2
-```
-
 ## 赋值
 
 在 n 维数组 `A` 中赋值的一般语法是：
@@ -354,7 +345,7 @@ julia> searchsorted(a, 4)
 A[I_1, I_2, ..., I_n] = X
 ```
 
-其中每个`I_k`可以是标量整数，整数数组或任何其他[支持的索引类型](@ref man-supported-index-types)。 这包括[`Colon`](@ref) (`:`)来选择整个维度中的所有索引，形式为`a:c`或`a:b:c`的范围来选择连续或跨步的部分元素，以及布尔数组以`true`索引选择元素。
+其中每个 `I_k` 可以是标量整数，整数数组或任何其他[支持的索引类型](@ref man-supported-index-types)。这包括 [`Colon`](@ref) (`:`) 来选择整个维度中的所有索引，形式为 `a:c` 或 `a:b:c` 的范围来选择连续或跨步的子区间，以及布尔数组以选择索引为 `true` 的元素。
 
 如果所有 `I_k` 都为整数，则数组 `A` 中 `I_1, I_2, ..., I_n` 位置的值将被 `X` 的值覆盖，必要时将 [`convert`](@ref) 为数组 `A` 的 [`eltype`](@ref)。
 
@@ -510,11 +501,22 @@ julia> A[CartesianIndex.(axes(A, 1), axes(A, 2)), :]
 
 !!! warning
 
-    `CartesianIndex` 和 `CartesianIndex` 数组与表示维度的最后一个索引的 `end` 关键字不兼容。 不要在可能包含 `CartesianIndex` 或其数组的索引表达式中使用 `end`。
+    `CartesianIndex` and arrays of `CartesianIndex` are not compatible with the
+    `end` keyword to represent the last index of a dimension. Do not use `end`
+    in indexing expressions that may contain either `CartesianIndex` or arrays thereof.
 
-### 逻辑索引
+### Logical indexing
 
-通常称为逻辑索引或使用逻辑掩码索引，通过布尔数组进行索引选择索引处其值为 `true` 的元素。 通过布尔向量 `B` 进行索引实际上与通过[`findall(B)`](@ref)返回的整数向量进行索引相同。 类似地，通过 `N` 维布尔数组进行索引实际上与通过 `CartesianIndex{N}` 向量在值为 `true` 处进行索引相同。 逻辑索引必须是与其索引的维度长度相同的向量，或者它必须是提供的唯一索引，并且与索引的数组的大小和维度相匹配。 将布尔数组直接用作索引，通常比首先调用[`findall`](@ref)更有效。
+Often referred to as logical indexing or indexing with a logical mask, indexing
+by a boolean array selects elements at the indices where its values are `true`.
+Indexing by a boolean vector `B` is effectively the same as indexing by the
+vector of integers that is returned by [`findall(B)`](@ref). Similarly, indexing
+by a `N`-dimensional boolean array is effectively the same as indexing by the
+vector of `CartesianIndex{N}`s where its values are `true`. A logical index
+must be a vector of the same length as the dimension it indexes into, or it
+must be the only index provided and match the size and dimensionality of the
+array it indexes into. It is generally more efficient to use boolean arrays as
+indices directly instead of first calling [`findall`](@ref).
 
 ```jldoctest
 julia> x = reshape(1:16, 4, 4)
@@ -531,10 +533,10 @@ julia> x[[false, true, true, false], :]
 
 julia> mask = map(ispow2, x)
 4×4 Array{Bool,2}:
-  true  false  false  false
-  true  false  false  false
- false  false  false  false
-  true   true  false   true
+ 1  0  0  0
+ 1  0  0  0
+ 0  0  0  0
+ 1  1  0  1
 
 julia> x[mask]
 5-element Array{Int64,1}:
@@ -543,6 +545,119 @@ julia> x[mask]
   4
   8
  16
+```
+
+### Number of indices
+
+#### Cartesian indexing
+
+The ordinary way to index into an `N`-dimensional array is to use exactly `N` indices; each
+index selects the position(s) in its particular dimension. For example, in the three-dimensional
+array `A = rand(4, 3, 2)`, `A[2, 3, 1]` will select the number in the second row of the third
+column in the first "page" of the array. This is often referred to as _cartesian indexing_.
+
+#### Linear indexing
+
+When exactly one index `i` is provided, that index no longer represents a location in a
+particular dimension of the array. Instead, it selects the `i`th element using the
+column-major iteration order that linearly spans the entire array. This is known as _linear
+indexing_. It essentially treats the array as though it had been reshaped into a
+one-dimensional vector with [`vec`](@ref).
+
+```jldoctest linindexing
+julia> A = [2 6; 4 7; 3 1]
+3×2 Array{Int64,2}:
+ 2  6
+ 4  7
+ 3  1
+
+julia> A[5]
+7
+
+julia> vec(A)[5]
+7
+```
+
+A linear index into the array `A` can be converted to a `CartesianIndex` for cartesian
+indexing with `CartesianIndices(A)[i]` (see [`CartesianIndices`](@ref)), and a set of
+`N` cartesian indices can be converted to a linear index with
+`LinearIndices(A)[i_1, i_2, ..., i_N]` (see [`LinearIndices`](@ref)).
+
+```jldoctest linindexing
+julia> CartesianIndices(A)[5]
+CartesianIndex(2, 2)
+
+julia> LinearIndices(A)[2, 2]
+5
+```
+
+It's important to note that there's a very large assymmetry in the performance
+of these conversions. Converting a linear index to a set of cartesian indices
+requires dividing and taking the remainder, whereas going the other way is just
+multiplies and adds. In modern processors, integer division can be 10-50 times
+slower than multiplication. While some arrays — like [`Array`](@ref) itself —
+are implemented using a linear chunk of memory and directly use a linear index
+in their implementations, other arrays — like [`Diagonal`](@ref) — need the
+full set of cartesian indices to do their lookup (see [`IndexStyle`](@ref) to
+introspect which is which). As such, when iterating over an entire array, it's
+much better to iterate over [`eachindex(A)`](@ref) instead of `1:length(A)`.
+Not only will the former be much faster in cases where `A` is `IndexCartesian`,
+but it will also support OffsetArrays, too.
+
+#### Omitted and extra indices
+
+In addition to linear indexing, an `N`-dimensional array may be indexed with
+fewer or more than `N` indices in certain situations.
+
+Indices may be omitted if the trailing dimensions that are not indexed into are
+all length one. In other words, trailing indices can be omitted only if there
+is only one possible value that those omitted indices could be for an in-bounds
+indexing expression. For example, a four-dimensional array with size `(3, 4, 2,
+1)` may be indexed with only three indices as the dimension that gets skipped
+(the fourth dimension) has length one. Note that linear indexing takes
+precedence over this rule.
+
+```jldoctest
+julia> A = reshape(1:24, 3, 4, 2, 1)
+3×4×2×1 reshape(::UnitRange{Int64}, 3, 4, 2, 1) with eltype Int64:
+[:, :, 1, 1] =
+ 1  4  7  10
+ 2  5  8  11
+ 3  6  9  12
+
+[:, :, 2, 1] =
+ 13  16  19  22
+ 14  17  20  23
+ 15  18  21  24
+
+julia> A[1, 3, 2] # Omits the fourth dimension (length 1)
+19
+
+julia> A[1, 3] # Attempts to omit dimensions 3 & 4 (lengths 2 and 1)
+ERROR: BoundsError: attempt to access 3×4×2×1 reshape(::UnitRange{Int64}, 3, 4, 2, 1) with eltype Int64 at index [1, 3]
+
+julia> A[19] # Linear indexing
+19
+```
+
+When omitting _all_ indices with `A[]`, this semantic provides a simple idiom
+to retrieve the only element in an array and simultaneously ensure that there
+was only one element.
+
+Similarly, more than `N` indices may be provided if all the indices beyond the
+dimensionality of the array are `1` (or more generally are the first and only
+element of `axes(A, d)` where `d` is that particular dimension number). This
+allows vectors to be indexed like one-column matrices, for example:
+
+```jldoctest
+julia> A = [8,6,7]
+3-element Array{Int64,1}:
+ 8
+ 6
+ 7
+
+julia> A[2,1]
+6
 ```
 
 ## 迭代

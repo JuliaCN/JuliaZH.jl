@@ -9,7 +9,14 @@
 
 我们首先考虑 Julia 任务 [Task（也就是协程）](@ref man-tasks)以及其它依赖于 Julia  运行时库的模块，通过运行时库，我们无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对 `Task` 间内部通信拥有完全控制。Julia 同样支持利用一些操作在 `Task` 间进行通信，比如 [`wait`](@ref) 以及 [`fetch`](@ref)。另外，通信和数据同步是通过管道 [`Channel`](@ref) 完成的，它也为 `Task` 间内部通信提供了渠道。
 
-Julia 还支持实验性的多线程功能，在执行时通过分叉（fork），然后有一个匿名函数在所有线程上运行。由于是一种*分叉-汇合*（fork-join）的方式，并行执行的线程必须在独立执行之后，最终汇合到 Julia 主线程上，以便能够继续串行执行。多线程功能是通过 `Base.Threads` 模块提供的，目前仍然是实验性的，因为目前 Julia 还不是完全线程安全的。尤其是在进行 I/O 操作和协程切换的时候可能会有段错误出现。最新的进展请关注 [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading)。多线程应该只在你考虑全局变量、锁以及原子操作的时候使用，后面我们都会详细讲解。
+Julia also supports [experimental multi-threading](@ref man-multithreading), where execution is forked and an anonymous function is run across all
+threads.
+Known as the fork-join approach, parallel threads execute independently, and must ultimately be joined in Julia's main thread to allow serial execution to continue.
+Multi-threading is supported using the [`Base.Threads`](@ref lib-multithreading) module that is still considered experimental, as Julia is
+not yet fully thread-safe. In particular segfaults seem to occur during I/O operations and task switching.
+As an up-to-date reference, keep an eye on [the issue tracker](https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading).
+Multi-Threading should only be used if you take into consideration global variables, locks and
+atomics, all of which are explained later.
 
 最后我们将介绍 Julia 的分布式和并行计算的实现方法。鉴于以科学计算为主要目的，Julia 底层实现上提供了跨多核或多机器对任务并行的接口。同时我们还将介绍一些有用的分布式编程的外部包，比如 `MPI.jl` 以及 `DistributedArrays.jl`。
 
@@ -53,51 +60,51 @@ Julia 的并行编程平台采用协程任务 [Tasks (aka Coroutines)](@ref man-
         @async foo()
     end
     ```
-* Channel 可以通过 `Channel{T}(sz)` 构造，得到的 channel 只能存储类型 `T` 的数据。如果 `T` 没有指定，那么 channel 可以存任意类型。`sz` 表示该 channel 能够存储的最大元素个数。比如 `Channel(32)` 得到的 channel 最多可以存储32个元素。而 `Channel{MyType}(64)` 则可以最多存储64个 `MyType` 类型的数据。
-   
-   
-   
-   
-* 如果一个 [`Channel`](@ref) 是空的，读取的 task(即执行 [`take!`](@ref) 的 task)会被阻塞直到有新的数据准备好了。
-* 如果一个 [`Channel`](@ref) 是满的，那么写入的 task(即执行 [`put!`](@ref) 的 task)则会被阻塞，直到 Channel 有空余。
-* [`isready`](@ref) 可以用来检查一个 channel 中是否有已经准备好的元素，而等待一个元素准备好 则用 [`wait`](@ref)
-   
-* 一个 [`Channel`](@ref) 一开始处于开启状态，也就是说可以被 [`take!`](@ref) 读取和 [`put!`](@ref) 写入。[`close`](@ref) 会关闭一个 [`Channel`](@ref)，对于一个已经关闭的 [`Channel`](@ref)，[`put!`](@ref) 会失败，例如：
-   
-   
+  * Channel 可以通过 `Channel{T}(sz)` 构造，得到的 channel 只能存储类型 `T` 的数据。如果 `T` 没有指定，那么 channel 可以存任意类型。`sz` 表示该 channel 能够存储的最大元素个数。比如 `Channel(32)` 得到的 channel 最多可以存储32个元素。而 `Channel{MyType}(64)` 则可以最多存储64个 `MyType` 类型的数据。
+     
+     
+     
+     
+  * 如果一个 [`Channel`](@ref) 是空的，读取的 task(即执行 [`take!`](@ref) 的 task)会被阻塞直到有新的数据准备好了。
+  * 如果一个 [`Channel`](@ref) 是满的，那么写入的 task(即执行 [`put!`](@ref) 的 task)则会被阻塞，直到 Channel 有空余。
+  * [`isready`](@ref) 可以用来检查一个 channel 中是否有已经准备好的元素，而等待一个元素准备好 则用 [`wait`](@ref)
+     
+  * 一个 [`Channel`](@ref) 一开始处于开启状态，也就是说可以被 [`take!`](@ref) 读取和 [`put!`](@ref) 写入。[`close`](@ref) 会关闭一个 [`Channel`](@ref)，对于一个已经关闭的 [`Channel`](@ref)，[`put!`](@ref) 会失败，例如：
+     
+     
 
-```julia-repl
-julia> c = Channel(2);
+    ```julia-repl
+    julia> c = Channel(2);
 
-julia> put!(c, 1) # `put!` on an open channel succeeds
-1
+    julia> put!(c, 1) # `put!` on an open channel succeeds
+    1
 
-julia> close(c);
+    julia> close(c);
 
-julia> put!(c, 2) # `put!` on a closed channel throws an exception.
-ERROR: InvalidStateException("Channel is closed.",:closed)
-Stacktrace:
-[...]
-```
+    julia> put!(c, 2) # `put!` on a closed channel throws an exception.
+    ERROR: InvalidStateException("Channel is closed.",:closed)
+    Stacktrace:
+    [...]
+    ```
 
   * [`take!`](@ref) 和 [`fetch`](@ref) (只读取，不会将元素从 channel 中删掉)仍然可以从一个已经关闭的 channel 中读数据，直到 channel 被取空了为止。继续上面的例子：
      
 
-```julia-repl
-julia> fetch(c) # Any number of `fetch` calls succeed.
-1
+    ```julia-repl
+    julia> fetch(c) # Any number of `fetch` calls succeed.
+    1
 
-julia> fetch(c)
-1
+    julia> fetch(c)
+    1
 
-julia> take!(c) # The first `take!` removes the value.
-1
+    julia> take!(c) # The first `take!` removes the value.
+    1
 
-julia> take!(c) # No more data available on a closed channel.
-ERROR: InvalidStateException("Channel is closed.",:closed)
-Stacktrace:
-[...]
-```
+    julia> take!(c) # No more data available on a closed channel.
+    ERROR: InvalidStateException("Channel is closed.",:closed)
+    Stacktrace:
+    [...]
+    ```
 
 `Channel` 可以在 `for` 循环中遍历，此时，循环会一直运行直到 `Channel` 中有数据，遍历过程中会取遍加入到 `Channel` 中的所有值。一旦 `Channel`关闭或者取空了，`for` 循环就会终止。
 
@@ -178,7 +185,7 @@ julia> @elapsed while n > 0 # 打印结果
 
 当前版本的 Julia 会将所有 task 分发到一个操作系统的线程，因此，涉及 I/O 的操作会从并行执行中获利，而计算密集型的 task 则会顺序地在单独这个线程上执行。未来 Julia 将支持在多个线程上调度 task，从而让计算密集型 task 也能从并行计算中获利。
 
-# 多线程（实验性功能）
+# [Multi-Threading (Experimental)](@id man-multithreading)
 
 除了 task 之外，Julia 还原生支持多线程。本部分内容是实验性的，未来相关接口可能会改变。
 
@@ -509,7 +516,7 @@ julia> fetch(s)
 
 
 
-## 访问代码以及加载库
+## [Code Availability and Loading Packages](@id code-availability)
 
 对于想要并行执行的代码，需要所有对所有线程都可见。例如，在 Julia 命令行中输入以下命令：
 
@@ -687,8 +694,7 @@ remotecall_fetch(()->sum(A), 2)
 
 因此，在远程调用中，需要非常小心地引用全局变量。事实上，应当尽量避免引用全局变量，如果必须引用，那么可以考虑用`let`代码块将全局变量局部化：
 
-例如：
-
+ 
 
 ```julia-repl
 julia> A = rand(10,10);
@@ -870,7 +876,7 @@ julia> for p in workers() # start tasks on the workers to process requests in pa
 julia> @elapsed while n > 0 # print out results
            job_id, exec_time, where = take!(results)
            println("$job_id finished in $(round(exec_time; digits=2)) seconds on worker $where")
-           n = n - 1
+           global n = n - 1
        end
 1 finished in 0.18 seconds on worker 4
 2 finished in 0.26 seconds on worker 5
@@ -906,6 +912,96 @@ julia> @elapsed while n > 0 # print out results
 对于远端引用，其引用本身的大小很小，不过在远端节点存储着的值可能相当大。由于本地的对象并不会立即被回收，于是一个比较好的做法是，对本地的 [`RemoteChannel`](@ref) 或者是还没获取值的 [`Future`](@ref) 执行 [`finalize`](@ref)。对于已经获取了值的 [`Future`](@ref) 来说，由于已经在调用 [`fetch`](@ref) 的时候已经将引用删除了，因此就不必再 [`finalize`](@ref) 了。显式地调用 [`finalize`](@ref) 会立即向远端节点发送信息并删除其引用。
 
 一旦执行了 finalize 之后，引用就不可用了。
+
+
+## Local invocations(@id man-distributed-local-invocations)
+
+Data is necessarily copied over to the remote node for execution. This is the case for both
+remotecalls and when data is stored to a[`RemoteChannel`](@ref) / [`Future`](@ref) on
+a different node. As expected, this results in a copy of the serialized objects
+on the remote node. However, when the destination node is the local node, i.e.
+the calling process id is the same as the remote node id, it is executed
+as a local call. It is usually(not always) executed in a different task - but there is no
+serialization/deserialization of data. Consequently, the call refers to the same object instances
+as passed - no copies are created. This behavior is highlighted below:
+
+```julia-repl
+julia> using Distributed;
+
+julia> rc = RemoteChannel(()->Channel(3));   # RemoteChannel created on local node
+
+julia> v = [0];
+
+julia> for i in 1:3
+           v[1] = i                          # Reusing `v`
+           put!(rc, v)
+       end;
+
+julia> result = [take!(rc) for _ in 1:3];
+
+julia> println(result);
+Array{Int64,1}[[3], [3], [3]]
+
+julia> println("Num Unique objects : ", length(unique(map(objectid, result))));
+Num Unique objects : 1
+
+julia> addprocs(1);
+
+julia> rc = RemoteChannel(()->Channel(3), workers()[1]);   # RemoteChannel created on remote node
+
+julia> v = [0];
+
+julia> for i in 1:3
+           v[1] = i
+           put!(rc, v)
+       end;
+
+julia> result = [take!(rc) for _ in 1:3];
+
+julia> println(result);
+Array{Int64,1}[[1], [2], [3]]
+
+julia> println("Num Unique objects : ", length(unique(map(objectid, result))));
+Num Unique objects : 3
+```
+
+As can be seen, [`put!`](@ref) on a locally owned [`RemoteChannel`](@ref) with the same
+object `v` modifed between calls results in the same single object instance stored. As
+opposed to copies of `v` being created when the node owning `rc` is a different node.
+
+It is to be noted that this is generally not an issue. It is something to be factored in only
+if the object is both being stored locally and modifed post the call. In such cases it may be
+appropriate to store a `deepcopy` of the object.
+
+This is also true for remotecalls on the local node as seen in the following example:
+
+```julia-repl
+julia> using Distributed; addprocs(1);
+
+julia> v = [0];
+
+julia> v2 = remotecall_fetch(x->(x[1] = 1; x), myid(), v);     # Executed on local node
+
+julia> println("v=$v, v2=$v2, ", v === v2);
+v=[1], v2=[1], true
+
+julia> v = [0];
+
+julia> v2 = remotecall_fetch(x->(x[1] = 1; x), workers()[1], v); # Executed on remote node
+
+julia> println("v=$v, v2=$v2, ", v === v2);
+v=[0], v2=[1], false
+```
+
+As can be seen once again, a remote call onto the local node behaves just like a direct invocation.
+The call modifies local objects passed as arguments. In the remote invocation, it operates on
+a copy of the arguments.
+
+To repeat, in general this is not an issue. If the local node is also being used as a compute
+node, and the arguments used post the call, this behavior needs to be factored in and if required
+deep copies of arguments must be passed to the call invoked on the local node. Calls on remote nodes
+will always operate on copies of arguments.
+
 
 ## [共享数组](@id man-shared-arrays)
 

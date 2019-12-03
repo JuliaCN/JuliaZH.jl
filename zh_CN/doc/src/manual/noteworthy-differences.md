@@ -16,9 +16,9 @@
      
   * 虚数单位 `sqrt(-1)` 在 Julia 中表示为 [`im`](@ref)，而不是在 MATLAB 中的 `i` 或 `j`。
   * 在 Julia 中，没有小数点的数字字面量（例如 `42`）会创建整数而不是浮点数。也支持任意大整数字面量。因此，某些操作（如 `2^-1`）将抛出 domain error，因为结果不是整数（有关的详细信息，请参阅[常见问题中有关 domain errors 的条目](@ref faq-domain-errors)）。
-     
-     
-     
+    point numbers. As a result, some operations can throw
+    a domain error if they expect a float; for example, `julia> a = -1; 2^a` throws a domain error, as the
+    result is not an integer (see [the FAQ entry on domain errors](@ref faq-domain-errors) for details).
   * 在 Julia 中，能返回多个值并将其赋值为元组，例如 `(a, b) = (1, 2)` 或 `a, b = 1, 2`。
     在 Julia 中不存在 MATLAB 的 `nargout`，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。取而代之的是，用户可以使用可选参数和关键字参数来实现类似的功能。
      
@@ -217,6 +217,9 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
      
   * 在 Julia 中，`%` 是余数运算符，而在 Python 中是模运算符。
+  * The commonly used `Int` type corresponds to the machine integer type (`Int32` or `Int64`).
+    This means it will overflow, such that `2^64 == 0`. If you need larger values use another appropriate type,
+    such as `Int128`, [`BigInt`](@ref) or a floating point type like `Float64`.
 
 ## 与 C/C++ 的显著差异
 

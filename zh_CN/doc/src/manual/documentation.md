@@ -509,7 +509,9 @@ b
 
 宏作者应该注意到只有只生成单个表达式的宏才会自动支持docstring。如果宏返回的是含有多个子表达式的块，需要写文档的子表达式应该使用宏 [`@__doc__`](@ref Core.@__doc__) 标记。
 
-`@enum`宏使用了`@__doc__`来允许给`Enum`写文档。检查其定义可以作为如何正确使用`@__doc__`的范例。
+The [`@enum`](@ref) macro makes use of `@__doc__` to allow for documenting [`Enum`](@ref)s.
+Examining its definition
+should serve as an example of how to use `@__doc__` correctly.
 
 ```@docs
 Core.@__doc__

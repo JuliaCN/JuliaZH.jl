@@ -15,7 +15,10 @@
 函数（语法，匿名或者do语法块） | 局部 | 全局或局部
 推导式，broadcast-fusing                 | 局部 | 全局或局部
 
-值得注意的是，这个表内没有的是[ begin 块](@ref man-compound-experessions)和[ if 块](@ref man-conditional-evaluation)，这两个块*不会*引进新的作用域块。这两种作用域遵循的规则有点不一样，会在下面解释。
+Notably missing from this table are
+[begin blocks](@ref man-compound-expressions) and [if blocks](@ref man-conditional-evaluation)
+which do *not* introduce new scopes.
+Both types of scopes follow somewhat different rules which will be explained below.
 
 Julia使用[词法作用域](https://en.wikipedia.org/wiki/Scope_%28computer_science%29#Lexical_scoping_vs._dynamic_scoping)，也就是说一个函数的作用域不会从其调用者的作用域继承，而从函数定义处的作用域继承。举个例子，在下列的代码中`foo`中的`x`指向的是模块`Bar`的全局作用域中的`x`。
 
@@ -74,11 +77,17 @@ ERROR: cannot assign variables in other modules
 
 ## 局部作用域
 
-大多数代码块都会引进一个新的局部作用域（参见上面的[表](@ref man-scope-table)以获取完整列表）。局部作用域会从父作用域中继承所有的变量，读和写都一样。另外，局部作用域还会继承在其父全局作用域块中赋值的所有全局变量（如果由全局 `if` 或者 `begin` 作用域包围）。与全局作用域不同，局部作用域并不是命名空间，所以在其内部作用域中的变量无法通过一些合格的通路在其父作用域中得到。
+A new local scope is introduced by most code blocks (see above
+[table](@ref man-scope-table) for a complete list).
+A local scope inherits all the variables from a parent local scope,
+both for reading and writing.
+Unlike global scopes, local scopes are not namespaces,
+thus variables in an inner scope cannot be retrieved from the parent scope through some sort of
+qualified access.
 
-接下来的规则和例子都适用于局部作用域。
-在局部作用域中新引进的变量不会反向传播到其父作用域。
-例如，这里``z``并没有引入到顶层作用域：
+The following rules and examples pertain to local scopes.
+A newly introduced variable in a local scope cannot be referenced by a parent scope.
+For example, here the ``z`` is not introduced into the top-level scope:
 
 ```jldoctest
 julia> for i = 1:10
@@ -92,18 +101,30 @@ ERROR: UndefVarError: z not defined
 !!! note
     在这个和以下所有的例子中都假设了它们的顶层作用域是一个工作空间是空的全局作用域，比如一个新打开的REPL。
 
+Inner local scopes can, however, update variables in their parent scopes:
+
+```jldoctest
+julia> for i = 1:1
+           z = i
+           for j = 1:1
+               z = 0
+           end
+           println(z)
+       end
+0
+```
+
 在局部作用域中可以使用 [`local`](@ref) 关键字来使一个变量强制为新的局部变量。
 
 ```jldoctest
-julia> x = 0;
-
-julia> for i = 1:10
-           local x # this is also the default
+julia> for i = 1:1
            x = i + 1
+           for j = 1:1
+               local x = 0
+           end
+           println(x)
        end
-
-julia> x
-0
+2
 ```
 
 在局部作用域内部，可以使用 [`global`](@ref) 关键字来给全局变量赋值：
@@ -132,8 +153,6 @@ julia> z
 
 `local`和`global`关键字都可以用于解构赋值，也就是说`local x, y = 1, 2`。在这个例子中关键字影响所有的列出来的变量。
 
-大多数块关键字都会引入局部作用域，而`begin`和`if`是例外。
-
 在一个局部作用域中，所有的变量都会从其父作用域块中继承，除非：
 
   * 赋值会导致*全局*变量改变，或者
@@ -158,8 +177,13 @@ julia> x
 
 为一个全局变量赋值需要显式的`global`：
 
-!!! sidebar "避免使用全局变量"
-    为了使得编出来的程序是最好的，很多人都考虑了避免改变全局变量的值。一个原因是远程改变其他模块中的全局变量的状态会导致程序的局部行为变得难以琢磨，应该小心行事。这也是为什么引入局部作用域的作用域块需要 `global` 关键字来声明其改变一个全局变量的意图。
+!!! sidebar "Avoiding globals"
+    Avoiding changing the value of global variables is considered by many
+    to be a programming best-practice.
+    Changing the value of a global variable can cause "action at a distance",
+    making the behavior of a program harder to reason about.
+    This is why the scope blocks that introduce local scope require the `global`
+    keyword to declare the intent to modify a global variable.
 
 ```jldoctest
 julia> x = 1;
@@ -195,7 +219,10 @@ julia> x, y # verify that global x and y are unchanged
 (1, 2)
 ```
 
-允许嵌套函数*修改*其父作用域的*局部*变量的原因是允许构建[闭包](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29)，闭包中有一个私有的态，例如下面例子中的 `state` 变量：
+The reason to allow modifying local variables of parent scopes in
+nested functions is to allow constructing [`closures`](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29)
+which have private state, for instance the `state` variable in the
+following example:
 
 ```jldoctest
 julia> let state = 0

@@ -31,7 +31,9 @@ end
 一个更好的编程风格是将变量作为参数传给函数。这样可以使得代码更易复用，以及清晰的展示函数的输入和输出。
 
 !!! note
-    所有的REPL中的代码都是在全局作用域中求值的，因此在顶层的变量的定义与赋值都会成为一个**全局**变量。在模块的顶层作用域定义的变量也是全局变量。
+    All code in the REPL is evaluated in global scope, so a variable defined and assigned
+    at top level will be a **global** variable. Variables defined at top level scope inside
+    modules are also global.
 
 在下面的REPL会话中：
 
@@ -107,25 +109,38 @@ julia> time_sum(x)
 496.84883432553846
 ```
 
-在一些情况下，你的函数需要分配新的内存，作为运算的一部分，这就会复杂化上面提到的简单的图像。在这样的情况下，考虑一下使用下面的[工具](@ref tools)之一来诊断问题，或者为函数写一个算法和内存分配分离的版本（参见 [输出预分配](@ref)）。
+In some situations, your function may need to allocate memory as part of its operation, and this
+can complicate the simple picture above. In such cases, consider using one of the [tools](@ref tools)
+below to diagnose problems, or write a version of your function that separates allocation from
+its algorithmic aspects (see [Pre-allocating outputs](@ref)).
 
 !!! note
-    对于更加正经的性能测试，考虑一下 [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) 包，这个包除了其他方面之外会多次评估函数的性能以降低噪声。
+    For more serious benchmarking, consider the [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)
+    package which among other things evaluates the function multiple times in order to reduce noise.
 
-## [工具](@id tools)
+## [Tools](@id tools)
 
-Julia 和其包生态圈包含了能帮助你诊断问题和提高你的代码的性能表现的工具：
+Julia and its package ecosystem includes tools that may help you diagnose problems and improve
+the performance of your code:
 
-  * [性能分析](@ref)允许你测量你运行的代码的性能表现并找出是性能瓶颈的代码。对于复杂的工程，[ProfileView](https://github.com/timholy/ProfileView.jl) 能帮你将性能分析结果可视化。
-  * [Traceur](https://github.com/MikeInnes/Traceur.jl) 包能帮你找到你代码中的常见性能问题。
-  * 没有预想到的巨大的内存申请 -- 像 [`@time`](@ref)，[`@allocated`](@ref) 或者性能分析器（通过对于垃圾回收进程的调用）告诉你的一样——提示着你的代码会有问题。如果没有见到有关内存申请的其他原因，你需要怀疑这是一个类型问题。你也可以通过 `-track-allocation=user` 选项开启 Julia 并检查生成的 `*.mem` 文件来检查有关内存申请发生位置的信息。参见[内存分配分析](@ref)。
-  * `@code_warntype` 生成你的代码的一个表示，对于找到会造成类型不确定的表达式有用。参见下面的 [`@code_warntype`](@ref)。
+  * [Profiling](@ref) allows you to measure the performance of your running code and identify lines
+    that serve as bottlenecks. For complex projects, the [ProfileView](https://github.com/timholy/ProfileView.jl)
+    package can help you visualize your profiling results.
+  * The [Traceur](https://github.com/MikeInnes/Traceur.jl) package can help you find common performance problems in your code.
+  * Unexpectedly-large memory allocations--as reported by [`@time`](@ref), [`@allocated`](@ref), or
+    the profiler (through calls to the garbage-collection routines)--hint that there might be issues
+    with your code. If you don't see another reason for the allocations, suspect a type problem.
+     You can also start Julia with the `--track-allocation=user` option and examine the resulting
+    `*.mem` files to see information about where those allocations occur. See [Memory allocation analysis](@ref).
+  * `@code_warntype` generates a representation of your code that can be helpful in finding expressions
+    that result in type uncertainty. See [`@code_warntype`](@ref) below.
 
-## 避免拥有抽象类型参数的容器
+## Avoid containers with abstract type parameters
 
-当处理参数化类型，包括数组时，最好尽可能避免通过抽象类型进行参数化。
+When working with parameterized types, including arrays, it is best to avoid parameterizing with
+abstract types where possible.
 
-考虑一下下面的代码：
+Consider the following:
 
 ```jldoctest
 julia> a = Real[]
@@ -135,7 +150,7 @@ julia> push!(a, 1); push!(a, 2.0); push!(a, π)
 3-element Array{Real,1}:
  1
  2.0
- π = 3.1415926535897...
+ π
 ```
 
 因为`a`是一个抽象类型[`Real`](@ref)的数组，它必须能容纳任何一个`Real`值。因为`Real`对象可以有任意的大小和结构，`a`必须用指针的数组来表示，以便能独立地为`Real`对象进行内存分配。但是如果我们只允许同样类型的数，比如[`Float64`](@ref)，才能存在`a`中，它们就能被更有效率地存储：
@@ -720,7 +735,7 @@ julia> x = randn(10000);
 
 julia> fmt(f) = println(rpad(string(f)*": ", 14, ' '), @elapsed f(x))
 
-julia> map(fmt, Any[copy_cols, copy_rows, copy_col_row, copy_row_col]);
+julia> map(fmt, [copy_cols, copy_rows, copy_col_row, copy_row_col]);
 copy_cols:    0.331706323
 copy_rows:    1.799009911
 copy_col_row: 0.415630047
@@ -1177,29 +1192,21 @@ julia> @noinline pos(x) = x < 0 ? 0 : x;
 
 julia> function f(x)
            y = pos(x)
-           sin(y*x + 1)
+           return sin(y*x + 1)
        end;
 
 julia> @code_warntype f(3.2)
+Variables
+  #self#::Core.Compiler.Const(f, false)
+  x::Float64
+  y::Union{Float64, Int64}
+
 Body::Float64
-2 1 ─ %1  = invoke Main.pos(%%x::Float64)::UNION{FLOAT64, INT64}
-3 │   %2  = isa(%1, Float64)::Bool
-  └──       goto 3 if not %2
-  2 ─ %4  = π (%1, Float64)
-  │   %5  = Base.mul_float(%4, %%x)::Float64
-  └──       goto 6
-  3 ─ %7  = isa(%1, Int64)::Bool
-  └──       goto 5 if not %7
-  4 ─ %9  = π (%1, Int64)
-  │   %10 = Base.sitofp(Float64, %9)::Float64
-  │   %11 = Base.mul_float(%10, %%x)::Float64
-  └──       goto 6
-  5 ─       Base.error("fatal error in type inference (type bound)")
-  └──       unreachable
-  6 ┄ %15 = φ (2 => %5, 4 => %11)::Float64
-  │   %16 = Base.add_float(%15, 1.0)::Float64
-  │   %17 = invoke Main.sin(%16::Float64)::Float64
-  └──       return %17
+1 ─      (y = Main.pos(x))
+│   %2 = (y * x)::Float64
+│   %3 = (%2 + 1)::Float64
+│   %4 = Main.sin(%3)::Float64
+└──      return %4
 ```
 
 解释 [`@code_warntype`](@ref) 的输出，就像其兄弟 [`@code_lowered`](@ref)、[`@code_typed`](@ref)、[`@code_llvm`](@ref) 和 [`@code_native`](@ref)，需要通过一点练习。你的代码是以其在生成经过编译的机器码的过程中被大量处理的形式呈现的。大多数表达式都会被类型标注，其由 `::T` 表示（例如，`T` 可能是 [`Float64`](@ref)）。[`@code_warntype`](@ref) 最重要的特征是非具体类型会以红色显示；在上例中，这种输出以大写字母显示。

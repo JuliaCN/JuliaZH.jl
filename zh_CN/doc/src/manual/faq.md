@@ -618,8 +618,7 @@ julia> @sync for i in 1:3
 你可以使用`ReentrantLock`来锁定你的写入，就像这样：
 
 ```jldoctest
-julia> l = ReentrantLock()
-ReentrantLock(nothing, Condition(Any[]), 0)
+julia> l = ReentrantLock();
 
 julia> @sync for i in 1:3
            @async begin
@@ -660,6 +659,30 @@ julia> A = zeros()
   `A[1]`，`A[1,1]`等来索引
 
 理解它与普通的标量之间的区别也很重要。标量不是一个可变的容器（尽管它们是可迭代的，可以定义像`length`，`getindex`这样的东西，*例如*`1[] == 1`）。特别地，如果`x = 0.0`是以一个标量来定义，尝试通过`x[] = 1.0`来改变它的值会报错。标量`x`能够通过`fill(x)`转化成包含它的零维数组，并且相对地，一个零维数组`a`可以通过`a[]`转化成其包含的标量。另外一个区别是标量可以参与到线性代数运算中，比如`2 * rand(2,2)`，但是零维数组的相似操作`fill(2) * rand(2,2)`会报错。
+
+### Why are my Julia benchmarks for linear algebra operations different from other languages?
+
+You may find that simple benchmarks of linear algebra building blocks like
+
+```julia
+using BenchmarkTools
+A = randn(1000, 1000)
+B = randn(1000, 1000)
+@btime $A \ $B
+@btime $A * $B
+```
+
+can be different when compared to other languages like Matlab or R.
+
+Since operations like this are very thin wrappers over the relevant BLAS functions, the reason for the discrepancy is very likely to be
+
+1. the BLAS library each language is using,
+
+2. the number of concurrent threads.
+
+Julia compiles and uses its own copy of OpenBLAS, with threads currently capped at `8` (or the number of your cores).
+
+Modifying OpenBLAS settings or compiling Julia with a different BLAS library, eg [Intel MKL](https://software.intel.com/en-us/mkl), may provide performance improvements. You can use [MKL.jl](https://github.com/JuliaComputing/MKL.jl), a package that makes Julia's linear algebra use Intel MKL BLAS and LAPACK instead of OpenBLAS, or search the discussion forum for suggestions on how to set this up manually. Note that Intel MKL cannot be bundled with Julia, as it is not open source.
 
 ## Julia 版本发布
 

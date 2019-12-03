@@ -74,13 +74,13 @@ julia> pi
 π = 3.1415926535897...
 
 julia> pi = 3
-ERROR: cannot assign variable MathConstants.pi from module Main
+ERROR: cannot assign a value to variable MathConstants.pi from module Main
 
 julia> sqrt(100)
 10.0
 
 julia> sqrt = 4
-ERROR: cannot assign variable Base.sqrt from module Main
+ERROR: cannot assign a value to variable Base.sqrt from module Main
 ```
 
 ## 合法的变量名

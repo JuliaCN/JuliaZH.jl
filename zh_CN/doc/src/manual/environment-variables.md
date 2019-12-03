@@ -54,15 +54,67 @@ $JULIA_BINDIR/../etc/julia/startup.jl
 
 ### `JULIA_PROJECT`
 
-指向当前 Julia 项目的目录路径。设置此环境变量与指定 `--project` 启动选项效果相同，但 `--project` 的优先级更高。如果此变量被设置为 `@.`，那么 Julia 会尝试在当前目录及其父目录中寻找包含 `Project.toml` 或 `JuliaProject.toml` 文件的目录。另请参阅 [代码加载](@ref) 一章。
+A directory path that indicates which project should be the initial active project.
+Setting this environment variable has the same effect as specifying the `--project`
+start-up option, but `--project` has higher precedence. If the variable is set to `@.`
+then Julia tries to find a project directory that contains `Project.toml` or
+`JuliaProject.toml` file from the current directory and its parents. See also
+the chapter on [Code Loading](@ref).
 
 !!! note
 
-    `JULIA_PROJECT` 必须在启动 julia 前定义；在启动过程中于 `startup.jl` 中定义它为时已晚。
+    `JULIA_PROJECT` must be defined before starting julia; defining it in `startup.jl`
+    is too late in the startup process.
 
 ### `JULIA_LOAD_PATH`
 
-一个会被附加到变量 [`LOAD_PATH`](@ref) 的绝对路径组成的分隔列表（在类 Unix 系统中，`:` 为路径分隔符；在 Windows 系统中，`;` 为路径分隔符）。`LOAD_PATH` 变量是 [`Base.require`](@ref) 和 `Base.load_in_path()` 寻找代码的地方。它默认为绝对路径 `$JULIA_HOME/../share/julia/stdlib/v$(VERSION.major).$(VERSION.minor)`，例如，假设操作系统为 Linux、Julia 版本为 0.7、Julia 可执行文件的路径为 `/bin/julia`，那么 `LOAD_PATH` 默认为 `/share/julia/stdlib/v0.7`。
+The `JULIA_LOAD_PATH` environment variable is used to populate the global Julia
+[`LOAD_PATH`](@ref) variable, which determines which packages can be loaded via
+`import` and `using` (see [Code Loading](@ref)).
+
+Unlike the shell `PATH` variable, empty entries in `JULIA_LOAD_PATH` are expanded to
+the default value of `LOAD_PATH`, `["@", "@v#.#", "@stdlib"]` when populating
+`LOAD_PATH`. This allows easy appending, prepending, etc. of the load path value in
+shell scripts regardless of whether `JULIA_LOAD_PATH` is already set or not. For
+example, to prepend the directory `/foo/bar` to `LOAD_PATH` just do
+```sh
+export JULIA_LOAD_PATH="/foo/bar:$JULIA_LOAD_PATH"
+```
+If the `JULIA_LOAD_PATH` environment variable is already set, its old value will be
+prepended with `/foo/bar`. On the other hand, if `JULIA_LOAD_PATH` is not set, then
+it will be set to `/foo/bar:` which will expand to a `LOAD_PATH` value of
+`["/foo/bar", "@", "@v#.#", "@stdlib"]`. If `JULIA_LOAD_PATH` is set to the empty
+string, it expands to an empty `LOAD_PATH` array. In other words, the empty string
+is interpreted as a zero-element array, not a one-element array of the empty string.
+This behavior was chosen so that it would be possible to set an empty load path via
+the environment variable. If you want the default load path, either unset the
+environment variable or if it must have a value, set it to the string `:`.
+
+### `JULIA_DEPOT_PATH`
+
+The `JULIA_DEPOT_PATH` environment variable is used to populate the global Julia
+[`DEPOT_PATH`](@ref) variable, which controls where the package manager, as well
+as Julia's code loading mechanisms, look for package registries, installed
+packages, named environments, repo clones, cached compiled package images, and
+configuration files.
+
+Unlike the shell `PATH` variable but similar to `JULIA_LOAD_PATH`, empty entries in
+`JULIA_DEPOT_PATH` are expanded to the default value of `DEPOT_PATH`. This allows
+easy appending, prepending, etc. of the depot path value in shell scripts regardless
+of whether `JULIA_DEPOT_PATH` is already set or not. For example, to prepend the
+directory `/foo/bar` to `DEPOT_PATH` just do
+```sh
+export JULIA_DEPOT_PATH="/foo/bar:$JULIA_DEPOT_PATH"
+```
+If the `JULIA_DEPOT_PATH` environment variable is already set, its old value will be
+prepended with `/foo/bar`. On the other hand, if `JULIA_DEPOT_PATH` is not set, then
+it will be set to `/foo/bar:` which will have the effect of prepending `/foo/bar` to
+the default depot path. If `JULIA_DEPOT_PATH` is set to the empty string, it expands
+to an empty `DEPOT_PATH` array. In other words, the empty string is interpreted as a
+zero-element array, not a one-element array of the empty string. This behavior was
+chosen so that it would be possible to set an empty depot path via the environment
+variable. If you want the default depot path, either unset the environment variable
+or if it must have a value, set it to the string `:`.
 
 ### `JULIA_HISTORY`
 
@@ -78,9 +130,10 @@ $HOME/.julia/logs/repl_history.jl
 
 假设 `$JULIA_PKGRESOLVE_ACCURACY` 的值是 `n`。那么
 
-*   预抽取的迭代次数为 `20*n`，
-*   抽取步骤间的迭代次数是 `10*n`，并且
-*   在抽取步骤中，每 `20*n` 包中至多有一个被抽取
+* 预抽取的迭代次数为 `20*n`，
+* 抽取步骤间的迭代次数是 `10*n`，并且
+* 在抽取步骤中，每 `20*n` 包中至多有一个被抽取
+
 
 ## 外部应用
 
