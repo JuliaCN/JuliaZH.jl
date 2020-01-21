@@ -1,5 +1,5 @@
 # override Documenter.jl/src/Writers/HTMLWriter.jl
-
+using Dates
 import Documenter: Documents, Documenter, Writers, Utilities
 import Documenter.Utilities.DOM: DOM, Tag, @tags
 import Documenter.Writers.HTMLWriter:
@@ -10,7 +10,21 @@ import Documenter.Writers.HTMLWriter:
     mdconvert,
     pagetitle,
     navhref,
-    domify
+    domify,
+    render_settings,
+    THEMES
+
+const zh_CN_numbers = ["一", "二", "三", "四", "五", "六",
+    "七", "八", "九", "十", "十一", "十二"]
+const zh_CN_months = zh_CN_numbers[1:12] .* "月"
+
+const zh_CN_months_abbrev = zh_CN_months
+const zh_CN_days = [
+    "周" .* zh_CN_numbers[1:6]
+    "周日"
+]
+
+Dates.LOCALES["zh_CN"] = Dates.DateLocale(zh_CN_months, zh_CN_months_abbrev, zh_CN_days, [""])
 
 #=
   1. 修改编辑翻译提示语
@@ -94,7 +108,7 @@ function Documenter.Writers.HTMLWriter.render_navbar(ctx, navnode, edit_page_lin
     # Settings cog
     push!(navbar_right.nodes, a[
         "#documenter-settings-button.docs-settings-button.fas.fa-cog",
-        :href => "#", :title => "Settings",
+        :href => "#", :title => "设置",
     ])
 
     # Hamburger on mobile
@@ -105,4 +119,39 @@ function Documenter.Writers.HTMLWriter.render_navbar(ctx, navnode, edit_page_lin
 
     # Construct the main <header> node that should be the first element in div.docs-main
     header[".docs-navbar"](breadcrumb, navbar_right)
+end
+
+function render_settings(ctx)
+    @tags div header section footer p button hr span select option label a
+
+    theme_selector = p(
+        label[".label"]("选择主题"),
+        div[".select"](
+            select["#documenter-themepicker"](option[:value=>theme](theme) for theme in THEMES)
+        )
+    )
+
+    now_full = Dates.format(now(), "Y U d E HH:MM"; locale="zh_CN")
+    now_short = Dates.format(now(), "Y U d E"; locale="zh_CN")
+    buildinfo = p(
+        "本文档在",
+        span[".colophon-date", :title => now_full](now_short),
+        "由",
+        a[:href => "https://github.com/JuliaDocs/Documenter.jl"]("Documenter.jl"),
+        "使用$(Base.VERSION)版本的Julia生成。"
+    )
+
+    div["#documenter-settings.modal"](
+        div[".modal-background"],
+        div[".modal-card"](
+            header[".modal-card-head"](
+                p[".modal-card-title"]("设置"),
+                button[".delete"]()
+            ),
+            section[".modal-card-body"](
+                theme_selector, hr(), buildinfo
+            ),
+            footer[".modal-card-foot"]()
+        )
+    )
 end
