@@ -5,35 +5,12 @@ import Documenter.Utilities.DOM: DOM, Tag, @tags
 import Documenter.Writers.HTMLWriter:
     getpage,
     render_head,
-    render_navmenu,
     render_article,
     open_output,
     mdconvert,
     pagetitle,
     navhref,
-    render_topbar,
     domify
-
-#=
-  1. 修改 html 的 lang 属性为 zh-cn
-  TODO: rm this after: https://github.com/JuliaDocs/Documenter.jl/pull/1223
-=#
-function Documenter.Writers.HTMLWriter.render_html(ctx, navnode, head, sidebar, navbar, article, footer, scripts::Vector{DOM.Node}=DOM.Node[])
-    @tags html body div
-    DOM.HTMLDocument(
-        html[:lang=>"zh-cn"](
-            head,
-            body(
-                div["#documenter"](
-                    sidebar,
-                    div[".docs-main"](navbar, article, footer),
-                    render_settings(ctx),
-                ),
-            ),
-            scripts...
-        )
-    )
-end
 
 #=
   1. 修改编辑翻译提示语
@@ -47,9 +24,6 @@ end
 
 const t_Edit_on_xx = " 完善 Transifex 上的翻译" # 开头加空格，避免与 icon 靠太近
 const t_Icon = "\uf0ac" # fa-globe
-
-# const t_Previous = "上一篇"
-# const t_Next     = "下一篇"
 
 # 生成对应文件在 Transifex 上的翻译地址
 function transifex_url(rel_path)
