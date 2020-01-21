@@ -9,7 +9,7 @@ Pkg.instantiate()
 
 using Documenter, DocumenterLaTeX
 include("../contrib/HTMLWriter.jl")
-# include("../contrib/LaTeXWriter.jl")
+include("../contrib/LaTeXWriter.jl")
 
 # Include the `build_sysimg` file.
 
