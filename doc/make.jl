@@ -196,7 +196,9 @@ else
         prettyurls = is_deploy,
         canonical = is_deploy ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
         analytics = "UA-28835595-9",
-        assets = ["assets/julia-manual.css", ]
+        assets = [
+            "assets/julia-manual.css"
+        ],
         lang = "zh-cn",
     )
 end
