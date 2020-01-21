@@ -8,8 +8,8 @@ using Pkg
 Pkg.instantiate()
 
 using Documenter, DocumenterLaTeX
-include("../contrib/HTMLWriter.jl")
-include("../contrib/LaTeXWriter.jl")
+# include("../contrib/HTMLWriter.jl")
+# include("../contrib/LaTeXWriter.jl")
 
 # Include the `build_sysimg` file.
 
@@ -195,6 +195,9 @@ else
     Documenter.HTML(
         prettyurls = is_deploy,
         canonical = is_deploy ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
+        analytics = "UA-28835595-9",
+        assets = ["assets/julia-manual.css", ]
+        lang = "zh-cn",
     )
 end
 
@@ -207,9 +210,7 @@ makedocs(
     format    = format,
     sitename  = "Julia中文文档",
     authors   = "Julia中文社区",
-    analytics = "UA-28835595-9",
     pages     = PAGES,
-    assets = ["assets/julia-manual.css", ]
 )
 
 deploydocs(

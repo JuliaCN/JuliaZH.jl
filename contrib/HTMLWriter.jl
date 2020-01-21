@@ -16,29 +16,24 @@ import Documenter.Writers.HTMLWriter:
 
 #=
   1. 修改 html 的 lang 属性为 zh-cn
+  TODO: rm this after: https://github.com/JuliaDocs/Documenter.jl/pull/1223
 =#
-function Documenter.Writers.HTMLWriter.render_page(ctx, navnode)
-    @tags html body
-
-    page = getpage(ctx, navnode)
-
-    head = render_head(ctx, navnode)
-    navmenu = render_navmenu(ctx, navnode)
-    article = render_article(ctx, navnode)
-
-    htmldoc = DOM.HTMLDocument(
-        # 修改 lang tag
+function Documenter.Writers.HTMLWriter.render_html(ctx, navnode, head, sidebar, navbar, article, footer, scripts::Vector{DOM.Node}=DOM.Node[])
+    @tags html body div
+    DOM.HTMLDocument(
         html[:lang=>"zh-cn"](
             head,
-            body(navmenu, article)
+            body(
+                div["#documenter"](
+                    sidebar,
+                    div[".docs-main"](navbar, article, footer),
+                    render_settings(ctx),
+                ),
+            ),
+            scripts...
         )
     )
-
-    open_output(ctx, navnode) do io
-        print(io, htmldoc)
-    end
 end
-
 
 #=
   1. 修改编辑翻译提示语
@@ -53,8 +48,8 @@ end
 const t_Edit_on_xx = " 完善 Transifex 上的翻译" # 开头加空格，避免与 icon 靠太近
 const t_Icon = "\uf0ac" # fa-globe
 
-const t_Previous = "上一篇"
-const t_Next     = "下一篇"
+# const t_Previous = "上一篇"
+# const t_Next     = "下一篇"
 
 # 生成对应文件在 Transifex 上的翻译地址
 function transifex_url(rel_path)
@@ -80,45 +75,60 @@ function transifex_url(rel_path)
     "https://www.transifex.com/juliacn/$parent_fold-zh_cn/translate/#zh_CN/$page_name"
 end
 
+
+
 # workaround on Documenter/#977
-function Documenter.Writers.HTMLWriter.render_article(ctx, navnode)
-    @tags article header footer nav ul li hr span a
+function Documenter.Writers.HTMLWriter.render_navbar(ctx, navnode, edit_page_link::Bool)
+    @tags div header nav ul li a span
 
-    header_links = map(Documents.navpath(navnode)) do nn
+    # The breadcrumb (navigation links on top)
+    navpath = Documents.navpath(navnode)
+    header_links = map(navpath) do nn
         title = mdconvert(pagetitle(ctx, nn); droplinks=true)
-        nn.page === nothing ? li(title) : li(a[:href => navhref(ctx, nn, navnode)](title))
+        nn.page === nothing ? li(a[".is-disabled"](title)) : li(a[:href => navhref(ctx, nn, navnode)](title))
     end
+    header_links[end] = header_links[end][".is-active"]
+    breadcrumb = nav[".breadcrumb"](
+        ul[".is-hidden-mobile"](header_links),
+        ul[".is-hidden-tablet"](header_links[end]) # when on mobile, we only show the page title, basically
+    )
 
-    topnav = nav(ul(header_links))
+    # The "Edit on GitHub" links and the hamburger to open the sidebar (on mobile) float right
+    navbar_right = div[".docs-right"]
 
     # Set the logo and name for the "Edit on.." button.
-    host_type = Utilities.repo_host_from_url(ctx.doc.user.repo)
+    if edit_page_link && (ctx.settings.edit_link !== nothing) && !ctx.settings.disable_git
+        host_type = Utilities.repo_host_from_url(ctx.doc.user.repo)
+        logo = t_Icon
 
-    if !ctx.settings.disable_git # 1.3: 改 URL
+        pageurl = get(getpage(ctx, navnode).globals.meta, :EditURL, getpage(ctx, navnode).source)
+        edit_branch = isa(ctx.settings.edit_link, String) ? ctx.settings.edit_link : nothing
+        
+        # 1.3: 改 URL
         url = transifex_url(getpage(ctx, navnode).source)
         if url !== nothing
-            # 1.1 & 1.2: 修改编辑翻译 icon/提示语
-            push!(topnav.nodes, a[".edit-page", :href => url](span[".fa"](t_Icon), t_Edit_on_xx))
+            title = t_Edit_on_xx
+            push!(navbar_right.nodes,
+                a[".docs-edit-link", :href => url, :title => title](
+                    span[".docs-icon.fab"](logo),
+                    span[".docs-label.is-hidden-touch"](title)
+                )
+            )
         end
     end
-    art_header = header(topnav, hr(), render_topbar(ctx, navnode))
 
-    # build the footer with nav links
-    art_footer = footer(hr())
-    if navnode.prev !== nothing
-        direction = span[".direction"](t_Previous) # 2.1: 修改翻页提示语
-        title = span[".title"](mdconvert(pagetitle(ctx, navnode.prev); droplinks=true))
-        link = a[".previous", :href => navhref(ctx, navnode.prev, navnode)](direction, title)
-        push!(art_footer.nodes, link)
-    end
+    # Settings cog
+    push!(navbar_right.nodes, a[
+        "#documenter-settings-button.docs-settings-button.fas.fa-cog",
+        :href => "#", :title => "Settings",
+    ])
 
-    if navnode.next !== nothing
-        direction = span[".direction"](t_Next) # 2.1: 修改翻页提示语
-        title = span[".title"](mdconvert(pagetitle(ctx, navnode.next); droplinks=true))
-        link = a[".next", :href => navhref(ctx, navnode.next, navnode)](direction, title)
-        push!(art_footer.nodes, link)
-    end
+    # Hamburger on mobile
+    push!(navbar_right.nodes, a[
+        "#documenter-sidebar-button.docs-sidebar-button.fa.fa-bars.is-hidden-desktop",
+        :href => "#"
+    ])
 
-    pagenodes = domify(ctx, navnode)
-    article["#docs"](art_header, pagenodes, art_footer)
+    # Construct the main <header> node that should be the first element in div.docs-main
+    header[".docs-navbar"](breadcrumb, navbar_right)
 end
