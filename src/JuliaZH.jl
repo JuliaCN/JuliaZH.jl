@@ -14,6 +14,18 @@ function set_mirror(mirror_name="BFSU")
     return
 end
 
+function generate_startup(mirror_name::String="BFSU")
+    default_dot_julia = first(DEPOT_PATH)
+    config_path = joinpath(default_dot_julia, "config")
+    if !ispath(config_path)
+        mkpath(config_path)
+    end
+
+    write(joinpath(config_path,
+        "startup.jl"), "ENV[\"JULIA_PKG_SERVER\"] = \"$(mirrors[mirror_name])\"")
+    return
+end
+
 function __init__()
     # set to Chinese env by default
     ENV["REPL_LOCALE"] = "zh_CN"
