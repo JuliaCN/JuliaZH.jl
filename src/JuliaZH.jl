@@ -38,8 +38,14 @@ function generate_startup(mirror_name::String="BFSU")
         mkpath(config_path)
     end
 
-    write(joinpath(config_path,
-        "startup.jl"), "ENV[\"JULIA_PKG_SERVER\"] = \"$(mirrors[mirror_name])\"")
+    startup_path = joinpath(config_path, "startup.jl")
+    if ispath(startup_path)
+        old_startup = read(startup_path, String)
+    else
+        old_startup = ""
+    end
+
+    write(startup_path, join([old_startup, "ENV[\"JULIA_PKG_SERVER\"] = \"$(mirrors[mirror_name])\"\n"], "\n"))
     return
 end
 
