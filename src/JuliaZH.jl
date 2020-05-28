@@ -25,9 +25,10 @@ function set_mirror(mirror_name = "BFSU")
     return
 end
 
+const regex_PKG_SERVER = r"^\s*[^#]*\s*(ENV\[\"JULIA_PKG_SERVER\"\]\s*=\s*)\"([\w\.:\/]*)\""
+
 """
     generate_startup(mirror_name::String="BFSU")
-
 自动产生将镜像设置到 `mirror_name` 的 `startup.jl` 文件。默认值是 `BFSU
 ` 的源。
 """
@@ -40,18 +41,32 @@ function generate_startup(mirror_name::String = "BFSU")
 
     startup_path = joinpath(config_path, "startup.jl")
     if ispath(startup_path)
-        old_startup = read(startup_path, String)
+        startup_lines = readlines(startup_path)
     else
-        old_startup = ""
+        startup_lines = String[]
     end
 
-    write(
-        startup_path,
-        join(
-            [old_startup, "ENV[\"JULIA_PKG_SERVER\"] = \"$(mirrors[mirror_name])\"\n"],
-            "\n",
-        ),
-    )
+    new_upstream = mirrors[mirror_name]
+    new_line = "ENV[\"JULIA_PKG_SERVER\"] = \"$(new_upstream)\""
+    
+    pkg_matches = map(x->match(regex_PKG_SERVER, x), startup_lines)
+    pkg_indices = findall(x->!isnothing(x), pkg_matches)
+    if isempty(pkg_indices)
+        @info "添加 PkgServer" 服务器地址=new_upstream 配置文件=config_path
+        append!(startup_lines, ["", "# 以下这一行由 JuliaCN 自动生成", new_line, ""])
+    else
+        # only modify the last match
+        idx = last(pkg_indices)
+        old_upstream = pkg_matches[idx].captures[2]
+
+        is_upstream_unchanged = occursin(new_upstream, old_upstream) || occursin(old_upstream, new_upstream)
+        if !is_upstream_unchanged
+            @info "更新 PkgServer" 新服务器地址=new_upstream 原服务器地址=old_upstream 配置文件=config_path
+            startup_lines[idx] = new_line
+        end
+    end
+
+    write(startup_path, join(startup_lines, "\n"))
     return
 end
 
