@@ -2,12 +2,12 @@ module JuliaZH
 
 import Base.Docs: DocStr
 
-const keywords = Dict{Symbol, DocStr}()
+const keywords = Dict{Symbol,DocStr}()
 
 """
 源列表
 """
-const mirrors = Dict{String, String}()
+const mirrors = Dict{String,String}()
 
 mirrors["BFSU"] = "https://mirrors.bfsu.edu.cn/julia/static"
 mirrors["default"] = "https://pkg.julialang.org"
@@ -20,7 +20,7 @@ mirrors["default"] = "https://pkg.julialang.org"
 - `"BFSU"`: TUNA支持的境内源
 - `"default"`: Julia官方默认源
 """
-function set_mirror(mirror_name="BFSU")
+function set_mirror(mirror_name = "BFSU")
     ENV["JULIA_PKG_SERVER"] = mirrors[mirror_name]
     return
 end
@@ -31,7 +31,7 @@ end
 自动产生将镜像设置到 `mirror_name` 的 `startup.jl` 文件。默认值是 `BFSU
 ` 的源。
 """
-function generate_startup(mirror_name::String="BFSU")
+function generate_startup(mirror_name::String = "BFSU")
     default_dot_julia = first(DEPOT_PATH)
     config_path = joinpath(default_dot_julia, "config")
     if !ispath(config_path)
@@ -45,7 +45,13 @@ function generate_startup(mirror_name::String="BFSU")
         old_startup = ""
     end
 
-    write(startup_path, join([old_startup, "ENV[\"JULIA_PKG_SERVER\"] = \"$(mirrors[mirror_name])\"\n"], "\n"))
+    write(
+        startup_path,
+        join(
+            [old_startup, "ENV[\"JULIA_PKG_SERVER\"] = \"$(mirrors[mirror_name])\"\n"],
+            "\n",
+        ),
+    )
     return
 end
 
