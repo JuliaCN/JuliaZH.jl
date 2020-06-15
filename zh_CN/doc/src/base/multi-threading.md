@@ -28,7 +28,7 @@ Base.Threads.atomic_fence
 Base.@threadcall
 ```
 
-## 同步原始类型
+## 同步基元
 
 ```@docs
 Base.Threads.AbstractLock

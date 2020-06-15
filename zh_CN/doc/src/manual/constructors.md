@@ -221,10 +221,10 @@ Point{Int64}(1, 2)
 julia> Point(1.0,2.5) ## 隐式的 T ##
 Point{Float64}(1.0, 2.5)
 
-julia> Point(1,2.5) ## 隐式的 T ##
+julia> Point(1,2.5) ## implicit T ##
 ERROR: MethodError: no method matching Point(::Int64, ::Float64)
 Closest candidates are:
-  Point(::T<:Real, ::T<:Real) where T<:Real at none:2
+  Point(::T, ::T) where T<:Real at none:2
 
 julia> Point{Int64}(1, 2) ## 显式的 T ##
 Point{Int64}(1, 2)
@@ -279,7 +279,7 @@ Point{Float64}
 julia> Point(1.5,2)
 ERROR: MethodError: no method matching Point(::Float64, ::Int64)
 Closest candidates are:
-  Point(::T<:Real, !Matched::T<:Real) where T<:Real at none:1
+  Point(::T, !Matched::T) where T<:Real at none:1
 ```
 
 如果你想要找到一种方法可以使类似的调用都可以正常工作，请参阅[类型转换与类型提升](@ref conversion-and-promotion)。这里稍稍“剧透”一下，我们可以利用下面的这个外部构造函数来满足需求，无论输入参数的类型如何，它都可以触发通用的 `Point` 构造函数：

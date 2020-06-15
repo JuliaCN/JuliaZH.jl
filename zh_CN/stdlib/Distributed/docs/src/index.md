@@ -57,10 +57,8 @@ Distributed.cluster_cookie(::Any)
 
 ## 集群管理接口
 
-This interface provides a mechanism to launch and manage Julia workers on different cluster environments.
-There are two types of managers present in Base: `LocalManager`, for launching additional workers on the
-same host, and `SSHManager`, for launching on remote hosts via `ssh`. TCP/IP sockets are used to connect
-and transport messages between processes. It is possible for Cluster Managers to provide a different transport.
+这个接口提供了一种在不同的集群上启动和管理 Julia 工作节点的机制。
+Base 模块提供了两种类型的管理器：`Localmanager` 用于在同一台主机上启动额外的工作节点； `SSHManager` 用于通过 `ssh` 在远程主机上启动额外的工作节点。 TCP/IP socket 用于连接进程以及进程间的信息传递。集群管理器也可以提供一种不同的传递方式。
 
 ```@docs
 Distributed.launch

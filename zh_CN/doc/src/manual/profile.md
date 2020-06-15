@@ -10,8 +10,7 @@
 
 尽管有这些限制，但抽样分析器仍然有很大的优势：
 
-  * 你无需对代码进行修改即可进行定时测量（这与替代的[注入型分析器](https://github.com/timholy/IProfile.jl)相反）。
-     
+  * You do not have to make any modifications to your code to take timing measurements.
   * 它可以分析 Julia 的核心代码，甚至（可选）可以分析 C 和 Fortran 库。
   * 通过「偶尔」运行，它只有很少的性能开销；代码在性能分析时能以接近本机的速度运行。
      

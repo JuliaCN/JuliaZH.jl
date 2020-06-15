@@ -251,7 +251,8 @@ search: * .*
 
 ## 进阶用法
 
-`@doc`宏在叫做`META`的每个模块的字典中连接他的第一个和第二个参数。默认地，文档希望是用Markdown写成，并且`doc"""`字符串宏简单地创造一个代表了Markdown内容的对象。在未来，有可能支持更多的进阶功能比如考虑到相关的图像或者链接路径。
+The `@doc` macro associates its first argument with its second in a per-module dictionary called
+`META`.
 
 为了让写文档更加简单，语法分析器对宏名`@doc`特殊对待：如果`@doc`的调用只有一个参数，但是在下一行出现了另外一个表达式，那么这个表达式就会追加为宏的参数。所以接下来的语法会被分析成`@doc`的2个参数的调用：
 
@@ -262,7 +263,7 @@ search: * .*
 f(x) = x
 ```
 
-这就让使用任意对象（这里指的是`原始`字符串）作为docstring变得简单。
+This makes it possible to use expressions other than normal string literals (such as the `raw""` string macro) as a docstring.
 
 当`@doc`宏（或者`doc`函数）用作抽取文档时，他会在所有的`META`字典寻找与对象相关的元数据并且返回。返回的对象（例如一些Markdown内容）会默认智能地显示。这个设计也让以编程方法使用文档系统变得容易；例如，在一个函数的不同版本中重用文档：
 
@@ -313,11 +314,24 @@ y = MyType("y")
 
 ## 语法指南
 
-对于所有的可写文档的Julia语法的总览。
+A comprehensive overview of all documentable Julia syntax.
+In the following examples `"..."` is used to illustrate an arbitrary docstring.
 
-在下述例子中`"..."`用来表示任意的docstring。
+### `$` and `\` characters
 
-`doc""`只应用在如下情况下：docstring包含不应被Julia分析的`$`或者`\`字符，比如LaTeX语法；Julia源码中包含插值。
+The `$` and `\` characters are still parsed as string interpolation or start of an escape sequence
+in docstrings too. The `raw""` string macro together with the `@doc` macro can be used to avoid
+having to escape them. This is handy when the docstrings include LaTeX or Julia source code examples
+containing interpolation:
+
+````julia
+@doc raw"""
+```math
+\LaTeX
+```
+"""
+function f end
+````
 
 ### 函数与方法
 

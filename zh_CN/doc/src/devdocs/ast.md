@@ -13,7 +13,7 @@ Julia 有两种代码的表现形式。
   * `Expr`
 
     Has a node type indicated by the `head` field, and an `args` field which is a `Vector{Any}` of
-    subexpressions.
+    子表达式
     尽管表层 AST 中，几乎每个部分都是通过 `Expr` 表示的，中间表现形式只四用了很有限的 `Expr`，主要用于调动、条件分支 (`gotoifnot`) 和返回。
     limited number of `Expr`s, mostly for calls, conditional branches (`gotoifnot`), and returns.
 

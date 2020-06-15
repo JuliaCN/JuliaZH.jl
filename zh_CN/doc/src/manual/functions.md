@@ -193,6 +193,24 @@ julia> map(x -> x^2 + 2x - 1, [1,3,-1])
 
 接受多个参数的匿名函数写法可以使用语法 `(x,y,z)->2x+y-z`，而无参匿名函数写作 `()->3` 。无参函数的这种写法看起来可能有些奇怪，不过它对于延迟计算很有必要。这种用法会把代码块包进一个无参函数中，后续把它当做 `f` 调用。
 
+As an example, consider this call to [`get`](@ref):
+
+```julia
+get(dict, key) do
+    # default value calculated here
+    time()
+end
+```
+
+上面的代码等效于使用包含代码的匿名函数调用`get`。 被包围在do和end之间，如下所示
+
+```julia
+get(()->time(), dict, key)
+```
+
+The call to [`time`](@ref) is delayed by wrapping it in a 0-argument anonymous function
+that is called only when the requested key is absent from `dict`.
+
 ## 元组
 
 Julia 有一个和函数参数与返回值密切相关的内置数据结构叫做元组（*tuple*）。
@@ -563,7 +581,7 @@ julia> (sqrt ∘ +)(3, 6)
 3.0
 ```
 
-This adds the numbers first, then finds the square root of the result.
+这个语句先把数字相加，再对结果求平方根。
 
 The next example composes three functions and maps the result over an array of strings:
 

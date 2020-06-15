@@ -753,7 +753,11 @@ julia> broadcast(+, a, b)
 
 类似 `.+` 和 `.*` 的[点运算符](@ref man-dot-operators) 等同于 `broadcast` 调用（除了它们融合两种操作，如下所述）。还有一个 [`broadcast!`](@ref) 函数来指定一个显式目标（也可以通过 `.=` 赋值以融合的方式访问它）。事实上，`f.(args...)` 等价于 `broadcast(f, args...)`，并为广播任何函数提供了方便的语法（[dot syntax](@ref man-vectorized)）。嵌套的「点调用」`f.(...)`（包括调用 `.+` 等）[自动融合](@ref man-dot-operators)到单个 `broadcast` 调用。
 
-另外，[`broadcast`](@ref) 并不局限于数组（参见函数文档），对于元组依然有效。对于其他非数组，元组或引用 [`Ref`](@ref)(除了指针 [`Ptr`](@ref)) 的参数，视作“标量”。
+Additionally, [`broadcast`](@ref) is not limited to arrays (see the function documentation);
+it also handles scalars, tuples and other collections.  By default, only some argument types are
+considered scalars, including (but not limited to) `Number`s, `String`s, `Symbol`s, `Type`s, `Function`s
+and some common singletons like `missing` and `nothing`. All other arguments are
+iterated over or indexed into elementwise.
 
 ```jldoctest
 julia> convert.(Float32, [1, 2])

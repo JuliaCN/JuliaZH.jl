@@ -78,7 +78,7 @@ julia [switches] -- [programfile] [args...]
 |选项                                 |描述|
 |:---                                   |:---|
 |`-v`, `--version`                      |显示版本信息|
-|`-h`, `--help`                         |打印本条帮助信息|
+|`-h`, `--help`                         |Print command-line options (this message).|
 |`--project[={<dir>\|@.}]`              |将 <dir> 设置为主项目/环境。默认的 @. 选项将搜索父目录，直至找到 Project.toml 或 JuliaProject.toml 文件。|
 |`-J`, `--sysimage <file>`              |用指定的镜像文件（system image file）启动|
 |`-H`, `--home <dir>`                   |设置 `julia` 可执行文件的路径|

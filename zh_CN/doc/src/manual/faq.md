@@ -1,5 +1,23 @@
 # 常见问题
 
+## General
+
+### Is Julia named after someone or something?
+
+No.
+
+### Why don't you compile Matlab/Python/R/… code to Julia?
+
+Since many people are familiar with the syntax of other dynamic languages, and lots of code has already been written in those languages, it is natural to wonder why we didn't just plug a Matlab or Python front-end into a Julia back-end (or “transpile” code to Julia) in order to get all the performance benefits of Julia without requiring programmers to learn a new language.  Simple, right?
+
+The basic issue is that there is *nothing special about Julia's compiler*: we use a commonplace compiler (LLVM) with no “secret sauce” that other language developers don't know about.  Indeed, Julia's compiler is in many ways much simpler than those of other dynamic languages (e.g. PyPy or LuaJIT).   Julia's performance advantage derives almost entirely from its front-end: its language semantics allow a [well-written Julia program](@ref man-performance-tips) to *give more opportunities to the compiler* to generate efficient code and memory layouts.  If you tried to compile Matlab or Python code to Julia, our compiler would be limited by the semantics of Matlab or Python to producing code no better than that of existing compilers for those languages (and probably worse).  The key role of semantics is also why several existing Python compilers (like Numba and Pythran) only attempt to optimize a small subset of the language (e.g. operations on Numpy arrays and scalars), and for this subset they are already doing at least as well as we could for the same semantics.  The people working on those projects are incredibly smart and have accomplished amazing things, but retrofitting a compiler onto a language that was designed to be interpreted is a very difficult problem.
+
+Julia's advantage is that good performance is not limited to a small subset of “built-in” types and operations, and one can write high-level type-generic code that works on arbitrary user-defined types while remaining fast and memory-efficient.  Types in languages like Python simply don't provide enough information to the compiler for similar capabilities, so as soon as you used those languages as a Julia front-end you would be stuck.
+
+For similar reasons, automated translation to Julia would also typically generate unreadable, slow, non-idiomatic code that would not be a good starting point for a native Julia port from another language.
+
+On the other hand, language *interoperability* is extremely useful: we want to exploit existing high-quality code in other languages from Julia (and vice versa)!  The best way to enable this is not a transpiler, but rather via easy inter-language calling facilities.  We have worked hard on this, from the built-in `ccall` intrinsic (to call C and Fortran libraries) to [JuliaInterop](https://github.com/JuliaInterop) packages that connect Julia to Python, Matlab, C++, and more.
+
 ## 会话和 REPL
 
 ### 如何从内存中删除某个对象？
@@ -285,7 +303,7 @@ julia> sqrt(-2.0+0im)
 0.0 + 1.4142135623730951im
 ```
 
-### 为什么Julia使用原生机器整数算法？
+### [Why does Julia use native machine integer arithmetic?](@id faq-integer-arithmetic)
 
 Julia使用机器算法进行整数计算。这意味着`Int`的范围是有界的，值在范围的两端循环，也就是说整数的加法，减法和乘法会出现上溢或者下溢，导致出现某些从开始就令人不安的结果：
 
@@ -655,8 +673,8 @@ julia> A = zeros()
   它的长度为`1`。
 * 零维数组原生没有任何你可以索引的维度
   -- 它们仅仅是`A[]`。我们可以给它们应用同样的"trailing one"规则，
-  如同所有其他的数组维度一样，所以你实际上可以使用
-  `A[1]`，`A[1,1]`等来索引
+  as for all other array dimensionalities, so you can indeed index them as `A[1]`, `A[1,1]`, etc; see
+  [Omitted and extra indices](@ref).
 
 理解它与普通的标量之间的区别也很重要。标量不是一个可变的容器（尽管它们是可迭代的，可以定义像`length`，`getindex`这样的东西，*例如*`1[] == 1`）。特别地，如果`x = 0.0`是以一个标量来定义，尝试通过`x[] = 1.0`来改变它的值会报错。标量`x`能够通过`fill(x)`转化成包含它的零维数组，并且相对地，一个零维数组`a`可以通过`a[]`转化成其包含的标量。另外一个区别是标量可以参与到线性代数运算中，比如`2 * rand(2,2)`，但是零维数组的相似操作`fill(2) * rand(2,2)`会报错。
 
@@ -686,18 +704,29 @@ Modifying OpenBLAS settings or compiling Julia with a different BLAS library, eg
 
 ## Julia 版本发布
 
-### 应该使用 Julia 的正式版（release version），测试版（beta version）还是每夜更新版（nightly version）？
+### Do I want to use the Stable, LTS, or nightly version of Julia?
 
-如果您正在寻找稳定的代码库，您可能更喜欢Julia的正式版。 通常每6个月发布一次，为您提供编写代码的稳定平台。
+The Stable version of Julia is the latest released version of Julia, this is the version most people will want to run.
+It has the latest features, including improved performance.
+The Stable version of Julia is versioned according to [SemVer](https://semver.org/) as v1.x.y.
+A new minor release of Julia corresponding to a new Stable version is made approximately every 4-5 months after a few weeks of testing as a release candidate.
+Unlike the LTS version the a Stable version will not normally recieve bugfixes after another Stable version of Julia has been released.
+However, upgrading to the next Stable release will always be possible as each release of Julia v1.x will continue to run code written for earlier versions.
 
-如果您不介意稍微落后于最新的错误修正和更改，觉得稍微更快的修改更具吸引力，您可能更喜欢Julia的测试版。 此外，这些二进制文件在发布之前会进行测试，以确保它们完全正常运行。
+You may prefer the LTS (Long Term Support) version of Julia if you are looking for a very stable code base.
+The current LTS version of Julia is versioned according to SemVer as v1.0.x;
+this branch will continue to recieve bugfixes until a new LTS branch is chosen, at which point the v1.0.x series will no longer recieved regular bug fixes and all but the most conservative users will be advised to upgrade to the new LTS version series.
+As a package developer, you may prefer to develop for the LTS version, to maximize the number of users who can use your package.
+As per SemVer, code written for v1.0 will continue to work for all future LTS and Stable versions.
+In general, even if targetting the LTS, one can develop and run code in the latest Stable version, to take advantage of the improved performance; so long as one avoids using new features (such as added library functions or new methods).
 
-如果您想利用该语言的最新更新，并且不介意今天可用的版本偶尔出现实际上并没有正常工作，您可能更喜欢 Julia 的每夜更新版。
+You may prefer the nightly version of Julia if you want to take advantage of the latest updates to the language, and don't mind if the version available today occasionally doesn't actually work.
+As the name implies, releases to the nightly version are made roughly every night (depending on build infrastructure stability).
+In general nightly released are fairly safe to use—your code will not catch on fire.
+However, they may be occasional regressions and or issues that will not be found until more thorough pre-release testing.
+You may wish to test against the nightly version to ensure that such regressions that affect your use case are caught before a release is made.
 
-最后，您也可以考虑自己从源代码编译Julia。 此选项主要适用于那些适应命令行或对学习感兴趣的人。 如果您是这样，您可能也有兴趣阅读我们的[贡献指南](https://github.com/JuliaLang/julia/blob/master/CONTRIBUTING.md)。
+Finally, you may also consider building Julia from source for yourself. This option is mainly for those individuals who are comfortable at the command line, or interested in learning.
+If this describes you, you may also be interested in reading our [guidelines for contributing](https://github.com/JuliaLang/julia/blob/master/CONTRIBUTING.md).
 
 可以在[https://julialang.org/downloads/](https://julialang.org/downloads/)的下载页面上找到每种下载类型的链接。 请注意，并非所有版本的Julia都适用于所有平台。
-
-### 已弃用的功能会在何时移除？
-
-已弃用的函数会被随后发布的版本中移除。例如，在1.0版本中被标记为已弃用的函数会在0.2版本及之后的版本中无法使用。
