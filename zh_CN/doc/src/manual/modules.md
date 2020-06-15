@@ -33,12 +33,11 @@ end
 
 代码 `using BigLib: thing1, thing2` 显式地将标识符 `thing1` 和 `thing2` 从模块 `BigLib` 中引入到当前作用域。如果这两个变量是函数的话，则**不允许**给它们增加新的方法，毕竟代码里写的是 "using"（使用）它们，而不是扩展它们。
 
-The [`import`](@ref) keyword supports the same syntax as [`using`](@ref), but only operates on a single name
-at a time. It does not add modules to be searched the way `using` does. `import` also differs
-from `using` in that functions imported using `import` can be extended with new methods.
+[`import`](@ref) 关键字所支持的语法与 [`using`](@ref) 一致。
+它并不会像 `using` 那样将模块添加到搜索空间中。
+与 `using` 不同，`import` 引入的函数 **可以** 为其增加新的方法。
 
-In `MyModule` above we wanted to add a method to the standard [`show`](@ref) function, so we had to write
-`import Base.show`. Functions whose names are only visible via `using` cannot be extended.
+前面的 `MyModule` 模块中，我们希望给 [`show`](@ref) 函数增加一个方法，需要写成 `import Base.show`。如果用 `using` 的话，就不能扩展 `show` 函数。通过 `using` 导入才可见的名字是不能被扩展的。
 
 一旦一个变量通过 `using` 或 `import` 引入，当前模块就不能创建同名的变量了。而且导入的变量是只读的，给全局变量赋值只能影响到由当前模块拥有的变量，否则会报错。
 
@@ -60,13 +59,13 @@ end
 
 这个模块用关键字 `export` 导出了 `x` 和 `y` 函数，此外还有一个没有被导出的函数 `p`。想要将该模块及其内部的函数导入当前模块有以下方法：
 
-| `import` 命令                  | 将哪些变量导入了当前作用域？                                                      | 如何添加或扩展方法              |
+| 导入代码                  | 当前作用域导入了哪些变量？                                                      | 可增加新方法的名字              |
 |:------------------------------- |:------------------------------------------------------------------------------- |:------------------------------------------- |
 | `using MyModule`                | All `export`ed names (`x` and `y`), `MyModule.x`, `MyModule.y` and `MyModule.p` | `MyModule.x`, `MyModule.y` and `MyModule.p` |
 | `using MyModule: x, p`          | `x` and `p`                                                                     |                                             |
-| `import MyModule`               | `MyModule.x`, `MyModule.y` and `MyModule.p`                                     | `MyModule.x`, `MyModule.y` and `MyModule.p` |
-| `import MyModule.x, MyModule.p` | `x` and `p`                                                                     | `x` and `p`                                 |
-| `import MyModule: x, p`         | `x` and `p`                                                                     | `x` and `p`                                 |
+| `import MyModule`               | `MyModule.x`、`MyModule.y` 和 `MyModule.p`                                     | `MyModule.x`、`MyModule.y` 和 `MyModule.p` |
+| `import MyModule.x, MyModule.p` | `x` 和 `p`                                                                     | `x` 和 `p`                                 |
+| `import MyModule: x, p`         | `x` 和 `p`                                                                     | `x` 和 `p`                                 |
 
 ### 模块和文件
 
@@ -96,20 +95,16 @@ end
 
 ### 标准模块
 
-There are three important standard modules:
-* [`Core`](@ref) contains all functionality "built into" the language.
-* [`Base`](@ref) contains basic functionality that is useful in almost all cases.
-* [`Main`](@ref) is the top-level module and the current module, when Julia is started.
+有三个重要的标准模块：
+* [`Core`](@ref) 包含了语言“内置”的所有功能。
+* [`Base`](@ref) 包含了绝大多数情况下都会用到的基本功能。
+* [`Main`](@ref) 是顶层模块，当 julia 启动时，也是当前模块。
 
 ### 默认顶层定义以及裸模块
 
-In addition to `using Base`, modules also automatically contain
-definitions of the [`eval`](@ref) and [`include`](@ref) functions,
-which evaluate expressions/files within the global scope of that module.
+除了默认包含 `using Base` 之外，所有模块都还包含 [`eval`](@ref) 和 [`include`](@ref) 函数。这两个函数用于在对应模块的全局环境中，执行表达式或文件。
 
-If these default definitions are not wanted, modules can be defined using the keyword [`baremodule`](@ref)
-instead (note: `Core` is still imported, as per above). In terms of `baremodule`, a standard
-`module` looks like this:
+如果连这些默认的定义都不需要，那么可以用 [`baremodule`](@ref) 定义裸模块（不过 `Core` 模块仍然会被引入，否则啥也干不了）。用裸模块表达的标准模块定义如下：
 
 ```
 baremodule Mod
@@ -161,13 +156,10 @@ end
 
 因为执行模块中的所有语句通常需要编译大量代码，大型模块可能需要几秒钟才能加载。Julia 会创建模块的预编译缓存以减少这个时间。
 
-The incremental precompiled module file are created and used automatically when using `import`
-or `using` to load a module.  This will cause it to be automatically compiled the first time
-it is imported. Alternatively, you can manually call [`Base.compilecache(modulename)`](@ref). The resulting
-cache files will be stored in `DEPOT_PATH[1]/compiled/`. Subsequently, the module is automatically
-recompiled upon `using` or `import` whenever any of its dependencies change; dependencies are modules it
-imports, the Julia build, files it includes, or explicit dependencies declared by [`include_dependency(path)`](@ref)
-in the module file(s).
+当用 `import` 或 `using` 加载一个模块时，模块增量预编译文件会自动创建并使用。这会让模块在第一次加载时自动编译。
+另外，你也可以手工调用 [`Base.compilecache(modulename)`](@ref)，产生的缓存文件会放在 `DEPOT_PATH[1]/compiled/` 目录下。
+之后，当该模块的任何一个依赖发生变更时，该模块会在 `using` 或 `import` 时自动重新编译；
+模块的依赖指的是：任何它导入的模块、Julia 自身、include 的文件或由 [`include_dependency(path)`](@ref) 显式声明的依赖。
 
 对于文件依赖，判断是否有变动的方法是：在 `include` 或 `include_dependency` 的时候检查每个文件的变更时间（`mtime`）是否没变，或等于截断变更时间。截断变更时间是指将变更时间截断到最近的一秒，这是由于在某些操作系统中，用 `mtime` 无法获取亚秒级的精度。此外，也会考虑到 `require` 搜索到的文件路径与之前预编译文件中的是否匹配。对于已经加载到当前进程的依赖，即使它们的文件发成了变更，甚至是丢失，Julia 也不会重新编译这些模块，这是为了避免正在运行的系统与预编译缓存之间的不兼容性。
 
@@ -190,29 +182,19 @@ end
 
 注意，在像 `__init__` 这样的函数里定义一个全局变量是完全可以的，这是动态语言的优点之一。但是把全局作用域的值定义成常量，可以让编译器能确定该值的类型，并且能让编译器生成更好的优化过的代码。显然，你的模块（Module）中，任何其他依赖于 `foo_data_ptr` 的全局量也必须在 `__init__` 中被初始化。
 
-Constants involving most Julia objects that are not produced by [`ccall`](@ref) do not need to be placed
-in `__init__`: their definitions can be precompiled and loaded from the cached module image. This
-includes complicated heap-allocated objects like arrays. However, any routine that returns a raw
-pointer value must be called at runtime for precompilation to work ([`Ptr`](@ref) objects will turn into
-null pointers unless they are hidden inside an [`isbits`](@ref) object). This includes the return values
-of the Julia functions `cfunction` and [`pointer`](@ref).
+涉及大多数不是由 [`ccall`](@ref) 生成的 Julia 对象的常量，不需要放在 `__init__` 中：它们的定义可以预编译并从缓存的模块映像中加载。这包括复杂的堆分配对象，如数组。
+但是，任何返回原始指针值的例程都必须在运行时调用，以便进行预编译（除非将 [`Ptr`](@ref) 对象隐藏在 [`isbits`](@ref) 对象中，否则它们将转换为空指针）。
+这包括 Julia 函数 `cfunction` 和 [`pointer`](@ref) 的返回值。
 
-Dictionary and set types, or in general anything that depends on the output of a `hash(key)` method,
-are a trickier case.  In the common case where the keys are numbers, strings, symbols, ranges,
-`Expr`, or compositions of these types (via arrays, tuples, sets, pairs, etc.) they are safe to
-precompile.  However, for a few other key types, such as `Function` or `DataType` and generic
-user-defined types where you haven't defined a `hash` method, the fallback `hash` method depends
-on the memory address of the object (via its `objectid`) and hence may change from run to run.
-If you have one of these key types, or if you aren't sure, to be safe you can initialize this
-dictionary from within your `__init__` function. Alternatively, you can use the [`IdDict`](@ref)
-dictionary type, which is specially handled by precompilation so that it is safe to initialize
-at compile-time.
+字典和集合类型，或者通常任何依赖于 `hash(key)` 方法的类型，都是比较棘手的情况。
+通常当键是数字、字符串、符号、范围、`Expr` 或这些类型的组合（通过数组、元组、集合、映射对等）时，可以安全地预编译它们。但是，对于一些其它的键类型，例如 `Function` 或 `DataType`、以及还没有定义散列方法的通用用户定义类型，回退（fallback）的散列（`hash`）方法依赖于对象的内存地址（通过 `objectid`），因此可能会在每次运行时发生变化。
+如果您有这些关键类型中的一种，或者您不确定，为了安全起见，您可以在您的 `__init__` 函数中初始化这个字典。或者，您可以使用 [`IdDict`](@ref) 字典类型，它是由预编译专门处理的，因此在编译时初始化是安全的。
 
 当使用预编译时，我们必须要清楚地区分代码的编译阶段和运行阶段。在此模式下，我们会更清楚发现 Julia 的编译器可以执行任何 Julia 代码，而不是一个用于生成编译后代码的独立的解释器。
 
 其它已知的潜在失败场景包括：
 
-1. Global counters (for example, for attempting to uniquely identify objects). Consider the following
+1. 全局计数器，例如：为了试图唯一的标识对象。考虑以下代码片段：
     
 
    ```julia
@@ -228,7 +210,7 @@ at compile-time.
     
     
 
-   注意 `objectid` （工作原理是 hash 内存指针）也有类似的问题，请查阅下面关于 `Dict` 的用法。
+   注意 `objectid` （工作原理是取内存指针的 hash）也有类似的问题，请查阅下面关于 `Dict` 的用法。
     
 
    一种解决方案是用宏捕捉 [`@__MODULE__`](@ref)，并将它与目前的 `counter` 值一起保存。然而，更好的方案是对代码进行重新设计，不要依赖这种全局状态变量。
@@ -255,12 +237,12 @@ at compile-time.
     
 2. 当 `__init__()` 已经开始执行后，在局部作用域中声明 `global const`（见 issue #12010，计划为此情况添加一个错误提示）
     
-3. 在增量预编译时替换模块是一个运行期间的错误。
+3. 在增量预编译时替换模块是一个运行时错误。
 
 一些其他需要注意的点：
 
-1. 在源代码文件本身被修改之后，不会执行代码重载或缓存失效化处理（包括由 [`Pkg.update`] 执行的修改，此外在 [`Pkg.rm`] 执行后也没有清理操作）
-   (including by `Pkg.update`), and no cleanup is done after `Pkg.rm`
+1. 在源代码文件本身被修改之后，不会执行代码重载或缓存失效化处理（包括由 `Pkg.update` 执行的修改，此外在 `Pkg.rm` 执行后也没有清理操作）
+    
 2. 变形数组的内存共享特性会被预编译忽略（每个数组样貌都会获得一个拷贝）
     
 3. 文件系统在编译期间和运行期间被假设为不变的，比如使用 [`@__FILE__`](@ref)/`source_path()` 在运行期间寻找资源、或使用 BinDeps 宏 `@checked_lib`。有时这是不可避免的。但是可能的话，在编译期将资源复制到模块里面是个好做法，这样在运行期间，就不需要去寻找它们了。
@@ -269,10 +251,10 @@ at compile-time.
     
 4. `WeakRef` 对象和完成器目前在序列化器中无法被恰当地处理（在接下来的发行版中将修复）。
     
-5. 通常，最好避免去捕捉内部元数据对象的引用，如 `Method`、`MethodInstance`、`TypeMapLevel`、`TypeMapEntry` 及这些对象的字段，因为这会迷惑序列化器，且可能会引发你不想要的结果。此操作不足以成为一个错误，但你需做好准备：系统会尝试拷贝一部分，然后创建其余部分的单个独立对象。
+5. 通常，最好避免去捕捉内部元数据对象的引用，如 `Method`、`MethodInstance`、`TypeMapLevel`、`TypeMapEntry` 及这些对象的字段，因为这会迷惑序列化器，且可能会引发你不想要的结果。此操作不足以成为一个错误，但你需做好准备：系统会尝试拷贝一部分，然后创建其余部分的单个独立实例。
     
     
     
     
 
-在开发模块时，关闭增量预编译可能会有所帮助。命令行标记 `--compiled-modules={yes|no}` 可以让你切换预编译的开启和关闭。当 Julia 附加 `--compiled-modules=no` 启动，在载入模块和模块依赖时，编译缓存中的序列化模块会被忽略。`Base.compilecache` 仍可以被手动调用。此命令行标记的状态会被传递给 `Pkg.build`，禁止其在安装、更新、显式建立包时触发自动预编译。
+在开发模块时，关闭增量预编译可能会有所帮助。命令行标记 `--compiled-modules={yes|no}` 可以让你切换预编译的开启和关闭。当 Julia 附加 `--compiled-modules=no` 启动，在载入模块和模块依赖时，编译缓存中的序列化模块会被忽略。`Base.compilecache` 仍可以被手动调用。此命令行标记的状态会被传递给 `Pkg.build`，禁止其在安装、更新、显式构建包时触发自动预编译。

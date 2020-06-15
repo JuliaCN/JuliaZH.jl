@@ -1,16 +1,10 @@
-# Dates
+# 日期
 
 ```@meta
 DocTestSetup = :(using Dates)
 ```
 
-The `Dates` module provides two types for working with dates: [`Date`](@ref) and [`DateTime`](@ref),
-representing day and millisecond precision, respectively; both are subtypes of the abstract [`TimeType`](@ref).
-The motivation for distinct types is simple: some operations are much simpler, both in terms of
-code and mental reasoning, when the complexities of greater precision don't have to be dealt with.
-For example, since the [`Date`](@ref) type only resolves to the precision of a single date (i.e.
-no hours, minutes, or seconds), normal considerations for time zones, daylight savings/summer
-time, and leap seconds are unnecessary and avoided.
+`Dates` 模块提供了两种类型来处理日期：[`Date`](@ref) 和 [`DateTime`](@ref)，分别精确到日和毫秒；两者都是抽象类型 [`TimeType`](@ref) 的子类型。区分类型的动机很简单：不必处理更高精度所带来的复杂性时，一些操作在代码和思维推理上都更加简单。例如，由于 [`Date`](@ref) 类型仅精确到日（即没有时、分或秒），因此避免了时区、夏令时和闰秒等不必要的通常考虑。
 
 Both [`Date`](@ref) and [`DateTime`](@ref) are basically immutable [`Int64`](@ref) wrappers.
 The single `instant` field of either type is actually a `UTInstant{P}` type, which
@@ -39,8 +33,7 @@ BC/BCE, etc.
 
 ## 构造函数
 
-[`Date`](@ref) and [`DateTime`](@ref) types can be constructed by integer or [`Period`](@ref)
-types, by parsing, or through adjusters (more on those later):
+[`Date`](@ref) 和 [`DateTime`](@ref) 类型可以通过整数或 [`Period`](@ref) 类型，解析，或调整器来构造（稍后会详细介绍）：
 
 ```jldoctest
 julia> DateTime(2013)
@@ -127,7 +120,7 @@ julia> for i = 1:10^5
 
 A full suite of parsing and formatting tests and examples is available in [`stdlib/Dates/test/io.jl`](https://github.com/JuliaLang/julia/blob/master/stdlib/Dates/test/io.jl).
 
-## Durations/Comparisons
+## 持续时间/比较
 
 Finding the length of time between two [`Date`](@ref) or [`DateTime`](@ref) is straightforward
 given their underlying representation as `UTInstant{Day}` and `UTInstant{Millisecond}`, respectively.
@@ -336,7 +329,7 @@ Stacktrace:
 ```
 
 
-## TimeType-Period Arithmetic
+## TimeType 时间运算
 
 It's good practice when using any language/date framework to be familiar with how date-period
 arithmetic is handled as there are some [tricky issues](https://codeblog.jonskeet.uk/2010/12/01/the-joys-of-date-time-arithmetic/)
@@ -395,7 +388,7 @@ results, but otherwise, everything should work as expected. Thankfully, that's p
 extent of the odd cases in date-period arithmetic when dealing with time in UT (avoiding the "joys"
 of dealing with daylight savings, leap seconds, etc.).
 
-As a bonus, all period arithmetic objects work directly with ranges:
+另外，所有时间运算都可以与范围一起使用：
 
 ```jldoctest
 julia> dr = Date(2014,1,29):Day(1):Date(2014,2,3)
@@ -424,7 +417,7 @@ julia> collect(dr)
  2014-07-29
 ```
 
-## Adjuster Functions
+## 调整器函数
 
 As convenient as date-period arithmetic is, often the kinds of calculations needed on dates
 take on a *calendrical* or *temporal* nature rather than a fixed number of periods. Holidays are
@@ -503,7 +496,7 @@ julia> filter(dr) do x
 
 Additional examples and tests are available in [`stdlib/Dates/test/adjusters.jl`](https://github.com/JuliaLang/julia/blob/master/stdlib/Dates/test/adjusters.jl).
 
-## Period Types
+## 时间段类型
 
 Periods are a human view of discrete, sometimes irregular durations of time. Consider 1 month;
 it could represent, in days, a value of 28, 29, 30, or 31 depending on the year and month context.
@@ -538,7 +531,7 @@ julia> div(y3,3) # 镜像整数除法
 3 years
 ```
 
-## Rounding
+## 取整
 
 [`Date`](@ref) and [`DateTime`](@ref) values can be rounded to a specified resolution (e.g., 1
 month or 15 minutes) with [`floor`](@ref), [`ceil`](@ref), or [`round`](@ref):
@@ -627,7 +620,7 @@ on methods exported from the `Dates` module.
 
 # [API reference](@id stdlib-dates-api)
 
-## Dates and Time Types
+## 日期和时间类型
 
 ```@docs
 Dates.Period
@@ -640,7 +633,7 @@ Dates.Date
 Dates.Time
 ```
 
-## Dates Functions
+## 日期函数
 
 ```@docs
 Dates.DateTime(::Int64, ::Int64, ::Int64, ::Int64, ::Int64, ::Int64, ::Int64)
@@ -742,7 +735,7 @@ Dates.CompoundPeriod(::Vector{<:Dates.Period})
 Dates.default
 ```
 
-### Rounding Functions
+### 取整函数
 
 `Date` and `DateTime` values can be rounded to a specified resolution (e.g., 1 month or 15 minutes)
 with `floor`, `ceil`, or `round`.
@@ -771,7 +764,7 @@ Dates.date2epochdays
 Dates.datetime2epochms
 ```
 
-### Conversion Functions
+### 转换函数
 
 ```@docs
 Dates.today
@@ -783,7 +776,7 @@ Dates.rata2datetime
 Dates.datetime2rata
 ```
 
-### Constants
+### 常量
 
 Days of the Week:
 

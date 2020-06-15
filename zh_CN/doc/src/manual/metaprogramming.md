@@ -112,6 +112,9 @@ julia> Symbol(:var,'_',"sym")
 :var_sym
 ```
 
+Note that to use `:` syntax, the symbol's name must be a valid identifier.
+Otherwise the `Symbol(str)` constructor must be used.
+
 在表达式的上下文中，符号用来表示对变量的访问；当一个表达式被求值时，符号会被替换为这个符号在合适的 [scope](@ref scope-of-variables) 中所绑定的值。
 
 Sometimes extra parentheses around the argument to `:` are needed to avoid ambiguity in parsing:
@@ -269,7 +272,7 @@ end
 
 这种行为背后的直觉是每个 `$` 都将 `x` 求值一遍：一个 `$` 工作方式类似于 `eval(:x)`，其返回 `x` 的值，而两个 `$` 行为相当于 `eval(eval(:x))`。
 
-### QuoteNode
+### [QuoteNode](@id man-quote-node)
 
 The usual representation of a `quote` form in an AST is an [`Expr`](@ref) with head `:quote`:
 
@@ -286,19 +289,30 @@ Expr
         3: Int64 2
 ```
 
-正如我们所看到的，这种表达式可以使用 `$` 进行插值。但是，在某些情况下，必须引用代码而*不*执行插值。这种引用还没有语法，但它在内部表示为 `QuoteNode` 类型的对象。对于像符号这样的简单引用项，解析器生成 `QuoteNode`：
+As we have seen, such expressions support interpolation with `$`.
+However, in some situations it is necessary to quote code *without* performing interpolation.
+This kind of quoting does not yet have syntax, but is represented internally
+as an object of type `QuoteNode`:
+```jldoctest interp1
+julia> eval(Meta.quot(Expr(:$, :(1+2))))
+3
 
+julia> eval(QuoteNode(Expr(:$, :(1+2))))
+:($(Expr(:$, :(1 + 2))))
+```
+The parser yields `QuoteNode`s for simple quoted items like symbols:
 ```jldoctest interp1
 julia> dump(Meta.parse(":x"))
 QuoteNode
   value: Symbol x
 ```
 
-`QuoteNode` 也可用于某些高级的元编程任务。
+`QuoteNode` can also be used for certain advanced metaprogramming tasks.
 
-### [`eval`](@ref) 及其效果
+### Evaluating expressions
 
-给定一个表达式对象，可以通过 [`eval`](@ref) 使 Julia 在全局作用域内求值（执行）它：
+Given an expression object, one can cause Julia to evaluate (execute) it at global scope using
+[`eval`](@ref):
 
 ```jldoctest interp1
 julia> :(1 + 2)
@@ -320,7 +334,9 @@ julia> eval(ex)
 3
 ```
 
-每个[模块](@ref modules)有自己的 [`eval`](@ref) 函数，该函数在其全局作用域内对表达式求值。传给 [`eval`](@ref) 的表达式不止可以返回值——它们还能具有改变封闭模块的环境状态的副作用：
+Every [module](@ref modules) has its own [`eval`](@ref) function that evaluates expressions in its global
+scope. Expressions passed to [`eval`](@ref) are not limited to returning values -- they can
+also have side-effects that alter the state of the enclosing module's environment:
 
 ```jldoctest
 julia> ex = :(x = 1)
@@ -922,16 +938,17 @@ end
 
 生成函数的声明不会执行某些计算或操作，而会返回一个被引用的表达式，接着该表达式构成参数类型所对应方法的主体。在调用生成函数时，其返回的表达式会被编译然后执行。为了提高效率，通常会缓存结果。为了能推断是否缓存结果，只能使用语言的受限子集。因此，生成函数提供了一个灵活的方式来将工作重运行时移到编译时，代价则是其构造能力受到更大的限制。
 
-定义生成函数与普通函数有四个主要区别：
+When defining generated functions, there are five main differences to ordinary functions:
 
 1. 使用 `@generated` 标注函数声明。这会向 AST 附加一些信息，让编译器知道这个函数是生成函数。
     
 2. 在生成函数的主体中，你只能访问参数的*类型*，而不能访问其值，以及在生成函数的定义之前便已定义的任何函数。
-    
-    
+   not their values.
 3. 不应计算某些东西或执行某些操作，应返回一个*被引用的*表达式，它会在被求值时执行你想要的操作。
     
-4. 生成函数不能*更改*或*观察*任何非常量的全局状态。（例如，其包括 IO、锁、非局部的字典或者使用 `hasmethod`）即它们只能读取全局常量，且没有任何副作用。换句话说，它们必须是纯函数。由于实现限制，这也意味着它们目前无法定义闭包或生成器。
+4. Generated functions are only permitted to call functions that were defined *before* the definition of the generated
+   function. (Failure to follow this my result on getting `MethodErrors` referring to functions from a future world-age.)
+5. 生成函数不能*更改*或*观察*任何非常量的全局状态。（例如，其包括 IO、锁、非局部的字典或者使用 `hasmethod`）即它们只能读取全局常量，且没有任何副作用。换句话说，它们必须是纯函数。由于实现限制，这也意味着它们目前无法定义闭包或生成器。
    for example, IO, locks, non-local dictionaries, or using [`hasmethod`](@ref)).
     
     

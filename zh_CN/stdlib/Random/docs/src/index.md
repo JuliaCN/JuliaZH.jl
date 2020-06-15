@@ -10,21 +10,16 @@ can be plugged in by inheriting the `AbstractRNG` type; they can then be used to
 streams of random numbers. Besides `MersenneTwister`, Julia also provides the `RandomDevice` RNG
 type, which is a wrapper over the OS provided entropy.
 
-Most functions related to random generation accept an optional `AbstractRNG` object as first argument,
-which defaults to the global one if not provided. Moreover, some of them accept optionally
-dimension specifications `dims...` (which can be given as a tuple) to generate arrays of random
-values.
+大部分与随机数生成相关的函数都接受一个可选的 `AbstractRNG` 对象作为第一个参数，如果不指定则使用全局默认的。此外，某些函数还接受一个可选的维度参数 `dims...` (可以是元组）来生成随机数组。
 
-A `MersenneTwister` or `RandomDevice` RNG can generate uniformly random numbers of the following types:
+一个 `MersenneTwister` 或 `RandomDevice` RNG 能够生成如下类型的随机数：
 [`Float16`](@ref), [`Float32`](@ref), [`Float64`](@ref), [`BigFloat`](@ref), [`Bool`](@ref),
 [`Int8`](@ref), [`UInt8`](@ref), [`Int16`](@ref), [`UInt16`](@ref), [`Int32`](@ref),
 [`UInt32`](@ref), [`Int64`](@ref), [`UInt64`](@ref), [`Int128`](@ref), [`UInt128`](@ref),
-[`BigInt`](@ref) (or complex numbers of those types).
-Random floating point numbers are generated uniformly in ``[0, 1)``. As `BigInt` represents
-unbounded integers, the interval must be specified (e.g. `rand(big.(1:6))`).
+[`BigInt`](@ref) （或者这些类型的复数）。
+随机浮点数在 ``[0, 1)`` 区间均匀生成。由于 `BigInt` 代表无界的整数，必须要指定区间（如 `rand(big.(1:6))`）。
 
-Additionally, normal and exponential distributions are implemented for some `AbstractFloat` and
-`Complex` types, see [`randn`](@ref) and [`randexp`](@ref) for details.
+另外，正态和指数分布是针对某些 `AbstractFloat` 和 `Complex` 类型，详细内容见 [`randn`](@ref) 和 [`randexp`](@ref)。
 
 
 ## Random generation functions
@@ -63,9 +58,9 @@ Random.RandomDevice
 
 ## Hooking into the `Random` API
 
-There are two mostly orthogonal ways to extend `Random` functionalities:
-1) generating random values of custom types
-2) creating new generators
+有两种主要的正交的方式可以扩展 `Random` 的功能：
+1) 为自定义类型生成随机值
+2) 创造新的生成器
 
 The API for 1) is quite functional, but is relatively recent so it may still have to evolve in subsequent releases of the `Random` module.
 For example, it's typically sufficient to implement one `rand` method in order to have all other usual methods work automatically.

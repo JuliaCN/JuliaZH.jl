@@ -486,6 +486,7 @@ julia> for i = 1:2, j = 3:4
 | [`ArgumentError`](@ref)       |
 | [`BoundsError`](@ref)         |
 | [`CompositeException`](@ref)  |
+| [`DimensionMismatch`](@ref)   |
 | [`DivideError`](@ref)         |
 | [`DomainError`](@ref)         |
 | [`EOFError`](@ref)            |
@@ -629,22 +630,22 @@ Stacktrace:
 
 ### `try/catch` 语句
 
-The `try/catch` statement allows for `Exception`s to be tested for, and for the
-graceful handling of things that may ordinarily break your application. For example,
-in the below code the function for square root would normally throw an exception. By
-placing a `try/catch` block around it we can mitigate that here. You may choose how
-you wish to handle this exception, whether logging it, return a placeholder value or
-as in the case below where we just printed out a statement. One thing to think about
-when deciding how to handle unexpected situations is that using a `try/catch` block is
-much slower than using conditional branching to handle those situations.
-Below there are more examples of handling exceptions with a `try/catch` block:
+通过 `try / catch` 语句，可以测试 Exception 并
+优雅处理可能会破坏应用程序的事情。 例如，
+在下面的代码中，平方根函数会引发异常。 通过
+在其周围放置 `try / catch` 块可以缓解。 您可以选择如何
+处理此异常，无论是记录它，返回占位符值还是
+就像下面仅打印一句话。 要注意的是
+在决定如何处理异常时，使用`try / catch` 块
+比使用条件分支处理要慢得多。
+以下是使用` try / catch` 块处理异常的更多示例：
 
 ```jldoctest
 julia> try
-           sqrt("ten")
-       catch e
-           println("You should have entered a numeric value")
-       end
+sqrt("ten")
+catch e
+println("You should have entered a numeric value")
+end
 You should have entered a numeric value
 ```
 
@@ -821,6 +822,6 @@ taskHdl = @task mytask(7)
 
 | 符号      | 含义                                            |
 |:----------- |:-------------------------------------------------- |
-| `:runnable` | Currently running, or able to run                  |
+| `:runnable` | 正在运行，或者可以被切换到                  |
 | `:done`     | 成功结束执行                    |
 | `:failed`   | 以一个没被捕获的异常结束                |

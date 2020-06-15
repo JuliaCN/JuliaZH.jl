@@ -25,6 +25,8 @@ Julia 为它所有的基础数值类型，提供了整套的基础算术和位�
 |:---------- |:-------- |:---------------------------------------- |
 | `!x`       | 否定 | 将 `true` 和 `false` 互换 |
 
+除了优先级比二元操作符高以外，直接放在标识符或括号前的数字，如 `2x` 或 `2(x+y)` 还会被视为乘法。详见[数值字面量系数](@ref man-numeric-literal-coefficients)。
+
 Julia 的类型提升系统使得混合参数类型上的代数运算也能顺其自然的工作，请参考[类型提升系统](@ref conversion-and-promotion)来了解更多内容。
 
 这里是使用算术运算符的一些简单例子：
@@ -210,7 +212,7 @@ julia> NaN > NaN
 false
 ```
 
-由于 `NaN` 的存在，在做[数组](@ref man-multi-dim-arrays)比较时会特别头疼：
+当你将 `NaN` 和 [数组](@ref man-multi-dim-arrays) 一起连用时，你就会感到头疼：
 
 ```jldoctest
 julia> [1 NaN] == [1 NaN]
@@ -320,6 +322,8 @@ Julia 提供了强大的数学函数和运算符集合。这些数学运算定�
 
 要看**全部** Julia 运算符的优先级关系，可以看这个文件的最上面部分：[`src/julia-parser.scm`](https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm)
 
+[数字字面量系数](@ref man-numeric-literal-coefficients)，例如 `2x` 中的 2，它的优先级比二元运算符高，因此会当作乘法，并且它的优先级也比 `^` 高。
+
 你也可以通过内置函数 `Base.operator_precedence` 查看任何给定运算符的优先级数值，数值越大优先级越高：
 
 ```jldoctest
@@ -350,8 +354,8 @@ Julia 支持三种数值转换，它们在处理不精确转换上有所不同�
 
       * 如果 `T` 是浮点类型，转换的结果就是最近的可表示值，
         可能会是正负无穷大。
-      * 如果 `T` 为整数类型，当 `x` 不为 `T` 类型时，会触发 `InexactError`
-  * `x % T` 将整数 `x` 转换为整型 `T`，与 `x` 模 `2^n` 的结果一致，其中 `n` 是 `T` 的位数。换句话说，如果用二进制表示是被砍掉一部分的。
+      * 如果 `T` 为整数类型，当 `x` 不能由 `T` 类型表示时，会抛出 `InexactError`。
+  * `x % T` 将整数 `x` 转换为整型 `T`，与 `x` 模 `2^n` 的结果一致，其中 `n` 是 `T` 的位数。换句话说，在二进制表示下被截掉了一部分。
      
      
   * [舍入函数](@ref) 接收一个 `T` 类型的可选参数。比如，`round(Int,x)`
@@ -404,8 +408,8 @@ Stacktrace:
 |:--------------------- |:-------------------------------- |:----------- |
 | [`round(x)`](@ref)    | `x` 舍到最接近的整数 | `typeof(x)` |
 | [`round(T, x)`](@ref) | `x` 舍到最接近的整数 | `T`         |
-| [`floor(x)`](@ref)    | `x` 舍到`-Inf`         | `typeof(x)` |
-| [`floor(T, x)`](@ref) | `x` 舍到`-Inf`         | `T`         |
+| [`floor(x)`](@ref)    | `x` 向 `-Inf` 舍入         | `typeof(x)` |
+| [`floor(T, x)`](@ref) | `x` 向 `-Inf` 舍入         | `T`         |
 | [`ceil(x)`](@ref)     | `x` 向 `+Inf` 方向取整         | `typeof(x)` |
 | [`ceil(T, x)`](@ref)  | `x` 向 `+Inf` 方向取整         | `T`         |
 | [`trunc(x)`](@ref)    | `x` 向 0 取整           | `typeof(x)` |

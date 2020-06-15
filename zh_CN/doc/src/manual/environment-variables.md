@@ -6,7 +6,11 @@ Julia 使用的环境变量通常以 `JULIA` 开头。如果调用 [`Interactive
 
 !!! note
 
-    某些变量需要在 Julia 启动之前设置，比如 `JULIA_NUM_THREADS` 和 `JULIA_PROJECT`，因为在启动过程中将这些变量添加到 `~/.julia/config/startup.jl` 中为时已晚。在 Bash 中，环境变量可以手动设置，这可通过在 Julia 启动前运行诸如 `export JULIA_NUM_THREADS=4` 的命令，亦可通过向 `-/.bashrc` 或 `~/.bash_profile` 添加相同命令来在 Bash 每次启动时设置该变量。
+    Some variables, such as `JULIA_NUM_THREADS` and `JULIA_PROJECT`, need to be set before Julia
+    starts, therefore adding these to `~/.julia/config/startup.jl` is too late in the startup process.
+    In Bash, environment variables can either be set manually by running, e.g.,
+    `export JULIA_NUM_THREADS=4` before starting Julia, or by adding the same command to
+    `~/.bashrc` or `~/.bash_profile` to set the variable each time Bash is started.
 
 ## 文件位置
 
@@ -95,8 +99,8 @@ environment variable or if it must have a value, set it to the string `:`.
 The `JULIA_DEPOT_PATH` environment variable is used to populate the global Julia
 [`DEPOT_PATH`](@ref) variable, which controls where the package manager, as well
 as Julia's code loading mechanisms, look for package registries, installed
-packages, named environments, repo clones, cached compiled package images, and
-configuration files.
+packages, named environments, repo clones, cached compiled package images,
+configuration files, and the default location of the REPL's history file.
 
 Unlike the shell `PATH` variable but similar to `JULIA_LOAD_PATH`, empty entries in
 `JULIA_DEPOT_PATH` are expanded to the default value of `DEPOT_PATH`. This allows
@@ -121,7 +125,7 @@ or if it must have a value, set it to the string `:`.
 REPL 历史文件中 `REPL.find_hist_file()` 的绝对路径。如果没有设置 `$JULIA_HISTORY`，那么 `REPL.find_hist_file()` 默认为
 
 ```
-$HOME/.julia/logs/repl_history.jl
+$(DEPOT_PATH[1])/logs/repl_history.jl
 ```
 
 ### `JULIA_PKGRESOLVE_ACCURACY`
@@ -262,7 +266,4 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 传递给 LLVM 后端的参数。
 
-### `JULIA_DEBUG_LOADING`
-
-如果设置，那么 Julia 会打印在 [`Base.require`](@ref) 加载过程中的有关缓存的详细信息。
 

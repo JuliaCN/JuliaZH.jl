@@ -174,8 +174,8 @@ julia> g(2, 3.0)
 
 julia> g(2.0, 3.0)
 ERROR: MethodError: g(::Float64, ::Float64) is ambiguous. Candidates:
-  g(x, y::Float64) in Main at none:1
   g(x::Float64, y) in Main at none:1
+  g(x, y::Float64) in Main at none:1
 Possible fix, define
   g(::Float64, ::Float64)
 ```
@@ -301,7 +301,7 @@ true
 julia> same_type_numeric("foo", 2.0)
 ERROR: MethodError: no method matching same_type_numeric(::String, ::Float64)
 Closest candidates are:
-  same_type_numeric(!Matched::T<:Number, ::T<:Number) where T<:Number at none:1
+  same_type_numeric(!Matched::T, ::T) where T<:Number at none:1
   same_type_numeric(!Matched::Number, ::Number) at none:1
 
 julia> same_type_numeric("foo", "bar")
@@ -422,7 +422,9 @@ julia> fetch(schedule(t, 1))
 abstract type AbstractArray{T, N} end
 eltype(::Type{<:AbstractArray{T}}) where {T} = T
 ```
-使用了所谓的三角分派。注意如果 `T` 是一个 `UnionAll` 类型，比如 `eltype(Array{T} where T <: Integer)`，会返回 `Any`（如同 `Base` 中的 `eltype` 一样）。
+using so-called triangular dispatch.  Note that if `T` is a `UnionAll`
+type, as e.g. `eltype(Array{T} where T <: Integer)`, then `Any` is
+returned (as does the version of `eltype` in `Base`).
 
 另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：
 
@@ -765,7 +767,10 @@ f(x::T, y::T) where {T} = ...
 f(x, y) = f(promote(x, y)...)
 ```
 
-这个设计的一个隐患是如果没有合适的把`x`和`y`转换到同样类型的类型提升方法，第二个方法就可能无限自递归然后引发堆溢出。非输出函数`Base.promote_noncircular`可以用作一个替代方案；当类型提升失败它依旧会扔出一个错误，但是有更加特定的错误信息时会失败更快。
+One risk with this design is the possibility that if there is no
+suitable promotion method converting `x` and `y` to the same type, the
+second method will recurse on itself infinitely and trigger a stack
+overflow.
 
 ### 一次只根据一个参数分派
 
