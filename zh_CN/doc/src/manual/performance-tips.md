@@ -126,7 +126,7 @@ the performance of your code:
   * [Profiling](@ref) allows you to measure the performance of your running code and identify lines
     that serve as bottlenecks. For complex projects, the [ProfileView](https://github.com/timholy/ProfileView.jl)
     package can help you visualize your profiling results.
-  * The [Traceur](https://github.com/MikeInnes/Traceur.jl) package can help you find common performance problems in your code.
+  * The [Traceur](https://github.com/JunoLab/Traceur.jl) package can help you find common performance problems in your code.
   * Unexpectedly-large memory allocations--as reported by [`@time`](@ref), [`@allocated`](@ref), or
     the profiler (through calls to the garbage-collection routines)--hint that there might be issues
     with your code. If you don't see another reason for the allocations, suspect a type problem.
@@ -135,7 +135,7 @@ the performance of your code:
   * `@code_warntype` generates a representation of your code that can be helpful in finding expressions
     that result in type uncertainty. See [`@code_warntype`](@ref) below.
 
-## Avoid containers with abstract type parameters
+## [Avoid containers with abstract type parameters](@id man-performance-abstract-container)
 
 When working with parameterized types, including arrays, it is best to avoid parameterizing with
 abstract types where possible.
@@ -424,6 +424,65 @@ c = (b + 1.0f0)::Complex{T}
 
 不会降低性能（但也不会提高），因为编译器可以在编译 `k` 时确定 `c` 的类型。
 
+### Be aware of when Julia avoids specializing
+
+As a heuristic, Julia avoids automatically specializing on argument type parameters in three
+specific cases: `Type`, `Function`, and `Vararg`. Julia will always specialize when the argument is
+used within the method, but not if the argument is just passed through to another function. This
+usually has no performance impact at runtime and
+[improves compiler performance](@ref compiler-efficiency-issues). If you find it does have a
+performance impact at runtime in your case, you can trigger specialization by adding a type
+parameter to the method declaration. Here are some examples:
+
+This will not specialize:
+
+```julia
+function f_type(t)  # or t::Type
+    x = ones(t, 10)
+    return sum(map(sin, x))
+end
+```
+
+but this will:
+
+```julia
+function g_type(t::Type{T}) where T
+    x = ones(T, 10)
+    return sum(map(sin, x))
+end
+```
+
+These will not specialize:
+
+```julia
+f_func(f, num) = ntuple(f, div(num, 2))
+g_func(g::Function, num) = ntuple(g, div(num, 2))
+```
+
+but this will:
+
+```julia
+h_func(h::H, num) where {H} = ntuple(h, div(num, 2))
+```
+
+This will not specialize:
+
+```julia
+f_vararg(x::Int...) = tuple(x...)
+```
+
+but this will:
+
+```julia
+g_vararg(x::Vararg{Int, N}) where {N} = tuple(x...)
+```
+
+Note that [`@code_typed`](@ref) and friends will always show you specialized code, even if Julia
+would not normally specialize that method call. You need to check the
+[method internals](@ref ast-lowered-method) if you want to see whether specializations are generated
+when argument types are changed, i.e., if `(@which f(...)).specializations` contains specializations
+for the argument in question.
+
 ## 将函数拆分为多个定义
 
 将一个函数写成许多小的定义能让编译器直接调用最适合的代码，甚至能够直接将它内联。
@@ -540,7 +599,7 @@ Julia 的编译器会在函数边界处针对参数类型特化代码，因此�
 
 诸如 `strange_twos` 的函数会在处理具有不确定类型的数据时出现，例如从可能包含整数、浮点数、字符串或其它内容的输入文件中加载的数据。
 
-## Types with values-as-parameters
+## [Types with values-as-parameters](@id man-performance-value-type)
 
 比方说你想创建一个每个维度大小都是3的 `N` 维数组。这种数组可以这样创建：
 
@@ -668,7 +727,7 @@ or thousands of variants compiled for it. Each of these increases the size of th
 code, the length of internal lists of methods, etc. Excess enthusiasm for values-as-parameters
 can easily waste enormous resources.
 
-## 按内存顺序访问数组，即按列访问
+## [Access arrays in memory order, along columns](@id man-performance-column-major)
 
 Julia 中的多维数组以列主序存储。这意味着数组一次堆叠一列。这可使用 `vec` 函数或语法 `[:]` 来验证，如下所示（请注意，数组的顺序是 `[1 3 2 4]`，而不是 `[1 2 3 4]`）：
 
@@ -977,7 +1036,9 @@ responses = [fetch(r) for r in refs]
      
      
 
-使用 1:n 索引 AbstractArray 这一常见习惯在该数组使用非传统索引时是不安全的，并且在关闭边界检查时可能导致段错误。请改用 `LinearIndices(x)` 或 `eachindex(x)`（参阅 [offset-arrays](https://docs.julialang.org/en/latest/devdocs/offset-arrays/)）。
+The common idiom of using 1:n to index into an AbstractArray is not safe if the Array uses unconventional indexing,
+and may cause a segmentation fault if bounds checking is turned off. Use `LinearIndices(x)` or `eachindex(x)`
+instead (see also [Arrays with custom indices](@ref man-custom-indices)).
 
 !!! note
     虽然 `@simd` 需要直接放在最内层 `for` 循环前面，但 `@inbounds` 和 `@fastmath` 都可作用于单个表达式或在嵌套代码块中出现的所有表达式，例如，可使用 `@inbounds begin` 或 `@inbounds for ...`。

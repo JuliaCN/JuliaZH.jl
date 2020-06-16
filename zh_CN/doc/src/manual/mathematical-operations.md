@@ -193,7 +193,7 @@ false
   * 有限数的大小顺序，和我们所熟知的相同。
   * `+0` 等于但不大于 `-0`.
   * `Inf` 等于自身，并且大于除了 `NaN` 外的所有数。
-  * `-Inf` 等于自身，并且小于除了 `NaN` 外的所有数。
+  * `-Inf` is equal to itself and less than everything else except `NaN`.
   * `NaN` 不等于、不小于且不大于任何数值，包括它自己。
 
 `NaN` 不等于它自己这一点可能会令人感到惊奇，所以需要注意：
@@ -328,9 +328,9 @@ Julia 提供了强大的数学函数和运算符集合。这些数学运算定�
 
 ```jldoctest
 julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)
-(11, 13, 17)
+(11, 12, 17)
 
-julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  #（请注意 `:(=)` 中的括号是必要的）
+julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)
 (0, 1, 1)
 ```
 

@@ -62,7 +62,7 @@ foo(Int(x), Int(y))
 
 这里的关键在于，如果一个函数需要处理的是整数，强制让调用者来决定非整数如何被转换（比如说向下还是向上取整）会更好。同时，把类型声明得具体一些的话可以为以后的方法定义留有更多的空间。
 
-## 在会更改自身输入参数内容的函数名字后加 `!`
+## [Append `!` to names of functions that modify their arguments](@id bang-convention)
 
 如下的代码：
 
@@ -146,7 +146,7 @@ a = Vector{Union{Int,AbstractString,Tuple,Array}}(undef, n)
 
 7. **Value**.
    对于关联集合来说，指的是键值对的值。
-   在类似于 `fill!(x, v)` 的情况中，指的是 `v`。
+   In cases like [`fill!(x, v)`](@ref fill!), this is `v`.
 
 8. **Everything else**.
    任何的其它参数。

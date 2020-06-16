@@ -269,7 +269,7 @@ pipeline(`do_work`, stdout=pipeline(`sort`, "out.txt"), stderr="errs.txt")
 ```julia
 writer = @async write(process, "data")
 reader = @async do_compute(read(process, String))
-wait(process)
+wait(writer)
 fetch(reader)
 ```
 

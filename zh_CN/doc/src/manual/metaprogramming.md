@@ -178,7 +178,7 @@ julia> typeof(ex)
 Expr
 ```
 
-### 插值
+### [Interpolation](@id man-expression-interpolation)
 
 Direct construction of [`Expr`](@ref) objects with value arguments is powerful, but `Expr` constructors
 can be tedious compared to "normal" Julia syntax. As an alternative, Julia allows *interpolation* of
@@ -230,14 +230,17 @@ julia> x = :(1 + 2);
 julia> e = quote quote $x end end
 quote
     #= none:1 =#
-    $(Expr(:quote, quote
-    #= none:1 =#
-    $(Expr(:$, :x))
-end))
+    quote
+        #= none:1 =#
+        $x
+    end
 end
 ```
 
-请注意，结果包含 `Expr(:$, :x)`，这意味着 `x` 还未被求值。换种说法，`$` 表达式「属于」内层引用表达式，所以它的参数只在内层引用表达式被求值时进行求值：
+Notice that the result contains `$x`, which means that `x` has not been
+evaluated yet.
+In other words, the `$` expression "belongs to" the inner quote expression, and
+so its argument is only evaluated when the inner quote expression is:
 
 ```jldoctest interp1
 julia> eval(e)
@@ -253,14 +256,15 @@ end
 julia> e = quote quote $$x end end
 quote
     #= none:1 =#
-    $(Expr(:quote, quote
-    #= none:1 =#
-    $(Expr(:$, :(1 + 2)))
-end))
+    quote
+        #= none:1 =#
+        $(1 + 2)
+    end
 end
 ```
 
-请注意，现在的结果中出现的是 `:(1 + 2)` 而不是符号 `:x`。求解此表达式产生一个被插值的 `3`：
+Notice that `(1 + 2)` now appears in the result instead of the symbol `x`.
+Evaluating this expression yields an interpolated `3`:
 
 ```jldoctest interp1
 julia> eval(e)
@@ -484,11 +488,14 @@ julia> @macroexpand @sayhello "human"
 :(println("Hello, ", "human"))
 ```
 
-### 注意：为何使用宏？
+### Hold up: why macros?
 
-我们在前一节中已经见过 `f(::Expr...) -> Expr` 形式的函数。事实上，[`macroexpand`](@ref) 也是这样的函数。所以，宏为何存在？
+We have already seen a function `f(::Expr...) -> Expr` in a previous section. In fact, [`macroexpand`](@ref)
+is also such a function. So, why do macros exist?
 
-宏是必需的，因为其在代码解析时执行，于是，宏允许程序员在整个程序运行*前*生成并包含自定义的代码片段。为了说明此差异，请考虑以下示例：
+Macros are necessary because they execute when code is parsed, therefore, macros allow the programmer
+to generate and include fragments of customized code *before* the full program is run. To illustrate
+the difference, consider the following example:
 
 ```julia-repl whymacros
 julia> macro twostep(arg)
@@ -498,7 +505,7 @@ julia> macro twostep(arg)
 @twostep (macro with 1 method)
 
 julia> ex = macroexpand(Main, :(@twostep :(1, 2, 3)) );
-I execute at parse time. The argument is: $(Expr(:quote, :((1, 2, 3))))
+I execute at parse time. The argument is: :((1, 2, 3))
 ```
 
 第一个 [`println`](@ref) 调用在调用 [`macroexpand`](@ref) 时执行。生成的表达式*只*包含第二个 `println`：
@@ -1113,7 +1120,10 @@ baz (generic function with 1 method)
 
 ### 一个高级的例子
 
-Julia 的 base 库有个内部函数 `sub2ind`，用于根据一组 n 重线性索引计算 n 维数组的线性索引——换句话说，用于计算索引 `i`，其可用于使用 `A[i]` 来索引数组 `A`，而不是用 `A[x,y,z,...]`。一种可能的实现如下：
+Julia's base library has an internal `sub2ind` function to calculate a linear index into an n-dimensional
+array, based on a set of n multilinear indices - in other words, to calculate the index `i` that
+can be used to index into an array `A` using `A[i]`, instead of `A[x,y,z,...]`. One possible implementation
+is the following:
 
 ```jldoctest sub2ind
 julia> function sub2ind_loop(dims::NTuple{N}, I::Integer...) where N

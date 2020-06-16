@@ -68,7 +68,9 @@ julia> isvalid(Char, 0x110000)
 false
 ```
 
-目前，有效的 Unicode 代码为，从 `U+00` 至 `U+d7ff`，以及从 `U+e000` 至 `U+10ffff`。它们还未全部被赋予明确的含义，也还没必要被应用解释；然而，所有的这些值都被认为是有效的 Unicode 字符。
+As of this writing, the valid Unicode code points are `U+0000` through `U+D7FF` and `U+E000` through
+`U+10FFFF`. These have not all been assigned intelligible meanings yet, nor are they necessarily
+interpretable by applications, but all of these values are considered to be valid Unicode characters.
 
 你可以在单引号中输入任何 Unicode 字符，通过使用 `\u` 加上至多 ４ 个十六进制数字或者 `\U` 加上至多 ８ 个十六进制数（最长的有效值也只需要 6 个）：
 
@@ -83,7 +85,7 @@ julia> '\u2200'
 '∀': Unicode U+2200 (category Sm: Symbol, math)
 
 julia> '\U10ffff'
-'\U10ffff': Unicode U+10ffff (category Cn: Other, not assigned)
+'\U10ffff': Unicode U+10FFFF (category Cn: Other, not assigned)
 ```
 
 Julia 使用系统默认的区域和语言设置来确定，哪些字符可以被正确显示，哪些需要用 `\u` 或 `\U` 的转义来显示。除 Unicode 转义格式之外，还可以使用所有的[传统 C 语言转义输入形式](https://en.wikipedia.org/wiki/C_syntax#Backslash_escapes)：
@@ -139,23 +141,26 @@ julia> """Contains "quote" characters"""
 "Contains \"quote\" characters"
 ```
 
-如果想从字符串中提取字符, 可以通过索引字符串的方式来获取：
+If you want to extract a character from a string, you index into it:
 
 ```jldoctest helloworldstring
+julia> str[begin]
+'H': ASCII/Unicode U+0048 (category Lu: Letter, uppercase)
+
 julia> str[1]
 'H': ASCII/Unicode U+0048 (category Lu: Letter, uppercase)
 
 julia> str[6]
-',': ASCII/Unicode U+002c (category Po: Punctuation, other)
+',': ASCII/Unicode U+002C (category Po: Punctuation, other)
 
 julia> str[end]
-'\n': ASCII/Unicode U+000a (category Cc: Other, control)
+'\n': ASCII/Unicode U+000A (category Cc: Other, control)
 ```
 
 Many Julia objects, including strings, can be indexed with integers. The index of the first
 element (the first character of a string) is returned by [`firstindex(str)`](@ref), and the index of the last element (character)
-with [`lastindex(str)`](@ref). The keyword `end` can be used inside an indexing
-operation as shorthand for the last index along the given dimension.
+with [`lastindex(str)`](@ref). The keywords `begin` and `end` can be used inside an indexing
+operation as shorthand for the first and last indices, respectively, along the given dimension.
 String indexing, like most indexing in Julia, is 1-based: `firstindex` always returns `1` for any `AbstractString`.
 As we will see below, however, `lastindex(str)` is *not* in general the same as `length(str)` for a string,
 because some Unicode characters can occupy multiple "code units".
@@ -164,16 +169,16 @@ because some Unicode characters can occupy multiple "code units".
 
 ```jldoctest helloworldstring
 julia> str[end-1]
-'.': ASCII/Unicode U+002e (category Po: Punctuation, other)
+'.': ASCII/Unicode U+002E (category Po: Punctuation, other)
 
 julia> str[end÷2]
 ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
 ```
 
-Using an index less than 1 or greater than `end` raises an error:
+Using an index less than `begin` (`1`) or greater than `end` raises an error:
 
 ```jldoctest helloworldstring
-julia> str[0]
+julia> str[begin-1]
 ERROR: BoundsError: attempt to access String
   at index [0]
 [...]
@@ -191,11 +196,11 @@ julia> str[4:9]
 "lo, wo"
 ```
 
-注意表达式 `str[k]` 和 `str[k:k]` 并没有给出相同的结果
+Notice that the expressions `str[k]` and `str[k:k]` do not give the same result:
 
 ```jldoctest helloworldstring
 julia> str[6]
-',': ASCII/Unicode U+002c (category Po: Punctuation, other)
+',': ASCII/Unicode U+002C (category Po: Punctuation, other)
 
 julia> str[6:6]
 ","
@@ -380,7 +385,7 @@ julia> foreach(display, s)
 '\xc0\xa0': [overlong] ASCII/Unicode U+0020 (category Zs: Separator, space)
 '\xe2\x88': Malformed UTF-8 (category Ma: Malformed, bad data)
 '\xe2': Malformed UTF-8 (category Ma: Malformed, bad data)
-'|': ASCII/Unicode U+007c (category Sm: Symbol, math)
+'|': ASCII/Unicode U+007C (category Sm: Symbol, math)
 
 julia> isvalid.(collect(s))
 4-element BitArray{1}:
@@ -393,7 +398,7 @@ julia> s2 = "\xf7\xbf\xbf\xbf"
 "\U1fffff"
 
 julia> foreach(display, s2)
-'\U1fffff': Unicode U+1fffff (category In: Invalid, too high)
+'\U1fffff': Unicode U+1FFFFF (category In: Invalid, too high)
 ```
 
 我们可以看到字符串 `s` 中的前两个代码单元形成了一个过长的空格字符编码。这是无效的，但是在字符串中作为单个字符是可以接受的。接下来的两个代码单元形成了一个有效的 3 位 UTF-8 序列开头。然而，第五个代码单元 `\xe2` 不是它的有效延续，所以代码单元 3 和 4 在这个字符串中也被解释为格式错误的字符。同理，由于 `|` 不是它的有效延续，代码单元 5 形成了一个格式错误的字符。最后字符串 `s2` 包含了一个太高的代码。

@@ -42,16 +42,14 @@ Julia 提供了许多用于构造和初始化数组的函数。在下列函数�
 | [`reinterpret(T, A)`](@ref)                    | 与 `A` 具有相同二进制数据的数组，但元素类型为 `T`                                                                                                                                                                         |
 | [`rand(T, dims...)`](@ref)                     | 一个随机 `Array`，元素值是 ``[0, 1)`` 半开区间中的均匀分布且服从一阶独立同分布 [^1]                                                                                                                                       |
 | [`randn(T, dims...)`](@ref)                    | 一个随机 `Array`，元素为标准正态分布，服从独立同分布                                                                                                                                                                         |
-| [`Matrix{T}(I, m, n)`](@ref)                   | `m` 行 `n` 列的单位矩阵                                                                                                                                                                                                                   |
+| [`Matrix{T}(I, m, n)`](@ref)                   | `m`-by-`n` identity matrix (requires `using LinearAlgebra`)                                                                                                                                                                                                                   |
 | [`range(start, stop=stop, length=n)`](@ref)    | 从 `start` 到 `stop` 的带有 `n` 个线性间隔元素的范围                                                                                                                                                                                 |
 | [`fill!(A, x)`](@ref)                          | 用值 `x` 填充数组 `A`                                                                                                                                                                                                        |
 | [`fill(x, dims...)`](@ref)                     | 一个被值 `x` 填充的 `Array`                                                                                                                                                                                                         |
 
 [^1]: *iid*，独立同分布
 
-用 `[A，B，C，...]` 来构造 1 维数组（即为向量）。如果所有参数有一个共同的提升类型（[promotion type](@ref conversion-and-promotion)），那么它们会被 [`convert`](@ref) 函数转换为该类型。
-
-要查看各种方法，我们可以将不同维数传递给这些构造函数，请考虑以下示例：
+To see the various ways we can pass dimensions to these functions, consider the following examples:
 ```jldoctest
 julia> zeros(Int8, 2, 3)
 2×3 Array{Int8,2}:
@@ -68,60 +66,125 @@ julia> zeros((2, 3))
  0.0  0.0  0.0
  0.0  0.0  0.0
 ```
-这里的 `(2, 3)` 是一个 [`Tuple`](@ref)。
+Here, `(2, 3)` is a [`Tuple`](@ref) and the first argument — the element type — is optional, defaulting to `Float64`.
 
-## 拼接
+## [Array literals](@id man-array-literals)
 
-可以使用以下函数构造和拼接数组：
+Arrays can also be directly constructed with square braces; the syntax `[A, B, C, ...]`
+creates a one dimensional array (i.e., a vector) containing the comma-separated arguments as
+its elements. The element type ([`eltype`](@ref)) of the resulting array is automatically
+determined by the types of the arguments inside the braces. If all the arguments are the
+same type, then that is its `eltype`. If they all have a common
+[promotion type](@ref conversion-and-promotion) then they get converted to that type using
+[`convert`](@ref) and that type is the array's `eltype`. Otherwise, a heterogeneous array
+that can hold anything — a `Vector{Any}` — is constructed; this includes the literal `[]`
+where no arguments are given.
 
-| 函数                    | 描述                                     |
-|:--------------------------- |:----------------------------------------------- |
-| [`cat(A...; dims=k)`](@ref) | 沿着 s 的第 `k` 维拼接数组 |
-| [`vcat(A...)`](@ref)        | `cat(A...; dims=1)` 的简写               |
-| [`hcat(A...)`](@ref)        | `cat(A...; dims=2)` 的简写               |
-
-传递给这些函数的标量值会被当作单元素数组。例如，
 ```jldoctest
-julia> vcat([1, 2], 3)
+julia> [1,2,3] # An array of `Int`s
 3-element Array{Int64,1}:
  1
  2
  3
 
-julia> hcat([1 2], 3)
+julia> promote(1, 2.3, 4//5) # This combination of Int, Float64 and Rational promotes to Float64
+(1.0, 2.3, 0.8)
+
+julia> [1, 2.3, 4//5] # Thus that's the element type of this Array
+3-element Array{Float64,1}:
+ 1.0
+ 2.3
+ 0.8
+
+julia> []
+0-element Array{Any,1}
+```
+
+### [Concatenation](@id man-array-concatenation)
+
+If the arguments inside the square brackets are separated by semicolons (`;`) or newlines
+instead of commas, then their contents are _vertically concatenated_ together instead of
+the arguments being used as elements themselves.
+
+```jldoctest
+julia> [1:2, 4:5] # Has a comma, so no concatenation occurs. The ranges are themselves the elements
+2-element Array{UnitRange{Int64},1}:
+ 1:2
+ 4:5
+
+julia> [1:2; 4:5]
+4-element Array{Int64,1}:
+ 1
+ 2
+ 4
+ 5
+
+julia> [1:2; 4:5]
+4-element Array{Int64,1}:
+ 1
+ 2
+ 4
+ 5
+
+julia> [1:2
+        4:5
+        6]
+5-element Array{Int64,1}:
+ 1
+ 2
+ 4
+ 5
+ 6
+```
+
+Similarly, if the arguments are separated by tabs or spaces, then their contents are
+_horizontally concatenated_ together.
+
+```jldoctest
+julia> [1:2  4:5  7:8]
+2×3 Array{Int64,2}:
+ 1  4  7
+ 2  5  8
+
+julia> [[1,2]  [4,5]  [7,8]]
+2×3 Array{Int64,2}:
+ 1  4  7
+ 2  5  8
+
+julia> [1 2 3] # Numbers can also be horizontally concatenated
 1×3 Array{Int64,2}:
  1  2  3
 ```
 
-这些拼接函数非常常用，因此它们有特殊的语法：
+Using semicolons (or newlines) and spaces (or tabs) can be combined to concatenate
+both horizontally and vertically at the same time.
 
-| 表达式        | 调用             |
-|:----------------- |:----------------- |
-| `[A; B; C; ...]`  | [`vcat`](@ref)  |
-| `[A B C ...]`     | [`hcat`](@ref)  |
-| `[A B; C D; ...]` | [`hvcat`](@ref) |
-
-[`hvcat`](@ref) 可以在第 1 维列数组（用分号分隔）和第 2 维行数组（用空格分隔）进行拼接。
-请考虑以下语法示例：
 ```jldoctest
-julia> [[1; 2]; [3, 4]]
-4-element Array{Int64,1}:
- 1
- 2
- 3
- 4
-
-julia> [[1 2] [3 4]]
-1×4 Array{Int64,2}:
- 1  2  3  4
-
-julia> [[1 2]; [3 4]]
+julia> [1 2
+        3 4]
 2×2 Array{Int64,2}:
  1  2
  3  4
+
+julia> [zeros(Int, 2, 2) [1; 2]
+        [3 4]            5]
+3×3 Array{Int64,2}:
+ 0  0  1
+ 0  0  2
+ 3  4  5
 ```
 
-## 限定类型数组的初始化
+More generally, concatenation can be accomplished through the [`cat`](@ref) function.
+These syntaxes are shorthands for function calls that themselves are convenience functions:
+
+| 语法            | 函数        | 描述                                        |
+|:----------------- |:--------------- |:-------------------------------------------------- |
+|                   | [`cat`](@ref)   | 沿着 s 的第 `k` 维拼接数组    |
+| `[A; B; C; ...]`  | [`vcat`](@ref)  | shorthand for `cat(A...; dims=1)                   |
+| `[A B C ...]`     | [`hcat`](@ref)  | shorthand for `cat(A...; dims=2)                   |
+| `[A B; C D; ...]` | [`hvcat`](@ref) | simultaneous vertical and horizontal concatenation |
+
+### Typed array literals
 
 可以用 `T[A, B, C, ...]` 的方式声明一个元素为某种特定类型的数组。该方法定义一个元素类型为 `T` 的一维数组并且初始化元素为 `A`, `B`, `C`, ....。比如，`Any[x, y, z]` 会构建一个异构数组，该数组可以包含任意类型的元素。
 
@@ -137,7 +200,7 @@ julia> Int8[[1 2] [3 4]]
  1  2  3  4
 ```
 
-## 数组推导
+## [Comprehensions](@id man-comprehensions)
 
 （数组）推导提供了构造数组的通用且强大的方法。其语法类似于数学中的集合构造的写法：
 
@@ -171,7 +234,9 @@ julia> [ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
  0.656511
 ```
 
-生成的数组类型取决于参与计算元素的类型。为了明确地控制类型，可以在（数组）推导之前添加类型。例如，我们可以要求结果为单精度类型：
+The resulting array type depends on the types of the computed elements just like [array literals](@ref man-array-literals) do. In order to control the
+type explicitly, a type can be prepended to the comprehension. For example, we could have requested
+the result in single precision by writing:
 
 ```julia
 Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
@@ -202,7 +267,12 @@ julia> map(tuple, (1/(i+j) for i=1:2, j=1:2), [1 3; 2 4])
  (0.333333, 2)  (0.25, 4)
 ```
 
-生成器是通过内部函数实现。 与语言中其他地方使用的内部函数一样，封闭作用域中的变量可以在内部函数中被「捕获」。例如，`sum(p[i] - q[i] for i=1:n)` 从封闭作用域中捕获三个变量 `p`、`q` 和 `n`。捕获变量可能会出现性能问题；请参阅 [性能提示](@ref man-performance-tips)。
+Generators are implemented via inner functions. Just like
+inner functions used elsewhere in the language, variables from the enclosing scope can be
+"captured" in the inner function.  For example, `sum(p[i] - q[i] for i=1:n)`
+captures the three variables `p`, `q` and `n` from the enclosing scope.
+Captured variables can present performance challenges; see
+[performance tips](@ref man-performance-captured).
 
 
 通过编写多个 `for` 关键字，生成器和推导中的范围可以取决于之前的范围：
@@ -243,7 +313,7 @@ X = A[I_1, I_2, ..., I_n]
 
 如果所有索引 `I_k` 都是向量，则 `X` 的形状将是 `(length(I_1), length(I_2), ..., length(I_n))`，其中，`X` 中位于 `i_1, i_2, ..., i_n` 处的元素为 `A[I_1[i_1], I_2[i_2], ..., I_n[i_n]]`。
 
-例子：
+例如：
 
 ```jldoctest
 julia> A = reshape(collect(1:16), (2, 2, 2, 2))
@@ -337,7 +407,7 @@ julia> x[1, [2 3; 4 1]]
  13  1
 ```
 
-## 赋值
+## [Indexed Assignment](@id man-indexed-assignment)
 
 在 n 维数组 `A` 中赋值的一般语法是：
 
@@ -783,7 +853,13 @@ Julia 中的基本数组类型是抽象类型 [`AbstractArray{T,N}`](@ref)。它
 
 `AbstractArray` 类型包含任何模糊类似的东西，它的实现可能与传统数组完全不同。例如，可以根据请求而不是存储来计算元素。但是，任何具体的 `AbstractArray{T,N}` 类型通常应该至少实现 [`size(A)`](@ref)（返回 `Int` 元组），[`getindex(A,i)`](@ref) 和 [`getindex(A,i1,...,iN)`](@ref getindex)；可变数组也应该实现 [`setindex!`](@ref)。建议这些操作具有几乎为常数的时间复杂性，或严格说来 Õ(1) 复杂性，否则某些数组函数可能出乎意料的慢。具体类型通常还应提供 [`similar(A,T=eltype(A),dims=size(A))`](@ref) 方法，用于为 [`copy`](@ref) 分配类似的数组和其他位于当前数组空间外的操作。无论在内部如何表示 `AbstractArray{T,N}`，`T` 是由 *整数* 索引返回的对象类型（`A[1, ..., 1]`，当 `A` 不为空），`N` 应该是 [`size`](@ref) 返回的元组的长度。有关定义自定义 `AbstractArray` 实现的更多详细信息，请参阅[接口章节中的数组接口导则](@ref man-interface-array)。
 
-`DenseArray` 是 `AbstractArray` 的抽象子类型，旨在包含元素按列连续存储的所有数组（请参阅[性能建议](@ref man-performance-tips)中的附加说明）。[`Array`](@ref) 类型是 `DenseArray` 的特定实例；[`Vector`](@ref) 和 [`Matrix`](@ref) 是在一维和二维情况下的别名。除了所有 `AbstractArray` 所需的操作之外，很少有专门为 `Array` 实现的操作；大多数数组库都以通用方式实现，以保证所有自定义数组都具有相似功能。
+`DenseArray` is an abstract subtype of `AbstractArray` intended to include all arrays where
+elements are stored contiguously in column-major order (see [additional notes in
+Performance Tips](@ref man-performance-column-major)). The [`Array`](@ref) type is a specific instance
+of `DenseArray`;  [`Vector`](@ref) and [`Matrix`](@ref) are aliases for the 1-d and 2-d cases.
+Very few operations are implemented specifically for `Array` beyond those that are required
+for all `AbstractArray`s; much of the array library is implemented in a generic
+manner that allows all custom arrays to behave similarly.
 
 `SubArray` 是 `AbstractArray` 的特例，它通过与原始数组共享内存而不是复制它来执行索引。 使用[`view`](@ref) 函数创建 `SubArray`，它的调用方式与[`getindex`](@ref) 相同（作用于数组和一系列索引参数）。 [`view`](@ref) 的结果看起来与 [`getindex`](@ref) 的结果相同，只是数据保持不变。 [`view`](@ref) 将输入索引向量存储在 `SubArray` 对象中，该对象稍后可用于间接索引原始数组。 通过将  [`@views`](@ref) 宏放在表达式或代码块之前，该表达式中的任何 `array [...]` 切片将被转换为创建一个 `SubArray` 视图。
 

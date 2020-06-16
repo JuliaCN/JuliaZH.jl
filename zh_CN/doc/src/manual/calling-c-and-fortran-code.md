@@ -321,7 +321,7 @@ same:
 | C 类型                                                  | Fortran 类型             | 标准 Julia 别名 | Julia 基本类型                                                                                                |
 |:------------------------------------------------------- |:------------------------ |:-------------------- |:-------------------------------------------------------------------------------------------------------------- |
 | `unsigned char`                                         | `CHARACTER`              | `Cuchar`             | `UInt8`                                                                                                        |
-| `bool` (only in C++)                                    |                          | `Cuchar`             | `UInt8`                                                                                                        |
+| `bool` (_Bool in C99+)                                  |                          | `Cuchar`             | `UInt8`                                                                                                        |
 | `short`                                                 | `INTEGER*2`, `LOGICAL*2` | `Cshort`             | `Int16`                                                                                                        |
 | `unsigned short`                                        |                          | `Cushort`            | `UInt16`                                                                                                       |
 | `int`, `BOOL` (C, typical)                              | `INTEGER*4`, `LOGICAL*4` | `Cint`               | `Int32`                                                                                                        |
@@ -907,6 +907,10 @@ function qsort(a::Vector{T}, cmp) where T
     return a
 end
 ```
+
+!!! note
+    Closure [`@cfunction`](@ref) rely on LLVM trampolines, which are not available on all
+    platforms (for example ARM and PowerPC).
 
 
 ## 关闭库

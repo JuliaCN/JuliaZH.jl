@@ -17,7 +17,9 @@ foo(xs::Array) = ...
 其它字符串宏并传递给 `@doc` 宏来使用其他格式。
 
 !!! note
-    Markdown 支持由 `Markdown` 标准库实现，有关支持语法的完整列表，请参阅其[文档](@ref Markdown)。
+    Markdown support is implemented in the `Markdown` standard library
+    and for a full list of supported syntax see the
+    [documentation](@ref markdown_stdlib).
 
 这里是一个更加复杂的例子，但仍然使用 Markdown：
 

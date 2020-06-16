@@ -18,14 +18,30 @@ julia> foo.baz
 2
 ```
 
-对很多类型来说，通过给所有字段赋值来创建新对象的这种方式就足以用于产生新实例了。然而，在某些情形下，创建复合对象需要更多的功能。有时必须通过检查或转化参数来确保固有属性不变。[递归数据结构](https://en.wikipedia.org/wiki/Recursion_%28computer_science%29#Recursive_data_structures_.28structural_recursion.29)，特别是那些可能引用自身的数据结构，它们通常不能被干净地构造，而是需要首先被不完整地构造，然后再通过编程的方式完成补全。为了方便，有时需要用较少的参数或者不同类型的参数来创建对象，Julia 的对象构造系统解决了所有这些问题。
+For many types, forming new objects by binding their field values together is all that is ever
+needed to create instances. However, in some cases more functionality is required when
+creating composite objects. Sometimes invariants must be enforced, either by checking arguments
+or by transforming them. [Recursive data structures](https://en.wikipedia.org/wiki/Recursion_%28computer_science%29#Recursive_data_structures_.28structural_recursion.29),
+especially those that may be self-referential, often cannot be constructed cleanly without first
+being created in an incomplete state and then altered programmatically to be made whole, as a
+separate step from object creation. Sometimes, it's just convenient to be able to construct objects
+with fewer or different types of parameters than they have fields. Julia's system for object construction
+addresses all of these cases and more.
 
 [^1]:
-    命名法：虽然术语「构造函数」通常是指用于构造类型对象的函数全体，但通常会略微滥用术语将特定的构造方法称为「构造函数」。在这种情况下，通常可以从上下文中清楚地辨别出术语表示的是「构造方法」而不是「构造函数」，尤其是在讨论某个特别的「构造方法」的时候。
+    Nomenclature: while the term "constructor" generally refers to the entire function which constructs
+    objects of a type, it is common to abuse terminology slightly and refer to specific constructor
+    methods as "constructors". In such situations, it is generally clear from the context that the term
+    is used to mean "constructor method" rather than "constructor function", especially as it is often
+    used in the sense of singling out a particular method of the constructor from all of the others.
 
-## 外部构造方法
+## [Outer Constructor Methods](@id man-outer-constructor-methods)
 
-构造函数与 Julia 中的其他任何函数一样，其整体行为由其各个方法的组合行为定义。因此，只要定义新方法就可以向构造函数添加功能。例如，假设你想为 `Foo` 对象添加一个构造方法，该方法只接受一个参数并其作为 `bar` 和 `baz` 的值。这很简单：
+A constructor is just like any other function in Julia in that its overall behavior is defined
+by the combined behavior of its methods. Accordingly, you can add functionality to a constructor
+by simply defining new methods. For example, let's say you want to add a constructor method for
+`Foo` objects that takes only one argument and uses the given value for both the `bar` and `baz`
+fields. This is simple:
 
 ```jldoctest footype
 julia> Foo(x) = Foo(x,x)
@@ -45,16 +61,27 @@ julia> Foo()
 Foo(0, 0)
 ```
 
-这里零参数构造方法会调用单参数构造方法，单参数构造方法又调用了自动提供默认值的双参数构造方法。上面附加的这类构造方法，它们的声明方式与普通的方法一样，像这样的构造方法被称为**外部**构造方法，下文很快就会揭示这样称呼的原因。外部构造方法只能通过调用其他构造方法来创建新实例，比如自动提供默认值的构造方法。
+Here the zero-argument constructor method calls the single-argument constructor method, which
+in turn calls the automatically provided two-argument constructor method. For reasons that will
+become clear very shortly, additional constructor methods declared as normal methods like this
+are called *outer* constructor methods. Outer constructor methods can only ever create a new instance
+by calling another constructor method, such as the automatically provided default ones.
 
-## 内部构造方法
+## [Inner Constructor Methods](@id man-inner-constructor-methods)
 
-尽管外部构造方法可以成功地为构造对象提供了额外的便利，但它无法解决另外两个在本章导言里提到的问题：确保固有属性不变和允许创建自引用对象。因此，我们需要**内部**构造方法。内部构造方法和外部构造方法很相像，但有两点不同：
+While outer constructor methods succeed in addressing the problem of providing additional convenience
+methods for constructing objects, they fail to address the other two use cases mentioned in the
+introduction of this chapter: enforcing invariants, and allowing construction of self-referential
+objects. For these problems, one needs *inner* constructor methods. An inner constructor method
+is like an outer constructor method, except for two differences:
 
-1. 内部构造方法在类型声明代码块的内部，而不是和普通方法一样在外部。
-2. 内部构造方法能够访问一个特殊的局部函数 [`new`](@ref)，此函数能够创建该类型的对象。
+1. It is declared inside the block of a type declaration, rather than outside of it like normal methods.
+2. It has access to a special locally existent function called [`new`](@ref) that creates objects of the
+   block's type.
 
-例如，假设你要声明一个保存一对实数的类型，但要约束第一个数不大于第二个数。你可以像这样声明它：
+For example, suppose one wants to declare a type that holds a pair of real numbers, subject to
+the constraint that the first number is not greater than the second one. One could declare it
+like this:
 
 ```jldoctest pairtype
 julia> struct OrderedPair
