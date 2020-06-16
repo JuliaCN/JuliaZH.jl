@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>字符串 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/strings/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li class="is-active"><a class="tocitem" href>字符串</a><ul class="internal"><li><a class="tocitem" href="#man-characters-1"><span>字符</span></a></li><li><a class="tocitem" href="#字符串基础-1"><span>字符串基础</span></a></li><li><a class="tocitem" href="#Unicode-和-UTF-8-1"><span>Unicode 和 UTF-8</span></a></li><li><a class="tocitem" href="#man-concatenation-1"><span>拼接</span></a></li><li><a class="tocitem" href="#string-interpolation-1"><span>插值</span></a></li><li><a class="tocitem" href="#三引号字符串字面量-1"><span>三引号字符串字面量</span></a></li><li><a class="tocitem" href="#常见操作-1"><span>常见操作</span></a></li><li><a class="tocitem" href="#非标准字符串字面量-1"><span>非标准字符串字面量</span></a></li><li><a class="tocitem" href="#正则表达式-1"><span>正则表达式</span></a></li><li><a class="tocitem" href="#字节数组字面量-1"><span>字节数组字面量</span></a></li><li><a class="tocitem" href="#man-version-number-literals-1"><span>版本号字面量</span></a></li><li><a class="tocitem" href="#man-raw-string-literals-1"><span>原始字符串字面量</span></a></li></ul></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">多线程</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>字符串</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>字符串</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/stringsmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="man-strings-1"><a class="docs-heading-anchor" href="#man-strings-1">字符串</a><a class="docs-heading-anchor-permalink" href="#man-strings-1" title="Permalink"></a></h1><p>字符串是由有限个字符组成的序列。而字符在英文中一般包括字母 <code>A</code>,<code>B</code>, <code>C</code> 等、数字和常用的标点符号。这些字符由 <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> 标准统一标准化并且与 0 到 127 范围内的整数一一对应。当然，还有很多非英文字符，包括 ASCII 字符在注音或其他方面的变体，例如西里尔字母和希腊字母，以及与 ASCII 和英文均完全无关的字母系统，包括阿拉伯语，中文， 希伯来语，印度语， 日本语， 和韩语。<a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> 标准对这些复杂的字符做了统一的定义，是一种大家普遍接受标准。 根据需求，写代码时可以忽略这种复杂性而只处理 ASCII 字符，也可针对可能出现的非 ASCII 文本而处理所有的字符或编码。Julia 可以简单高效地处理纯粹的 ASCII 文本以及 Unicode 文本。 甚至，在 Julia 中用 C 语言风格的代码来处理 ASCII 字符串，可以在不失性能和易读性的前提下达到预期效果。当遇到非 ASCII 文本时，Julia会优雅明确地提示错误信息而不是引入乱码。 这时，直接修改代码使其可以处理非 ASCII 数据即可。</p><p>关于 Julia 的字符串类型有一些值得注意的高级特性：</p><ul><li>Julia 中用于字符串（和字符串文字）的内置具体类型是 <a href="../../base/strings/#Core.String-Tuple{AbstractString}"><code>String</code></a>。 它支持全部 <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> 字符 通过 <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> 编码。（<a href="../../base/strings/#Base.transcode"><code>transcode</code></a> 函数是 提供 Unicode 编码和其他编码转换的函数。）</li><li>所有的字符串类型都是抽象类型 <code>AbstractString</code> 的子类型，而一些外部包定义了别的 <code>AbstractString</code> 子类型（例如为其它的编码定义的子类型）。若要定义需要字符串参数的函数，你应当声明此类型为 <code>AbstractString</code> 来让这函数接受任何字符串类型。</li><li>类似 C 和 Java，但是和大多数动态语言不同的是，Julia 有优秀的表示单字符的类型，即 <a href="../../base/strings/#Core.AbstractChar"><code>AbstractChar</code></a>。<a href="../../base/strings/#Core.Char"><code>Char</code></a> 是 <code>AbstractChar</code> 的内置子类型，它能表示任何 Unicode 字符的 32 位原始类型（基于 UTF-8 编码）。</li><li>如 Java 中那样，字符串不可改——任何 <code>AbstractString</code> 对象的值不可改变。 若要构造不同的字符串值，应当从其它字符串的部分构造一个新的字符串。</li><li>从概念上讲，字符串是从索引到字符的<em>部分函数</em>：对于某些索引值，它不返回字符值，而是引发异常。这允许通过编码表示形式的字节索引来实现高效的字符串索引，而不是通过字符索引——它不能简单高效地实现可变宽度的 Unicode 字符串编码。</li></ul><h2 id="man-characters-1"><a class="docs-heading-anchor" href="#man-characters-1">字符</a><a class="docs-heading-anchor-permalink" href="#man-characters-1" title="Permalink"></a></h2><p><code>Char</code> 类型的值代表单个字符：它只是带有特殊文本表示法和适当算术行为的 32 位原始类型，不能转化为代表 <a href="https://en.wikipedia.org/wiki/Code_point">Unicode 代码</a> 的数值。（Julia 的包可能会定义别的 <code>AbstractChar</code> 子类型，比如当为了优化对其它 <a href="https://en.wikipedia.org/wiki/Character_encoding">字符编码</a> 的操作时）<code>Char</code> 类型的值以这样的方式输入和显示：</p><pre><code class="language-julia-repl">julia&gt; &#39;x&#39;
+&#39;x&#39;: ASCII/Unicode U+0078 (category Ll: Letter, lowercase)
+
+julia&gt; typeof(ans)
+Char</code></pre><p>你可以轻松地将 <code>Char</code> 转换为其对应的整数值，即 Unicode 代码：</p><pre><code class="language-julia-repl">julia&gt; Int(&#39;x&#39;)
+120
+
+julia&gt; typeof(ans)
+Int64</code></pre><p>在 32 位架构中，<a href="../../base/base/#Core.typeof"><code>typeof(ans)</code></a> 将显示为 <a href="../../base/numbers/#Core.Int32"><code>Int32</code></a>。你可以轻松地将一个整数值转回 <code>Char</code>。</p><pre><code class="language-julia-repl">julia&gt; Char(120)
+&#39;x&#39;: ASCII/Unicode U+0078 (category Ll: Letter, lowercase)</code></pre><p>并非所有的整数值都是有效的 Unicode 代码，但是为了性能，<code>Char</code> 的转化不会检查每个值是否有效。如果你想检查每个转换的值是否为有效值，请使用 <a href="../../base/strings/#Base.isvalid-Tuple{Any}"><code>isvalid</code></a> 函数：</p><pre><code class="language-julia-repl">julia&gt; Char(0x110000)
+&#39;\U110000&#39;: Unicode U+110000 (category In: Invalid, too high)
+
+julia&gt; isvalid(Char, 0x110000)
+false</code></pre><p>目前，有效的 Unicode 代码为，从 <code>U+00</code> 至 <code>U+d7ff</code>，以及从 <code>U+e000</code> 至 <code>U+10ffff</code>。它们还未全部被赋予明确的含义，也还没必要被应用解释；然而，所有的这些值都被认为是有效的 Unicode 字符。</p><p>你可以在单引号中输入任何 Unicode 字符，通过使用 <code>\u</code> 加上至多 ４ 个十六进制数字或者 <code>\U</code> 加上至多 ８ 个十六进制数（最长的有效值也只需要 6 个）：</p><pre><code class="language-julia-repl">julia&gt; &#39;\u0&#39;
+&#39;\0&#39;: ASCII/Unicode U+0000 (category Cc: Other, control)
+
+julia&gt; &#39;\u78&#39;
+&#39;x&#39;: ASCII/Unicode U+0078 (category Ll: Letter, lowercase)
+
+julia&gt; &#39;\u2200&#39;
+&#39;∀&#39;: Unicode U+2200 (category Sm: Symbol, math)
+
+julia&gt; &#39;\U10ffff&#39;
+&#39;\U10ffff&#39;: Unicode U+10ffff (category Cn: Other, not assigned)</code></pre><p>Julia 使用系统默认的区域和语言设置来确定，哪些字符可以被正确显示，哪些需要用 <code>\u</code> 或 <code>\U</code> 的转义来显示。除 Unicode 转义格式之外，还可以使用所有的<a href="https://en.wikipedia.org/wiki/C_syntax#Backslash_escapes">传统 C 语言转义输入形式</a>：</p><pre><code class="language-julia-repl">julia&gt; Int(&#39;\0&#39;)
+0
+
+julia&gt; Int(&#39;\t&#39;)
+9
+
+julia&gt; Int(&#39;\n&#39;)
+10
+
+julia&gt; Int(&#39;\e&#39;)
+27
+
+julia&gt; Int(&#39;\x7f&#39;)
+127
+
+julia&gt; Int(&#39;\177&#39;)
+127</code></pre><p>你可以对 <code>Char</code> 的值进行比较和有限的算术运算：</p><pre><code class="language-julia-repl">julia&gt; &#39;A&#39; &lt; &#39;a&#39;
+true
+
+julia&gt; &#39;A&#39; &lt;= &#39;a&#39; &lt;= &#39;Z&#39;
+false
+
+julia&gt; &#39;A&#39; &lt;= &#39;X&#39; &lt;= &#39;Z&#39;
+true
+
+julia&gt; &#39;x&#39; - &#39;a&#39;
+23
+
+julia&gt; &#39;A&#39; + 1
+&#39;B&#39;: ASCII/Unicode U+0042 (category Lu: Letter, uppercase)</code></pre><h2 id="字符串基础-1"><a class="docs-heading-anchor" href="#字符串基础-1">字符串基础</a><a class="docs-heading-anchor-permalink" href="#字符串基础-1" title="Permalink"></a></h2><p>字符串字面量由双引号或三重双引号分隔：</p><pre><code class="language-julia-repl">julia&gt; str = &quot;Hello, world.\n&quot;
+&quot;Hello, world.\n&quot;
+
+julia&gt; &quot;&quot;&quot;Contains &quot;quote&quot; characters&quot;&quot;&quot;
+&quot;Contains \&quot;quote\&quot; characters&quot;</code></pre><p>如果想从字符串中提取字符, 可以通过索引字符串的方式来获取：</p><pre><code class="language-julia-repl">julia&gt; str[1]
+&#39;H&#39;: ASCII/Unicode U+0048 (category Lu: Letter, uppercase)
+
+julia&gt; str[6]
+&#39;,&#39;: ASCII/Unicode U+002c (category Po: Punctuation, other)
+
+julia&gt; str[end]
+&#39;\n&#39;: ASCII/Unicode U+000a (category Cc: Other, control)</code></pre><p>Many Julia objects, including strings, can be indexed with integers. The index of the first element (the first character of a string) is returned by <a href="../../base/collections/#Base.firstindex"><code>firstindex(str)</code></a>, and the index of the last element (character) with <a href="../../base/collections/#Base.lastindex"><code>lastindex(str)</code></a>. The keyword <code>end</code> can be used inside an indexing operation as shorthand for the last index along the given dimension. String indexing, like most indexing in Julia, is 1-based: <code>firstindex</code> always returns <code>1</code> for any <code>AbstractString</code>. As we will see below, however, <code>lastindex(str)</code> is <em>not</em> in general the same as <code>length(str)</code> for a string, because some Unicode characters can occupy multiple &quot;code units&quot;.</p><p>你可以用 <a href="../../base/base/#end"><code>end</code></a> 进行算术以及其它操作，就像普通值一样：</p><pre><code class="language-julia-repl">julia&gt; str[end-1]
+&#39;.&#39;: ASCII/Unicode U+002e (category Po: Punctuation, other)
+
+julia&gt; str[end÷2]
+&#39; &#39;: ASCII/Unicode U+0020 (category Zs: Separator, space)</code></pre><p>Using an index less than 1 or greater than <code>end</code> raises an error:</p><pre><code class="language-julia-repl">julia&gt; str[0]
+ERROR: BoundsError: attempt to access String
+  at index [0]
+[...]
+
+julia&gt; str[end+1]
+ERROR: BoundsError: attempt to access String
+  at index [15]
+[...]</code></pre><p>你也可以用范围索引来提取子字符串：</p><pre><code class="language-julia-repl">julia&gt; str[4:9]
+&quot;lo, wo&quot;</code></pre><p>注意表达式 <code>str[k]</code> 和 <code>str[k:k]</code> 并没有给出相同的结果</p><pre><code class="language-julia-repl">julia&gt; str[6]
+&#39;,&#39;: ASCII/Unicode U+002c (category Po: Punctuation, other)
+
+julia&gt; str[6:6]
+&quot;,&quot;</code></pre><p>前者是 <code>Char</code> 类型的单个字符值，后者是碰巧只有单个字符的字符串值。在 Julia 里面两者大不相同。</p><p>范围索引复制了原字符串的选定部分。此外，也可以用 <a href="../../base/strings/#Base.SubString"><code>SubString</code></a> 类型创建字符串的 <code>view</code>，例如：</p><pre><code class="language-julia-repl">julia&gt; str = &quot;long string&quot;
+&quot;long string&quot;
+
+julia&gt; substr = SubString(str, 1, 4)
+&quot;long&quot;
+
+julia&gt; typeof(substr)
+SubString{String}</code></pre><p>几个标准函数，像 <a href="../../base/strings/#Base.chop"><code>chop</code></a>, <a href="../../base/strings/#Base.chomp"><code>chomp</code></a> 或者 <a href="../../base/strings/#Base.strip"><code>strip</code></a> 都会返回一个 <a href="../../base/strings/#Base.SubString"><code>SubString</code></a>。</p><h2 id="Unicode-和-UTF-8-1"><a class="docs-heading-anchor" href="#Unicode-和-UTF-8-1">Unicode 和 UTF-8</a><a class="docs-heading-anchor-permalink" href="#Unicode-和-UTF-8-1" title="Permalink"></a></h2><p>Julia 完全支持 Unicode 字符和字符串。<a href="#man-characters-1">如上所述</a>，在字符字面量中，Unicode 代码可以用 Unicode <code>\u</code> 和 <code>\U</code> 转义序列表示，也可以用所有标准 C 转义序列表示。这些同样可以用来写字符串字面量：</p><pre><code class="language-julia-repl">julia&gt; s = &quot;\u2200 x \u2203 y&quot;
+&quot;∀ x ∃ y&quot;</code></pre><p>Whether these Unicode characters are displayed as escapes or shown as special characters depends on your terminal&#39;s locale settings and its support for Unicode. String literals are encoded using the UTF-8 encoding. UTF-8 is a variable-width encoding, meaning that not all characters are encoded in the same number of bytes (&quot;code units&quot;). In UTF-8, ASCII characters — i.e. those with code points less than 0x80 (128) – are encoded as they are in ASCII, using a single byte, while code points 0x80 and above are encoded using multiple bytes — up to four per character.</p><p>String indices in Julia refer to code units (= bytes for UTF-8), the fixed-width building blocks that are used to encode arbitrary characters (code points). This means that not every index into a <code>String</code> is necessarily a valid index for a character. If you index into a string at such an invalid byte index, an error is thrown:</p><pre><code class="language-julia-repl">julia&gt; s[1]
+&#39;∀&#39;: Unicode U+2200 (category Sm: Symbol, math)
+
+julia&gt; s[2]
+ERROR: StringIndexError(&quot;∀ x ∃ y&quot;, 2)
+[...]
+
+julia&gt; s[3]
+ERROR: StringIndexError(&quot;∀ x ∃ y&quot;, 3)
+Stacktrace:
+[...]
+
+julia&gt; s[4]
+&#39; &#39;: ASCII/Unicode U+0020 (category Zs: Separator, space)</code></pre><p>在这种情况下，字符 <code>∀</code> 是一个三字节字符，因此索引 2 和 3 都是无效的，而下一个字符的索引是 4；这个接下来的有效索引可以用 <a href="../../base/strings/#Base.nextind"><code>nextind(s,1)</code></a> 来计算，再接下来的用 <code>nextind(s,4)</code>，依此类推。</p><p>Since <code>end</code> is always the last valid index into a collection, <code>end-1</code> references an invalid byte index if the second-to-last character is multibyte.</p><pre><code class="language-julia-repl">julia&gt; s[end-1]
+&#39; &#39;: ASCII/Unicode U+0020 (category Zs: Separator, space)
+
+julia&gt; s[end-2]
+ERROR: StringIndexError(&quot;∀ x ∃ y&quot;, 9)
+Stacktrace:
+[...]
+
+julia&gt; s[prevind(s, end, 2)]
+&#39;∃&#39;: Unicode U+2203 (category Sm: Symbol, math)</code></pre><p>The first case works, because the last character <code>y</code> and the space are one-byte characters, whereas <code>end-2</code> indexes into the middle of the <code>∃</code> multibyte representation. The correct way for this case is using <code>prevind(s, lastindex(s), 2)</code> or, if you&#39;re using that value to index into <code>s</code> you can write <code>s[prevind(s, end, 2)]</code> and <code>end</code> expands to <code>lastindex(s)</code>.</p><p>Extraction of a substring using range indexing also expects valid byte indices or an error is thrown:</p><pre><code class="language-julia-repl">julia&gt; s[1:1]
+&quot;∀&quot;
+
+julia&gt; s[1:2]
+ERROR: StringIndexError(&quot;∀ x ∃ y&quot;, 2)
+Stacktrace:
+[...]
+
+julia&gt; s[1:4]
+&quot;∀ &quot;</code></pre><p>Because of variable-length encodings, the number of characters in a string (given by <a href="../../base/arrays/#Base.length-Tuple{AbstractArray}"><code>length(s)</code></a>) is not always the same as the last index. If you iterate through the indices 1 through <a href="../../base/collections/#Base.lastindex"><code>lastindex(s)</code></a> and index into <code>s</code>, the sequence of characters returned when errors aren&#39;t thrown is the sequence of characters comprising the string <code>s</code>. Thus we have the identity that <code>length(s) &lt;= lastindex(s)</code>, since each character in a string must have its own index. The following is an inefficient and verbose way to iterate through the characters of <code>s</code>:</p><pre><code class="language-julia-repl">julia&gt; for i = firstindex(s):lastindex(s)
+           try
+               println(s[i])
+           catch
+               # ignore the index error
+           end
+       end
+∀
+
+x
+
+∃
+
+y</code></pre><p>The blank lines actually have spaces on them. Fortunately, the above awkward idiom is unnecessary for iterating through the characters in a string, since you can just use the string as an iterable object, no exception handling required:</p><pre><code class="language-julia-repl">julia&gt; for c in s
+           println(c)
+       end
+∀
+
+x
+
+∃
+
+y</code></pre><p>If you need to obtain valid indices for a string, you can use the <a href="../../base/strings/#Base.nextind"><code>nextind</code></a> and <a href="../../base/strings/#Base.prevind"><code>prevind</code></a> functions to increment/decrement to the next/previous valid index, as mentioned above. You can also use the <a href="../../base/arrays/#Base.eachindex"><code>eachindex</code></a> function to iterate over the valid character indices:</p><pre><code class="language-julia-repl">julia&gt; collect(eachindex(s))
+7-element Array{Int64,1}:
+  1
+  4
+  5
+  6
+  7
+ 10
+ 11</code></pre><p>To access the raw code units (bytes for UTF-8) of the encoding, you can use the <a href="../../base/strings/#Base.codeunit"><code>codeunit(s,i)</code></a> function, where the index <code>i</code> runs consecutively from <code>1</code> to <a href="../../base/strings/#Base.ncodeunits-Tuple{AbstractString}"><code>ncodeunits(s)</code></a>.  The <a href="../../base/strings/#Base.codeunits"><code>codeunits(s)</code></a> function returns an <code>AbstractVector{UInt8}</code> wrapper that lets you access these raw codeunits (bytes) as an array.</p><p>Strings in Julia can contain invalid UTF-8 code unit sequences. This convention allows to treat any byte sequence as a <code>String</code>. In such situations a rule is that when parsing a sequence of code units from left to right characters are formed by the longest sequence of 8-bit code units that matches the start of one of the following bit patterns (each <code>x</code> can be <code>0</code> or <code>1</code>):</p><ul><li><code>0xxxxxxx</code>;</li><li><code>110xxxxx</code> <code>10xxxxxx</code>;</li><li><code>1110xxxx</code> <code>10xxxxxx</code> <code>10xxxxxx</code>;</li><li><code>11110xxx</code> <code>10xxxxxx</code> <code>10xxxxxx</code> <code>10xxxxxx</code>;</li><li><code>10xxxxxx</code>;</li><li><code>11111xxx</code>.</li></ul><p>In particular this means that overlong and too-high code unit sequences and prefixes thereof are treated as a single invalid character rather than multiple invalid characters. This rule may be best explained with an example:</p><pre><code class="language-julia-repl">julia&gt; s = &quot;\xc0\xa0\xe2\x88\xe2|&quot;
+&quot;\xc0\xa0\xe2\x88\xe2|&quot;
+
+julia&gt; foreach(display, s)
+&#39;\xc0\xa0&#39;: [overlong] ASCII/Unicode U+0020 (category Zs: Separator, space)
+&#39;\xe2\x88&#39;: Malformed UTF-8 (category Ma: Malformed, bad data)
+&#39;\xe2&#39;: Malformed UTF-8 (category Ma: Malformed, bad data)
+&#39;|&#39;: ASCII/Unicode U+007c (category Sm: Symbol, math)
+
+julia&gt; isvalid.(collect(s))
+4-element BitArray{1}:
+ 0
+ 0
+ 0
+ 1
+
+julia&gt; s2 = &quot;\xf7\xbf\xbf\xbf&quot;
+&quot;\U1fffff&quot;
+
+julia&gt; foreach(display, s2)
+&#39;\U1fffff&#39;: Unicode U+1fffff (category In: Invalid, too high)</code></pre><p>我们可以看到字符串 <code>s</code> 中的前两个代码单元形成了一个过长的空格字符编码。这是无效的，但是在字符串中作为单个字符是可以接受的。接下来的两个代码单元形成了一个有效的 3 位 UTF-8 序列开头。然而，第五个代码单元 <code>\xe2</code> 不是它的有效延续，所以代码单元 3 和 4 在这个字符串中也被解释为格式错误的字符。同理，由于 <code>|</code> 不是它的有效延续，代码单元 5 形成了一个格式错误的字符。最后字符串 <code>s2</code> 包含了一个太高的代码。</p><p>Julia 默认使用 UTF-8 编码，对于新编码的支持可以通过包加上。例如，<a href="https://github.com/JuliaStrings/LegacyStrings.jl">LegacyStrings.jl</a> 包实现了 <code>UTF16String</code> 和 <code>UTF32String</code> 类型。关于其它编码的额外讨论以及如何实现对它们的支持暂时超过了这篇文档的讨论范围。UTF-8 编码相关问题的进一步讨论参见下面的<a href="manual/@ref man-byte-array-literals">字节数组字面量</a>章节。<a href="../../base/strings/#Base.transcode"><code>transcode</code></a> 函数可在各种 UTF-xx 编码之间转换，主要用于外部数据和包。</p><h2 id="man-concatenation-1"><a class="docs-heading-anchor" href="#man-concatenation-1">拼接</a><a class="docs-heading-anchor-permalink" href="#man-concatenation-1" title="Permalink"></a></h2><p>最常见最有用的字符串操作是级联：</p><pre><code class="language-julia-repl">julia&gt; greet = &quot;Hello&quot;
+&quot;Hello&quot;
+
+julia&gt; whom = &quot;world&quot;
+&quot;world&quot;
+
+julia&gt; string(greet, &quot;, &quot;, whom, &quot;.\n&quot;)
+&quot;Hello, world.\n&quot;</code></pre><p>意识到像对无效 UTF-8 字符进行级联这样的潜在危险情形是非常重要的。生成的字符串可能会包含和输入字符串不同的字符，并且其中字符的数目也可能少于被级联字符串中字符数目之和，例如：</p><pre><code class="language-julia-repl">julia&gt; a, b = &quot;\xe2\x88&quot;, &quot;\x80&quot;
+(&quot;\xe2\x88&quot;, &quot;\x80&quot;)
+
+julia&gt; c = a*b
+&quot;∀&quot;
+
+julia&gt; collect.([a, b, c])
+3-element Array{Array{Char,1},1}:
+ [&#39;\xe2\x88&#39;]
+ [&#39;\x80&#39;]
+ [&#39;∀&#39;]
+
+julia&gt; length.([a, b, c])
+3-element Array{Int64,1}:
+ 1
+ 1
+ 1</code></pre><p>这种情形只可能发生于无效 UTF-8 字符串上。对于有效 UTF-8 字符串，级联保留字符串中的所有字符和字符串的总长度。</p><p>Julia 也提供 <a href="../../base/math/#Base.:*-Tuple{Any,Vararg{Any,N} where N}"><code>*</code></a> 用于字符串级联：</p><pre><code class="language-julia-repl">julia&gt; greet * &quot;, &quot; * whom * &quot;.\n&quot;
+&quot;Hello, world.\n&quot;</code></pre><p>尽管对于提供 <code>+</code> 函数用于字符串拼接的语言使用者而言，<code>*</code> 似乎是一个令人惊讶的选择，但 <code>*</code> 的这种用法在数学中早有先例，尤其是在抽象代数中。</p><p>在数学上，<code>+</code> 通常表示可交换运算（<em>commutative</em> operation）——运算对象的顺序不重要。一个例子是矩阵加法：对于任何形状相同的矩阵 <code>A</code> 和 <code>B</code>，都有 <code>A + B == B + A</code>。与之相反，<code>*</code> 通常表示不可交换运算——运算对象的顺序很重要。例如，对于矩阵乘法，一般 <code>A * B != B * A</code>。同矩阵乘法类似，字符串拼接是不可交换的：<code>greet * whom != whom * greet</code>。在这一点上，对于插入字符串的拼接操作，<code>*</code> 是一个自然而然的选择，与它在数学中的用法一致。</p><p>更确切地说，有限长度字符串集合 <em>S</em> 和字符串拼接操作 <code>*</code> 构成了一个<a href="https://en.wikipedia.org/wiki/Free_monoid">自由幺半群</a> (<em>S</em>, <code>*</code>)。该集合的单位元是空字符串，<code>&quot;&quot;</code>。当一个自由幺半群不是交换的时，它的运算通常表示为 <code>\cdot</code>，<code>*</code>，或者类似的符号，而非暗示交换性的 <code>+</code>。</p><h2 id="string-interpolation-1"><a class="docs-heading-anchor" href="#string-interpolation-1">插值</a><a class="docs-heading-anchor-permalink" href="#string-interpolation-1" title="Permalink"></a></h2><p>拼接构造字符串的方式有时有些麻烦。为了减少对于 <a href="../../base/strings/#Base.string"><code>string</code></a> 的冗余调用或者重复地做乘法，Julia 允许像 Perl 中一样使用 <code>$</code> 对字符串字面量进行插值：</p><pre><code class="language-julia-repl">julia&gt; &quot;$greet, $whom.\n&quot;
+&quot;Hello, world.\n&quot;</code></pre><p>This is more readable and convenient and equivalent to the above string concatenation – the system rewrites this apparent single string literal into the call <code>string(greet, &quot;, &quot;, whom, &quot;.\n&quot;)</code>.</p><p>在 <code>$</code> 之后最短的完整表达式被视为插入其值于字符串中的表达式。因此，你可以用括号向字符串中插入任何表达式：</p><pre><code class="language-julia-repl">julia&gt; &quot;1 + 2 = $(1 + 2)&quot;
+&quot;1 + 2 = 3&quot;</code></pre><p>Both concatenation and string interpolation call <a href="../../base/strings/#Base.string"><code>string</code></a> to convert objects into string form. However, <code>string</code> actually just returns the output of <a href="../../base/io-network/#Base.print"><code>print</code></a>, so new types should add methods to <a href="../../base/io-network/#Base.print"><code>print</code></a> or <a href="../../base/io-network/#Base.show-Tuple{Any}"><code>show</code></a> instead of <code>string</code>.</p><p>Most non-<code>AbstractString</code> objects are converted to strings closely corresponding to how they are entered as literal expressions:</p><pre><code class="language-julia-repl">julia&gt; v = [1,2,3]
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3
+
+julia&gt; &quot;v: $v&quot;
+&quot;v: [1, 2, 3]&quot;</code></pre><p><a href="../../base/strings/#Base.string"><code>string</code></a> 是 <code>AbstractString</code> 和 <code>AbstractChar</code> 值的标识，所以它们作为自身被插入字符串，无需引用，无需转义：</p><pre><code class="language-julia-repl">julia&gt; c = &#39;x&#39;
+&#39;x&#39;: ASCII/Unicode U+0078 (category Ll: Letter, lowercase)
+
+julia&gt; &quot;hi, $c&quot;
+&quot;hi, x&quot;</code></pre><p>若要在字符串字面量中包含文本 <code>$</code>，就用反斜杠转义：</p><pre><code class="language-julia-repl">julia&gt; print(&quot;I have \$100 in my account.\n&quot;)
+I have $100 in my account.</code></pre><h2 id="三引号字符串字面量-1"><a class="docs-heading-anchor" href="#三引号字符串字面量-1">三引号字符串字面量</a><a class="docs-heading-anchor-permalink" href="#三引号字符串字面量-1" title="Permalink"></a></h2><p>当使用三引号（<code>&quot;&quot;&quot;...&quot;&quot;&quot;</code>）创建字符串时，它们有一些在创建更长文本块时可能用到的特殊行为。</p><p>首先，三引号字符串也被反缩进到最小缩进线的水平。这在定义包含缩进的字符串时很有用。例如：</p><pre><code class="language-julia-repl">julia&gt; str = &quot;&quot;&quot;
+           Hello,
+           world.
+         &quot;&quot;&quot;
+&quot;  Hello,\n  world.\n&quot;</code></pre><p>在这里，后三引号 <code>&quot;&quot;&quot;</code> 前面的最后一（空）行设置了缩进级别。</p><p>反缩进级别被确定为所有行中空格或制表符的最大公共起始序列，不包括前三引号 <code>&quot;&quot;&quot;</code> 后面的一行以及只包含空格或制表符的行（总包含结尾 <code>&quot;&quot;&quot;</code> 的行）。那么对于所有不包括前三引号 <code>&quot;&quot;&quot;</code> 后面文本的行而言，公共起始序列就被移除了（包括只含空格和制表符而以此序列开始的行），例如：</p><pre><code class="language-julia-repl">julia&gt; &quot;&quot;&quot;    This
+         is
+           a test&quot;&quot;&quot;
+&quot;    This\nis\n  a test&quot;</code></pre><p>接下来，如果前三引号 <code>&quot;&quot;&quot;</code> 后面紧跟换行符，那么换行符就从生成的字符串中被剥离。</p><pre><code class="language-julia">&quot;&quot;&quot;hello&quot;&quot;&quot;</code></pre><p>等价于</p><pre><code class="language-julia">&quot;&quot;&quot;
+hello&quot;&quot;&quot;</code></pre><p>但是</p><pre><code class="language-julia">&quot;&quot;&quot;
+
+hello&quot;&quot;&quot;</code></pre><p>将在开头包含一个文本换行符。</p><p>换行符的移除是在反缩进之后进行的。例如：</p><pre><code class="language-julia-repl">julia&gt; &quot;&quot;&quot;
+         Hello,
+         world.&quot;&quot;&quot;
+&quot;Hello,\nworld.&quot;</code></pre><p>尾随空格保持不变。</p><p>三引号字符串字面量可不带转义地包含 <code>&quot;</code> 符号。</p><p>注意，无论是用单引号还是三引号，在文本字符串中换行符都会生成一个换行 (LF) 字符 <code>\n</code>，即使你的编辑器使用回车组合符 <code>\r</code> (CR) 或 CRLF 来结束行。为了在字符串中包含 CR，总是应该使用显式转义符 <code>\r</code>；比如，可以输入文本字符串 <code>&quot;a CRLF line ending\r\n&quot;</code>。</p><h2 id="常见操作-1"><a class="docs-heading-anchor" href="#常见操作-1">常见操作</a><a class="docs-heading-anchor-permalink" href="#常见操作-1" title="Permalink"></a></h2><p>你可以使用标准的比较操作符按照字典顺序比较字符串：</p><pre><code class="language-julia-repl">julia&gt; &quot;abracadabra&quot; &lt; &quot;xylophone&quot;
+true
+
+julia&gt; &quot;abracadabra&quot; == &quot;xylophone&quot;
+false
+
+julia&gt; &quot;Hello, world.&quot; != &quot;Goodbye, world.&quot;
+true
+
+julia&gt; &quot;1 + 2 = 3&quot; == &quot;1 + 2 = $(1 + 2)&quot;
+true</code></pre><p>你可以使用 <a href="../../base/arrays/#Base.findfirst-Tuple{Any}"><code>findfirst</code></a> 与 <a href="../../base/arrays/#Base.findlast-Tuple{Any}"><code>findlast</code></a> 函数搜索特定字符的索引：</p><pre><code class="language-julia-repl">julia&gt; findfirst(isequal(&#39;o&#39;), &quot;xylophone&quot;)
+4
+
+julia&gt; findlast(isequal(&#39;o&#39;), &quot;xylophone&quot;)
+7
+
+julia&gt; findfirst(isequal(&#39;z&#39;), &quot;xylophone&quot;)</code></pre><p>你可以带上第三个参数，用 <a href="../../base/arrays/#Base.findnext-Tuple{Any,Integer}"><code>findnext</code></a> 与 <a href="../../base/arrays/#Base.findprev-Tuple{Any,Integer}"><code>findprev</code></a> 函数来在给定偏移量处搜索字符：</p><pre><code class="language-julia-repl">julia&gt; findnext(isequal(&#39;o&#39;), &quot;xylophone&quot;, 1)
+4
+
+julia&gt; findnext(isequal(&#39;o&#39;), &quot;xylophone&quot;, 5)
+7
+
+julia&gt; findprev(isequal(&#39;o&#39;), &quot;xylophone&quot;, 5)
+4
+
+julia&gt; findnext(isequal(&#39;o&#39;), &quot;xylophone&quot;, 8)</code></pre><p>你可以用 <a href="../../base/strings/#Base.occursin"><code>occursin</code></a> 函数检查在字符串中某子字符串可否找到。</p><pre><code class="language-julia-repl">julia&gt; occursin(&quot;world&quot;, &quot;Hello, world.&quot;)
+true
+
+julia&gt; occursin(&quot;o&quot;, &quot;Xylophon&quot;)
+true
+
+julia&gt; occursin(&quot;a&quot;, &quot;Xylophon&quot;)
+false
+
+julia&gt; occursin(&#39;o&#39;, &quot;Xylophon&quot;)
+true</code></pre><p>最后那个例子表明 <a href="../../base/strings/#Base.occursin"><code>occursin</code></a> 也可用于搜寻字符字面量。</p><p>另外还有两个方便的字符串函数 <a href="../../base/arrays/#Base.repeat"><code>repeat</code></a> 和 <a href="../../base/strings/#Base.join"><code>join</code></a>：</p><pre><code class="language-julia-repl">julia&gt; repeat(&quot;.:Z:.&quot;, 10)
+&quot;.:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:..:Z:.&quot;
+
+julia&gt; join([&quot;apples&quot;, &quot;bananas&quot;, &quot;pineapples&quot;], &quot;, &quot;, &quot; and &quot;)
+&quot;apples, bananas and pineapples&quot;</code></pre><p>其它有用的函数还包括：</p><ul><li><a href="../../base/collections/#Base.firstindex"><code>firstindex(str)</code></a> 给出可用来索引到 <code>str</code> 的最小（字节）索引（对字符串来说这总是 1，对于别的容器来说却不一定如此）。</li><li><a href="../../base/collections/#Base.lastindex"><code>lastindex(str)</code></a> 给出可用来索引到 <code>str</code> 的最大（字节）索引。</li><li><a href="../../base/arrays/#Base.length-Tuple{AbstractArray}"><code>length(str)</code></a>，<code>str</code> 中的字符个数。</li><li><a href="../../base/arrays/#Base.length-Tuple{AbstractArray}"><code>length(str, i, j)</code></a>，<code>str</code> 中从 <code>i</code> 到 <code>j</code> 的有效字符索引个数。</li><li><a href="../../base/strings/#Base.ncodeunits-Tuple{AbstractString}"><code>ncodeunits(str)</code></a>，字符串中<a href="https://en.wikipedia.org/wiki/Character_encoding#Terminology">代码单元</a>（<a href="https://zh.wikipedia.org/wiki/字符编码#字符集、代码页，与字符映射">码元</a>）的数目。</li><li><a href="../../base/strings/#Base.codeunit"><code>codeunit(str, i)</code></a> 给出在字符串 <code>str</code> 中索引为 <code>i</code> 的代码单元值。</li><li><a href="../../base/strings/#Base.thisind"><code>thisind(str, i)</code></a>，给定一个字符串的任意索引，查找索引点所在的首个索引。</li><li><a href="../../base/strings/#Base.nextind"><code>nextind(str, i, n=1)</code></a> 查找在索引 <code>i</code> 之后第 <code>n</code> 个字符的开头。</li><li><a href="../../base/strings/#Base.prevind"><code>prevind(str, i, n=1)</code></a> 查找在索引 <code>i</code> 之前第 <code>n</code> 个字符的开始。</li></ul><h2 id="非标准字符串字面量-1"><a class="docs-heading-anchor" href="#非标准字符串字面量-1">非标准字符串字面量</a><a class="docs-heading-anchor-permalink" href="#非标准字符串字面量-1" title="Permalink"></a></h2><p>有时当你想构造字符串或者使用字符串语义，标准的字符串构造却不能很好的满足需求。Julia 为这种情形提供了非标准字符串字面量。非标准字符串字面量看似常规双引号字符串字面量，但却直接加上了标识符前缀因而并不那么像普通的字符串字面量。下面将提到，正则表达式，字节数组字面量和版本号字面量都是非标准字符串字面量的例子。其它例子见<a href="../metaprogramming/#元编程-1">元编程</a>章。</p><h2 id="正则表达式-1"><a class="docs-heading-anchor" href="#正则表达式-1">正则表达式</a><a class="docs-heading-anchor-permalink" href="#正则表达式-1" title="Permalink"></a></h2><p>Julia has Perl-compatible regular expressions (regexes), as provided by the <a href="http://www.pcre.org/">PCRE</a> library (a description of the syntax can be found <a href="http://www.pcre.org/current/doc/html/pcre2syntax.html">here</a>). Regular expressions are related to strings in two ways: the obvious connection is that regular expressions are used to find regular patterns in strings; the other connection is that regular expressions are themselves input as strings, which are parsed into a state machine that can be used to efficiently search for patterns in strings. In Julia, regular expressions are input using non-standard string literals prefixed with various identifiers beginning with <code>r</code>. The most basic regular expression literal without any options turned on just uses <code>r&quot;...&quot;</code>:</p><pre><code class="language-julia-repl">julia&gt; r&quot;^\s*(?:#|$)&quot;
+r&quot;^\s*(?:#|$)&quot;
+
+julia&gt; typeof(ans)
+Regex</code></pre><p>若要检查正则表达式是否匹配某字符串，就用 <a href="../../base/strings/#Base.occursin"><code>occursin</code></a>：</p><pre><code class="language-julia-repl">julia&gt; occursin(r&quot;^\s*(?:#|$)&quot;, &quot;not a comment&quot;)
+false
+
+julia&gt; occursin(r&quot;^\s*(?:#|$)&quot;, &quot;# a comment&quot;)
+true</code></pre><p>可以看到，<a href="../../base/strings/#Base.occursin"><code>occursin</code></a> 只返回正确或错误，表明给定正则表达式是否在该字符串中出现。然而，通常我们不只想知道字符串是否匹配，更想了解它是如何匹配的。要捕获匹配的信息，可以改用 <a href="../../base/strings/#Base.match"><code>match</code></a> 函数：</p><pre><code class="language-julia-repl">julia&gt; match(r&quot;^\s*(?:#|$)&quot;, &quot;not a comment&quot;)
+
+julia&gt; match(r&quot;^\s*(?:#|$)&quot;, &quot;# a comment&quot;)
+RegexMatch(&quot;#&quot;)</code></pre><p>若正则表达式与给定字符串不匹配，<a href="../../base/strings/#Base.match"><code>match</code></a> 返回 <a href="../../base/constants/#Core.nothing"><code>nothing</code></a>——在交互式提示框中不打印任何东西的特殊值。除了不打印，它是一个完全正常的值，这可以用程序来测试：</p><pre><code class="language-julia">m = match(r&quot;^\s*(?:#|$)&quot;, line)
+if m === nothing
+    println(&quot;not a comment&quot;)
+else
+    println(&quot;blank or comment&quot;)
+end</code></pre><p>如果正则表达式匹配，<a href="../../base/strings/#Base.match"><code>match</code></a> 的返回值是 <code>RegexMatch</code> 对象。这些对象记录了表达式是如何匹配的，包括该模式匹配的子字符串和任何可能被捕获的子字符串。上面的例子仅仅捕获了匹配的部分子字符串，但也许我们想要捕获的是公共字符后面的任何非空文本。我们可以这样做：</p><pre><code class="language-julia-repl">julia&gt; m = match(r&quot;^\s*(?:#\s*(.*?)\s*$|$)&quot;, &quot;# a comment &quot;)
+RegexMatch(&quot;# a comment &quot;, 1=&quot;a comment&quot;)</code></pre><p>当调用 <a href="../../base/strings/#Base.match"><code>match</code></a> 时，你可以选择指定开始搜索的索引。例如：</p><pre><code class="language-julia-repl">julia&gt; m = match(r&quot;[0-9]&quot;,&quot;aaaa1aaaa2aaaa3&quot;,1)
+RegexMatch(&quot;1&quot;)
+
+julia&gt; m = match(r&quot;[0-9]&quot;,&quot;aaaa1aaaa2aaaa3&quot;,6)
+RegexMatch(&quot;2&quot;)
+
+julia&gt; m = match(r&quot;[0-9]&quot;,&quot;aaaa1aaaa2aaaa3&quot;,11)
+RegexMatch(&quot;3&quot;)</code></pre><p>你可以从 <code>RegexMatch</code> 对象中提取如下信息：</p><ul><li>匹配的整个子字符串：<code>m.match</code></li><li>作为字符串数组捕获的子字符串：<code>m.captures</code></li><li>整个匹配开始处的偏移：<code>m.offset</code></li><li>作为向量的捕获子字符串的偏移：<code>m.offsets</code></li></ul><p>当捕获不匹配时，<code>m.captures</code> 在该处不再包含一个子字符串，而是 <code>什么也不</code> 包含；此外，<code>m.offsets</code> 的偏移量为 0（回想一下，Julia 的索引是从 1 开始的，因此字符串的零偏移是无效的）。下面是两个有些牵强的例子：</p><pre><code class="language-julia-repl">julia&gt; m = match(r&quot;(a|b)(c)?(d)&quot;, &quot;acd&quot;)
+RegexMatch(&quot;acd&quot;, 1=&quot;a&quot;, 2=&quot;c&quot;, 3=&quot;d&quot;)
+
+julia&gt; m.match
+&quot;acd&quot;
+
+julia&gt; m.captures
+3-element Array{Union{Nothing, SubString{String}},1}:
+ &quot;a&quot;
+ &quot;c&quot;
+ &quot;d&quot;
+
+julia&gt; m.offset
+1
+
+julia&gt; m.offsets
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3
+
+julia&gt; m = match(r&quot;(a|b)(c)?(d)&quot;, &quot;ad&quot;)
+RegexMatch(&quot;ad&quot;, 1=&quot;a&quot;, 2=nothing, 3=&quot;d&quot;)
+
+julia&gt; m.match
+&quot;ad&quot;
+
+julia&gt; m.captures
+3-element Array{Union{Nothing, SubString{String}},1}:
+ &quot;a&quot;
+ nothing
+ &quot;d&quot;
+
+julia&gt; m.offset
+1
+
+julia&gt; m.offsets
+3-element Array{Int64,1}:
+ 1
+ 0
+ 2</code></pre><p>让捕获作为数组返回是很方便的，这样就可以用解构语法把它们和局域变量绑定起来：</p><pre><code class="language-julia-repl">julia&gt; first, second, third = m.captures; first
+&quot;a&quot;</code></pre><p>通过使用捕获组的编号或名称对 <code>RegexMatch</code> 对象进行索引，也可实现对捕获的访问：</p><pre><code class="language-julia-repl">julia&gt; m=match(r&quot;(?&lt;hour&gt;\d+):(?&lt;minute&gt;\d+)&quot;,&quot;12:45&quot;)
+RegexMatch(&quot;12:45&quot;, hour=&quot;12&quot;, minute=&quot;45&quot;)
+
+julia&gt; m[:minute]
+&quot;45&quot;
+
+julia&gt; m[2]
+&quot;45&quot;</code></pre><p>使用 <a href="../../base/collections/#Base.replace-Tuple{Any,Vararg{Pair,N} where N}"><code>replace</code></a> 时利用 <code>\n</code> 引用第 n 个捕获组和给替换字符串加上 <code>s</code> 的前缀，可以实现替换字符串中对捕获的引用。捕获组 0 指的是整个匹配对象。可在替换中用 <code>\g&lt;groupname&gt;</code> 对命名捕获组进行引用。例如：</p><pre><code class="language-julia-repl">julia&gt; replace(&quot;first second&quot;, r&quot;(\w+) (?&lt;agroup&gt;\w+)&quot; =&gt; s&quot;\g&lt;agroup&gt; \1&quot;)
+&quot;second first&quot;</code></pre><p>为明确起见，编号捕获组也可用 <code>\g&lt;n&gt;</code> 进行引用，例如：</p><pre><code class="language-julia-repl">julia&gt; replace(&quot;a&quot;, r&quot;.&quot; =&gt; s&quot;\g&lt;0&gt;1&quot;)
+&quot;a1&quot;</code></pre><p>你可以在后双引号的后面加上 <code>i</code>, <code>m</code>, <code>s</code> 和 <code>x</code> 等标志对正则表达式进行修改。这些标志和 Perl 里面的含义一样，详见以下对 <a href="http://perldoc.perl.org/perlre.html#Modifiers">perlre 手册</a>的摘录：</p><pre><code class="language-none">i   不区分大小写的模式匹配。
+
+    若区域设置规则有效，相应映射中代码点小于 255 的部分取自当前区域设置，更大代码点的部分取自 Unicode 规则。然而，跨越 Unicode 规则（ords 255/256）和 非 Unicode 规则边界的匹配将失败。
+
+m   将字符串视为多行。也即更改 &quot;^&quot; 和 &quot;$&quot;, 使其从匹配字符串的开头和结尾变为匹配字符串中任意一行的开头或结尾。
+
+s   将字符串视为单行。也即更改 &quot;.&quot; 以匹配任何字符，即使是通常不能匹配的换行符。
+
+    像这样一起使用，r&quot;&quot;ms，它们让 &quot;.&quot; 匹配任何字符，同时也支持分别在字符串中换行符的后面和前面用 &quot;^&quot; 和 &quot;$&quot; 进行匹配。
+
+x   令正则表达式解析器忽略多数既不是反斜杠也不属于字符类的空白。它可以用来把正则表达式分解成（略为）更易读的部分。和普通代码中一样，`#` 字符也被当作引入注释的元字符。</code></pre><p>例如，下面的正则表达式已打开所有三个标志：</p><pre><code class="language-julia-repl">julia&gt; r&quot;a+.*b+.*?d$&quot;ism
+r&quot;a+.*b+.*?d$&quot;ims
+
+julia&gt; match(r&quot;a+.*b+.*?d$&quot;ism, &quot;Goodbye,\nOh, angry,\nBad world\n&quot;)
+RegexMatch(&quot;angry,\nBad world&quot;)</code></pre><p><code>r&quot;...&quot;</code> 文本的构造没有插值和转义（除了引号 <code>&quot;</code> 仍然需要转义）。下面例子展示了它和标准字符串字面量之间的差别：</p><pre><code class="language-julia-repl">julia&gt; x = 10
+10
+
+julia&gt; r&quot;$x&quot;
+r&quot;$x&quot;
+
+julia&gt; &quot;$x&quot;
+&quot;10&quot;
+
+julia&gt; r&quot;\x&quot;
+r&quot;\x&quot;
+
+julia&gt; &quot;\x&quot;
+ERROR: syntax: invalid escape sequence</code></pre><p>Julia 也支持 <code>r&quot;&quot;&quot;...&quot;&quot;&quot;</code> 形式的三引号正则表达式字符串（或许便于处理包含引号和换行符的正则表达式）。</p><p><code>Regex()</code> 构造函数可以用于以编程方式创建合法的正则表达式字符串。这允许在构造正则表达式字符串时使用字符串变量的内容和其他字符串操作。上面的任何正则表达式代码可以在 <code>Regex()</code> 的单字符串参数中使用。下面是一些例子：</p><pre><code class="language-julia-repl">julia&gt; using Dates
+
+julia&gt; d = Date(1962,7,10)
+1962-07-10
+
+julia&gt; regex_d = Regex(&quot;Day &quot; * string(day(d)))
+r&quot;Day 10&quot;
+
+julia&gt; match(regex_d, &quot;It happened on Day 10&quot;)
+RegexMatch(&quot;Day 10&quot;)
+
+julia&gt; name = &quot;Jon&quot;
+&quot;Jon&quot;
+
+julia&gt; regex_name = Regex(&quot;[\&quot;( ]$name[\&quot;) ]&quot;)  # 插入 name 的值
+r&quot;[\&quot;( ]Jon[\&quot;) ]&quot;
+
+julia&gt; match(regex_name,&quot; Jon &quot;)
+RegexMatch(&quot; Jon &quot;)
+
+julia&gt; match(regex_name,&quot;[Jon]&quot;) === nothing
+true</code></pre><h2 id="字节数组字面量-1"><a class="docs-heading-anchor" href="#字节数组字面量-1">字节数组字面量</a><a class="docs-heading-anchor-permalink" href="#字节数组字面量-1" title="Permalink"></a></h2><p>另一个有用的非标准字符串字面量是字节数组字面量：<code>b&quot;...&quot;</code>。这种形式使你能够用字符串表示法来表达只读字面量字节数组，也即 <a href="../../base/numbers/#Core.UInt8"><code>UInt8</code></a> 值的数组。字节数组字面量的规则如下：</p><ul><li>ASCII 字符和 ASCII 转义生成单个字节。</li><li><code>\x</code> 和八进制转义序列生成与转义值对应的<em>字节</em>。</li><li>Unicode 转义序列生成编码 UTF-8 中该代码点的字节序列。</li></ul><p>这些规则有一些重叠，这是因为 <code>\x</code> 的行为和小于 0x80(128) 的八进制转义被前两个规则同时包括了；但这两个规则又是一致的。通过这些规则可以方便地同时使用 ASCII 字符，任意字节值，以及 UTF-8 序列来生成字节数组。下面是一个用到全部三个规则的例子：</p><pre><code class="language-julia-repl">julia&gt; b&quot;DATA\xff\u2200&quot;
+8-element Base.CodeUnits{UInt8,String}:
+ 0x44
+ 0x41
+ 0x54
+ 0x41
+ 0xff
+ 0xe2
+ 0x88
+ 0x80</code></pre><p>其中，ASCII 字符串 &quot;DATA&quot; 对应于字节 68, 65, 84, 65。<code>\xff</code> 生成单个字节 255。Unicode 转义 <code>\u2200</code> 在 UTF-8 中被编码为三个字节 226, 136, 128。注意生成的字节数组不对应任何有效 UTF-8 字符串。</p><pre><code class="language-julia-repl">julia&gt; isvalid(&quot;DATA\xff\u2200&quot;)
+false</code></pre><p>如前所述，<code>CodeUnits{UInt8,String}</code> 类型的行为类似于只读 <code>UInt8</code> 数组。如果需要标准数组，你可以 `Vector{UInt8} 进行转换。</p><pre><code class="language-julia-repl">julia&gt; x = b&quot;123&quot;
+3-element Base.CodeUnits{UInt8,String}:
+ 0x31
+ 0x32
+ 0x33
+
+julia&gt; x[1]
+0x31
+
+julia&gt; x[1] = 0x32
+ERROR: setindex! not defined for Base.CodeUnits{UInt8,String}
+[...]
+
+julia&gt; Vector{UInt8}(x)
+3-element Array{UInt8,1}:
+ 0x31
+ 0x32
+ 0x33</code></pre><p>同时，要注意到 <code>\xff</code> 和 <code>\uff</code> 之间的显著差别：前面的转义序列编码为<em>字节 255</em>，而后者代表 <em>代码 255</em>，它在 UTF-8 中编码为两个字节：</p><pre><code class="language-julia-repl">julia&gt; b&quot;\xff&quot;
+1-element Base.CodeUnits{UInt8,String}:
+ 0xff
+
+julia&gt; b&quot;\uff&quot;
+2-element Base.CodeUnits{UInt8,String}:
+ 0xc3
+ 0xbf</code></pre><p>字符字面量也用到了相同的行为。</p><p>对于小于 <code>\u80</code> 的代码，每个代码的 UTF-8 编码恰好只是由相应 <code>\x</code> 转义产生的单个字节，因此忽略两者的差别无伤大雅。然而，从 <code>x80</code> 到 <code>\xff</code> 的转义比起从 <code>u80</code> 到 <code>\uff</code> 的转义来，就有一个主要的差别：前者都只编码为一个字节，它没有形成任何有效 UTF-8 数据，除非它后面有非常特殊的连接字节；而后者则都代表 2 字节编码的 Unicode 代码。</p><p>如果这些还是太难理解，试着读一下 <a href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/">&quot;每个软件开发人员绝对必须知道的最基础 Unicode 和字符集知识&quot;</a>。它是一个优质的 Unicode 和 UTF-8 指南，或许能帮助解除一些这方面的疑惑。</p><h2 id="man-version-number-literals-1"><a class="docs-heading-anchor" href="#man-version-number-literals-1">版本号字面量</a><a class="docs-heading-anchor-permalink" href="#man-version-number-literals-1" title="Permalink"></a></h2><p>版本号很容易用 <a href="../../base/base/#Base.@v_str"><code>v&quot;...&quot;</code></a> 形式的非标准字符串字面量表示。版本号字面量生成遵循<a href="https://semver.org/">语义版本</a>规范的 <a href="../../base/base/#Base.VersionNumber"><code>VersionNumber</code></a> 对象，因此由主、次、补丁号构成，后跟预发行 (pre-release) 和生成阿尔法数注释（build alpha-numeric）。例如，<code>v&quot;0.2.1-rc1+win64&quot;</code> 可分为主版本号 <code>0</code>，次版本号 <code>2</code>，补丁版本号 <code>1</code>，预发行版号 <code>rc1</code>，以及生成版本 <code>win64</code>。输入版本字面量时，除了主版本号以外所有内容都是可选的，因此 <code>v&quot;0.2&quot;</code> 等效于 <code>v&quot;0.2.0&quot;</code>（预发行号和生成注释为空），<code>v&quot;2&quot;</code> 等效于 <code>v&quot;2.0.0&quot;</code>，等等。</p><p><code>VersionNumber</code> 对象在轻松正确地比较两个（或更多）版本时非常有用。例如，常数 <code>VERSION</code> 把 Julia 的版本号保留为一个 <code>VersionNumber</code> 对象，因此可以像下面这样用简单的声明定义一些特定版本的行为：</p><pre><code class="language-julia">if v&quot;0.2&quot; &lt;= VERSION &lt; v&quot;0.3-&quot;
+    # 针对 0.2 发行版系列做些事情
+end</code></pre><p>注意在上例中用到了非标准版本号 <code>v&quot;0.3-&quot;</code>，其中有尾随符 <code>-</code>：这个符号是 Julia 标准的扩展，它可以用来表明低于任何 <code>0.3</code> 发行版的版本，包括所有的预发行版。所以上例中代码只能在稳定版本 <code>0.2</code> 上运行，而不能在 <code>v&quot;0.3.0-rc1&quot;</code> 这样的版本上运行。为了支持非稳定（即预发行）的 <code>0.2</code> 版本，下限检查应像这样应该改为：<code>v&quot;0.2-&quot; &lt;= VERSION</code>。</p><p>另一个非标准版本规范扩展使得能够使用 <code>+</code> 来表示生成版本的上限，例如 <code>VERSION &gt; v&quot;0.2-rc1+&quot;</code> 可以用来表示任意高于 <code>0.2-rc1</code> 和其任意生成版本的版本：它对 <code>v&quot;0.2-rc1+win64&quot;</code> 返回 <code>false</code> 而对 <code>v&quot;0.2-rc2&quot;</code> 返回 <code>true</code>。</p><p>在比较中使用这样的特殊版本是个好办法（特别是，总是应该对高版本使用尾随 <code>-</code>，除非有好理由不这样），但它们不应该被用作任何内容的实际版本，因为它们在语义版本控制方案中无效。</p><p>除了用于定义常数 <a href="../../base/constants/#Base.VERSION"><code>VERSION</code></a>，<code>VersionNumber</code> 对象在 <code>Pkg</code> 模块应用广泛，常用于指定软件包的版本及其依赖。</p><h2 id="man-raw-string-literals-1"><a class="docs-heading-anchor" href="#man-raw-string-literals-1">原始字符串字面量</a><a class="docs-heading-anchor-permalink" href="#man-raw-string-literals-1" title="Permalink"></a></h2><p>无插值和非转义的原始字符串可用 <code>raw&quot;...&quot;</code> 形式的非标准字符串字面量表示。原始字符串字面量生成普通的 <code>String</code> 对象，它无需插值和非转义地包含和输入完全一样的封闭式内容。这对于包含其他语言中使用 &quot; 或 \&quot; 作为特殊字符的代码或标记的字符串很有用。</p><p>例外的是，引号仍必须转义，例如 <code>raw&quot;\&quot;&quot;</code> 等效于 <code>&quot;\&quot;&quot;</code>。为了能够表达所有字符串，反斜杠也必须转义，不过只是当它刚好出现在引号前面时。</p><pre><code class="language-julia-repl">julia&gt; println(raw&quot;\\ \\\&quot;&quot;)
+\\ \&quot;</code></pre><p>请注意，前两个反斜杠在输出中逐字显示，这是因为它们不是在引号前面。然而，接下来的一个反斜杠字符转义了后面的一个反斜杠；又由于这些反斜杠出现在引号前面，最后一个反斜杠转义了一个引号。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../complex-and-rational-numbers/">« 复数和有理数</a><a class="docs-footer-nextpage" href="../functions/">函数 »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 六月 16 周二 16:23">2020 六月 16 周二</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
