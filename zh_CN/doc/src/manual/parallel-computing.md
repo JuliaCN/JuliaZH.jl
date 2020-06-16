@@ -187,7 +187,8 @@ julia> @elapsed while n > 0 # 打印结果
 
 # [Multi-Threading (Experimental)](@id man-multithreading)
 
-除了 task 之外，Julia 还原生支持多线程。本部分内容是实验性的，未来相关接口可能会改变。
+In addition to tasks Julia natively supports multi-threading.
+Note that this section is experimental and the interfaces may change in the future.
 
 ## 设置
 
@@ -201,11 +202,24 @@ julia> Threads.nthreads()
 
 Julia 启动时的线程数可以通过环境变量 `JULIA_NUM_THREADS` 设置，下面启动4个线程：
 
+Bash on Linux/OSX:
+
 ```bash
 export JULIA_NUM_THREADS=4
 ```
 
-(上面的代码只能在 Linux 和 OSX 系统中运行，如果你在以上平台中使用的是 C shell，那么将 `export` 改成 `set`，如果你是在 Windows 上运行，那么将 `export` 改成 `set` 同时启动 Julia 时指定 `julia.exe` 的完整路径。)
+C shell on Linux/OSX, CMD on Windows:
+
+```bash
+set JULIA_NUM_THREADS=4
+```
+
+Powershell on Windows:
+
+```powershell
+$env:JULIA_NUM_THREADS=4
+```
+
 
 现在确认下确实有4个线程：
 
@@ -336,7 +350,14 @@ julia> acc[]
 ## 副作用和可变的函数参数
 
 
-在使用多线程时，要非常小心使用了不[纯](https://en.wikipedia.org/wiki/Pure_function)的函数，例如，用到了[以!结尾](https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1)的函数，通常这类函数会修改其参数，因而是不纯的。此外还有些函数没有以 `!` 结尾，其实也是有副作用的，比如 [`findfirst(regex, str)`](@ref) 就会改变 `regex` 参数，或者是 [`rand()`](@ref) 会修改 `Base.GLOBAL_RNG`:
+When using multi-threading we have to be careful when using functions that are not
+[pure](https://en.wikipedia.org/wiki/Pure_function) as we might get a wrong answer.
+For instance functions that have their
+[name ending with `!`](@ref bang-convention)
+by convention modify their arguments and thus are not pure. However, there are
+functions that have side effects and their name does not end with `!`. For
+instance [`findfirst(regex, str)`](@ref) mutates its `regex` argument or
+[`rand()`](@ref) changes `Base.GLOBAL_RNG` :
 
 ```julia-repl
 julia> using Base.Threads
@@ -646,8 +667,10 @@ julia> addprocs(2)
 
 在 master 主线程中，`Distributed` 模块必须显式地在调用 [`addprocs`](@ref) 之前载入，该模块会自动在其它进程中可见。
 
-需要注意的时，worker 进程并不会执行 `~/.julia/config/startup.jl` 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。
-
+Note that workers do not run a `~/.julia/config/startup.jl` startup script, nor do they synchronize
+their global state (such as global variables, new method definitions, and loaded modules) with any
+of the other running processes. You may use `addprocs(exeflags="--project")` to initialize a worker with
+a particular environment, and then `@everywhere using <modulename>` or `@everywhere include("file.jl")`.
 
 其它类型的集群可以通过自己写一个 `ClusterManager` 来实现，下面 [集群管理器](@ref) 部分会介绍。
 
@@ -979,7 +1002,7 @@ sent to the remote node to go ahead and remove its reference to the value.
 一旦执行了 finalize 之后，引用就不可用了。
 
 
-## Local invocations(@id man-distributed-local-invocations)
+## Local invocations
 
 Data is necessarily copied over to the remote node for execution. This is the case for both
 remotecalls and when data is stored to a[`RemoteChannel`](@ref) / [`Future`](@ref Distributed.Future) on
@@ -1100,7 +1123,7 @@ julia> addprocs(3)
 
 julia> @everywhere using SharedArrays
 
-julia> S = SharedArray{Int,2}((3,4), init = S -> S[localindices(S)] = myid())
+julia> S = SharedArray{Int,2}((3,4), init = S -> S[localindices(S)] = repeat([myid()], length(localindices(S))))
 3×4 SharedArray{Int64,2}:
  2  2  3  4
  2  3  3  4
@@ -1119,7 +1142,7 @@ julia> S
 [`SharedArrays.localindices`](@ref) 提供了一个以为的切片，可以很方便地用来将 task 分配到各个进程上。当然你可以按你想要的方式做区分：
 
 ```julia-repl
-julia> S = SharedArray{Int,2}((3,4), init = S -> S[indexpids(S):length(procs(S)):length(S)] = myid())
+julia> S = SharedArray{Int,2}((3,4), init = S -> S[indexpids(S):length(procs(S)):length(S)] = repeat([myid()], length( indexpids(S):length(procs(S)):length(S))))
 3×4 SharedArray{Int64,2}:
  2  2  2  2
  3  3  3  3

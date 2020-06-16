@@ -135,16 +135,18 @@ julia> collect(Iterators.reverse(Squares(4)))
   1
 ```
 
-## 索引
+## Indexing
 
-| 需要实现的方法 | 简介 |
+| Methods to implement | Brief description                |
 |:-------------------- |:-------------------------------- |
-| `getindex(X, i)` | `X[i]`，索引元素访问 |
-| `setindex!(X, v, i)` | `X[i] = v`，索引元素赋值 |
-| `firstindex(X)` | 第一个索引 |
-| `lastindex(X)` | 最后一个索引，用于 `X[end]` |
+| `getindex(X, i)`     | `X[i]`, indexed element access   |
+| `setindex!(X, v, i)` | `X[i] = v`, indexed assignment   |
+| `firstindex(X)`         | The first index, used in `X[begin]` |
+| `lastindex(X)`           | The last index, used in `X[end]` |
 
-对于 `Squares` 类型而言，可以通过对第 `i` 个元素求平方计算出其中的第 `i` 个元素，可以用 `S[i]` 的索引表达式形式暴露该接口。为了支持该行为，`Squares` 只需要简单地定义 [`getindex`](@ref)：
+For the `Squares` iterable above, we can easily compute the `i`th element of the sequence by squaring
+it.  We can expose this as an indexing expression `S[i]`. To opt into this behavior, `Squares`
+simply needs to define [`getindex`](@ref):
 
 ```jldoctest squaretype
 julia> function Base.getindex(S::Squares, i::Int)
@@ -156,7 +158,8 @@ julia> Squares(100)[23]
 529
 ```
 
-另外，为了支持语法 `S[end]`，我们必须定义 [`lastindex`](@ref) 来指定最后一个有效索引。建议也定义 [`firstindex`](@ref) 来指定第一个有效索引：
+Additionally, to support the syntax `S[begin]` and `S[end]`, we must define [`firstindex`](@ref) and
+[`lastindex`](@ref) to specify the first and last valid indices, respectively:
 
 ```jldoctest squaretype
 julia> Base.firstindex(S::Squares) = 1
@@ -195,7 +198,7 @@ julia> Squares(10)[[3,4.,5]]
 | **可选方法**                            | **默认定义**                 | **简短描述**                                                                 |
 | `IndexStyle(::Type)`                            | `IndexCartesian()`                     | 返回 `IndexLinear()` 或 `IndexCartesian()`。请参阅下文描述。      |
 | `getindex(A, I...)`                             | 基于标量 `getindex` 定义  | [多维非标量索引](@ref man-array-indexing)                    |
-| `setindex!(A, I...)`                            | 基于标量 `setindex!` 定义 | [多维非标量索引元素赋值](@ref man-array-indexing)          |
+| `setindex!(A, X, I...)`                            | 基于标量 `setindex!` 定义 | [多维非标量索引元素赋值](@ref man-array-indexing)          |
 | `iterate`                                       | 基于标量 `getindex` 定义  | Iteration                                                                             |
 | `length(A)`                                     | `prod(size(A))`                        | 元素数                                                                    |
 | `similar(A)`                                    | `similar(A, eltype(A), size(A))`       | 返回具有相同形状和元素类型的可变数组                           |
@@ -462,10 +465,11 @@ end
 find_aac(bc::Base.Broadcast.Broadcasted) = find_aac(bc.args)
 find_aac(args::Tuple) = find_aac(find_aac(args[1]), Base.tail(args))
 find_aac(x) = x
+find_aac(::Tuple{}) = nothing
 find_aac(a::ArrayAndChar, rest) = a
 find_aac(::Any, rest) = find_aac(rest)
 # output
-find_aac (generic function with 5 methods)
+find_aac (generic function with 6 methods)
 ```
 
 在这些定义中，可以得到以下行为：

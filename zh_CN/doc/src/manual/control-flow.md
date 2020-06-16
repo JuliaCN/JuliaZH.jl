@@ -2,7 +2,7 @@
 
 Julia 提供了大量的流程控制构件：
 
-  * [复合表达式](@ref man-compound-expressions)：`begin` 和 `(;)`。
+  * [Compound Expressions](@ref man-compound-expressions): `begin` and `;`.
   * [条件表达式](@ref man-conditional-evaluation)：`if`-`elseif`-`else` 和 `?:` (三元运算符)。
   * [短路求值](@ref)：`&&`、`||` 和链式比较。
   * [重复执行：循环](@ref man-loops)：`while` 和 `for`。
@@ -13,7 +13,10 @@ Julia 提供了大量的流程控制构件：
 
 ## [复合表达式](@id man-compound-expressions)
 
-有时一个表达式能够有序地计算若干子表达式，并返回最后一个子表达式的值作为它的值是很方便的。Julia 有两个组件来完成这个： `begin` 代码块 和 `(;)` 链。这两个复合表达式组件的值都是最后一个子表达式的值。下面是一个 `begin` 代码块的例子：
+Sometimes it is convenient to have a single expression which evaluates several subexpressions
+in order, returning the value of the last subexpression as its value. There are two Julia constructs
+that accomplish this: `begin` blocks and `;` chains. The value of both compound expression constructs
+is that of the last subexpression. Here's an example of a `begin` block:
 
 ```jldoctest
 julia> z = begin
@@ -24,14 +27,17 @@ julia> z = begin
 3
 ```
 
-因为这些是非常简短的表达式，它们可以简单地被放到一行里，这也是 `(;)` 链的由来：
+Since these are fairly small, simple expressions, they could easily be placed onto a single line,
+which is where the `;` chain syntax comes in handy:
 
 ```jldoctest
 julia> z = (x = 1; y = 2; x + y)
 3
 ```
 
-这个语法在定义简洁的单行函数的时候特别有用，参见 [函数](@id man-functions)。尽管很典型，但是并不要求 `begin` 代码块是多行的，或者 `(;)` 链是单行的：
+This syntax is particularly useful with the terse single-line function definition form introduced
+in [Functions](@ref). Although it is typical, there is no requirement that `begin` blocks be multiline
+or that `;` chains be single-line:
 
 ```jldoctest
 julia> begin x = 1; y = 2; x + y end

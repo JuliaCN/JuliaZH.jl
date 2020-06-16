@@ -83,7 +83,7 @@ end
 
 此函数的返回值就像赋值给了一个类型已被声明的变量：返回值始终转换为`Float64`。
 
-## 抽象类型
+## [Abstract Types](@id man-abstract-types)
 
 抽象类型不能实例化，只能作为类型图中的节点使用，从而描述由相关具体类型组成的集合：那些作为其后代的具体类型。我们从抽象类型开始，即使它们没有实例，因为它们是类型系统的主干：它们形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。
 
@@ -145,7 +145,10 @@ end
 
 因此，抽象类型允许程序员编写泛型函数，之后可以通过许多具体类型的组合将其用作默认方法。多亏了多重分派，程序员可以完全控制是使用默认方法还是更具体的方法。
 
-需要注意的重点是，即使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅[性能建议](@ref man-performance-tips)。）
+An important point to note is that there is no loss in performance if the programmer relies on
+a function whose arguments are abstract types, because it is recompiled for each tuple of argument
+concrete types with which it is invoked. (There may be a performance issue, however, in the case
+of function arguments that are containers of abstract types; see [Performance Tips](@ref man-performance-abstract-container).)
 
 ## 原始类型
 
@@ -1036,6 +1039,9 @@ julia> firstlast(Val(false))
 
 为了保证 Julia 的一致性，调用处应当始终传递 `Val` *实例*而不是*类型*，也就是使用 `foo(Val(:bar))` 而不是 `foo(Val{:bar})`。
 
-值得注意的是，参数「值」类型非常容易被误用，包括 `Val`；情况不太好时，你很容易使代码性能变得更*糟糕*。一般使用时，你可能从来不会想要写出上方示例那样的代码。有关 `Val` 的正确（和不正确）使用的更多信息，请阅读[性能建议](@ref man-performance-tips)中更广泛的讨论。
+It's worth noting that it's extremely easy to mis-use parametric "value" types, including `Val`;
+in unfavorable cases, you can easily end up making the performance of your code much *worse*.
+ In particular, you would never want to write actual code as illustrated above.  For more information
+about the proper (and improper) uses of `Val`, please read [the more extensive discussion in the performance tips](@ref man-performance-value-type).
 
 [^1]: 「少数」由常数 `MAX_UNION_SPLITTING` 定义，目前设置为 4。

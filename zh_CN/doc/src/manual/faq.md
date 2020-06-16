@@ -56,7 +56,7 @@ obj3 = MyModule.someotherfunction(obj2, c)
 
 当一个文件通过使用 `julia file.jl` 来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查 `abspath(PROGRAM_FILE) == @__FILE__` 是不是 `true`。
 
-### 怎样在脚本中捕获 CTRL-C ？
+### [How do I catch CTRL-C in a script?](@id catch-ctrl-c)
 
 通过 `julia file.jl` 方式运行的 Julia 脚本，在你尝试按 CTRL-C (SIGINT) 中止它时，并不会抛出 [`InterruptException`](@ref)。如果希望在脚本终止之后运行一些代码，请使用 [`atexit`](@ref)，注意：脚本的中止不一定是由 CTRL-C 导致的。
 另外你也可以通过 `julia -e 'include(popfirst!(ARGS))' file.jl` 命令运行脚本，然后可以通过 [`try`](@ref) 捕获 `InterruptException`。
@@ -70,16 +70,28 @@ obj3 = MyModule.someotherfunction(obj2, c)
 ```julia
 #!/bin/bash
 #=
-exec julia --color=yes --startup-file=no -e 'include(popfirst!(ARGS))' \
-    "${BASH_SOURCE[0]}" "$@"
+exec julia --color=yes --startup-file=no "${BASH_SOURCE[0]}" "$@"
 =#
 
-@show ARGS  # 把你的 Julia 代码放在这里
+@show ARGS  # put any Julia code here
 ```
 
 在以上例子中，位于 `#=` 和 `=#` 之间的代码可以当作一个 `bash` 脚本。
 因为这些代码放在 Julia 的多行注释中，所以 Julia 会忽略它们。
 在 `=#` 之后的 Julia 代码会被 `bash` 忽略，J因为当文件解析到 `exec` 语句时会停止解析，开始执行命令。
+
+!!! note
+    In order to [catch CTRL-C](@ref catch-ctrl-c) in the script you can use
+    ```julia
+    #!/bin/bash
+    #=
+    exec julia --color=yes --startup-file=no -e 'include(popfirst!(ARGS))' \
+        "${BASH_SOURCE[0]}" "$@"
+    =#
+
+    @show ARGS  # put any Julia code here
+    ```
+    instead. Note that with this strategy [`PROGRAM_FILE`](@ref) will not be set.
 
 ## 函数
 
@@ -303,6 +315,45 @@ julia> sqrt(-2.0+0im)
 0.0 + 1.4142135623730951im
 ```
 
+### How can I constrain or compute type parameters?
+
+The parameters of a [parametric type](@ref Parametric-Types) can hold either
+types or bits values, and the type itself chooses how it makes use of these parameters.
+For example, `Array{Float64, 2}` is parameterized by the type `Float64` to express its
+element type and the integer value `2` to express its number of dimensions.  When
+defining your own parametric type, you can use subtype constraints to declare that a
+certain parameter must be a subtype ([`<:`](@ref)) of some abstract type or a previous
+type parameter.  There is not, however, a dedicated syntax to declare that a parameter
+must be a _value_ of a given type — that is, you cannot directly declare that a
+dimensionality-like parameter [`isa`](@ref) `Int` within the `struct` definition, for
+example.  Similarly, you cannot do computations (including simple things like addition
+or subtraction) on type parameters.  Instead, these sorts of constraints and
+relationships may be expressed through additional type parameters that are computed
+and enforced within the type's [constructors](@ref man-constructors).
+
+As an example, consider
+```julia
+struct ConstrainedType{T,N,N+1} # NOTE: INVALID SYNTAX
+    A::Array{T,N}
+    B::Array{T,N+1}
+end
+```
+where the user would like to enforce that the third type parameter is always the second plus one. This can be implemented with an explicit type parameter that is checked by an [inner constructor method](@ref man-inner-constructor-methods) (where it can be combined with other checks):
+```julia
+struct ConstrainedType{T,N,M}
+    A::Array{T,N}
+    B::Array{T,M}
+    function ConstrainedType(A::Array{T,N}, B::Array{T,M}) where {T,N,M}
+        N + 1 == M || throw(ArgumentError("second argument should have one more axis" ))
+        new{T,N,M}(A, B)
+    end
+end
+```
+This check is usually *costless*, as the compiler can elide the check for valid concrete types. If the second argument is also computed, it may be advantageous to provide an [outer constructor method](@ref man-outer-constructor-methods) that performs this calculation:
+```julia
+ConstrainedType(A) = ConstrainedType(A, compute_B(A))
+```
+
 ### [Why does Julia use native machine integer arithmetic?](@id faq-integer-arithmetic)
 
 Julia使用机器算法进行整数计算。这意味着`Int`的范围是有界的，值在范围的两端循环，也就是说整数的加法，减法和乘法会出现上溢或者下溢，导致出现某些从开始就令人不安的结果：
@@ -467,6 +518,14 @@ Source line: 5
 因为编译器知道整数加法和乘法是满足结合律的并且乘法可以在加法上使用分配律 — 两者在饱和算法中都不成立 — 所以编译器就可以把整个循环优化到只有一个乘法和一个加法。饱和算法完全无法使用这种优化，因为在每个循环迭代中结合律和分配律都会失效导致不同的失效位置会得到不同的结果。编译器可以展开循环，但是不能代数上将多个操作简化到更少的等效操作。
 
 让整数算法静默溢出的最合理的备用方案是所有地方都使用检查算法，当加法、减法和乘法溢出，产生不正确的值时引发错误。在[blog post](http://danluu.com/integer-overflow/)中，Dan Luu分析了这个方案，发现这个方案理论上的性能微不足道，但是最终仍然会消耗大量的性能因为编译器（LLVM和GCC）无法在加法溢出检测处优雅地进行优化。如果未来有所进步我们会考虑在Julia中默认设置为检查整数算法，但是现在，我们需要和溢出可能共同相处。
+
+In the meantime, overflow-safe integer operations can be achieved through the use of external libraries
+such as [SaferIntegers.jl](https://github.com/JeffreySarnoff/SaferIntegers.jl). Note that, as stated
+previously, the use of these libraries significantly increases the execution time of code using the
+checked integer types. However, for limited usage, this is far less of an issue than if it were used
+for all integer operations. You can follow the status of the discussion
+[here](https://github.com/JuliaLang/julia/issues/855).
+
 
 ### 在远程执行中`UndefVarError`的可能原因有哪些？
 

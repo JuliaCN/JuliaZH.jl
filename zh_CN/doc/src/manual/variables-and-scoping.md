@@ -236,7 +236,11 @@ julia> counter()
 2
 ```
 
-也可以参见接下来两节例子中的闭包。内部函数从包含它的作用域中继承的变量有时被称为*被捕获*变量，比如在第一个例子中的 `x` 与在第二个例子中的 `state`。被捕获变量可能带来性能挑战，这会在[性能建议](@ref man-performance-tips)中讨论。
+See also the closures in the examples in the next two sections. A variable,
+such as `x` in the first example and `state` in the second, that is inherited
+from the enclosing scope by the inner function is sometimes called a
+*captured* variable. Captured variables can present [performance challenges
+discussed in performance tips](@ref man-performance-captured).
 
 继承全局作用域与嵌套局部作用域的区别可能导致在局部或者全局作用域中定义的函数在变量赋值上有稍许区别。考虑一下上面最后一个例子的一个变化，把 `bar` 移动到全局作用域中：
 
@@ -363,7 +367,9 @@ julia> let
 
 ### 对于循环和推导式
 
-`for` 循环，`while` 循环，和[数组推导](@ref)拥有下述的行为：任何在它们的内部的作用域中引入的新变量在每次循环迭代中都会被新分配一块内存，就像循环体是被 `let` 块包围一样。
+`for` loops, `while` loops, and [comprehensions](@ref man-comprehensions) have the following behavior: any new variables
+introduced in their body scopes are freshly allocated for each loop iteration, as if the loop body
+were surrounded by a `let` block:
 
 ```jldoctest
 julia> Fs = Vector{Any}(undef, 2);

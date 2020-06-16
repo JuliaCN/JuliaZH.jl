@@ -65,7 +65,8 @@ julia> convert(Array{Float64}, a)
  4.0  5.0  6.0
 ```
 
-类型转换并不总是可行的，有时 `convert` 函数并不知道该如何执行所请求的类型转换就会抛出 no method error 错误。例如下例：
+Conversion isn't always possible, in which case a [`MethodError`](@ref) is thrown indicating that `convert`
+doesn't know how to perform the requested conversion:
 
 ```jldoctest
 julia> convert(AbstractFloat, "foo")

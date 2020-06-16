@@ -78,7 +78,8 @@
      
   * 类似于提取（或「解引用」）元胞数组的所有元素的操作，例如 MATLAB 中的 `vertcat(A{:})`，在 Julia 中是使用 splat 运算符编写的，例如 `vcat(A...)`。
      
-
+  * In Julia, the `adjoint` function performs conjugate transposition; in MATLAB, `adjoint` provides the "adjugate" or
+    classical adjoint, which is the transpose of the matrix of cofactors.
 ## 与 R 的显著差异
 
 Julia 的目标之一是为数据分析和统计编程提供高效的语言。对于从 R 转到 Julia 的用户来说，这是一些显著差异：
@@ -201,12 +202,12 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
   * Julia 的 `for`、`if`、`while`等代码块由`end`关键字终止。缩进级别并不像在 Python 中那么重要。
      
-  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的表达式，则认为已经结束；否则，认为输入继续。强制表达式继续的一种方式是将其包含在括号中。
+  * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的表达式，则认为其已经结束；否则，认为输入继续。强制表达式继续的一种方式是将其包含在括号中。
      
      
   * 默认情况下，Julia 数组是列优先的（Fortran 顺序），而 NumPy 数组是行优先（C 顺序）。为了在循环数组时获得最佳性能，循环顺序应该在 Julia 中相对于 NumPy 反转（请参阅 [Performance Tips](@ref man-performance-tips) 中的对应章节）。
      
-     
+    be reversed in Julia relative to NumPy (see [relevant section of Performance Tips](@ref man-performance-column-major)).
   * Julia 的更新运算符（例如 `+=`，`-=`，···）是 *not in-place*，而 Numpy 的是。这意味着 `A = [1, 1]; B = A; B += [3, 3]` 不会改变 `A` 中的值，而将名称 `B` 重新绑定到右侧表达式 `B = B + 3` 的结果，这是一个新的数组。对于 in-place 操作，使用 `B .+= 3`（另请参阅 [dot operators](@ref man-dot-operators)）、显式的循环或者 `InplaceOps.jl`。
      
      
@@ -232,7 +233,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
   * Julia 的数组是列优先的（Fortran 顺序），而 C/C++ 的数组默认是行优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 [性能建议](@ref man-performance-tips)）。
      
-     
+    reversed in Julia relative to C/C++ (see [relevant section of Performance Tips](@ref man-performance-column-major)).
   * Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
      
   * 在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。
