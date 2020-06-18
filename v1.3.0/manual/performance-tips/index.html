@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>性能建议 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/performance-tips/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li class="is-active"><a class="tocitem" href>性能建议</a><ul class="internal"><li><a class="tocitem" href="#避免全局变量-1"><span>避免全局变量</span></a></li><li><a class="tocitem" href="#使用-[@time](@ref)评估性能以及注意内存分配-1"><span>使用 <code>@time</code>评估性能以及注意内存分配</span></a></li><li><a class="tocitem" href="#tools-1"><span>Tools</span></a></li><li><a class="tocitem" href="#Avoid-containers-with-abstract-type-parameters-1"><span>Avoid containers with abstract type parameters</span></a></li><li><a class="tocitem" href="#类型声明-1"><span>类型声明</span></a></li><li><a class="tocitem" href="#将函数拆分为多个定义-1"><span>将函数拆分为多个定义</span></a></li><li><a class="tocitem" href="#编写「类型稳定的」函数-1"><span>编写「类型稳定的」函数</span></a></li><li><a class="tocitem" href="#避免更改变量类型-1"><span>避免更改变量类型</span></a></li><li><a class="tocitem" href="#kernel-functions-1"><span>Separate kernel functions (aka, function barriers)</span></a></li><li><a class="tocitem" href="#Types-with-values-as-parameters-1"><span>Types with values-as-parameters</span></a></li><li><a class="tocitem" href="#The-dangers-of-abusing-multiple-dispatch-(aka,-more-on-types-with-values-as-parameters)-1"><span>The dangers of abusing multiple dispatch (aka, more on types with values-as-parameters)</span></a></li><li><a class="tocitem" href="#按内存顺序访问数组，即按列访问-1"><span>按内存顺序访问数组，即按列访问</span></a></li><li><a class="tocitem" href="#输出预分配-1"><span>输出预分配</span></a></li><li><a class="tocitem" href="#点语法：融合向量化操作-1"><span>点语法：融合向量化操作</span></a></li><li><a class="tocitem" href="#考虑在切片中使用视图-1"><span>考虑在切片中使用视图</span></a></li><li><a class="tocitem" href="#复制数据不总是坏的-1"><span>复制数据不总是坏的</span></a></li><li><a class="tocitem" href="#避免-I/0-中的字符串插值-1"><span>避免 I/0 中的字符串插值</span></a></li><li><a class="tocitem" href="#并发执行时优化网络-I/O-1"><span>并发执行时优化网络 I/O</span></a></li><li><a class="tocitem" href="#修复过期警告-1"><span>修复过期警告</span></a></li><li><a class="tocitem" href="#小技巧-1"><span>小技巧</span></a></li><li><a class="tocitem" href="#man-performance-annotations-1"><span>性能标注</span></a></li><li><a class="tocitem" href="#Treat-Subnormal-Numbers-as-Zeros-1"><span>Treat Subnormal Numbers as Zeros</span></a></li><li><a class="tocitem" href="#man-code-warntype-1"><span><code>@code_warntype</code></span></a></li><li><a class="tocitem" href="#man-performance-captured-1"><span>被捕获变量的性能</span></a></li><li class="toplevel"><a class="tocitem" href="#Checking-for-equality-with-a-singleton-1"><span>Checking for equality with a singleton</span></a></li></ul></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">多线程</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>性能建议</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>性能建议</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/performance-tipsmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="man-performance-tips-1"><a class="docs-heading-anchor" href="#man-performance-tips-1">性能建议</a><a class="docs-heading-anchor-permalink" href="#man-performance-tips-1" title="Permalink"></a></h1><p>下面几节简要地介绍了一些使 Julia 代码运行得尽可能快的技巧。</p><h2 id="避免全局变量-1"><a class="docs-heading-anchor" href="#避免全局变量-1">避免全局变量</a><a class="docs-heading-anchor-permalink" href="#避免全局变量-1" title="Permalink"></a></h2><p>全局变量的值和类型随时都会发生变化， 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。</p><p>任何注重性能或者需要测试性能的代码都应该被放置在函数之中。</p><p>我们发现全局变量经常是常量，将它们声明为常量可大幅提升性能。</p><pre><code class="language-julia">const DEFAULT_VAL = 0</code></pre><p>对于非常量的全局变量可以通过在使用的时候标注它们的类型来优化。</p><pre><code class="language-julia">global x = rand(1000)
+
+function loop_over_global()
+    s = 0.0
+    for i in x::Vector{Float64}
+        s += i
+    end
+    return s
+end</code></pre><p>一个更好的编程风格是将变量作为参数传给函数。这样可以使得代码更易复用，以及清晰的展示函数的输入和输出。</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>All code in the REPL is evaluated in global scope, so a variable defined and assigned at top level will be a <strong>global</strong> variable. Variables defined at top level scope inside modules are also global.</p></div></div><p>在下面的REPL会话中：</p><pre><code class="language-julia-repl">julia&gt; x = 1.0</code></pre><p>等价于：</p><pre><code class="language-julia-repl">julia&gt; global x = 1.0</code></pre><p>因此，所有上文关于性能问题的讨论都适用于它们。</p><h2 id="使用-[@time](@ref)评估性能以及注意内存分配-1"><a class="docs-heading-anchor" href="#使用-[@time](@ref)评估性能以及注意内存分配-1">使用 <a href="../../base/base/#Base.@time"><code>@time</code></a>评估性能以及注意内存分配</a><a class="docs-heading-anchor-permalink" href="#使用-[@time](@ref)评估性能以及注意内存分配-1" title="Permalink"></a></h2><p><a href="../../base/base/#Base.@time"><code>@time</code></a> 宏是一个有用的性能评估工具。这里我们将重复上面全局变量的例子，但是这次移除类型声明：</p><pre><code class="language-julia-repl">julia&gt; x = rand(1000);
+
+julia&gt; function sum_global()
+           s = 0.0
+           for i in x
+               s += i
+           end
+           return s
+       end;
+
+julia&gt; @time sum_global()
+  0.017705 seconds (15.28 k allocations: 694.484 KiB)
+496.84883432553846
+
+julia&gt; @time sum_global()
+  0.000140 seconds (3.49 k allocations: 70.313 KiB)
+496.84883432553846</code></pre><p>在第一次调用函数(<code>@time sum_global()</code>)的时候，它会被编译。如果你这次会话中还没有使用过<a href="../../base/base/#Base.@time"><code>@time</code></a>，这时也会编译计时需要的相关函数。你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64位浮点向量元素和，因此这里应该没有申请内存的必要（至少不用在<code>@time</code>报告的堆上申请内存）。</p><p>未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数远没有生成性能良好的代码。认真对待这些现象，遵循接下来的建议。</p><p>如果你换成将<code>x</code>作为参数传给函数，就可以避免内存的分配（这里报告的内存分配是由于在全局作用域中运行<code>@time</code>导致的），而且在第一次运行之后运行速度也会得到显著的提高。</p><pre><code class="language-julia-repl">julia&gt; x = rand(1000);
+
+julia&gt; function sum_arg(x)
+           s = 0.0
+           for i in x
+               s += i
+           end
+           return s
+       end;
+
+julia&gt; @time sum_arg(x)
+  0.007701 seconds (821 allocations: 43.059 KiB)
+496.84883432553846
+
+julia&gt; @time sum_arg(x)
+  0.000006 seconds (5 allocations: 176 bytes)
+496.84883432553846</code></pre><p>这里出现的5个内存分配是由于在全局作用域中运行<code>@time</code>宏导致的。如果我们在函数内运行时间测试，我们将发现事实上并没有发生任何内存分配。</p><pre><code class="language-julia-repl">julia&gt; time_sum(x) = @time sum_arg(x);
+
+julia&gt; time_sum(x)
+  0.000001 seconds
+496.84883432553846</code></pre><p>In some situations, your function may need to allocate memory as part of its operation, and this can complicate the simple picture above. In such cases, consider using one of the <a href="#tools-1">tools</a> below to diagnose problems, or write a version of your function that separates allocation from its algorithmic aspects (see <a href="manual/@ref">Pre-allocating outputs</a>).</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>For more serious benchmarking, consider the <a href="https://github.com/JuliaCI/BenchmarkTools.jl">BenchmarkTools.jl</a> package which among other things evaluates the function multiple times in order to reduce noise.</p></div></div><h2 id="tools-1"><a class="docs-heading-anchor" href="#tools-1">Tools</a><a class="docs-heading-anchor-permalink" href="#tools-1" title="Permalink"></a></h2><p>Julia and its package ecosystem includes tools that may help you diagnose problems and improve the performance of your code:</p><ul><li><a href="manual/@ref">Profiling</a> allows you to measure the performance of your running code and identify lines that serve as bottlenecks. For complex projects, the <a href="https://github.com/timholy/ProfileView.jl">ProfileView</a> package can help you visualize your profiling results.</li><li>The <a href="https://github.com/MikeInnes/Traceur.jl">Traceur</a> package can help you find common performance problems in your code.</li><li>Unexpectedly-large memory allocations–as reported by <a href="../../base/base/#Base.@time"><code>@time</code></a>, <a href="../../base/base/#Base.@allocated"><code>@allocated</code></a>, or the profiler (through calls to the garbage-collection routines)–hint that there might be issues with your code. If you don&#39;t see another reason for the allocations, suspect a type problem.  You can also start Julia with the <code>--track-allocation=user</code> option and examine the resulting <code>*.mem</code> files to see information about where those allocations occur. See <a href="manual/@ref">Memory allocation analysis</a>.</li><li><code>@code_warntype</code> generates a representation of your code that can be helpful in finding expressions that result in type uncertainty. See <a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_warntype"><code>@code_warntype</code></a> below.</li></ul><h2 id="Avoid-containers-with-abstract-type-parameters-1"><a class="docs-heading-anchor" href="#Avoid-containers-with-abstract-type-parameters-1">Avoid containers with abstract type parameters</a><a class="docs-heading-anchor-permalink" href="#Avoid-containers-with-abstract-type-parameters-1" title="Permalink"></a></h2><p>When working with parameterized types, including arrays, it is best to avoid parameterizing with abstract types where possible.</p><p>Consider the following:</p><pre><code class="language-julia-repl">julia&gt; a = Real[]
+0-element Array{Real,1}
+
+julia&gt; push!(a, 1); push!(a, 2.0); push!(a, π)
+3-element Array{Real,1}:
+ 1
+ 2.0
+ π</code></pre><p>因为<code>a</code>是一个抽象类型<a href="../../base/numbers/#Core.Real"><code>Real</code></a>的数组，它必须能容纳任何一个<code>Real</code>值。因为<code>Real</code>对象可以有任意的大小和结构，<code>a</code>必须用指针的数组来表示，以便能独立地为<code>Real</code>对象进行内存分配。但是如果我们只允许同样类型的数，比如<a href="../../base/numbers/#Core.Float64"><code>Float64</code></a>，才能存在<code>a</code>中，它们就能被更有效率地存储：</p><pre><code class="language-julia-repl">julia&gt; a = Float64[]
+0-element Array{Float64,1}
+
+julia&gt; push!(a, 1); push!(a, 2.0); push!(a,  π)
+3-element Array{Float64,1}:
+ 1.0
+ 2.0
+ 3.141592653589793</code></pre><p>把数字赋值给<code>a</code>会即时将数字转换成<code>Float64</code>并且<code>a</code>会按照64位浮点数值的连续的块来储存，这就能高效地处理。</p><p>也请参见在<a href="../types/#参数类型-1">参数类型</a>下的讨论。</p><h2 id="类型声明-1"><a class="docs-heading-anchor" href="#类型声明-1">类型声明</a><a class="docs-heading-anchor-permalink" href="#类型声明-1" title="Permalink"></a></h2><p>在有可选类型声明的语言中，添加声明是使代码运行更快的原则性方法。在Julia中<em>并不是</em>这种情况。在Julia中，编译器都知道所有的函数参数，局部变量和表达式的类型。但是，有一些特殊的情况下声明是有帮助的。</p><h3 id="避免有抽象类型的字段-1"><a class="docs-heading-anchor" href="#避免有抽象类型的字段-1">避免有抽象类型的字段</a><a class="docs-heading-anchor-permalink" href="#避免有抽象类型的字段-1" title="Permalink"></a></h3><p>类型能在不指定其字段的类型的情况下被声明：</p><pre><code class="language-julia-repl">julia&gt; struct MyAmbiguousType
+           a
+       end</code></pre><p>这就允许<code>a</code>可以是任意类型。这经常很有用，但是有个缺点：对于类型<code>MyAmbiguousType</code>的对象，编译器不能够生成高性能的代码。原因是编译器使用对象的类型，而非值，来确定如何构建代码。不幸的是，几乎没有信息可以从类型<code>MyAmbiguousType</code>的对象中推导出来：</p><pre><code class="language-julia-repl">julia&gt; b = MyAmbiguousType(&quot;Hello&quot;)
+MyAmbiguousType(&quot;Hello&quot;)
+
+julia&gt; c = MyAmbiguousType(17)
+MyAmbiguousType(17)
+
+julia&gt; typeof(b)
+MyAmbiguousType
+
+julia&gt; typeof(c)
+MyAmbiguousType</code></pre><p><code>b</code> 和 <code>c</code> 的值具有相同类型，但它们在内存中的数据的底层表示十分不同。即使你只在字段 <code>a</code> 中存储数值，<a href="../../base/numbers/#Core.UInt8"><code>UInt8</code></a> 的内存表示与 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> 也是不同的，这也意味着 CPU 需要使用两种不同的指令来处理它们。因为该类型中不提供所需的信息，所以必须在运行时进行这些判断。而这会降低性能。</p><p>通过声明 <code>a</code> 的类型，你能够做得更好。这里我们关注 <code>a</code> 可能是几种类型中任意一种的情况，在这种情况下，自然的一个解决方法是使用参数。例如：</p><pre><code class="language-julia-repl">julia&gt; mutable struct MyType{T&lt;:AbstractFloat}
+           a::T
+       end</code></pre><p>比下面这种更好</p><pre><code class="language-julia-repl">julia&gt; mutable struct MyStillAmbiguousType
+           a::AbstractFloat
+       end</code></pre><p>因为第一种通过包装对象的类型指定了 <code>a</code> 的类型。 例如：</p><pre><code class="language-julia-repl">julia&gt; m = MyType(3.2)
+MyType{Float64}(3.2)
+
+julia&gt; t = MyStillAmbiguousType(3.2)
+MyStillAmbiguousType(3.2)
+
+julia&gt; typeof(m)
+MyType{Float64}
+
+julia&gt; typeof(t)
+MyStillAmbiguousType</code></pre><p>字段 <code>a</code> 的类型可以很容易地通过 <code>m</code> 的类型确定，而不是通过 <code>t</code> 的类型确定。事实上，在 <code>t</code> 中是可以改变字段 <code>a</code> 的类型的：</p><pre><code class="language-julia-repl">julia&gt; typeof(t.a)
+Float64
+
+julia&gt; t.a = 4.5f0
+4.5f0
+
+julia&gt; typeof(t.a)
+Float32</code></pre><p>反之，一旦 <code>m</code> 被构建出来，<code>m.a</code> 的类型就不能够更改了。</p><pre><code class="language-julia-repl">julia&gt; m.a = 4.5f0
+4.5f0
+
+julia&gt; typeof(m.a)
+Float64</code></pre><p><code>m.a</code> 的类型是通过 <code>m</code> 的类型得知这一事实加上它的类型不能改变在函数中改变这一事实，这两者使得对于像 <code>m</code> 这样的对象编译器可以生成高度优化后的代码，但是对 <code>t</code> 这样的对象却不可以。 当然，如果我们将 <code>m</code> 构造成一个具体类型，那么这两者都可以。我们可以通过明确地使用一个抽象类型去构建它来破坏这一点：</p><pre><code class="language-julia-repl">julia&gt; m = MyType{AbstractFloat}(3.2)
+MyType{AbstractFloat}(3.2)
+
+julia&gt; typeof(m.a)
+Float64
+
+julia&gt; m.a = 4.5f0
+4.5f0
+
+julia&gt; typeof(m.a)
+Float32</code></pre><p>对于一个实际的目的来说，这样的对象表现起来和那些 <code>MyStillAmbiguousType</code> 的对象一模一样。</p><p>比较为一个简单函数生成的代码的绝对数量是十分有指导意义的，</p><pre><code class="language-julia">func(m::MyType) = m.a+1</code></pre><p>使用</p><pre><code class="language-julia">code_llvm(func, Tuple{MyType{Float64}})
+code_llvm(func, Tuple{MyType{AbstractFloat}})</code></pre><p>由于长度的原因，代码的结果没有在这里显示出来，但是你可能会希望自己去验证这一点。因为在第一种情况中，类型被完全指定了，在运行时，编译器不需要生成任何代码来决定类型。这就带来了更短和更快的代码。</p><h3 id="避免使用带抽象容器的字段-1"><a class="docs-heading-anchor" href="#避免使用带抽象容器的字段-1">避免使用带抽象容器的字段</a><a class="docs-heading-anchor-permalink" href="#避免使用带抽象容器的字段-1" title="Permalink"></a></h3><p>上面的做法同样也适用于容器的类型：</p><pre><code class="language-julia-repl">julia&gt; struct MySimpleContainer{A&lt;:AbstractVector}
+           a::A
+       end
+
+julia&gt; struct MyAmbiguousContainer{T}
+           a::AbstractVector{T}
+       end</code></pre><p>例如:</p><pre><code class="language-julia-repl">julia&gt; c = MySimpleContainer(1:3);
+
+julia&gt; typeof(c)
+MySimpleContainer{UnitRange{Int64}}
+
+julia&gt; c = MySimpleContainer([1:3;]);
+
+julia&gt; typeof(c)
+MySimpleContainer{Array{Int64,1}}
+
+julia&gt; b = MyAmbiguousContainer(1:3);
+
+julia&gt; typeof(b)
+MyAmbiguousContainer{Int64}
+
+julia&gt; b = MyAmbiguousContainer([1:3;]);
+
+julia&gt; typeof(b)
+MyAmbiguousContainer{Int64}</code></pre><p>对于 <code>MySimpleContainer</code> 来说，它被它的类型和参数完全确定了，因此编译器能够生成优化过的代码。在大多数实例中，这点能够实现。</p><p>尽管编译器现在可以将它的工作做得非常好，但是还是有<strong>你</strong>可能希望你的代码能够能够根据 <code>a</code> 的<strong>元素类型</strong>做不同的事情的时候。通常达成这个目的最好的方式是将你的具体操作 (here, <code>foo</code>) 打包到一个独立的函数中。</p><pre><code class="language-julia-repl">julia&gt; function sumfoo(c::MySimpleContainer)
+           s = 0
+           for x in c.a
+               s += foo(x)
+           end
+           s
+       end
+sumfoo (generic function with 1 method)
+
+julia&gt; foo(x::Integer) = x
+foo (generic function with 1 method)
+
+julia&gt; foo(x::AbstractFloat) = round(x)
+foo (generic function with 2 methods)</code></pre><p>这使事情变得简单，同时也允许编译器在所有情况下生成经过优化的代码。</p><p>但是，在某些情况下，你可能需要声明外部函数的不同版本，这可能是为了不同的元素类型，也可能是为了 <code>MySimpleContainer</code> 中的字段 <code>a</code> 所具有的不同 <code>AbstractVector</code> 类型。你可以这样做：</p><pre><code class="language-julia-repl">julia&gt; function myfunc(c::MySimpleContainer{&lt;:AbstractArray{&lt;:Integer}})
+           return c.a[1]+1
+       end
+myfunc (generic function with 1 method)
+
+julia&gt; function myfunc(c::MySimpleContainer{&lt;:AbstractArray{&lt;:AbstractFloat}})
+           return c.a[1]+2
+       end
+myfunc (generic function with 2 methods)
+
+julia&gt; function myfunc(c::MySimpleContainer{Vector{T}}) where T &lt;: Integer
+           return c.a[1]+3
+       end
+myfunc (generic function with 3 methods)</code></pre><pre><code class="language-julia-repl">julia&gt; myfunc(MySimpleContainer(1:3))
+2
+
+julia&gt; myfunc(MySimpleContainer(1.0:3))
+3.0
+
+julia&gt; myfunc(MySimpleContainer([1:3;]))
+4</code></pre><h3 id="对从无类型位置获取的值进行类型注释-1"><a class="docs-heading-anchor" href="#对从无类型位置获取的值进行类型注释-1">对从无类型位置获取的值进行类型注释</a><a class="docs-heading-anchor-permalink" href="#对从无类型位置获取的值进行类型注释-1" title="Permalink"></a></h3><p>使用可能包含任何类型的值的数据结构（如类型为 <code>Array{Any}</code> 的数组）经常是很方便的。但是，如果你正在使用这些数据结构之一，并且恰巧知道某个元素的类型，那么让编译器也知道这一点会有所帮助：</p><pre><code class="language-julia">function foo(a::Array{Any,1})
+    x = a[1]::Int32
+    b = x+1
+    ...
+end</code></pre><p>在这里，我们恰巧知道 <code>a</code> 的第一个元素是个 <a href="../../base/numbers/#Core.Int32"><code>Int32</code></a>。留下这样的注释还有另外的好处，它将在该值不是预期类型时引发运行时错误，而这可能会更早地捕获某些错误。</p><p>在没有确切知道 <code>a[1]</code> 的类型的情况下，<code>x</code> 可以通过 <code>x = convert(Int32, a[1])::Int32</code> 来声明。使用 <a href="../../base/base/#Base.convert"><code>convert</code></a> 函数则允许 <code>a[1]</code> 是可转换为 <code>Int32</code> 的任何对象（比如 <code>UInt8</code>），从而通过放松类型限制来提高代码的通用性。请注意，<code>convert</code> 本身在此上下文中需要类型注释才能实现类型稳定性。这是因为除非该函数所有参数的类型都已知，否则编译器无法推导出该函数返回值的类型，即使其为 <code>convert</code>。</p><p>如果类型注释中的类型是在运行时构造的，那么类型注释不会增强（并且实际上可能会降低）性能。这是因为编译器无法使用该类型注释来专门化代码，而类型检查本身又需要时间。例如，在以下代码中：</p><pre><code class="language-julia">function nr(a, prec)
+    ctype = prec == 32 ? Float32 : Float64
+    b = Complex{ctype}(a)
+    c = (b + 1.0f0)::Complex{ctype}
+    abs(c)
+end</code></pre><p>the annotation of <code>c</code> harms performance. To write performant code involving types constructed at run-time, use the <a href="#kernel-functions-1">function-barrier technique</a> discussed below, and ensure that the constructed type appears among the argument types of the kernel function so that the kernel operations are properly specialized by the compiler. For example, in the above snippet, as soon as <code>b</code> is constructed, it can be passed to another function <code>k</code>, the kernel. If, for example, function <code>k</code> declares <code>b</code> as an argument of type <code>Complex{T}</code>, where <code>T</code> is a type parameter, then a type annotation appearing in an assignment statement within <code>k</code> of the form:</p><pre><code class="language-julia">c = (b + 1.0f0)::Complex{T}</code></pre><p>不会降低性能（但也不会提高），因为编译器可以在编译 <code>k</code> 时确定 <code>c</code> 的类型。</p><h2 id="将函数拆分为多个定义-1"><a class="docs-heading-anchor" href="#将函数拆分为多个定义-1">将函数拆分为多个定义</a><a class="docs-heading-anchor-permalink" href="#将函数拆分为多个定义-1" title="Permalink"></a></h2><p>将一个函数写成许多小的定义能让编译器直接调用最适合的代码，甚至能够直接将它内联。</p><p>这是一个真的该被写成许多小的定义的<strong>复合函数</strong>的例子：</p><pre><code class="language-julia">using LinearAlgebra
+
+function mynorm(A)
+    if isa(A, Vector)
+        return sqrt(real(dot(A,A)))
+    elseif isa(A, Matrix)
+        return maximum(svdvals(A))
+    else
+        error(&quot;mynorm: invalid argument&quot;)
+    end
+end</code></pre><p>这可以更简洁有效地写成：</p><pre><code class="language-julia">norm(x::Vector) = sqrt(real(dot(x, x)))
+norm(A::Matrix) = maximum(svdvals(A))</code></pre><p>然而，应该注意的是，编译器会十分高效地优化掉编写得如同 <code>mynorm</code> 例子的代码中的死分支。</p><h2 id="编写「类型稳定的」函数-1"><a class="docs-heading-anchor" href="#编写「类型稳定的」函数-1">编写「类型稳定的」函数</a><a class="docs-heading-anchor-permalink" href="#编写「类型稳定的」函数-1" title="Permalink"></a></h2><p>如果可能，确保函数总是返回相同类型的值是有好处的。考虑以下定义：</p><pre><code class="language-julia">pos(x) = x &lt; 0 ? 0 : x</code></pre><p>虽然这看起来挺合法的，但问题是 <code>0</code> 是一个（<code>Int</code> 类型的）整数而 <code>x</code> 可能是任何类型。于是，根据 <code>x</code> 的值，此函数可能返回两种类型中任何一种的值。这种行为是允许的，并且在某些情况下可能是合乎需要的。但它可以很容易地以如下方式修复：</p><pre><code class="language-julia">pos(x) = x &lt; 0 ? zero(x) : x</code></pre><p>还有 <a href="../../base/numbers/#Base.oneunit"><code>oneunit</code></a> 函数，以及更通用的 <a href="../../base/base/#Base.oftype"><code>oftype(x, y)</code></a> 函数，它返回被转换为 <code>x</code> 的类型的 <code>y</code>。</p><h2 id="避免更改变量类型-1"><a class="docs-heading-anchor" href="#避免更改变量类型-1">避免更改变量类型</a><a class="docs-heading-anchor-permalink" href="#避免更改变量类型-1" title="Permalink"></a></h2><p>类似的「类型稳定性」问题存在于在函数内重复使用的变量：</p><pre><code class="language-julia">function foo()
+    x = 1
+    for i = 1:10
+        x /= rand()
+    end
+    return x
+end</code></pre><p>局部变量 <code>x</code> 一开始是整数，在一次循环迭代后变为浮点数（<a href="../../base/math/#Base.:/"><code>/</code></a> 运算符的结果）。这使得编译器更难优化循环体。有几种可能的解决方法：</p><ul><li>使用 <code>x = 1.0</code> 初始化 <code>x</code></li><li>声明 <code>x</code> 的类型：<code>x::Float64 = 1</code></li><li>使用显式的类型转换：<code>x = oneunit(Float64)</code></li><li>使用第一个循环迭代初始化，即 <code>x = 1 / rand()</code>，接着循环 <code>for i = 2:10</code></li></ul><h2 id="kernel-functions-1"><a class="docs-heading-anchor" href="#kernel-functions-1">Separate kernel functions (aka, function barriers)</a><a class="docs-heading-anchor-permalink" href="#kernel-functions-1" title="Permalink"></a></h2><p>许多函数遵循这一模式：先执行一些设置工作，再通过多次迭代来执行核心计算。如果可行，将这些核心计算放在单独的函数中是个好主意。例如，以下做作的函数返回一个数组，其类型是随机选择的。</p><pre><code class="language-julia-repl">julia&gt; function strange_twos(n)
+           a = Vector{rand(Bool) ? Int64 : Float64}(undef, n)
+           for i = 1:n
+               a[i] = 2
+           end
+           return a
+       end;
+
+julia&gt; strange_twos(3)
+3-element Array{Float64,1}:
+ 2.0
+ 2.0
+ 2.0</code></pre><p>这应该写作：</p><pre><code class="language-julia-repl">julia&gt; function fill_twos!(a)
+           for i = eachindex(a)
+               a[i] = 2
+           end
+       end;
+
+julia&gt; function strange_twos(n)
+           a = Vector{rand(Bool) ? Int64 : Float64}(undef, n)
+           fill_twos!(a)
+           return a
+       end;
+
+julia&gt; strange_twos(3)
+3-element Array{Float64,1}:
+ 2.0
+ 2.0
+ 2.0</code></pre><p>Julia 的编译器会在函数边界处针对参数类型特化代码，因此在原始的实现中循环期间无法得知 <code>a</code> 的类型（因为它是随即选择的）。于是，第二个版本通常更快，因为对于不同类型的 <code>a</code>，内层循环都可被重新编译为 <code>fill_twos!</code> 的一部分。</p><p>第二种形式通常是更好的风格，并且可以带来更多的代码的重复利用。</p><p>这个模式在 Julia Base 的几个地方中有使用。相关的例子，请参阅 <a href="https://github.com/JuliaLang/julia/blob/40fe264f4ffaa29b749bcf42239a89abdcbba846/base/abstractarray.jl#L1205-L1206"><code>abstractarray.jl</code></a> 中的 <code>vcat</code> 和 <code>hcat</code>，或者 <a href="../../base/arrays/#Base.fill!"><code>fill!</code></a> 函数，我们可使用该函数而不是编写自己的 <code>fill_twos!</code>。</p><p>诸如 <code>strange_twos</code> 的函数会在处理具有不确定类型的数据时出现，例如从可能包含整数、浮点数、字符串或其它内容的输入文件中加载的数据。</p><h2 id="Types-with-values-as-parameters-1"><a class="docs-heading-anchor" href="#Types-with-values-as-parameters-1">Types with values-as-parameters</a><a class="docs-heading-anchor-permalink" href="#Types-with-values-as-parameters-1" title="Permalink"></a></h2><p>比方说你想创建一个每个维度大小都是3的 <code>N</code> 维数组。这种数组可以这样创建：</p><pre><code class="language-julia-repl">julia&gt; A = fill(5.0, (3, 3))
+3×3 Array{Float64,2}:
+ 5.0  5.0  5.0
+ 5.0  5.0  5.0
+ 5.0  5.0  5.0</code></pre><p>这个方法工作得很好：编译器可以识别出来 <code>A</code> 是一个 <code>Array{Float64,2}</code> 因为它知道填充值 (<code>5.0::Float64</code>) 的类型和维度 (<code>(3, 3)::NTuple{2,Int}</code>).</p><p>但是现在打比方说你想写一个函数，在任何一个维度下，它都创建一个 3×3×... 的数组；你可能会心动地写下一个函数</p><pre><code class="language-julia-repl">julia&gt; function array3(fillval, N)
+           fill(fillval, ntuple(d-&gt;3, N))
+       end
+array3 (generic function with 1 method)
+
+julia&gt; array3(5.0, 2)
+3×3 Array{Float64,2}:
+ 5.0  5.0  5.0
+ 5.0  5.0  5.0
+ 5.0  5.0  5.0</code></pre><p>这确实有用，但是（你可以自己使用 <code>@code_warntype array3(5.0, 2)</code> 来验证）问题是输出地类型不能被推断出来：参数 <code>N</code> 是一个 <code>Int</code> 类型的<strong>值</strong>，而且类型推断不会（也不能）提前预测它的值。这意味着使用这个函数的结果的代码在每次获取 <code>A</code> 时都不得不保守地检查其类型；这样的代码将会是非常缓慢的。</p><p>Now, one very good way to solve such problems is by using the <a href="#kernel-functions-1">function-barrier technique</a>. However, in some cases you might want to eliminate the type-instability altogether. In such cases, one approach is to pass the dimensionality as a parameter, for example through <code>Val{T}()</code> (see <a href="manual/@ref">&quot;Value types&quot;</a>):</p><pre><code class="language-julia-repl">julia&gt; function array3(fillval, ::Val{N}) where N
+           fill(fillval, ntuple(d-&gt;3, Val(N)))
+       end
+array3 (generic function with 1 method)
+
+julia&gt; array3(5.0, Val(2))
+3×3 Array{Float64,2}:
+ 5.0  5.0  5.0
+ 5.0  5.0  5.0
+ 5.0  5.0  5.0</code></pre><p>Julia has a specialized version of <code>ntuple</code> that accepts a <code>Val{::Int}</code> instance as the second parameter; by passing <code>N</code> as a type-parameter, you make its &quot;value&quot; known to the compiler. Consequently, this version of <code>array3</code> allows the compiler to predict the return type.</p><p>However, making use of such techniques can be surprisingly subtle. For example, it would be of no help if you called <code>array3</code> from a function like this:</p><pre><code class="language-julia">function call_array3(fillval, n)
+    A = array3(fillval, Val(n))
+end</code></pre><p>Here, you&#39;ve created the same problem all over again: the compiler can&#39;t guess what <code>n</code> is, so it doesn&#39;t know the <em>type</em> of <code>Val(n)</code>. Attempting to use <code>Val</code>, but doing so incorrectly, can easily make performance <em>worse</em> in many situations. (Only in situations where you&#39;re effectively combining <code>Val</code> with the function-barrier trick, to make the kernel function more efficient, should code like the above be used.)</p><p>一个正确使用 <code>Val</code> 的例子是这样的：</p><pre><code class="language-julia">function filter3(A::AbstractArray{T,N}) where {T,N}
+    kernel = array3(1, Val(N))
+    filter(A, kernel)
+end</code></pre><p>In this example, <code>N</code> is passed as a parameter, so its &quot;value&quot; is known to the compiler. Essentially, <code>Val(T)</code> works only when <code>T</code> is either hard-coded/literal (<code>Val(3)</code>) or already specified in the type-domain.</p><h2 id="The-dangers-of-abusing-multiple-dispatch-(aka,-more-on-types-with-values-as-parameters)-1"><a class="docs-heading-anchor" href="#The-dangers-of-abusing-multiple-dispatch-(aka,-more-on-types-with-values-as-parameters)-1">The dangers of abusing multiple dispatch (aka, more on types with values-as-parameters)</a><a class="docs-heading-anchor-permalink" href="#The-dangers-of-abusing-multiple-dispatch-(aka,-more-on-types-with-values-as-parameters)-1" title="Permalink"></a></h2><p>Once one learns to appreciate multiple dispatch, there&#39;s an understandable tendency to go overboard and try to use it for everything. For example, you might imagine using it to store information, e.g.</p><pre><code class="language-none">struct Car{Make, Model}
+    year::Int
+    ...more fields...
+end</code></pre><p>and then dispatch on objects like <code>Car{:Honda,:Accord}(year, args...)</code>.</p><p>This might be worthwhile when either of the following are true:</p><ul><li>You require CPU-intensive processing on each <code>Car</code>, and it becomes vastly more efficient if you know the <code>Make</code> and <code>Model</code> at compile time and the total number of different <code>Make</code> or <code>Model</code> that will be used is not too large.</li><li>You have homogenous lists of the same type of <code>Car</code> to process, so that you can store them all in an <code>Array{Car{:Honda,:Accord},N}</code>.</li></ul><p>When the latter holds, a function processing such a homogenous array can be productively specialized: Julia knows the type of each element in advance (all objects in the container have the same concrete type), so Julia can &quot;look up&quot; the correct method calls when the function is being compiled (obviating the need to check at run-time) and thereby emit efficient code for processing the whole list.</p><p>When these do not hold, then it&#39;s likely that you&#39;ll get no benefit; worse, the resulting &quot;combinatorial explosion of types&quot; will be counterproductive. If <code>items[i+1]</code> has a different type than <code>item[i]</code>, Julia has to look up the type at run-time, search for the appropriate method in method tables, decide (via type intersection) which one matches, determine whether it has been JIT-compiled yet (and do so if not), and then make the call. In essence, you&#39;re asking the full type- system and JIT-compilation machinery to basically execute the equivalent of a switch statement or dictionary lookup in your own code.</p><p>Some run-time benchmarks comparing (1) type dispatch, (2) dictionary lookup, and (3) a &quot;switch&quot; statement can be found <a href="https://groups.google.com/forum/#!msg/julia-users/jUMu9A3QKQQ/qjgVWr7vAwAJ">on the mailing list</a>.</p><p>Perhaps even worse than the run-time impact is the compile-time impact: Julia will compile specialized functions for each different <code>Car{Make, Model}</code>; if you have hundreds or thousands of such types, then every function that accepts such an object as a parameter (from a custom <code>get_year</code> function you might write yourself, to the generic <code>push!</code> function in Julia Base) will have hundreds or thousands of variants compiled for it. Each of these increases the size of the cache of compiled code, the length of internal lists of methods, etc. Excess enthusiasm for values-as-parameters can easily waste enormous resources.</p><h2 id="按内存顺序访问数组，即按列访问-1"><a class="docs-heading-anchor" href="#按内存顺序访问数组，即按列访问-1">按内存顺序访问数组，即按列访问</a><a class="docs-heading-anchor-permalink" href="#按内存顺序访问数组，即按列访问-1" title="Permalink"></a></h2><p>Julia 中的多维数组以列主序存储。这意味着数组一次堆叠一列。这可使用 <code>vec</code> 函数或语法 <code>[:]</code> 来验证，如下所示（请注意，数组的顺序是 <code>[1 3 2 4]</code>，而不是 <code>[1 2 3 4]</code>）：</p><pre><code class="language-julia-repl">julia&gt; x = [1 2; 3 4]
+2×2 Array{Int64,2}:
+ 1  2
+ 3  4
+
+julia&gt; x[:]
+4-element Array{Int64,1}:
+ 1
+ 3
+ 2
+ 4</code></pre><p>这种数组排序的约定在许多语言中都很常见，比如 Fortran、Matlab 和 R（仅举几例）。列主序的替代方案是行主序，这是 C 和 Python（<code>numpy</code>）在其它语言中采用的惯例。请记住数组的排序在循环数组时会对性能产生显著影响。需记住的一个经验法则是，对于列主序数组，改变第一个索引最快。实际上，这意味着如果最内层循环索引是切片表达式的第一个索引，那循环将更快。</p><p>考虑以下人为示例。假设我们想编写一个接收 <a href="../../base/arrays/#Base.Vector"><code>Vector</code></a> 并返回方阵 <a href="../../base/arrays/#Base.Matrix"><code>Matrix</code></a> 的函数，所返回方阵的行或列都用输入向量的副本填充。并假设用这些副本填充的是行还是列并不重要（也许可以很容易地相应调整剩余代码）。我们至少可以想到四种方式（除了建议的调用内置函数 <a href="../../base/arrays/#Base.repeat"><code>repeat</code></a>）：</p><pre><code class="language-julia">function copy_cols(x::Vector{T}) where T
+    inds = axes(x, 1)
+    out = similar(Array{T}, inds, inds)
+    for i = inds
+        out[:, i] = x
+    end
+    return out
+end
+
+function copy_rows(x::Vector{T}) where T
+    inds = axes(x, 1)
+    out = similar(Array{T}, inds, inds)
+    for i = inds
+        out[i, :] = x
+    end
+    return out
+end
+
+function copy_col_row(x::Vector{T}) where T
+    inds = axes(x, 1)
+    out = similar(Array{T}, inds, inds)
+    for col = inds, row = inds
+        out[row, col] = x[row]
+    end
+    return out
+end
+
+function copy_row_col(x::Vector{T}) where T
+    inds = axes(x, 1)
+    out = similar(Array{T}, inds, inds)
+    for row = inds, col = inds
+        out[row, col] = x[col]
+    end
+    return out
+end</code></pre><p>现在，我们使用相同的 <code>10000</code> 乘 <code>1</code> 的随机输入向量来对这些函数计时。</p><pre><code class="language-julia-repl">julia&gt; x = randn(10000);
+
+julia&gt; fmt(f) = println(rpad(string(f)*&quot;: &quot;, 14, &#39; &#39;), @elapsed f(x))
+
+julia&gt; map(fmt, [copy_cols, copy_rows, copy_col_row, copy_row_col]);
+copy_cols:    0.331706323
+copy_rows:    1.799009911
+copy_col_row: 0.415630047
+copy_row_col: 1.721531501</code></pre><p>请注意，<code>copy_cols</code> 比 <code>copy_rows</code> 快得多。这与预料的一致，因为 <code>copy_cols</code> 尊重 <code>Matrix</code> 基于列的内存布局。另外，<code>copy_col_row</code> 比 <code>copy_row_col</code> 快得多，因为它遵循我们的经验法则，即切片表达式中出现的第一个元素应该与最内层循环耦合。</p><h2 id="输出预分配-1"><a class="docs-heading-anchor" href="#输出预分配-1">输出预分配</a><a class="docs-heading-anchor-permalink" href="#输出预分配-1" title="Permalink"></a></h2><p>如果函数返回 <code>Array</code> 或其它复杂类型，则可能需要分配内存。不幸的是，内存分配及其反面垃圾收集通常是很大的瓶颈。</p><p>有时，你可以通过预分配输出结果来避免在每个函数调用上分配内存的需要。作为一个简单的例子，比较</p><pre><code class="language-julia-repl">julia&gt; function xinc(x)
+           return [x, x+1, x+2]
+       end;
+
+julia&gt; function loopinc()
+           y = 0
+           for i = 1:10^7
+               ret = xinc(i)
+               y += ret[2]
+           end
+           return y
+       end;</code></pre><p>和</p><pre><code class="language-julia-repl">julia&gt; function xinc!(ret::AbstractVector{T}, x::T) where T
+           ret[1] = x
+           ret[2] = x+1
+           ret[3] = x+2
+           nothing
+       end;
+
+julia&gt; function loopinc_prealloc()
+           ret = Vector{Int}(undef, 3)
+           y = 0
+           for i = 1:10^7
+               xinc!(ret, i)
+               y += ret[2]
+           end
+           return y
+       end;</code></pre><p>计时结果：</p><pre><code class="language-julia-repl">julia&gt; @time loopinc()
+  0.529894 seconds (40.00 M allocations: 1.490 GiB, 12.14% gc time)
+50000015000000
+
+julia&gt; @time loopinc_prealloc()
+  0.030850 seconds (6 allocations: 288 bytes)
+50000015000000</code></pre><p>预分配还有其它优点，例如允许调用者在算法中控制「输出」类型。在上述例子中，我们如果需要，可以传递 <code>SubArray</code> 而不是 <a href="../../base/arrays/#Core.Array"><code>Array</code></a>。</p><p>极端情况下，预分配可能会使你的代码更丑陋，所以可能需要做性能测试和一些判断。但是，对于「向量化」（逐元素）函数，方便的语法 <code>x .= f.(y)</code> 可用于具有融合循环的 in-place 操作且无需临时数组（请参阅<a href="../functions/#man-vectorized-1">向量化函数的点语法</a>）。</p><h2 id="点语法：融合向量化操作-1"><a class="docs-heading-anchor" href="#点语法：融合向量化操作-1">点语法：融合向量化操作</a><a class="docs-heading-anchor-permalink" href="#点语法：融合向量化操作-1" title="Permalink"></a></h2><p>Julia 有特殊的<a href="../functions/#man-vectorized-1">点语法</a>，它可以将任何标量函数转换为「向量化」函数调用，将任何运算符转换为「向量化」运算符，其具有的特殊性质是嵌套「点调用」是<em>融合的</em>：它们在语法层级被组合为单个循环，无需分配临时数组。如果你使用 <code>.=</code> 和类似的赋值运算符，则结果也可以 in-place 存储在预分配的数组（参见上文）。</p><p>在线性代数的上下文中，这意味着即使诸如 <code>vector + vector</code> 和 <code>vector * scalar</code> 之类的运算，使用 <code>vector .+ vector</code> 和 <code>vector .* scalar</code> 来替代也可能是有利的，因为生成的循环可与周围的计算融合。例如，考虑两个函数：</p><pre><code class="language-julia-repl">julia&gt; f(x) = 3x.^2 + 4x + 7x.^3;
+
+julia&gt; fdot(x) = @. 3x^2 + 4x + 7x^3 # equivalent to 3 .* x.^2 .+ 4 .* x .+ 7 .* x.^3;</code></pre><p><code>f</code> 和 <code>fdot</code> 都做相同的计算。但是，<code>fdot</code>（在 <a href="../../base/arrays/#Base.Broadcast.@__dot__"><code>@.</code></a> 宏的帮助下定义）在作用于数组时明显更快：</p><pre><code class="language-julia-repl">julia&gt; x = rand(10^6);
+
+julia&gt; @time f(x);
+  0.019049 seconds (16 allocations: 45.777 MiB, 18.59% gc time)
+
+julia&gt; @time fdot(x);
+  0.002790 seconds (6 allocations: 7.630 MiB)
+
+julia&gt; @time f.(x);
+  0.002626 seconds (8 allocations: 7.630 MiB)</code></pre><p>也就是说，<code>fdot(x)</code> 比 <code>f(x)</code> 快十倍且分配的内存为其 1/6，因为 <code>f(x)</code> 中的每个 <code>*</code> 和 <code>+</code> 运算都会分配一个新的临时数组并在单独的循环中执行。（当然，如果你只计算 <code>f.(x)</code>，那在此例中它与 <code>fdot(x)</code> 一样快，但在许多情况下，在表达式中添加一些点比为每个向量化操作定义单独的函数更方便。）</p><h2 id="考虑在切片中使用视图-1"><a class="docs-heading-anchor" href="#考虑在切片中使用视图-1">考虑在切片中使用视图</a><a class="docs-heading-anchor-permalink" href="#考虑在切片中使用视图-1" title="Permalink"></a></h2><p>在 Julia 中，数组「切片」表达式，如 <code>array[1:5, :]</code>，创建对应数据的副本（除了在赋值的左侧，此情况下 <code>array[1:5, :] = ...</code> 会对 <code>array</code> 的对应部分进行 in-place 赋值）。如果你会在切片上执行许多操作，这对性能是有好处的，因为使用更小的连续副本比索引到原始数组更高效。另一方面，如果你只在切片上执行一些简单操作，则分配和复制操作的成本可能很高。</p><p>另一种方法是创建数组的「视图」，它是一个数组对象（一个 <code>SubArray</code>），它实际上 in-place 引用原始数组的数据而无需进行复制。（如果你改写一个视图，它也会修改原始数组的数据。）对于单个切片，这可通过调用 <a href="../../base/arrays/#Base.view"><code>view</code></a> 来完成，对于整个表达式或代码块，这还可更简单地通过将 <a href="../../base/arrays/#Base.@views"><code>@views</code></a> 放在该表达式前来完成。例如：</p><pre><code class="language-julia-repl">julia&gt; fcopy(x) = sum(x[2:end-1]);
+
+julia&gt; @views fview(x) = sum(x[2:end-1]);
+
+julia&gt; x = rand(10^6);
+
+julia&gt; @time fcopy(x);
+  0.003051 seconds (7 allocations: 7.630 MB)
+
+julia&gt; @time fview(x);
+  0.001020 seconds (6 allocations: 224 bytes)</code></pre><p>请注意，该函数的 <code>fview</code> 版本提速了 3 倍且减少了内存分配。</p><h2 id="复制数据不总是坏的-1"><a class="docs-heading-anchor" href="#复制数据不总是坏的-1">复制数据不总是坏的</a><a class="docs-heading-anchor-permalink" href="#复制数据不总是坏的-1" title="Permalink"></a></h2><p>数组被连续地存储在内存中，这使其可被 CPU 向量化，并且会由于缓存减少内存访问。这与建议以列序优先方式访问数组的原因相同（请参见上文）。由于不按顺序访问内存，无规律的访问方式和不连续的视图可能会大大减慢数组上的计算速度。</p><p>在对无规律访问的数据进行操作前，将其复制到连续的数组中可能带来巨大的加速，正如下例所示。其中，矩阵和向量在相乘前会访问其 800,000 个已被随机混洗的索引处的值。将视图复制到普通数组会加速乘法，即使考虑了复制操作的成本。</p><pre><code class="language-julia-repl">julia&gt; using Random
+
+julia&gt; x = randn(1_000_000);
+
+julia&gt; inds = shuffle(1:1_000_000)[1:800000];
+
+julia&gt; A = randn(50, 1_000_000);
+
+julia&gt; xtmp = zeros(800_000);
+
+julia&gt; Atmp = zeros(50, 800_000);
+
+julia&gt; @time sum(view(A, :, inds) * view(x, inds))
+  0.412156 seconds (14 allocations: 960 bytes)
+-4256.759568345458
+
+julia&gt; @time begin
+           copyto!(xtmp, view(x, inds))
+           copyto!(Atmp, view(A, :, inds))
+           sum(Atmp * xtmp)
+       end
+  0.285923 seconds (14 allocations: 960 bytes)
+-4256.759568345134</code></pre><p>倘若副本本身的内存足够大，那么将视图复制到数组的成本可能远远超过在连续数组上执行矩阵乘法所带来的加速。</p><h2 id="避免-I/0-中的字符串插值-1"><a class="docs-heading-anchor" href="#避免-I/0-中的字符串插值-1">避免 I/0 中的字符串插值</a><a class="docs-heading-anchor-permalink" href="#避免-I/0-中的字符串插值-1" title="Permalink"></a></h2><p>将数据写入到文件（或其他 I/0 设备）中时，生成额外的中间字符串会带来开销。请不要写成这样：</p><pre><code class="language-julia">println(file, &quot;$a $b&quot;)</code></pre><p>请写成这样：</p><pre><code class="language-julia">println(file, a, &quot; &quot;, b)</code></pre><p>第一个版本的代码生成一个字符串，然后将其写入到文件中，而第二个版本直接将值写入到文件中。另请注意，在某些情况下，字符串插值可能更难阅读。请考虑：</p><pre><code class="language-julia">println(file, &quot;$(f(a))$(f(b))&quot;)</code></pre><p>与：</p><pre><code class="language-julia">println(file, f(a), f(b))</code></pre><h2 id="并发执行时优化网络-I/O-1"><a class="docs-heading-anchor" href="#并发执行时优化网络-I/O-1">并发执行时优化网络 I/O</a><a class="docs-heading-anchor-permalink" href="#并发执行时优化网络-I/O-1" title="Permalink"></a></h2><p>当并发地执行一个远程函数时：</p><pre><code class="language-julia">using Distributed
+
+responses = Vector{Any}(undef, nworkers())
+@sync begin
+    for (idx, pid) in enumerate(workers())
+        @async responses[idx] = remotecall_fetch(foo, pid, args...)
+    end
+end</code></pre><p>会快于：</p><pre><code class="language-julia">using Distributed
+
+refs = Vector{Any}(undef, nworkers())
+for (idx, pid) in enumerate(workers())
+    refs[idx] = @spawnat pid foo(args...)
+end
+responses = [fetch(r) for r in refs]</code></pre><p>第一种方式导致每个worker一次网络往返，而第二种方式是两次网络调用：一次 <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> 一次<a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> （甚至是 <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>）。 <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> 和<a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a> 都是同步执行，会导致较差的性能。</p><h2 id="修复过期警告-1"><a class="docs-heading-anchor" href="#修复过期警告-1">修复过期警告</a><a class="docs-heading-anchor-permalink" href="#修复过期警告-1" title="Permalink"></a></h2><p>过期的函数在内部会执行查找，以便仅打印一次相关警告。 这种额外查找可能会显著影响性能，因此应根据警告建议修复掉过期函数的所有使用。</p><h2 id="小技巧-1"><a class="docs-heading-anchor" href="#小技巧-1">小技巧</a><a class="docs-heading-anchor-permalink" href="#小技巧-1" title="Permalink"></a></h2><p>有一些小的注意事项可能会帮助改善循环性能。</p><ul><li>避免使用不必要的数组。比如，使用 <code>x+y+z</code> 而不是 <a href="../../base/collections/#Base.sum"><code>sum([x,y,z])</code></a>。</li><li>对于复数 <code>z</code>，使用 <a href="../../base/math/#Base.abs2"><code>abs2(z)</code></a> 而不是 <a href="../../base/math/#Base.:^-Tuple{Number,Number}"><code>abs(z)^2</code></a>。一般的， 对于复数参数，用 <a href="../../base/math/#Base.abs2"><code>abs2</code></a> 代替<a href="../../base/math/#Base.abs"><code>abs</code></a>。</li><li>对于直接截断的整除，使用 <a href="../../base/math/#Base.div"><code>div(x,y)</code></a> 而不是 <a href="../../base/math/#Base.trunc"><code>trunc(x/y)</code></a>，使用<a href="../../base/math/#Base.fld"><code>fld(x,y)</code></a> 而不是 <a href="../../base/math/#Base.floor"><code>floor(x/y)</code></a>，使用 <a href="../../base/math/#Base.cld"><code>cld(x,y)</code></a> 而不是 <a href="../../base/math/#Base.ceil"><code>ceil(x/y)</code></a>。</li></ul><h2 id="man-performance-annotations-1"><a class="docs-heading-anchor" href="#man-performance-annotations-1">性能标注</a><a class="docs-heading-anchor-permalink" href="#man-performance-annotations-1" title="Permalink"></a></h2><p>有时，你可以通过承诺某些程序性质来启用更好的优化。</p><ul><li>使用 <a href="../../base/base/#Base.@inbounds"><code>@inbounds</code></a> 来取消表达式中的数组边界检查。使用前请再三确定，如果下标越界，可能会发生崩溃或潜在的故障。</li><li>使用 <a href="../../base/math/#Base.FastMath.@fastmath"><code>@fastmath</code></a> 来允许对于实数是正确的、但是对于 IEEE 数字会导致差异的浮点数优化。使用时请多多小心，因为这可能改变数值结果。这对应于 clang 的 <code>-ffast-math</code> 选项。</li><li>在 <code>for</code> 循环前编写 <a href="../../base/base/#Base.SimdLoop.@simd"><code>@simd</code></a> 来承诺迭代是相互独立且可以重新排序的。请注意，在许多情况下，Julia 可以在没有 <code>@simd</code> 宏的情况下自动向量化代码；只有在这种转换原本是非法的情况下才有用，包括允许浮点数重新结合和忽略相互依赖的内存访问（<code>@simd ivdep</code>）等情况。此外，在断言 <code>@simd</code> 时要十分小心，因为错误地标注一个具有相互依赖的迭代的循环可能导致意外结果。尤其要注意的是，某些 <code>AbstractArray</code> 子类型的 <code>setindex!</code> 本质上依赖于迭代顺序。<strong>此功能是实验性的</strong>，在 Julia 未来的版本中可能会更改或消失。</li></ul><p>使用 1:n 索引 AbstractArray 这一常见习惯在该数组使用非传统索引时是不安全的，并且在关闭边界检查时可能导致段错误。请改用 <code>LinearIndices(x)</code> 或 <code>eachindex(x)</code>（参阅 <a href="https://docs.julialang.org/en/latest/devdocs/offset-arrays/">offset-arrays</a>）。</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>虽然 <code>@simd</code> 需要直接放在最内层 <code>for</code> 循环前面，但 <code>@inbounds</code> 和 <code>@fastmath</code> 都可作用于单个表达式或在嵌套代码块中出现的所有表达式，例如，可使用 <code>@inbounds begin</code> 或 <code>@inbounds for ...</code>。</p></div></div><p>下面是一个具有 <code>@inbounds</code> 和 <code>@simd</code> 标记的例子（我们这里使用 <code>@noinline</code> 来防止因优化器过于智能而破坏我们的基准测试）：</p><pre><code class="language-julia">@noinline function inner(x, y)
+    s = zero(eltype(x))
+    for i=eachindex(x)
+        @inbounds s += x[i]*y[i]
+    end
+    return s
+end
+
+@noinline function innersimd(x, y)
+    s = zero(eltype(x))
+    @simd for i = eachindex(x)
+        @inbounds s += x[i] * y[i]
+    end
+    return s
+end
+
+function timeit(n, reps)
+    x = rand(Float32, n)
+    y = rand(Float32, n)
+    s = zero(Float64)
+    time = @elapsed for j in 1:reps
+        s += inner(x, y)
+    end
+    println(&quot;GFlop/sec        = &quot;, 2n*reps / time*1E-9)
+    time = @elapsed for j in 1:reps
+        s += innersimd(x, y)
+    end
+    println(&quot;GFlop/sec (SIMD) = &quot;, 2n*reps / time*1E-9)
+end
+
+timeit(1000, 1000)</code></pre><p>在配备 2.4GHz Intel Core i5 处理器的计算机上，其结果为：</p><pre><code class="language-none">GFlop/sec        = 1.9467069505224963
+GFlop/sec (SIMD) = 17.578554163920018</code></pre><p>（<code>GFlop/sec</code> 用来测试性能，数值越大越好。）</p><p>下面是一个具有三种标记的例子。此程序首先计算一个一维数组的有限差分，然后计算结果的 L2 范数：</p><pre><code class="language-julia">function init!(u::Vector)
+    n = length(u)
+    dx = 1.0 / (n-1)
+    @fastmath @inbounds @simd for i in 1:n # 通过断言 `u` 是一个 `Vector`，我们可以假定它具有 1-based 索引
+        u[i] = sin(2pi*dx*i)
+    end
+end
+
+function deriv!(u::Vector, du)
+    n = length(u)
+    dx = 1.0 / (n-1)
+    @fastmath @inbounds du[1] = (u[2] - u[1]) / dx
+    @fastmath @inbounds @simd for i in 2:n-1
+        du[i] = (u[i+1] - u[i-1]) / (2*dx)
+    end
+    @fastmath @inbounds du[n] = (u[n] - u[n-1]) / dx
+end
+
+function mynorm(u::Vector)
+    n = length(u)
+    T = eltype(u)
+    s = zero(T)
+    @fastmath @inbounds @simd for i in 1:n
+        s += u[i]^2
+    end
+    @fastmath @inbounds return sqrt(s)
+end
+
+function main()
+    n = 2000
+    u = Vector{Float64}(undef, n)
+    init!(u)
+    du = similar(u)
+
+    deriv!(u, du)
+    nu = mynorm(du)
+
+    @time for i in 1:10^6
+        deriv!(u, du)
+        nu = mynorm(du)
+    end
+
+    println(nu)
+end
+
+main()</code></pre><p>在配备 2.7 GHz Intel Core i7 处理器的计算机上，其结果为：</p><pre><code class="language-none">$ julia wave.jl;
+  1.207814709 seconds
+4.443986180758249
+
+$ julia --math-mode=ieee wave.jl;
+  4.487083643 seconds
+4.443986180758249</code></pre><p>在这里，选项 <code>--math-mode=ieee</code> 禁用 <code>@fastmath</code> 宏，好让我们可以比较结果。</p><p>在这种情况下，<code>@fastmath</code> 加速了大约 3.7 倍。这非常大——通常来说，加速会更小。（在这个特定的例子中，基准测试的工作集足够小，可以放在该处理器的 L1 缓存中，因此内存访问延迟不起作用，计算时间主要由 CPU 使用率决定。在许多现实世界的程序中，情况并非如此。）此外，在这种情况下，此优化不会改变计算结果——通常来说，结果会略有不同。在某些情况下，尤其是数值不稳定的算法，计算结果可能会差很多。</p><p>标注 <code>@fastmath</code> 会重新排列浮点数表达式，例如更改求值顺序，或者假设某些特殊情况（如 inf、nan）不出现。在这种情况中（以及在这个特定的计算机上），主要区别是函数 <code>deriv</code> 中的表达式 <code>1 / (2*dx)</code> 会被提升出循环（即在循环外计算），就像编写了 <code>idx = 1 / (2*dx)</code>，然后，在循环中，表达式 <code>... / (2*dx)</code> 变为 <code>... * idx</code>，后者计算起来快得多。当然，编译器实际上采用的优化以及由此产生的加速都在很大程度上取决于硬件。你可以使用 Julia 的 <a href="../../stdlib/InteractiveUtils/#InteractiveUtils.code_native"><code>code_native</code></a> 函数来检查所生成代码的更改。</p><p>请注意，<code>@fastmath</code> 也假设了在计算中不会出现 <code>NaN</code>，这可能导致意想不到的行为：</p><pre><code class="language-julia-repl">julia&gt; f(x) = isnan(x);
+
+julia&gt; f(NaN)
+true
+
+julia&gt; f_fast(x) = @fastmath isnan(x);
+
+julia&gt; f_fast(NaN)
+false</code></pre><h2 id="Treat-Subnormal-Numbers-as-Zeros-1"><a class="docs-heading-anchor" href="#Treat-Subnormal-Numbers-as-Zeros-1">Treat Subnormal Numbers as Zeros</a><a class="docs-heading-anchor-permalink" href="#Treat-Subnormal-Numbers-as-Zeros-1" title="Permalink"></a></h2><p>Subnormal numbers, formerly called <a href="https://en.wikipedia.org/wiki/Denormal_number">denormal numbers</a>, are useful in many contexts, but incur a performance penalty on some hardware. A call <a href="../../base/numbers/#Base.Rounding.set_zero_subnormals"><code>set_zero_subnormals(true)</code></a> grants permission for floating-point operations to treat subnormal inputs or outputs as zeros, which may improve performance on some hardware. A call <a href="../../base/numbers/#Base.Rounding.set_zero_subnormals"><code>set_zero_subnormals(false)</code></a> enforces strict IEEE behavior for subnormal numbers.</p><p>Below is an example where subnormals noticeably impact performance on some hardware:</p><pre><code class="language-julia">function timestep(b::Vector{T}, a::Vector{T}, Δt::T) where T
+    @assert length(a)==length(b)
+    n = length(b)
+    b[1] = 1                            # Boundary condition
+    for i=2:n-1
+        b[i] = a[i] + (a[i-1] - T(2)*a[i] + a[i+1]) * Δt
+    end
+    b[n] = 0                            # Boundary condition
+end
+
+function heatflow(a::Vector{T}, nstep::Integer) where T
+    b = similar(a)
+    for t=1:div(nstep,2)                # Assume nstep is even
+        timestep(b,a,T(0.1))
+        timestep(a,b,T(0.1))
+    end
+end
+
+heatflow(zeros(Float32,10),2)           # Force compilation
+for trial=1:6
+    a = zeros(Float32,1000)
+    set_zero_subnormals(iseven(trial))  # Odd trials use strict IEEE arithmetic
+    @time heatflow(a,1000)
+end</code></pre><p>This gives an output similar to</p><pre><code class="language-none">  0.002202 seconds (1 allocation: 4.063 KiB)
+  0.001502 seconds (1 allocation: 4.063 KiB)
+  0.002139 seconds (1 allocation: 4.063 KiB)
+  0.001454 seconds (1 allocation: 4.063 KiB)
+  0.002115 seconds (1 allocation: 4.063 KiB)
+  0.001455 seconds (1 allocation: 4.063 KiB)</code></pre><p>Note how each even iteration is significantly faster.</p><p>This example generates many subnormal numbers because the values in <code>a</code> become an exponentially decreasing curve, which slowly flattens out over time.</p><p>Treating subnormals as zeros should be used with caution, because doing so breaks some identities, such as <code>x-y == 0</code> implies <code>x == y</code>:</p><pre><code class="language-julia-repl">julia&gt; x = 3f-38; y = 2f-38;
+
+julia&gt; set_zero_subnormals(true); (x - y, x == y)
+(0.0f0, false)
+
+julia&gt; set_zero_subnormals(false); (x - y, x == y)
+(1.0000001f-38, false)</code></pre><p>In some applications, an alternative to zeroing subnormal numbers is to inject a tiny bit of noise.  For example, instead of initializing <code>a</code> with zeros, initialize it with:</p><pre><code class="language-julia">a = rand(Float32,1000) * 1.f-9</code></pre><h2 id="man-code-warntype-1"><a class="docs-heading-anchor" href="#man-code-warntype-1"><a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_warntype"><code>@code_warntype</code></a></a><a class="docs-heading-anchor-permalink" href="#man-code-warntype-1" title="Permalink"></a></h2><p>宏 <a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_warntype"><code>@code_warntype</code></a>（或其函数变体 <a href="../../stdlib/InteractiveUtils/#InteractiveUtils.code_warntype"><code>code_warntype</code></a>）有时可以帮助诊断类型相关的问题。这是一个例子：</p><pre><code class="language-julia-repl">julia&gt; @noinline pos(x) = x &lt; 0 ? 0 : x;
+
+julia&gt; function f(x)
+           y = pos(x)
+           return sin(y*x + 1)
+       end;
+
+julia&gt; @code_warntype f(3.2)
+Variables
+  #self#::Core.Compiler.Const(f, false)
+  x::Float64
+  y::Union{Float64, Int64}
+
+Body::Float64
+1 ─      (y = Main.pos(x))
+│   %2 = (y * x)::Float64
+│   %3 = (%2 + 1)::Float64
+│   %4 = Main.sin(%3)::Float64
+└──      return %4</code></pre><p>解释 <a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_warntype"><code>@code_warntype</code></a> 的输出，就像其兄弟 <a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_lowered"><code>@code_lowered</code></a>、<a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_typed"><code>@code_typed</code></a>、<a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_llvm"><code>@code_llvm</code></a> 和 <a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_native"><code>@code_native</code></a>，需要通过一点练习。你的代码是以其在生成经过编译的机器码的过程中被大量处理的形式呈现的。大多数表达式都会被类型标注，其由 <code>::T</code> 表示（例如，<code>T</code> 可能是 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a>）。<a href="../../stdlib/InteractiveUtils/#InteractiveUtils.@code_warntype"><code>@code_warntype</code></a> 最重要的特征是非具体类型会以红色显示；在上例中，这种输出以大写字母显示。</p><p>在顶部，该函数类型推导后的返回类型显示为 <code>Body::Float64</code>。下一行以 Julia 的 SSA IR 形式表示了 <code>f</code> 的主体。被数字标记的方块表示代码中（通过 <code>goto</code>）跳转的目标。查看主体，你会看到首先调用了 <code>pos</code>，其返回值经类型推导为 <code>Union</code> 类型 <code>UNION{FLOAT64, INT64}</code> 并以大写字母显示，因为它是非具体类型。这意味着我们无法根据输入类型知道 <code>pos</code> 的确切返回类型。但是，无论 <code>y</code> 是 <code>Float64</code> 还是 <code>Int64</code>，<code>y*x</code> 的结果都是 <code>Float64</code>。最终的结果是 <code>f(x::Float64)</code> 在其输出中不会是类型不稳定的，即使有些中间计算是类型不稳定的。</p><p>如何使用这些信息取决于你。显然，最好将 <code>pos</code> 修改为类型稳定的：如果这样做，<code>f</code> 中的所有变量都是具体的，其性能将是最佳的。但是，在某些情况下，这种<em>短暂的</em>类型不稳定性可能无关紧要：例如，如果 <code>pos</code> 从不单独使用，那么 <code>f</code> 的输出（对于 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> 输入）是类型稳定的这一事实将保护之后的代码免受类型不稳定性的传播影响。这与类型不稳定性难以或不可能修复的情况密切相关。在这些情况下，上面的建议（例如，添加类型注释并/或分解函数）是你控制类型不稳定性的「损害」的最佳工具。另请注意，即使是 Julia Base 也有类型不稳定的函数。例如，函数 <a href="../../base/arrays/#Base.findfirst-Tuple{Any}"><code>findfirst</code></a> 如果找到键则返回数组索引，如果没有找到键则返回 <code>nothing</code>，这是明显的类型不稳定性。为了更易于找到可能很重要的类型不稳定性，包含 <code>missing</code> 或 <code>nothing</code> 的 <code>Union</code> 会用黄色着重显示，而不是用红色。</p><p>以下示例可以帮助你解释被标记为包含非叶类型的表达式：</p><ul><li><p>函数体以 <code>Body::UNION{T1,T2})</code> 开头</p><ul><li>解释：函数具有不稳定返回类型</li><li>建议：使返回值类型稳定，即使你必须对其进行类型注释</li></ul></li><li><p><code>invoke Main.g(%%x::Int64)::UNION{FLOAT64, INT64}</code></p><ul><li>解释：调用类型不稳定的函数 <code>g</code>。</li><li>建议：修改该函数，或在必要时对其返回值进行类型注释</li></ul></li><li><p><code>invoke Base.getindex(%%x::Array{Any,1}, 1::Int64)::ANY</code></p><ul><li>解释：访问缺乏类型信息的数组的元素</li><li>建议：使用具有更佳定义的类型的数组，或在必要时对访问的单个元素进行类型注释</li></ul></li><li><p><code>Base.getfield(%%x, :(:data))::ARRAY{FLOAT64,N} WHERE N</code></p><ul><li>解释：获取值为非叶类型的字段。在这种情况下，<code>ArrayContainer</code> 具有字段 <code>data::Array{T}</code>。但是 <code>Array</code> 也需要维度 <code>N</code> 来成为具体类型。</li><li>建议：使用类似于 <code>Array{T,3}</code> 或 <code>Array{T,N}</code> 的具体类型，其中的 <code>N</code> 现在是 <code>ArrayContainer</code> 的参数</li></ul></li></ul><h2 id="man-performance-captured-1"><a class="docs-heading-anchor" href="#man-performance-captured-1">被捕获变量的性能</a><a class="docs-heading-anchor-permalink" href="#man-performance-captured-1" title="Permalink"></a></h2><p>请考虑以下定义内部函数的示例：</p><pre><code class="language-julia">function abmult(r::Int)
+    if r &lt; 0
+        r = -r
+    end
+    f = x -&gt; x * r
+    return f
+end</code></pre><p>函数 <code>abmult</code> 返回一个函数 <code>f</code>，它将其参数乘以 <code>r</code> 的绝对值。赋值给 <code>f</code> 的函数称为「闭包」。内部函数还被语言用于 <code>do</code> 代码块和生成器表达式。</p><p>这种代码风格为语言带来了性能挑战。解析器在将其转换为较低级别的指令时，基本上通过将内部函数提取到单独的代码块来重新组织上述代码。「被捕获的」变量，比如 <code>r</code>，被内部函数共享，且包含它们的作用域会被提取到内部函数和外部函数皆可访问的堆分配「box」中，这是因为语言指定内部作用域中的 <code>r</code> 必须与外部作用域中的 <code>r</code> 相同，就算在外部作用域（或另一个内部函数）修改 <code>r</code> 后也需如此。</p><p>前一段的讨论中提到了「解析器」，也就是，包含 <code>abmult</code> 的模块被首次加载时发生的编译前期，而不是首次调用它的编译后期。解析器不「知道」<code>Int</code> 是固定类型，也不知道语句 <code>r = -r</code> 将一个 <code>Int</code> 转换为另一个 <code>Int</code>。类型推断的魔力在编译后期生效。</p><p>因此，解析器不知道 <code>r</code> 具有固定类型（<code>Int</code>）。一旦内部函数被创建，<code>r</code> 的值也不会改变（因此也不需要 box）。因此，解析器向包含具有抽象类型（比如 <code>Any</code>）的对象的 box 发出代码，这对于每次出现的 <code>r</code> 都需要运行时类型分派。这可以通过在上述函数中使用 <code>@code_warntype</code> 来验证。装箱和运行时的类型分派都有可能导致性能损失。</p><p>如果捕获的变量用于代码的性能关键部分，那么以下提示有助于确保它们的使用具有高效性。首先，如果已经知道被捕获的变量不会改变类型，则可以使用类型注释来显式声明类型（在变量上，而不是在右侧）：</p><pre><code class="language-julia">function abmult2(r0::Int)
+    r::Int = r0
+    if r &lt; 0
+        r = -r
+    end
+    f = x -&gt; x * r
+    return f
+end</code></pre><p>类型注释部分恢复由于捕获而导致的丢失性能，因为解析器可以将具体类型与 box 中的对象相关联。更进一步，如果被捕获的变量不再需要 box（因为它不会在闭包创建后被重新分配），就可以用 <code>let</code> 代码块表示，如下所示。</p><pre><code class="language-julia">function abmult3(r::Int)
+    if r &lt; 0
+        r = -r
+    end
+    f = let r = r
+            x -&gt; x * r
+    end
+    return f
+end</code></pre><p><code>let</code> 代码块创建了一个新的变量 <code>r</code>，它的作用域只是内部函数。第二种技术在捕获变量存在时完全恢复了语言性能。请注意，这是编译器的一个快速发展的方面，未来的版本可能不需要依靠这种程度的程序员注释来获得性能。与此同时，一些用户提供的包（如 <a href="https://github.com/c42f/FastClosures.jl">FastClosures</a>）会自动插入像在 <code>abmult3</code> 中那样的 <code>let</code> 语句。</p><h1 id="Checking-for-equality-with-a-singleton-1"><a class="docs-heading-anchor" href="#Checking-for-equality-with-a-singleton-1">Checking for equality with a singleton</a><a class="docs-heading-anchor-permalink" href="#Checking-for-equality-with-a-singleton-1" title="Permalink"></a></h1><p>When checking if a value is equal to some singleton it can be better for performance to check for identicality (<code>===</code>) instead of equality (<code>==</code>). The same advice applies to using <code>!==</code> over <code>!=</code>. These type of checks frequently occur e.g. when implementing the iteration protocol and checking if <code>nothing</code> is returned from <a href="../../base/collections/#Base.iterate"><code>iterate</code></a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../stacktraces/">« 栈跟踪</a><a class="docs-footer-nextpage" href="../workflow-tips/">工作流程建议 »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 六月 18 周四 16:46">2020 六月 18 周四</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
