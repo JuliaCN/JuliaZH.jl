@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>栈跟踪 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/stacktraces/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li class="is-active"><a class="tocitem" href>栈跟踪</a><ul class="internal"><li><a class="tocitem" href="#查看栈跟踪-1"><span>查看栈跟踪</span></a></li><li><a class="tocitem" href="#抽取有用信息-1"><span>抽取有用信息</span></a></li><li><a class="tocitem" href="#错误处理-1"><span>错误处理</span></a></li><li><a class="tocitem" href="#异常栈与catch_stack-1"><span>异常栈与<code>catch_stack</code></span></a></li><li><a class="tocitem" href="#[stacktrace](@ref)-与-[backtrace](@ref)-的比较-1"><span><code>stacktrace</code> 与 <code>backtrace</code> 的比较</span></a></li></ul></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">多线程</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">Dates</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">Using Valgrind with Julia</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>栈跟踪</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>栈跟踪</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/stacktracesmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="栈跟踪-1"><a class="docs-heading-anchor" href="#栈跟踪-1">栈跟踪</a><a class="docs-heading-anchor-permalink" href="#栈跟踪-1" title="Permalink"></a></h1><p><code>StackTraces</code> 模块提供了简单的栈跟踪功能，这些栈跟踪信息既可读又易于编程使用。</p><h2 id="查看栈跟踪-1"><a class="docs-heading-anchor" href="#查看栈跟踪-1">查看栈跟踪</a><a class="docs-heading-anchor-permalink" href="#查看栈跟踪-1" title="Permalink"></a></h2><p>获取栈跟踪信息的主要函数是 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a>：</p><pre><code class="language-julia-repl">6-element Array{Base.StackTraces.StackFrame,1}:
+ top-level scope
+ eval at boot.jl:317 [inlined]
+ eval(::Module, ::Expr) at REPL.jl:5
+ eval_user_input(::Any, ::REPL.REPLBackend) at REPL.jl:85
+ macro expansion at REPL.jl:116 [inlined]
+ (::getfield(REPL, Symbol(&quot;##28#29&quot;)){REPL.REPLBackend})() at event.jl:92</code></pre><p>调用 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace()</code></a> 会返回一个 <a href="../../base/stacktraces/#Base.StackTraces.StackFrame"><code>StackTraces.StackFrame</code></a> 数组。为了使用方便，可以用 <a href="../../base/stacktraces/#Base.StackTraces.StackTrace"><code>StackTraces.StackTrace</code></a> 来代替 <code>Vector{StackFrame}</code>。下面例子中 <code>[...]</code> 的意思是这部分输出的内容可能会根据代码的实际执行情况而定。</p><pre><code class="language-julia-repl">julia&gt; example() = stacktrace()
+example (generic function with 1 method)
+
+julia&gt; example()
+7-element Array{Base.StackTraces.StackFrame,1}:
+ example() at REPL[1]:1
+ top-level scope
+ eval at boot.jl:317 [inlined]
+[...]
+
+julia&gt; @noinline child() = stacktrace()
+child (generic function with 1 method)
+
+julia&gt; @noinline parent() = child()
+parent (generic function with 1 method)
+
+julia&gt; grandparent() = parent()
+grandparent (generic function with 1 method)
+
+julia&gt; grandparent()
+9-element Array{Base.StackTraces.StackFrame,1}:
+ child() at REPL[3]:1
+ parent() at REPL[4]:1
+ grandparent() at REPL[5]:1
+[...]</code></pre><p>注意，在调用 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace()</code></a> 的时，通常会出现 <code>eval at boot.jl</code> 这帧。 当从 REPL 里调用 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace()</code></a> 的时候，还会显示 <code>REPL.jl</code> 里的一些额外帧，就像下面一样：</p><pre><code class="language-julia-repl">julia&gt; example() = stacktrace()
+example (generic function with 1 method)
+
+julia&gt; example()
+7-element Array{Base.StackTraces.StackFrame,1}:
+ example() at REPL[1]:1
+ top-level scope
+ eval at boot.jl:317 [inlined]
+ eval(::Module, ::Expr) at REPL.jl:5
+ eval_user_input(::Any, ::REPL.REPLBackend) at REPL.jl:85
+ macro expansion at REPL.jl:116 [inlined]
+ (::getfield(REPL, Symbol(&quot;##28#29&quot;)){REPL.REPLBackend})() at event.jl:92</code></pre><h2 id="抽取有用信息-1"><a class="docs-heading-anchor" href="#抽取有用信息-1">抽取有用信息</a><a class="docs-heading-anchor-permalink" href="#抽取有用信息-1" title="Permalink"></a></h2><p>每个 <a href="../../base/stacktraces/#Base.StackTraces.StackFrame"><code>StackTraces.StackFrame</code></a> 都会包含函数名，文件名，代码行数，lambda 信息，一个用于确认此帧是否被内联的标帜，一个用于确认函数是否为 C 函数的标帜（在默认的情况下 C 函数不会出现在栈跟踪信息中）以及一个用整数表示的指针，它是由 <a href="../../base/base/#Base.backtrace"><code>backtrace</code></a> 返回的：</p><pre><code class="language-julia-repl">julia&gt; frame = stacktrace()[3]
+eval(::Module, ::Expr) at REPL.jl:5
+
+julia&gt; frame.func
+:eval
+
+julia&gt; frame.file
+Symbol(&quot;~/julia/usr/share/julia/stdlib/v0.7/REPL/src/REPL.jl&quot;)
+
+julia&gt; frame.line
+5
+
+julia&gt; top_frame.linfo
+MethodInstance for eval(::Module, ::Expr)
+
+julia&gt; top_frame.inlined
+false
+
+julia&gt; top_frame.from_c
+false</code></pre><pre><code class="language-julia-repl">julia&gt; top_frame.pointer
+0x00007f92d6293171</code></pre><p>这使得我们可以通过编程的方式将栈跟踪信息用于打印日志，处理错误以及其它更多用途。</p><h2 id="错误处理-1"><a class="docs-heading-anchor" href="#错误处理-1">错误处理</a><a class="docs-heading-anchor-permalink" href="#错误处理-1" title="Permalink"></a></h2><p>能够轻松地获取当前调用栈的状态信息在许多场景下都很有用，但最直接的应用是错误处理和调试。</p><pre><code class="language-julia-repl">julia&gt; @noinline bad_function() = undeclared_variable
+bad_function (generic function with 1 method)
+
+julia&gt; @noinline example() = try
+           bad_function()
+       catch
+           stacktrace()
+       end
+example (generic function with 1 method)
+
+julia&gt; example()
+7-element Array{Base.StackTraces.StackFrame,1}:
+ example() at REPL[2]:4
+ top-level scope
+ eval at boot.jl:317 [inlined]
+[...]</code></pre><p>你可能已经注意到了，上述例子中第一个栈帧指向了 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a> 被调用的第 4 行，而不是 <code>bad_function</code> 被调用的第 2 行，且完全没有出现 <code>bad_function</code> 的栈帧。这是也是可以理解的，因为 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a> 是在 <code>catch</code> 的上下文中被调用的。虽然在这个例子中很容易查找到错误的真正源头，但在复杂的情况下查找错误源并不是一件容易的事。</p><p>为了补救，我们可以将 <a href="../../base/base/#Base.catch_backtrace"><code>catch_backtrace</code></a> 的输出传递给 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a>。<a href="../../base/base/#Base.catch_backtrace"><code>catch_backtrace</code></a> 会返回最近发生异常的上下文中的栈信息，而不是返回当前上下文中的调用栈信息。</p><pre><code class="language-julia-repl">julia&gt; @noinline bad_function() = undeclared_variable
+bad_function (generic function with 1 method)
+
+julia&gt; @noinline example() = try
+           bad_function()
+       catch
+           stacktrace(catch_backtrace())
+       end
+example (generic function with 1 method)
+
+julia&gt; example()
+8-element Array{Base.StackTraces.StackFrame,1}:
+ bad_function() at REPL[1]:1
+ example() at REPL[2]:2
+[...]</code></pre><p>可以看到，现在栈跟踪会显示正确的行号以及之前缺失的栈帧。</p><pre><code class="language-julia-repl">julia&gt; @noinline child() = error(&quot;Whoops!&quot;)
+child (generic function with 1 method)
+
+julia&gt; @noinline parent() = child()
+parent (generic function with 1 method)
+
+julia&gt; @noinline function grandparent()
+           try
+               parent()
+           catch err
+               println(&quot;ERROR: &quot;, err.msg)
+               stacktrace(catch_backtrace())
+           end
+       end
+grandparent (generic function with 1 method)
+
+julia&gt; grandparent()
+ERROR: Whoops!
+10-element Array{Base.StackTraces.StackFrame,1}:
+ error at error.jl:33 [inlined]
+ child() at REPL[1]:1
+ parent() at REPL[2]:1
+ grandparent() at REPL[3]:3
+[...]</code></pre><h2 id="异常栈与catch_stack-1"><a class="docs-heading-anchor" href="#异常栈与catch_stack-1">异常栈与<code>catch_stack</code></a><a class="docs-heading-anchor-permalink" href="#异常栈与catch_stack-1" title="Permalink"></a></h2><div class="admonition is-compat"><header class="admonition-header">Julia 1.1</header><div class="admonition-body"><p>异常栈需要 Julia 1.1 及以上版本。</p></div></div><p>在处理一个异常时，后续的异常同样可能被抛出。观察这些异常对定位问题的源头极有帮助。Julia runtime 支持将每个异常发生后推入一个内部的<em>异常栈</em>。当代码正常退出一个<code>catch</code>语句，可认为所有被推入栈中的异常在相应的<code>try</code>语句中被成功处理并已从栈中移除。</p><p>存放当前异常的栈可通过测试函数 <a href="manual/@ref"><code>Base.catch_stack</code></a> 获取，例如</p><pre><code class="language-julia-repl">julia&gt; try
+           error(&quot;(A) The root cause&quot;)
+       catch
+           try
+               error(&quot;(B) An exception while handling the exception&quot;)
+           catch
+               for (exc, bt) in Base.catch_stack()
+                   showerror(stdout, exc, bt)
+                   println()
+               end
+           end
+       end
+(A) The root cause
+Stacktrace:
+ [1] error(::String) at error.jl:33
+ [2] top-level scope at REPL[7]:2
+ [3] eval(::Module, ::Any) at boot.jl:319
+ [4] eval_user_input(::Any, ::REPL.REPLBackend) at REPL.jl:85
+ [5] macro expansion at REPL.jl:117 [inlined]
+ [6] (::getfield(REPL, Symbol(&quot;##26#27&quot;)){REPL.REPLBackend})() at task.jl:259
+(B) An exception while handling the exception
+Stacktrace:
+ [1] error(::String) at error.jl:33
+ [2] top-level scope at REPL[7]:5
+ [3] eval(::Module, ::Any) at boot.jl:319
+ [4] eval_user_input(::Any, ::REPL.REPLBackend) at REPL.jl:85
+ [5] macro expansion at REPL.jl:117 [inlined]
+ [6] (::getfield(REPL, Symbol(&quot;##26#27&quot;)){REPL.REPLBackend})() at task.jl:259</code></pre><p>在本例中，根源异常（A）排在栈头，其后放置着延伸异常（B)。 在正常退出（例如，不抛出新异常）两个 catch 块后，所有异常都被移除出栈，无法访问。</p><p>异常栈被存放于发生异常的 <code>Task</code> 处。当某个任务失败，出现意料外的异常时，<code>catch_stack(task)</code> 可能会被用于观察该任务的异常栈。</p><h2 id="[stacktrace](@ref)-与-[backtrace](@ref)-的比较-1"><a class="docs-heading-anchor" href="#[stacktrace](@ref)-与-[backtrace](@ref)-的比较-1"><a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a> 与 <a href="../../base/base/#Base.backtrace"><code>backtrace</code></a> 的比较</a><a class="docs-heading-anchor-permalink" href="#[stacktrace](@ref)-与-[backtrace](@ref)-的比较-1" title="Permalink"></a></h2><p>调用 <a href="../../base/base/#Base.backtrace"><code>backtrace</code></a> 会返回一个 <code>Union{Ptr{Nothing}, Base.InterpreterIP}</code> 的数组，可以将其传给 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a> 函数进行转化：</p><pre><code class="language-julia-repl">julia&gt; trace = backtrace()
+18-element Array{Union{Ptr{Nothing}, Base.InterpreterIP},1}:
+ Ptr{Nothing} @0x00007fd8734c6209
+ Ptr{Nothing} @0x00007fd87362b342
+ Ptr{Nothing} @0x00007fd87362c136
+ Ptr{Nothing} @0x00007fd87362c986
+ Ptr{Nothing} @0x00007fd87362d089
+ Base.InterpreterIP(CodeInfo(:(begin
+      Core.SSAValue(0) = backtrace()
+      trace = Core.SSAValue(0)
+      return Core.SSAValue(0)
+  end)), 0x0000000000000000)
+ Ptr{Nothing} @0x00007fd87362e4cf
+[...]
+
+julia&gt; stacktrace(trace)
+6-element Array{Base.StackTraces.StackFrame,1}:
+ top-level scope
+ eval at boot.jl:317 [inlined]
+ eval(::Module, ::Expr) at REPL.jl:5
+ eval_user_input(::Any, ::REPL.REPLBackend) at REPL.jl:85
+ macro expansion at REPL.jl:116 [inlined]
+ (::getfield(REPL, Symbol(&quot;##28#29&quot;)){REPL.REPLBackend})() at event.jl:92</code></pre><p>需要注意的是，<a href="../../base/base/#Base.backtrace"><code>backtrace</code></a> 返回的向量有 18 个元素，而 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a> 返回的向量只包含6 个元素。这是因为 <a href="../../base/stacktraces/#Base.StackTraces.stacktrace"><code>stacktrace</code></a> 在默认情况下会移除所有底层 C 函数的栈信息。如果你想显示 C 函数调用的栈帧，可以这样做：</p><pre><code class="language-julia-repl">julia&gt; stacktrace(trace, true)
+21-element Array{Base.StackTraces.StackFrame,1}:
+ jl_apply_generic at gf.c:2167
+ do_call at interpreter.c:324
+ eval_value at interpreter.c:416
+ eval_body at interpreter.c:559
+ jl_interpret_toplevel_thunk_callback at interpreter.c:798
+ top-level scope
+ jl_interpret_toplevel_thunk at interpreter.c:807
+ jl_toplevel_eval_flex at toplevel.c:856
+ jl_toplevel_eval_in at builtins.c:624
+ eval at boot.jl:317 [inlined]
+ eval(::Module, ::Expr) at REPL.jl:5
+ jl_apply_generic at gf.c:2167
+ eval_user_input(::Any, ::REPL.REPLBackend) at REPL.jl:85
+ jl_apply_generic at gf.c:2167
+ macro expansion at REPL.jl:116 [inlined]
+ (::getfield(REPL, Symbol(&quot;##28#29&quot;)){REPL.REPLBackend})() at event.jl:92
+ jl_fptr_trampoline at gf.c:1838
+ jl_apply_generic at gf.c:2167
+ jl_apply at julia.h:1540 [inlined]
+ start_task at task.c:268
+ ip:0xffffffffffffffff</code></pre><p><a href="../../base/base/#Base.backtrace"><code>backtrace</code></a> 返回的单个指针可以通过 <a href="../../base/stacktraces/#Base.StackTraces.lookup"><code>StackTraces.lookup</code></a> 来转化成一组 <a href="../../base/stacktraces/#Base.StackTraces.StackFrame"><code>StackTraces.StackFrame</code></a>：</p><pre><code class="language-julia-repl">julia&gt; pointer = backtrace()[1];
+
+julia&gt; frame = StackTraces.lookup(pointer)
+1-element Array{Base.StackTraces.StackFrame,1}:
+ jl_apply_generic at gf.c:2167
+
+julia&gt; println(&quot;The top frame is from $(frame[1].func)!&quot;)
+The top frame is from jl_apply_generic!</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../profile/">« 性能分析</a><a class="docs-footer-nextpage" href="../performance-tips/">性能建议 »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 六月 18 周四 17:28">2020 六月 18 周四</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
