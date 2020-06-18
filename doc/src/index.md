@@ -1,6 +1,6 @@
 # Julia 1.4 中文文档
 
-欢迎来到 Julia 1.4 中文文档([PDF版本](https://raw.githubusercontent.com/JuliaCN/JuliaZH.jl/pdf/dev/Julia中文文档.pdf))!
+欢迎来到 Julia 1.4 中文文档([PDF版本](https://raw.githubusercontent.com/JuliaCN/JuliaZH.jl/pdf/v1.4.0/Julia中文文档-1.4.0.pdf))!
 
 请先阅读 [v1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观。我们推荐刚刚开始学习 Julia 语言的朋友阅读中文社区提供的 [Julia入门指引](https://discourse.juliacn.com/t/topic/159)，也推荐你使用[discourse](https://discourse.juliacn.com)对遇到的问题进行提问。
 
