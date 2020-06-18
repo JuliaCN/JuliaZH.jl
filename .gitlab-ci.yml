@@ -1,4 +1,4 @@
-image: julia:1.0.0-stretch
+image: julia:1-stretch
 
 before_script:
   - julia --version
