@@ -571,7 +571,7 @@ julia> """
 
 尾随空格保持不变。
 
-三引号字符串字面量可不带转义地包含 `"` 符号。
+Triple-quoted string literals can contain `"` characters without escaping.
 
 注意，无论是用单引号还是三引号，在文本字符串中换行符都会生成一个换行 (LF) 字符 `\n`，即使你的编辑器使用回车组合符 `\r` (CR) 或 CRLF 来结束行。为了在字符串中包含 CR，总是应该使用显式转义符 `\r`；比如，可以输入文本字符串 `"a CRLF line ending\r\n"`。
 

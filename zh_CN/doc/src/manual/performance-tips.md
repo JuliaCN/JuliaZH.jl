@@ -144,20 +144,20 @@ Consider the following:
 
 ```jldoctest
 julia> a = Real[]
-0-element Array{Real,1}
+Real[]
 
 julia> push!(a, 1); push!(a, 2.0); push!(a, π)
 3-element Array{Real,1}:
  1
  2.0
- π
+ π = 3.1415926535897...
 ```
 
 因为`a`是一个抽象类型[`Real`](@ref)的数组，它必须能容纳任何一个`Real`值。因为`Real`对象可以有任意的大小和结构，`a`必须用指针的数组来表示，以便能独立地为`Real`对象进行内存分配。但是如果我们只允许同样类型的数，比如[`Float64`](@ref)，才能存在`a`中，它们就能被更有效率地存储：
 
 ```jldoctest
 julia> a = Float64[]
-0-element Array{Float64,1}
+Float64[]
 
 julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
 3-element Array{Float64,1}:
@@ -477,6 +477,11 @@ but this will:
 g_vararg(x::Vararg{Int, N}) where {N} = tuple(x...)
 ```
 
+One only needs to introduce a single type parameter to force specialization, even if the other types are unconstrained. For example, this will also specialize, and is useful when the arguments are not all of the same type:
+```julia
+h_vararg(x::Vararg{Any, N}) where {N} = tuple(x...)
+```
+
 Note that [`@code_typed`](@ref) and friends will always show you specialized code, even if Julia
 would not normally specialize that method call. You need to check the
 [method internals](@ref ast-lowered-method) if you want to see whether specializations are generated
@@ -545,8 +550,8 @@ end
 局部变量 `x` 一开始是整数，在一次循环迭代后变为浮点数（[`/`](@ref) 运算符的结果）。这使得编译器更难优化循环体。有几种可能的解决方法：
 
   * 使用 `x = 1.0` 初始化 `x`
-  * 声明 `x` 的类型：`x::Float64 = 1`
-  * 使用显式的类型转换：`x = oneunit(Float64)`
+  * Declare the type of `x` explicitly as `x::Float64 = 1`
+  * Use an explicit conversion by `x = oneunit(Float64)`
   * 使用第一个循环迭代初始化，即 `x = 1 / rand()`，接着循环 `for i = 2:10`
 
 ## [Separate kernel functions (aka, function barriers)](@id kernel-functions)
@@ -745,7 +750,13 @@ julia> x[:]
  4
 ```
 
-这种数组排序的约定在许多语言中都很常见，比如 Fortran、Matlab 和 R（仅举几例）。列主序的替代方案是行主序，这是 C 和 Python（`numpy`）在其它语言中采用的惯例。请记住数组的排序在循环数组时会对性能产生显著影响。需记住的一个经验法则是，对于列主序数组，改变第一个索引最快。实际上，这意味着如果最内层循环索引是切片表达式的第一个索引，那循环将更快。
+This convention for ordering arrays is common in many languages like Fortran, Matlab, and R (to
+name a few). The alternative to column-major ordering is row-major ordering, which is the convention
+adopted by C and Python (`numpy`) among other languages. Remembering the ordering of arrays can
+have significant performance effects when looping over arrays. A rule of thumb to keep in mind
+is that with column-major arrays, the first index changes most rapidly. Essentially this means
+that looping will be faster if the inner-most loop index is the first to appear in a slice expression.
+Keep in mind that indexing an array with `:` is an implicit loop that iteratively accesses all elements within a particular dimension; it can be faster to extract columns than rows, for example.
 
 考虑以下人为示例。假设我们想编写一个接收 [`Vector`](@ref) 并返回方阵 [`Matrix`](@ref) 的函数，所返回方阵的行或列都用输入向量的副本填充。并假设用这些副本填充的是行还是列并不重要（也许可以很容易地相应调整剩余代码）。我们至少可以想到四种方式（除了建议的调用内置函数 [`repeat`](@ref)）：
 
@@ -888,13 +899,33 @@ julia> @time f.(x);
   0.002626 seconds (8 allocations: 7.630 MiB)
 ```
 
-也就是说，`fdot(x)` 比 `f(x)` 快十倍且分配的内存为其 1/6，因为 `f(x)` 中的每个 `*` 和 `+` 运算都会分配一个新的临时数组并在单独的循环中执行。（当然，如果你只计算 `f.(x)`，那在此例中它与 `fdot(x)` 一样快，但在许多情况下，在表达式中添加一些点比为每个向量化操作定义单独的函数更方便。）
+That is, `fdot(x)` is ten times faster and allocates 1/6 the
+memory of `f(x)`, because each `*` and `+` operation in `f(x)` allocates
+a new temporary array and executes in a separate loop. (Of course,
+if you just do `f.(x)` then it is as fast as `fdot(x)` in this
+example, but in many contexts it is more convenient to just sprinkle
+some dots in your expressions rather than defining a separate function
+for each vectorized operation.)
 
-## 考虑在切片中使用视图
+## [Consider using views for slices](@id man-performance-views)
 
-在 Julia 中，数组「切片」表达式，如 `array[1:5, :]`，创建对应数据的副本（除了在赋值的左侧，此情况下 `array[1:5, :] = ...` 会对 `array` 的对应部分进行 in-place 赋值）。如果你会在切片上执行许多操作，这对性能是有好处的，因为使用更小的连续副本比索引到原始数组更高效。另一方面，如果你只在切片上执行一些简单操作，则分配和复制操作的成本可能很高。
+In Julia, an array "slice" expression like `array[1:5, :]` creates
+a copy of that data (except on the left-hand side of an assignment,
+where `array[1:5, :] = ...` assigns in-place to that portion of `array`).
+If you are doing many operations on the slice, this can be good for
+performance because it is more efficient to work with a smaller
+contiguous copy than it would be to index into the original array.
+On the other hand, if you are just doing a few simple operations on
+the slice, the cost of the allocation and copy operations can be
+substantial.
 
-另一种方法是创建数组的「视图」，它是一个数组对象（一个 `SubArray`），它实际上 in-place 引用原始数组的数据而无需进行复制。（如果你改写一个视图，它也会修改原始数组的数据。）对于单个切片，这可通过调用 [`view`](@ref) 来完成，对于整个表达式或代码块，这还可更简单地通过将 [`@views`](@ref) 放在该表达式前来完成。例如：
+An alternative is to create a "view" of the array, which is
+an array object (a `SubArray`) that actually references the data
+of the original array in-place, without making a copy. (If you
+write to a view, it modifies the original array's data as well.)
+This can be done for individual slices by calling [`view`](@ref),
+or more simply for a whole expression or block of code by putting
+[`@views`](@ref) in front of that expression. For example:
 
 ```jldoctest; filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> fcopy(x) = sum(x[2:end-1]);
@@ -1260,7 +1291,7 @@ julia> @code_warntype f(3.2)
 Variables
   #self#::Core.Compiler.Const(f, false)
   x::Float64
-  y::Union{Float64, Int64}
+  y::UNION{FLOAT64, INT64}
 
 Body::Float64
 1 ─      (y = Main.pos(x))
@@ -1270,7 +1301,13 @@ Body::Float64
 └──      return %4
 ```
 
-解释 [`@code_warntype`](@ref) 的输出，就像其兄弟 [`@code_lowered`](@ref)、[`@code_typed`](@ref)、[`@code_llvm`](@ref) 和 [`@code_native`](@ref)，需要通过一点练习。你的代码是以其在生成经过编译的机器码的过程中被大量处理的形式呈现的。大多数表达式都会被类型标注，其由 `::T` 表示（例如，`T` 可能是 [`Float64`](@ref)）。[`@code_warntype`](@ref) 最重要的特征是非具体类型会以红色显示；在上例中，这种输出以大写字母显示。
+Interpreting the output of [`@code_warntype`](@ref), like that of its cousins [`@code_lowered`](@ref),
+[`@code_typed`](@ref), [`@code_llvm`](@ref), and [`@code_native`](@ref), takes a little practice.
+Your code is being presented in form that has been heavily digested on its way to generating
+compiled machine code. Most of the expressions are annotated by a type, indicated by the `::T`
+(where `T` might be [`Float64`](@ref), for example). The most important characteristic of [`@code_warntype`](@ref)
+is that non-concrete types are displayed in red; since this document is written in Markdown, which has no color,
+in this document, red text is denoted by uppercase.
 
 在顶部，该函数类型推导后的返回类型显示为 `Body::Float64`。下一行以 Julia 的 SSA IR 形式表示了 `f` 的主体。被数字标记的方块表示代码中（通过 `goto`）跳转的目标。查看主体，你会看到首先调用了 `pos`，其返回值经类型推导为 `Union` 类型 `UNION{FLOAT64, INT64}` 并以大写字母显示，因为它是非具体类型。这意味着我们无法根据输入类型知道 `pos` 的确切返回类型。但是，无论 `y` 是 `Float64` 还是 `Int64`，`y*x` 的结果都是 `Float64`。最终的结果是 `f(x::Float64)` 在其输出中不会是类型不稳定的，即使有些中间计算是类型不稳定的。
 

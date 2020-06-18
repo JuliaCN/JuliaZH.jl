@@ -106,6 +106,10 @@ julia> sort(v, alg=InsertionSort)
 Base.sort!
 Base.sort
 Base.sortperm
+Base.InsertionSort
+Base.MergeSort
+Base.QuickSort
+Base.PartialQuickSort
 Base.Sort.sortperm!
 Base.Sort.sortslices
 ```
@@ -127,10 +131,10 @@ Base.Sort.partialsortperm!
 
 目前，Julia Base 中有四种可用的排序算法：
 
-  * `InsertionSort`
-  * `QuickSort`
-  * `PartialQuickSort(k)`
-  * `MergeSort`
+  * [`InsertionSort`](@ref)
+  * [`QuickSort`](@ref)
+  * [`PartialQuickSort(k)`](@ref)
+  * [`MergeSort`](@ref)
 
 `InsertionSort` 是一个在 `QuickSort` 中使用的时间复杂度为 O(n^2) 的稳定的排序算法，它通常在 `n` 比较小的时候才具有较高的效率。
 

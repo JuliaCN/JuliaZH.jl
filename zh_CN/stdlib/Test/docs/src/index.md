@@ -231,7 +231,7 @@ that `Test` provides.
 定义一个基本的 `AbstractTestSet` 子类：
 
 ```julia
-import Test: record, finish
+import Test: Test, record, finish
 using Test: AbstractTestSet, Result, Pass, Fail, Error
 using Test: get_testset_depth, get_testset
 struct CustomTestSet <: Test.AbstractTestSet

@@ -35,7 +35,7 @@ Julia 的类型系统设计得强大而富有表现力，却清晰、直观且�
 
 ```jldoctest
 julia> (1+2)::AbstractFloat
-ERROR: TypeError: in typeassert, expected AbstractFloat, got Int64
+ERROR: TypeError: in typeassert, expected AbstractFloat, got a value of type Int64
 
 julia> (1+2)::Int
 3
@@ -152,6 +152,14 @@ of function arguments that are containers of abstract types; see [Performance Ti
 
 ## 原始类型
 
+!!! warning
+  It is almost always preferable to wrap an existing primitive type in a new
+  composite type than to define your own primitive type.
+
+  This functionality exists to allow Julia to bootstrap the standard primitive
+  types that LLVM supports. Once they are defined, there is very little reason
+  to define more.
+
 原始类型是具体类型，其数据是由简单的位组成。原始类型的经典示例是整数和浮点数。与大多数语言不同，Julia 允许你声明自己的原始类型，而不是只提供一组固定的内置原始类型。实际上，标准原始类型都是在语言本身中定义的：
 
 ```julia
@@ -181,7 +189,14 @@ primitive type «name» «bits» end
 primitive type «name» <: «supertype» «bits» end
 ```
 
-bits 的数值表示该类型需要多少存储空间，name 为新类型指定名称。可以选择将一个原始类型声明为某个超类型的子类型。如果省略超类型，则默认 `Any` 为其直接超类型。上述声明中意味着 [`Bool`](@ref) 类型需要 8 位来储存，并且直接超类型为 [`Integer`](@ref)。目前支持的大小只能是 8 位的倍数。因此，布尔值虽然确实只需要一位，但不能声明为小于 8 位的值。
+The number of bits indicates how much storage the type requires and the name gives the new type
+a name. A primitive type can optionally be declared to be a subtype of some supertype. If a supertype
+is omitted, then the type defaults to having `Any` as its immediate supertype. The declaration
+of [`Bool`](@ref) above therefore means that a boolean value takes eight bits to store, and has
+[`Integer`](@ref) as its immediate supertype. Currently, only sizes that are multiples of
+8 bits are supported and you are likely to experience LLVM bugs with sizes other than those used above.
+Therefore, boolean values, although they really need just a single bit, cannot be declared to be any
+smaller than eight bits.
 
 [`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 类型都具有相同的表现形式：它们都是 8 位内存块。然而，由于 Julia 的类型系统是主格的，它们尽管具有相同的结构，但不是通用的。它们之间的一个根本区别是它们具有不同的超类型：[`Bool`](@ref) 的直接超类型是 [`Integer`](@ref)、[`Int8`](@ref) 的是 [`Signed`](@ref) 而 [`UInt8`](@ref) 的是 [`Unsigned`](@ref)。[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 的所有其它差异是行为上的——定义函数的方式在这些类型的对象作为参数给定时起作用。这也是为什么主格的类型系统是必须的：如果结构确定类型，类型决定行为，就不可能使 [`Bool`](@ref) 的行为与 [`Int8`](@ref) 或 [`UInt8`](@ref) 有任何不同。
 
@@ -335,7 +350,7 @@ julia> "Hello!" :: IntOrString
 "Hello!"
 
 julia> 1.0 :: IntOrString
-ERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got Float64
+ERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got a value of type Float64
 ```
 
 许多语言都有内建的共用体结构来推导类型；Julia 简单地将它暴露给程序员。Julia 编译器能在 `Union` 类型只具有少量类型[^1]的情况下生成高效的代码，方法是为每个可能类型的不同分支都生成专用代码。
@@ -569,7 +584,8 @@ julia> struct DiagPoint{T} <: Pointy{T}
 julia> abstract type Pointy{T<:Real} end
 ```
 
-在这样的声明中，可以使用任何 [`Real`](@ref) 的子类型替换 `T`，但不能使用不是 `Real` 子类型的类型：
+With such a declaration, it is acceptable to use any type that is a subtype of
+[`Real`](@ref) in place of `T`, but not types that are not subtypes of `Real`:
 
 ```jldoctest realpointytype
 julia> Pointy{Float64}
@@ -582,7 +598,7 @@ julia> Pointy{AbstractString}
 ERROR: TypeError: in Pointy, in T, expected T<:Real, got Type{AbstractString}
 
 julia> Pointy{1}
-ERROR: TypeError: in Pointy, in T, expected T<:Real, got Int64
+ERROR: TypeError: in Pointy, in T, expected T<:Real, got a value of type Int64
 ```
 
 参数化复合类型的类型参数可用相同的方式限制：
@@ -680,10 +696,24 @@ julia> typeof((a=1,b="hello"))
 NamedTuple{(:a, :b),Tuple{Int64,String}}
 ```
 
+The [`@NamedTuple`](@ref) macro provides a more convenient `struct`-like syntax for declaring
+`NamedTuple` types via `key::Type` declarations, where an omitted `::Type` corresponds to `::Any`.
+
+```jldoctest
+julia> @NamedTuple{a::Int, b::String}
+NamedTuple{(:a, :b),Tuple{Int64,String}}
+
+julia> @NamedTuple begin
+           a::Int
+           b::String
+       end
+NamedTuple{(:a, :b),Tuple{Int64,String}}
+```
+
 `NamedTuple` 类型可以用作构造函数，接受一个单独的元组作为参数。构造出来的 `NamedTuple` 类型可以是具体类型，如果参数都被指定，也可以是只由字段名称所指定的类型：
 
 ```jldoctest
-julia> NamedTuple{(:a, :b),Tuple{Float32, String}}((1,""))
+julia> @NamedTuple{a::Float32,b::String}((1,""))
 (a = 1.0f0, b = "")
 
 julia> NamedTuple{(:a, :b)}((1,""))
@@ -877,8 +907,7 @@ Any
 julia> supertype(Union{Float64,Int64})
 ERROR: MethodError: no method matching supertype(::Type{Union{Float64, Int64}})
 Closest candidates are:
-  supertype(!Matched::DataType) at operators.jl:42
-  supertype(!Matched::UnionAll) at operators.jl:47
+[...]
 ```
 
 ## [自定义 pretty-printing](@id man-custom-pretty-printing)
@@ -1037,7 +1066,8 @@ julia> firstlast(Val(false))
 "Last"
 ```
 
-为了保证 Julia 的一致性，调用处应当始终传递 `Val` *实例*而不是*类型*，也就是使用 `foo(Val(:bar))` 而不是 `foo(Val{:bar})`。
+For consistency across Julia, the call site should always pass a `Val` *instance* rather than using
+a *type*, i.e., use `foo(Val(:bar))` rather than `foo(Val{:bar})`.
 
 It's worth noting that it's extremely easy to mis-use parametric "value" types, including `Val`;
 in unfavorable cases, you can easily end up making the performance of your code much *worse*.

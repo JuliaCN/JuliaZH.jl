@@ -60,7 +60,7 @@ julia> typeof(ans)
 Int32
 ```
 
-`clock` takes no arguments and returns an [`Int32`](@ref). One common gotcha is that a 1-tuple of
+`clock` takes no arguments and returns an [`Int32`](@ref). One common mistake is forgetting that a 1-tuple of
 argument types must be written with a trailing comma. For example, to call the `getenv` function
 to get a pointer to the value of an environment variable, one makes a call like this:
 
@@ -72,7 +72,9 @@ julia> unsafe_string(path)
 "/bin/bash"
 ```
 
-请注意，参数类型元组必须是 `(Cstring,)`，而不是 `(Cstring)` 。这是因为 `(Cstring)` 只是括号括起来的表达式 `Cstring`，而不是包含 `Cstring` 的单元组：
+Note that the argument type tuple must be written as `(Cstring,)`, not `(Cstring)`. This
+is because `(Cstring)` is just the expression `Cstring` surrounded by parentheses, rather than
+a 1-tuple containing `Cstring`:
 
 ```jldoctest
 julia> (Cstring)
@@ -82,7 +84,12 @@ julia> (Cstring,)
 (Cstring,)
 ```
 
-在实践中，特别是在提供可重用功能时，通常会将 [`ccall`](@ref) 封装成一个 Julia 函数，此函数负责为 [`ccall`](@ref) 配置参数，且无论 C 或 Fortran 函数以任何方式产生错误，此函数都会对其进行检查并将异常传递给调用者。这一点尤其重要，因为 C 和 Fortran 的 API 在出错时的表现形式和行为极其不一致。例如，C 库函数 `getenv` 在 Julia 中的封装可以在 [`env.jl`](https://github.com/JuliaLang/julia/blob/master/base/env.jl) 里找到，该封装的一个简化版本如下：
+In practice, especially when providing reusable functionality, one generally wraps [`ccall`](@ref)
+uses in Julia functions that set up arguments and then check for errors in whatever manner the
+C or Fortran function specifies. And if an error occurs it is thrown as a normal Julia exception. This is especially
+important since C and Fortran APIs are notoriously inconsistent about how they indicate error
+conditions. For example, the `getenv` C library function is wrapped in the following Julia function,
+which is a simplified version of the actual definition from [`env.jl`](https://github.com/JuliaLang/julia/blob/master/base/env.jl):
 
 ```julia
 function getenv(var::AbstractString)
@@ -121,8 +128,15 @@ function gethostname()
 end
 ```
 
-这个例子首先分配一个由bytes组成的数组，然后调用C库函数`gethostname`用主机名填充数组，获取指向主机名缓冲区的指针，假设它是一个以NUL终止的C字符串，并将指针转换为指向Julia字符串的指针。 这种使用这种需要调用者分配内存以传递给被调用者来填充的模式对于C库函数很常见。
-Julia中类似的内存分配通常是通过创建一个未初始化的数组并将指向其数据的指针传递给C函数来完成的。 这就是我们不在这里使用`Cstring`类型的原因：由于数组未初始化，它可能包含NUL字节。转换到`Cstring`作为 [`ccall`](@ref) 的一部分会检查包含的NUL字节，因此可能会抛出转换错误。
+This example first allocates an array of bytes. It then calls the C library function `gethostname`
+to populate the array with the hostname. Finally, it takes a pointer to the hostname buffer, and converts the
+pointer to a Julia string, assuming that it is a NUL-terminated C string. It is common for C libraries
+to use this pattern of requiring the caller to allocate memory to be passed to the callee and
+populated. Allocation of memory from Julia like this is generally accomplished by creating an
+uninitialized array and passing a pointer to its data to the C function. This is why we don't
+use the `Cstring` type here: as the array is uninitialized, it could contain NUL bytes. Converting
+to a `Cstring` as part of the [`ccall`](@ref) checks for contained NUL bytes and could therefore
+throw a conversion error.
 
 ## 创建和C兼容的Julia函数指针
 
@@ -144,7 +158,7 @@ Julia function. The arguments to [`@cfunction`](@ref) are:
 
 !!! note
     Currently, only the platform-default C calling convention is supported. This means that
-    `@cfunction`-generated pointers cannot be used in calls where WINAPI expects `stdcall`
+    `@cfunction`-generated pointers cannot be used in calls where WINAPI expects a `stdcall`
     function on 32-bit Windows, but can be used on WIN64 (where `stdcall` is unified with the
     C calling convention).
 
@@ -160,8 +174,8 @@ each. `compare` is a callback function which takes pointers to two elements `a` 
 an integer less/greater than zero if `a` should appear before/after `b` (or zero if any order
 is permitted).
 
-Now, suppose that we have a 1d array `A` of values in Julia that we want to sort
-using the `qsort` function (rather than Julia's built-in `sort` function). Before we worry about
+Now, suppose that we have a 1-d array `A` of values in Julia that we want to sort
+using the `qsort` function (rather than Julia's built-in `sort` function). Before we consider
 calling `qsort` and passing arguments, we need to write a comparison function:
 
 ```jldoctest mycompare
@@ -171,8 +185,8 @@ julia> function mycompare(a, b)::Cint
 mycompare (generic function with 1 method)
 ```
 
-``qsort`` expects a comparison function that return a C ``int``, so we annotate the return type
-to be ``Cint``.
+`qsort` expects a comparison function that return a C `int`, so we annotate the return type
+to be `Cint`.
 
 In order to pass this function to C, we obtain its address using the macro `@cfunction`:
 
@@ -203,7 +217,7 @@ julia> A
   4.4
 ```
 
-As can be seen, `A` is changed to the sorted array `[-2.7, 1.3, 3.1, 4.4]`. Note that Julia
+As the example shows, the original Julia array `A` has now been sorted: `[-2.7, 1.3, 3.1, 4.4]`. Note that Julia
 [takes care of converting the array to a `Ptr{Cdouble}`](@ref automatic-type-conversion)), computing
 the size of the element type in bytes, and so on.
 
@@ -230,7 +244,7 @@ to the specified type. For example, the following call:
 ccall((:foo, "libfoo"), Cvoid, (Int32, Float64), x, y)
 ```
 
-will behave as if the following were written:
+will behave as if it were written like this:
 
 ```julia
 ccall((:foo, "libfoo"), Cvoid, (Int32, Float64),
@@ -312,8 +326,10 @@ same:
     这允许，比如，将一个 `argv` 的指针数组，其类型为
     `Vector{String}` ，传递给一个类型为 `Ptr{Ptr{Cchar}}` 的参数。
 
-在所有我们当前支持的系统上，C/C++中的基本值类型都能以如下的方式对应到Julia类型。每一个C类型也有一个对应的同名Julia类型，添加一个‘C’前缀。
-这在写可移植代码时将非常有用（注意到，C中的 `int` 类型和Julia的 `Int` 不同）。
+On all systems we currently support, basic C/C++ value types may be translated to Julia types
+as follows. Every C type also has a corresponding Julia type with the same name, prefixed by C.
+This can help when writing portable code (and remembering that an `int` in C is not the same as
+an `Int` in Julia).
 
 
 **System Independent Types**
@@ -373,7 +389,7 @@ checks and is only meant to improve readability of the call.
 
 !!! warning
     For string arguments (`char*`) the Julia type should be `Cstring` (if NUL- terminated data is
-    expected) or either `Ptr{Cchar}` or `Ptr{UInt8}` otherwise (these two pointer types have the same
+    expected), or either `Ptr{Cchar}` or `Ptr{UInt8}` otherwise (these two pointer types have the same
     effect), as described above, not `String`. Similarly, for array arguments (`T[]` or `T*`), the
     Julia type should again be `Ptr{T}`, not `Vector{T}`.
 
@@ -382,19 +398,19 @@ checks and is only meant to improve readability of the call.
     `wint_t`) on all platforms.
 
 !!! warning
-    A return type of `Union{}` means the function will not return i.e. C++11 `[[noreturn]]` or C11
+    A return type of `Union{}` means the function will not return, i.e., C++11 `[[noreturn]]` or C11
     `_Noreturn` (e.g. `jl_throw` or `longjmp`). Do not use this for functions that return no value
     (`void`) but do return, use `Cvoid` instead.
 
 !!! note
     For `wchar_t*` arguments, the Julia type should be [`Cwstring`](@ref) (if the C routine expects a
-    NUL-terminated string) or `Ptr{Cwchar_t}` otherwise. Note also that UTF-8 string data in Julia is
+    NUL-terminated string), or `Ptr{Cwchar_t}` otherwise. Note also that UTF-8 string data in Julia is
     internally NUL-terminated, so it can be passed to C functions expecting NUL-terminated data without
     making a copy (but using the `Cwstring` type will cause an error to be thrown if the string itself
     contains NUL characters).
 
 !!! note
-    C functions that take an argument of the type `char**` can be called by using a `Ptr{Ptr{UInt8}}`
+    C functions that take an argument of type `char**` can be called by using a `Ptr{Ptr{UInt8}}`
     type within Julia. For example, C functions of the form:
 
     ```c
@@ -413,7 +429,7 @@ checks and is only meant to improve readability of the call.
     are provided as *hidden arguments*. Type and position of these arguments in the list are compiler
     specific, where compiler vendors usually default to using `Csize_t` as type and append the hidden
     arguments at the end of the argument list. While this behaviour is fixed for some compilers (GNU),
-    others *optionally* permit placing hidden arguments directly after the character argument (Intel,PGI).
+    others *optionally* permit placing hidden arguments directly after the character argument (Intel, PGI).
     For example, Fortran subroutines of the form
 
     ```fortran
@@ -442,7 +458,7 @@ checks and is only meant to improve readability of the call.
 
 ### Struct Type Correspondences
 
-Composite types, aka `struct` in C or `TYPE` in Fortran90 (or `STRUCTURE` / `RECORD` in some variants
+Composite types such as `struct` in C or `TYPE` in Fortran90 (or `STRUCTURE` / `RECORD` in some variants
 of F77), can be mirrored in Julia by creating a `struct` definition with the same
 field layout.
 
@@ -818,12 +834,12 @@ When passing data to a [`ccall`](@ref), it is best to avoid using the [`pointer`
 Instead define a convert method and pass the variables directly to the [`ccall`](@ref). [`ccall`](@ref)
 automatically arranges that all of its arguments will be preserved from garbage collection until
 the call returns. If a C API will store a reference to memory allocated by Julia, after the [`ccall`](@ref)
-returns, you must arrange that the object remains visible to the garbage collector. The suggested
-way to handle this is to make a global variable of type `Array{Ref,1}` to hold these values, until
+returns, you must ensure that the object remains visible to the garbage collector. The suggested
+way to do this is to make a global variable of type `Array{Ref,1}` to hold these values, until
 the C library notifies you that it is finished with them.
 
 Whenever you have created a pointer to Julia data, you must ensure the original data exists until
-you are done with using the pointer. Many methods in Julia such as [`unsafe_load`](@ref) and
+you have finished using the pointer. Many methods in Julia such as [`unsafe_load`](@ref) and
 [`String`](@ref) make copies of data instead of taking ownership of the buffer, so that it is
 safe to free (or alter) the original data without affecting Julia. A notable exception is
 [`unsafe_wrap`](@ref) which, for performance reasons, shares (or can be told to take ownership of) the
@@ -851,7 +867,8 @@ when wrapping libraries that contain many similar functions.
 A similar example can be constructed for [`@cfunction`](@ref).
 
 However, doing this will also be very slow and leak memory, so you should usually avoid this and instead keep
-reading.  The next section discusses how to use indirect calls to efficiently accomplish a similar effect.
+reading.
+The next section discusses how to use indirect calls to efficiently achieve a similar effect.
 
 ## 非直接调用
 

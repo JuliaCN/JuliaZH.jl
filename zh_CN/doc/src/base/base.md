@@ -34,6 +34,22 @@ ans
 
 ## 关键字
 
+This is the list of reserved keywords in Julia:
+`baremodule`, `begin`, `break`, `catch`, `const`, `continue`, `do`,
+`else`, `elseif`, `end`, `export`, `false`, `finally`, `for`, `function`,
+`global`, `if`, `import`, `let`, `local`, `macro`, `module`, `quote`,
+`return`, `struct`, `true`, `try`, `using`, `while`.
+Those keywords are not allowed to be used as variable names.
+
+The following two-word sequences are reserved:
+`abstract type`, `mutable struct`, `primitive type`.
+However, you can create variables with names:
+`abstract`, `mutable`, `primitive` and `type`.
+
+Finally, `where` is parsed as an infix operator for writing parametric method
+and type definitions. Also `in` and `isa` are parsed as infix operators.
+Creation of a variable named `where`, `in` or `isa` is allowed though.
+
 ```@docs
 module
 export
@@ -62,13 +78,22 @@ struct
 mutable struct
 abstract type
 primitive type
+where
 ...
 ;
+=
+?:
 ```
 
-## Base 模块
+## Standard Modules
 ```@docs
-Base.Base
+Main
+Core
+Base
+```
+
+## Base Submodules
+```@docs
 Base.Broadcast
 Base.Docs
 Base.Iterators
@@ -80,7 +105,7 @@ Base.Threads
 Base.GC
 ```
 
-## 所有对象
+## All Objects
 
 ```@docs
 Core.:(===)
@@ -101,6 +126,7 @@ Base.deepcopy
 Base.getproperty
 Base.setproperty!
 Base.propertynames
+Base.hasproperty
 Core.getfield
 Core.setfield!
 Core.isdefined
@@ -112,12 +138,14 @@ Base.widen
 Base.identity
 ```
 
-## 类型的属性
+## Properties of Types
 
-### 类型关系
+### Type relations
 
 ```@docs
 Base.supertype
+Core.Type
+Core.DataType
 Core.:(<:)
 Base.:(>:)
 Base.typejoin
@@ -127,19 +155,22 @@ Base.promote_rule
 Base.isdispatchtuple
 ```
 
-### 已声明结构
+### Declared structure
 
 ```@docs
+Base.ismutable
 Base.isimmutable
 Base.isabstracttype
 Base.isprimitivetype
+Base.issingletontype
 Base.isstructtype
 Base.nameof(::DataType)
 Base.fieldnames
 Base.fieldname
+Base.hasfield
 ```
 
-### 内存布局
+### Memory layout
 
 ```@docs
 Base.sizeof(::Type)
@@ -147,6 +178,7 @@ Base.isconcretetype
 Base.isbits
 Base.isbitstype
 Core.fieldtype
+Base.fieldtypes
 Base.fieldcount
 Base.fieldoffset
 Base.datatype_alignment
@@ -154,7 +186,7 @@ Base.datatype_haspadding
 Base.datatype_pointerfree
 ```
 
-### 特殊值
+### Special values
 
 ```@docs
 Base.typemin
@@ -167,7 +199,7 @@ Base.eps(::AbstractFloat)
 Base.instances
 ```
 
-## 特殊类型
+## Special Types
 
 ```@docs
 Core.Any
@@ -176,15 +208,22 @@ Union{}
 Core.UnionAll
 Core.Tuple
 Core.NamedTuple
+Base.@NamedTuple
 Base.Val
 Core.Vararg
 Core.Nothing
+Base.isnothing
 Base.Some
 Base.something
+Base.Enums.Enum
 Base.Enums.@enum
+Core.Expr
+Core.Symbol
+Core.Symbol(x...)
+Core.Module
 ```
 
-## 泛型
+## Generic Functions
 
 ```@docs
 Core.Function
@@ -197,7 +236,7 @@ Base.:(|>)
 Base.:(∘)
 ```
 
-## 语法
+## Syntax
 
 ```@docs
 Core.eval
@@ -207,30 +246,34 @@ Base.evalfile
 Base.esc
 Base.@inbounds
 Base.@boundscheck
+Base.@propagate_inbounds
 Base.@inline
 Base.@noinline
 Base.@nospecialize
 Base.@specialize
 Base.gensym
 Base.@gensym
+var"name"
 Base.@goto
 Base.@label
 Base.@simd
 Base.@polly
 Base.@generated
 Base.@pure
+Base.@deprecate
 ```
 
-## 缺失值
+## Missing Values
 ```@docs
 Base.Missing
 Base.missing
 Base.coalesce
 Base.ismissing
 Base.skipmissing
+Base.nonmissingtype
 ```
 
-## 系统
+## System
 
 ```@docs
 Base.run
@@ -263,19 +306,25 @@ Base.Sys.isunix
 Base.Sys.isapple
 Base.Sys.islinux
 Base.Sys.isbsd
+Base.Sys.isfreebsd
+Base.Sys.isopenbsd
+Base.Sys.isnetbsd
+Base.Sys.isdragonfly
 Base.Sys.iswindows
 Base.Sys.windows_version
+Base.Sys.free_memory
+Base.Sys.total_memory
 Base.@static
 ```
 
-## 版本控制
+## Versioning
 
 ```@docs
 Base.VersionNumber
 Base.@v_str
 ```
 
-## 错误
+## Errors
 
 ```@docs
 Base.error
@@ -283,7 +332,10 @@ Core.throw
 Base.rethrow
 Base.backtrace
 Base.catch_backtrace
+Base.catch_stack
 Base.@assert
+Base.Experimental.register_error_hint
+Base.Experimental.show_error_hints
 Base.ArgumentError
 Base.AssertionError
 Core.BoundsError
@@ -302,6 +354,7 @@ Base.MissingException
 Core.OutOfMemoryError
 Core.ReadOnlyMemoryError
 Core.OverflowError
+Base.ProcessFailedException
 Core.StackOverflowError
 Base.SystemError
 Core.TypeError
@@ -314,7 +367,7 @@ Base.retry
 Base.ExponentialBackOff
 ```
 
-## 事件
+## Events
 
 ```@docs
 Base.Timer(::Function, ::Real)
@@ -323,7 +376,7 @@ Base.AsyncCondition
 Base.AsyncCondition(::Function)
 ```
 
-## 反射
+## Reflection
 
 ```@docs
 Base.nameof(::Module)
@@ -340,21 +393,30 @@ Base.functionloc(::Any, ::Any)
 Base.functionloc(::Method)
 ```
 
-## 内核
+## Internals
 
 ```@docs
 Base.GC.gc
 Base.GC.enable
 Base.GC.@preserve
+Base.GC.safepoint
 Meta.lower
 Meta.@lower
 Meta.parse(::AbstractString, ::Int)
 Meta.parse(::AbstractString)
 Meta.ParseError
+Core.QuoteNode
 Base.macroexpand
 Base.@macroexpand
 Base.@macroexpand1
 Base.code_lowered
 Base.code_typed
 Base.precompile
+```
+
+## Meta
+```@docs
+Meta.quot
+Meta.isexpr
+Meta.show_sexpr
 ```

@@ -2,7 +2,10 @@
 
 Julia 可以配置许多环境变量，一种常见的方式是直接配置操作系统环境变量，另一种更便携的方式是在 Julia 中配置。假设你要将环境变量 `JULIA_EDITOR` 设置为 `vim`，可以直接在 REPL 中输入 `ENV["JULIA_EDITOR"] = "vim"`（请根据具体情况对此进行修改），也可以将其添加到用户主目录中的配置文件 `~/.julia/config/startup.jl`，这样做会使其永久生效。环境变量的当前值是通过执行 `ENV["JULIA_EDITOR"]` 来确定的。
 
-Julia 使用的环境变量通常以 `JULIA` 开头。如果调用 [`InteractiveUtils.versioninfo`](@ref) 时关键字参数 `verbose = true`，那么输出的结果将列出与 Julia 相关的已定义环境变量，即包括那些名称中包含 `JULIA` 的环境变量。
+The environment variables that Julia uses generally start with `JULIA`. If
+[`InteractiveUtils.versioninfo`](@ref) is called with the keyword `verbose=true`, then the
+output will list any defined environment variables relevant for Julia,
+including those which include `JULIA` in their names.
 
 !!! note
 
@@ -128,17 +131,6 @@ REPL 历史文件中 `REPL.find_hist_file()` 的绝对路径。如果没有设�
 $(DEPOT_PATH[1])/logs/repl_history.jl
 ```
 
-### `JULIA_PKGRESOLVE_ACCURACY`
-
-一个正的 `Int` 值，用于约束 `MaxSum.maxsum()` 的执行时间。此变量默认为 `1`，更大的值对应更大的时间量。`MaxSum.maxsum()` 是 `max-sum` 的子例程，它的作用是解析包的依赖性，在允许的时间内，它会尽可能满足约束，直到放弃。
-
-假设 `$JULIA_PKGRESOLVE_ACCURACY` 的值是 `n`。那么
-
-* 预抽取的迭代次数为 `20*n`，
-* 抽取步骤间的迭代次数是 `10*n`，并且
-* 在抽取步骤中，每 `20*n` 包中至多有一个被抽取
-
-
 ## 外部应用
 
 ### `JULIA_SHELL`
@@ -165,13 +157,17 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 一个 [`Float64`](@ref) 值，用来确定 `Distributed.worker_timeout()` 的值（默认：`60.0`）。此函数提供 worker 进程在死亡之前等待 master 进程建立连接的秒数。
 
-### `JULIA_NUM_THREADS`
+### [`JULIA_NUM_THREADS`](@id JULIA_NUM_THREADS)
 
 一个无符号 64 位整数（`uint64_t`），用来设置 Julia 可用线程的最大数。如果 `$JULIA_NUM_THREADS` 超过可用的物理 CPU 核心数，那么线程数设置为核心数。如果 `$JULIA_NUM_THREADS` 不是正数或没有设置，或者无法通过系统调用确定 CPU 核心数，那么线程数就会被设置为 `1`。
 
 !!! note
 
     `JULIA_NUM_THREADS` 必须在启动 julia 前定义；在启动过程中于 `startup.jl` 中定义它为时已晚。
+
+!!! compat "Julia 1.5"
+    In Julia 1.5 and above the number of threads can also be specified on startup
+    using the `-t`/`--threads` command line argument.
 
 ### `JULIA_THREAD_SLEEP_THRESHOLD`
 
@@ -214,6 +210,10 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 `Base.stackframe_function_color()`（默认值：粗体，`"\033[1m"`），栈跟踪期间函数调用在终端中的形式。
 
 ## 调试和性能分析
+
+### `JULIA_DEBUG`
+
+Enable debug logging for a file or module, see [`Logging`](@ref Logging) for more information.
 
 ### `JULIA_GC_ALLOC_POOL`, `JULIA_GC_ALLOC_OTHER`, `JULIA_GC_ALLOC_PRINT`
 

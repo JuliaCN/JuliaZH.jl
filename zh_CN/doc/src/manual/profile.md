@@ -42,7 +42,17 @@ julia> using Profile
 julia> @profile myfunc()
 ```
 
-要查看性能分析结果，可以用[图形浏览器](https://github.com/timholy/ProfileView.jl)，但在这里我们将使用标准库附带的基于文本的显示方式：
+To see the profiling results, there are several graphical browsers.
+One "family" of visualizers is based on [FlameGraphs.jl](https://github.com/timholy/FlameGraphs.jl), with each family member providing a different user interface:
+- [Juno](https://junolab.org/) is a full IDE with built-in support for profile visualization
+- [ProfileView.jl](https://github.com/timholy/ProfileView.jl) is a stand-alone visualizer based on GTK
+- [ProfileVega.jl](https://github.com/davidanthoff/ProfileVega.jl) uses VegaLight and integrates well with Jupyter notebooks
+- [StatProfilerHTML](https://github.com/tkluck/StatProfilerHTML.jl) produces HTML and presents some additional summaries, and also integrates well with Jupyter notebooks
+- [ProfileSVG](https://github.com/timholy/ProfileSVG.jl) renders SVG
+
+An entirely independent approach to profile visualization is [PProf.jl](https://github.com/vchuravy/PProf.jl), which uses the external `pprof` tool.
+
+Here, though, we'll use the text-based display that comes with the standard library:
 
 ```julia-repl
 julia> Profile.print()
@@ -246,7 +256,7 @@ Julia 目前支持的外部性能分析工具有 `Intel VTune`、`OProfile` 和 
 >opreport -l `which ./julia`
 ```
 
-或者类似地使用 `perf`：
+Or similary with `perf` :
 
 ```
 $ ENABLE_JITPROFILING=1 perf record -o /tmp/perf.data --call-graph dwarf ./julia /test/fastmath.jl

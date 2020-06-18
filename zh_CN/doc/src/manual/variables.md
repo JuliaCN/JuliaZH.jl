@@ -95,7 +95,7 @@ Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其�
 大部分 Sm 类别中的 Unicode 中缀运算符，像 `⊕`，则会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 `const ⊗ = kron` 将 `⊗` 定义为中缀的 Kronecker 积）。
 运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 `+̂ₐ″` 被解析成一个与 `+` 具有相同优先级的中缀运算符。
 
-内置语句的名字是唯一明确被禁止使用的变量名：
+The only explicitly disallowed names for variables are the names of the built-in [Keywords](@ref):
 
 ```julia-repl
 julia> else = false
@@ -105,8 +105,12 @@ julia> try = "No"
 ERROR: syntax: unexpected "="
 ```
 
-有一些 Unicode 字符在标识符中被认为是等价的。输入 Unicode 组合字符（如重音标记的字符）的不同方式是等价的（具体来说，Julia 语言中的标识符使用 NFC 正规化）。
-Unicode 字符 `ɛ`（U+025B：拉丁字母小写开放 e）和 `µ`（U+00B5：微记号）被视为等价于对应的希腊字母，因为前者使用一些输入法易于键入。
+Some Unicode characters are considered to be equivalent in identifiers.
+Different ways of entering Unicode combining characters (e.g., accents)
+are treated as equivalent (specifically, Julia identifiers are [NFC](http://www.macchiato.com/unicode/nfc-faq)-normalized).
+The Unicode characters `ɛ` (U+025B: Latin small letter open e)
+and `µ` (U+00B5: micro sign) are treated as equivalent to the corresponding
+Greek letters, because the former are easily accessible via some input methods.
 
 ## 命名规范
 
