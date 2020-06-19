@@ -4,7 +4,9 @@
 DocTestSetup = :(using LinearAlgebra)
 ```
 
-除了（且作为一部分）对多维数组的支持，Julia 还提供了许多常见和实用的线性代数运算的本地实现。基本的运算，比如 [`tr`](@ref)，[`det`](@ref) 和 [`inv`](@ref) 都是支持的：
+In addition to (and as part of) its support for multi-dimensional arrays, Julia provides native implementations
+of many common and useful linear algebra operations which can be loaded with `using LinearAlgebra`. Basic operations, such as [`tr`](@ref), [`det`](@ref),
+and [`inv`](@ref) are all supported:
 
 ```jldoctest
 julia> A = [1 2 3; 4 1 6; 7 8 1]
@@ -36,13 +38,13 @@ julia> A = [-4. -17.; 2. 2.]
 
 julia> eigvals(A)
 2-element Array{Complex{Float64},1}:
- -1.0 + 5.0im
  -1.0 - 5.0im
+ -1.0 + 5.0im
 
 julia> eigvecs(A)
 2×2 Array{Complex{Float64},2}:
-  0.945905+0.0im        0.945905-0.0im
- -0.166924-0.278207im  -0.166924+0.278207im
+  0.945905-0.0im        0.945905+0.0im
+ -0.166924+0.278207im  -0.166924-0.278207im
 ```
 
 此外，Julia 提供了多种[矩阵分解](@ref man-linalg-factorizations)，它们可用于加快问题的求解，比如线性求解或矩阵或矩阵求幂，这通过将矩阵预先分解成更适合问题的形式（出于性能或内存上的原因）。有关的更多信息，请参阅文档 [`factorize`](@ref)。举个例子：
@@ -147,67 +149,80 @@ julia> sB\x
 
 下表总结了在 Julia 中已经实现的特殊矩阵类型，以及为它们提供各种优化方法的钩子在 LAPACK 中是否可用。
 
-| 类型                      | 描述                                                                      |
-|:------------------------- |:-------------------------------------------------------------------------------- |
-| [`Symmetric`](@ref)       | [对称矩阵](https://en.wikipedia.org/wiki/Symmetric_matrix)               |
-| [`Hermitian`](@ref)       | [埃尔米特矩阵](https://en.wikipedia.org/wiki/Hermitian_matrix)               |
-| [`UpperTriangular`](@ref) | 上[三角矩阵](https://en.wikipedia.org/wiki/Triangular_matrix)       |
-| [`LowerTriangular`](@ref) | 下[三角矩阵](https://en.wikipedia.org/wiki/Triangular_matrix)       |
-| [`Tridiagonal`](@ref)     | [三对角矩阵](https://en.wikipedia.org/wiki/Tridiagonal_matrix)           |
-| [`SymTridiagonal`](@ref)  | 对称三对角矩阵                                                     |
-| [`Bidiagonal`](@ref)      | 上/下[双对角矩阵](https://en.wikipedia.org/wiki/Bidiagonal_matrix) |
-| [`Diagonal`](@ref)        | [对角矩阵](https://en.wikipedia.org/wiki/Diagonal_matrix)                 |
-| [`UniformScaling`](@ref)  | [等比缩放运算符](https://en.wikipedia.org/wiki/Uniform_scaling)        |
+| 类型                          | 描述                                                                                   |
+|:----------------------------- |:--------------------------------------------------------------------------------------------- |
+| [`Symmetric`](@ref)           | [对称矩阵](https://en.wikipedia.org/wiki/Symmetric_matrix)                            |
+| [`Hermitian`](@ref)           | [埃尔米特矩阵](https://en.wikipedia.org/wiki/Hermitian_matrix)                            |
+| [`UpperTriangular`](@ref)     | 上[三角矩阵](https://en.wikipedia.org/wiki/Triangular_matrix)                    |
+| [`UnitUpperTriangular`](@ref) | Upper [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix) with unit diagonal |
+| [`LowerTriangular`](@ref)     | Lower [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix)                    |     |
+| [`UnitLowerTriangular`](@ref) | Lower [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix) with unit diagonal |
+| [`UpperHessenberg`](@ref)     | Upper [Hessenberg matrix](https://en.wikipedia.org/wiki/Hessenberg_matrix)
+| [`Tridiagonal`](@ref)         | [Tridiagonal matrix](https://en.wikipedia.org/wiki/Tridiagonal_matrix)                        |
+| [`SymTridiagonal`](@ref)      | Symmetric tridiagonal matrix                                                                  |
+| [`Bidiagonal`](@ref)          | Upper/lower [bidiagonal matrix](https://en.wikipedia.org/wiki/Bidiagonal_matrix)              |
+| [`Diagonal`](@ref)            | [Diagonal matrix](https://en.wikipedia.org/wiki/Diagonal_matrix)                              |
+| [`UniformScaling`](@ref)      | [Uniform scaling operator](https://en.wikipedia.org/wiki/Uniform_scaling)                     |
 
-### 基本运算
+### Elementary operations
 
-| 矩阵类型               | `+` | `-` | `*` | `\` | 其它具有优化方法的函数                      |
-|:------------------------- |:--- |:--- |:--- |:--- |:----------------------------------------------------------- |
-| [`Symmetric`](@ref)       |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
-| [`Hermitian`](@ref)       |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
-| [`UpperTriangular`](@ref) |     |     | MV  | MV  | [`inv`](@ref), [`det`](@ref)                                |
-| [`LowerTriangular`](@ref) |     |     | MV  | MV  | [`inv`](@ref), [`det`](@ref)                                |
-| [`SymTridiagonal`](@ref)  | M   | M   | MS  | MV  | [`eigmax`](@ref), [`eigmin`](@ref)                          |
-| [`Tridiagonal`](@ref)     | M   | M   | MS  | MV  |                                                             |
-| [`Bidiagonal`](@ref)      | M   | M   | MS  | MV  |                                                             |
-| [`Diagonal`](@ref)        | M   | M   | MV  | MV  | [`inv`](@ref), [`det`](@ref), [`logdet`](@ref), [`/`](@ref) |
-| [`UniformScaling`](@ref)  | M   | M   | MVS | MVS | [`/`](@ref)                                                 |
+| Matrix type                   | `+` | `-` | `*` | `\` | Other functions with optimized methods                      |
+|:----------------------------- |:--- |:--- |:--- |:--- |:----------------------------------------------------------- |
+| [`Symmetric`](@ref)           |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
+| [`Hermitian`](@ref)           |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
+| [`UpperTriangular`](@ref)     |     |     | MV  | MV  | [`inv`](@ref), [`det`](@ref)                                |
+| [`UnitUpperTriangular`](@ref) |     |     | MV  | MV  | [`inv`](@ref), [`det`](@ref)                                |
+| [`LowerTriangular`](@ref)     |     |     | MV  | MV  | [`inv`](@ref), [`det`](@ref)                                |
+| [`UnitLowerTriangular`](@ref) |     |     | MV  | MV  | [`inv`](@ref), [`det`](@ref)                                |
+| [`UpperHessenberg`](@ref)     |     |     |     | MM  | [`inv`](@ref), [`det`](@ref)                                |
+| [`SymTridiagonal`](@ref)      | M   | M   | MS  | MV  | [`eigmax`](@ref), [`eigmin`](@ref)                          |
+| [`Tridiagonal`](@ref)         | M   | M   | MS  | MV  |                                                             |
+| [`Bidiagonal`](@ref)          | M   | M   | MS  | MV  |                                                             |
+| [`Diagonal`](@ref)            | M   | M   | MV  | MV  | [`inv`](@ref), [`det`](@ref), [`logdet`](@ref), [`/`](@ref) |
+| [`UniformScaling`](@ref)      | M   | M   | MVS | MVS | [`/`](@ref)                                                 |
 
-图例：
+Legend:
 
-| 键        | 描述                                                   |
+| Key        | Description                                                   |
 |:---------- |:------------------------------------------------------------- |
-| M (matrix) | 针对矩阵与矩阵运算的优化方法可用 |
-| V (vector) | 针对矩阵与向量运算的优化方法可用 |
-| S (scalar) | 针对矩阵与标量运算的优化方法可用 |
+| M (matrix) | An optimized method for matrix-matrix operations is available |
+| V (vector) | An optimized method for matrix-vector operations is available |
+| S (scalar) | An optimized method for matrix-scalar operations is available |
 
-### 矩阵分解
+### Matrix factorizations
 
-| 矩阵类型               | LAPACK | [`eigen`](@ref) | [`eigvals`](@ref) | [`eigvecs`](@ref) | [`svd`](@ref) | [`svdvals`](@ref) |
-|:------------------------- |:------ |:------------- |:----------------- |:----------------- |:------------- |:----------------- |
-| [`Symmetric`](@ref)       | SY     |               | ARI               |                   |               |                   |
-| [`Hermitian`](@ref)       | HE     |               | ARI               |                   |               |                   |
-| [`UpperTriangular`](@ref) | TR     | A             | A                 | A                 |               |                   |
-| [`LowerTriangular`](@ref) | TR     | A             | A                 | A                 |               |                   |
-| [`SymTridiagonal`](@ref)  | ST     | A             | ARI               | AV                |               |                   |
-| [`Tridiagonal`](@ref)     | GT     |               |                   |                   |               |                   |
-| [`Bidiagonal`](@ref)      | BD     |               |                   |                   | A             | A                 |
-| [`Diagonal`](@ref)        | DI     |               | A                 |                   |               |                   |
+| Matrix type                   | LAPACK | [`eigen`](@ref) | [`eigvals`](@ref) | [`eigvecs`](@ref) | [`svd`](@ref) | [`svdvals`](@ref) |
+|:----------------------------- |:------ |:------------- |:----------------- |:----------------- |:------------- |:----------------- |
+| [`Symmetric`](@ref)           | SY     |               | ARI               |                   |               |                   |
+| [`Hermitian`](@ref)           | HE     |               | ARI               |                   |               |                   |
+| [`UpperTriangular`](@ref)     | TR     | A             | A                 | A                 |               |                   |
+| [`UnitUpperTriangular`](@ref) | TR     | A             | A                 | A                 |               |                   |
+| [`LowerTriangular`](@ref)     | TR     | A             | A                 | A                 |               |                   |
+| [`UnitLowerTriangular`](@ref) | TR     | A             | A                 | A                 |               |                   |
+| [`SymTridiagonal`](@ref)      | ST     | A             | ARI               | AV                |               |                   |
+| [`Tridiagonal`](@ref)         | GT     |               |                   |                   |               |                   |
+| [`Bidiagonal`](@ref)          | BD     |               |                   |                   | A             | A                 |
+| [`Diagonal`](@ref)            | DI     |               | A                 |                   |               |                   |
 
-图例：
+Legend:
 
-| 键          | 描述                                                                                                                     | 例子              |
+| Key          | Description                                                                                                                     | Example              |
 |:------------ |:------------------------------------------------------------------------------------------------------------------------------- |:-------------------- |
-| A (all)      | 找到所有特征值和/或特征向量的优化方法可用                                           | 例如，`eigvals(M)`    |
-| R (range)    | 通过第 `ih` 个特征值寻找第 `il` 个特征值的优化方法可用                                   | `eigvals(M, il, ih)` |
-| I (interval) | 寻找在区间 [`vl`, `vh`] 内的特征值的优化方法可用                                 | `eigvals(M, vl, vh)` |
-| V (vectors)  | 寻找对应于特征值 `x=[x1, x2,...]` 的特征向量的优化方法可用 | `eigvecs(M, x)`      |
+| A (all)      | An optimized method to find all the characteristic values and/or vectors is available                                           | e.g. `eigvals(M)`    |
+| R (range)    | An optimized method to find the `il`th through the `ih`th characteristic values are available                                   | `eigvals(M, il, ih)` |
+| I (interval) | An optimized method to find the characteristic values in the interval [`vl`, `vh`] is available                                 | `eigvals(M, vl, vh)` |
+| V (vectors)  | An optimized method to find the characteristic vectors corresponding to the characteristic values `x=[x1, x2,...]` is available | `eigvecs(M, x)`      |
 
-### 等比缩放运算符
+### The uniform scaling operator
 
-[`UniformScaling`](@ref) 运算符代表一个标量乘以恒同运算符，`λ*I`。恒同运算符 `I` 定义为常量和 `UniformScaling` 的实例。这些运算符是通用的，并且会在二元运算符 [`+`](@ref)，[`-`](@ref)，[`*`](@ref) 和 [`\`](@ref) 中与另一个矩阵相匹配。对于 `A+I` 和 `A-I` ，这意味着 `A` 必须是个方阵。与恒同运算符 `I` 相乘是一个空操作（除了检查比例因子是一），因此几乎没有开销。
+A [`UniformScaling`](@ref) operator represents a scalar times the identity operator, `λ*I`. The identity
+operator `I` is defined as a constant and is an instance of `UniformScaling`. The size of these
+operators are generic and match the other matrix in the binary operations [`+`](@ref), [`-`](@ref),
+[`*`](@ref) and [`\`](@ref). For `A+I` and `A-I` this means that `A` must be square. Multiplication
+with the identity operator `I` is a noop (except for checking that the scaling factor is one)
+and therefore almost without overhead.
 
-来查看 `UniformScaling` 运算符的运行结果：
+To see the `UniformScaling` operator in action:
 
 ```jldoctest
 julia> U = UniformScaling(2);
@@ -243,36 +258,54 @@ Stacktrace:
 [...]
 ```
 
-## [矩阵分解](@id man-linalg-factorizations)
-
-[矩阵分解](https://en.wikipedia.org/wiki/Matrix_decomposition)将矩阵分解成矩阵乘积，是线性代数的中心概念。
-
-下表总结了在 Julia 中已经实现了的矩阵分解的类型。其相关方法的细节可以在线性代数文档中的[标准函数](@ref)这一节中找到。
-
-| 类型              | 描述                                                                                                    |
-|:----------------- |:-------------------------------------------------------------------------------------------------------------- |
-| `Cholesky`        | [Cholesky 分解](https://en.wikipedia.org/wiki/Cholesky_decomposition)                                 |
-| `CholeskyPivoted` | [Pivoted](https://en.wikipedia.org/wiki/Pivot_element) Cholesky 分解                                  |
-| `LU`              | [LU 分解](https://en.wikipedia.org/wiki/LU_decomposition)                                             |
-| `LUTridiagonal`   | 针对 [`Tridiagonal`](@ref) 矩阵的 LU 分解                                                            |
-| `QR`              | [QR 分解](https://en.wikipedia.org/wiki/QR_decomposition)                                             |
-| `QRCompactWY`     | QR 分解的紧凑 WY 形式                                                                        |
-| `QRPivoted`       | Pivoted [QR 分解](https://en.wikipedia.org/wiki/QR_decomposition)                                     |
-| `Hessenberg`      | [Hessenberg 分解](http://mathworld.wolfram.com/HessenbergDecomposition.html)                          |
-| `Eigen`           | [谱分解](https://en.wikipedia.org/wiki/Eigendecomposition_(matrix))                            |
-| `SVD`             | [奇异值分解](https://en.wikipedia.org/wiki/Singular_value_decomposition)                     |
-| `GeneralizedSVD`  | [广义 SVD](https://en.wikipedia.org/wiki/Generalized_singular_value_decomposition#Higher_order_version) |
+If you need to solve many systems of the form `(A+μI)x = b` for the same `A` and different `μ`, it might be beneficial
+to first compute the Hessenberg factorization `F` of `A` via the [`hessenberg`](@ref) function.
+Given `F`, Julia employs an efficient algorithm for `(F+μ*I) \ b` (equivalent to `(A+μ*I)x \ b`) and related
+operations like determinants.
 
 
+## [Matrix factorizations](@id man-linalg-factorizations)
+
+[Matrix factorizations (a.k.a. matrix decompositions)](https://en.wikipedia.org/wiki/Matrix_decomposition)
+compute the factorization of a matrix into a product of matrices, and are one of the central concepts
+in linear algebra.
+
+The following table summarizes the types of matrix factorizations that have been implemented in
+Julia. Details of their associated methods can be found in the [Standard functions](@ref) section
+of the Linear Algebra documentation.
+
+| Type               | Description                                                                                                    |
+|:------------------ |:-------------------------------------------------------------------------------------------------------------- |
+| `BunchKaufman`     | Bunch-Kaufman factorization                                                                                    |
+| `Cholesky`         | [Cholesky factorization](https://en.wikipedia.org/wiki/Cholesky_decomposition)                                 |
+| `CholeskyPivoted`  | [Pivoted](https://en.wikipedia.org/wiki/Pivot_element) Cholesky factorization                                  |
+| `LDLt`             | [LDL(T) factorization](https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition)                 |
+| `LU`               | [LU factorization](https://en.wikipedia.org/wiki/LU_decomposition)                                             |
+| `QR`               | [QR factorization](https://en.wikipedia.org/wiki/QR_decomposition)                                             |
+| `QRCompactWY`      | Compact WY form of the QR factorization                                                                        |
+| `QRPivoted`        | Pivoted [QR factorization](https://en.wikipedia.org/wiki/QR_decomposition)                                     |
+| `LQ`               | [QR factorization](https://en.wikipedia.org/wiki/QR_decomposition) of `transpose(A)`                           |
+| `Hessenberg`       | [Hessenberg decomposition](http://mathworld.wolfram.com/HessenbergDecomposition.html)                          |
+| `Eigen`            | [Spectral decomposition](https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix)                         |
+| `GeneralizedEigen` | [Generalized spectral decomposition](https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix#Generalized_eigenvalue_problem)                            |
+| `SVD`              | [Singular value decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition)                     |
+| `GeneralizedSVD`   | [Generalized SVD](https://en.wikipedia.org/wiki/Generalized_singular_value_decomposition#Higher_order_version) |
+| `Schur`            | [Schur decomposition](https://en.wikipedia.org/wiki/Schur_decomposition)                                       |
+| `GeneralizedSchur` | [Generalized Schur decomposition](https://en.wikipedia.org/wiki/Schur_decomposition#Generalized_Schur_decomposition) |
 
 
-## 标准函数
 
-Julia 中的线性代数函数主要通过调用 [LAPACK](http://www.netlib.org/lapack/) 中的函数来实现。稀疏分解则调用 [SuiteSparse](http://faculty.cse.tamu.edu/davis/suitesparse.html) 中的函数。
+## Standard functions
+
+Linear algebra functions in Julia are largely implemented by calling functions from [LAPACK](http://www.netlib.org/lapack/).
+ Sparse factorizations call functions from [SuiteSparse](http://faculty.cse.tamu.edu/davis/suitesparse.html).
 
 ```@docs
 Base.:*(::AbstractMatrix, ::AbstractMatrix)
 Base.:\(::AbstractMatrix, ::AbstractVecOrMat)
+LinearAlgebra.SingularException
+LinearAlgebra.PosDefException
+LinearAlgebra.ZeroPivotException
 LinearAlgebra.dot
 LinearAlgebra.cross
 LinearAlgebra.factorize
@@ -284,26 +317,39 @@ LinearAlgebra.Symmetric
 LinearAlgebra.Hermitian
 LinearAlgebra.LowerTriangular
 LinearAlgebra.UpperTriangular
+LinearAlgebra.UnitLowerTriangular
+LinearAlgebra.UnitUpperTriangular
+LinearAlgebra.UpperHessenberg
 LinearAlgebra.UniformScaling
+LinearAlgebra.I
+LinearAlgebra.Factorization
+LinearAlgebra.LU
 LinearAlgebra.lu
 LinearAlgebra.lu!
+LinearAlgebra.Cholesky
+LinearAlgebra.CholeskyPivoted
 LinearAlgebra.cholesky
 LinearAlgebra.cholesky!
 LinearAlgebra.lowrankupdate
 LinearAlgebra.lowrankdowndate
 LinearAlgebra.lowrankupdate!
 LinearAlgebra.lowrankdowndate!
+LinearAlgebra.LDLt
 LinearAlgebra.ldlt
 LinearAlgebra.ldlt!
-LinearAlgebra.qr
-LinearAlgebra.qr!
 LinearAlgebra.QR
 LinearAlgebra.QRCompactWY
 LinearAlgebra.QRPivoted
-LinearAlgebra.lq!
+LinearAlgebra.qr
+LinearAlgebra.qr!
+LinearAlgebra.LQ
 LinearAlgebra.lq
+LinearAlgebra.lq!
+LinearAlgebra.BunchKaufman
 LinearAlgebra.bunchkaufman
 LinearAlgebra.bunchkaufman!
+LinearAlgebra.Eigen
+LinearAlgebra.GeneralizedEigen
 LinearAlgebra.eigvals
 LinearAlgebra.eigvals!
 LinearAlgebra.eigmax
@@ -311,12 +357,17 @@ LinearAlgebra.eigmin
 LinearAlgebra.eigvecs
 LinearAlgebra.eigen
 LinearAlgebra.eigen!
+LinearAlgebra.Hessenberg
 LinearAlgebra.hessenberg
 LinearAlgebra.hessenberg!
-LinearAlgebra.schur!
+LinearAlgebra.Schur
+LinearAlgebra.GeneralizedSchur
 LinearAlgebra.schur
+LinearAlgebra.schur!
 LinearAlgebra.ordschur
 LinearAlgebra.ordschur!
+LinearAlgebra.SVD
+LinearAlgebra.GeneralizedSVD
 LinearAlgebra.svd
 LinearAlgebra.svd!
 LinearAlgebra.svdvals
@@ -346,6 +397,8 @@ LinearAlgebra.pinv
 LinearAlgebra.nullspace
 Base.kron
 LinearAlgebra.exp(::StridedMatrix{<:LinearAlgebra.BlasFloat})
+Base.:^(::AbstractMatrix, ::Number)
+Base.:^(::Number, ::AbstractMatrix)
 LinearAlgebra.log(::StridedMatrix)
 LinearAlgebra.sqrt(::StridedMatrix{<:Real})
 LinearAlgebra.cos(::StridedMatrix{<:Real})
@@ -385,16 +438,22 @@ LinearAlgebra.isdiag
 LinearAlgebra.ishermitian
 Base.transpose
 LinearAlgebra.transpose!
+LinearAlgebra.Transpose
 Base.adjoint
 LinearAlgebra.adjoint!
+LinearAlgebra.Adjoint
 Base.copy(::Union{Transpose,Adjoint})
 LinearAlgebra.stride1
 LinearAlgebra.checksquare
+LinearAlgebra.peakflops
 ```
 
-## 底层矩阵运算
+## Low-level matrix operations
 
-在许多情况下，矩阵运算存在 in-place 版本，这允许你使用预先分配的输出向量或矩阵。在优化关键代码是这很实用，可以避免重复分配的开销。根据 Julia 的通常惯例，这些 in-place 运算后面带有 `!`（例如，`mul!`）。
+In many cases there are in-place versions of matrix operations that allow you to supply
+a pre-allocated output vector or matrix.  This is useful when optimizing critical code in order
+to avoid the overhead of repeated allocations. These in-place operations are suffixed with `!`
+below (e.g. `mul!`) according to the usual Julia convention.
 
 ```@docs
 LinearAlgebra.mul!
@@ -404,57 +463,74 @@ LinearAlgebra.ldiv!
 LinearAlgebra.rdiv!
 ```
 
-## BLAS 函数
+## BLAS functions
 
-在 Julia 中（就像许多科学计算一样），密集线性代数运算是基于 [LAPACK 库](http://www.netlib.org/lapack/)，它反过来建立在被称为 [BLAS](http://www.netlib.org/blas/) 的基本线性代数构建模块之上。高度优化的 BLAS 实现在每个计算机架构上可用，并且有时在高性能线性代数例程中直接调用 BLAS 函数很有用。
+In Julia (as in much of scientific computation), dense linear-algebra operations are based on
+the [LAPACK library](http://www.netlib.org/lapack/), which in turn is built on top of basic linear-algebra
+building-blocks known as the [BLAS](http://www.netlib.org/blas/). There are highly optimized
+implementations of BLAS available for every computer architecture, and sometimes in high-performance
+linear algebra routines it is useful to call the BLAS functions directly.
 
-`LinearAlgebra.BLAS` 提供了一些 BLAS 函数的封装。那些改写了某个输入数组的 BLAS 函数的名称以 `'!'` 结尾。通常，一个 BLAS 函数定义了四个方法，分别针对 [`Float64`](@ref)，[`Float32`](@ref)，`ComplexF64` 和 `ComplexF32` 数组。
+`LinearAlgebra.BLAS` provides wrappers for some of the BLAS functions. Those BLAS functions
+that overwrite one of the input arrays have names ending in `'!'`.  Usually, a BLAS function has
+four methods defined, for [`Float64`](@ref), [`Float32`](@ref), `ComplexF64`, and `ComplexF32` arrays.
 
-### [BLAS 字符参数](@id stdlib-blas-chars)
-许多 BLAS 函数接受的参数可以决定是否转置某个参数的（`trans`），要引用矩阵的哪一个三角（`uplo` 或 `ul`），是否可以假设三角矩阵的对角线上全为一（`dA`），或者输入参数属于矩阵乘法中的哪一边（`side`）。可能是：
+### [BLAS character arguments](@id stdlib-blas-chars)
+Many BLAS functions accept arguments that determine whether to transpose an argument (`trans`),
+which triangle of a matrix to reference (`uplo` or `ul`),
+whether the diagonal of a triangular matrix can be assumed to
+be all ones (`dA`) or which side of a matrix multiplication
+the input argument belongs on (`side`). The possibilities are:
 
-#### [乘法顺序](@id stdlib-blas-side)
-| `side` | 含义                                                             |
+#### [Multiplication order](@id stdlib-blas-side)
+| `side` | Meaning                                                             |
 |:-------|:--------------------------------------------------------------------|
-| `'L'`  | 参数位于矩阵与矩阵运算的*左*边。  |
-| `'R'`  | 参数位于矩阵与矩阵运算的*右*边。 |
+| `'L'`  | The argument goes on the *left* side of a matrix-matrix operation.  |
+| `'R'`  | The argument goes on the *right* side of a matrix-matrix operation. |
 
-#### [三角引用](@id stdlib-blas-uplo)
-| `uplo`/`ul` | 含义                                               |
+#### [Triangle referencing](@id stdlib-blas-uplo)
+| `uplo`/`ul` | Meaning                                               |
 |:------------|:------------------------------------------------------|
-| `'U'`       | 只会使用矩阵的*上*三角部分。 |
-| `'L'`       | 只会使用矩阵的*下*三角部分。 |
+| `'U'`       | Only the *upper* triangle of the matrix will be used. |
+| `'L'`       | Only the *lower* triangle of the matrix will be used. |
 
-#### [转置运算](@id stdlib-blas-trans)
-| `trans`/`tX` | 含义                                                 |
+#### [Transposition operation](@id stdlib-blas-trans)
+| `trans`/`tX` | Meaning                                                 |
 |:-------------|:--------------------------------------------------------|
-| `'N'`        | 输入矩阵 `X` 不被转置或共轭。   |
-| `'T'`        | 输入矩阵 `X` 会被转置。                |
-| `'C'`        | 输入矩阵 `X` 会被共轭转置。 |
+| `'N'`        | The input matrix `X` is not transposed or conjugated.   |
+| `'T'`        | The input matrix `X` will be transposed.                |
+| `'C'`        | The input matrix `X` will be conjugated and transposed. |
 
-#### [单位对角线](@id stdlib-blas-diag)
-| `diag`/`dX` | 含义                                                   |
+#### [Unit diagonal](@id stdlib-blas-diag)
+| `diag`/`dX` | Meaning                                                   |
 |:------------|:----------------------------------------------------------|
-| `'N'`       | 矩阵 `X` 对角线上的值会被读取。       |
-| `'U'`       | 矩阵 `X` 对角线上假设全为一。 |
+| `'N'`       | The diagonal values of the matrix `X` will be read.       |
+| `'U'`       | The diagonal of the matrix `X` is assumed to be all ones. |
 
 ```@docs
 LinearAlgebra.BLAS
+LinearAlgebra.BLAS.dot
 LinearAlgebra.BLAS.dotu
 LinearAlgebra.BLAS.dotc
 LinearAlgebra.BLAS.blascopy!
 LinearAlgebra.BLAS.nrm2
 LinearAlgebra.BLAS.asum
 LinearAlgebra.axpy!
+LinearAlgebra.axpby!
 LinearAlgebra.BLAS.scal!
 LinearAlgebra.BLAS.scal
+LinearAlgebra.BLAS.iamax
 LinearAlgebra.BLAS.ger!
 LinearAlgebra.BLAS.syr!
 LinearAlgebra.BLAS.syrk!
 LinearAlgebra.BLAS.syrk
+LinearAlgebra.BLAS.syr2k!
+LinearAlgebra.BLAS.syr2k
 LinearAlgebra.BLAS.her!
 LinearAlgebra.BLAS.herk!
 LinearAlgebra.BLAS.herk
+LinearAlgebra.BLAS.her2k!
+LinearAlgebra.BLAS.her2k
 LinearAlgebra.BLAS.gbmv!
 LinearAlgebra.BLAS.gbmv
 LinearAlgebra.BLAS.sbmv!
@@ -472,6 +548,12 @@ LinearAlgebra.BLAS.symm(::Any, ::Any, ::Any, ::Any)
 LinearAlgebra.BLAS.symv!
 LinearAlgebra.BLAS.symv(::Any, ::Any, ::Any, ::Any)
 LinearAlgebra.BLAS.symv(::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.hemm!
+LinearAlgebra.BLAS.hemm(::Any, ::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.hemm(::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.hemv!
+LinearAlgebra.BLAS.hemv(::Any, ::Any, ::Any, ::Any)
+LinearAlgebra.BLAS.hemv(::Any, ::Any, ::Any)
 LinearAlgebra.BLAS.trmm!
 LinearAlgebra.BLAS.trmm
 LinearAlgebra.BLAS.trsm!
@@ -481,16 +563,19 @@ LinearAlgebra.BLAS.trmv
 LinearAlgebra.BLAS.trsv!
 LinearAlgebra.BLAS.trsv
 LinearAlgebra.BLAS.set_num_threads
-LinearAlgebra.I
 ```
 
-## LAPACK 函数
+## LAPACK functions
 
-`LinearAlgebra.LAPACK` 提供了一些针对线性代数的 LAPACK 函数的封装。那些改写了输入数组的函数的名称以 `'!'` 结尾。
+`LinearAlgebra.LAPACK` provides wrappers for some of the LAPACK functions for linear algebra.
+ Those functions that overwrite one of the input arrays have names ending in `'!'`.
 
-一个函数通常定义了 4 个方法，分别针对 [`Float64`](@ref)，[`Float32`](@ref)，`ComplexF64` 和 `ComplexF32` 数组。
+Usually a function has 4 methods defined, one each for [`Float64`](@ref), [`Float32`](@ref),
+`ComplexF64` and `ComplexF32` arrays.
 
-请注意，由 Julia 提供的 LAPACK API 可以并且将来会改变。因此，这个 API 不是面向用户的，也没有承诺在将来的版本中支持/弃用这个特殊的函数集。
+Note that the LAPACK API provided by Julia can and will change in the future. Since this API is
+not user-facing, there is no commitment to support/deprecate this specific set of functions in
+future releases.
 
 ```@docs
 LinearAlgebra.LAPACK

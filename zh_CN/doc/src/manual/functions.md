@@ -1,6 +1,8 @@
 # [函数](@id man-functions)
 
-在 Julia 里，函数是一个将参数值元组映射到返回值的对象。Julia 的函数不是纯粹的数学函数，在某种意义上，函数可以改变并受程序的全局状态的影响。在Julia中定义函数的基本语法是：
+In Julia, a function is an object that maps a tuple of argument values to a return value. Julia
+functions are not pure mathematical functions, because they can alter and be affected
+by the global state of the program. The basic syntax for defining functions in Julia is:
 
 ```jldoctest
 julia> function f(x,y)
@@ -28,7 +30,8 @@ julia> f(2,3)
 5
 ```
 
-没有括号时，表达式 `f` 指的是函数对象，可以像任何值一样被传递：
+Without parentheses, the expression `f` refers to the function object, and can be passed around
+like any other value:
 
 ```jldoctest fofxy
 julia> g = f;
@@ -209,7 +212,7 @@ julia> function (x)
 匿名函数最主要的用法是传递给接收函数作为参数的函数。一个经典的例子是 [`map`](@ref) ，为数组的每个元素应用一次函数，然后返回一个包含结果值的新数组：
 
 ```jldoctest
-julia> map(round, [1.2,3.5,1.7])
+julia> map(round, [1.2, 3.5, 1.7])
 3-element Array{Float64,1}:
  1.0
  4.0
@@ -219,7 +222,7 @@ julia> map(round, [1.2,3.5,1.7])
 如果做为第一个参数传递给 [`map`](@ref) 的转换函数已经存在，那直接使用函数名称是没问题的。但是通常要使用的函数还没有定义好，这样使用匿名函数就更加方便：
 
 ```jldoctest
-julia> map(x -> x^2 + 2x - 1, [1,3,-1])
+julia> map(x -> x^2 + 2x - 1, [1, 3, -1])
 3-element Array{Int64,1}:
   2
  14
@@ -273,14 +276,19 @@ julia> x[2]
 元组的元素可以有名字，这时候就有了*具名元组*：
 
 ```jldoctest
-julia> x = (a=1, b=1+1)
-(a = 1, b = 2)
+julia> x = (a=2, b=1+2)
+(a = 2, b = 3)
+
+julia> x[1]
+2
 
 julia> x.a
-1
+2
 ```
 
-具名元组和元组很像，除了具名元组的字段可以通过点号语法访问 `(x.a)` 。
+Named tuples are very similar to tuples, except that fields can additionally be accessed by name
+using dot syntax (`x.a`) in addition to the regular indexing syntax
+(`x[1]`).
 
 ## 多返回值
 
@@ -313,7 +321,7 @@ julia> y
 6
 ```
 
-你也可以显式地使用 `return` 关键字来返回多个值：
+You can also return multiple values using the `return` keyword:
 
 ```julia
 function foo(a,b)
@@ -331,20 +339,20 @@ end
 ```julia
 julia> minmax(x, y) = (y < x) ? (y, x) : (x, y)
 
-julia> range((min, max)) = max - min
+julia> gap((min, max)) = max - min
 
-julia> range(minmax(10, 2))
+julia> gap(minmax(10, 2))
 8
 ```
 
-注意 `range` 定义中的额外括号。
-如果没有这些括号，`range`将是一个双参数函数，这个例子就会行不通。
+Notice the extra set of parentheses in the definition of `gap`. Without those, `gap`
+would be a two-argument function, and this example would not work.
 
 ## 变参函数
 
-定义有任意个参数的函数通常是很方便的。
-这样的函数通常被称为变参函数 （Varargs Functions）， 是“参数数量可变的函数”的简称。
-你可以通过在最后一个参数后面增加一个省略号来定义一个变参函数：
+It is often convenient to be able to write functions taking an arbitrary number of arguments.
+Such functions are traditionally known as "varargs" functions, which is short for "variable number
+of arguments". You can define a varargs function by following the last positional argument with an ellipsis:
 
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
@@ -448,7 +456,12 @@ baz(::Any, ::Any) at none:1
 
 ## 可选参数
 
-在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，`Dates` 模块中的 [`Date(y, [m, d])`](@ref) 函数对于给定的年（year）`y`、月（mouth）`m`、日（data）`d` 构造了 `Date` 类型。但是，`m` 和 `d` 参数都是可选的，默认值都是 `1`。这行为可以简述为：
+It is often possible to provide sensible default values for function arguments.
+This can save users from having to pass every argument on every call.
+For example, the function [`Date(y, [m, d])`](@ref)
+from `Dates` module constructs a `Date` type for a given year `y`, month `m` and day `d`.
+However, `m` and `d` arguments are optional and their default value is `1`.
+This behavior can be expressed concisely as:
 
 ```julia
 function Date(y::Int64, m::Int64=1, d::Int64=1)
@@ -458,9 +471,11 @@ function Date(y::Int64, m::Int64=1, d::Int64=1)
 end
 ```
 
-注意到，这定义调用了 `Date` 函数的另一个方法，该方法带有一个 `UTInstant{Day}` 类型的参数。
+Observe, that this definition calls another method of the `Date` function that takes one argument
+of type `UTInstant{Day}`.
 
-在此定义下，函数调用时可以带有一个、两个或三个参数，并且在没有指定参数时，自动传递 `1`：
+With this definition, the function can be called with either one, two or three arguments, and
+`1` is automatically passed when only one or two of the arguments are specified:
 
 ```jldoctest
 julia> using Dates
@@ -503,6 +518,14 @@ function f(;x::Int=1)
 end
 ```
 
+Keyword arguments can also be used in varargs functions:
+
+```julia
+function plot(x...; style="solid")
+    ###
+end
+```
+
 附加的关键字参数可用 `...` 收集，正如在变参函数中：
 
 ```julia
@@ -523,6 +546,10 @@ f(3)      # throws UndefKeywordError(:y)
 ```
 
 在分号后也可传递 `key => value` 表达式。例如，`plot(x, y; :width => 2)` 等价于 `plot(x, y, width=2)`。当关键字名称需要在运行时被计算时，这就很实用了。
+
+When a bare identifier or dot expression occurs after a semicolon, the keyword argument name is
+implied by the identifier or field name. For example `plot(x, y; width)` is equivalent to
+`plot(x, y; width=width)` and `plot(x, y; options.width)` is equivalent to `plot(x, y; width=options.width)`.
 
 可选参数的性质使得可以多次指定同一参数的值。例如，在调用 `plot(x, y; options..., width=2)` 的过程中，`options` 结构也能包含一个 `width` 的值。在这种情况下，最右边的值优先级最高；在此例中，`width` 的值可以确定是 `2`。但是，显式地多次指定同一参数的值是不允许的，例如 `plot(x, y, width=2, width=3)`，这会导致语法错误。
 
@@ -626,12 +653,12 @@ The next example composes three functions and maps the result over an array of s
 ```jldoctest
 julia> map(first ∘ reverse ∘ uppercase, split("you can compose functions like this"))
 6-element Array{Char,1}:
- 'U'
- 'N'
- 'E'
- 'S'
- 'E'
- 'S'
+ 'U': ASCII/Unicode U+0055 (category Lu: Letter, uppercase)
+ 'N': ASCII/Unicode U+004E (category Lu: Letter, uppercase)
+ 'E': ASCII/Unicode U+0045 (category Lu: Letter, uppercase)
+ 'S': ASCII/Unicode U+0053 (category Lu: Letter, uppercase)
+ 'E': ASCII/Unicode U+0045 (category Lu: Letter, uppercase)
+ 'S': ASCII/Unicode U+0053 (category Lu: Letter, uppercase)
 ```
 
 Function chaining (sometimes called "piping" or "using a pipe" to send data to a subsequent function) is when you apply a function to the previous function's output:
@@ -677,7 +704,9 @@ julia> sin.(A)
  0.1411200080598672
 ```
 
-当然，你如果为 `f` 编写了一个专门的「向量化」方法，例如通过 `f(A::AbstractArray) = map(f, A)`，可以省略点号，这和 `f.(A)` 一样高效。但这种方法要求你事先决定要进行向量化的函数。
+Of course, you can omit the dot if you write a specialized "vector" method of `f`, e.g. via `f(A::AbstractArray) = map(f, A)`,
+and this is just as efficient as `f.(A)`. The advantage of the `f.(A)` syntax is that which functions are vectorizable need not be decided upon
+in advance by the library writer.
 
 更一般地，`f.(args...)` 实际上等价于 `broadcast(f, args...)`，它允许你操作多个数组（甚至是不同形状的），或是数组和标量的混合（请参阅 [Broadcasting](@ref)）。例如，如果有 `f(x,y) = 3x + 4y`，那么 `f.(pi,A)` 将为 `A` 中的每个 `a` 返回一个由 `f(pi,a)` 组成的新数组，而 `f.(vector1,vector2)` 将为每个索引 `i` 返回一个由 `f(vector1[i],vector2[i])` 组成的新向量（如果向量具有不同的长度则会抛出异常）。
 

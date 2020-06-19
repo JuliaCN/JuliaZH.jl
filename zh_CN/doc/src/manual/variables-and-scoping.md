@@ -1,24 +1,36 @@
 # [变量作用域](@id scope-of-variables)
 
-变量的*作用域*是代码的一个区域，在这个区域中这个变量是可见的。给变量划分作用域有助于解决变量命名冲突。这个概念是符合直觉的：两个函数可能同时都有叫做 `x` 的参量，而这两个 `x` 并不指向同一个东西。相似地，也有很多其他的情况下代码的不同块会使用同样名字而并不指向同一个东西。相同的变量名是否指向同一个东西的规则被称为作用域规则；这一届会详细地把这个规则讲清楚。
+The *scope* of a variable is the region of code within which a variable is visible. Variable scoping
+helps avoid variable naming conflicts. The concept is intuitive: two functions can both have
+arguments called `x` without the two `x`'s referring to the same thing. Similarly, there are many
+other cases where different blocks of code can use the same name without referring to the same
+thing. The rules for when the same variable name does or doesn't refer to the same thing are called
+scope rules; this section spells them out in detail.
 
-语言中的某些结构会引入*作用域块*，这是有资格成为一些变量集合的作用域的代码区域。一个变量的作用域不可能是源代码行的任意集合；相反，它始终与这些块之一关系密切。在 Julia 中主要有两种作用域，*全局作用域*与*局部作用域*，后者可以嵌套。引入作用域块的结构有：
+Certain constructs in the language introduce *scope blocks*, which are regions of code that are
+eligible to be the scope of some set of variables. The scope of a variable cannot be an arbitrary
+set of source lines; instead, it will always line up with one of these blocks. There are two main
+types of scopes in Julia, *global scope* and *local scope*. The latter can be nested. There is also
+a distinction in Julia between constructs which introduce a "hard scope" and those which only
+introduce a "soft scope", which affects whether shadowing a global variable by the same name is
+allowed or not.
 
 ### [作用域结构](@id man-scope-table)
 
-结构 | 作用域类型 | 可嵌入的作用域块
------------- | -------------  |---------------------------
-[`module`](@ref), [`baremodule`](@ref)            | 全局 | 全局
-交互式提示符（REPL）                         | 全局 | 全局
-(mutable) [`struct`](@ref), [`macro`](@ref)       | 局部  | 全局
-[`for`](@ref), [`while`](@ref), [`try-catch-finally`](@ref try), [`let`](@ref) |局部 | 全局或局部
-函数（语法，匿名或者do语法块） | 局部 | 全局或局部
-推导式，broadcast-fusing                 | 局部 | 全局或局部
+The constructs introducing scope blocks are:
+
+结构 | 作用域类型 | Allowed within
+----------|------------|---------------
+[`module`](@ref), [`baremodule`](@ref) | 全局 | 全局
+[`struct`](@ref) | local (soft) | 全局
+[`for`](@ref), [`while`](@ref), [`try`](@ref try) | local (soft) | 全局或局部
+[`macro`](@ref) | local (hard) | 全局
+[`let`](@ref), functions, comprehensions, generators | local (hard) | 全局或局部
 
 Notably missing from this table are
 [begin blocks](@ref man-compound-expressions) and [if blocks](@ref man-conditional-evaluation)
 which do *not* introduce new scopes.
-Both types of scopes follow somewhat different rules which will be explained below.
+The three types of scopes follow somewhat different rules which will be explained below.
 
 Julia使用[词法作用域](https://en.wikipedia.org/wiki/Scope_%28computer_science%29#Lexical_scoping_vs._dynamic_scoping)，也就是说一个函数的作用域不会从其调用者的作用域继承，而从函数定义处的作用域继承。举个例子，在下列的代码中`foo`中的`x`指向的是模块`Bar`的全局作用域中的`x`。
 
@@ -40,11 +52,21 @@ julia> Bar.foo()
 1
 ```
 
-所以*词法作用域*表明变量作用域只能通过源码推断。
+Thus *lexical scope* means that what a variable in a particular piece of code refers to can be
+deduced from the code in which it appears alone and does not depend on how the program executes. A
+scope nested inside another scope can "see" variables in all the outer scopes in which it is
+contained. Outer scopes, on the other hand, cannot see variables in inner scopes.
 
 ## 全局作用域
 
-每个模块会引进一个新的全局作用域，与其他所有模块的全局作用域分开；无所不包的全局作用域不存在。模块可以把其他模块的变量引入到它的作用域中，通过[using 或者 import](@ref modules)语句或者通过点符号这种有资格的通路，也就是说每个模块都是所谓的*命名空间*。值得注意的是变量绑定只能在它们的全局作用域中改变，在外部模块中不行。
+Each module introduces a new global scope, separate from the global scope of all other modules—there
+is no all-encompassing global scope. Modules can introduce variables of other modules into their
+scope through the [using or import](@ref modules) statements or through qualified access using the
+dot-notation, i.e. each module is a so-called *namespace* as well as a first-class data structure
+associating names with values. Note that while variable bindings can be read externally, they can only
+be changed within the module to which they belong. As an escape hatch, you can always evaluate code
+inside that module to modify a variable; this guarantees, in particular, that module bindings cannot
+be modified externally by code that never calls `eval`.
 
 ```jldoctest
 julia> module A
@@ -77,227 +99,358 @@ ERROR: cannot assign variables in other modules
 
 ## 局部作用域
 
-A new local scope is introduced by most code blocks (see above
-[table](@ref man-scope-table) for a complete list).
-A local scope inherits all the variables from a parent local scope,
-both for reading and writing.
-Unlike global scopes, local scopes are not namespaces,
-thus variables in an inner scope cannot be retrieved from the parent scope through some sort of
-qualified access.
+A new local scope is introduced by most code blocks (see above [table](@ref man-scope-table) for a
+complete list). Some programming languages require explicitly declaring new variables before using
+them. Explicit declaration works in Julia too: in any local scope, writing `local x` declares a new
+local variable in that scope, regardless of whether there is already a variable named `x` in an
+outer scope or not. Declaring each new local like this is somewhat verbose and tedious, however, so
+Julia, like many other languages, considers assignment to a new variable in a local scope to
+implicitly declare that variable as a new local. Mostly this is pretty intuitive, but as with many
+things that behave intuitively, the details are more subtle than one might naïvely imagine.
 
-The following rules and examples pertain to local scopes.
-A newly introduced variable in a local scope cannot be referenced by a parent scope.
-For example, here the ``z`` is not introduced into the top-level scope:
+When `x = <value>` occurs in a local scope, Julia applies the following rules to decide what the
+expression means based on where the assignment expression occurs and what `x` already refers to at
+that location:
+
+1. **Existing local:** If `x` is *already a local variable*, then the existing local `x` is
+   assigned;
+2. **Hard scope:** If `x` is *not already a local variable* and assignment occurs inside of any
+   hard scope construct (i.e. within a let block, function or macro body, comprehension, or
+   generator), a new local named `x` is created in the scope of the assignment;
+3. **Soft scope:** If `x` is *not already a local variable* and all of the scope constructs
+   containing the assignment are soft scopes (loops, `try`/`catch` blocks, or `struct` blocks), the
+   behavior depends on whether the global variable `x` is defined:
+   * if global `x` is *undefined*, a new local named `x` is created in the scope of the
+     assignment;
+   * if global `x` is *defined*, the assignment is considered ambiguous:
+     * in *non-interactive* contexts (files, eval), an ambiguity warning is printed and a new
+       local is created;
+     * in *interactive* contexts (REPL, notebooks), the global variable `x` is assigned.
+
+You may note that in non-interactive contexts the hard and soft scope behaviors are identical except
+that a warning is printed when an implicitly local variable (i.e. not declared with `local x`)
+shadows a global. In interactive contexts, the rules follow a more complex heuristic for the sake of
+convenience. This is covered in depth in examples that follow.
+
+Now that you know the rules, let's look at some examples. Each example is assumed to be evaluated in
+a fresh REPL session so that the only globals in each snippet are the ones that are assigned in that
+block of code.
+
+We'll begin with a nice and clear-cut situation—assignment inside of a hard scope, in this case a
+function body, when no local variable by that name already exists:
 
 ```jldoctest
-julia> for i = 1:10
-           z = i
-       end
-
-julia> z
-ERROR: UndefVarError: z not defined
-```
-
-!!! note
-    在这个和以下所有的例子中都假设了它们的顶层作用域是一个工作空间是空的全局作用域，比如一个新打开的REPL。
-
-Inner local scopes can, however, update variables in their parent scopes:
-
-```jldoctest
-julia> for i = 1:1
-           z = i
-           for j = 1:1
-               z = 0
-           end
-           println(z)
-       end
-0
-```
-
-在局部作用域中可以使用 [`local`](@ref) 关键字来使一个变量强制为新的局部变量。
-
-```jldoctest
-julia> for i = 1:1
-           x = i + 1
-           for j = 1:1
-               local x = 0
-           end
+julia> function greet()
+           x = "hello" # new local
            println(x)
        end
-2
+greet (generic function with 1 method)
+
+julia> greet()
+hello
+
+julia> x # global
+ERROR: UndefVarError: x not defined
 ```
 
-在局部作用域内部，可以使用 [`global`](@ref) 关键字来给全局变量赋值：
+Inside of the `greet` function, the assignment `x = "hello"` causes `x` to be a new local variable
+in the function's scope. There are two relevant facts: the assignment occurs in local scope and
+there is no existing local `x` variable. Since `x` is local, it doesn't matter if there is a global
+named `x` or not. Here for example we define `x = 123` before defining and calling `greet`:
 
 ```jldoctest
-julia> for i = 1:10
-           global z
-           z = i
+julia> x = 123 # global
+123
+
+julia> function greet()
+           x = "hello" # new local
+           println(x)
        end
+greet (generic function with 1 method)
 
-julia> z
-10
+julia> greet()
+hello
+
+julia> x # global
+123
 ```
 
-在作用域块中`local`和`global`关键字的位置都无关痛痒。下面的例子与上面最后的一个例子是等价的（虽然在文体上更差）:
+Since the `x` in `greet` is local, the value (or lack thereof) of the global `x` is unaffected by
+calling `greet`. The hard scope rule doesn't care whether a global named `x` exists or not:
+assignment to `x` in a hard scope is local (unless `x` is declared global).
 
-```jldoctest
-julia> for i = 1:10
-           z = i
-           global z
-       end
+The next clear cut situation we'll consider is when there is already a local variable named `x`, in
+which case `x = <value>` always assigns to this existing local `x`.  The function `sum_to` computes
+the sum of the numbers from one up to `n`:
 
-julia> z
-10
+```julia
+function sum_to(n)
+    s = 0 # new local
+    for i = 1:n
+        s = s + i # assign existing local
+    end
+    return s # same local
+end
 ```
 
-`local`和`global`关键字都可以用于解构赋值，也就是说`local x, y = 1, 2`。在这个例子中关键字影响所有的列出来的变量。
-
-在一个局部作用域中，所有的变量都会从其父作用域块中继承，除非：
-
-  * 赋值会导致*全局*变量改变，或者
-  * 变量专门使用`local`关键字标记。
-
-所以全局变量只能通过读来继承，不能通过写来继承。
+As in the previous example, the first assignment to `s` at the top of `sum_to` causes `s` to be a
+new local variable in the body of the function. The `for` loop has its own inner local scope within
+the function scope. At the point where `s = s + i` occurs, `s` is already a local variable, so the
+assignment updates the existing `s` instead of creating a new local. We can test this out by calling
+`sum_to` in the REPL:
 
 ```jldoctest
-julia> x, y = 1, 2;
-
-julia> function foo()
-           x = 2        # assignment introduces a new local
-           return x + y # y refers to the global
-       end;
-
-julia> foo()
-4
-
-julia> x
-1
-```
-
-为一个全局变量赋值需要显式的`global`：
-
-!!! sidebar "Avoiding globals"
-    Avoiding changing the value of global variables is considered by many
-    to be a programming best-practice.
-    Changing the value of a global variable can cause "action at a distance",
-    making the behavior of a program harder to reason about.
-    This is why the scope blocks that introduce local scope require the `global`
-    keyword to declare the intent to modify a global variable.
-
-```jldoctest
-julia> x = 1;
-
-julia> function foobar()
-           global x = 2
-       end;
-
-julia> foobar();
-
-julia> x
-2
-```
-
-注意*嵌套函数*会改变其父作用域的*局部*变量：
-
-```jldoctest
-julia> x, y = 1, 2;
-
-julia> function baz()
-           x = 2 # introduces a new local
-           function bar()
-               x = 10       # modifies the parent's x
-               return x + y # y is global
+julia> function sum_to(n)
+           s = 0 # new local
+           for i = 1:n
+               s = s + i # assign existing local
            end
-           return bar() + x # 12 + 10 (x is modified in call of bar())
-       end;
+           return s # same local
+       end
+sum_to (generic function with 1 method)
 
-julia> baz()
-22
+julia> sum_to(10)
+55
 
-julia> x, y # verify that global x and y are unchanged
-(1, 2)
+julia> s # global
+ERROR: UndefVarError: s not defined
 ```
 
-The reason to allow modifying local variables of parent scopes in
-nested functions is to allow constructing [`closures`](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29)
-which have private state, for instance the `state` variable in the
-following example:
+Since `s` is local to the function `sum_to`, calling the function has no effect on the global
+variable `s`. We can also see that the update `s = s + i` in the `for` loop must have updated the same
+`s` created by the initialization `s = 0` since we get the correct sum of 55 for the integers 1
+through 10.
+
+Let's dig into the fact that the `for` loop body has its own scope for a second by writing a slightly
+more verbose variation which we'll call `sum_to′`, in which we save the sum `s + i` in a variable `t`
+before updating `s`:
 
 ```jldoctest
-julia> let state = 0
-           global counter() = (state += 1)
-       end;
+julia> function sum_to′(n)
+           s = 0 # new local
+           for i = 1:n
+               t = s + i # new local `t`
+               s = t # assign existing local `s`
+           end
+           return s, @isdefined(t)
+       end
+sum_to′ (generic function with 1 method)
 
-julia> counter()
-1
-
-julia> counter()
-2
+julia> sum_to′(10)
+(55, false)
 ```
 
-See also the closures in the examples in the next two sections. A variable,
-such as `x` in the first example and `state` in the second, that is inherited
-from the enclosing scope by the inner function is sometimes called a
-*captured* variable. Captured variables can present [performance challenges
-discussed in performance tips](@ref man-performance-captured).
+This version returns `s` as before but it also uses the `@isdefined` macro to return a boolean
+indicating whether there is a local variable named `t` defined in the function's outermost local
+scope. As you can see, there is no `t` defined outside of the `for` loop body. This is because of the
+hard scope rule again: since the assignment to `t` occurs inside of a function, which
+introduces a hard scope, the assignment causes `t` to become a new local variable in the local scope
+where it appears, i.e. inside of the loop body. Even if there were a global named `t`, it would make
+no difference—the hard scope rule isn't affected by anything in global scope.
 
-继承全局作用域与嵌套局部作用域的区别可能导致在局部或者全局作用域中定义的函数在变量赋值上有稍许区别。考虑一下上面最后一个例子的一个变化，把 `bar` 移动到全局作用域中：
+Let's move onto some more ambiguous cases covered by the soft scope rule. We'll explore this by
+extracting the bodies of the `greet` and `sum_to′` functions into soft scope contexts. First, let's put the
+body of `greet` in a `for` loop—which is soft, rather than hard—and evaluate it in the REPL:
 
 ```jldoctest
-julia> x, y = 1, 2;
+julia> for i = 1:3
+           x = "hello" # new local
+           println(x)
+       end
+hello
+hello
+hello
 
-julia> function bar()
-           x = 10 # local, no longer a closure variable
-           return x + y
-       end;
-
-julia> function quz()
-           x = 2 # local
-           return bar() + x # 12 + 2 (x is not modified)
-       end;
-
-julia> quz()
-14
-
-julia> x, y # verify that global x and y are unchanged
-(1, 2)
+julia> x
+ERROR: UndefVarError: x not defined
 ```
 
-注意到在上面的嵌套规则并不适用于类型和宏定义因为他们只能出现在全局作用域中。涉及到[函数](@ref man-functions)中提到的默认和关键字函数参数的评估的话会有特别的作用域规则。
+Since the global `x` is not defined when the `for` loop is evaluated, the first clause of the soft
+scope rule applies and `x` is created as local to the `for` loop and therefore global `x` remains
+undefined after the loop executes. Next, let's consider the body of `sum_to′` extracted into global
+scope, fixing its argument to `n = 10`
 
-在函数，类型或者宏定义内部使用的变量，将其引入到作用域中的赋值行为不必在其内部使用之前进行：
-
-```jldoctest
-julia> f = y -> y + a;
-
-julia> f(3)
-ERROR: UndefVarError: a not defined
-Stacktrace:
-[...]
-
-julia> a = 1
-1
-
-julia> f(3)
-4
+```julia
+s = 0
+for i = 1:10
+    t = s + i
+    s = t
+end
+s
+@isdefined(t)
 ```
 
-这个行为看起来对于普通变量来说有点奇怪，但是这个允许命名过的函数 -- 它只是连接了函数对象的普通变量 -- 在定义之前就能被使用。这就允许函数能以符合直觉和方便的顺序定义，而非强制以颠倒顺序或者需要前置声明，只要在实际调用之前被定义就行。举个例子，这里有个不高效的，相互递归的方法去检验正整数是奇数还是偶数的方法：
+What does this code do? Hint: it's a trick question. The answer is "it depends." If this code is
+entered interactively, it behaves the same way it does in a function body. But if the code appears
+in a file, it  prints an ambiguity warning and throws an undefined variable error. Let's see it
+working in the REPL first:
 
 ```jldoctest
-julia> even(n) = (n == 0) ? true : odd(n - 1);
+julia> s = 0 # global
+0
 
-julia> odd(n) = (n == 0) ? false : even(n - 1);
+julia> for i = 1:10
+           t = s + i # new local `t`
+           s = t # assign global `s`
+       end
 
-julia> even(3)
+julia> s # global
+55
+
+julia> @isdefined(t) # global
 false
-
-julia> odd(3)
-true
 ```
 
-Julia提供了叫做[`iseven`](@ref)和[`isodd`](@ref)的内置的高效的奇偶性检验的函数，所以之上的定义只能被认为是作用域的一个例子，而非高效的设计。
+The REPL approximates being in the body of a function by deciding whether assignment inside the loop
+assigns to a global or creates new local based on whether a global variable by that name is defined
+or not. If a global by the name exists, then the assignment updates it. If no global exists, then
+the assignment creates a new local variable. In this example we see both cases in action:
+
+* There is no global named `t`, so `t = s + i` creates a new `t` that is local to the `for` loop;
+* There is a global named `s`, so `s = t` assigns to it.
+
+The second fact is why execution of the loop changes the global value of `s` and the first fact is
+why `t` is still undefined after the loop executes. Now, let's try evaluating this same code as
+though it were in a file instead:
+
+```jldoctest
+julia> code = """
+       s = 0 # global
+       for i = 1:10
+           t = s + i # new local `t`
+           s = t # new local `s` with warning
+       end
+       s, # global
+       @isdefined(t) # global
+       """;
+
+julia> include_string(Main, code)
+┌ Warning: Assignment to `s` in soft scope is ambiguous because a global variable by the same name exists: `s` will be treated as a new local. Disambiguate by using `local s` to suppress this warning or `global s` to assign to the existing global variable.
+└ @ string:4
+ERROR: LoadError: UndefVarError: s not defined
+```
+
+Here we use [`include_string`](@ref), to evaluate `code` as though it were the contents of a file.
+We could also save `code` to a file and then call `include` on that file—the result would be the
+same. As you can see, this behaves quite different from evaluating the same code in the REPL. Let's
+break down what's happening here:
+
+* global `s` is defined with the value `0` before the loop is evaluated
+* the assignment `s = t` occurs in a soft scope—a `for` loop outside of any function body or other hard
+  scope construct
+* therefore the second clause of the soft scope rule applies, and the assignment is ambiguous so a
+  warning is emitted
+* execution continues, making `s` local to the `for` loop body
+* since `s` is local to the `for` loop, it is undefined when `t = s + i` is evaluated, causing an error
+* evaluation stops there, but if it got to `s` and `@isdefined(t)`, it would return `0` and `false`.
+
+This demonstrates some important aspects of scope: in a scope, each variable can only have one
+meaning, and that meaning is determined regardless of the order of expressions. The presence of the
+expression `s = t` in the loop causes `s` to be local to the loop, which means that it is also local
+when it appears on the right hand side of `t = s + i`, even though that expression appears first and is
+evaluated first. One might imagine that the `s` on the first line of the loop could be global while
+the `s` on the second line of the loop is local, but that's not possible since the two lines are in
+the same scope block and each variable can only mean one thing in a given scope.
+
+#### On Soft Scope
+
+We have now covered all the local scope rules, but before wrapping up this section, perhaps a few
+words should be said about why the ambiguous soft scope case is handled differently in interactive
+and non-interactive contexts. There are two obvious questions one could ask:
+
+1. Why doesn't it just work like the REPL everywhere?
+2. Why doesn't it just work like in files everywhere? And maybe skip the warning?
+
+In Julia ≤ 0.6, all global scopes did work like the current REPL: when `x = <value>` occurred in a
+loop (or `try`/`catch`, or `struct` body) but outside of a function body (or `let` block or comprehension),
+it was decided based on whether a global named `x` was defined or not whether `x` should be local to
+the loop. This behavior has the advantage of being intuitive and convenient since it approximates
+the behavior inside of a function body as closely as possible. In particular, it makes it easy to
+move code back and forth between a function body and the REPL when trying to debug the behavior of a
+function. However, it has some downsides. First, it's quite a complex behavior: many people over the
+years were confused about this behavior and complained that it was complicated and hard both to
+explain and understand. Fair point. Second, and arguably worse, is that it's bad for programming "at
+scale." When you see a small piece of code in one place like this, it's quite clear what's going on:
+
+```julia
+s = 0
+for i = 1:10
+    s += i
+end
+```
+
+Obviously the intention is to modify the existing global variable `s`. What else could it mean?
+However, not all real world code is so short or so clear. We found that code like the following
+often occurs in the wild:
+
+```julia
+x = 123
+
+# much later
+# maybe in a different file
+
+for i = 1:10
+    x = "hello"
+    println(x)
+end
+
+# much later
+# maybe in yet another file
+# or maybe back in the first one where `x = 123`
+
+y = x + 234
+```
+
+It's far less clear what should happen here. Since `x + "hello"` is a method error, it seems
+probable that the intention is for `x` to be local to the `for` loop. But runtime values and what
+methods happen to exist cannot be used to determine the scopes of variables. With the Julia ≤ 0.6
+behavior, it's especially concerning that someone might have written the `for` loop first, had it
+working just fine, but later when someone else adds a new global far away—possibly in a different
+file—the code suddenly changes meaning and either breaks noisily or, worse still, silently does the
+wrong thing. This kind of ["spooky action at a distance"](https://en.wikipedia.org/wiki/Action_at_a_distance_(computer_programming)) is something that good programming language
+designs should prevent.
+
+So in Julia 1.0, we simplified the rules for scope: in any local scope, assignment to a name that
+wasn't already a local variable created a new local variable. This eliminated the notion of soft
+scope entirely as well as removing the potential for spooky action. We uncovered and fixed a significant number of bugs due to the removal of soft scope, vindicating the choice to get rid of it.
+And there was much rejoicing! Well, no, not really. Because some people were
+angry that they now had to write:
+
+```julia
+s = 0
+for i = 1:10
+    global s += i
+end
+```
+
+Do you see that `global` annotation in there? Hideous. Obviously this situation could not be
+tolerated. But seriously, there are two main issues with requiring `global` for this kind of
+top-level code:
+
+1. It's no longer convenient to copy and paste the code from inside a function body into the REPL
+   to debug it—you have to add `global` annotations and then remove them again to go back;
+
+2. Beginners will write this kind of code without the `global` and have no idea why their code
+   doesn't work—the error that they get is that `s` is undefined, which does not seem to enlighten
+   anyone who happens to make this mistake.
+
+As of Julia 1.5, this code works without the `global` annotation in interactive contexts like the
+REPL or Jupyter notebooks (just like Julia 0.6) and in files and other non-interactive contexts, it
+prints this very direct warning:
+
+> Assignment to `s` in soft scope is ambiguous because a global variable by the same name exists:
+> `s` will be treated as a new local. Disambiguate by using `local s` to suppress this warning or
+> `global s` to assign to the existing global variable.
+
+This addresses both issues while preserving the "programming at scale" benefits of the 1.0 behavior:
+global variables have no spooky effect on the meaning of code that may be far away; in the REPL
+copy-and-paste debugging works and beginners don't have any issues; any time someone either forgets
+a `global` annotation or accidentally shadows an existing global with a local in a soft scope,
+which would be confusing anyway, they get a nice clear warning.
+
+An important property of this design is that any code that executes in a file without a warning will
+behave the same way in a fresh REPL. And on the flip side, if you take a REPL session and save it to
+file, if it behaves differently than it did in the REPL, then you will get a warning.
 
 ### let块
 
@@ -365,11 +518,11 @@ julia> let
 
 因为`let`引进了一个新的作用域块，内部的局部`x`与外部的局部`x`是不同的变量。
 
-### 对于循环和推导式
+### Loops and Comprehensions
 
-`for` loops, `while` loops, and [comprehensions](@ref man-comprehensions) have the following behavior: any new variables
+In loops and [comprehensions](@ref man-comprehensions), new variables
 introduced in their body scopes are freshly allocated for each loop iteration, as if the loop body
-were surrounded by a `let` block:
+were surrounded by a `let` block, as demonstrated by this example:
 
 ```jldoctest
 julia> Fs = Vector{Any}(undef, 2);
@@ -389,22 +542,25 @@ julia> Fs[2]()
 
 ```julia-repl enable_doctest_when_deprecation_warning_is_removed
 julia> function f()
- i = 0
- for i = 1:3
- end
- return i
- end;
+           i = 0
+           for i = 1:3
+               # empty
+           end
+           return i
+       end;
 
 julia> f()
 0
 ```
 
-但是，有时重复使用一个存在的局部变量作为迭代变量是有用的。这能够通过添加关键字 `outer` 来方便地做到：
+However, it is occasionally useful to reuse an existing local variable as the iteration variable.
+This can be done conveniently by adding the keyword `outer`:
 
 ```jldoctest
 julia> function f()
            i = 0
            for outer i = 1:3
+               # empty
            end
            return i
        end;
@@ -445,13 +601,13 @@ julia> const x = 1.0
 julia> x = 1
 ERROR: invalid redefinition of constant x
 ```
-* 如果一个新值的类型与常量一样会打印一个警告：
+* if a new value has the same type as the constant then a warning is printed:
 ```jldoctest
 julia> const y = 1.0
 1.0
 
 julia> y = 2.0
-WARNING: redefining constant y
+WARNING: redefinition of constant y. This may fail, cause incorrect answers, or produce other errors.
 2.0
 ```
 * 如果赋值不会导致变量值的变化，不会给出任何信息：
@@ -490,12 +646,16 @@ julia> const a = [1]
  1
 
 julia> a = [1]
-WARNING: redefining constant a
+WARNING: redefinition of constant a. This may fail, cause incorrect answers, or produce other errors.
 1-element Array{Int64,1}:
  1
 ```
 
-注意，改变一个声明为常量的变量的值虽然有时是可能的，但是十分不推荐这样做，并且在交互式使用中这样做仅仅是为了更加方便。举个例子，如果一个方法引用了一个常量并且在常量被改变之前已经被编译了，那么这个变量还是会保留使用原来的值：
+Note that although sometimes possible, changing the value of a `const` variable is strongly
+discouraged, and is intended only for convenience during interactive use. Changing constants can
+cause various problems or unexpected behaviors. For instance, if a method references a constant and
+is already compiled before the constant is changed, then it might keep using the old value:
+
 ```jldoctest
 julia> const x = 1
 1
@@ -507,7 +667,7 @@ julia> f()
 1
 
 julia> x = 2
-WARNING: redefining constant x
+WARNING: redefinition of constant x. This may fail, cause incorrect answers, or produce other errors.
 2
 
 julia> f()

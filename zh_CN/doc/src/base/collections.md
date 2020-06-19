@@ -127,6 +127,8 @@ Base.mapfoldl(::Any, ::Any, ::Any)
 Base.mapfoldr(::Any, ::Any, ::Any)
 Base.first
 Base.last
+Base.front
+Base.tail
 Base.step
 Base.collect(::Any)
 Base.collect(::Type, ::Any)
@@ -187,6 +189,7 @@ Base.lastindex
 例如：语法 `D[x,y]` 等于 `D[(x,y)]`，也就是说，它指向键为元组 `(x,y)` 的值。
 
 ```@docs
+Base.AbstractDict
 Base.Dict
 Base.IdDict
 Base.WeakKeyDict
@@ -203,8 +206,9 @@ Base.keys
 Base.values
 Base.pairs
 Base.merge
-Base.merge!(::AbstractDict, ::AbstractDict...)
-Base.merge!(::Function, ::AbstractDict, ::AbstractDict...)
+Base.mergewith
+Base.merge!
+Base.mergewith!
 Base.sizehint!
 Base.keytype
 Base.valtype
@@ -229,6 +233,7 @@ Base.valtype
 ## 类似 Set 的集合
 
 ```@docs
+Base.AbstractSet
 Base.Set
 Base.BitSet
 Base.union
@@ -243,6 +248,7 @@ Base.issubset
 Base.:⊈
 Base.:⊊
 Base.issetequal
+Base.isdisjoint
 ```
 
 以下类型均完全实现了上述函数：

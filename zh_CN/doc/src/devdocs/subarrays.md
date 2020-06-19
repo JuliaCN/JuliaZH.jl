@@ -2,36 +2,11 @@
 
 Julia 的 `SubArray` 类型是编码父类型 [`AbstractArray`](@ref) 的“视图”的一个容器。本页介绍了 `SubArray` 的一些设计原则和实现。
 
-## 索引：笛卡尔索引与线性索引
+One of the major design goals is to ensure high performance for views of both [`IndexLinear`](@ref) and
+[`IndexCartesian`](@ref) arrays. Furthermore, views of `IndexLinear` arrays should themselves be
+`IndexLinear` to the extent that it is possible.
 
-Broadly speaking, there are two main ways to access data in an array. The first, often called
-cartesian indexing, uses `N` indices for an `N` -dimensional `AbstractArray`.  For example, a
-matrix `A` (2-dimensional) can be indexed in cartesian style as `A[i,j]`.  The second indexing
-method, referred to as linear indexing, uses a single index even for higher-dimensional objects.
- For example, if `A = reshape(1:12, 3, 4)`, then the expression `A[5]` returns the value 5.  Julia
-allows you to combine these styles of indexing: for example, a 3d array `A3` can be indexed as
-`A3[i,j]`, in which case `i` is interpreted as a cartesian index for the first dimension, and
-`j` is a linear index over dimensions 2 and 3.
-
-For `Array`s, linear indexing appeals to the underlying storage format: an array is laid out as
-a contiguous block of memory, and hence the linear index is just the offset (+1) of the corresponding
-entry relative to the beginning of the array.  However, this is not true for many other `AbstractArray`
-types: examples include [`SparseMatrixCSC`](@ref) from the `SparseArrays` standard library
-module, arrays that require some kind of
-computation (such as interpolation), and the type under discussion here, `SubArray`.
-For these types, the underlying information is more naturally described in terms of
-cartesian indices.
-
-The `getindex` and `setindex!` functions for `AbstractArray` types may include automatic conversion
-between indexing types. For explicit conversion, [`CartesianIndices`](@ref) can be used.
-
-While converting from a cartesian index to a linear index is fast (it's just multiplication and
-addition), converting from a linear index to a cartesian index is very slow: it relies on the
-`div` operation, which is one of the slowest low-level operations you can perform with a CPU.
- For this reason, any code that deals with `AbstractArray` types is best designed in terms of
-cartesian, rather than linear, indexing.
-
-## 索引替换
+## Index replacement
 
 Consider making 2d slices of a 3d array:
 
@@ -64,7 +39,7 @@ with `A[i,1,(2:3)[j]]` and `S2[i,j]` with `A[1,i,(2:3)[j]]`.
 The key feature of the design of SubArrays is that this index replacement can be performed without
 any runtime overhead.
 
-## 子数组设计
+## SubArray design
 
 ### Type parameters and fields
 
@@ -143,7 +118,7 @@ for any pair of indices `(i,j)` (except [`CartesianIndex`](@ref)s and arrays the
 This is the core of a `SubArray`; indexing methods depend upon `reindex` to do this index translation.
 Sometimes, though, we can avoid the indirection and make it even faster.
 
-### 线性索引
+### Linear indexing
 
 Linear indexing can be implemented efficiently when the entire array has a single stride that
 separates successive elements, starting from some offset. This means that we can pre-compute these

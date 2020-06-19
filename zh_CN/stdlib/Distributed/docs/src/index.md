@@ -1,9 +1,5 @@
 # 分布式计算
 
-```@meta
-DocTestSetup = :(using Distributed)
-```
-
 ```@docs
 Distributed.addprocs
 Distributed.nprocs
@@ -18,17 +14,18 @@ Distributed.pmap
 Distributed.RemoteException
 Distributed.Future
 Distributed.RemoteChannel
-Distributed.wait
-Distributed.fetch(::Any)
+Distributed.fetch(::Distributed.Future)
+Distributed.fetch(::RemoteChannel)
 Distributed.remotecall(::Any, ::Integer, ::Any...)
 Distributed.remotecall_wait(::Any, ::Integer, ::Any...)
 Distributed.remotecall_fetch(::Any, ::Integer, ::Any...)
 Distributed.remote_do(::Any, ::Integer, ::Any...)
 Distributed.put!(::RemoteChannel, ::Any...)
-Distributed.put!(::Future, ::Any)
+Distributed.put!(::Distributed.Future, ::Any)
 Distributed.take!(::RemoteChannel, ::Any...)
 Distributed.isready(::RemoteChannel, ::Any...)
-Distributed.isready(::Future)
+Distributed.isready(::Distributed.Future)
+Distributed.AbstractWorkerPool
 Distributed.WorkerPool
 Distributed.CachingPool
 Distributed.default_worker_pool
@@ -38,13 +35,9 @@ Distributed.remotecall(::Any, ::AbstractWorkerPool, ::Any...)
 Distributed.remotecall_wait(::Any, ::AbstractWorkerPool, ::Any...)
 Distributed.remotecall_fetch(::Any, ::AbstractWorkerPool, ::Any...)
 Distributed.remote_do(::Any, ::AbstractWorkerPool, ::Any...)
-Distributed.timedwait
-Distributed.@spawn
 Distributed.@spawnat
 Distributed.@fetch
 Distributed.@fetchfrom
-Distributed.@async
-Distributed.@sync
 Distributed.@distributed
 Distributed.@everywhere
 Distributed.clear!(::Any, ::Any; ::Any)
@@ -55,12 +48,16 @@ Distributed.cluster_cookie()
 Distributed.cluster_cookie(::Any)
 ```
 
-## 集群管理接口
+## Cluster Manager Interface
 
-这个接口提供了一种在不同的集群上启动和管理 Julia 工作节点的机制。
-Base 模块提供了两种类型的管理器：`Localmanager` 用于在同一台主机上启动额外的工作节点； `SSHManager` 用于通过 `ssh` 在远程主机上启动额外的工作节点。 TCP/IP socket 用于连接进程以及进程间的信息传递。集群管理器也可以提供一种不同的传递方式。
+This interface provides a mechanism to launch and manage Julia workers on different cluster environments.
+There are two types of managers present in Base: `LocalManager`, for launching additional workers on the
+same host, and `SSHManager`, for launching on remote hosts via `ssh`. TCP/IP sockets are used to connect
+and transport messages between processes. It is possible for Cluster Managers to provide a different transport.
 
 ```@docs
+Distributed.ClusterManager
+Distributed.WorkerConfig
 Distributed.launch
 Distributed.manage
 Distributed.kill(::ClusterManager, ::Int, ::WorkerConfig)
@@ -68,8 +65,4 @@ Distributed.connect(::ClusterManager, ::Int, ::WorkerConfig)
 Distributed.init_worker
 Distributed.start_worker
 Distributed.process_messages
-```
-
-```@meta
-DocTestSetup = nothing
 ```

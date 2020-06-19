@@ -33,10 +33,8 @@ int main(int argc, char *argv[])
 为构建这个程序，你必须将 Julia 头文件的路径放入 include 路径并链接 `libjulia` 。例如 Julia 被安装到 `$JULIA_DIR`，则可以用 `gcc` 来编译上面的测试程序 `test.c`：
 
 ```
-gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib test.c -ljulia $JULIA_DIR/lib/julia/libstdc++.so.6
+gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib -Wl,-rpath,$JULIA_DIR/lib test.c -ljulia
 ```
-
-然后如果将环境变量 `JULIA_BINDIR` 设置为 `$JULIA_DIR/bin`，那么输出的程序`test`将会被执行。
 
 或者查看 Julia 源代码目录 `test/embedding/` 文件夹下的 `embedding.c` 文件。
 文件 `ui/repl.c` 则是另一个简单示例，用于设置链接 `libjulia` 时 `jl_options` 的选项 。
@@ -210,8 +208,14 @@ jl_value_t *jl_call(jl_function_t *f, jl_value_t **args, int32_t nargs)
 
 通常，Julia 对象由垃圾收集器（GC）释放，但 GC 不会自动就懂我们正C中保留对Julia值的引用。这意味着 GC 会在你的掌控之外释放对象，从而使指针无效。
 
-GC 只会在 Julia 对象分配后运行。像 `jl_box_float64` 这种函数调用会触发内存分配，且有可能会发生在Julia代码运行过程中的任何时期。
-但是在两次 `jl_...` 调用之间使用指针通常是安全的。但是为了确保值可以在 `jl_...` 调用中存活，我们必须告诉 Julia 我们保留对 Julia 值的引用。可以使用 `JL_GC_PUSH` 宏来完成：
+The GC can only run when Julia objects are allocated. Calls like `jl_box_float64` perform allocation,
+and allocation might also happen at any point in running Julia code. However, it is generally
+safe to use pointers in between `jl_...` calls. But in order to make sure that values can survive
+`jl_...` calls, we have to tell Julia that we still hold a reference to Julia
+[root](https://www.cs.purdue.edu/homes/hosking/690M/p611-fenichel.pdf) values, a process
+called "GC rooting". Rooting a value will ensure that the garbage collector does not accidentally
+identify this value as unused and free the memory backing that value. This can be done using the
+`JL_GC_PUSH` macros:
 
 ```c
 jl_value_t *ret = jl_eval_string("sqrt(2.0)");

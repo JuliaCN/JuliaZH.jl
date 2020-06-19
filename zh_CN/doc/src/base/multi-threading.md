@@ -1,13 +1,28 @@
-
-# 多线程
-
-这个实验性接口支持 Julia 的多线程功能。
-类型和函数在本节的相关描述很有可能会在未来进行修改。
+# [Multi-Threading](@id lib-multithreading)
 
 ```@docs
+Base.Threads.@threads
+Base.Threads.@spawn
 Base.Threads.threadid
 Base.Threads.nthreads
-Base.Threads.@threads
+```
+
+## Synchronization
+
+```@docs
+Base.Threads.Condition
+Base.Threads.Event
+```
+
+See also [Synchronization](@ref lib-task-sync).
+
+## Atomic operations
+
+!!! warning
+
+    The API for atomic operations has not yet been finalized and is likely to change.
+
+```@docs
 Base.Threads.Atomic
 Base.Threads.atomic_cas!
 Base.Threads.atomic_xchg!
@@ -22,26 +37,16 @@ Base.Threads.atomic_min!
 Base.Threads.atomic_fence
 ```
 
-## 使用线程池的 `ccal` 方法（实验性）
+## ccall using a threadpool (Experimental)
 
 ```@docs
 Base.@threadcall
 ```
 
-## 同步基元
+## Low-level synchronization primitives
+
+These building blocks are used to create the regular synchronization objects.
 
 ```@docs
-Base.Threads.AbstractLock
-Base.lock
-Base.unlock
-Base.trylock
-Base.islocked
-Base.ReentrantLock
-Base.Threads.Mutex
 Base.Threads.SpinLock
-Base.Threads.RecursiveSpinLock
-Base.Semaphore
-Base.acquire
-Base.release
 ```
-

@@ -8,7 +8,8 @@ struct VecElement{T}
 end
 ```
 
-它有特别的编译规则：当 `T` 是初始位类型，并且元组长度属于集合 {2-6,8-10,16} 时，`VecElement{T}` 的同态元组会映射为一个 LLVM `vector` 类型。
+It has a special compilation rule: a homogeneous tuple of `VecElement{T}` maps to an LLVM `vector`
+type when `T` is a primitive bits type.
 
 使用 `-O3` 参数时，编译器 *可能* 自动为这样的元组向量化运算符。
 例如接下来的程序，使用 `julia -O3` 编译，在x86系统中会生成两个 SIMD 附加指令（`addps`）：

@@ -207,6 +207,16 @@ true
 
 因此，Julia 的整数算术实际上是[模算数](https://zh.wikipedia.org/wiki/%E6%A8%A1%E7%AE%97%E6%95%B8)的一种形式，它反映了现代计算机实现底层算术的特点。在可能有溢出产生的程序中，对最值边界出现循环进行显式检查是必要的。否则，推荐使用[任意精度算术](@ref)中的 [`BigInt`](@ref) 类型作为替代。
 
+An example of overflow behavior and how to potentially resolve it is as follows:
+
+```jldoctest
+julia> 10^19
+-8446744073709551616
+
+julia> big(10)^19
+10000000000000000000
+```
+
 ### 除法错误
 
 `div` 函数的整数除法有两种异常情况：除以零，以及使用 -1 去除最小的负数（[`typemin`](@ref)）。

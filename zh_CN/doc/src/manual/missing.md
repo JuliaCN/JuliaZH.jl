@@ -4,7 +4,11 @@ Julia 支持表示统计意义上的缺失值，即某个变量在观察中没�
 
 ## 缺失值的传播
 
-`missing` 值的行为遵循一个基本规则：`missing` 值在传给标准运算符和函数（尤其是数学函数）时会自动*传播*。其中一个操作数的值的不确定性会导致结果的不确定性。这实际上意味着涉及 `missing` 值的操作通常会返回 `missing`。
+`missing` values *propagate* automatically when passed to standard mathematical
+operators and functions.
+For these functions, uncertainty about the value of one of the operands
+induces uncertainty about the result. In practice, this means a math operation
+involving a `missing` value generally returns `missing`
 ```jldoctest
 julia> missing + 1
 missing
@@ -16,7 +20,20 @@ julia> abs(missing)
 missing
 ```
 
-由于 `missing` 是个普通的 Julia 对象，此传播规则仅适用于已选择实现此行为的函数。这可通过为 `Missing` 类型的参数定义特定的方法来实现，或者简单地通过接受此类型的参数，并将它们传给会传播它们的函数（如标准运算符）来实现。包在定义新函数时应考虑其传播缺失值是否有意义，如果是这种情况，则应适当地定义方法。将 `missing` 值传给一个函数，若该函数没有定义接受类型为 `Missing` 的参数的方法，则抛出一个 [`MethodError`](@ref)，就像任何其它类型。
+As `missing` is a normal Julia object, this propagation rule only works
+for functions which have opted in to implement this behavior. This can be
+achieved either via a specific method defined for arguments of type `Missing`,
+or simply by accepting arguments of this type, and passing them to functions
+which propagate them (like standard math operators). Packages should consider
+whether it makes sense to propagate missing values when defining new functions,
+and define methods appropriately if that is the case. Passing a `missing` value
+to a function for which no method accepting arguments of type `Missing` is defined
+throws a [`MethodError`](@ref), just like for any other type.
+
+Functions that do not propagate `missing` values can be made to do so by wrapping
+them in the `passmissing` function provided by the
+[Missings.jl](https://github.com/JuliaData/Missings.jl) package.
+For example, `f(x)` becomes `passmissing(f)(x)`.
 
 ## 相等和比较运算符
 
@@ -222,7 +239,7 @@ This convenience function returns an iterator which filters out `missing` values
 efficiently. It can therefore be used with any function which supports iterators
 ```jldoctest skipmissing; setup = :(using Statistics)
 julia> x = skipmissing([3, missing, 2, 1])
-Base.SkipMissing{Array{Union{Missing, Int64},1}}(Union{Missing, Int64}[3, missing, 2, 1])
+skipmissing(Union{Missing, Int64}[3, missing, 2, 1])
 
 julia> maximum(x)
 3
