@@ -1,6 +1,6 @@
 # 日志记录
 
-The `Logging` module provides a way to record the history and progress of a
+The [`Logging`](@ref Logging.Logging) module provides a way to record the history and progress of a
 computation as a log of events.  Events are created by inserting a logging
 statement into the source code, for example:
 
@@ -58,17 +58,23 @@ automatically extracted. Let's examine the user-defined data first:
 * The *log level* is a broad category for the message that is used for early
   filtering. There are several standard levels of type [`LogLevel`](@ref);
   user-defined levels are also possible.
-  - Use `Debug` for verbose information that could be useful when debugging an
-    application or module. These events are disabled by default.
-  - Use `Info` to inform the user about the normal operation of the program.
-  - Use `Warn` when a potential problem is detected.
-  - Use `Error` to report errors where the code has enough context to recover
-    and continue.  (When the code doesn't have enough context, an exception or
-    early return is more appropriate.)
+  Each is distinct in purpose:
+  - `Debug` is information intended for the developer of the program.
+  These events are disabled by default.
+  - `Info` is for general information to the user.
+  Think of it as an alternative to using `println` directly.
+  - `Warn` means something is wrong and action is likely required
+  but that for now the program is still working.
+  - `Error` means something is wrong and it is unlikely to be recovered,
+  at least by this part of the code.
+  Often this log-level is unneeded as throwing an exception can convey
+  all the required information.
+
 * The *message*  is an object describing the event. By convention
   `AbstractString`s passed as messages are assumed to be in markdown format.
-  Other types will be displayed using `show(io,mime,obj)` according to the
-  display capabilities of the installed logger.
+  Other types will be displayed using `print(io, obj)` or `string(obj)` for
+  text-based output and possibly `show(io,mime,obj)` for other multimedia
+  displays used in the installed logger.
 * Optional *key--value pairs* allow arbitrary data to be attached to each event.
   Some keys have conventional meaning that can affect the way an event is
   interpreted (see [`@logmsg`](@ref)).
@@ -77,10 +83,10 @@ The system also generates some standard information for each event:
 
 * The `module` in which the logging macro was expanded.
 * The `file` and `line` where the logging macro occurs in the source code.
-* A message `id` that is unique for each logging macro invocation. This is
-  very useful as a key for caching information or actions associated with an
-  event. For instance, it can be used to limit the number of times a message
-  is presented to the user.
+* A message `id` that is a unique, fixed identifier for the *source code
+  statement* where the logging macro appears. This identifier is designed to be
+  fairly stable even if the source code of the file changes, as long as the
+  logging statement itself remains the same.
 * A `group` for the event, which is set to the base name of the file by default,
   without extension.  This can be used to group messages into categories more
   finely than the log level (for example, all deprecation warnings have group
@@ -94,7 +100,7 @@ time, backtrace, values of global variables and other useful information as
 required.
 
 
-## 处理日志事件
+## Processing log events
 
 As you can see in the examples, logging statements make no mention of
 where log events go or how they are processed. This is a key design feature
@@ -165,14 +171,14 @@ application, which is helpful when enabling little-used debug events in a
 production system.  This behavior can be customized per logger type by
 extending [`Logging.catch_exceptions`](@ref).
 
-## 测试日志事件
+## Testing log events
 
 Log events are a side effect of running normal code, but you might find
 yourself wanting to test particular informational messages and warnings. The
 `Test` module provides a [`@test_logs`](@ref) macro that can be used to
 pattern match against the log event stream.
 
-## 环境变量
+## Environment variables
 
 Message filtering can be influenced through the `JULIA_DEBUG` environment
 variable, and serves as an easy way to enable debug logging for a file or
@@ -193,10 +199,70 @@ Similarly, the environment variable can be used to enable debug logging of
 modules, such as `Pkg`, or module roots (see [`Base.moduleroot`](@ref)). To
 enable all debug logging, use the special value `all`.
 
+To turn debug logging on from the REPL, set `ENV["JULIA_DEBUG"]` to the
+name of the module of interest. Functions defined in the REPL belong to
+module `Main`; logging for them can be enabled like this:
+```julia-repl
+julia> foo() = @debug "foo"
+foo (generic function with 1 method)
 
-## 参考
+julia> foo()
 
-### 创建事件
+julia> ENV["JULIA_DEBUG"] = Main
+Main
+
+julia> foo()
+┌ Debug: foo
+└ @ Main REPL[1]:1
+
+```
+
+## Writing log events to a file
+
+Sometimes it can be useful to write log events to a file. Here is an example
+of how to use a task-local and global logger to write information to a text
+file:
+
+```julia-repl
+# Load the logging module
+julia> using Logging
+
+# Open a textfile for writing
+julia> io = open("log.txt", "w+")
+IOStream(<file log.txt>)
+
+# Create a simple logger
+julia> logger = SimpleLogger(io)
+SimpleLogger(IOStream(<file log.txt>), Info, Dict{Any,Int64}())
+
+# Log a task-specific message
+julia> with_logger(logger) do
+           @info("a context specific log message")
+       end
+
+# Write all buffered messages to the file
+julia> flush(io)
+
+# Set the global logger to logger
+julia> global_logger(logger)
+SimpleLogger(IOStream(<file log.txt>), Info, Dict{Any,Int64}())
+
+# This message will now also be written to the file
+julia> @info("a global log message")
+
+# Close the file
+julia> close(io)
+```
+
+
+## Reference
+
+### Logging module
+```@docs
+Logging.Logging
+```
+
+### Creating events
 
 ```@docs
 Logging.@logmsg
@@ -226,9 +292,9 @@ Logging.catch_exceptions
 Logging.disable_logging
 ```
 
-### 使用记录器
+### Using Loggers
 
-记录器安装和检查：
+Logger installation and inspection:
 
 ```@docs
 Logging.global_logger
@@ -236,11 +302,10 @@ Logging.with_logger
 Logging.current_logger
 ```
 
-系统提供的记录器：
+Loggers that are supplied with the system:
 
 ```@docs
 Logging.NullLogger
 Logging.ConsoleLogger
 Logging.SimpleLogger
 ```
-

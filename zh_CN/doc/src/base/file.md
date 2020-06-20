@@ -29,10 +29,10 @@ Base.Filesystem.rm
 Base.Filesystem.touch
 Base.Filesystem.tempname
 Base.Filesystem.tempdir
-Base.Filesystem.mktemp(::Any)
-Base.Filesystem.mktemp(::Function, ::Any)
-Base.Filesystem.mktempdir(::Any)
-Base.Filesystem.mktempdir(::Function, ::Any)
+Base.Filesystem.mktemp(::AbstractString)
+Base.Filesystem.mktemp(::Function, ::AbstractString)
+Base.Filesystem.mktempdir(::AbstractString)
+Base.Filesystem.mktempdir(::Function, ::AbstractString)
 Base.Filesystem.isblockdev
 Base.Filesystem.ischardev
 Base.Filesystem.isdir
@@ -62,4 +62,5 @@ Base.Filesystem.expanduser
 Base.Filesystem.splitdir
 Base.Filesystem.splitdrive
 Base.Filesystem.splitext
+Base.Filesystem.splitpath
 ```

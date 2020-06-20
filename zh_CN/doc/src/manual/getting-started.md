@@ -69,6 +69,10 @@ Greetings! 你好! 안녕하세요?
 ...
 ```
 
+Note that although you should have a `~/.julia` directory once you've run Julia for the
+first time, you may need to create the `~/.julia/config` folder and the
+`~/.julia/config/startup.jl` file if you use it.
+
 和 `perl` 和 `ruby` 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：
 
 ```
@@ -89,6 +93,7 @@ julia [switches] -- [programfile] [args...]
 |`-e`, `--eval <expr>`                  |执行 `<expr>`|
 |`-E`, `--print <expr>`                 |执行 `<expr>` 并显示结果|
 |`-L`, `--load <file>`                  |立即在所有进程中载入 `<file>` |
+|`-t`, `--threads {N\|auto}`            |Enable N threads; `auto` currently sets N to the number of local CPU threads but this might change in the future|
 |`-p`, `--procs {N\|auto}`              |这里的整数 N 表示启动 N 个额外的工作进程；`auto` 表示启动与 CPU 线程数目（logical cores）一样多的进程|
 |`--machine-file <file>`                |在 `<file>` 中列出的主机上运行进程|
 |`-i`                                   |交互式模式；REPL 运行且 `isinteractive()` 为 true|

@@ -44,6 +44,18 @@ julia> 3*2/12
 
 习惯上我们会把优先运算的操作符紧邻操作数，比如 `-x + 2` 表示先要给 `x`  取反，然后再加 `2` 。
 
+When used in multiplication, `false` acts as a *strong zero*:
+
+```jldoctest
+julia> NaN * false
+0.0
+
+julia> false * Inf
+0.0
+```
+
+This is useful for preventing the propagation of `NaN` values in quantities that are known to be zero. See [Knuth (1992)](https://arxiv.org/abs/math/9205211) for motivation.
+
 ## 位运算符
 
 所有原始整数类型都支持以下[位运算符](https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators)：

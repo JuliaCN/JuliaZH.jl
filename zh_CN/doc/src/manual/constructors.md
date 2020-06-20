@@ -433,7 +433,7 @@ julia> struct SummedArray{T<:Number,S<:Number}
 julia> SummedArray(Int32[1; 2; 3], Int32(6))
 ERROR: MethodError: no method matching SummedArray(::Array{Int32,1}, ::Int32)
 Closest candidates are:
-  SummedArray(::Array{T,1}) where T at none:5
+  SummedArray(::Array{T,1}) where T at none:4
 ```
 
 此构造函数将会被 `SummedArray(a)` 这种写法触发。`new{T,S}` 的这种写法允许指定待构建类型的参数，也就是说调用它会返回一个 `SummedArray{T,S}` 的实例。`new{T,S}` 也可以用于其它构造函数的定义中，但为了方便，Julia 会根据正在构造的类型自动推导出 `new{}` 花括号里的参数（如果可行的话）。

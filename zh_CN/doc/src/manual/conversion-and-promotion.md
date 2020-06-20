@@ -75,8 +75,8 @@ ERROR: MethodError: Cannot `convert` an object of type String to an object of ty
 ```
 
 Some languages consider parsing strings as numbers or formatting numbers as strings to be conversions
-(many dynamic languages will even perform conversion for you automatically), however Julia does
-not: even though some strings can be parsed as numbers, most strings are not valid representations
+(many dynamic languages will even perform conversion for you automatically). This is not the case in Julia.
+Even though some strings can be parsed as numbers, most strings are not valid representations
 of numbers, and only a very limited subset of them are. Therefore in Julia the dedicated [`parse`](@ref)
 function must be used to perform this operation, making it more explicit.
 
@@ -209,7 +209,9 @@ type. Thus, by defining the rule:
 promote_rule(::Type{Float64}, ::Type{Float32}) = Float64
 ```
 
-声明当同时类型提升 64 位和 32 位浮点值时，它们应该被类型提升为 64 位浮点数。但是，提升类型不需要是参数类型之一；在 Julia Base 中有以下类型提升规则：
+one declares that when 64-bit and 32-bit floating-point values are promoted together, they should
+be promoted to 64-bit floating-point. The promotion type does not need to be one of the argument
+types. For example, the following promotion rules both occur in Julia Base:
 
 ```julia
 promote_rule(::Type{BigInt}, ::Type{Float64}) = BigFloat

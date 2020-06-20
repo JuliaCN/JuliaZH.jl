@@ -117,7 +117,9 @@ julia> x # x is unchanged!
 
 在 Julia 中，通过将 `x` 作为参数传递给函数，不能改变变量 `x` 的绑定。在上例中，调用 `change_value!(x)` 时，`y` 是一个新建变量，初始时与 `x` 的值绑定，即 `10`。然后 `y` 与常量 `17` 重新绑定，此时变量外作用域中的 `x` 并没有变动。
 
-但是这里有一个需要注意的点：假设 `x` 被绑定至 `Array` 类型 (或者其他 *可变* 的类型)。在函数中，你无法将 `x` 与 Array “解绑”，但是你可以改变其内容。例如：
+However, if `x` is bound to an object of type `Array`
+(or any other *mutable* type). From within the function, you cannot "unbind" `x` from this Array,
+but you *can* change its content. For example:
 
 ```jldoctest
 julia> x = [1,2,3]
@@ -291,8 +293,10 @@ julia> function unstable(flag::Bool)
 unstable (generic function with 1 method)
 ```
 
-根据参数的不同，该函数可能返回 `Int` 或 [`Float64`](@ref)。
-由于 Julia 无法在编译期预测该函数的返回值类型，任何使用该函数的计算都需要考虑这两种可能的返回类型，这样难以生成高效的机器码。
+It returns either an `Int` or a [`Float64`](@ref) depending on the value of its argument.
+Since Julia can't predict the return type of this function at compile-time, any computation
+that uses it must be able to cope with values of both types, which makes it hard to produce
+fast machine code.
 
 ### [为何 Julia 对某个看似合理的操作返回 `DomainError`？](@id faq-domain-errors)
 
@@ -628,7 +632,9 @@ julia> remotecall_fetch(anon_bar, 2)
 
 在统计环境下表示缺失的数据（R 中的 `NA` 或者 SQL 中的 `NULL`）请使用 [`missing`](@ref) 对象。请参照[`缺失值`](@ref missing)章节来获取详细信息。
 
-空元组（`()`）是空值的另一个表示方式。但是这不应该真的被认为是空值，而应被认为是零值的元组。
+In some languages, the empty tuple (`()`) is considered the canonical
+form of nothingness. However, in julia it is best thought of as just
+a regular tuple that happens to contain zero values.
 
 空（或者"底层"）类型，写作`Union{}`（空的union类型）是没有值和子类型（除了自己）的类型。通常你没有必要用这个类型。
 

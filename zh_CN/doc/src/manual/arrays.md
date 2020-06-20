@@ -42,14 +42,14 @@ Julia 提供了许多用于构造和初始化数组的函数。在下列函数�
 | [`reinterpret(T, A)`](@ref)                    | 与 `A` 具有相同二进制数据的数组，但元素类型为 `T`                                                                                                                                                                         |
 | [`rand(T, dims...)`](@ref)                     | 一个随机 `Array`，元素值是 ``[0, 1)`` 半开区间中的均匀分布且服从一阶独立同分布 [^1]                                                                                                                                       |
 | [`randn(T, dims...)`](@ref)                    | 一个随机 `Array`，元素为标准正态分布，服从独立同分布                                                                                                                                                                         |
-| [`Matrix{T}(I, m, n)`](@ref)                   | `m`-by-`n` identity matrix (requires `using LinearAlgebra`)                                                                                                                                                                                                                   |
+| [`Matrix{T}(I, m, n)`](@ref)                   | `m`-by-`n` identity matrix. Requires `using LinearAlgebra` for [`I`](@ref).                                                                                                                                                                                                                   |
 | [`range(start, stop=stop, length=n)`](@ref)    | 从 `start` 到 `stop` 的带有 `n` 个线性间隔元素的范围                                                                                                                                                                                 |
 | [`fill!(A, x)`](@ref)                          | 用值 `x` 填充数组 `A`                                                                                                                                                                                                        |
 | [`fill(x, dims...)`](@ref)                     | 一个被值 `x` 填充的 `Array`                                                                                                                                                                                                         |
 
 [^1]: *iid*，独立同分布
 
-To see the various ways we can pass dimensions to these functions, consider the following examples:
+要查看各种方法，我们可以将不同维数传递给这些构造函数，请考虑以下示例：
 ```jldoctest
 julia> zeros(Int8, 2, 3)
 2×3 Array{Int8,2}:
@@ -97,7 +97,7 @@ julia> [1, 2.3, 4//5] # Thus that's the element type of this Array
  0.8
 
 julia> []
-0-element Array{Any,1}
+Any[]
 ```
 
 ### [Concatenation](@id man-array-concatenation)
@@ -111,13 +111,6 @@ julia> [1:2, 4:5] # Has a comma, so no concatenation occurs. The ranges are them
 2-element Array{UnitRange{Int64},1}:
  1:2
  4:5
-
-julia> [1:2; 4:5]
-4-element Array{Int64,1}:
- 1
- 2
- 4
- 5
 
 julia> [1:2; 4:5]
 4-element Array{Int64,1}:
@@ -459,7 +452,7 @@ julia> x
 
 1. 标量索引。默认情况下，这包括：
     * 非布尔的整数
-    * [`CartesianIndex{N}`](@ref)s，其行为类似于跨越多个维度的 `N` 维整数元组（详见下文）
+    * [[`CartesianIndex {N}`](@ref)s，其行为类似于跨越多个维度的 `N` 维整数元组（详见下文）](@ref)s, which behave like an `N`-tuple of integers spanning multiple dimensions (see below for more details)
 2. 标量索引数组。这包括：
     * 整数向量和多维整数数组
     * 像 `[]` 这样的空数组，它不选择任何元素
@@ -493,7 +486,7 @@ julia> A[[1 4; 3 8]]
  5  15
 
 julia> A[[]]
-0-element Array{Int64,1}
+Int64[]
 
 julia> A[1:2:5]
 3-element Array{Int64,1}:
@@ -774,7 +767,7 @@ Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 
 此设置将导致 `myArray` 上的 `eachindex` 迭代使用整数。如果未指定此特征，则使用默认值 `IndexCartesian()`。
 
-## 数组、向量化操作符及函数
+## [Array and Vectorized Operators and Functions](@id man-array-and-vectorized-operators-and-functions)
 
 以下运算符支持对数组操作
 
@@ -821,7 +814,13 @@ julia> broadcast(+, a, b)
  1.73659  0.873631
 ```
 
-类似 `.+` 和 `.*` 的[点运算符](@ref man-dot-operators) 等同于 `broadcast` 调用（除了它们融合两种操作，如下所述）。还有一个 [`broadcast!`](@ref) 函数来指定一个显式目标（也可以通过 `.=` 赋值以融合的方式访问它）。事实上，`f.(args...)` 等价于 `broadcast(f, args...)`，并为广播任何函数提供了方便的语法（[dot syntax](@ref man-vectorized)）。嵌套的「点调用」`f.(...)`（包括调用 `.+` 等）[自动融合](@ref man-dot-operators)到单个 `broadcast` 调用。
+[Dotted operators](@ref man-dot-operators) such as `.+` and `.*` are equivalent
+to `broadcast` calls (except that they fuse, as [described above](@ref man-array-and-vectorized-operators-and-functions)). There is also a
+[`broadcast!`](@ref) function to specify an explicit destination (which can also
+be accessed in a fusing fashion by `.=` assignment). In fact, `f.(args...)`
+is equivalent to `broadcast(f, args...)`, providing a convenient syntax to broadcast any function
+([dot syntax](@ref man-vectorized)). Nested "dot calls" `f.(...)` (including calls to `.+` etcetera)
+[automatically fuse](@ref man-dot-operators) into a single `broadcast` call.
 
 Additionally, [`broadcast`](@ref) is not limited to arrays (see the function documentation);
 it also handles scalars, tuples and other collections.  By default, only some argument types are
@@ -835,7 +834,7 @@ julia> convert.(Float32, [1, 2])
  1.0
  2.0
 
-julia> ceil.((UInt8,), [1.2 3.4; 5.6 6.7])
+julia> ceil.(UInt8, [1.2 3.4; 5.6 6.7])
 2×2 Array{UInt8,2}:
  0x02  0x04
  0x06  0x07
@@ -845,6 +844,17 @@ julia> string.(1:3, ". ", ["First", "Second", "Third"])
  "1. First"
  "2. Second"
  "3. Third"
+```
+
+Sometimes, you want a container (like an array) that would normally participate in broadcast to be "protected"
+from broadcast's behavior of iterating over all of its elements. By placing it inside another container
+(like a single element [`Tuple`](@ref)) broadcast will treat it as a single value.
+```jldoctest
+julia> ([1, 2, 3], [4, 5, 6]) .+ ([1, 2, 3],)
+([2, 4, 6], [5, 7, 9])
+
+julia> ([1, 2, 3], [4, 5, 6]) .+ tuple([1, 2, 3])
+([2, 4, 6], [5, 7, 9])
 ```
 
 ## 实现
@@ -865,42 +875,72 @@ manner that allows all custom arrays to behave similarly.
 
 [`BitArray`](@ref) 是节省空间“压缩”的布尔数组，每个比特（bit）存储一个布尔值。 它们可以类似于 `Array{Bool}` 数组（每个字节（byte）存储一个布尔值），并且可以分别通过 `Array(bitarray)` 和 `BitArray(array)` 相互转换。
 
-「strided」数组存储在内存中，元素以常规偏移量排列，因此元素类型兼容 `isbits` 的实例可以被传递给期望此内存布局的外部 C 和 Fortran 函数。Strided 数组必须定义一个 [`strides(A)`](@ref) 方法，该方法为每个维返回一个「strides」元组；提供 [`stride(A,k)`](@ref) 方法访问该元组中的第 `k` 个元素。将维数 `k` 的索引增加 `1` 应该把 [`getindex(A,i)`](@ref) 得到的索引 `i` 增加 [`stride(A,k)`](@ref)。如果提供了指针转换方法 [`Base.unsafe_convert(Ptr{T}, A)`](@ref)，则内存布局必须以与这些间隔相同的方式对应。`DenseArray` 是一个非常具体的 strided 数组示例，其中元素是连续排列的，因此它为子类提供了适当的 `strides` 定义。更多具体的例子可以在 [strided 数组的接口指南](@ref man-interface-strided-arrays)中找到。[`StridedVector`](@ref) 和 [`StridedMatrix`](@ref) 是许多算是 strided 数组的内置数组类型的便捷别名，允许它们只使用指针和 stride 派发来选择调用专门实现，即使用经高度调试和优化的 BLAS 和 LAPACK 函数。
-
-接下来的例子计算一个大数组中一小部分的 QR 分解，不需要引入任何临时变量。通过正确的维度大小和偏移参数调用合适的 LAPACK 函数。
+An array is "strided" if it is stored in memory with well-defined spacings (strides) between
+its elements. A strided array with a supported element type may be passed to an external
+(non-Julia) library like BLAS or LAPACK by simply passing its [`pointer`](@ref) and the
+stride for each dimension. The [`stride(A, d)`](@ref) is the distance between elements along
+dimension `d`. For example, the builtin `Array` returned by `rand(5,7,2)` has its elements
+arranged contiguously in column major order. This means that the stride of the first
+dimension — the spacing between elements in the same column — is `1`:
 
 ```julia-repl
-julia> a = rand(10, 10)
-10×10 Array{Float64,2}:
- 0.517515  0.0348206  0.749042   0.0979679  …  0.75984     0.950481   0.579513
- 0.901092  0.873479   0.134533   0.0697848     0.0586695   0.193254   0.726898
- 0.976808  0.0901881  0.208332   0.920358      0.288535    0.705941   0.337137
- 0.657127  0.0317896  0.772837   0.534457      0.0966037   0.700694   0.675999
- 0.471777  0.144969   0.0718405  0.0827916     0.527233    0.173132   0.694304
- 0.160872  0.455168   0.489254   0.827851   …  0.62226     0.0995456  0.946522
- 0.291857  0.769492   0.68043    0.629461      0.727558    0.910796   0.834837
- 0.775774  0.700731   0.700177   0.0126213     0.00822304  0.327502   0.955181
- 0.9715    0.64354    0.848441   0.241474      0.591611    0.792573   0.194357
- 0.646596  0.575456   0.0995212  0.038517      0.709233    0.477657   0.0507231
+julia> A = rand(5,7,2);
 
-julia> b = view(a, 2:2:8,2:2:4)
-4×2 view(::Array{Float64,2}, 2:2:8, 2:2:4) with eltype Float64:
- 0.873479   0.0697848
- 0.0317896  0.534457
- 0.455168   0.827851
- 0.700731   0.0126213
-
-julia> (q, r) = qr(b);
-
-julia> q
-4×4 LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}:
- -0.722358    0.227524  -0.247784    -0.604181
- -0.0262896  -0.575919  -0.804227     0.144377
- -0.376419   -0.75072    0.540177    -0.0541979
- -0.579497    0.230151  -0.00552346   0.781782
-
-julia> r
-2×2 Array{Float64,2}:
- -1.20921  -0.383393
-  0.0      -0.910506
+julia> stride(A,1)
+1
 ```
+
+The stride of the second dimension is the spacing between elements in the same row, skipping
+as many elements as there are in a single column (`5`). Similarly, jumping between the two
+"pages" (in the third dimension) requires skipping `5*7 == 35` elements.  The [`strides`](@ref)
+of this array is the tuple of these three numbers together:
+
+```julia-repl
+julia> strides(A)
+(1, 5, 35)
+```
+
+In this particular case, the number of elements skipped _in memory_ matches the number of
+_linear indices_ skipped. This is only the case for contiguous arrays like `Array` (and
+other `DenseArray` subtypes) and is not true in general. Views with range indices are a good
+example of _non-contiguous_ strided arrays; consider `V = @view A[1:3:4, 2:2:6, 2:-1:1]`.
+This view `V` refers to the same memory as `A` but is skipping and re-arranging some of its
+elements. The stride of the first dimension of `V` is `3` because we're only selecting every
+third row from our original array:
+
+```julia-repl
+julia> V = @view A[1:3:4, 2:2:6, 2:-1:1];
+
+julia> stride(V, 1)
+3
+```
+
+This view is similarly selecting every other column from our original `A` — and thus it
+needs to skip the equivalent of two five-element columns when moving between indices in the
+second dimension:
+
+```julia-repl
+julia> stride(V, 2)
+10
+```
+
+The third dimension is interesting because its order is reversed! Thus to get from the first
+"page" to the second one it must go _backwards_ in memory, and so its stride in this
+dimension is negative!
+
+```julia-repl
+julia> stride(V, 3)
+-35
+```
+
+This means that the `pointer` for `V` is actually pointing into the middle of `A`'s memory
+block, and it refers to elements both backwards and forwards in memory. See the
+[interface guide for strided arrays](@ref man-interface-strided-arrays) for more details on
+defining your own strided arrays. [`StridedVector`](@ref) and [`StridedMatrix`](@ref) are
+convenient aliases for many of the builtin array types that are considered strided arrays,
+allowing them to dispatch to select specialized implementations that call highly tuned and
+optimized BLAS and LAPACK functions using just the pointer and strides.
+
+It is worth emphasizing that strides are about offsets in memory rather than indexing. If
+you are looking to convert between linear (single-index) indexing and cartesian
+(multi-index) indexing, see [`LinearIndices`](@ref) and [`CartesianIndices`](@ref).

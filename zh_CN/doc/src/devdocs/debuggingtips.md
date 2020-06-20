@@ -22,7 +22,7 @@ Julia的 flisp 解释器使用 `value_t` 对象；能够通过  `call fl_print(f
 
 ## 有用的用于检查的 Julia 变量
 
-While the addresses of many variables, like singletons, can be be useful to print for many failures,
+While the addresses of many variables, like singletons, can be useful to print for many failures,
 there are a number of additional variables (see `julia.h` for a complete list) that are even more
 useful.
 
@@ -237,3 +237,10 @@ deterministically.  The replayed execution's address spaces, register contents, 
 are exactly the same in every run.
 
 A recent version of rr (3.1.0 or higher) is required.
+
+### Reproducing concurrency bugs with rr
+
+rr simulates a single-threaded machine by default. In order to debug concurrent
+code you can use `rr record --chaos` which will cause rr to simulate between
+one to eight cores, chosen randomly. You might therefore want to set `JULIA_NUM_THREADS=8`
+and rerun your code under rr until you have caught your bug.

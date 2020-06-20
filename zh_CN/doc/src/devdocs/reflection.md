@@ -67,27 +67,31 @@ julia> subtypes(AbstractFloat)
 
 ## 扩展和更底层
 
-像 [Metaprogramming](@ref) 部分讨论的那样,  [`macroexpand`](@ref) 函数提供不带 quote 和 插值表达式 (`Expr`) 的形式。若要使用 `macroexpand`, `quote` 表达式代码块本身，（不然宏将被执行并替换为结果）。例如：
-the unquoted and interpolated expression (`Expr`) form for a given macro. To use `macroexpand`,
+As discussed in the [Metaprogramming](@ref) section, the [`macroexpand`](@ref) function gives
+the unquoted and interpolated expression ([`Expr`](@ref)) form for a given macro. To use `macroexpand`,
 `quote` the expression block itself (otherwise, the macro will be evaluated and the result will
 be passed instead!). For example:
 
 ```jldoctest; setup = :(using InteractiveUtils)
 julia> macroexpand(@__MODULE__, :(@edit println("")) )
-:((InteractiveUtils.edit)(println, (Base.typesof)("")))
+:(InteractiveUtils.edit(println, (Base.typesof)("")))
 ```
 
-函数 `Base.Meta.show_sexpr` 和 [`dump`](@ref) 用来展示 S-表达式样式预览 并且对任何表达式显示深层网络结构细节。
+The functions `Base.Meta.show_sexpr` and [`dump`](@ref) are used to display S-expr style views
+and depth-nested detail views for any expression.
 
-最终， [`Meta.lower`](@ref) 函数对任何表达式提供 `底层` 的形式，并且是令人感兴趣的是理解 语言的结构 映射到 原始的操作比如赋值、分支以及调用：
+Finally, the [`Meta.lower`](@ref) function gives the `lowered` form of any expression and is of
+particular interest for understanding how language constructs map to primitive operations such
+as assignments, branches, and calls:
 
 ```jldoctest
-julia> Meta.lower(@__MODULE__, :([1+2, sin(0.5)]) )
+julia> Meta.lower(@__MODULE__, :( [1+2, sin(0.5)] ))
 :($(Expr(:thunk, CodeInfo(
- 1 ─ %1 = 1 + 2
- │   %2 = sin(0.5)
- │   %3 = (Base.vect)(%1, %2)
- └──      return %3
+    @ none within `top-level scope'
+1 ─ %1 = 1 + 2
+│   %2 = sin(0.5)
+│   %3 = Base.vect(%1, %2)
+└──      return %3
 ))))
 ```
 
@@ -106,13 +110,31 @@ julia> Meta.lower(@__MODULE__, :([1+2, sin(0.5)]) )
 ```julia-repl
 julia> @code_llvm +(1,1)
 
-; Function Attrs: sspreq
-define i64 @"julia_+_130862"(i64, i64) #0 {
+define i64 @"julia_+_130862"(i64, i64) {
 top:
-    %2 = add i64 %1, %0, !dbg !8
-    ret i64 %2, !dbg !8
+    %2 = add i64 %1, %0
+    ret i64 %2
 }
 ```
 
-See [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_warntype`](@ref),
+For more informations see [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_warntype`](@ref),
 [`@code_llvm`](@ref), and [`@code_native`](@ref).
+
+### Printing of debug information
+
+The aforementioned functions and macros take the keyword argument `debuginfo` that controls the level
+debug information printed.
+
+```
+julia> @code_typed debuginfo=:source +(1,1)
+CodeInfo(
+    @ int.jl:53 within `+'
+1 ─ %1 = Base.add_int(x, y)::Int64
+└──      return %1
+) => Int64
+```
+
+Possible values for `debuginfo` are: `:none`, `:source`, and`:default`.
+Per default debug information is not printed, but that can be changed
+by setting `Base.IRShow.default_debuginfo[] = :source`.
+

@@ -11,37 +11,44 @@
 
 You can start a Julia session, edit `compiler/*.jl` (for example to
 insert `print` statements), and then replace `Core.Compiler` in your
-running session by navigating to `base/compiler` and executing
-`include("compiler.jl")`. This trick typically leads to much faster
+running session by navigating to `base` and executing
+`include("compiler/compiler.jl")`. This trick typically leads to much faster
 development than if you rebuild Julia for each change.
+
+Alternatively, you can use the [Revise.jl](https://github.com/timholy/Revise.jl)
+package to track the compiler changes by using the command
+`Revise.track(Core.Compiler)` at the beginning of your Julia session. As
+explained in the [Revise documentation](https://timholy.github.io/Revise.jl/stable/),
+the modifications to the compiler will be reflected when the modified files
+are saved.
 
 A convenient entry point into inference is `typeinf_code`. Here's a
 demo running inference on `convert(Int, UInt(1))`:
 
 ```julia
-# 获取方法
-atypes = Tuple{Type{Int}, UInt}  # 参数类型
-mths = methods(convert, atypes)  # 值得检验一下是否只有唯一一个方法
+# Get the method
+atypes = Tuple{Type{Int}, UInt}  # argument types
+mths = methods(convert, atypes)  # worth checking that there is only one
 m = first(mths)
 
-# 为 `typeinf_code` 调用创建所需的变量
-params = Core.Compiler.Params(typemax(UInt))  # 参数是世界时间,
-                                                        #   typemax(UInt) -> 最近
-sparams = Core.svec()      # 这个特别的方法没有类型参数 
-optimize = true            # 运行所有的推断优化
-cached = false             # 强制执行推断（不使用缓存的结果）
-Core.Compiler.typeinf_code(m, atypes, sparams, optimize, cached, params)
+# Create variables needed to call `typeinf_code`
+params = Core.Compiler.Params(typemax(UInt))  # parameter is the world age,
+                                              # typemax(UInt) -> most recent
+sparams = Core.svec()      # this particular method doesn't have type-parameters
+optimize = true            # run all inference optimizations
+types = Tuple{typeof(convert), atypes.parameters...} # Tuple{typeof(convert), Type{Int}, UInt}
+Core.Compiler.typeinf_code(m, types, sparams, optimize, params)
 ```
 
 If your debugging adventures require a `MethodInstance`, you can look it up by
-calling `Core.Compiler.code_for_method` using many of the variables above.
+calling `Core.Compiler.specialize_method` using many of the variables above.
 A `CodeInfo` object may be obtained with
 ```julia
-# 返回 `convert(Int, ::UInt)` 的 CodeInfo 对象:
+# Returns the CodeInfo object for `convert(Int, ::UInt)`:
 ci = (@code_typed convert(Int, UInt(1)))[1]
 ```
 
-## 内联算法 (inline_worthy)
+## The inlining algorithm (inline_worthy)
 
 Much of the hardest work for inlining runs in
 `inlining_pass`. However, if your question is "why didn't my function
@@ -73,7 +80,7 @@ in CPU cycles) to each of Julia's intrinsic functions. These costs are
 based on
 [standard ranges for common architectures](http://ithare.com/wp-content/uploads/part101_infographics_v08.png)
 (see
-[Agner Fog's analysis](http://www.agner.org/optimize/instruction_tables.pdf)
+[Agner Fog's analysis](https://www.agner.org/optimize/instruction_tables.pdf)
 for more detail).
 
 We supplement this low-level lookup table with a number of special
@@ -88,15 +95,46 @@ dynamic dispatch, but a mere heuristic indicating that dynamic
 dispatch is extremely expensive.
 
 Each statement gets analyzed for its total cost in a function called
-`statement_cost`. You can run this yourself by following this example:
+`statement_cost`. You can run this yourself by following the sketch below,
+where `f` is your function and `tt` is the Tuple-type of the arguments:
 
-```julia
+```jldoctest
+# A demo on `fill(3.5, (2, 3))`
+f = fill
+tt = Tuple{Float64, Tuple{Int,Int}}
+# Create the objects we need to interact with the compiler
 params = Core.Compiler.Params(typemax(UInt))
-# 获取 CodeInfo 对象
-ci = (@code_typed fill(3, (5, 5)))[1]  # 我们将再 `fill(3, (5, 5))` 上尝试代码
-# 计算每条语句得成本
-cost(stmt) = Core.Compiler.statement_cost(stmt, ci, Base, params)
+mi = Base.method_instances(f, tt)[1]
+ci = code_typed(f, tt)[1][1]
+opt = Core.Compiler.OptimizationState(mi, params)
+# Calculate cost of each statement
+cost(stmt::Expr) = Core.Compiler.statement_cost(stmt, -1, ci, opt.sptypes, opt.slottypes, opt.params)
+cost(stmt) = 0
 cst = map(cost, ci.code)
+
+# output
+
+31-element Array{Int64,1}:
+  0
+  0
+ 20
+  4
+  1
+  1
+  1
+  0
+  0
+  0
+  ⋮
+  0
+  0
+  0
+  0
+  0
+  0
+  0
+  0
+  0
 ```
 
 The output is a `Vector{Int}` holding the estimated cost of each
