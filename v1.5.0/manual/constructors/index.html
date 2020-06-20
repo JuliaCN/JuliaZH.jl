@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>构造函数 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/constructors/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">Variables</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li class="is-active"><a class="tocitem" href>构造函数</a><ul class="internal"><li><a class="tocitem" href="#man-outer-constructor-methods-1"><span>Outer Constructor Methods</span></a></li><li><a class="tocitem" href="#man-inner-constructor-methods-1"><span>Inner Constructor Methods</span></a></li><li><a class="tocitem" href="#不完整初始化-1"><span>不完整初始化</span></a></li><li><a class="tocitem" href="#参数类型的构造函数-1"><span>参数类型的构造函数</span></a></li><li><a class="tocitem" href="#案例分析：分数的实现-1"><span>案例分析：分数的实现</span></a></li><li><a class="tocitem" href="#Outer-only-constructors-1"><span>Outer-only constructors</span></a></li></ul></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>构造函数</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>构造函数</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/constructorsmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="man-constructors-1"><a class="docs-heading-anchor" href="#man-constructors-1">构造函数</a><a class="docs-heading-anchor-permalink" href="#man-constructors-1" title="Permalink"></a></h1><p>构造函数 <sup class="footnote-reference"><a id="citeref-1" href="#footnote-1">[1]</a></sup> 是用来创建新对象的函数 – 确切地说，它创建的是<a href="../types/#复合类型-1">复合类型</a>的实例。在 Julia 中，类型对象也同时充当构造函数的角色：可以用类名加参数元组的方式像函数调用一样来创建新实例。这一点在介绍复合类型（Composite Types）时已经大致谈过了。例如：</p><pre><code class="language-julia-repl">julia&gt; struct Foo
+           bar
+           baz
+       end
+
+julia&gt; foo = Foo(1, 2)
+Foo(1, 2)
+
+julia&gt; foo.bar
+1
+
+julia&gt; foo.baz
+2</code></pre><p>For many types, forming new objects by binding their field values together is all that is ever needed to create instances. However, in some cases more functionality is required when creating composite objects. Sometimes invariants must be enforced, either by checking arguments or by transforming them. <a href="https://en.wikipedia.org/wiki/Recursion_%28computer_science%29#Recursive_data_structures_.28structural_recursion.29">Recursive data structures</a>, especially those that may be self-referential, often cannot be constructed cleanly without first being created in an incomplete state and then altered programmatically to be made whole, as a separate step from object creation. Sometimes, it&#39;s just convenient to be able to construct objects with fewer or different types of parameters than they have fields. Julia&#39;s system for object construction addresses all of these cases and more.</p><h2 id="man-outer-constructor-methods-1"><a class="docs-heading-anchor" href="#man-outer-constructor-methods-1">Outer Constructor Methods</a><a class="docs-heading-anchor-permalink" href="#man-outer-constructor-methods-1" title="Permalink"></a></h2><p>A constructor is just like any other function in Julia in that its overall behavior is defined by the combined behavior of its methods. Accordingly, you can add functionality to a constructor by simply defining new methods. For example, let&#39;s say you want to add a constructor method for <code>Foo</code> objects that takes only one argument and uses the given value for both the <code>bar</code> and <code>baz</code> fields. This is simple:</p><pre><code class="language-julia-repl">julia&gt; Foo(x) = Foo(x,x)
+Foo
+
+julia&gt; Foo(1)
+Foo(1, 1)</code></pre><p>你也可以为 <code>Foo</code> 添加新的零参数构造方法，它为 <code>bar</code> 和 <code>baz</code> 提供默认值：</p><pre><code class="language-julia-repl">julia&gt; Foo() = Foo(0)
+Foo
+
+julia&gt; Foo()
+Foo(0, 0)</code></pre><p>Here the zero-argument constructor method calls the single-argument constructor method, which in turn calls the automatically provided two-argument constructor method. For reasons that will become clear very shortly, additional constructor methods declared as normal methods like this are called <em>outer</em> constructor methods. Outer constructor methods can only ever create a new instance by calling another constructor method, such as the automatically provided default ones.</p><h2 id="man-inner-constructor-methods-1"><a class="docs-heading-anchor" href="#man-inner-constructor-methods-1">Inner Constructor Methods</a><a class="docs-heading-anchor-permalink" href="#man-inner-constructor-methods-1" title="Permalink"></a></h2><p>While outer constructor methods succeed in addressing the problem of providing additional convenience methods for constructing objects, they fail to address the other two use cases mentioned in the introduction of this chapter: enforcing invariants, and allowing construction of self-referential objects. For these problems, one needs <em>inner</em> constructor methods. An inner constructor method is like an outer constructor method, except for two differences:</p><ol><li>It is declared inside the block of a type declaration, rather than outside of it like normal methods.</li><li>It has access to a special locally existent function called <a href="../../base/base/#new"><code>new</code></a> that creates objects of the block&#39;s type.</li></ol><p>For example, suppose one wants to declare a type that holds a pair of real numbers, subject to the constraint that the first number is not greater than the second one. One could declare it like this:</p><pre><code class="language-julia-repl">julia&gt; struct OrderedPair
+           x::Real
+           y::Real
+           OrderedPair(x,y) = x &gt; y ? error(&quot;out of order&quot;) : new(x,y)
+       end</code></pre><p>现在 <code>OrderedPair</code> 对象只能在 <code>x &lt;= y</code> 时被成功构造：</p><pre><code class="language-julia-repl">julia&gt; OrderedPair(1, 2)
+OrderedPair(1, 2)
+
+julia&gt; OrderedPair(2,1)
+ERROR: out of order
+Stacktrace:
+ [1] error at ./error.jl:33 [inlined]
+ [2] OrderedPair(::Int64, ::Int64) at ./none:4
+ [3] top-level scope</code></pre><p>如果类型被声明为 <code>mutable</code>，你可以直接更改字段值来打破这个固有属性，然而，在未经允许的情况下，随意摆弄对象的内核一般都是不好的行为。你（或者其他人）可以在以后任何时候提供额外的外部构造方法，但一旦类型被声明了，就没有办法来添加更多的内部构造方法了。由于外部构造方法只能通过调用其它的构造方法来创建对象，所以最终构造对象的一定是某个内部构造函数。这保证了已声明类型的对象必须通过调用该类型的内部构造方法才得已存在，从而在某种程度上保证了类型的固有属性。</p><p>只要定义了任何一个内部构造方法，Julia 就不会再提供默认的构造方法：它会假定你已经为自己提供了所需的所有内部构造方法。默认构造方法等效于一个你自己编写的内部构造函数，该函数将所有成员作为参数（如果相应的字段具有类型，则约束为正确的类型），并将它们传递给 <code>new</code>，最后返回结果对象：</p><pre><code class="language-julia-repl">julia&gt; struct Foo
+           bar
+           baz
+           Foo(bar,baz) = new(bar,baz)
+       end
+</code></pre><p>这个声明与前面没有显式内部构造方法的 <code>Foo</code> 类型的定义效果相同。 以下两个类型是等价的 – 一个具有默认构造方法，另一个具有显式构造方法：</p><pre><code class="language-julia-repl">julia&gt; struct T1
+           x::Int64
+       end
+
+julia&gt; struct T2
+           x::Int64
+           T2(x) = new(x)
+       end
+
+julia&gt; T1(1)
+T1(1)
+
+julia&gt; T2(1)
+T2(1)
+
+julia&gt; T1(1.0)
+T1(1)
+
+julia&gt; T2(1.0)
+T2(1)</code></pre><p>提供尽可能少的内部构造方法是一种良好的形式：仅在需要显式地处理所有参数，以及强制执行必要的错误检查和转换时候才使用内部构造。其它用于提供便利的构造方法，比如提供默认值或辅助转换，应该定义为外部构造函数，然后再通过调用内部构造函数来执行繁重的工作。这种解耦是很自然的。</p><h2 id="不完整初始化-1"><a class="docs-heading-anchor" href="#不完整初始化-1">不完整初始化</a><a class="docs-heading-anchor-permalink" href="#不完整初始化-1" title="Permalink"></a></h2><p>最后一个还没提到的问题是，如何构造具有自引用的对象，更广义地来说是构造递归数据结构。由于这其中的困难并不是那么显而易见，这里我们来简单解释一下，考虑如下的递归类型声明：</p><pre><code class="language-julia-repl">julia&gt; mutable struct SelfReferential
+           obj::SelfReferential
+       end
+</code></pre><p>这种类型可能看起来没什么大不了，直到我们考虑如何来构造它的实例。 如果 <code>a</code> 是 <code>SelfReferential</code> 的一个实例，则第二个实例可以用如下的调用来创建：</p><pre><code class="language-julia-repl">julia&gt; b = SelfReferential(a)</code></pre><p>但是，当没有实例存在的情况下，即没有可以传递给 <code>obj</code> 成员变量的有效值时，如何构造第一个实例？唯一的解决方案是允许使用未初始化的 <code>obj</code> 成员来创建一个未完全初始化的 <code>SelfReferential</code> 实例，并使用该不完整的实例作为另一个实例的 <code>obj</code> 成员的有效值，例如，它本身。</p><p>为了允许创建未完全初始化的对象，Julia 允许使用少于该类型成员数的参数来调用 <a href="manual/@ ref"><code>new</code></a> 函数，并返回一个具有某个未初始化成员的对象。然后，内部构造函数可以使用不完整的对象，在返回之前完成初始化。例如，我们在定义 <code>SelfReferential</code> 类型时采用了另一个方法，使用零参数内部构造函数来返回一个实例，此实例的 <code>obj</code> 成员指向其自身：</p><pre><code class="language-julia-repl">julia&gt; mutable struct SelfReferential
+           obj::SelfReferential
+           SelfReferential() = (x = new(); x.obj = x)
+       end
+</code></pre><p>我们可以验证这一构造函数有效性，且由其构造的对象确实是自引用的：</p><pre><code class="language-julia-repl">julia&gt; x = SelfReferential();
+
+julia&gt; x === x
+true
+
+julia&gt; x === x.obj
+true
+
+julia&gt; x === x.obj.obj
+true</code></pre><p>虽然从一个内部构造函数中返回一个完全初始化的对象是很好的，但是也可以返回未完全初始化的对象：</p><pre><code class="language-julia-repl">julia&gt; mutable struct Incomplete
+           data
+           Incomplete() = new()
+       end
+
+julia&gt; z = Incomplete();</code></pre><p>尽管允许创建含有未初始化成员的对象，然而任何对未初始化引用的访问都会立即报错：</p><pre><code class="language-julia-repl">julia&gt; z.data
+ERROR: UndefRefError: access to undefined reference</code></pre><p>这避免了不断地检测 <code>null</code> 值的需要。然而，并不是所有的对象成员都是引用。Julia 会将一些类型当作纯数据（&quot;plain data&quot;），这意味着它们的数据是自包含的，并且没有引用其它对象。这些纯数据包括原始类型（比如 <code>Int</code> ）和由其它纯数据类型构成的不可变结构体。纯数据类型的初始值是未定义的：</p><pre><code class="language-julia-repl">julia&gt; struct HasPlain
+           n::Int
+           HasPlain() = new()
+       end
+
+julia&gt; HasPlain()
+HasPlain(438103441441)</code></pre><p>由纯数据组成的数组也具有一样的行为。</p><p>在内部构造函数中，你可以将不完整的对象传递给其它函数来委托其补全构造：</p><pre><code class="language-julia-repl">julia&gt; mutable struct Lazy
+           data
+           Lazy(v) = complete_me(new(), v)
+       end</code></pre><p>与构造函数返回的不完整对象一样，如果 <code>complete_me</code> 或其任何被调用者尝试在初始化之前访问 <code>Lazy</code> 对象的 <code>data</code> 字段，就会立刻报错。</p><h2 id="参数类型的构造函数-1"><a class="docs-heading-anchor" href="#参数类型的构造函数-1">参数类型的构造函数</a><a class="docs-heading-anchor-permalink" href="#参数类型的构造函数-1" title="Permalink"></a></h2><p>参数类型的存在为构造函数增加了更多的复杂性。首先，让我们回顾一下<a href="../types/#参数类型-1">参数类型</a>。在默认情况下，我们可以用两种方法来实例化参数复合类型，一种是显式地提供类型参数，另一种是让 Julia 根据构造函数输入参数的类型来隐式地推导类型参数。这里有一些例子：</p><pre><code class="language-julia-repl">julia&gt; struct Point{T&lt;:Real}
+           x::T
+           y::T
+       end
+
+julia&gt; Point(1,2) ## 隐式的 T ##
+Point{Int64}(1, 2)
+
+julia&gt; Point(1.0,2.5) ## 隐式的 T ##
+Point{Float64}(1.0, 2.5)
+
+julia&gt; Point(1,2.5) ## implicit T ##
+ERROR: MethodError: no method matching Point(::Int64, ::Float64)
+Closest candidates are:
+  Point(::T, ::T) where T&lt;:Real at none:2
+
+julia&gt; Point{Int64}(1, 2) ## 显式的 T ##
+Point{Int64}(1, 2)
+
+julia&gt; Point{Int64}(1.0,2.5) ## 显式的 T ##
+ERROR: InexactError: Int64(2.5)
+Stacktrace:
+[...]
+
+julia&gt; Point{Float64}(1.0, 2.5) ## 显式的 T ##
+Point{Float64}(1.0, 2.5)
+
+julia&gt; Point{Float64}(1,2) ## 显式的 T ##
+Point{Float64}(1.0, 2.0)</code></pre><p>就像你看到的那样，用类型参数显式地调用构造函数，其参数会被转换为指定的类型：<code>Point{Int64}(1,2)</code> 可以正常工作，但是 <code>Point{Int64}(1.0,2.5)</code> 则会在将 <code>2.5</code> 转换为 <a href="../../base/numbers/#Core.Int64"><code>Int64</code></a> 的时候报一个 <a href="../../base/base/#Core.InexactError"><code>InexactError</code></a>。当类型是从构造函数的参数隐式推导出来的时候，比如在例子 <code>Point(1,2)</code> 中，输入参数的类型必须一致，否则就无法确定 <code>T</code> 是什么，但 <code>Point</code> 的构造函数仍可以适配任意同类型的实数对。</p><p>实际上，这里的 <code>Point</code>，<code>Point{Float64}</code> 以及 <code>Point{Int64}</code> 是不同的构造函数。<code>Point{T}</code> 表示对于每个类型 <code>T</code> 都存在一个不同的构造函数。如果不显式提供内部构造函数，在声明复合类型 <code>Point{T&lt;:Real}</code> 的时候，Julia 会对每个满足 <code>T&lt;:Real</code> 条件的类型都提供一个默认的内部构造函数 <code>Point{T}</code>，它们的行为与非参数类型的默认内部构造函数一致。Julia 同时也会提供了一个通用的外部构造函数 <code>Point</code>，用于适配任意同类型的实数对。Julia 默认提供的构造函数等价于下面这种显式的声明：</p><pre><code class="language-julia-repl">julia&gt; struct Point{T&lt;:Real}
+           x::T
+           y::T
+           Point{T}(x,y) where {T&lt;:Real} = new(x,y)
+       end
+
+julia&gt; Point(x::T, y::T) where {T&lt;:Real} = Point{T}(x,y);</code></pre><p>注意，每个构造函数定义的方式与调用它们的方式是一样的。调用 <code>Point{Int64}(1,2)</code> 会触发 <code>struct</code> 块内部的 <code>Point{T}(x,y)</code>。另一方面，外部构造函数声明的 <code>Point</code> 构造函数只会被同类型的实数对触发，它使得我们可以直接以 <code>Point(1,2)</code> 和 <code>Point(1.0,2.5)</code> 这种方式来创建实例，而不需要显示地使用类型参数。由于此方法的声明方式已经对输入参数的类型施加了约束，像 <code>Point(1,2.5)</code> 这种调用自然会导致 &quot;no method&quot; 错误。</p><p>假如我们想让 <code>Point(1,2.5)</code> 这种调用方式正常工作，比如，通过将整数 <code>1</code> 自动「提升」为浮点数 <code>1.0</code>，最简单的方法是像下面这样定义一个额外的外部构造函数：</p><pre><code class="language-julia-repl">julia&gt; Point(x::Int64, y::Float64) = Point(convert(Float64,x),y);</code></pre><p>此方法采用了 <a href="../../base/base/#Base.convert"><code>convert</code></a> 函数，显式地将 <code>x</code> 转化成了 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> 类型，之后再委托前面讲到的那个通用的外部构造函数来进行具体的构造工作，经过转化，两个参数的类型都是 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a>，所以可以正确构造出一个 <code>Point{Float64}</code> 对象，而不会像之前那样触发 <a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>。</p><pre><code class="language-julia-repl">julia&gt; Point(1,2.5)
+Point{Float64}(1.0, 2.5)
+
+julia&gt; typeof(ans)
+Point{Float64}</code></pre><p>然而，其它类似的调用依然有问题：</p><pre><code class="language-julia-repl">julia&gt; Point(1.5,2)
+ERROR: MethodError: no method matching Point(::Float64, ::Int64)
+Closest candidates are:
+  Point(::T, !Matched::T) where T&lt;:Real at none:1</code></pre><p>如果你想要找到一种方法可以使类似的调用都可以正常工作，请参阅<a href="../conversion-and-promotion/#conversion-and-promotion-1">类型转换与类型提升</a>。这里稍稍“剧透”一下，我们可以利用下面的这个外部构造函数来满足需求，无论输入参数的类型如何，它都可以触发通用的 <code>Point</code> 构造函数：</p><pre><code class="language-julia-repl">julia&gt; Point(x::Real, y::Real) = Point(promote(x,y)...);</code></pre><p>这里的 <code>promote</code> 函数会将它的输入转化为同一类型，在此例中是 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a>。定义了这个方法，<code>Point</code> 构造函数会自动提升输入参数的类型，且提升机制与算术运算符相同，比如 <a href="../../base/math/#Base.:+"><code>+</code></a>，因此对所有的实数输入参数都适用：</p><pre><code class="language-julia-repl">julia&gt; Point(1.5,2)
+Point{Float64}(1.5, 2.0)
+
+julia&gt; Point(1,1//2)
+Point{Rational{Int64}}(1//1, 1//2)
+
+julia&gt; Point(1.0,1//2)
+Point{Float64}(1.0, 0.5)</code></pre><p>所以，即使 Julia 提供的默认内部构造函数对于类型参数的要求非常严格，我们也有方法将其变得更加易用。正因为构造函数可以充分发挥类型系统、方法以及多重分派的作用，定义复杂的行为也会变得非常简单。</p><h2 id="案例分析：分数的实现-1"><a class="docs-heading-anchor" href="#案例分析：分数的实现-1">案例分析：分数的实现</a><a class="docs-heading-anchor-permalink" href="#案例分析：分数的实现-1" title="Permalink"></a></h2><p>上文主要讲了关于参数复合类型及其构造函数的一些零散内容，或许将这些内容结合起来的一个最佳方法是分析一个真实的案例。为此，我们来实现一个我们自己的分数类型 <code>OurRational</code>，它与 Julia 内置的分数类型 <a href="../../base/numbers/#Base.Rational"><code>Rational</code></a> 很相似，它的定义在 <a href="https://github.com/JuliaLang/julia/blob/master/base/rational.jl"><code>rational.jl</code></a> 里：</p><pre><code class="language-julia-repl">julia&gt; struct OurRational{T&lt;:Integer} &lt;: Real
+           num::T
+           den::T
+           function OurRational{T}(num::T, den::T) where T&lt;:Integer
+               if num == 0 &amp;&amp; den == 0
+                    error(&quot;invalid rational: 0//0&quot;)
+               end
+               g = gcd(den, num)
+               num = div(num, g)
+               den = div(den, g)
+               new(num, den)
+           end
+       end
+
+julia&gt; OurRational(n::T, d::T) where {T&lt;:Integer} = OurRational{T}(n,d)
+OurRational
+
+julia&gt; OurRational(n::Integer, d::Integer) = OurRational(promote(n,d)...)
+OurRational
+
+julia&gt; OurRational(n::Integer) = OurRational(n,one(n))
+OurRational
+
+julia&gt; ⊘(n::Integer, d::Integer) = OurRational(n,d)
+⊘ (generic function with 1 method)
+
+julia&gt; ⊘(x::OurRational, y::Integer) = x.num ⊘ (x.den*y)
+⊘ (generic function with 2 methods)
+
+julia&gt; ⊘(x::Integer, y::OurRational) = (x*y.den) ⊘ y.num
+⊘ (generic function with 3 methods)
+
+julia&gt; ⊘(x::Complex, y::Real) = complex(real(x) ⊘ y, imag(x) ⊘ y)
+⊘ (generic function with 4 methods)
+
+julia&gt; ⊘(x::Real, y::Complex) = (x*y&#39;) ⊘ real(y*y&#39;)
+⊘ (generic function with 5 methods)
+
+julia&gt; function ⊘(x::Complex, y::Complex)
+           xy = x*y&#39;
+           yy = real(y*y&#39;)
+           complex(real(xy) ⊘ yy, imag(xy) ⊘ yy)
+       end
+⊘ (generic function with 6 methods)</code></pre><p>第一行 – <code>struct OurRational{T&lt;:Integer} &lt;: Real</code> – 声明了 <code>OurRational</code> 会接收一个整数类型的类型参数，且它自己属于实数类型。它声明了两个成员：<code>num::T</code> 和 <code>den::T</code>。这表明一个 <code>OurRational{T}</code> 的实例中会包含一对整数，且类型为 <code>T</code>，其中一个表示分子，另一个表示分母。</p><p>现在事情开始变得有意思了，<code>OurRational</code> 只有一个内部构造函数，它的作用是检查 <code>num</code> 和 <code>den</code> 是否为 0，并确保构建的每个分数都是经过约分化简的形式，且分母为非负数。这可以令分子和分母同时除以它们的最大公约数来实现，最大公约数可以用 Julia 内置的 <code>gcd</code> 函数计算。由于 <code>gcd</code> 返回的最大公约数的符号是跟第一个参数 <code>den</code> 一致的，所以约分后一定会保证 <code>den</code> 的值为非负数。因为这是 <code>OurRational</code> 的唯一一个内部构造函数，所以我们可以确保构建出的 <code>OurRational</code> 对象一定是这种化简的形式。</p><p>为了方便，<code>OurRational</code> 也提供了一些其它的外部构造函数。第一个外部构造函数是“标准的”通用构造函数，当分子和分母的类型一致时，它就可以推导出类型参数 <code>T</code>。第二个外部构造函数可以用于分子和分母的类型不一致的情景，它会将分子和分母的类型提升至一个共同的类型，然后再委托第一个外部构造函数进行构造。第三个构造函数会将一个整数转化为分数，方法是将 1 当作分母。</p><p>在定义了外部构造函数之后，我们为 <code>⊘</code> 算符定义了一系列的方法，之后就可以使用 <code>⊘</code> 算符来写分数，比如 <code>1 ⊘ 2</code>。Julia 的 <code>Rational</code> 类型采用的是 <a href="../../base/math/#Base.://"><code>//</code></a> 算符。在做上述定义之前，<code>⊘</code> 是一个无意的且未被定义的算符。它的行为与在<a href="../complex-and-rational-numbers/#有理数-1">有理数</a>一节中描述的一致，注意它的所有行为都是那短短几行定义的。第一个也是最基础的定义只是将 <code>a ⊘ b</code> 中的 <code>a</code> 和 <code>b</code> 当作参数传递给 <code>OurRational</code> 的构造函数来实例化 <code>OurRational</code>，当然这要求 <code>a</code> 和 <code>b</code> 分别都是整数。在 <code>⊘</code> 的某个操作数已经是分数的情况下，我们采用了一个有点不一样的方法来构建新的分数，这实际上等价于用分数除以一个整数。最后，我们也可以让 <code>⊘</code> 作用于复数，用来创建一个类型为 <code>Complex{OurRational}</code> 的对象，即一个实部和虚部都是分数的复数：</p><pre><code class="language-julia-repl">julia&gt; z = (1 + 2im) ⊘ (1 - 2im);
+
+julia&gt; typeof(z)
+Complex{OurRational{Int64}}
+
+julia&gt; typeof(z) &lt;: Complex{OurRational}
+false</code></pre><p>因此，尽管 <code>⊘</code> 算符通常会返回一个 <code>OurRational</code> 的实例，但倘若其中一个操作数是复整数，那么就会返回 <code>Complex{OurRational}</code>。感兴趣的话可以读一读 <a href="https://github.com/JuliaLang/julia/blob/master/base/rational.jl"><code>rational.jl</code></a>：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自包涵的。</p><h2 id="Outer-only-constructors-1"><a class="docs-heading-anchor" href="#Outer-only-constructors-1">Outer-only constructors</a><a class="docs-heading-anchor-permalink" href="#Outer-only-constructors-1" title="Permalink"></a></h2><p>正如我们所看到的，典型的参数类型都有一个内部构造函数，它仅在全部的类型参数都已知的情况下才会被调用。例如，可以用 <code>Point{Int}</code> 调用，但<code>Point</code> 就不行。我们可以选择性的添加外部构造函数来自动推导并添加类型参数，比如，调用 <code>Point(1,2)</code> 来构造 <code>Point{Int}</code>。外部构造函数调用内部构造函数来实际创建实例。然而，在某些情况下，我们可能并不想要内部构造函数，从而达到禁止手动指定类型参数的目的。</p><p>例如，假设我们要定义一个类型用于存储数组以及其累加和：</p><pre><code class="language-julia-repl">julia&gt; struct SummedArray{T&lt;:Number,S&lt;:Number}
+           data::Vector{T}
+           sum::S
+       end
+
+julia&gt; SummedArray(Int32[1; 2; 3], Int32(6))
+SummedArray{Int32,Int32}(Int32[1, 2, 3], 6)</code></pre><p>问题在于我们想让 <code>S</code> 的类型始终比 <code>T</code> 大，这样做是为了确保累加过程不会丢失信息。例如，当 <code>T</code> 是 <a href="../../base/numbers/#Core.Int32"><code>Int32</code></a> 时，我们想让 <code>S</code> 是 <a href="../../base/numbers/#Core.Int64"><code>Int64</code></a>。所以我们想要一种接口来禁止用户创建像 <code>SummedArray{Int32,Int32}</code> 这种类型的实例。一种实现方式是只提供一个 <code>SummedArray</code> 构造函数，当需要将其放入 <code>struct</code>-block 中，从而不让 Julia 提供默认的构造函数：</p><pre><code class="language-julia-repl">julia&gt; struct SummedArray{T&lt;:Number,S&lt;:Number}
+           data::Vector{T}
+           sum::S
+           function SummedArray(a::Vector{T}) where T
+               S = widen(T)
+               new{T,S}(a, sum(S, a))
+           end
+       end
+
+julia&gt; SummedArray(Int32[1; 2; 3], Int32(6))
+ERROR: MethodError: no method matching SummedArray(::Array{Int32,1}, ::Int32)
+Closest candidates are:
+  SummedArray(::Array{T,1}) where T at none:4</code></pre><p>此构造函数将会被 <code>SummedArray(a)</code> 这种写法触发。<code>new{T,S}</code> 的这种写法允许指定待构建类型的参数，也就是说调用它会返回一个 <code>SummedArray{T,S}</code> 的实例。<code>new{T,S}</code> 也可以用于其它构造函数的定义中，但为了方便，Julia 会根据正在构造的类型自动推导出 <code>new{}</code> 花括号里的参数（如果可行的话）。</p><section class="footnotes is-size-7"><ul><li class="footnote" id="footnote-1"><a class="tag is-link" href="#citeref-1">1</a>Nomenclature: while the term &quot;constructor&quot; generally refers to the entire function which constructs objects of a type, it is common to abuse terminology slightly and refer to specific constructor methods as &quot;constructors&quot;. In such situations, it is generally clear from the context that the term is used to mean &quot;constructor method&quot; rather than &quot;constructor function&quot;, especially as it is often used in the sense of singling out a particular method of the constructor from all of the others.</li></ul></section></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../methods/">« 方法</a><a class="docs-footer-nextpage" href="../conversion-and-promotion/">类型转换和类型提升 »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 六月 20 周六 00:12">2020 六月 20 周六</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

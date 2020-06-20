@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>常见问题 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/faq/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">Variables</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li class="is-active"><a class="tocitem" href>常见问题</a><ul class="internal"><li><a class="tocitem" href="#General-1"><span>General</span></a></li><li><a class="tocitem" href="#会话和-REPL-1"><span>会话和 REPL</span></a></li><li><a class="tocitem" href="#man-scripting-1"><span>脚本</span></a></li><li><a class="tocitem" href="#函数-1"><span>函数</span></a></li><li><a class="tocitem" href="#类型，类型声明和构造函数-1"><span>类型，类型声明和构造函数</span></a></li><li><a class="tocitem" href="#包和模块-1"><span>包和模块</span></a></li><li><a class="tocitem" href="#空值与缺失值-1"><span>空值与缺失值</span></a></li><li><a class="tocitem" href="#内存-1"><span>内存</span></a></li><li><a class="tocitem" href="#faq-async-io-1"><span>异步 IO 与并发同步写入</span></a></li><li><a class="tocitem" href="#数组-1"><span>数组</span></a></li><li><a class="tocitem" href="#Julia-版本发布-1"><span>Julia 版本发布</span></a></li></ul></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>常见问题</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>常见问题</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/faqmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="常见问题-1"><a class="docs-heading-anchor" href="#常见问题-1">常见问题</a><a class="docs-heading-anchor-permalink" href="#常见问题-1" title="Permalink"></a></h1><h2 id="General-1"><a class="docs-heading-anchor" href="#General-1">General</a><a class="docs-heading-anchor-permalink" href="#General-1" title="Permalink"></a></h2><h3 id="Is-Julia-named-after-someone-or-something?-1"><a class="docs-heading-anchor" href="#Is-Julia-named-after-someone-or-something?-1">Is Julia named after someone or something?</a><a class="docs-heading-anchor-permalink" href="#Is-Julia-named-after-someone-or-something?-1" title="Permalink"></a></h3><p>No.</p><h3 id="Why-don&#39;t-you-compile-Matlab/Python/R/…-code-to-Julia?-1"><a class="docs-heading-anchor" href="#Why-don&#39;t-you-compile-Matlab/Python/R/…-code-to-Julia?-1">Why don&#39;t you compile Matlab/Python/R/… code to Julia?</a><a class="docs-heading-anchor-permalink" href="#Why-don&#39;t-you-compile-Matlab/Python/R/…-code-to-Julia?-1" title="Permalink"></a></h3><p>Since many people are familiar with the syntax of other dynamic languages, and lots of code has already been written in those languages, it is natural to wonder why we didn&#39;t just plug a Matlab or Python front-end into a Julia back-end (or “transpile” code to Julia) in order to get all the performance benefits of Julia without requiring programmers to learn a new language.  Simple, right?</p><p>The basic issue is that there is <em>nothing special about Julia&#39;s compiler</em>: we use a commonplace compiler (LLVM) with no “secret sauce” that other language developers don&#39;t know about.  Indeed, Julia&#39;s compiler is in many ways much simpler than those of other dynamic languages (e.g. PyPy or LuaJIT).   Julia&#39;s performance advantage derives almost entirely from its front-end: its language semantics allow a <a href="../performance-tips/#man-performance-tips-1">well-written Julia program</a> to <em>give more opportunities to the compiler</em> to generate efficient code and memory layouts.  If you tried to compile Matlab or Python code to Julia, our compiler would be limited by the semantics of Matlab or Python to producing code no better than that of existing compilers for those languages (and probably worse).  The key role of semantics is also why several existing Python compilers (like Numba and Pythran) only attempt to optimize a small subset of the language (e.g. operations on Numpy arrays and scalars), and for this subset they are already doing at least as well as we could for the same semantics.  The people working on those projects are incredibly smart and have accomplished amazing things, but retrofitting a compiler onto a language that was designed to be interpreted is a very difficult problem.</p><p>Julia&#39;s advantage is that good performance is not limited to a small subset of “built-in” types and operations, and one can write high-level type-generic code that works on arbitrary user-defined types while remaining fast and memory-efficient.  Types in languages like Python simply don&#39;t provide enough information to the compiler for similar capabilities, so as soon as you used those languages as a Julia front-end you would be stuck.</p><p>For similar reasons, automated translation to Julia would also typically generate unreadable, slow, non-idiomatic code that would not be a good starting point for a native Julia port from another language.</p><p>On the other hand, language <em>interoperability</em> is extremely useful: we want to exploit existing high-quality code in other languages from Julia (and vice versa)!  The best way to enable this is not a transpiler, but rather via easy inter-language calling facilities.  We have worked hard on this, from the built-in <code>ccall</code> intrinsic (to call C and Fortran libraries) to <a href="https://github.com/JuliaInterop">JuliaInterop</a> packages that connect Julia to Python, Matlab, C++, and more.</p><h2 id="会话和-REPL-1"><a class="docs-heading-anchor" href="#会话和-REPL-1">会话和 REPL</a><a class="docs-heading-anchor-permalink" href="#会话和-REPL-1" title="Permalink"></a></h2><h3 id="如何从内存中删除某个对象？-1"><a class="docs-heading-anchor" href="#如何从内存中删除某个对象？-1">如何从内存中删除某个对象？</a><a class="docs-heading-anchor-permalink" href="#如何从内存中删除某个对象？-1" title="Permalink"></a></h3><p>Julia 没有类似于 MATLAB 的 <code>clear</code> 函数，某个名称一旦定义在 Julia 的会话中（准确地说，在 <code>Main</code> 模块中），它就会一直存在下去。</p><p>如果关心内存用量，一个对象总能被一个占用更少内存的对象替换掉。例如，如果 <code>A</code> 是一个不再需要的 GB 量级的数组，可以使用 <code>A = nothing</code> 来释放内存。该内存将在下一次垃圾回收器运行时被释放，也可以使用 <a href="../../base/base/#Base.GC.gc"><code>gc()</code></a> 强制进行垃圾回收。另外，试图使用 <code>A</code> 很可能导致错误，因为大部分方法（method）在 <code>Nothing</code> 类型上没有定义。</p><h3 id="如何在会话中修改某个类型的声明？-1"><a class="docs-heading-anchor" href="#如何在会话中修改某个类型的声明？-1">如何在会话中修改某个类型的声明？</a><a class="docs-heading-anchor-permalink" href="#如何在会话中修改某个类型的声明？-1" title="Permalink"></a></h3><p>也许你定义了某个类型，后来发现需要向其中增加一个新的域。如果在 REPL 中尝试这样做，会得到一个错误：</p><pre><code class="language-none">ERROR: invalid redefinition of constant MyType</code></pre><p>模块 <code>Main</code> 中的类型不能重新定义。</p><p>尽管这在开发新代码时会造成不便，但是这个问题仍然有一个不错的解决办法：可以用重新定义的模块替换原有的模块，把所有新代码封装在一个模块里，这样就能重新定义类型和常量了。虽说不能将类型名称导入到 <code>Main</code> 模块中再去重新定义，但是可以用模块名来改变作用范围。换言之，开发时的工作流可能类似这样：</p><pre><code class="language-julia">include(&quot;mynewcode.jl&quot;) # this defines a module MyModule
+obj1 = MyModule.ObjConstructor(a, b)
+obj2 = MyModule.somefunction(obj1)
+# Got an error. Change something in &quot;mynewcode.jl&quot;
+include(&quot;mynewcode.jl&quot;) # reload the module
+obj1 = MyModule.ObjConstructor(a, b) # old objects are no longer valid, must reconstruct
+obj2 = MyModule.somefunction(obj1) # this time it worked!
+obj3 = MyModule.someotherfunction(obj2, c)
+...</code></pre><h2 id="man-scripting-1"><a class="docs-heading-anchor" href="#man-scripting-1">脚本</a><a class="docs-heading-anchor-permalink" href="#man-scripting-1" title="Permalink"></a></h2><h3 id="该如何检查当前文件是否正在以主脚本运行？-1"><a class="docs-heading-anchor" href="#该如何检查当前文件是否正在以主脚本运行？-1">该如何检查当前文件是否正在以主脚本运行？</a><a class="docs-heading-anchor-permalink" href="#该如何检查当前文件是否正在以主脚本运行？-1" title="Permalink"></a></h3><p>当一个文件通过使用 <code>julia file.jl</code> 来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查 <code>abspath(PROGRAM_FILE) == @__FILE__</code> 是不是 <code>true</code>。</p><h3 id="catch-ctrl-c-1"><a class="docs-heading-anchor" href="#catch-ctrl-c-1">How do I catch CTRL-C in a script?</a><a class="docs-heading-anchor-permalink" href="#catch-ctrl-c-1" title="Permalink"></a></h3><p>通过 <code>julia file.jl</code> 方式运行的 Julia 脚本，在你尝试按 CTRL-C (SIGINT) 中止它时，并不会抛出 <a href="../../base/base/#Core.InterruptException"><code>InterruptException</code></a>。如果希望在脚本终止之后运行一些代码，请使用 <a href="../../base/base/#Base.atexit"><code>atexit</code></a>，注意：脚本的中止不一定是由 CTRL-C 导致的。 另外你也可以通过 <code>julia -e &#39;include(popfirst!(ARGS))&#39; file.jl</code> 命令运行脚本，然后可以通过 <a href="../../base/base/#try"><code>try</code></a> 捕获 <code>InterruptException</code>。</p><h3 id="怎样通过-#!/usr/bin/env-传递参数给-julia？-1"><a class="docs-heading-anchor" href="#怎样通过-#!/usr/bin/env-传递参数给-julia？-1">怎样通过 <code>#!/usr/bin/env</code> 传递参数给 <code>julia</code>？</a><a class="docs-heading-anchor-permalink" href="#怎样通过-#!/usr/bin/env-传递参数给-julia？-1" title="Permalink"></a></h3><p>通过类似 <code>#!/usr/bin/env julia --startup-file=no</code> 的方式，使用 shebang 传递选项给 Julia 的方法，可能在像 Linux 这样的平台上无法正常工作。这是因为各平台上 shebang 的参数解析是平台相关的，并且尚未标准化。 在类 Unix 的环境中，可以通过以 <code>bash</code> 脚本作为可执行脚本的开头，并使用 <code>exec</code> 代替给 <code>julia</code> 传递选项的过程，来可靠的为 <code>julia</code> 传递选项。</p><pre><code class="language-julia">#!/bin/bash
+#=
+exec julia --color=yes --startup-file=no &quot;${BASH_SOURCE[0]}&quot; &quot;$@&quot;
+=#
+
+@show ARGS  # put any Julia code here</code></pre><p>在以上例子中，位于 <code>#=</code> 和 <code>=#</code> 之间的代码可以当作一个 <code>bash</code> 脚本。 因为这些代码放在 Julia 的多行注释中，所以 Julia 会忽略它们。 在 <code>=#</code> 之后的 Julia 代码会被 <code>bash</code> 忽略，J因为当文件解析到 <code>exec</code> 语句时会停止解析，开始执行命令。</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>In order to <a href="#catch-ctrl-c-1">catch CTRL-C</a> in the script you can use</p><pre><code class="language-julia">#!/bin/bash
+#=
+exec julia --color=yes --startup-file=no -e &#39;include(popfirst!(ARGS))&#39; \
+    &quot;${BASH_SOURCE[0]}&quot; &quot;$@&quot;
+=#
+
+@show ARGS  # put any Julia code here</code></pre><p>instead. Note that with this strategy <a href="../../base/constants/#Base.PROGRAM_FILE"><code>PROGRAM_FILE</code></a> will not be set.</p></div></div><h2 id="函数-1"><a class="docs-heading-anchor" href="#函数-1">函数</a><a class="docs-heading-anchor-permalink" href="#函数-1" title="Permalink"></a></h2><h3 id="向函数传递了参数-x，在函数中做了修改，但是在函数外变量-x-的值还是没有变。为什么？-1"><a class="docs-heading-anchor" href="#向函数传递了参数-x，在函数中做了修改，但是在函数外变量-x-的值还是没有变。为什么？-1">向函数传递了参数 <code>x</code>，在函数中做了修改，但是在函数外变量 <code>x</code> 的值还是没有变。为什么？</a><a class="docs-heading-anchor-permalink" href="#向函数传递了参数-x，在函数中做了修改，但是在函数外变量-x-的值还是没有变。为什么？-1" title="Permalink"></a></h3><p>假设函数被如此调用：</p><pre><code class="language-julia-repl">julia&gt; x = 10
+10
+
+julia&gt; function change_value!(y)
+           y = 17
+       end
+change_value! (generic function with 1 method)
+
+julia&gt; change_value!(x)
+17
+
+julia&gt; x # x is unchanged!
+10</code></pre><p>在 Julia 中，通过将 <code>x</code> 作为参数传递给函数，不能改变变量 <code>x</code> 的绑定。在上例中，调用 <code>change_value!(x)</code> 时，<code>y</code> 是一个新建变量，初始时与 <code>x</code> 的值绑定，即 <code>10</code>。然后 <code>y</code> 与常量 <code>17</code> 重新绑定，此时变量外作用域中的 <code>x</code> 并没有变动。</p><p>However, if <code>x</code> is bound to an object of type <code>Array</code> (or any other <em>mutable</em> type). From within the function, you cannot &quot;unbind&quot; <code>x</code> from this Array, but you <em>can</em> change its content. For example:</p><pre><code class="language-julia-repl">julia&gt; x = [1,2,3]
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3
+
+julia&gt; function change_array!(A)
+           A[1] = 5
+       end
+change_array! (generic function with 1 method)
+
+julia&gt; change_array!(x)
+5
+
+julia&gt; x
+3-element Array{Int64,1}:
+ 5
+ 2
+ 3</code></pre><p>这里我们新建了一个函数 <code>chang_array!</code>，它把 <code>5</code> 赋值给传入的数组（在调用处与 <code>x</code> 绑定，在函数中与 <code>A</code> 绑定）的第一个元素。注意，在函数调用之后，<code>x</code> 依旧与同一个数组绑定，但是数组的内容变化了：变量 <code>A</code> 和 <code>x</code> 是不同的绑定，引用同一个可变的 <code>Array</code> 对象。</p><h3 id="函数内部能否使用-using-或-import？-1"><a class="docs-heading-anchor" href="#函数内部能否使用-using-或-import？-1">函数内部能否使用 <code>using</code> 或 <code>import</code>？</a><a class="docs-heading-anchor-permalink" href="#函数内部能否使用-using-或-import？-1" title="Permalink"></a></h3><p>不可以，不能在函数内部使用 <code>using</code> 或 <code>import</code> 语句。如果你希望导入一个模块，但只在特定的一个或一组函数中使用它的符号，有以下两种方式：</p><ol><li><p>使用 <code>import</code>：</p><pre><code class="language-julia">import Foo
+function bar(...)
+    # ... refer to Foo symbols via Foo.baz ...
+end</code></pre><p>这会加载 <code>Foo</code> 模块，同时定义一个变量 <code>Foo</code> 引用该模块，但并不会 将其他任何符号从该模块中导入当前的命名空间。 <code>Foo</code> 等符号可以由限定的名称 <code>Foo.bar</code> 等引用。</p></li><li><p>将函数封装到模块中：</p><pre><code class="language-julia">module Bar
+export bar
+using Foo
+function bar(...)
+    # ... refer to Foo.baz as simply baz ....
+end
+end
+using Bar</code></pre><p>这会从 <code>Foo</code> 中导入所有符号，但仅限于 <code>Bar</code> 模块内。</p></li></ol><h3 id="运算符-...-有何作用？-1"><a class="docs-heading-anchor" href="#运算符-...-有何作用？-1">运算符 <code>...</code> 有何作用？</a><a class="docs-heading-anchor-permalink" href="#运算符-...-有何作用？-1" title="Permalink"></a></h3><h3 id="...-运算符的两个用法：slurping-和-splatting-1"><a class="docs-heading-anchor" href="#...-运算符的两个用法：slurping-和-splatting-1"><code>...</code> 运算符的两个用法：slurping 和 splatting</a><a class="docs-heading-anchor-permalink" href="#...-运算符的两个用法：slurping-和-splatting-1" title="Permalink"></a></h3><p>很多 Julia 的新手会对运算符 <code>...</code> 的用法感到困惑。让 <code>...</code> 用法如此困惑的部分原因是根据上下文它有两种不同的含义。</p><h3 id="...-在函数定义中将多个参数组合成一个参数-1"><a class="docs-heading-anchor" href="#...-在函数定义中将多个参数组合成一个参数-1"><code>...</code> 在函数定义中将多个参数组合成一个参数</a><a class="docs-heading-anchor-permalink" href="#...-在函数定义中将多个参数组合成一个参数-1" title="Permalink"></a></h3><p>在函数定义的上下文中，<code>...</code>运算符用来将多个不同的参数组合成单个参数。<code>...</code>运算符的这种将多个不同参数组合成单个参数的用法称为slurping：</p><pre><code class="language-julia-repl">julia&gt; function printargs(args...)
+           println(typeof(args))
+           for (i, arg) in enumerate(args)
+               println(&quot;Arg #$i = $arg&quot;)
+           end
+       end
+printargs (generic function with 1 method)
+
+julia&gt; printargs(1, 2, 3)
+Tuple{Int64,Int64,Int64}
+Arg #1 = 1
+Arg #2 = 2
+Arg #3 = 3</code></pre><p>如果Julia是一个使用ASCII字符更加自由的语言的话，slurping运算符可能会写作<code>&lt;-...</code>而非<code>...</code>。</p><h3 id="...在函数调用中将一个参数分解成多个不同参数-1"><a class="docs-heading-anchor" href="#...在函数调用中将一个参数分解成多个不同参数-1"><code>...</code>在函数调用中将一个参数分解成多个不同参数</a><a class="docs-heading-anchor-permalink" href="#...在函数调用中将一个参数分解成多个不同参数-1" title="Permalink"></a></h3><p>与在定义函数时表示将多个不同参数组合成一个参数的<code>...</code>运算符用法相对，当用在函数调用的上下文中<code>...</code>运算符也用来将单个的函数参数分成多个不同的参数。<code>...</code>函数的这个用法叫做splatting：</p><pre><code class="language-julia-repl">julia&gt; function threeargs(a, b, c)
+           println(&quot;a = $a::$(typeof(a))&quot;)
+           println(&quot;b = $b::$(typeof(b))&quot;)
+           println(&quot;c = $c::$(typeof(c))&quot;)
+       end
+threeargs (generic function with 1 method)
+
+julia&gt; x = [1, 2, 3]
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3
+
+julia&gt; threeargs(x...)
+a = 1::Int64
+b = 2::Int64
+c = 3::Int64</code></pre><p>如果Julia是一个使用ASCII字符更加自由的语言的话，splatting运算符可能会写作<code>...-&gt;</code>而非<code>...</code>。</p><h3 id="赋值语句的返回值是什么？-1"><a class="docs-heading-anchor" href="#赋值语句的返回值是什么？-1">赋值语句的返回值是什么？</a><a class="docs-heading-anchor-permalink" href="#赋值语句的返回值是什么？-1" title="Permalink"></a></h3><p><code>=</code>运算符始终返回右侧的值，所以：</p><pre><code class="language-julia-repl">julia&gt; function threeint()
+           x::Int = 3.0
+           x # returns variable x
+       end
+threeint (generic function with 1 method)
+
+julia&gt; function threefloat()
+           x::Int = 3.0 # returns 3.0
+       end
+threefloat (generic function with 1 method)
+
+julia&gt; threeint()
+3
+
+julia&gt; threefloat()
+3.0</code></pre><p>相似地：</p><pre><code class="language-julia-repl">julia&gt; function threetup()
+           x, y = [3, 3]
+           x, y # returns a tuple
+       end
+threetup (generic function with 1 method)
+
+julia&gt; function threearr()
+           x, y = [3, 3] # returns an array
+       end
+threearr (generic function with 1 method)
+
+julia&gt; threetup()
+(3, 3)
+
+julia&gt; threearr()
+2-element Array{Int64,1}:
+ 3
+ 3</code></pre><h2 id="类型，类型声明和构造函数-1"><a class="docs-heading-anchor" href="#类型，类型声明和构造函数-1">类型，类型声明和构造函数</a><a class="docs-heading-anchor-permalink" href="#类型，类型声明和构造函数-1" title="Permalink"></a></h2><h3 id="man-type-stability-1"><a class="docs-heading-anchor" href="#man-type-stability-1">何谓“类型稳定”？</a><a class="docs-heading-anchor-permalink" href="#man-type-stability-1" title="Permalink"></a></h3><p>这意味着输出的类型可以由输入的类型预测出来。特别地，这意味着输出的类型不会因输入的<em>值</em>的不同而变化。以下代码<em>不是</em>类型稳定的：</p><pre><code class="language-julia-repl">julia&gt; function unstable(flag::Bool)
+           if flag
+               return 1
+           else
+               return 1.0
+           end
+       end
+unstable (generic function with 1 method)</code></pre><p>It returns either an <code>Int</code> or a <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> depending on the value of its argument. Since Julia can&#39;t predict the return type of this function at compile-time, any computation that uses it must be able to cope with values of both types, which makes it hard to produce fast machine code.</p><h3 id="faq-domain-errors-1"><a class="docs-heading-anchor" href="#faq-domain-errors-1">为何 Julia 对某个看似合理的操作返回 <code>DomainError</code>？</a><a class="docs-heading-anchor-permalink" href="#faq-domain-errors-1" title="Permalink"></a></h3><p>某些运算在数学上有意义，但会产生错误：</p><pre><code class="language-julia-repl">julia&gt; sqrt(-2.0)
+ERROR: DomainError with -2.0:
+sqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
+Stacktrace:
+[...]</code></pre><p>这一行为是为了保证类型稳定而带来的不便。对于 <a href="../../base/math/#Base.sqrt-Tuple{Real}"><code>sqrt</code></a>，许多用户会希望 <code>sqrt(2.0)</code> 产生一个实数，如果得到了复数 <code>1.4142135623730951 + 0.0im</code> 则会不高兴。也可以编写 <a href="../../base/math/#Base.sqrt-Tuple{Real}"><code>sqrt</code></a> 函数，只有当传递一个负数时才切换到复值输出，但结果将不是<a href="#man-type-stability-1">类型稳定</a>的，而且 <a href="../../base/math/#Base.sqrt-Tuple{Real}"><code>sqrt</code></a> 函数的性能会很差。</p><p>在这样那样的情况下，若你想得到希望的结果，你可以选择一个<em>输入类型</em>，它可以使根据你的想法接受一个<em>输出类型</em>，从而结果可以这样表示：</p><pre><code class="language-julia-repl">julia&gt; sqrt(-2.0+0im)
+0.0 + 1.4142135623730951im</code></pre><h3 id="How-can-I-constrain-or-compute-type-parameters?-1"><a class="docs-heading-anchor" href="#How-can-I-constrain-or-compute-type-parameters?-1">How can I constrain or compute type parameters?</a><a class="docs-heading-anchor-permalink" href="#How-can-I-constrain-or-compute-type-parameters?-1" title="Permalink"></a></h3><p>The parameters of a <a href="manual/@ref Parametric-Types">parametric type</a> can hold either types or bits values, and the type itself chooses how it makes use of these parameters. For example, <code>Array{Float64, 2}</code> is parameterized by the type <code>Float64</code> to express its element type and the integer value <code>2</code> to express its number of dimensions.  When defining your own parametric type, you can use subtype constraints to declare that a certain parameter must be a subtype (<a href="../../base/base/#Core.:&lt;:"><code>&lt;:</code></a>) of some abstract type or a previous type parameter.  There is not, however, a dedicated syntax to declare that a parameter must be a <em>value</em> of a given type — that is, you cannot directly declare that a dimensionality-like parameter <a href="../../base/base/#Core.isa"><code>isa</code></a> <code>Int</code> within the <code>struct</code> definition, for example.  Similarly, you cannot do computations (including simple things like addition or subtraction) on type parameters.  Instead, these sorts of constraints and relationships may be expressed through additional type parameters that are computed and enforced within the type&#39;s <a href="../constructors/#man-constructors-1">constructors</a>.</p><p>As an example, consider</p><pre><code class="language-julia">struct ConstrainedType{T,N,N+1} # NOTE: INVALID SYNTAX
+    A::Array{T,N}
+    B::Array{T,N+1}
+end</code></pre><p>where the user would like to enforce that the third type parameter is always the second plus one. This can be implemented with an explicit type parameter that is checked by an <a href="../constructors/#man-inner-constructor-methods-1">inner constructor method</a> (where it can be combined with other checks):</p><pre><code class="language-julia">struct ConstrainedType{T,N,M}
+    A::Array{T,N}
+    B::Array{T,M}
+    function ConstrainedType(A::Array{T,N}, B::Array{T,M}) where {T,N,M}
+        N + 1 == M || throw(ArgumentError(&quot;second argument should have one more axis&quot; ))
+        new{T,N,M}(A, B)
+    end
+end</code></pre><p>This check is usually <em>costless</em>, as the compiler can elide the check for valid concrete types. If the second argument is also computed, it may be advantageous to provide an <a href="../constructors/#man-outer-constructor-methods-1">outer constructor method</a> that performs this calculation:</p><pre><code class="language-julia">ConstrainedType(A) = ConstrainedType(A, compute_B(A))</code></pre><h3 id="faq-integer-arithmetic-1"><a class="docs-heading-anchor" href="#faq-integer-arithmetic-1">Why does Julia use native machine integer arithmetic?</a><a class="docs-heading-anchor-permalink" href="#faq-integer-arithmetic-1" title="Permalink"></a></h3><p>Julia使用机器算法进行整数计算。这意味着<code>Int</code>的范围是有界的，值在范围的两端循环，也就是说整数的加法，减法和乘法会出现上溢或者下溢，导致出现某些从开始就令人不安的结果：</p><pre><code class="language-julia-repl">julia&gt; typemax(Int)
+9223372036854775807
+
+julia&gt; ans+1
+-9223372036854775808
+
+julia&gt; -ans
+-9223372036854775808
+
+julia&gt; 2*ans
+0</code></pre><p>无疑，这与数学上的整数的行为很不一样，并且你会想对于高阶编程语言来说把这个暴露给用户难称完美。然而，对于效率优先和透明度优先的数值计算来说，其他的备选方案可谓更糟。</p><p>一个备选方案是去检查每个整数运算是否溢出，如果溢出则将结果提升到更大的整数类型比如<a href="../../base/numbers/#Core.Int128"><code>Int128</code></a>或者<a href="../../base/numbers/#Base.GMP.BigInt"><code>BigInt</code></a>。 不幸的是，这会给所有的整数操作（比如让循环计数器自增）带来巨大的额外开销 — 这需要生成代码去在算法指令后进行运行溢出检测，并生成分支去处理潜在的溢出。更糟糕的是，这会让涉及整数的所有运算变得类型不稳定。如同上面提到的，对于高效生成高效的代码<a href="#man-type-stability-1">类型稳定很重要</a>。如果不指望整数运算的结果是整数，就无法想C和Fortran编译器一样生成快速简单的代码。</p><p>这个方法有个变体可以避免类型不稳定的出现，这个变体是将类型<code>Int</code>和<a href="../../base/numbers/#Base.GMP.BigInt"><code>BigInt</code></a>合并成单个混合整数类型，当结果不再满足机器整数的大小时会内部自动切换表示。虽然表面上在Julia代码层面解决了类型不稳定，但是这个只是通过将所有的困难硬塞给实现混合整数类型的C代码而掩盖了这个问题。这个方法<em>可能</em>有用，甚至在很多情况下速度很快，但是它有很多缺点。一个缺点是整数和整数数组的内存上的表示不再与C、Fortran和其他使用原生机器整数的怨言所使用的自然表示一样。所以，为了与那些语言协作，我们无论如何最终都需要引入原生整数类型。任何整数的无界表示都不会占用固定的比特数，所以无法使用固定大小的槽来内联地存储在数组中 — 大的整数值通常需要单独的堆分配的存储。并且无论使用的混合整数实现多么智能，总会存在性能陷阱 — 无法预期的性能下降的情况。复杂的表示，与C和Fortran协作能力的缺乏，无法在不使用另外的堆存储的情况下表示整数数组，和无法预测的性能特性让即使是最智能化的混合整数实现对于高性能数值计算来说也是个很差的选择。</p><p>除了使用混合整数和提升到BigInt，另一个备选方案是使用饱和整数算法，此时最大整数值加一个数时值保持不变，最小整数值减一个数时也是同样的。这就是Matlab™的做法：</p><pre><code class="language-none">&gt;&gt; int64(9223372036854775807)
+
+ans =
+
+  9223372036854775807
+
+&gt;&gt; int64(9223372036854775807) + 1
+
+ans =
+
+  9223372036854775807
+
+&gt;&gt; int64(-9223372036854775808)
+
+ans =
+
+ -9223372036854775808
+
+&gt;&gt; int64(-9223372036854775808) - 1
+
+ans =
+
+ -9223372036854775808</code></pre><p>乍一看，这个似乎足够合理，因为9223372036854775807比-9223372036854775808更接近于9223372036854775808并且整数还是以固定大小的自然方式表示的，这与C和Fortran相兼容。但是饱和整数算法是很有问题的。首先最明显的问题是这并不是机器整数算法的工作方式，所以实现饱和整数算法需要生成指令，在每个机器整数运算后检查上溢或者下溢并正确地讲这些结果用<a href="../../base/base/#Base.typemin"><code>typemin(Int)</code></a>或者<a href="../../base/base/#Base.typemax"><code>typemax(Int)</code></a>取代。单单这个就将整数运算从单语句的快速的指令扩展成六个指令，还可能包括分支。哎呦喂~~但是还有更糟的 — 饱和整数算法并不满足结合律。考虑下列的Matlab计算：</p><pre><code class="language-none">&gt;&gt; n = int64(2)^62
+4611686018427387904
+
+&gt;&gt; n + (n - 1)
+9223372036854775807
+
+&gt;&gt; (n + n) - 1
+9223372036854775806</code></pre><p>这就让写很多基础整数算法变得困难因为很多常用技术都是基于有溢出的机器加法<em>是</em>满足结合律这一事实的。考虑一下在Julia中求整数值<code>lo</code>和<code>hi</code>之间的中点值，使用表达式<code>(lo + hi) &gt;&gt;&gt; 1</code>:</p><pre><code class="language-julia-repl">julia&gt; n = 2^62
+4611686018427387904
+
+julia&gt; (n + 2n) &gt;&gt;&gt; 1
+6917529027641081856</code></pre><p>看到了吗？没有任何问题。那就是2^62和2^63之间的正确地中点值，虽然<code>n + 2n</code>的值是 -4611686018427387904。现在使用Matlab试一下：</p><pre><code class="language-none">&gt;&gt; (n + 2*n)/2
+
+ans =
+
+  4611686018427387904</code></pre><p>哎呦喂。在Matlab中添加<code>&gt;&gt;&gt;</code>运算符没有任何作用，因为在将<code>n</code>与<code>2n</code>相加时已经破坏了能计算出正确地中点值的必要信息，已经出现饱和。</p><p>没有结合性不但对于不能依靠像这样的技术的程序员是不幸的，并且让几乎所有的希望优化整数算法的编译器铩羽而归。例如，因为Julia中的整数使用平常的机器整数算法，LLVM就可以自由地激进地优化像<code>f(k) = 5k-1</code>这样的简单地小函数。这个函数的机器码如下所示：</p><pre><code class="language-julia-repl">julia&gt; code_native(f, Tuple{Int})
+  .text
+Filename: none
+  pushq %rbp
+  movq  %rsp, %rbp
+Source line: 1
+  leaq  -1(%rdi,%rdi,4), %rax
+  popq  %rbp
+  retq
+  nopl  (%rax,%rax)</code></pre><p>这个函数的实际函数体只是一个简单地<code>leap</code>指令，可以立马计算整数乘法与加法。当<code>f</code>内联在其他函数中的时候这个更加有益：</p><pre><code class="language-julia-repl">julia&gt; function g(k, n)
+           for i = 1:n
+               k = f(k)
+           end
+           return k
+       end
+g (generic function with 1 methods)
+
+julia&gt; code_native(g, Tuple{Int,Int})
+  .text
+Filename: none
+  pushq %rbp
+  movq  %rsp, %rbp
+Source line: 2
+  testq %rsi, %rsi
+  jle L26
+  nopl  (%rax)
+Source line: 3
+L16:
+  leaq  -1(%rdi,%rdi,4), %rdi
+Source line: 2
+  decq  %rsi
+  jne L16
+Source line: 5
+L26:
+  movq  %rdi, %rax
+  popq  %rbp
+  retq
+  nop</code></pre><p>因为<code>f</code>的调用内联化，循环体就只是简单地<code>leap</code>指令。接着，考虑一下如果循环迭代的次数固定的时候会发生什么：</p><pre><code class="language-julia-repl">julia&gt; function g(k)
+           for i = 1:10
+               k = f(k)
+           end
+           return k
+       end
+g (generic function with 2 methods)
+
+julia&gt; code_native(g,(Int,))
+  .text
+Filename: none
+  pushq %rbp
+  movq  %rsp, %rbp
+Source line: 3
+  imulq $9765625, %rdi, %rax    # imm = 0x9502F9
+  addq  $-2441406, %rax         # imm = 0xFFDABF42
+Source line: 5
+  popq  %rbp
+  retq
+  nopw  %cs:(%rax,%rax)</code></pre><p>因为编译器知道整数加法和乘法是满足结合律的并且乘法可以在加法上使用分配律 — 两者在饱和算法中都不成立 — 所以编译器就可以把整个循环优化到只有一个乘法和一个加法。饱和算法完全无法使用这种优化，因为在每个循环迭代中结合律和分配律都会失效导致不同的失效位置会得到不同的结果。编译器可以展开循环，但是不能代数上将多个操作简化到更少的等效操作。</p><p>让整数算法静默溢出的最合理的备用方案是所有地方都使用检查算法，当加法、减法和乘法溢出，产生不正确的值时引发错误。在<a href="http://danluu.com/integer-overflow/">blog post</a>中，Dan Luu分析了这个方案，发现这个方案理论上的性能微不足道，但是最终仍然会消耗大量的性能因为编译器（LLVM和GCC）无法在加法溢出检测处优雅地进行优化。如果未来有所进步我们会考虑在Julia中默认设置为检查整数算法，但是现在，我们需要和溢出可能共同相处。</p><p>In the meantime, overflow-safe integer operations can be achieved through the use of external libraries such as <a href="https://github.com/JeffreySarnoff/SaferIntegers.jl">SaferIntegers.jl</a>. Note that, as stated previously, the use of these libraries significantly increases the execution time of code using the checked integer types. However, for limited usage, this is far less of an issue than if it were used for all integer operations. You can follow the status of the discussion <a href="https://github.com/JuliaLang/julia/issues/855">here</a>.</p><h3 id="在远程执行中UndefVarError的可能原因有哪些？-1"><a class="docs-heading-anchor" href="#在远程执行中UndefVarError的可能原因有哪些？-1">在远程执行中<code>UndefVarError</code>的可能原因有哪些？</a><a class="docs-heading-anchor-permalink" href="#在远程执行中UndefVarError的可能原因有哪些？-1" title="Permalink"></a></h3><p>如同这个错误表述的，远程结点上的<code>UndefVarError</code>的直接原因是变量名的绑定并不存在。让我们探索一下一些可能的原因。</p><pre><code class="language-julia-repl">julia&gt; module Foo
+           foo() = remotecall_fetch(x-&gt;x, 2, &quot;Hello&quot;)
+       end
+
+julia&gt; Foo.foo()
+ERROR: On worker 2:
+UndefVarError: Foo not defined
+Stacktrace:
+[...]</code></pre><p>闭包<code>x-&gt;x</code>中有<code>Foo</code>的引用，因为<code>Foo</code>在节点2上不存在，所以<code>UndefVarError</code>被扔出。</p><p>在模块中而非<code>Main</code>中的全局变量不会在远程节点上按值序列化。只传递了一个引用。新建全局绑定的函数（除了<code>Main</code>中）可能会导致之后扔出<code>UndefVarError</code>。</p><pre><code class="language-julia-repl">julia&gt; @everywhere module Foo
+           function foo()
+               global gvar = &quot;Hello&quot;
+               remotecall_fetch(()-&gt;gvar, 2)
+           end
+       end
+
+julia&gt; Foo.foo()
+ERROR: On worker 2:
+UndefVarError: gvar not defined
+Stacktrace:
+[...]</code></pre><p>在上面的例子中，<code>@everywhere module Foo</code>在所有节点上定义了<code>Foo</code>。但是调用<code>Foo.foo()</code>在本地节点上新建了新的全局绑定<code>gvar</code>，但是节点2中并没有找到这个绑定，这会导致<code>UndefVarError</code>错误。</p><p>注意着并不适用于在模块<code>Main</code>下新建的全局变量。模块<code>Main</code>下的全局变量会被序列化并且在远程节点的<code>Main</code>下新建新的绑定。</p><pre><code class="language-julia-repl">julia&gt; gvar_self = &quot;Node1&quot;
+&quot;Node1&quot;
+
+julia&gt; remotecall_fetch(()-&gt;gvar_self, 2)
+&quot;Node1&quot;
+
+julia&gt; remotecall_fetch(varinfo, 2)
+name          size summary
+––––––––– –––––––– –––––––
+Base               Module
+Core               Module
+Main               Module
+gvar_self 13 bytes String</code></pre><p>这并不适用于<code>函数</code>或者<code>结构体</code>声明。但是绑定到全局变量的匿名函数被序列化，如下例所示。</p><pre><code class="language-julia-repl">julia&gt; bar() = 1
+bar (generic function with 1 method)
+
+julia&gt; remotecall_fetch(bar, 2)
+ERROR: On worker 2:
+UndefVarError: #bar not defined
+[...]
+
+julia&gt; anon_bar  = ()-&gt;1
+(::#21) (generic function with 1 method)
+
+julia&gt; remotecall_fetch(anon_bar, 2)
+1</code></pre><h3 id="为什么-Julia-使用-*-进行字符串拼接？而不是使用-或其他符号？-1"><a class="docs-heading-anchor" href="#为什么-Julia-使用-*-进行字符串拼接？而不是使用-或其他符号？-1">为什么 Julia 使用 <code>*</code> 进行字符串拼接？而不是使用 <code>+</code> 或其他符号？</a><a class="docs-heading-anchor-permalink" href="#为什么-Julia-使用-*-进行字符串拼接？而不是使用-或其他符号？-1" title="Permalink"></a></h3><p>使用 <code>+</code>  的<a href="../strings/#man-concatenation-1">主要依据</a>是：字符串拼接是不可交换的操作，而 <code>+</code> 通常是一个具有可交换性的操作符。Julia 社区也意识到其他语言使用了不同的操作符，一些用户也可能不熟悉 <code>*</code> 包含的特定代数性值。</p><p>注意：你也可以用 <code>string(...)</code> 来拼接字符串和其他能转换成字符串的值； 类似的 <code>repeat</code> 函数可以用于替代用于重复字符串的 <code>^</code> 操作符。 <a href="../strings/#string-interpolation-1">字符串插值语法</a>在构造字符串时也很常用。</p><h2 id="包和模块-1"><a class="docs-heading-anchor" href="#包和模块-1">包和模块</a><a class="docs-heading-anchor-permalink" href="#包和模块-1" title="Permalink"></a></h2><h3 id="&quot;using&quot;和&quot;import&quot;的区别是什么？-1"><a class="docs-heading-anchor" href="#&quot;using&quot;和&quot;import&quot;的区别是什么？-1">&quot;using&quot;和&quot;import&quot;的区别是什么？</a><a class="docs-heading-anchor-permalink" href="#&quot;using&quot;和&quot;import&quot;的区别是什么？-1" title="Permalink"></a></h3><p>只有一个区别，并且在表面上（语法层面）这个区别看来很小。<code>using</code>和<code>import</code>的区别是使用<code>using</code>时你需要写<code>function Foo.bar(..</code>来用一个新方法来扩展模块Foo的函数bar，但是使用<code>import Foo.bar</code>时，你只需要写<code>function bar(...</code>，会自动扩展模块Foo的函数bar。</p><p>这个区别足够重要以至于提供不同的语法的原因是你不希望意外地扩展一个你根本不知道其存在的函数，因为这很容易造成bug。对于使用像字符串后者整数这样的常用类型的方法最有可能出现这个问题，因为你和其他模块都可能定义了方法来处理这样的常用类型。如果你使用<code>import</code>，你会用你自己的新实现覆盖别的函数的<code>bar(s::AbstractString)</code>实现，这会导致做的事情天差地别（并且破坏模块Foo中其他的依赖于调用bar的函数的所有/大部分的将来的使用）。</p><h2 id="空值与缺失值-1"><a class="docs-heading-anchor" href="#空值与缺失值-1">空值与缺失值</a><a class="docs-heading-anchor-permalink" href="#空值与缺失值-1" title="Permalink"></a></h2><h3 id="faq-nothing-1"><a class="docs-heading-anchor" href="#faq-nothing-1">在Julia中&quot;null&quot;，&quot;空&quot;或者&quot;缺失&quot;是怎么工作的?</a><a class="docs-heading-anchor-permalink" href="#faq-nothing-1" title="Permalink"></a></h3><p>不像其它很多语言（例如 C 和 Java），Julia 对象默认不能为&quot;null&quot;。当一个引用（变量，对象域，或者数组元素）没有被初始化，访问它会立即扔出一个错误。这种情况可以使用函数 <a href="../../base/base/#Core.isdefined"><code>isdefined</code></a> 或者 <a href="../../base/arrays/#Base.isassigned"><code>isassigned</code></a> 检测到。</p><p>一些函数只为了其副作用使用，并不需要返回一个值。在这些情况下，约定的是返回 <code>nothing</code> 这个值，这只是 <code>Nothing</code> 类型的一个单例对象。这是一个没有域的一般类型；除了这个约定之外没有任何特殊点，REPL 不会为它打印任何东西。有些语言结构不会有值，也产生 <code>nothing</code>，例如 <code>if false; end</code>。</p><p>对于类型<code>T</code>的值<code>x</code>只会有时存在的情况，<code>Union{T,Nothing}</code>类型可以用作函数参数，对象域和数组元素的类型，与其他语言中的<a href="https://en.wikipedia.org/wiki/Nullable_type"><code>Nullable</code>, <code>Option</code> or <code>Maybe</code></a>相等。如果值本身可以是<code>nothing</code>(显然当<code>T</code>是<code>Any</code>时），<code>Union{Some{T}, Nothing}</code>类型更加准确因为<code>x == nothing</code>表示值的缺失，<code>x == Some(nothing)</code>表示与<code>nothing</code>相等的值的存在。<a href="../../base/base/#Base.something"><code>something</code></a>函数允许使用默认值的展开的<code>Some</code>对象，而非<code>nothing</code>参数。注意在使用<code>Union{T,Nothing}</code>参数或者域时编译器能够生成高效的代码。</p><p>在统计环境下表示缺失的数据（R 中的 <code>NA</code> 或者 SQL 中的 <code>NULL</code>）请使用 <a href="../../base/base/#Base.missing"><code>missing</code></a> 对象。请参照<a href="../missing/#missing-1"><code>缺失值</code></a>章节来获取详细信息。</p><p>In some languages, the empty tuple (<code>()</code>) is considered the canonical form of nothingness. However, in julia it is best thought of as just a regular tuple that happens to contain zero values.</p><p>空（或者&quot;底层&quot;）类型，写作<code>Union{}</code>（空的union类型）是没有值和子类型（除了自己）的类型。通常你没有必要用这个类型。</p><h2 id="内存-1"><a class="docs-heading-anchor" href="#内存-1">内存</a><a class="docs-heading-anchor-permalink" href="#内存-1" title="Permalink"></a></h2><h3 id="为什么当x和y都是数组时x-y还会申请内存？-1"><a class="docs-heading-anchor" href="#为什么当x和y都是数组时x-y还会申请内存？-1">为什么当<code>x</code>和<code>y</code>都是数组时<code>x += y</code>还会申请内存？</a><a class="docs-heading-anchor-permalink" href="#为什么当x和y都是数组时x-y还会申请内存？-1" title="Permalink"></a></h3><p>在 Julia 中，<code>x += y</code> 在语法分析中会用 <code>x = x + y</code> 代替。对于数组，结果就是它会申请一个新数组来存储结果，而非把结果存在 <code>x</code> 同一位置的内存上。</p><p>这个行为可能会让一些人吃惊，但是这个结果是经过深思熟虑的。主要原因是Julia中的不可变对象，这些对象一旦新建就不能改变他们的值。实际上，数字是不可变对象，语句<code>x = 5; x += 1</code>不会改变<code>5</code>的意义，改变的是与<code>x</code>绑定的值。对于不可变对象，改变其值的唯一方法是重新赋值。</p><p>为了稍微详细一点，考虑下列的函数：</p><pre><code class="language-julia">function power_by_squaring(x, n::Int)
+    ispow2(n) || error(&quot;此实现只适用于2的幂&quot;)
+    while n &gt;= 2
+        x *= x
+        n &gt;&gt;= 1
+    end
+    x
+end</code></pre><p>在<code>x = 5; y = power_by_squaring(x, 4)</code>调用后，你可以得到期望的结果<code>x == 5 &amp;&amp; y == 625</code>。然而，现在假设当<code>*=</code>与矩阵一起使用时会改变左边的值，这会有两个问题：</p><ul><li>对于普通的方阵，<code>A = A*B</code> 不能在没有临时存储的情况下实现：<code>A[1,1]</code> 会被计算并且在被右边使用完之前存储在左边。</li><li>假设你愿意申请一个计算的临时存储（这会消除 <code>*=</code>就地计算的大部分要点）；如果你利用了<code>x</code>的可变性， 这个函数会对于可变和不可变的输入有不同的行为。特别地， 对于不可变的<code>x</code>，在调用后（通常）你会得到<code>y != x</code>，而对可变的<code>x</code>，你会有<code>y == x</code>。</li></ul><p>因为支持范用计算被认为比能使用其他方法完成的潜在的性能优化（比如使用显式循环）更加重要，所以像<code>+=</code>和<code>*=</code>运算符以绑定新值的方式工作。</p><h2 id="faq-async-io-1"><a class="docs-heading-anchor" href="#faq-async-io-1">异步 IO 与并发同步写入</a><a class="docs-heading-anchor-permalink" href="#faq-async-io-1" title="Permalink"></a></h2><h3 id="为什么对于同一个流的并发写入会导致相互混合的输出？-1"><a class="docs-heading-anchor" href="#为什么对于同一个流的并发写入会导致相互混合的输出？-1">为什么对于同一个流的并发写入会导致相互混合的输出？</a><a class="docs-heading-anchor-permalink" href="#为什么对于同一个流的并发写入会导致相互混合的输出？-1" title="Permalink"></a></h3><p>虽然流式 I/O 的 API 是同步的，底层的实现是完全异步的。</p><p>思考一下下面的输出：</p><pre><code class="language-julia-repl">julia&gt; @sync for i in 1:3
+           @async write(stdout, string(i), &quot; Foo &quot;, &quot; Bar &quot;)
+       end
+123 Foo  Foo  Foo  Bar  Bar  Bar</code></pre><p>这是因为，虽然<code>write</code>调用是同步的，每个参数的写入在等待那一部分I/O完成时会生成其他的Tasks。</p><p><code>print</code>和<code>println</code>在调用中会&quot;锁定&quot;该流。因此把上例中的<code>write</code>改成<code>println</code>会导致：</p><pre><code class="language-julia-repl">julia&gt; @sync for i in 1:3
+           @async println(stdout, string(i), &quot; Foo &quot;, &quot; Bar &quot;)
+       end
+1 Foo  Bar
+2 Foo  Bar
+3 Foo  Bar</code></pre><p>你可以使用<code>ReentrantLock</code>来锁定你的写入，就像这样：</p><pre><code class="language-julia-repl">julia&gt; l = ReentrantLock();
+
+julia&gt; @sync for i in 1:3
+           @async begin
+               lock(l)
+               try
+                   write(stdout, string(i), &quot; Foo &quot;, &quot; Bar &quot;)
+               finally
+                   unlock(l)
+               end
+           end
+       end
+1 Foo  Bar 2 Foo  Bar 3 Foo  Bar</code></pre><h2 id="数组-1"><a class="docs-heading-anchor" href="#数组-1">数组</a><a class="docs-heading-anchor-permalink" href="#数组-1" title="Permalink"></a></h2><h3 id="零维数组和标量之间的有什么差别？-1"><a class="docs-heading-anchor" href="#零维数组和标量之间的有什么差别？-1">零维数组和标量之间的有什么差别？</a><a class="docs-heading-anchor-permalink" href="#零维数组和标量之间的有什么差别？-1" title="Permalink"></a></h3><p>零维数组是<code>Array{T,0}</code>形式的数组，它与标量的行为相似，但是有很多重要的不同。这值得一提，因为这是使用数组的范用定义来解释也符合逻辑的特殊情况，虽然最开始看起来有些非直觉。下面一行定义了一个零维数组：</p><pre><code class="language-none">julia&gt; A = zeros()
+0-dimensional Array{Float64,0}:
+0.0</code></pre><p>在这个例子中，<code>A</code>是一个含有一个元素的可变容器，这个元素可以通过<code>A[] = 1.0</code>来设置，通过<code>A[]</code>来读取。所有的零维数组都有同样的大小（<code>size(A) == ()</code>）和长度（<code>length(A) == 1</code>）。特别地，零维数组不是空数组。如果你觉得这个非直觉，这里有些想法可以帮助理解Julia的这个定义。</p><ul><li>类比的话，零维数组是&quot;点&quot;，向量是&quot;线&quot;而矩阵 是&quot;面&quot;。就像线没有面积一样（但是也能代表事物的一个集合）, 点没有长度和任意一个维度（但是也能表示一个事物）。</li><li>我们定义<code>prod(())</code>为1，一个数组中的所有的元素个数是 大小的乘积。零维数组的大小为<code>()</code>，所以 它的长度为<code>1</code>。</li><li>零维数组原生没有任何你可以索引的维度 – 它们仅仅是<code>A[]</code>。我们可以给它们应用同样的&quot;trailing one&quot;规则， as for all other array dimensionalities, so you can indeed index them as <code>A[1]</code>, <code>A[1,1]</code>, etc; see <a href="../arrays/#Omitted-and-extra-indices-1">Omitted and extra indices</a>.</li></ul><p>理解它与普通的标量之间的区别也很重要。标量不是一个可变的容器（尽管它们是可迭代的，可以定义像<code>length</code>，<code>getindex</code>这样的东西，<em>例如</em><code>1[] == 1</code>）。特别地，如果<code>x = 0.0</code>是以一个标量来定义，尝试通过<code>x[] = 1.0</code>来改变它的值会报错。标量<code>x</code>能够通过<code>fill(x)</code>转化成包含它的零维数组，并且相对地，一个零维数组<code>a</code>可以通过<code>a[]</code>转化成其包含的标量。另外一个区别是标量可以参与到线性代数运算中，比如<code>2 * rand(2,2)</code>，但是零维数组的相似操作<code>fill(2) * rand(2,2)</code>会报错。</p><h3 id="Why-are-my-Julia-benchmarks-for-linear-algebra-operations-different-from-other-languages?-1"><a class="docs-heading-anchor" href="#Why-are-my-Julia-benchmarks-for-linear-algebra-operations-different-from-other-languages?-1">Why are my Julia benchmarks for linear algebra operations different from other languages?</a><a class="docs-heading-anchor-permalink" href="#Why-are-my-Julia-benchmarks-for-linear-algebra-operations-different-from-other-languages?-1" title="Permalink"></a></h3><p>You may find that simple benchmarks of linear algebra building blocks like</p><pre><code class="language-julia">using BenchmarkTools
+A = randn(1000, 1000)
+B = randn(1000, 1000)
+@btime $A \ $B
+@btime $A * $B</code></pre><p>can be different when compared to other languages like Matlab or R.</p><p>Since operations like this are very thin wrappers over the relevant BLAS functions, the reason for the discrepancy is very likely to be</p><ol><li><p>the BLAS library each language is using,</p></li><li><p>the number of concurrent threads.</p></li></ol><p>Julia compiles and uses its own copy of OpenBLAS, with threads currently capped at <code>8</code> (or the number of your cores).</p><p>Modifying OpenBLAS settings or compiling Julia with a different BLAS library, eg <a href="https://software.intel.com/en-us/mkl">Intel MKL</a>, may provide performance improvements. You can use <a href="https://github.com/JuliaComputing/MKL.jl">MKL.jl</a>, a package that makes Julia&#39;s linear algebra use Intel MKL BLAS and LAPACK instead of OpenBLAS, or search the discussion forum for suggestions on how to set this up manually. Note that Intel MKL cannot be bundled with Julia, as it is not open source.</p><h2 id="Julia-版本发布-1"><a class="docs-heading-anchor" href="#Julia-版本发布-1">Julia 版本发布</a><a class="docs-heading-anchor-permalink" href="#Julia-版本发布-1" title="Permalink"></a></h2><h3 id="Do-I-want-to-use-the-Stable,-LTS,-or-nightly-version-of-Julia?-1"><a class="docs-heading-anchor" href="#Do-I-want-to-use-the-Stable,-LTS,-or-nightly-version-of-Julia?-1">Do I want to use the Stable, LTS, or nightly version of Julia?</a><a class="docs-heading-anchor-permalink" href="#Do-I-want-to-use-the-Stable,-LTS,-or-nightly-version-of-Julia?-1" title="Permalink"></a></h3><p>The Stable version of Julia is the latest released version of Julia, this is the version most people will want to run. It has the latest features, including improved performance. The Stable version of Julia is versioned according to <a href="https://semver.org/">SemVer</a> as v1.x.y. A new minor release of Julia corresponding to a new Stable version is made approximately every 4-5 months after a few weeks of testing as a release candidate. Unlike the LTS version the a Stable version will not normally recieve bugfixes after another Stable version of Julia has been released. However, upgrading to the next Stable release will always be possible as each release of Julia v1.x will continue to run code written for earlier versions.</p><p>You may prefer the LTS (Long Term Support) version of Julia if you are looking for a very stable code base. The current LTS version of Julia is versioned according to SemVer as v1.0.x; this branch will continue to recieve bugfixes until a new LTS branch is chosen, at which point the v1.0.x series will no longer recieved regular bug fixes and all but the most conservative users will be advised to upgrade to the new LTS version series. As a package developer, you may prefer to develop for the LTS version, to maximize the number of users who can use your package. As per SemVer, code written for v1.0 will continue to work for all future LTS and Stable versions. In general, even if targetting the LTS, one can develop and run code in the latest Stable version, to take advantage of the improved performance; so long as one avoids using new features (such as added library functions or new methods).</p><p>You may prefer the nightly version of Julia if you want to take advantage of the latest updates to the language, and don&#39;t mind if the version available today occasionally doesn&#39;t actually work. As the name implies, releases to the nightly version are made roughly every night (depending on build infrastructure stability). In general nightly released are fairly safe to use—your code will not catch on fire. However, they may be occasional regressions and or issues that will not be found until more thorough pre-release testing. You may wish to test against the nightly version to ensure that such regressions that affect your use case are caught before a release is made.</p><p>Finally, you may also consider building Julia from source for yourself. This option is mainly for those individuals who are comfortable at the command line, or interested in learning. If this describes you, you may also be interested in reading our <a href="https://github.com/JuliaLang/julia/blob/master/CONTRIBUTING.md">guidelines for contributing</a>.</p><p>可以在<a href="https://julialang.org/downloads/">https://julialang.org/downloads/</a>的下载页面上找到每种下载类型的链接。 请注意，并非所有版本的Julia都适用于所有平台。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../style-guide/">« 代码风格指南</a><a class="docs-footer-nextpage" href="../noteworthy-differences/">与其他语言的显著差异 »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 六月 20 周六 00:12">2020 六月 20 周六</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
