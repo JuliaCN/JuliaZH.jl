@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>元编程 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/metaprogramming/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li class="is-active"><a class="tocitem" href>元编程</a><ul class="internal"><li><a class="tocitem" href="#程序表示-1"><span>程序表示</span></a></li><li><a class="tocitem" href="#表达式与求值-1"><span>表达式与求值</span></a></li><li><a class="tocitem" href="#man-macros-1"><span>宏</span></a></li><li><a class="tocitem" href="#代码生成-1"><span>代码生成</span></a></li><li><a class="tocitem" href="#非标准字符串字面量-1"><span>非标准字符串字面量</span></a></li><li><a class="tocitem" href="#生成函数-1"><span>生成函数</span></a></li></ul></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">多线程</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>元编程</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>元编程</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/metaprogrammingmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="元编程-1"><a class="docs-heading-anchor" href="#元编程-1">元编程</a><a class="docs-heading-anchor-permalink" href="#元编程-1" title="Permalink"></a></h1><p>Lisp 留给 Julia 最大的遗产就是它的元编程支持。和 Lisp 一样，Julia 把自己的代码表示为语言中的数据结构。既然代码被表示为了可以在语言中创建和操作的对象，程序就可以变换和生成自己的代码。这允许在没有额外构建步骤的情况下生成复杂的代码，并且还允许在 <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">abstract syntax trees</a> 级别上运行的真正的 Lisp 风格的宏。与之相对的是预处理器“宏”系统，比如 C 和 C++ 中的，它们在解析和解释代码之前进行文本操作和变换。由于 Julia 中的所有数据类型和代码都被表示为 Julia 的 数据结构，强大的 <a href="https://en.wikipedia.org/wiki/Reflection_omputer_%28cprogramming%29">reflection</a> 功能可用于探索程序的内部及其类型，就像任何其他数据一样。</p><h2 id="程序表示-1"><a class="docs-heading-anchor" href="#程序表示-1">程序表示</a><a class="docs-heading-anchor-permalink" href="#程序表示-1" title="Permalink"></a></h2><p>每个 Julia 程序均以字符串开始：</p><pre><code class="language-julia-repl">julia&gt; prog = &quot;1 + 1&quot;
+&quot;1 + 1&quot;</code></pre><p><strong>What happens next?</strong></p><p>The next step is to <a href="https://en.wikipedia.org/wiki/Parsing#Computer_languages">parse</a> each string into an object called an expression, represented by the Julia type <a href="manual/@ref"><code>Expr</code></a>:</p><pre><code class="language-julia-repl">julia&gt; ex1 = Meta.parse(prog)
+:(1 + 1)
+
+julia&gt; typeof(ex1)
+Expr</code></pre><p><code>Expr</code> 对象包含两个部分：</p><ul><li>a <a href="../../base/strings/#Core.Symbol"><code>Symbol</code></a> identifying the kind of expression. A symbol is an <a href="https://en.wikipedia.org/wiki/String_interning">interned string</a> 标识符（下面会有更多讨论）</li></ul><pre><code class="language-julia-repl">julia&gt; ex1.head
+:call</code></pre><ul><li>表达式的参数，可能是符号、其他表达式或字面值：</li></ul><pre><code class="language-julia-repl">julia&gt; ex1.args
+3-element Array{Any,1}:
+  :+
+ 1
+ 1</code></pre><p>表达式也可能直接用 <a href="https://en.wikipedia.org/wiki/Polish_notation">prefix notation</a> 构造：</p><pre><code class="language-julia-repl">julia&gt; ex2 = Expr(:call, :+, 1, 1)
+:(1 + 1)</code></pre><p>上面构造的两个表达式 – 一个通过解析构造一个通过直接构造 – 是等价的：</p><pre><code class="language-julia-repl">julia&gt; ex1 == ex2
+true</code></pre><p><strong>这里的关键点是 Julia 的代码在内部表示为可以从语言本身访问的数据结构</strong></p><p>函数 <a href="../../base/io-network/#Base.dump"><code>dump</code></a> 可以带有缩进和注释地显示 <code>Expr</code> 对象：</p><pre><code class="language-julia-repl">julia&gt; dump(ex2)
+Expr
+  head: Symbol call
+  args: Array{Any}((3,))
+    1: Symbol +
+    2: Int64 1
+    3: Int64 1</code></pre><p><code>Expr</code> 对象也可以嵌套：</p><pre><code class="language-julia-repl">julia&gt; ex3 = Meta.parse(&quot;(4 + 4) / 2&quot;)
+:((4 + 4) / 2)</code></pre><p>另外一个查看表达式的方法是使用 <code>Meta.show_sexpr</code>，它能显示给定 <code>Expr</code> 的 <a href="https://en.wikipedia.org/wiki/S-expression">S-expression</a>，对 Lisp 用户来说，这看着很熟悉。下面是一个示例，阐释了如何显示嵌套的 <code>Expr</code>：</p><pre><code class="language-julia-repl">julia&gt; Meta.show_sexpr(ex3)
+(:call, :/, (:call, :+, 4, 4), 2)</code></pre><h3 id="符号-1"><a class="docs-heading-anchor" href="#符号-1">符号</a><a class="docs-heading-anchor-permalink" href="#符号-1" title="Permalink"></a></h3><p>字符 <code>:</code> 在 Julia 中有两个作用。第一种形式构造一个  <a href="../../base/strings/#Core.Symbol"><code>Symbol</code></a>，这是作为表达式组成部分的一个 <a href="https://en.wikipedia.org/wiki/String_interning">interned string</a>：</p><pre><code class="language-julia-repl">julia&gt; :foo
+:foo
+
+julia&gt; typeof(ans)
+Symbol</code></pre><p>构造函数 <a href="../../base/strings/#Core.Symbol"><code>Symbol</code></a> 接受任意数量的参数并通过把它们的字符串表示连在一起创建一个新的符号：</p><pre><code class="language-julia-repl">julia&gt; :foo == Symbol(&quot;foo&quot;)
+true
+
+julia&gt; Symbol(&quot;func&quot;,10)
+:func10
+
+julia&gt; Symbol(:var,&#39;_&#39;,&quot;sym&quot;)
+:var_sym</code></pre><p>Note that to use <code>:</code> syntax, the symbol&#39;s name must be a valid identifier. Otherwise the <code>Symbol(str)</code> constructor must be used.</p><p>在表达式的上下文中，符号用来表示对变量的访问；当一个表达式被求值时，符号会被替换为这个符号在合适的 <a href="../variables-and-scoping/#scope-of-variables-1">scope</a> 中所绑定的值。</p><p>Sometimes extra parentheses around the argument to <code>:</code> are needed to avoid ambiguity in parsing:</p><pre><code class="language-julia-repl">julia&gt; :(:)
+:(:)
+
+julia&gt; :(::)
+:(::)</code></pre><h2 id="表达式与求值-1"><a class="docs-heading-anchor" href="#表达式与求值-1">表达式与求值</a><a class="docs-heading-anchor-permalink" href="#表达式与求值-1" title="Permalink"></a></h2><h3 id="引用-1"><a class="docs-heading-anchor" href="#引用-1">引用</a><a class="docs-heading-anchor-permalink" href="#引用-1" title="Permalink"></a></h3><p>The second syntactic purpose of the <code>:</code> character is to create expression objects without using the explicit <a href="manual/@ref"><code>Expr</code></a> constructor. This is referred to as <em>quoting</em>. The <code>:</code> character, followed by paired parentheses around a single statement of Julia code, produces an <code>Expr</code> object based on the enclosed code. Here is example of the short form used to quote an arithmetic expression:</p><pre><code class="language-julia-repl">julia&gt; ex = :(a+b*c+1)
+:(a + b * c + 1)
+
+julia&gt; typeof(ex)
+Expr</code></pre><p>（为了查看这个表达式的结构，可以试一试 <code>ex.head</code> 和 <code>ex.args</code>，或者使用 <a href="../../base/io-network/#Base.dump"><code>dump</code></a> 同时查看 <code>ex.head</code> 和 <code>ex.args</code> 或者 <a href="../../base/io-network/#Base.Meta.@dump"><code>Meta.@dump</code></a>）</p><p>注意等价的表达式也可以使用 <a href="../../base/base/#Base.Meta.parse-Tuple{AbstractString,Int64}"><code>Meta.parse</code></a> 或者直接用 <code>Expr</code> 构造：</p><pre><code class="language-julia-repl">julia&gt;      :(a + b*c + 1)       ==
+       Meta.parse(&quot;a + b*c + 1&quot;) ==
+       Expr(:call, :+, :a, Expr(:call, :*, :b, :c), 1)
+true</code></pre><p>解析器提供的表达式通常只有符号、其它表达式和字面量值作为其参数，而由 Julia 代码构造的表达式能以非字面量形式的任意运行期值作为其参数。在此特例中，<code>+</code> 和 <code>a</code> 都是符号，<code>*(b,c)</code> 是子表达式，而 <code>1</code> 是 64 位带符号整数字面量。</p><p>引用多个表达式有第二种语法形式：在 <code>quote ... end</code> 中包含代码块。</p><pre><code class="language-julia-repl">julia&gt; ex = quote
+           x = 1
+           y = 2
+           x + y
+       end
+quote
+    #= none:2 =#
+    x = 1
+    #= none:3 =#
+    y = 2
+    #= none:4 =#
+    x + y
+end
+
+julia&gt; typeof(ex)
+Expr</code></pre><h3 id="插值-1"><a class="docs-heading-anchor" href="#插值-1">插值</a><a class="docs-heading-anchor-permalink" href="#插值-1" title="Permalink"></a></h3><p>Direct construction of <a href="manual/@ref"><code>Expr</code></a> objects with value arguments is powerful, but <code>Expr</code> constructors can be tedious compared to &quot;normal&quot; Julia syntax. As an alternative, Julia allows <em>interpolation</em> of literals or expressions into quoted expressions. Interpolation is indicated by a prefix <code>$</code>.</p><p>在此示例中，插入了变量 <code>a</code> 的值：</p><pre><code class="language-julia-repl">julia&gt; a = 1;
+
+julia&gt; ex = :($a + b)
+:(1 + b)</code></pre><p>对未被引用的表达式进行插值是不支持的，这会导致编译期错误：</p><pre><code class="language-julia-repl">julia&gt; $a + b
+ERROR: syntax: &quot;$&quot; expression outside quote</code></pre><p>在此示例中，元组 <code>(1,2,3)</code> 作为表达式插入到条件测试中：</p><pre><code class="language-julia-repl">julia&gt; ex = :(a in $:((1,2,3)) )
+:(a in (1, 2, 3))</code></pre><p>在表达式插值中使用 <code>$</code> 是有意让人联想到<a href="../strings/#string-interpolation-1">字符串插值</a>和<a href="../running-external-programs/#command-interpolation-1">命令插值</a>。表达式插值使得复杂 Julia 表达式的程序化构造变得方便和易读。</p><h3 id="Splatting-插值-1"><a class="docs-heading-anchor" href="#Splatting-插值-1">Splatting 插值</a><a class="docs-heading-anchor-permalink" href="#Splatting-插值-1" title="Permalink"></a></h3><p>请注意，<code>$</code> 插值语法只允许插入单个表达式到包含它的表达式中。有时，你手头有个由表达式组成的数组，需要它们都变成其所处表达式的参数，而这可通过 <code>$(xs...)</code> 语法做到。例如，下面的代码生成了一个函数调用，其参数数量通过编程确定：</p><pre><code class="language-julia-repl">julia&gt; args = [:x, :y, :z];
+
+julia&gt; :(f(1, $(args...)))
+:(f(1, x, y, z))</code></pre><h3 id="嵌套引用-1"><a class="docs-heading-anchor" href="#嵌套引用-1">嵌套引用</a><a class="docs-heading-anchor-permalink" href="#嵌套引用-1" title="Permalink"></a></h3><p>自然地，引用表达式可以包含在其它引用表达式中。插值在这些情形中的工作方式可能会有点难以理解。考虑这个例子：</p><pre><code class="language-julia-repl">julia&gt; x = :(1 + 2);
+
+julia&gt; e = quote quote $x end end
+quote
+    #= none:1 =#
+    $(Expr(:quote, quote
+    #= none:1 =#
+    $(Expr(:$, :x))
+end))
+end</code></pre><p>请注意，结果包含 <code>Expr(:$, :x)</code>，这意味着 <code>x</code> 还未被求值。换种说法，<code>$</code> 表达式「属于」内层引用表达式，所以它的参数只在内层引用表达式被求值时进行求值：</p><pre><code class="language-julia-repl">julia&gt; eval(e)
+quote
+    #= none:1 =#
+    1 + 2
+end</code></pre><p>但是，外部 <code>quote</code> 表达式可以把值插入到内部引用表达式的 <code>$</code> 中去。这通过多个 <code>$</code> 实现：</p><pre><code class="language-julia-repl">julia&gt; e = quote quote $$x end end
+quote
+    #= none:1 =#
+    $(Expr(:quote, quote
+    #= none:1 =#
+    $(Expr(:$, :(1 + 2)))
+end))
+end</code></pre><p>请注意，现在的结果中出现的是 <code>:(1 + 2)</code> 而不是符号 <code>:x</code>。求解此表达式产生一个被插值的 <code>3</code>：</p><pre><code class="language-julia-repl">julia&gt; eval(e)
+quote
+    #= none:1 =#
+    3
+end</code></pre><p>这种行为背后的直觉是每个 <code>$</code> 都将 <code>x</code> 求值一遍：一个 <code>$</code> 工作方式类似于 <code>eval(:x)</code>，其返回 <code>x</code> 的值，而两个 <code>$</code> 行为相当于 <code>eval(eval(:x))</code>。</p><h3 id="man-quote-node-1"><a class="docs-heading-anchor" href="#man-quote-node-1">QuoteNode</a><a class="docs-heading-anchor-permalink" href="#man-quote-node-1" title="Permalink"></a></h3><p>The usual representation of a <code>quote</code> form in an AST is an <a href="manual/@ref"><code>Expr</code></a> with head <code>:quote</code>:</p><pre><code class="language-julia-repl">julia&gt; dump(Meta.parse(&quot;:(1+2)&quot;))
+Expr
+  head: Symbol quote
+  args: Array{Any}((1,))
+    1: Expr
+      head: Symbol call
+      args: Array{Any}((3,))
+        1: Symbol +
+        2: Int64 1
+        3: Int64 2</code></pre><p>As we have seen, such expressions support interpolation with <code>$</code>. However, in some situations it is necessary to quote code <em>without</em> performing interpolation. This kind of quoting does not yet have syntax, but is represented internally as an object of type <code>QuoteNode</code>:</p><pre><code class="language-julia-repl">julia&gt; eval(Meta.quot(Expr(:$, :(1+2))))
+3
+
+julia&gt; eval(QuoteNode(Expr(:$, :(1+2))))
+:($(Expr(:$, :(1 + 2))))</code></pre><p>The parser yields <code>QuoteNode</code>s for simple quoted items like symbols:</p><pre><code class="language-julia-repl">julia&gt; dump(Meta.parse(&quot;:x&quot;))
+QuoteNode
+  value: Symbol x</code></pre><p><code>QuoteNode</code> can also be used for certain advanced metaprogramming tasks.</p><h3 id="Evaluating-expressions-1"><a class="docs-heading-anchor" href="#Evaluating-expressions-1">Evaluating expressions</a><a class="docs-heading-anchor-permalink" href="#Evaluating-expressions-1" title="Permalink"></a></h3><p>Given an expression object, one can cause Julia to evaluate (execute) it at global scope using <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a>:</p><pre><code class="language-julia-repl">julia&gt; :(1 + 2)
+:(1 + 2)
+
+julia&gt; eval(ans)
+3
+
+julia&gt; ex = :(a + b)
+:(a + b)
+
+julia&gt; eval(ex)
+ERROR: UndefVarError: b not defined
+[...]
+
+julia&gt; a = 1; b = 2;
+
+julia&gt; eval(ex)
+3</code></pre><p>Every <a href="../modules/#modules-1">module</a> has its own <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a> function that evaluates expressions in its global scope. Expressions passed to <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a> are not limited to returning values – they can also have side-effects that alter the state of the enclosing module&#39;s environment:</p><pre><code class="language-julia-repl">julia&gt; ex = :(x = 1)
+:(x = 1)
+
+julia&gt; x
+ERROR: UndefVarError: x not defined
+
+julia&gt; eval(ex)
+1
+
+julia&gt; x
+1</code></pre><p>这里，表达式对象的求值导致一个值被赋值给全局变量 <code>x</code>。</p><p>由于表达式只是 <code>Expr</code> 对象，而其可以通过编程方式构造然后对它求值，因此可以动态地生成任意代码，然后使用 <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a> 运行所生成的代码。这是个简单的例子：</p><pre><code class="language-julia-repl">julia&gt; a = 1;
+
+julia&gt; ex = Expr(:call, :+, a, :b)
+:(1 + b)
+
+julia&gt; a = 0; b = 2;
+
+julia&gt; eval(ex)
+3</code></pre><p><code>a</code> 的值被用于构造表达式 <code>ex</code>，该表达式将函数 <code>+</code> 作用于值 1 和变量 <code>b</code>。请注意 <code>a</code> 和 <code>b</code> 使用方式间的重要区别：</p><ul><li><em>变量</em> <code>a</code> 在表达式构造时的值在表达式中用作立即值。因此，在对表达式求值时，<code>a</code> 的值就无关紧要了：表达式中的值已经是 <code>1</code>，与 <code>a</code> 的值无关。</li><li>另一方面，因为在表达式构造时用的是符号 <code>:b</code>，所以变量 <code>b</code> 的值无关紧要——<code>:b</code> 只是一个符号，变量 <code>b</code> 甚至无需被定义。然而，在表达式求值时，符号 <code>:b</code> 的值通过寻找变量 <code>b</code> 的值来解析。</li></ul><h3 id="关于表达式的函数-1"><a class="docs-heading-anchor" href="#关于表达式的函数-1">关于表达式的函数</a><a class="docs-heading-anchor-permalink" href="#关于表达式的函数-1" title="Permalink"></a></h3><p>As hinted above, one extremely useful feature of Julia is the capability to generate and manipulate Julia code within Julia itself. We have already seen one example of a function returning <a href="manual/@ref"><code>Expr</code></a> objects: the <a href="../../base/numbers/#Base.parse"><code>parse</code></a> function, which takes a string of Julia code and returns the corresponding <code>Expr</code>. A function can also take one or more <code>Expr</code> objects as arguments, and return another <code>Expr</code>. Here is a simple, motivating example:</p><pre><code class="language-julia-repl">julia&gt; function math_expr(op, op1, op2)
+           expr = Expr(:call, op, op1, op2)
+           return expr
+       end
+math_expr (generic function with 1 method)
+
+julia&gt;  ex = math_expr(:+, 1, Expr(:call, :*, 4, 5))
+:(1 + 4 * 5)
+
+julia&gt; eval(ex)
+21</code></pre><p>作为另一个例子，这个函数将数值参数加倍，但不处理表达式：</p><pre><code class="language-julia-repl">julia&gt; function make_expr2(op, opr1, opr2)
+           opr1f, opr2f = map(x -&gt; isa(x, Number) ? 2*x : x, (opr1, opr2))
+           retexpr = Expr(:call, op, opr1f, opr2f)
+           return retexpr
+       end
+make_expr2 (generic function with 1 method)
+
+julia&gt; make_expr2(:+, 1, 2)
+:(2 + 4)
+
+julia&gt; ex = make_expr2(:+, 1, Expr(:call, :*, 5, 8))
+:(2 + 5 * 8)
+
+julia&gt; eval(ex)
+42</code></pre><h2 id="man-macros-1"><a class="docs-heading-anchor" href="#man-macros-1">宏</a><a class="docs-heading-anchor-permalink" href="#man-macros-1" title="Permalink"></a></h2><p>宏提供了在程序的最终主体中包含所生成的代码的方法。宏将参数元组映射到所返回的<em>表达式</em>，且生成的表达式会被直接编译，并不需要运行时的 <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a> 调用。宏的参数可以包括表达式、字面量值和符号。</p><h3 id="基础-1"><a class="docs-heading-anchor" href="#基础-1">基础</a><a class="docs-heading-anchor-permalink" href="#基础-1" title="Permalink"></a></h3><p>这是一个非常简单的宏：</p><pre><code class="language-julia-repl">julia&gt; macro sayhello()
+           return :( println(&quot;Hello, world!&quot;) )
+       end
+@sayhello (macro with 1 method)</code></pre><p>宏在Julia的语法中有一个专门的字符 <code>@</code> (at-sign)，紧接着是其使用<code>macro NAME ... end</code> 形式来声明的唯一的宏名。在这个例子中，编译器会把所有的<code>@sayhello</code> 替换成：</p><pre><code class="language-julia">:( println(&quot;Hello, world!&quot;) )</code></pre><p>当 <code>@sayhello</code> 在REPL中被输入时，解释器立即执行，因此我们只会看到计算后的结果：</p><pre><code class="language-julia-repl">julia&gt; @sayhello()
+Hello, world!</code></pre><p>现在，考虑一个稍微复杂一点的宏：</p><pre><code class="language-julia-repl">julia&gt; macro sayhello(name)
+ return :( println(&quot;Hello, &quot;, $name) )
+ end
+@sayhello (macro with 1 method)</code></pre><p>这个宏接受一个参数<code>name</code>。当遇到<code>@sayhello</code>时，quoted 表达式会被<em>展开</em>并将参数中的值插入到最终的表达式中：</p><pre><code class="language-julia-repl">julia&gt; @sayhello(&quot;human&quot;)
+Hello, human</code></pre><p>We can view the quoted return expression using the function <a href="../../base/base/#Base.macroexpand"><code>macroexpand</code></a> (<strong>important note:</strong> this is an extremely useful tool for debugging macros):</p><pre><code class="language-julia-repl">julia&gt; ex = macroexpand(Main, :(@sayhello(&quot;human&quot;)) )
+:(Main.println(&quot;Hello, &quot;, &quot;human&quot;))
+
+julia&gt; typeof(ex)
+Expr</code></pre><p>我们可以看到 <code>&quot;human&quot;</code> 字面量已被插入到表达式中了。</p><p>还有一个宏 <a href="manual/@ ref"><code>@ macroexpand</code></a>，它可能比 <code>macroexpand</code> 函数更方便：</p><pre><code class="language-julia-repl">julia&gt; @macroexpand @sayhello &quot;human&quot;
+:(println(&quot;Hello, &quot;, &quot;human&quot;))</code></pre><h3 id="注意：为何使用宏？-1"><a class="docs-heading-anchor" href="#注意：为何使用宏？-1">注意：为何使用宏？</a><a class="docs-heading-anchor-permalink" href="#注意：为何使用宏？-1" title="Permalink"></a></h3><p>我们在前一节中已经见过 <code>f(::Expr...) -&gt; Expr</code> 形式的函数。事实上，<a href="../../base/base/#Base.macroexpand"><code>macroexpand</code></a> 也是这样的函数。所以，宏为何存在？</p><p>宏是必需的，因为其在代码解析时执行，于是，宏允许程序员在整个程序运行<em>前</em>生成并包含自定义的代码片段。为了说明此差异，请考虑以下示例：</p><pre><code class="language-julia-repl">julia&gt; macro twostep(arg)
+           println(&quot;I execute at parse time. The argument is: &quot;, arg)
+           return :(println(&quot;I execute at runtime. The argument is: &quot;, $arg))
+       end
+@twostep (macro with 1 method)
+
+julia&gt; ex = macroexpand(Main, :(@twostep :(1, 2, 3)) );
+I execute at parse time. The argument is: $(Expr(:quote, :((1, 2, 3))))</code></pre><p>第一个 <a href="../../base/io-network/#Base.println"><code>println</code></a> 调用在调用 <a href="../../base/base/#Base.macroexpand"><code>macroexpand</code></a> 时执行。生成的表达式<em>只</em>包含第二个 <code>println</code>：</p><pre><code class="language-julia-repl">julia&gt; typeof(ex)
+Expr
+
+julia&gt; ex
+:(println(&quot;I execute at runtime. The argument is: &quot;, $(Expr(:copyast, :($(QuoteNode(:((1, 2, 3)))))))))
+
+julia&gt; eval(ex)
+I execute at runtime. The argument is: (1, 2, 3)</code></pre><h3 id="宏的调用-1"><a class="docs-heading-anchor" href="#宏的调用-1">宏的调用</a><a class="docs-heading-anchor-permalink" href="#宏的调用-1" title="Permalink"></a></h3><p>宏的通常调用语法如下：</p><pre><code class="language-julia">@name expr1 expr2 ...
+@name(expr1, expr2, ...)</code></pre><p>请注意，在宏名称前的标志 <code>@</code>，且在第一种形式中参数表达式间没有逗号，而在第二种形式中 <code>@name</code> 后没有空格。这两种风格不应混淆。例如，下列语法不同于上述例子；它把元组 <code>(expr1, expr2, ...)</code> 作为参数传给宏：</p><pre><code class="language-julia">@name (expr1, expr2, ...)</code></pre><p>在数组字面量（或推导式）上调用宏的另一种方法是不使用括号直接并列两者。在这种情况下，数组将是唯一的传给宏的表达式。以下语法等价（且与 <code>@name [a b] * v</code> 不同）：</p><pre><code class="language-julia">@name[a b] * v
+@name([a b]) * v</code></pre><p>在这着重强调，宏把它们的参数作为表达式、字面量或符号接收。浏览宏参数的一种方法是在宏的内部调用 <a href="../../base/io-network/#Base.show-Tuple{Any}"><code>show</code></a> 函数：</p><pre><code class="language-julia-repl">julia&gt; macro showarg(x)
+           show(x)
+           # ... remainder of macro, returning an expression
+       end
+@showarg (macro with 1 method)
+
+julia&gt; @showarg(a)
+:a
+
+julia&gt; @showarg(1+1)
+:(1 + 1)
+
+julia&gt; @showarg(println(&quot;Yo!&quot;))
+:(println(&quot;Yo!&quot;))</code></pre><p>除了给定的参数列表，每个宏都会传递名为 <code>__source__</code> 和 <code>__module__</code> 的额外参数。</p><p>The argument <code>__source__</code> provides information (in the form of a <code>LineNumberNode</code> object) about the parser location of the <code>@</code> sign from the macro invocation. This allows macros to include better error diagnostic information, and is commonly used by logging, string-parser macros, and docs, for example, as well as to implement the <a href="../../base/file/#Base.@__LINE__"><code>@__LINE__</code></a>, <a href="../../base/file/#Base.@__FILE__"><code>@__FILE__</code></a>, and <a href="../../base/file/#Base.@__DIR__"><code>@__DIR__</code></a> macros.</p><p>引用 <code>__source__.line</code> 和 <code>__source__.file</code> 即可访问位置信息：</p><pre><code class="language-julia-repl">julia&gt; macro __LOCATION__(); return QuoteNode(__source__); end
+@__LOCATION__ (macro with 1 method)
+
+julia&gt; dump(
+            @__LOCATION__(
+       ))
+LineNumberNode
+  line: Int64 2
+  file: Symbol none</code></pre><p>参数 <code>__module__</code> 提供宏调用展开处的上下文相关信息（以 <code>Module</code> 对象的形式）。这允许宏查找上下文相关的信息，比如现有的绑定，或者将值作为附加参数插入到一个在当前模块中进行自我反射的运行时函数调用中。</p><h3 id="构建高级的宏-1"><a class="docs-heading-anchor" href="#构建高级的宏-1">构建高级的宏</a><a class="docs-heading-anchor-permalink" href="#构建高级的宏-1" title="Permalink"></a></h3><p>Here is a simplified definition of Julia&#39;s <a href="../../base/base/#Base.@assert"><code>@assert</code></a> macro:</p><pre><code class="language-julia-repl">julia&gt; macro assert(ex)
+           return :( $ex ? nothing : throw(AssertionError($(string(ex)))) )
+       end
+@assert (macro with 1 method)</code></pre><p>这个宏可以像这样使用：</p><pre><code class="language-julia-repl">julia&gt; @assert 1 == 1.0
+
+julia&gt; @assert 1 == 0
+ERROR: AssertionError: 1 == 0</code></pre><p>宏调用在解析时扩展为其返回结果，并替代已编写的语法。这相当于编写：</p><pre><code class="language-julia">1 == 1.0 ? nothing : throw(AssertionError(&quot;1 == 1.0&quot;))
+1 == 0 ? nothing : throw(AssertionError(&quot;1 == 0&quot;))</code></pre><p>That is, in the first call, the expression <code>:(1 == 1.0)</code> is spliced into the test condition slot, while the value of <code>string(:(1 == 1.0))</code> is spliced into the assertion message slot. The entire expression, thus constructed, is placed into the syntax tree where the <code>@assert</code> macro call occurs. Then at execution time, if the test expression evaluates to true, then <a href="../../base/constants/#Core.nothing"><code>nothing</code></a> is returned, whereas if the test is false, an error is raised indicating the asserted expression that was false. Notice that it would not be possible to write this as a function, since only the <em>value</em> of the condition is available and it would be impossible to display the expression that computed it in the error message.</p><p>The actual definition of <code>@assert</code> in Julia Base is more complicated. It allows the user to optionally specify their own error message, instead of just printing the failed expression. Just like in functions with a variable number of arguments (<a href="manual/@ref">Varargs Functions</a>), this is specified with an ellipses following the last argument:</p><pre><code class="language-julia-repl">julia&gt; macro assert(ex, msgs...)
+           msg_body = isempty(msgs) ? ex : msgs[1]
+           msg = string(msg_body)
+           return :($ex ? nothing : throw(AssertionError($msg)))
+       end
+@assert (macro with 1 method)</code></pre><p>Now <code>@assert</code> has two modes of operation, depending upon the number of arguments it receives! If there&#39;s only one argument, the tuple of expressions captured by <code>msgs</code> will be empty and it will behave the same as the simpler definition above. But now if the user specifies a second argument, it is printed in the message body instead of the failing expression. You can inspect the result of a macro expansion with the aptly named <a href="../../base/base/#Base.@macroexpand"><code>@macroexpand</code></a> macro:</p><pre><code class="language-julia-repl">julia&gt; @macroexpand @assert a == b
+:(if Main.a == Main.b
+        Main.nothing
+    else
+        Main.throw(Main.AssertionError(&quot;a == b&quot;))
+    end)
+
+julia&gt; @macroexpand @assert a==b &quot;a should equal b!&quot;
+:(if Main.a == Main.b
+        Main.nothing
+    else
+        Main.throw(Main.AssertionError(&quot;a should equal b!&quot;))
+    end)</code></pre><p>实际的 <code>@assert</code> 宏还处理了另一种情形：我们如果除了打印「a should equal b」外还想打印它们的值？有人也许会天真地尝试在自定义消息中使用字符串插值，例如，<code>@assert a==b &quot;a ($a) should equal b ($b)!&quot;</code>，但这不会像上面的宏一样按预期工作。你能想到为什么吗？回想一下<a href="../strings/#string-interpolation-1">字符串插值</a>，内插字符串会被重写为 <a href="../../base/strings/#Base.string"><code>string</code></a> 的调用。比较：</p><pre><code class="language-julia-repl">julia&gt; typeof(:(&quot;a should equal b&quot;))
+String
+
+julia&gt; typeof(:(&quot;a ($a) should equal b ($b)!&quot;))
+Expr
+
+julia&gt; dump(:(&quot;a ($a) should equal b ($b)!&quot;))
+Expr
+  head: Symbol string
+  args: Array{Any}((5,))
+    1: String &quot;a (&quot;
+    2: Symbol a
+    3: String &quot;) should equal b (&quot;
+    4: Symbol b
+    5: String &quot;)!&quot;</code></pre><p>所以，现在宏在 <code>msg_body</code> 中获得的不是单纯的字符串，其接收了一个完整的表达式，该表达式需进行求值才能按预期显示。这可作为 <a href="../../base/strings/#Base.string"><code>string</code></a> 调用的参数直接拼接到返回的表达式中；有关完整实现，请参阅 <a href="https://github.com/JuliaLang/julia/blob/master/base/error.jl"><code>error.jl</code></a>。</p><p><code>@assert</code> 宏充分利用拼接被引用的表达式，以便简化对宏内部表达式的操作。</p><h3 id="卫生宏-1"><a class="docs-heading-anchor" href="#卫生宏-1">卫生宏</a><a class="docs-heading-anchor-permalink" href="#卫生宏-1" title="Permalink"></a></h3><p>在更复杂的宏中会出现关于<a href="https://en.wikipedia.org/wiki/Hygienic_macro">卫生宏</a> 的问题。简而言之，宏必须确保在其返回表达式中引入的变量不会意外地与其展开处周围代码中的现有变量相冲突。相反，作为参数传递给宏的表达式通常被<em>认为</em>在其周围代码的上下文中进行求值，与现有变量交互并修改之。另一个问题源于这样的事实：宏可以在不同于其定义所处模块的模块中调用。在这种情况下，我们需要确保所有全局变量都被解析到正确的模块中。Julia 比使用文本宏展开的语言（比如 C）具有更大的优势，因为它只需要考虑返回的表达式。所有其它变量（例如上面<code>@assert</code> 中的 <code>msg</code>）遵循<a href="../variables-and-scoping/#scope-of-variables-1">通常的作用域块规则</a>。</p><p>为了演示这些问题，让我们来编写宏 <code>@time</code>，其以表达式为参数，记录当前时间，对表达式求值，再次记录当前时间，打印前后的时间差，然后以表达式的值作为其最终值。该宏可能看起来就像这样：</p><pre><code class="language-julia">macro time(ex)
+    return quote
+        local t0 = time()
+        local val = $ex
+        local t1 = time()
+        println(&quot;elapsed time: &quot;, t1-t0, &quot; seconds&quot;)
+        val
+    end
+end</code></pre><p>在这里，我们希望 <code>t0</code>、<code>t1</code> 和 <code>val</code> 是私有的临时变量且 <code>time</code> 引用在 Julia Base 中的 <a href="../../base/base/#Base.Libc.time-Tuple{}"><code>time</code></a> 函数，而不是用户也许具有的任何 <code>time</code> 变量（对于 <code>println</code> 也是一样）。想象一下，如果用户表达式 <code>ex</code> 中也包含对名为 <code>t0</code> 的变量的赋值、或者定义了自己的 <code>time</code> 变量，则可能会出现问题，我们可能会得到错误或者诡异且不正确的行为。</p><p>Julia 的宏展开器以下列方式解决这些问题。首先，宏返回结果中的变量被分为局部变量或全局变量。如果一个变量被赋值（且未声明为全局变量）、声明为局部变量或者用作函数参数名称，则将其视为局部变量。否则，则认为它是全局变量。接着，局部变量重命名为唯一名称（通过生成新符号的 <a href="../../base/base/#Base.gensym"><code>gensym</code></a> 函数），并在宏定义所处环境中解析全局变量。因此，上述两个问题都被解决了；宏的局部变量不会与任何用户变量相冲突，<code>time</code> 和 <code>println</code> 也将引用其在 Julia Base 中的定义。</p><p>然而，仍有另外的问题。考虑此宏的以下用法：</p><pre><code class="language-julia">module MyModule
+import Base.@time
+
+time() = ... # compute something
+
+@time time()
+end</code></pre><p>在这里，用户表达式 <code>ex</code> 是对 <code>time</code> 的调用，但不是宏所使用的 <code>time</code> 函数。它明确地引用 <code>MyModule.time</code>。因此，我们必须将 <code>ex</code> 中的代码安排在宏调用所处环境中解析。这通过用 <a href="../../base/base/#Base.esc"><code>esc</code></a>「转义」表达式来完成：</p><pre><code class="language-julia">macro time(ex)
+    ...
+    local val = $(esc(ex))
+    ...
+end</code></pre><p>以这种方式封装的表达式会被宏展开器单独保留，并将其简单地逐字粘贴到输出中。因此，它将在宏调用所处环境中解析。</p><p>这种转义机制可以在必要时用于「违反」卫生，以便于引入或操作用户变量。例如，以下宏在其调用所处环境中将 <code>x</code> 设置为零：</p><pre><code class="language-julia-repl">julia&gt; macro zerox()
+           return esc(:(x = 0))
+       end
+@zerox (macro with 1 method)
+
+julia&gt; function foo()
+           x = 1
+           @zerox
+           return x # is zero
+       end
+foo (generic function with 1 method)
+
+julia&gt; foo()
+0</code></pre><p>应当明智地使用这种变量操作，但它偶尔会很方便。</p><p>Getting the hygiene rules correct can be a formidable challenge. Before using a macro, you might want to consider whether a function closure would be sufficient. Another useful strategy is to defer as much work as possible to runtime. For example, many macros simply wrap their arguments in a <code>QuoteNode</code> or other similar <a href="manual/@ref"><code>Expr</code></a>. Some examples of this include <code>@task body</code> which simply returns <code>schedule(Task(() -&gt; $body))</code>, and <code>@eval expr</code>, which simply returns <code>eval(QuoteNode(expr))</code>.</p><p>为了演示，我们可以将上面的 <code>@time</code> 示例重新编写成：</p><pre><code class="language-julia">macro time(expr)
+    return :(timeit(() -&gt; $(esc(expr))))
+end
+function timeit(f)
+    t0 = time()
+    val = f()
+    t1 = time()
+    println(&quot;elapsed time: &quot;, t1-t0, &quot; seconds&quot;)
+    return val
+end</code></pre><p>但是，我们不这样做也是有充分理由的：将 <code>expr</code> 封装在新的作用域块（该匿名函数）中也会稍微改变该表达式的含义（其中任何变量的作用域），而我们想要 <code>@time</code> 使用时对其封装的代码影响最小。</p><h3 id="宏与派发-1"><a class="docs-heading-anchor" href="#宏与派发-1">宏与派发</a><a class="docs-heading-anchor-permalink" href="#宏与派发-1" title="Permalink"></a></h3><p>与 Julia 函数一样，宏也是泛型的。由于多重派发，这意味着宏也能有多个方法定义：</p><pre><code class="language-julia-repl">julia&gt; macro m end
+@m (macro with 0 methods)
+
+julia&gt; macro m(args...)
+           println(&quot;$(length(args)) arguments&quot;)
+       end
+@m (macro with 1 method)
+
+julia&gt; macro m(x,y)
+           println(&quot;Two arguments&quot;)
+       end
+@m (macro with 2 methods)
+
+julia&gt; @m &quot;asd&quot;
+1 arguments
+
+julia&gt; @m 1 2
+Two arguments</code></pre><p>但是应该记住，宏派发基于传递给宏的 AST 的类型，而不是 AST 在运行时进行求值的类型：</p><pre><code class="language-julia-repl">julia&gt; macro m(::Int)
+           println(&quot;An Integer&quot;)
+       end
+@m (macro with 3 methods)
+
+julia&gt; @m 2
+An Integer
+
+julia&gt; x = 2
+2
+
+julia&gt; @m x
+1 arguments</code></pre><h2 id="代码生成-1"><a class="docs-heading-anchor" href="#代码生成-1">代码生成</a><a class="docs-heading-anchor-permalink" href="#代码生成-1" title="Permalink"></a></h2><p>当需要大量重复的样板代码时，为了避免冗余，通常以编程方式生成它。在大多数语言中，这需要一个额外的构建步骤以及生成重复代码的独立程序。在 Julia 中，表达式插值和 <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a> 允许在通常的程序执行过程中生成这些代码。例如，考虑下列自定义类型</p><pre><code class="language-julia">struct MyNumber
+    x::Float64
+end
+# output
+</code></pre><p>我们想为该类型添加一些方法。在下面的循环中，我们以编程的方式完成此工作：</p><pre><code class="language-julia">for op = (:sin, :cos, :tan, :log, :exp)
+    eval(quote
+        Base.$op(a::MyNumber) = MyNumber($op(a.x))
+    end)
+end
+# output
+</code></pre><p>现在，我们对自定义类型调用这些函数：</p><pre><code class="language-julia-repl">julia&gt; x = MyNumber(π)
+MyNumber(3.141592653589793)
+
+julia&gt; sin(x)
+MyNumber(1.2246467991473532e-16)
+
+julia&gt; cos(x)
+MyNumber(-1.0)</code></pre><p>在这种方法中，Julia 充当了自己的<a href="https://en.wikipedia.org/wiki/Preprocessor">预处理器</a>，并且允许从语言内部生成代码。使用 <code>:</code> 前缀的引用形式编写上述代码会使其更简洁：</p><pre><code class="language-julia">for op = (:sin, :cos, :tan, :log, :exp)
+    eval(:(Base.$op(a::MyNumber) = MyNumber($op(a.x))))
+end</code></pre><p>不管怎样，这种使用 <code>eval(quote(...))</code> 模式生成语言内部的代码很常见，为此，Julia 自带了一个宏来缩写该模式：</p><pre><code class="language-julia">for op = (:sin, :cos, :tan, :log, :exp)
+    @eval Base.$op(a::MyNumber) = MyNumber($op(a.x))
+end</code></pre><p><a href="../../base/base/#Base.@eval"><code>@eval</code></a> 重写此调用，使其与上面的较长版本完全等价。为了生成较长的代码块，可以把一个代码块作为表达式参数传给 <a href="../../base/base/#Base.@eval"><code>@eval</code></a>：</p><pre><code class="language-julia">@eval begin
+    # multiple lines
+end</code></pre><h2 id="非标准字符串字面量-1"><a class="docs-heading-anchor" href="#非标准字符串字面量-1">非标准字符串字面量</a><a class="docs-heading-anchor-permalink" href="#非标准字符串字面量-1" title="Permalink"></a></h2><p>回想一下在<a href="manual/@ref non-standard-string-literals">字符串</a>的文档中，以标识符为前缀的字符串字面量被称为非标准字符串字面量，它们可以具有与未加前缀的字符串字面量不同的语义。例如：</p><ul><li><code>r&quot;^\s*(?:#|$)&quot;</code> 生成一个正则表达式对象而不是一个字符串</li><li><code>b&quot;DATA\xff\u2200&quot;</code> 是字节数组 <code>[68,65,84,65,255,226,136,128]</code> 的字面量。</li></ul><p>可能令人惊讶的是，这些行为并没有被硬编码到 Julia 的解释器或编译器中。相反，它们是由一个通用机制实现的自定义行为，且任何人都可以使用该机制：带前缀的字符串字面量被解析为特定名称的宏的调用。例如，正则表达式宏如下：</p><pre><code class="language-julia">macro r_str(p)
+    Regex(p)
+end</code></pre><p>这便是全部代码。这个宏说的是字符串字面量 <code>r&quot;^\s*(?:#|$)&quot;</code> 的字面内容应该传给宏 <code>@r_str</code>，并且展开后的结果应当放在该字符串字面量出现处的语法树中。换句话说，表达式 <code>r&quot;^\s*(?:#|$)&quot;</code> 等价于直接把下列对象放进语法树中：</p><pre><code class="language-julia">Regex(&quot;^\\s*(?:#|\$)&quot;)</code></pre><p>字符串字面量形式不仅更短、更方便，也更高效：因为正则表达式需要编译，<code>Regex</code> 对象实际上是<em>在编译代码时</em>创建的，所以编译只发生一次，而不是每次执行代码时都再编译一次。请考虑如果正则表达式出现在循环中：</p><pre><code class="language-julia">for line = lines
+    m = match(r&quot;^\s*(?:#|$)&quot;, line)
+    if m === nothing
+        # non-comment
+    else
+        # comment
+    end
+end</code></pre><p>因为正则表达式 <code>r&quot;^\s*(?:#|$)&quot;</code> 在这段代码解析时便已编译并被插入到语法树中，所以它只编译一次，而不是每次执行循环时都再编译一次。要在不使用宏的情况下实现此效果，必须像这样编写此循环：</p><pre><code class="language-julia">re = Regex(&quot;^\\s*(?:#|\$)&quot;)
+for line = lines
+    m = match(re, line)
+    if m === nothing
+        # non-comment
+    else
+        # comment
+    end
+end</code></pre><p>此外，如果编译器无法确定在所有循环中正则表达式对象都是常量，可能无法进行某些优化，使得此版本的效率依旧低于上面的更方便的字面量形式。当然，在某些情况下，非字面量形式更方便：如果需要向正则表达式中插入变量，就必须采用这种更冗长的方法；如果正则表达式模式本身是动态的，可能在每次循环迭代时发生变化，就必须在每次迭代中构造新的正则表达式对象。然而，在绝大多数用例中，正则表达式不是基于运行时的数据构造的。在大多数情况下，将正则表达式编写为编译期值的能力是无法估量的。</p><p>与非标准字符串字面量一样，非标准命令字面量存在使用命令字面量语法的带前缀变种。命令字面量 <code>custom`literal`</code> 被解析为 <code>@custom_cmd &quot;literal&quot;</code>。Julia 本身不包含任何非标准命令字面量，但包可以使用此语法。除了语法不同以及使用 <code>_cmd</code> 而不是 <code>_str</code> 后缀，非标准命令字面量的行为与非标准字符串字面量完全相同。</p><p>如果两个模块提供了同名的非标准字符串或命令字面量，能使用模块名限定该字符串或命令字面量。例如，如果 <code>Foo</code> 和 <code>Bar</code> 提供了相同的字符串字面量 <code>@x_str</code>，那么可以编写 <code>Foo.x&quot;literal&quot;</code> 或 <code>Bar.x&quot;literal&quot;</code> 来消除两者的歧义。</p><p>用户定义的字符串字面量的机制十分强大。不仅 Julia 的非标准字面量的实现使用它，而且命令字面量的语法（<code>`echo &quot;Hello, $person&quot;`</code>）用下面看起来人畜无害的宏实现：</p><pre><code class="language-julia">macro cmd(str)
+    :(cmd_gen($(shell_parse(str)[1])))
+end</code></pre><p>当然，这个宏的定义中使用的函数隐藏了许多复杂性，但它们只是函数且完全用 Julia 编写。你可以阅读它们的源代码并精确地看到它们的行为——它们所做的一切就是构造要插入到你的程序的语法树的表达式对象。</p><h2 id="生成函数-1"><a class="docs-heading-anchor" href="#生成函数-1">生成函数</a><a class="docs-heading-anchor-permalink" href="#生成函数-1" title="Permalink"></a></h2><p>有个非常特殊的宏叫 <a href="../../base/base/#Base.@generated"><code>@generated</code></a>，它允许你定义所谓的<em>生成函数</em>。它们能根据其参数类型生成专用代码，与用多重派发所能实现的代码相比，其代码更灵活和/或少。虽然宏在解析时使用表达式且无法访问其输入值的类型，但是生成函数在参数类型已知时会被展开，但该函数尚未编译。</p><p>生成函数的声明不会执行某些计算或操作，而会返回一个被引用的表达式，接着该表达式构成参数类型所对应方法的主体。在调用生成函数时，其返回的表达式会被编译然后执行。为了提高效率，通常会缓存结果。为了能推断是否缓存结果，只能使用语言的受限子集。因此，生成函数提供了一个灵活的方式来将工作重运行时移到编译时，代价则是其构造能力受到更大的限制。</p><p>When defining generated functions, there are five main differences to ordinary functions:</p><ol><li>使用 <code>@generated</code> 标注函数声明。这会向 AST 附加一些信息，让编译器知道这个函数是生成函数。</li><li>在生成函数的主体中，你只能访问参数的<em>类型</em>，而不能访问其值，以及在生成函数的定义之前便已定义的任何函数。 not their values.</li><li>不应计算某些东西或执行某些操作，应返回一个<em>被引用的</em>表达式，它会在被求值时执行你想要的操作。</li><li>Generated functions are only permitted to call functions that were defined <em>before</em> the definition of the generated function. (Failure to follow this my result on getting <code>MethodErrors</code> referring to functions from a future world-age.)</li><li>生成函数不能<em>更改</em>或<em>观察</em>任何非常量的全局状态。（例如，其包括 IO、锁、非局部的字典或者使用 <code>hasmethod</code>）即它们只能读取全局常量，且没有任何副作用。换句话说，它们必须是纯函数。由于实现限制，这也意味着它们目前无法定义闭包或生成器。 for example, IO, locks, non-local dictionaries, or using <a href="../../base/base/#Base.hasmethod"><code>hasmethod</code></a>).</li></ol><p>举例子来说明这个是最简单的。我们可以将生成函数 <code>foo</code> 声明为</p><pre><code class="language-julia-repl">julia&gt; @generated function foo(x)
+           Core.println(x)
+           return :(x * x)
+       end
+foo (generic function with 1 method)</code></pre><p>请注意，代码主体返回一个被引用的表达式，即 <code>:(x * x)</code>，而不仅仅是 <code>x * x</code> 的值。</p><p>从调用者的角度看，这与通常的函数等价；实际上，你无需知道你所调用的是通常的函数还是生成函数。让我们看看 <code>foo</code> 的行为：</p><pre><code class="language-julia-repl">julia&gt; x = foo(2); # note: output is from println() statement in the body
+Int64
+
+julia&gt; x           # now we print x
+4
+
+julia&gt; y = foo(&quot;bar&quot;);
+String
+
+julia&gt; y
+&quot;barbar&quot;</code></pre><p>因此，我们知道在生成函数的主体中，<code>x</code> 是所传递参数的<em>类型</em>，并且，生成函数的返回值是其定义所返回的被引用的表达式的求值结果，在该表达式求值时 <code>x</code> 表示其<em>值</em>。</p><p>如果我们使用我们已经使用过的类型再次对 <code>foo</code> 求值会发生什么？</p><pre><code class="language-julia-repl">julia&gt; foo(4)
+16</code></pre><p>请注意，这里并没有打印 <a href="../../base/numbers/#Core.Int64"><code>Int64</code></a>。我们可以看到对于特定的参数类型集来说，生成函数的主体只执行一次，且结果会被缓存。此后，对于此示例，生成函数首次调用返回的表达式被重新用作方法主体。但是，实际的缓存行为是由实现定义的性能优化，过于依赖此行为并不实际。</p><p>生成函数<em>可能</em>只生成一次函数,但也<em>可能</em>多次生成，或者看起来根本就没有生成过函数。因此，你应该<em>从不</em>编写有副作用的生成函数——因为副作用发生的时间和频率是不确定的。（对于宏来说也是如此——跟宏一样，在生成函数中使用 <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a> 也许意味着你正以错误的方式做某事。）但是，与宏不同，运行时系统无法正确处理对 <a href="../../base/base/#Base.MainInclude.eval"><code>eval</code></a> 的调用，所以不允许这样做。</p><p>理解 <code>@generated</code> 函数与方法的重定义间如何相互作用也很重要。遵循正确的 <code>@generated</code> 函数不能观察任何可变状态或导致全局状态的任何更改的原则，我们看到以下行为。观察到，生成函数<em>不能</em>调用在生成函数本身的<em>定义</em>之前未定义的任何方法。</p><p>一开始 <code>f(x)</code> 有一个定义</p><pre><code class="language-julia-repl">julia&gt; f(x) = &quot;original definition&quot;;</code></pre><p>定义使用 <code>f(x)</code> 的其它操作：</p><pre><code class="language-julia-repl">julia&gt; g(x) = f(x);
+
+julia&gt; @generated gen1(x) = f(x);
+
+julia&gt; @generated gen2(x) = :(f(x));</code></pre><p>我们现在为 <code>f(x)</code> 添加几个新定义：</p><pre><code class="language-julia-repl">julia&gt; f(x::Int) = &quot;definition for Int&quot;;
+
+julia&gt; f(x::Type{Int}) = &quot;definition for Type{Int}&quot;;</code></pre><p>并比较这些结果的差异：</p><pre><code class="language-julia-repl">julia&gt; f(1)
+&quot;definition for Int&quot;
+
+julia&gt; g(1)
+&quot;definition for Int&quot;
+
+julia&gt; gen1(1)
+&quot;original definition&quot;
+
+julia&gt; gen2(1)
+&quot;definition for Int&quot;</code></pre><p>生成函数的每个方法都有自己的已定义函数视图：</p><pre><code class="language-julia-repl">julia&gt; @generated gen1(x::Real) = f(x);
+
+julia&gt; gen1(1)
+&quot;definition for Type{Int}&quot;</code></pre><p>上例中的生成函数 <code>foo</code> 能做的，通常的函数 <code>foo(x) = x * x</code> 也能做（除了在第一次调用时打印类型，并产生了更高的开销）。但是，生成函数的强大之处在于其能够根据传递给它的类型计算不同的被引用的表达式：</p><pre><code class="language-julia-repl">julia&gt; @generated function bar(x)
+           if x &lt;: Integer
+               return :(x ^ 2)
+           else
+               return :(x)
+           end
+       end
+bar (generic function with 1 method)
+
+julia&gt; bar(4)
+16
+
+julia&gt; bar(&quot;baz&quot;)
+&quot;baz&quot;</code></pre><p>（当然，这个刻意的例子可以更简单地通过多重派发实现······）</p><p>滥用它会破坏运行时系统并导致未定义行为：</p><pre><code class="language-julia-repl">julia&gt; @generated function baz(x)
+           if rand() &lt; .9
+               return :(x^2)
+           else
+               return :(&quot;boo!&quot;)
+           end
+       end
+baz (generic function with 1 method)</code></pre><p>由于生成函数的主体具有不确定性，其行为和<em>所有后续代码的行为</em>并未定义。</p><p><em>不要复制这些例子！</em></p><p>这些例子有助于说明生成函数定义和调用的工作方式；但是，<em>不要复制它们</em>，原因如下：</p><ul><li><code>foo</code> 函数有副作用（对 <code>Core.println</code> 的调用），并且未确切定义这些副作用发生的时间、频率和次数。</li><li><code>bar</code> 函数解决的问题可通过多重派发被更好地解决——定义 <code>bar(x) = x</code> 和 <code>bar(x::Integer) = x ^ 2</code> 会做同样的事，但它更简单和快捷。</li><li><code>baz</code> 函数是病态的</li></ul><p>请注意，不应在生成函数中尝试的操作并无严格限制，且运行时系统现在只能检测一部分无效操作。还有许多操作只会破坏运行时系统而没有通知，通常以微妙的方式而非显然地与错误的定义相关联。因为函数生成器是在类型推导期间运行的，所以它必须遵守该代码的所有限制。</p><p>一些不应该尝试的操作包括：</p><ol><li><p>缓存本地指针。</p></li><li><p>以任何方式与 <code>Core.Compiler</code> 的内容或方法交互。</p></li><li><p>观察任何可变状态。</p><ul><li>生成函数的类型推导可以在<em>任何</em>时候运行，包括你的代码正在尝试观察或更改此状态时。</li></ul></li><li><p>采用任何锁：你调用的 C 代码可以在内部使用锁（例如，调用 <code>malloc</code> 不会有问题，即使大多数实现在内部需要锁），但是不要试图在执行 Julia 代码时保持或请求任何锁。</p></li><li><p>调用在生成函数的主体后定义的任何函数。对于增量加载的预编译模块，则放宽此条件，以允许调用模块中的任何函数。</p></li></ol><p>那好，我们现在已经更好地理解了生成函数的工作方式，让我们使用它来构建一些更高级（和有效）的功能……</p><h3 id="一个高级的例子-1"><a class="docs-heading-anchor" href="#一个高级的例子-1">一个高级的例子</a><a class="docs-heading-anchor-permalink" href="#一个高级的例子-1" title="Permalink"></a></h3><p>Julia 的 base 库有个内部函数 <code>sub2ind</code>，用于根据一组 n 重线性索引计算 n 维数组的线性索引——换句话说，用于计算索引 <code>i</code>，其可用于使用 <code>A[i]</code> 来索引数组 <code>A</code>，而不是用 <code>A[x,y,z,...]</code>。一种可能的实现如下：</p><pre><code class="language-julia-repl">julia&gt; function sub2ind_loop(dims::NTuple{N}, I::Integer...) where N
+           ind = I[N] - 1
+           for i = N-1:-1:1
+               ind = I[i]-1 + dims[i]*ind
+           end
+           return ind + 1
+       end
+sub2ind_loop (generic function with 1 method)
+
+julia&gt; sub2ind_loop((3, 5), 1, 2)
+4</code></pre><p>用递归可以完成同样的事情：</p><pre><code class="language-julia-repl">julia&gt; sub2ind_rec(dims::Tuple{}) = 1;
+
+julia&gt; sub2ind_rec(dims::Tuple{}, i1::Integer, I::Integer...) =
+           i1 == 1 ? sub2ind_rec(dims, I...) : throw(BoundsError());
+
+julia&gt; sub2ind_rec(dims::Tuple{Integer, Vararg{Integer}}, i1::Integer) = i1;
+
+julia&gt; sub2ind_rec(dims::Tuple{Integer, Vararg{Integer}}, i1::Integer, I::Integer...) =
+           i1 + dims[1] * (sub2ind_rec(Base.tail(dims), I...) - 1);
+
+julia&gt; sub2ind_rec((3, 5), 1, 2)
+4</code></pre><p>这两种实现虽然不同，但本质上做同样的事情：在数组维度上的运行时循环，将每个维度上的偏移量收集到最后的索引中。</p><p>然而，循环所需的信息都已嵌入到参数的类型信息中。因此，我们可以利用生成函数将迭代移动到编译期；用编译器的说法，我们用生成函数手动展开循环。代码主体变得几乎相同，但我们不是计算线性索引，而是建立计算索引的<em>表达式</em>：</p><pre><code class="language-julia-repl">julia&gt; @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
+           ex = :(I[$N] - 1)
+           for i = (N - 1):-1:1
+               ex = :(I[$i] - 1 + dims[$i] * $ex)
+           end
+           return :($ex + 1)
+       end
+sub2ind_gen (generic function with 1 method)
+
+julia&gt; sub2ind_gen((3, 5), 1, 2)
+4</code></pre><p><strong>这会生成什么代码？</strong></p><p>找出所生成代码的一个简单方法是将生成函数的主体提取到另一个（通常的）函数中：</p><pre><code class="language-julia-repl">julia&gt; @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
+           return sub2ind_gen_impl(dims, I...)
+       end
+sub2ind_gen (generic function with 1 method)
+
+julia&gt; function sub2ind_gen_impl(dims::Type{T}, I...) where T &lt;: NTuple{N,Any} where N
+           length(I) == N || return :(error(&quot;partial indexing is unsupported&quot;))
+           ex = :(I[$N] - 1)
+           for i = (N - 1):-1:1
+               ex = :(I[$i] - 1 + dims[$i] * $ex)
+           end
+           return :($ex + 1)
+       end
+sub2ind_gen_impl (generic function with 1 method)</code></pre><p>我们现在可以执行 <code>sub2ind_gen_impl</code> 并检查它所返回的表达式：</p><pre><code class="language-julia-repl">julia&gt; sub2ind_gen_impl(Tuple{Int,Int}, Int, Int)
+:(((I[1] - 1) + dims[1] * (I[2] - 1)) + 1)</code></pre><p>因此，这里使用的方法主体根本不包含循环——只有两个元组的索引、乘法和加法/减法。所有循环都是在编译期执行的，我们完全避免了在执行期间的循环。因此，我们只需对每个类型循环<em>一次</em>，在本例中每个 <code>N</code> 循环一次（除了在该函数被多次生成的边缘情况——请参阅上面的免责声明）。</p><h3 id="可选地生成函数-1"><a class="docs-heading-anchor" href="#可选地生成函数-1">可选地生成函数</a><a class="docs-heading-anchor-permalink" href="#可选地生成函数-1" title="Permalink"></a></h3><p>生成函数可以在运行时实现高效率，但需要编译时间成本：必须为具体的参数类型的每个组合生成新的函数体。通常，Julia 能够编译函数的「泛型」版本，其适用于任何参数，但对于生成函数，这是不可能的。这意味着大量使用生成函数的程序可能无法静态编译。</p><p>为了解决这个问题，语言提供用于编写生成函数的通常、非生成的替代实现的语法。应用于上面的 <code>sub2ind</code> 示例，它看起来像这样：</p><pre><code class="language-julia">function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N
+    if N != length(I)
+        throw(ArgumentError(&quot;Number of dimensions must match number of indices.&quot;))
+    end
+    if @generated
+        ex = :(I[$N] - 1)
+        for i = (N - 1):-1:1
+            ex = :(I[$i] - 1 + dims[$i] * $ex)
+        end
+        return :($ex + 1)
+    else
+        ind = I[N] - 1
+        for i = (N - 1):-1:1
+            ind = I[i] - 1 + dims[i]*ind
+        end
+        return ind + 1
+    end
+end</code></pre><p>在内部，这段代码创建了函数的两个实现：一个生成函数的实现，其使用 <code>if @generated</code> 中的第一个块，一个通常的函数的实现，其使用 <code>else</code> 块。在 <code>if @generated</code> 块的 <code>then</code> 部分中，代码与其它生成函数具有相同的语义：参数名称引用类型，且代码应返回表达式。可能会出现多个 <code>if @generated</code> 块，在这种情况下，生成函数的实现使用所有的 <code>then</code> 块，而替代实现使用所有的 <code>else</code> 块。</p><p>请注意，我们在函数顶部添加了错误检查。此代码对两个版本都是通用的，且是两个版本中的运行时代码（它将被引用并返回为生成函数版本中的表达式）。这意味着局部变量的值和类型在代码生成时不可用——用于代码生成的代码只能看到参数类型。</p><p>在这种定义方式中，代码生成功能本质上只是一种可选的优化。如果方便，编译器将使用它，否则可能选择使用通常的实现。这种方式是首选的，因为它允许编译器做出更多决策和以更多方式编译程序，还因为通常代码比由代码生成的代码更易读。但是，使用哪种实现取决于编译器实现细节，因此，两个实现的行为必须相同。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../documentation/">« 文档</a><a class="docs-footer-nextpage" href="../arrays/">多维数组 »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 六月 20 周六 00:10">2020 六月 20 周六</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

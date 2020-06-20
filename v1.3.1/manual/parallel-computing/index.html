@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>并行计算 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/parallel-computing/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li class="is-active"><a class="tocitem" href>并行计算</a><ul class="internal"><li class="toplevel"><a class="tocitem" href="#协程-1"><span>协程</span></a></li><li><a class="tocitem" href="#管道-1"><span>管道</span></a></li><li class="toplevel"><a class="tocitem" href="#man-multithreading-1"><span>Multi-Threading (Experimental)</span></a></li><li><a class="tocitem" href="#设置-1"><span>设置</span></a></li><li><a class="tocitem" href="#@threads宏-1"><span><code>@threads</code>宏</span></a></li><li><a class="tocitem" href="#原子操作-1"><span>原子操作</span></a></li><li><a class="tocitem" href="#副作用和可变的函数参数-1"><span>副作用和可变的函数参数</span></a></li><li><a class="tocitem" href="#@threadcall-（实验性功能）-1"><span>@threadcall （实验性功能）</span></a></li><li class="toplevel"><a class="tocitem" href="#多核心或分布式处理-1"><span>多核心或分布式处理</span></a></li><li><a class="tocitem" href="#code-availability-1"><span>Code Availability and Loading Packages</span></a></li><li><a class="tocitem" href="#启动和管理-worker-进程-1"><span>启动和管理 worker 进程</span></a></li><li><a class="tocitem" href="#数据转移-1"><span>数据转移</span></a></li><li><a class="tocitem" href="#全局变量-1"><span>全局变量</span></a></li><li><a class="tocitem" href="#并行的Map和Loop-1"><span>并行的Map和Loop</span></a></li><li><a class="tocitem" href="#远程引用和-AbstractChannel-1"><span>远程引用和 AbstractChannel</span></a></li><li><a class="tocitem" href="#Channel-和-RemoteChannel-1"><span>Channel 和 RemoteChannel</span></a></li><li><a class="tocitem" href="#Local-invocations(@id-man-distributed-local-invocations)-1"><span>Local invocations(@id man-distributed-local-invocations)</span></a></li><li><a class="tocitem" href="#man-shared-arrays-1"><span>共享数组</span></a></li><li><a class="tocitem" href="#集群管理器-1"><span>集群管理器</span></a></li><li><a class="tocitem" href="#指定网络拓补结构（实验性功能）-1"><span>指定网络拓补结构（实验性功能）</span></a></li><li><a class="tocitem" href="#一些值得关注的外部库-1"><span>一些值得关注的外部库</span></a></li></ul></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">多线程</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>并行计算</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>并行计算</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/parallel-computingmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="并行计算-1"><a class="docs-heading-anchor" href="#并行计算-1">并行计算</a><a class="docs-heading-anchor-permalink" href="#并行计算-1" title="Permalink"></a></h1><p>对于多线程和并行计算的新手来说，首先了解Jullia所提供的 不同层级并行是非常有用的。这里我们主要将其分成三类：</p><ol><li>Julia 协程（绿色线程）</li><li>多线程</li><li>多核心或分布式处理</li></ol><p>我们首先考虑 Julia 任务 <a href="../control-flow/#man-tasks-1">Task（也就是协程）</a>以及其它依赖于 Julia  运行时库的模块，通过运行时库，我们无需手动与操作系统的调度进行交互就可以挂起和恢复计算，并且对 <code>Task</code> 间内部通信拥有完全控制。Julia 同样支持利用一些操作在 <code>Task</code> 间进行通信，比如 <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a> 以及 <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a>。另外，通信和数据同步是通过管道 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 完成的，它也为 <code>Task</code> 间内部通信提供了渠道。</p><p>Julia also supports <a href="#man-multithreading-1">experimental multi-threading</a>, where execution is forked and an anonymous function is run across all threads. Known as the fork-join approach, parallel threads execute independently, and must ultimately be joined in Julia&#39;s main thread to allow serial execution to continue. Multi-threading is supported using the <a href="../../base/math/#Base.:--Tuple{Any,Any}"><code>Base.Threads</code></a> module that is still considered experimental, as Julia is not yet fully thread-safe. In particular segfaults seem to occur during I/O operations and task switching. As an up-to-date reference, keep an eye on <a href="https://github.com/JuliaLang/julia/issues?q=is%3Aopen+is%3Aissue+label%3Amultithreading">the issue tracker</a>. Multi-Threading should only be used if you take into consideration global variables, locks and atomics, all of which are explained later.</p><p>最后我们将介绍 Julia 的分布式和并行计算的实现方法。鉴于以科学计算为主要目的，Julia 底层实现上提供了跨多核或多机器对任务并行的接口。同时我们还将介绍一些有用的分布式编程的外部包，比如 <code>MPI.jl</code> 以及 <code>DistributedArrays.jl</code>。</p><h1 id="协程-1"><a class="docs-heading-anchor" href="#协程-1">协程</a><a class="docs-heading-anchor-permalink" href="#协程-1" title="Permalink"></a></h1><p>Julia 的并行编程平台采用协程任务 <a href="../control-flow/#man-tasks-1">Tasks (aka Coroutines)</a> 来进行多个计算之间的切换。为了表示轻量线程之间的执行顺序，必须提供一种通信的原语。Julia 提供了函数 <code>Channel(func::Function, ctype=Any, csize=0, taskref=nothing)</code>，根据 <code>func</code> 创建 task，然后将其绑定到一个新的大小为 <code>csize</code>、 类型为 <code>ctype</code> 的管道上，并调度 task。<code>Channel</code> 可以当作是一种 task 之间通信的方式，<code>Channel{T}(sz::Int)</code> 会创建一个类型为 <code>T</code>、 大小为 <code>sz</code> 的管道。无论何时发起一个通信操作，如 <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> 或 <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>，当前 task 都会挂起，然后调度器会选择其它 task 去执行，在一个 task 等待的事件结束之后会重新恢复执行。</p><p>对于许多问题而言，并不需要直接考虑 task。不过，task 可以用来同时等待多个事件，从而实现<strong>动态调度</strong>。在动态调度的过程中，程序可以决定计算什么，或者根据其它任务执行结束的时间决定接下来在哪里执行计算。这对于不可预测或不平衡的计算量来说是必须的，因为我们只希望给那些已经完成了其当前任务的进程分配更多的任务。</p><h2 id="管道-1"><a class="docs-heading-anchor" href="#管道-1">管道</a><a class="docs-heading-anchor-permalink" href="#管道-1" title="Permalink"></a></h2><p>在 <a href="../control-flow/#流程控制-1">流程控制</a> 中有关 <a href="../../base/parallel/#Core.Task"><code>Task</code></a> 的部分，已经讨论了如何协调多个函数的执行。<a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 可以很方便地在多个运行中的 task 传递数据，特别是那些涉及 I/O 的操作。</p><p>典型的 I/O 操作包括读写文件、访问 web 服务、执行外部程序等。在所有这些场景中，如果其它 task 可以在读取文件（等待外部服务或程序执行完成）时继续执行，那么总的执行时间能够得到大大提升。</p><p>一个管道可以形象得看做是一个管子，一端可读，另一端可写：</p><ul><li><p>不同的 task 可以通过 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 往同一个 channel 并发地写入。</p></li><li><p>不同的 task 也可以通过 <a href="../../base/io-network/#Base.take!-Tuple{Base.GenericIOBuffer}"><code>take!</code></a> 从同一个 channel 并发地取数据</p></li><li><p>举个例子：</p><pre><code class="language-julia"># Given Channels c1 and c2,
+c1 = Channel(32)
+c2 = Channel(32)
+
+# and a function `foo` which reads items from c1, processes the item read
+# and writes a result to c2,
+function foo()
+    while true
+        data = take!(c1)
+        [...]               # process data
+        put!(c2, result)    # write out result
+    end
+end
+
+# we can schedule `n` instances of `foo` to be active concurrently.
+for _ in 1:n
+    @async foo()
+end</code></pre></li><li><p>Channel 可以通过 <code>Channel{T}(sz)</code> 构造，得到的 channel 只能存储类型 <code>T</code> 的数据。如果 <code>T</code> 没有指定，那么 channel 可以存任意类型。<code>sz</code> 表示该 channel 能够存储的最大元素个数。比如 <code>Channel(32)</code> 得到的 channel 最多可以存储32个元素。而 <code>Channel{MyType}(64)</code> 则可以最多存储64个 <code>MyType</code> 类型的数据。</p></li><li><p>如果一个 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 是空的，读取的 task(即执行 <a href="../../base/io-network/#Base.take!-Tuple{Base.GenericIOBuffer}"><code>take!</code></a> 的 task)会被阻塞直到有新的数据准备好了。</p></li><li><p>如果一个 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 是满的，那么写入的 task(即执行 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 的 task)则会被阻塞，直到 Channel 有空余。</p></li><li><p><a href="../../base/parallel/#Base.isready-Tuple{Channel}"><code>isready</code></a> 可以用来检查一个 channel 中是否有已经准备好的元素，而等待一个元素准备好 则用 <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a></p></li><li><p>一个 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 一开始处于开启状态，也就是说可以被 <a href="../../base/io-network/#Base.take!-Tuple{Base.GenericIOBuffer}"><code>take!</code></a> 读取和 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 写入。<a href="../../base/io-network/#Base.close"><code>close</code></a> 会关闭一个 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a>，对于一个已经关闭的 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a>，<a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> 会失败，例如：</p><pre><code class="language-julia-repl">julia&gt; c = Channel(2);
+
+julia&gt; put!(c, 1) # `put!` on an open channel succeeds
+1
+
+julia&gt; close(c);
+
+julia&gt; put!(c, 2) # `put!` on a closed channel throws an exception.
+ERROR: InvalidStateException(&quot;Channel is closed.&quot;,:closed)
+Stacktrace:
+[...]</code></pre></li><li><p><a href="../../base/io-network/#Base.take!-Tuple{Base.GenericIOBuffer}"><code>take!</code></a> 和 <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> (只读取，不会将元素从 channel 中删掉)仍然可以从一个已经关闭的 channel 中读数据，直到 channel 被取空了为止。继续上面的例子：</p><pre><code class="language-julia-repl">julia&gt; fetch(c) # Any number of `fetch` calls succeed.
+1
+
+julia&gt; fetch(c)
+1
+
+julia&gt; take!(c) # The first `take!` removes the value.
+1
+
+julia&gt; take!(c) # No more data available on a closed channel.
+ERROR: InvalidStateException(&quot;Channel is closed.&quot;,:closed)
+Stacktrace:
+[...]</code></pre></li></ul><p><code>Channel</code> 可以在 <code>for</code> 循环中遍历，此时，循环会一直运行直到 <code>Channel</code> 中有数据，遍历过程中会取遍加入到 <code>Channel</code> 中的所有值。一旦 <code>Channel</code>关闭或者取空了，<code>for</code> 循环就会终止。</p><p>例如，下面的 <code>for</code> 循环会等待新的数据：</p><pre><code class="language-julia-repl">julia&gt; c = Channel{Int}(10);
+
+julia&gt; foreach(i-&gt;put!(c, i), 1:3) # add a few entries
+
+julia&gt; data = [i for i in c]</code></pre><p>而下面的则会返回已经读取的数据：</p><pre><code class="language-julia-repl">julia&gt; c = Channel{Int}(10);
+
+julia&gt; foreach(i-&gt;put!(c, i), 1:3); # add a few entries
+
+julia&gt; close(c);                    # `for` loops can exit
+
+julia&gt; data = [i for i in c]
+3-element Array{Int64,1}:
+ 1
+ 2
+ 3</code></pre><p>考虑这样一个用 channel 做 task 之间通信的例子。首先，起 4 个 task 来处理一个 <code>jobs</code> channel 中的数据。<code>jobs</code> 中的每个任务通过 <code>job_id</code> 来表示，然后每个 task 模拟读取一个 <code>job_id</code>，然后随机等待一会儿，然后往一个 results channel 中写入一个元组，它分别包含 <code>job_id</code> 和执行的时间，最后将结果打印出来：</p><pre><code class="language-julia-repl">julia&gt; const jobs = Channel{Int}(32);
+
+julia&gt; const results = Channel{Tuple}(32);
+
+julia&gt; function do_work()
+           for job_id in jobs
+               exec_time = rand()
+               sleep(exec_time)                # 模拟执行实际外部工作所需的时间
+               put!(results, (job_id, exec_time))
+           end
+       end;
+
+julia&gt; function make_jobs(n)
+           for i in 1:n
+               put!(jobs, i)
+           end
+       end;
+
+julia&gt; n = 12;
+
+julia&gt; @async make_jobs(n); # 用 &quot;n&quot; 个 jobs 填充 jobs channel
+
+julia&gt; for i in 1:4 # 启动 4 个 tasks 来并行的处理请求
+           @async do_work()
+       end
+
+julia&gt; @elapsed while n &gt; 0 # 打印结果
+           job_id, exec_time = take!(results)
+           println(&quot;$job_id finished in $(round(exec_time; digits=2)) seconds&quot;)
+           global n = n - 1
+       end
+4 finished in 0.22 seconds
+3 finished in 0.45 seconds
+1 finished in 0.5 seconds
+7 finished in 0.14 seconds
+2 finished in 0.78 seconds
+5 finished in 0.9 seconds
+9 finished in 0.36 seconds
+6 finished in 0.87 seconds
+8 finished in 0.79 seconds
+10 finished in 0.64 seconds
+12 finished in 0.5 seconds
+11 finished in 0.97 seconds
+0.029772311</code></pre><p>当前版本的 Julia 会将所有 task 分发到一个操作系统的线程，因此，涉及 I/O 的操作会从并行执行中获利，而计算密集型的 task 则会顺序地在单独这个线程上执行。未来 Julia 将支持在多个线程上调度 task，从而让计算密集型 task 也能从并行计算中获利。</p><h1 id="man-multithreading-1"><a class="docs-heading-anchor" href="#man-multithreading-1">Multi-Threading (Experimental)</a><a class="docs-heading-anchor-permalink" href="#man-multithreading-1" title="Permalink"></a></h1><p>除了 task 之外，Julia 还原生支持多线程。本部分内容是实验性的，未来相关接口可能会改变。</p><h2 id="设置-1"><a class="docs-heading-anchor" href="#设置-1">设置</a><a class="docs-heading-anchor-permalink" href="#设置-1" title="Permalink"></a></h2><p>Julia 默认启动一个线程执行代码，这点可以通过 <a href="../../base/multi-threading/#Base.Threads.nthreads"><code>Threads.nthreads()</code></a> 来确认：</p><pre><code class="language-julia-repl">julia&gt; Threads.nthreads()
+1</code></pre><p>Julia 启动时的线程数可以通过环境变量 <code>JULIA_NUM_THREADS</code> 设置，下面启动4个线程：</p><pre><code class="language-bash">export JULIA_NUM_THREADS=4</code></pre><p>(上面的代码只能在 Linux 和 OSX 系统中运行，如果你在以上平台中使用的是 C shell，那么将 <code>export</code> 改成 <code>set</code>，如果你是在 Windows 上运行，那么将 <code>export</code> 改成 <code>set</code> 同时启动 Julia 时指定 <code>julia.exe</code> 的完整路径。)</p><p>现在确认下确实有4个线程：</p><pre><code class="language-julia-repl">julia&gt; Threads.nthreads()
+4</code></pre><p>不过我们现在是在 master 线程，用 <a href="../../base/multi-threading/#Base.Threads.threadid"><code>Threads.threadid</code></a> 确认下：</p><pre><code class="language-julia-repl">julia&gt; Threads.threadid()
+1</code></pre><h2 id="@threads宏-1"><a class="docs-heading-anchor" href="#@threads宏-1"><code>@threads</code>宏</a><a class="docs-heading-anchor-permalink" href="#@threads宏-1" title="Permalink"></a></h2><p>下面用一个简单的例子测试我们原生的线程，首先创建一个全零的数组：</p><pre><code class="language-julia-repl">julia&gt; a = zeros(10)
+10-element Array{Float64,1}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0</code></pre><p>现在用4个线程模拟操作这个数组，每个线程往对应的位置写入线程ID。</p><p>Julia 用 <a href="../../base/multi-threading/#Base.Threads.@threads"><code>Threads.@threads</code></a> 宏实现并行循环，该宏加在 <code>for</code> 循环前面，提示 Julia 循环部分是一个多线程的区域：</p><pre><code class="language-julia-repl">julia&gt; Threads.@threads for i = 1:10
+           a[i] = Threads.threadid()
+       end</code></pre><p>每次迭代会分配到各个线程，然后每个线程往对应位置写入线程 ID：</p><pre><code class="language-julia-repl">julia&gt; a
+10-element Array{Float64,1}:
+ 1.0
+ 1.0
+ 1.0
+ 2.0
+ 2.0
+ 2.0
+ 3.0
+ 3.0
+ 4.0
+ 4.0</code></pre><p>注意 <a href="../../base/multi-threading/#Base.Threads.@threads"><code>Threads.@threads</code></a> 并没有一个像 <a href="../../stdlib/Distributed/#Distributed.@distributed"><code>@distributed</code></a> 一样的可选的 reduction 参数。</p><h2 id="原子操作-1"><a class="docs-heading-anchor" href="#原子操作-1">原子操作</a><a class="docs-heading-anchor-permalink" href="#原子操作-1" title="Permalink"></a></h2><p>Julia 支持访问和修改值的<strong>原子</strong>操作，即以一种线程安全的方式来避免<a href="https://en.wikipedia.org/wiki/Race_condition">竞态条件</a>。一个值（必须是基本类型的，primitive type）可以通过 <a href="../../base/multi-threading/#Base.Threads.Atomic"><code>Threads.Atomic</code></a> 来包装起来从而支持原子操作。下面看个例子：</p><pre><code class="language-julia-repl">julia&gt; i = Threads.Atomic{Int}(0);
+
+julia&gt; ids = zeros(4);
+
+julia&gt; old_is = zeros(4);
+
+julia&gt; Threads.@threads for id in 1:4
+           old_is[id] = Threads.atomic_add!(i, id)
+           ids[id] = id
+       end
+
+julia&gt; old_is
+4-element Array{Float64,1}:
+ 0.0
+ 1.0
+ 7.0
+ 3.0
+
+julia&gt; ids
+4-element Array{Float64,1}:
+ 1.0
+ 2.0
+ 3.0
+ 4.0</code></pre><p>如果不加 <code>Atomic</code> 的话，那么会因为竞态条件而得到错误的结果，下面是一个没有避免竞态条件的例子：</p><pre><code class="language-julia-repl">julia&gt; using Base.Threads
+
+julia&gt; nthreads()
+4
+
+julia&gt; acc = Ref(0)
+Base.RefValue{Int64}(0)
+
+julia&gt; @threads for i in 1:1000
+          acc[] += 1
+       end
+
+julia&gt; acc[]
+926
+
+julia&gt; acc = Atomic{Int64}(0)
+Atomic{Int64}(0)
+
+julia&gt; @threads for i in 1:1000
+          atomic_add!(acc, 1)
+       end
+
+julia&gt; acc[]
+1000</code></pre><p>并非<strong>所有的</strong>原始类型都能放在 <code>Atomic</code> 标签内封装起来，支持的类型有<code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, <code>Int128</code>, <code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt64</code>, <code>UInt128</code>, <code>Float16</code>, <code>Float32</code>, 以及 <code>Float64</code>。此外，<code>Int128</code> 和 <code>UInt128</code> 在 AAarch32 和 ppc64le 上不支持。</p><h2 id="副作用和可变的函数参数-1"><a class="docs-heading-anchor" href="#副作用和可变的函数参数-1">副作用和可变的函数参数</a><a class="docs-heading-anchor-permalink" href="#副作用和可变的函数参数-1" title="Permalink"></a></h2><p>在使用多线程时，要非常小心使用了不<a href="https://en.wikipedia.org/wiki/Pure_function">纯</a>的函数，例如，用到了<a href="https://docs.julialang.org/en/latest/manual/style-guide/#Append-!-to-names-of-functions-that-modify-their-arguments-1">以!结尾</a>的函数，通常这类函数会修改其参数，因而是不纯的。此外还有些函数没有以 <code>!</code> 结尾，其实也是有副作用的，比如 <a href="../../base/arrays/#Base.findfirst-Tuple{Any}"><code>findfirst(regex, str)</code></a> 就会改变 <code>regex</code> 参数，或者是 <a href="../../stdlib/Random/#Base.rand"><code>rand()</code></a> 会修改 <code>Base.GLOBAL_RNG</code>:</p><pre><code class="language-julia-repl">julia&gt; using Base.Threads
+
+julia&gt; nthreads()
+4
+
+julia&gt; function f()
+           s = repeat([&quot;123&quot;, &quot;213&quot;, &quot;231&quot;], outer=1000)
+           x = similar(s, Int)
+           rx = r&quot;1&quot;
+           @threads for i in 1:3000
+               x[i] = findfirst(rx, s[i]).start
+           end
+           count(v -&gt; v == 1, x)
+       end
+f (generic function with 1 method)
+
+julia&gt; f() # the correct result is 1000
+1017
+
+julia&gt; function g()
+           a = zeros(1000)
+           @threads for i in 1:1000
+               a[i] = rand()
+           end
+           length(unique(a))
+       end
+g (generic function with 1 method)
+
+julia&gt; Random.seed!(1); g() # the result for a single thread is 1000
+781</code></pre><p>此时，应该重新设计代码来避免可能的竞态条件或者是使用 <a href="https://docs.julialang.org/en/latest/base/multi-threading/#Synchronization-Primitives-1">同步机制</a>。</p><p>例如，为了修正上面 <code>findfirst</code> 的例子，每个线程都要拷贝一份 <code>rx</code>。</p><pre><code class="language-julia-repl">julia&gt; function f_fix()
+             s = repeat([&quot;123&quot;, &quot;213&quot;, &quot;231&quot;], outer=1000)
+             x = similar(s, Int)
+             rx = [Regex(&quot;1&quot;) for i in 1:nthreads()]
+             @threads for i in 1:3000
+                 x[i] = findfirst(rx[threadid()], s[i]).start
+             end
+             count(v -&gt; v == 1, x)
+         end
+f_fix (generic function with 1 method)
+
+julia&gt; f_fix()
+1000</code></pre><p>现在使用 <code>Regex(&quot;1&quot;)</code> 而不是 <code>r&quot;1&quot;</code> 来保证 Julia 对每个 <code>rx</code> 向量的元素都创建了一个 <code>Regex</code> 的对象。</p><p><code>rand</code> 的例子更复杂点，因为我们需要保证每个线程使用的是不重叠的随机数序列，这可以简单地通过 <code>Future.randjump</code> 函数保证：</p><pre><code class="language-julia-repl">julia&gt; using Random; import Future
+
+julia&gt; function g_fix(r)
+           a = zeros(1000)
+           @threads for i in 1:1000
+               a[i] = rand(r[threadid()])
+           end
+           length(unique(a))
+       end
+g_fix (generic function with 1 method)
+
+julia&gt;  r = let m = MersenneTwister(1)
+                [m; accumulate(Future.randjump, fill(big(10)^20, nthreads()-1), init=m)]
+            end;
+
+julia&gt; g_fix(r)
+1000</code></pre><p>这里将 <code>r</code> 向量发送到 <code>g_fix</code>，由于生成多个随机数是很昂贵的操作，因此我们不希望每次执行函数都重复该操作。</p><h2 id="@threadcall-（实验性功能）-1"><a class="docs-heading-anchor" href="#@threadcall-（实验性功能）-1">@threadcall （实验性功能）</a><a class="docs-heading-anchor-permalink" href="#@threadcall-（实验性功能）-1" title="Permalink"></a></h2><p>所有的 I/O task，计时器，REPL 命令等都是通过一个事件循环复用的一个系统线程。有一个补丁版的 libuv(<a href="http://docs.libuv.org/en/v1.x/">http://docs.libuv.org/en/v1.x/</a>) 提供了该功能，从而在同一个系统线程上协调调度多个 task。I/O task 和计时器在等待某个事件发生时，会隐式地退出（yield），而显式地调用 <a href="../../base/parallel/#Base.yield"><code>yield</code></a> 则会允许其它 task 被调度。</p><p>因此，一个执行 <a href="../../base/c/#ccall"><code>ccall</code></a> 的 task 会阻止 Julia 的调度器执行其它 task，直到调用返回，这种情况对于所有外部库的调用都存在，例外的情况是，某些自定义的C代码调用返回到了 Julia中（此时有可能 yield ）或者 C 代码执行了 <code>jl_yield()</code>（C 中等价的 <a href="../../base/parallel/#Base.yield"><code>yield</code></a>）。</p><p>注意，尽管 Julia 的代码默认是单线程的，但是 Julia 调用的库可能会用到其内部的多线程，例如，BLAS 会在一台机器上使用尽可能多的线程。</p><p><a href="../../base/multi-threading/#Base.@threadcall"><code>@threadcall</code></a> 就是要解决 <a href="../../base/c/#ccall"><code>ccall</code></a> 会卡住主线程的这个问题，它会在一个额外的线程中调度 C 函数的执行，有一个默认大小为4的线程库用来做这个事情，该线程库的大小可以通过环境变量 <code>UV_THREADPOOL_SIZE</code> 控制。在等待一个空闲线程，以及在函数执行过程中某个线程空闲下来时，（主线程的事件循环中）正在请求的 task 会 yield 到其它 task，注意，<code>@threadcall</code> 并不会返回，直到执行结束。从用户的角度来看，就是一个和其它 Julia API 一样会阻塞的模块。</p><p>非常关键的一点是，被调用的函数不会再调用回 Julia。</p><p><code>@threadcall</code> 在 Julia 未来的版本中可能会被移除或改变。</p><h1 id="多核心或分布式处理-1"><a class="docs-heading-anchor" href="#多核心或分布式处理-1">多核心或分布式处理</a><a class="docs-heading-anchor-permalink" href="#多核心或分布式处理-1" title="Permalink"></a></h1><p>作为 Julia 标准库之一，<code>Distributed</code> 库提供了一种分布式内存并行计算的实现。</p><p>大多数现代计算机都拥有不止一个 CPU，而且多台计算机可以组织在一起形成一个集群。借助多个 CPU 的计算能力，许多计算过程能够更快地完成，这其中影响性能的两个主要因素分别是：CPU 自身的速度以及它们访问内存的速度。显然，在一个集群中，一个 CPU 访问同一个节点的 RAM 速度是最快的，不过令人吃惊的是，在一台典型的多核笔记本电脑上，由于访问主存和<a href="https://www.akkadia.org/drepper/cpumemory.pdf">缓存</a>的速度存在差别，类似的现象也会存在。因此，一个良好的多进程环境应该能够管理好某一片内存区域“所属”的CPU。Julia提供的多进程环境是基于消息传递来实现的，可以做到同时让程序在多个进程的不同内存区域中运行。</p><p>Julia 的消息传递机制与一些其它的框架不太一样，比如 MPI <sup class="footnote-reference"><a id="citeref-1" href="#footnote-1">[1]</a></sup>。在 Julia 中，进程之间的通信通常是<strong>单向</strong>的，这里单向的意思是说，在实现2个进程之间的操作时，只需要显式地管理一个进程即可。此外，这些操作并不像是“发送消息”，“接收消息”这类操作，而是一些高阶的操作，比如调用用户定义的函数。</p><p>Julia 中的分布式编程基于两个基本概念：<strong>远程引用</strong>(<em>remote references</em>)和<strong>远程调用</strong>(<em>remote calls</em>)。远程引用是一个对象，任意一个进程可以通过它访问存储在某个特定进程上的对象。远程调用指是某个进程发起的执行函数的请求，该函数会在另一个（也可能是同一个）进程中执行。</p><p>Remote references come in two flavors: <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> and <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a>.</p><p>A remote call returns a <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> to its result. Remote calls return immediately; the process that made the call proceeds to its next operation while the remote call happens somewhere else. You can wait for a remote call to finish by calling <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a> on the returned <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a>, and you can obtain the full value of the result using <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a>.</p><p>对于 <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 而言，它可以被反复写入。例如，多个进程可以通过引用同一个远程 <code>Channel</code> 来协调相互之间的操作。</p><p>每个进程都有一个对应的 id，提供 Julia 交互环境的进程的 <code>id</code> 永远是1。我们把用来执行并行任务的进程称为 “worker”，假如总共只有一个进程，那么进程1就被认为是 worker，否则，除了进程1以外的进程都称作 worker。</p><p>一起试一下吧。执行 <code>julia -p n</code> 就可以在本地起 <code>n</code> 个进程。一般来说，将 <code>n</code> 设成与你机器上（物理的内核数）CPU 个数一致比较合适。需要注意 <code>-p</code> 参数会隐式地载入 <code>Distributed</code> 模块。</p><pre><code class="language-julia">$ ./julia -p 2
+
+julia&gt; r = remotecall(rand, 2, 2, 2)
+Future(2, 1, 4, nothing)
+
+julia&gt; s = @spawnat 2 1 .+ fetch(r)
+Future(2, 1, 5, nothing)
+
+julia&gt; fetch(s)
+2×2 Array{Float64,2}:
+ 1.18526  1.50912
+ 1.16296  1.60607</code></pre><p><a href="../../stdlib/Distributed/#Distributed.remotecall-Tuple{Any,Integer,Vararg{Any,N} where N}"><code>remotecall</code></a> 的第一个参数是想要调用的函数，第二个参数是执行函数的进程 <code>id</code>，其余的参数会喂给将要被调用的函数。在 Julia 中进行并行编程时，一般不需要显示地指明具体在哪个进程上执行，不过 <a href="../../stdlib/Distributed/#Distributed.remotecall-Tuple{Any,Integer,Vararg{Any,N} where N}"><code>remotecall</code></a> 是一个相对底层的接口用来提供细粒度的管理。</p><p>可以看到，第一行代码请求进程2构建一个随机矩阵，第二行代码对该矩阵执行加一操作。每次执行的结果存在对应的 Future 中，即 <code>r</code> 和 <code>s</code>。这里 <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> 宏会在第一个参数所指定的进程中执行后面第二个参数中的表达式。</p><p>有时候，你可能会希望立即获取远程计算的结果，比如，在接下来的操作中就需要读取远程调用的结果，这时候你可以使用 <a href="../../stdlib/Distributed/#Distributed.remotecall_fetch-Tuple{Any,Integer,Vararg{Any,N} where N}"><code>remotecall_fetch</code></a> 函数，其效果相当于 <code>fetch(remotecall(...))</code>，不过更高效些。</p><pre><code class="language-julia-repl">julia&gt; remotecall_fetch(getindex, 2, r, 1, 1)
+0.18526337335308085</code></pre><p>回忆下，这里 <a href="../../base/arrays/#Base.getindex-Tuple{Type,Vararg{Any,N} where N}"><code>getindex(r,1,1)</code></a> <a href="../arrays/#man-array-indexing-1">相当于</a> <code>r[1,1]</code>，因此，上面的调用相当于获取 <code>r</code> 的第一个元素。</p><p>To make things easier, the symbol <code>:any</code> can be passed to [<code>@spawnat</code>], which picks where to do the operation for you:</p><pre><code class="language-julia-repl">julia&gt; r = @spawnat :any rand(2,2)
+Future(2, 1, 4, nothing)
+
+julia&gt; s = @spawnat :any 1 .+ fetch(r)
+Future(3, 1, 5, nothing)
+
+julia&gt; fetch(s)
+2×2 Array{Float64,2}:
+ 1.38854  1.9098
+ 1.20939  1.57158</code></pre><p>Note that we used <code>1 .+ fetch(r)</code> instead of <code>1 .+ r</code>. This is because we do not know where the code will run, so in general a <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> might be required to move <code>r</code> to the process doing the addition. In this case, <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> is smart enough to perform the computation on the process that owns <code>r</code>, so the <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> will be a no-op (no work is done).</p><p>(It is worth noting that <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> is not built-in but defined in Julia as a <a href="../metaprogramming/#man-macros-1">macro</a>. It is possible to define your own such constructs.)</p><p>An important thing to remember is that, once fetched, a <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> will cache its value locally. Further <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> calls do not entail a network hop. Once all referencing <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a>s have fetched, the remote stored value is deleted.</p><p><a href="../../stdlib/Distributed/#Base.@async"><code>@async</code></a> is similar to <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a>, but only runs tasks on the local process. We use it to create a &quot;feeder&quot; task for each process. Each task picks the next index that needs to be computed, then waits for its process to finish, then repeats until we run out of indices. Note that the feeder tasks do not begin to execute until the main task reaches the end of the <a href="../../stdlib/Distributed/#Base.@sync"><code>@sync</code></a> block, at which point it surrenders control and waits for all the local tasks to complete before returning from the function. As for v0.7 and beyond, the feeder tasks are able to share state via <code>nextidx</code> because they all run on the same process. Even if <code>Tasks</code> are scheduled cooperatively, locking may still be required in some contexts, as in <a href="../faq/#faq-async-io-1">asynchronous I/O</a>. This means context switches only occur at well-defined points: in this case, when <a href="../../stdlib/Distributed/#Distributed.remotecall_fetch-Tuple{Any,Integer,Vararg{Any,N} where N}"><code>remotecall_fetch</code></a> is called. This is the current state of implementation and it may change for future Julia versions, as it is intended to make it possible to run up to N <code>Tasks</code> on M <code>Process</code>, aka <a href="https://en.wikipedia.org/wiki/Thread_(computing)#Models">M:N Threading</a>. Then a lock acquiring\releasing model for <code>nextidx</code> will be needed, as it is not safe to let multiple processes read-write a resource at the same time.</p><h2 id="code-availability-1"><a class="docs-heading-anchor" href="#code-availability-1">Code Availability and Loading Packages</a><a class="docs-heading-anchor-permalink" href="#code-availability-1" title="Permalink"></a></h2><p>对于想要并行执行的代码，需要所有对所有线程都可见。例如，在 Julia 命令行中输入以下命令：</p><pre><code class="language-julia-repl">julia&gt; function rand2(dims...)
+           return 2*rand(dims...)
+       end
+
+julia&gt; rand2(2,2)
+2×2 Array{Float64,2}:
+ 0.153756  0.368514
+ 1.15119   0.918912
+
+julia&gt; fetch(@spawnat :any rand2(2,2))
+ERROR: RemoteException(2, CapturedException(UndefVarError(Symbol(&quot;#rand2&quot;))
+Stacktrace:
+[...]</code></pre><p>进程1知道函数 <code>rand2</code> 的存在，但进程2并不知道。</p><p>大多数情况下，你会从文件或者库中加载代码，在此过程中你可以灵活地控制哪个进程加载哪部分代码。假设有这样一个文件，<code>DummyModule.jl</code>，其代码如下：</p><pre><code class="language-julia">module DummyModule
+
+export MyType, f
+
+mutable struct MyType
+    a::Int
+end
+
+f(x) = x^2+1
+
+println(&quot;loaded&quot;)
+
+end</code></pre><p>为了在所有进程中引用 <code>MyType</code>，<code>DummyModule.jl</code> 需要在每个进程中载入。单独执行 <code>include(&quot;DummyModule.jl&quot;)</code> 只会在一个线程中将其载入。为了让每个线程都载入它，可以用 <a href="../../stdlib/Distributed/#Distributed.@everywhere"><code>@everywhere</code></a> 宏来实现(启动 Julia 的时候，执行 <code>julia -p 2</code>)。</p><pre><code class="language-julia-repl">julia&gt; @everywhere include(&quot;DummyModule.jl&quot;)
+loaded
+      From worker 3:    loaded
+      From worker 2:    loaded</code></pre><p>和往常一样，这么做并不会将 <code>DummyModule</code> 引入到每个线程的命名空间中，除非显式地使用 <code>using</code> 或 <code>import</code>。此外，显式地将 <code>DummyModule</code> 引入一个线程中，并不会影响其它线程：</p><pre><code class="language-julia-repl">julia&gt; using .DummyModule
+
+julia&gt; MyType(7)
+MyType(7)
+
+julia&gt; fetch(@spawnat 2 MyType(7))
+ERROR: On worker 2:
+UndefVarError: MyType not defined
+⋮
+
+julia&gt; fetch(@spawnat 2 DummyModule.MyType(7))
+MyType(7)</code></pre><p>不过，我们仍然可以在已经包含(include)过 <code>DummyModule</code> 的进程中，发送 <code>MyType</code> 类型的实例，尽管此时该进程的命名空间中并没有 <code>MyType</code> 变量:</p><pre><code class="language-julia-repl">julia&gt; put!(RemoteChannel(2), MyType(7))
+RemoteChannel{Channel{Any}}(2, 1, 13)</code></pre><p>文件代码还可以在启动的时候，通过 <code>-L</code> 参数指定，从而提前在多个进程中载入，然后通过一个 driver.jl 文件控制执行逻辑:</p><pre><code class="language-none">julia -p &lt;n&gt; -L file1.jl -L file2.jl driver.jl</code></pre><p>上面执行 <code>driver.jl</code> 的进程 id 为1，就跟提供交互式命令行的 Julia 进程一样。</p><p>最后，如果 <code>DummyModule.jl</code> 不是一个单独的文件，而是一个包的话，那么 <code>using DummyModule</code> 只会在所有线程中<em>载入</em> <code>DummyModule.jl</code>，也就是说 <code>DummyModule</code> 只会在 <code>using</code> 执行的线程中被引入命名空间。</p><h2 id="启动和管理-worker-进程-1"><a class="docs-heading-anchor" href="#启动和管理-worker-进程-1">启动和管理 worker 进程</a><a class="docs-heading-anchor-permalink" href="#启动和管理-worker-进程-1" title="Permalink"></a></h2><p>Julia 自带两种集群管理模式：</p><ul><li>本地集群，前面通过启动时指定 <code>-p</code> 参数就是这种模式</li><li>跨机器的集群，通过 <code>--machine-file</code> 指定。这种模式采用没有密码的 <code>ssh</code> 登陆并对应的机器上（与 host 相同的路径下）启动 Julia 的 worker 进程。</li></ul><p><a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a>, <a href="../../stdlib/Distributed/#Distributed.rmprocs"><code>rmprocs</code></a>, <a href="../../stdlib/Distributed/#Distributed.workers"><code>workers</code></a> 这些函数可以分别用来对集群中的进程进行增加，删除和修改。</p><pre><code class="language-julia-repl">julia&gt; using Distributed
+
+julia&gt; addprocs(2)
+2-element Array{Int64,1}:
+ 2
+ 3</code></pre><p>在 master 主线程中，<code>Distributed</code> 模块必须显式地在调用 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a> 之前载入，该模块会自动在其它进程中可见。</p><p>需要注意的时，worker 进程并不会执行 <code>~/.julia/config/startup.jl</code> 启动脚本，也不会同步其它进程的全局状态（比如全局变量，新定义的方法，加载的模块等）。</p><p>其它类型的集群可以通过自己写一个 <code>ClusterManager</code> 来实现，下面 <a href="#集群管理器-1">集群管理器</a> 部分会介绍。</p><h2 id="数据转移-1"><a class="docs-heading-anchor" href="#数据转移-1">数据转移</a><a class="docs-heading-anchor-permalink" href="#数据转移-1" title="Permalink"></a></h2><p>分布式程序的性能瓶颈主要是由发送消息和数据转移造成的，减少发送消息和转移数据的数量对于获取高性能和可扩展性至关重要，因此，深入了解 Julia 分布式程序是如何转移数据的非常有必要。</p><p><a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> can be considered an explicit data movement operation, since it directly asks that an object be moved to the local machine. <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> (and a few related constructs) also moves data, but this is not as obvious, hence it can be called an implicit data movement operation. Consider these two approaches to constructing and squaring a random matrix:</p><p>方法一：</p><pre><code class="language-julia-repl">julia&gt; A = rand(1000,1000);
+
+julia&gt; Bref = @spawnat :any A^2;
+
+[...]
+
+julia&gt; fetch(Bref);</code></pre><p>方法二：</p><pre><code class="language-julia-repl">julia&gt; Bref = @spawnat :any rand(1000,1000)^2;
+
+[...]
+
+julia&gt; fetch(Bref);</code></pre><p>The difference seems trivial, but in fact is quite significant due to the behavior of <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a>. In the first method, a random matrix is constructed locally, then sent to another process where it is squared. In the second method, a random matrix is both constructed and squared on another process. Therefore the second method sends much less data than the first.</p><p>In this toy example, the two methods are easy to distinguish and choose from. However, in a real program designing data movement might require more thought and likely some measurement. For example, if the first process needs matrix <code>A</code> then the first method might be better. Or, if computing <code>A</code> is expensive and only the current process has it, then moving it to another process might be unavoidable. Or, if the current process has very little to do between the <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> and <code>fetch(Bref)</code>, it might be better to eliminate the parallelism altogether. Or imagine <code>rand(1000,1000)</code> is replaced with a more expensive operation. Then it might make sense to add another <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> statement just for this step.</p><h2 id="全局变量-1"><a class="docs-heading-anchor" href="#全局变量-1">全局变量</a><a class="docs-heading-anchor-permalink" href="#全局变量-1" title="Permalink"></a></h2><p>Expressions executed remotely via <code>@spawnat</code>, or closures specified for remote execution using <code>remotecall</code> may refer to global variables. Global bindings under module <code>Main</code> are treated a little differently compared to global bindings in other modules. Consider the following code snippet:</p><pre><code class="language-julia-repl">A = rand(10,10)
+remotecall_fetch(()-&gt;sum(A), 2)</code></pre><p>这个例子中 <a href="../../base/collections/#Base.sum"><code>sum</code></a> 必须已经在远程的线程中定义了。注意这里 <code>A</code> 是当前线程中的一个全局变量，起初 worker 2 在其 <code>Main</code> 中并没有一个叫做 <code>A</code> 的变量。上面代码中，将闭包 <code>()-&gt;sum(A)</code> 发送到 worker 2 之后，会在 worker 2 中定义一个变量 <code>Main.A</code>，而且，<code>Main.A</code> 即使在执行完 <code>remotecall_fetch</code> 之后，仍然会存在与 worker 2 中。远程调用中包含的全局（这里仅仅指 <code>Main</code> 模块中的）引用会按如下方式管理：</p><ul><li><p>在全局调用中引用的全局绑定会在将要执行该调用的 worker 中被创建。</p></li><li><p>全局常量仍然在远端结点定义为常量。</p></li><li><p>全局绑定会在下一次远程调用中引用到的时候，当其值发生改变时，再次发送给目标 worker。此外，集群并不会所有结点的全局绑定。例如：</p><pre><code class="language-julia">A = rand(10,10)
+remotecall_fetch(()-&gt;sum(A), 2) # worker 2
+A = rand(10,10)
+remotecall_fetch(()-&gt;sum(A), 3) # worker 3
+A = nothing</code></pre><p>可以看到，<code>A</code> 作为全局变量在 worker 2中有定义，而 <code>B</code> 是一个局部变量，因而最后在 worker 2 中并没有 <code>B</code> 的绑定。 执行以上代码之后，worker 2 和 worker 3中的 <code>Main.A</code> 的值是不同的，同时，节点1上的值则为 <code>nothing</code>。</p></li></ul><p>也许你也注意到了，在 master 主节点上被赋值为 <code>nothing</code> 之后，全局变量的内存会被回收，但在 worker 节点上的全局变量并没有被回收掉。执行 <a href="manual/@ref"><code>clear</code></a> 可以手动将远端结点上的特定全局变量置为 <code>nothing</code>，然后对应的内存会被周期性的垃圾回收机制回收。</p><p>因此，在远程调用中，需要非常小心地引用全局变量。事实上，应当尽量避免引用全局变量，如果必须引用，那么可以考虑用<code>let</code>代码块将全局变量局部化：</p><pre><code class="language-julia-repl">julia&gt; A = rand(10,10);
+
+julia&gt; remotecall_fetch(()-&gt;A, 2);
+
+julia&gt; B = rand(10,10);
+
+julia&gt; let B = B
+           remotecall_fetch(()-&gt;B, 2)
+       end;
+
+julia&gt; @fetchfrom 2 InteractiveUtils.varinfo()
+name           size summary
+––––––––– ––––––––– ––––––––––––––––––––––
+A         800 bytes 10×10 Array{Float64,2}
+Base                Module
+Core                Module
+Main                Module</code></pre><p>可以看到，<code>A</code> 作为全局变量在 worker 2中有定义，而 <code>B</code> 是一个局部变量，因而最后在 worker 2 中并没有 <code>B</code> 的绑定。</p><h2 id="并行的Map和Loop-1"><a class="docs-heading-anchor" href="#并行的Map和Loop-1">并行的Map和Loop</a><a class="docs-heading-anchor-permalink" href="#并行的Map和Loop-1" title="Permalink"></a></h2><p>Fortunately, many useful parallel computations do not require data movement. A common example is a Monte Carlo simulation, where multiple processes can handle independent simulation trials simultaneously. We can use <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> to flip coins on two processes. First, write the following function in <code>count_heads.jl</code>:</p><pre><code class="language-julia">function count_heads(n)
+    c::Int = 0
+    for i = 1:n
+        c += rand(Bool)
+    end
+    c
+end</code></pre><p>函数 <code>count_heads</code> 只是简单地将 <code>n</code> 个随机 0-1 值累加，下面在两个机器上进行试验，并将结果叠加：</p><pre><code class="language-julia-repl">julia&gt; @everywhere include_string(Main, $(read(&quot;count_heads.jl&quot;, String)), &quot;count_heads.jl&quot;)
+
+julia&gt; a = @spawnat :any count_heads(100000000)
+Future(2, 1, 6, nothing)
+
+julia&gt; b = @spawnat :any count_heads(100000000)
+Future(3, 1, 7, nothing)
+
+julia&gt; fetch(a)+fetch(b)
+100001564</code></pre><p>上面的例子展示了一种非常常见而且有用的并行编程模式，在一些进程中执行多次独立的迭代，然后将它们的结果通过某个函数合并到一起，这个合并操作通常称作<strong>聚合</strong>(<em>reduction</em>)，也就是一般意义上的<strong>张量降维</strong>(tensor-rank-reducing)，比如将一个向量降维成一个数，或者是将一个 tensor 降维到某一行或者某一列等。在代码中，通常具有 <code>x = f(x, v[i])</code> 这种形式，其中 <code>x</code> 是一个叠加器，<code>f</code> 是一个聚合函数，而 <code>v[i]</code> 则是将要被聚合的值。一般来说，<code>f</code> 要求满足结合律，这样不管执行的顺序如何，都不会影响计算结果。</p><p>Notice that our use of this pattern with <code>count_heads</code> can be generalized. We used two explicit <a href="../../stdlib/Distributed/#Distributed.@spawnat"><code>@spawnat</code></a> statements, which limits the parallelism to two processes. To run on any number of processes, we can use a <em>parallel for loop</em>, running in distributed memory, which can be written in Julia using <a href="../../stdlib/Distributed/#Distributed.@distributed"><code>@distributed</code></a> like this:</p><pre><code class="language-julia">nheads = @distributed (+) for i = 1:200000000
+    Int(rand(Bool))
+end</code></pre><p>上面的写法将多次迭代分配到了不同的线程，然后通过一个聚合函数（这里是 <code>(+)</code>）合并计算结果，其中，每次迭代的结果作为 <code>for</code> 循环中的表达式的结果，最后整个循环的结果聚合后得到最终的结果。</p><p>注意，尽管这里 for 循环看起来跟串行的 for 循环差不多，实际表现完全不同。这里的迭代并没有特定的执行顺序，而且由于所有的迭代都在不同的进程中进行，其中变量的写入对全局来说不可见。所有并行的 for 循环中的变量都会复制并广播到每个进程。</p><p>比如，下面这段代码并不会像你想要的那样执行：</p><pre><code class="language-julia">a = zeros(100000)
+@distributed for i = 1:100000
+    a[i] = i
+end</code></pre><p>这段代码并不会把 <code>a</code> 的所有元素初始化，因为每个进程都会有一份 <code>a</code> 的拷贝，因此类似的 for 循环一定要避免。幸运的是，<a href="#man-shared-arrays-1">共享数组</a> 可以用来突破这种限制：</p><pre><code class="language-julia">using SharedArrays
+
+a = SharedArray{Float64}(10)
+@distributed for i = 1:10
+    a[i] = i
+end</code></pre><p>当然，对于 for 循环外面的变量来说，如果是只读的话，使用起来完全没问题：</p><pre><code class="language-julia">a = randn(1000)
+@distributed (+) for i = 1:100000
+    f(a[rand(1:end)])
+end</code></pre><p>这里每次迭代都会从共享给每个进程的向量 <code>a</code> 中随机选一个样本，然后用来计算 <code>f</code>。</p><p>As you could see, the reduction operator can be omitted if it is not needed. In that case, the loop executes asynchronously, i.e. it spawns independent tasks on all available workers and returns an array of <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> immediately without waiting for completion. The caller can wait for the <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> completions at a later point by calling <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> on them, or wait for completion at the end of the loop by prefixing it with <a href="../../stdlib/Distributed/#Base.@sync"><code>@sync</code></a>, like <code>@sync @distributed for</code>.</p><p>在一些不需要聚合函数的情况下，我们可能只是像对某个范围内的整数应用一个函数(或者，更一般地，某个序列中的所有元素)，这种操作称作<strong>并行的 map</strong>，在 Julia 中有一个对应的函数 <a href="../../stdlib/Distributed/#Distributed.pmap"><code>pmap</code></a>。例如，可以像下面这样计算一些随机大矩阵的奇异值：</p><pre><code class="language-julia-repl">julia&gt; M = Matrix{Float64}[rand(1000,1000) for i = 1:10];
+
+julia&gt; pmap(svdvals, M);</code></pre><p>Julia 中的 <a href="../../stdlib/Distributed/#Distributed.pmap"><code>pmap</code></a> 是被设计用来处理一些计算量比较复杂的函数的并行化的。与之对比的是，<code>@distributed for</code> 是用来处理一些每次迭代计算都很轻量的计算，比如简单地对两个数求和。<a href="../../stdlib/Distributed/#Distributed.pmap"><code>pmap</code></a> 和 <code>@distributed for</code> 都只会用到 worker 的进程。对于 <code>@distributed for</code> 而言，最后的聚合计算由发起者的进程完成。</p><h2 id="远程引用和-AbstractChannel-1"><a class="docs-heading-anchor" href="#远程引用和-AbstractChannel-1">远程引用和 AbstractChannel</a><a class="docs-heading-anchor-permalink" href="#远程引用和-AbstractChannel-1" title="Permalink"></a></h2><p>远程引用通常指某种 <code>AbstractChannel</code> 的实现。</p><p>A concrete implementation of an <code>AbstractChannel</code> (like <code>Channel</code>), is required to implement <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a>, <a href="../../base/io-network/#Base.take!-Tuple{Base.GenericIOBuffer}"><code>take!</code></a>, <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a>, <a href="../../base/parallel/#Base.isready-Tuple{Channel}"><code>isready</code></a> and <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a>. The remote object referred to by a <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> is stored in a <code>Channel{Any}(1)</code>, i.e., a <code>Channel</code> of size 1 capable of holding objects of <code>Any</code> type.</p><p><a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 可以被反复写入，可以指向任意大小和类型的 channel（或者是任意 <code>AbstractChannel</code> 的实现）。</p><p><code>RemoteChannel(f::Function, pid)()</code> 构造器可以构造一些引用，而这些引用指向的 channel 可以容纳多个某种具体类型的数据。其中 <code>f</code> 是将要在 <code>pid</code> 上执行的函数，其返回值必须是 <code>AbstractChannel</code> 类型。</p><p>例如，<code>RemoteChannel(()-&gt;Channel{Int}(10), pid)</code> 会创建一个 channel，其类型是 <code>Int</code>，容量是 10，这个 channel 存在于 <code>pid</code> 进程中。</p><p>针对 <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 的 <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a>, <a href="../../base/io-network/#Base.take!-Tuple{Base.GenericIOBuffer}"><code>take!</code></a>, <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a>, <a href="../../base/parallel/#Base.isready-Tuple{Channel}"><code>isready</code></a> 和 <a href="../../stdlib/Distributed/#Base.wait"><code>wait</code></a> 方法会被重定向到其底层存储着 channel 的进程。</p><p>因此，<a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 可以用来引用用户自定义的 <code>AbstractChannel</code> 对象。在 <a href="https://github.com/JuliaAttic/Examples">Examples repository</a> 中的 <code>dictchannel.jl</code> 文件中有一个简单的例子，其中使用了一个字典用于远端存储。</p><h2 id="Channel-和-RemoteChannel-1"><a class="docs-heading-anchor" href="#Channel-和-RemoteChannel-1">Channel 和 RemoteChannel</a><a class="docs-heading-anchor-permalink" href="#Channel-和-RemoteChannel-1" title="Permalink"></a></h2><ul><li>一个 <a href="../../base/parallel/#Base.Channel"><code>Channel</code></a> 仅对局部的进程可见，worker 2 无法直接访问 worker 3 上的 <code>Channel</code>，反之亦如此。不过 <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 可以跨 worker 获取和写入数据。</li><li><a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 可以看作是对 <code>Channel</code> 的封装。</li><li><a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 的 <code>pid</code> 就是其封装的 channel 所在的进程 id。</li><li>任意拥有 <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 引用的进程都可以对其进行读写，数据会自动发送到 <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 底层 channel 的进程（或从中获取数据）</li><li>序列化 <code>Channel</code> 会将其中的所有数据也都序列化，因此反序列化的时候也就可以得到一个原始数据的拷贝。</li><li>不过，对 <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> 的序列化则只会序列化其底层指向的 channel 的 id，因此反序列化之后得到的对象仍然会指向之前存储的对象。</li></ul><p>如上的通道示例可以修改为进程间通信，如下所示</p><p>首先，起 4 个 worker 进程处理同一个 remote channel <code>jobs</code>，其中的每个 job 都有一个对应的 <code>job_id</code>，然后每个 task 读取一个 <code>job_id</code>，然后模拟随机等待一段时间，然后往存储结果的 <code>RemoteChannel</code> 中写入一个 Tuple 对象，其中包含 <code>job_id</code> 和等待的时间。最后将结果打印出来。</p><pre><code class="language-julia-repl">julia&gt; addprocs(4); # add worker processes
+
+julia&gt; const jobs = RemoteChannel(()-&gt;Channel{Int}(32));
+
+julia&gt; const results = RemoteChannel(()-&gt;Channel{Tuple}(32));
+
+julia&gt; @everywhere function do_work(jobs, results) # define work function everywhere
+           while true
+               job_id = take!(jobs)
+               exec_time = rand()
+               sleep(exec_time) # simulates elapsed time doing actual work
+               put!(results, (job_id, exec_time, myid()))
+           end
+       end
+
+julia&gt; function make_jobs(n)
+           for i in 1:n
+               put!(jobs, i)
+           end
+       end;
+
+julia&gt; n = 12;
+
+julia&gt; @async make_jobs(n); # feed the jobs channel with &quot;n&quot; jobs
+
+julia&gt; for p in workers() # start tasks on the workers to process requests in parallel
+           remote_do(do_work, p, jobs, results)
+       end
+
+julia&gt; @elapsed while n &gt; 0 # print out results
+           job_id, exec_time, where = take!(results)
+           println(&quot;$job_id finished in $(round(exec_time; digits=2)) seconds on worker $where&quot;)
+           global n = n - 1
+       end
+1 finished in 0.18 seconds on worker 4
+2 finished in 0.26 seconds on worker 5
+6 finished in 0.12 seconds on worker 4
+7 finished in 0.18 seconds on worker 4
+5 finished in 0.35 seconds on worker 5
+4 finished in 0.68 seconds on worker 2
+3 finished in 0.73 seconds on worker 3
+11 finished in 0.01 seconds on worker 3
+12 finished in 0.02 seconds on worker 3
+9 finished in 0.26 seconds on worker 5
+8 finished in 0.57 seconds on worker 4
+10 finished in 0.58 seconds on worker 2
+0.055971741</code></pre><h3 id="远程调用和分布式垃圾回收-1"><a class="docs-heading-anchor" href="#远程调用和分布式垃圾回收-1">远程调用和分布式垃圾回收</a><a class="docs-heading-anchor-permalink" href="#远程调用和分布式垃圾回收-1" title="Permalink"></a></h3><p>远程引用所指向的对象可以在其所有引用都被集群删除之后被释放掉。</p><p>The node where the value is stored keeps track of which of the workers have a reference to it. Every time a <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> or a (unfetched) <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> is serialized to a worker, the node pointed to by the reference is notified. And every time a <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> or a (unfetched) <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> is garbage collected locally, the node owning the value is again notified. This is implemented in an internal cluster aware serializer. Remote references are only valid in the context of a running cluster. Serializing and deserializing references to and from regular <code>IO</code> objects is not supported.</p><p>上面说到的<strong>通知</strong>都是通过发送&quot;跟踪&quot;信息来实现的，当一个引用被序列化的时候，就会发送&quot;添加引用&quot;的信息，而一个引用被本地的垃圾回收器回收的时候，就会发送一个&quot;删除引用&quot;的信息。</p><p>Since <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a>s are write-once and cached locally, the act of <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a>ing a <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> also updates reference tracking information on the node owning the value.</p><p>一旦指向某个值的引用都被删除了，对应的节点会将其释放。</p><p>With <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a>s, serializing an already fetched <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> to a different node also sends the value since the original remote store may have collected the value by this time.</p><p>此外需要注意的是，本地的垃圾回收到底发生在什么时候取决于具体对象的大小以及当时系统的内存压力。</p><p>In case of remote references, the size of the local reference object is quite small, while the value stored on the remote node may be quite large. Since the local object may not be collected immediately, it is a good practice to explicitly call <a href="../../base/base/#Base.finalize"><code>finalize</code></a> on local instances of a <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a>, or on unfetched <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a>s. Since calling <a href="../../base/parallel/#Base.fetch-Tuple{Channel}"><code>fetch</code></a> on a <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> also removes its reference from the remote store, this is not required on fetched <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a>s. Explicitly calling <a href="../../base/base/#Base.finalize"><code>finalize</code></a> results in an immediate message sent to the remote node to go ahead and remove its reference to the value.</p><p>一旦执行了 finalize 之后，引用就不可用了。</p><h2 id="Local-invocations(@id-man-distributed-local-invocations)-1"><a class="docs-heading-anchor" href="#Local-invocations(@id-man-distributed-local-invocations)-1">Local invocations(@id man-distributed-local-invocations)</a><a class="docs-heading-anchor-permalink" href="#Local-invocations(@id-man-distributed-local-invocations)-1" title="Permalink"></a></h2><p>Data is necessarily copied over to the remote node for execution. This is the case for both remotecalls and when data is stored to a<a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> / <a href="../../stdlib/Distributed/#Distributed.Future"><code>Future</code></a> on a different node. As expected, this results in a copy of the serialized objects on the remote node. However, when the destination node is the local node, i.e. the calling process id is the same as the remote node id, it is executed as a local call. It is usually(not always) executed in a different task - but there is no serialization/deserialization of data. Consequently, the call refers to the same object instances as passed - no copies are created. This behavior is highlighted below:</p><pre><code class="language-julia-repl">julia&gt; using Distributed;
+
+julia&gt; rc = RemoteChannel(()-&gt;Channel(3));   # RemoteChannel created on local node
+
+julia&gt; v = [0];
+
+julia&gt; for i in 1:3
+           v[1] = i                          # Reusing `v`
+           put!(rc, v)
+       end;
+
+julia&gt; result = [take!(rc) for _ in 1:3];
+
+julia&gt; println(result);
+Array{Int64,1}[[3], [3], [3]]
+
+julia&gt; println(&quot;Num Unique objects : &quot;, length(unique(map(objectid, result))));
+Num Unique objects : 1
+
+julia&gt; addprocs(1);
+
+julia&gt; rc = RemoteChannel(()-&gt;Channel(3), workers()[1]);   # RemoteChannel created on remote node
+
+julia&gt; v = [0];
+
+julia&gt; for i in 1:3
+           v[1] = i
+           put!(rc, v)
+       end;
+
+julia&gt; result = [take!(rc) for _ in 1:3];
+
+julia&gt; println(result);
+Array{Int64,1}[[1], [2], [3]]
+
+julia&gt; println(&quot;Num Unique objects : &quot;, length(unique(map(objectid, result))));
+Num Unique objects : 3</code></pre><p>As can be seen, <a href="../../base/parallel/#Base.put!-Tuple{Channel,Any}"><code>put!</code></a> on a locally owned <a href="../../stdlib/Distributed/#Distributed.RemoteChannel"><code>RemoteChannel</code></a> with the same object <code>v</code> modifed between calls results in the same single object instance stored. As opposed to copies of <code>v</code> being created when the node owning <code>rc</code> is a different node.</p><p>It is to be noted that this is generally not an issue. It is something to be factored in only if the object is both being stored locally and modifed post the call. In such cases it may be appropriate to store a <code>deepcopy</code> of the object.</p><p>This is also true for remotecalls on the local node as seen in the following example:</p><pre><code class="language-julia-repl">julia&gt; using Distributed; addprocs(1);
+
+julia&gt; v = [0];
+
+julia&gt; v2 = remotecall_fetch(x-&gt;(x[1] = 1; x), myid(), v);     # Executed on local node
+
+julia&gt; println(&quot;v=$v, v2=$v2, &quot;, v === v2);
+v=[1], v2=[1], true
+
+julia&gt; v = [0];
+
+julia&gt; v2 = remotecall_fetch(x-&gt;(x[1] = 1; x), workers()[1], v); # Executed on remote node
+
+julia&gt; println(&quot;v=$v, v2=$v2, &quot;, v === v2);
+v=[0], v2=[1], false</code></pre><p>As can be seen once again, a remote call onto the local node behaves just like a direct invocation. The call modifies local objects passed as arguments. In the remote invocation, it operates on a copy of the arguments.</p><p>To repeat, in general this is not an issue. If the local node is also being used as a compute node, and the arguments used post the call, this behavior needs to be factored in and if required deep copies of arguments must be passed to the call invoked on the local node. Calls on remote nodes will always operate on copies of arguments.</p><h2 id="man-shared-arrays-1"><a class="docs-heading-anchor" href="#man-shared-arrays-1">共享数组</a><a class="docs-heading-anchor-permalink" href="#man-shared-arrays-1" title="Permalink"></a></h2><p>共享数组使用系统共享内存将数组映射到多个进程上，尽管和 <a href="https://github.com/JuliaParallel/DistributedArrays.jl"><code>DArray</code></a> 有点像，但其实际表现有很大不同。在 <a href="https://github.com/JuliaParallel/DistributedArrays.jl"><code>DArray</code></a> 中，每个进程可以访问数据中的一块，但任意两个进程都不能共享同一块数据，而对于 <a href="../../stdlib/SharedArrays/#SharedArrays.SharedArray"><code>SharedArray</code></a>，每个进程都可以访问整个数组。如果你想在一台机器上，让一大块数据能够被多个进程访问到，那么 <a href="../../stdlib/SharedArrays/#SharedArrays.SharedArray"><code>SharedArray</code></a> 是个不错的选择。</p><p>共享数组由 <code>SharedArray</code> 提供，必须在所有相关的 worker 中都显式地加载。</p><p>对 <a href="../../stdlib/SharedArrays/#SharedArrays.SharedArray"><code>SharedArray</code></a> 索引（访问和复制）操作就跟普通的数组一样，由于底层的内存对本地的进程是可见的，索引的效率很高，因此大多数单进程上的算法对 <a href="../../stdlib/SharedArrays/#SharedArrays.SharedArray"><code>SharedArray</code></a> 来说都是适用的，除非某些算法必须使用 <a href="../../base/arrays/#Core.Array"><code>Array</code></a> 类型（此时可以通过调用 <a href="../../stdlib/SharedArrays/#SharedArrays.sdata"><code>sdata</code></a> 来获取 <a href="../../stdlib/SharedArrays/#SharedArrays.SharedArray"><code>SharedArray</code></a> 数组）。对于其它类型的 <code>AbstractArray</code> 类型数组来说，<a href="../../stdlib/SharedArrays/#SharedArrays.sdata"><code>sdata</code></a> 仅仅会返回数组本身，因此，可以放心地使用 <a href="../../stdlib/SharedArrays/#SharedArrays.sdata"><code>sdata</code></a> 对任意类型的 <code>Array</code> 进行操作。</p><p>共享数组可以通过以下形式构造：</p><pre><code class="language-julia">SharedArray{T,N}(dims::NTuple; init=false, pids=Int[])</code></pre><p>上面的代码会创建一个 N 维，类型为 <code>T</code>，大小为 <code>dims</code> 的共享数组，通过 <code>pids</code> 指定可见的进程。与分布式数组不同的是，只有通过 <code>pids</code> 指定的 worker 才可见。</p><p>如果提供了一个类型为 <code>initfn(S::SharedArray)</code> 的 <code>init</code> 函数，那么所有相关的 worker 都会调用它。你可以让每个 worker 都在共享数组不同的地方执行 <code>init</code> 函数，从而实现并行初始化。</p><p>下面是个例子：</p><pre><code class="language-julia-repl">julia&gt; using Distributed
+
+julia&gt; addprocs(3)
+3-element Array{Int64,1}:
+ 2
+ 3
+ 4
+
+julia&gt; @everywhere using SharedArrays
+
+julia&gt; S = SharedArray{Int,2}((3,4), init = S -&gt; S[localindices(S)] = myid())
+3×4 SharedArray{Int64,2}:
+ 2  2  3  4
+ 2  3  3  4
+ 2  3  4  4
+
+julia&gt; S[3,2] = 7
+7
+
+julia&gt; S
+3×4 SharedArray{Int64,2}:
+ 2  2  3  4
+ 2  3  3  4
+ 2  7  4  4</code></pre><p><a href="../../stdlib/SharedArrays/#SharedArrays.localindices"><code>SharedArrays.localindices</code></a> 提供了一个以为的切片，可以很方便地用来将 task 分配到各个进程上。当然你可以按你想要的方式做区分：</p><pre><code class="language-julia-repl">julia&gt; S = SharedArray{Int,2}((3,4), init = S -&gt; S[indexpids(S):length(procs(S)):length(S)] = myid())
+3×4 SharedArray{Int64,2}:
+ 2  2  2  2
+ 3  3  3  3
+ 4  4  4  4</code></pre><p>由于所有的进程都能够访问底层的数据，因此一定要小心避免出现冲突：</p><pre><code class="language-julia">@sync begin
+    for p in procs(S)
+        @async begin
+            remotecall_wait(fill!, p, S, p)
+        end
+    end
+end</code></pre><p>上面的代码会导致不确定的结果，因为每个进程都将<strong>整个</strong>数组赋值为其 <code>pid</code>，从而导致最后一个执行完成的进程会保留其 <code>pid</code>。</p><p>考虑更复杂的一种情况：</p><pre><code class="language-julia">q[i,j,t+1] = q[i,j,t] + u[i,j,t]</code></pre><p>这个例子中，如果首先将任务用按照一维的索引作区分，那么就会出问题：如果 <code>q[i,j,t]</code> 位于分配给某个 worker 的最后一个位置，而 <code>q[i,j,t+1]</code> 位于下一个 worker 的开始位置，那么后面这个 worker 开始计算的时候，可能 <code>q[i,j,t]</code> 还没有准备好，这时候，更好的做法是，手动分区，比如可以定义一个函数，按照 <code>(irange,jrange)</code> 给每个 worker 分配任务。</p><pre><code class="language-julia-repl">julia&gt; @everywhere function myrange(q::SharedArray)
+           idx = indexpids(q)
+           if idx == 0 # This worker is not assigned a piece
+               return 1:0, 1:0
+           end
+           nchunks = length(procs(q))
+           splits = [round(Int, s) for s in range(0, stop=size(q,2), length=nchunks+1)]
+           1:size(q,1), splits[idx]+1:splits[idx+1]
+       end</code></pre><p>然后定义计算内核：</p><pre><code class="language-julia-repl">julia&gt; @everywhere function advection_chunk!(q, u, irange, jrange, trange)
+           @show (irange, jrange, trange)  # display so we can see what&#39;s happening
+           for t in trange, j in jrange, i in irange
+               q[i,j,t+1] = q[i,j,t] + u[i,j,t]
+           end
+           q
+       end</code></pre><p>然后定义一个 wrapper：</p><pre><code class="language-julia-repl">julia&gt; @everywhere advection_shared_chunk!(q, u) =
+           advection_chunk!(q, u, myrange(q)..., 1:size(q,3)-1)</code></pre><p>接下来，比较三个不同的版本，第一个是单进程版本：</p><pre><code class="language-julia-repl">julia&gt; advection_serial!(q, u) = advection_chunk!(q, u, 1:size(q,1), 1:size(q,2), 1:size(q,3)-1);</code></pre><p>然后是使用 <a href="../../stdlib/Distributed/#Distributed.@distributed"><code>@distributed</code></a>:</p><pre><code class="language-julia-repl">julia&gt; function advection_parallel!(q, u)
+           for t = 1:size(q,3)-1
+               @sync @distributed for j = 1:size(q,2)
+                   for i = 1:size(q,1)
+                       q[i,j,t+1]= q[i,j,t] + u[i,j,t]
+                   end
+               end
+           end
+           q
+       end;</code></pre><p>最后是使用分区：</p><pre><code class="language-julia-repl">julia&gt; function advection_shared!(q, u)
+           @sync begin
+               for p in procs(q)
+                   @async remotecall_wait(advection_shared_chunk!, p, q, u)
+               end
+           end
+           q
+       end;</code></pre><p>如果创建好了 <code>SharedArray</code> 之后，计算这些函数的执行时间，那么可以得到以下结果（用 <code>julia -p 4</code> 启动）：</p><pre><code class="language-julia-repl">julia&gt; q = SharedArray{Float64,3}((500,500,500));
+
+julia&gt; u = SharedArray{Float64,3}((500,500,500));</code></pre><p>先执行一次以便 JIT 编译，然后用 <a href="../../base/base/#Base.@time"><code>@time</code></a> 宏测试其第二次执行的时间：</p><pre><code class="language-julia-repl">julia&gt; @time advection_serial!(q, u);
+(irange,jrange,trange) = (1:500,1:500,1:499)
+ 830.220 milliseconds (216 allocations: 13820 bytes)
+
+julia&gt; @time advection_parallel!(q, u);
+   2.495 seconds      (3999 k allocations: 289 MB, 2.09% gc time)
+
+julia&gt; @time advection_shared!(q,u);
+        From worker 2:       (irange,jrange,trange) = (1:500,1:125,1:499)
+        From worker 4:       (irange,jrange,trange) = (1:500,251:375,1:499)
+        From worker 3:       (irange,jrange,trange) = (1:500,126:250,1:499)
+        From worker 5:       (irange,jrange,trange) = (1:500,376:500,1:499)
+ 238.119 milliseconds (2264 allocations: 169 KB)</code></pre><p>这里 <code>advection_shared!</code> 最大的优势在于，最小程度地降低了 woker 之间的通信，从而让每个 worker 能针对被分配的部分持续地计算一段时间。</p><h3 id="共享数组与分布式垃圾回收-1"><a class="docs-heading-anchor" href="#共享数组与分布式垃圾回收-1">共享数组与分布式垃圾回收</a><a class="docs-heading-anchor-permalink" href="#共享数组与分布式垃圾回收-1" title="Permalink"></a></h3><p>和远程引用一样，共享数组也依赖于创建节点上的垃圾回收来释放所有参与的 worker 上的引用。因此，创建大量生命周期比较短的数组，并尽可能快地显式 finilize 这些对象，代码会更高效，这样与之对用的内存和文件句柄都会更快地释放。</p><h2 id="集群管理器-1"><a class="docs-heading-anchor" href="#集群管理器-1">集群管理器</a><a class="docs-heading-anchor-permalink" href="#集群管理器-1" title="Permalink"></a></h2><p>Julia 通过集群管理器实现对多个进程（所构成的逻辑上的集群）的启动，管理以及网络通信。一个 <code>ClusterManager</code> 负责：</p><ul><li>在一个集群环境中启动 worker 进程 </li><li>管理每个 worker 生命周期内的事件</li><li>（可选），提供数据传输</li></ul><p>一个 Julia 集群由以下特点：</p><ul><li>初始进程，称为 <code>master</code>，其 <code>id</code> 为 1</li><li>只有 master 进程可以增加或删除 worker 进程</li><li>所有进程之间都可以直接通信</li></ul><p>worker 之间的连接（用的是内置的 TCP/IP 传输）按照以下方式进行：</p><ul><li>master 进程对一个 <code>ClusterManager</code> 对象调用 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a></li><li><a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a> 调用对应的 <a href="../../stdlib/Distributed/#Distributed.launch"><code>launch</code></a> 方法，然后在对应的机器上启动相应数量的 worker 进程</li><li>每个 worker 监听一个端口，然后将其 host 和 port 信息传给 <a href="../../base/io-network/#Base.stdout"><code>stdout</code></a></li><li>集群管理器捕获 <a href="../../base/io-network/#Base.stdout"><code>stdout</code></a> 中每个 worker 的信息，并提供给 master 进程</li><li>master 进程解析信息并与相应的 worker 建立 TCP/IP 连接</li><li>每个 worker 都会被通知集群中的其它 worker</li><li>每个 worker 与 <code>id</code> 小于自己的 worker 连接</li><li>这样，一个网络就建立了，从而，每个 worker 都可以与其它 worker 建立连接</li></ul><p>尽管默认的传输层使用的是 <a href="../../stdlib/Sockets/#Sockets.TCPSocket"><code>TCPSocket</code></a>，对于一个自定义的集群管理器来说，完全可以使用其它传输方式。</p><p>Julia 提供了两种内置的集群管理器：</p><ul><li><code>LocalManager</code>，调用 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs()</code></a> 或 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs(np::Integer)</code></a> 时会用到。</li><li><code>SSHManager</code>，调用 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs(hostnames::Array)</code></a> 时，传递一个 hostnames 的列表。</li></ul><p><code>LocalManager</code> 用来在同一个 host 上启动多个 worker，从而利用多核/多处理器硬件。</p><p>因此，一个最小的集群管理器需要：</p><ul><li>是一个 <code>ClusterManager</code> 抽象类的一个子类</li><li>实现 <a href="../../stdlib/Distributed/#Distributed.launch"><code>launch</code></a> 接口，用来启动新的 worker</li><li>实现 <a href="../../stdlib/Distributed/#Distributed.manage"><code>manage</code></a>，在一个 worker 的生命周期中多次被调用（例如，发送中断信号）</li></ul><p><a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs(manager::FooManager)</code></a> 需要 <code>FooManager</code> 实现：</p><pre><code class="language-julia">function launch(manager::FooManager, params::Dict, launched::Array, c::Condition)
+    [...]
+end
+
+function manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symbol)
+    [...]
+end</code></pre><p>作为一个例子，我们来看下 <code>LocalManager</code> 是怎么实现的：</p><pre><code class="language-julia">struct LocalManager &lt;: ClusterManager
+    np::Integer
+end
+
+function launch(manager::LocalManager, params::Dict, launched::Array, c::Condition)
+    [...]
+end
+
+function manage(manager::LocalManager, id::Integer, config::WorkerConfig, op::Symbol)
+    [...]
+end</code></pre><p><a href="../../stdlib/Distributed/#Distributed.launch"><code>launch</code></a> 方法接收以下参数：</p><ul><li><code>manager::ClusterManager</code>: 调用 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a> 时所用到的集群管理器</li><li><code>params::Dict</code>: 所有的关键字参数都会传递到 <a href="../../stdlib/Distributed/#Distributed.addprocs"><code>addprocs</code></a> 中</li><li><code>launched::Array</code>: 用来存储一个或多个 <code>WorkerConfig</code></li><li><code>c::Condition</code>: 在 workers 启动后被通知的条件变量</li></ul><p><a href="../../stdlib/Distributed/#Distributed.launch"><code>launch</code></a> 会在一个异步的task中调用，该 task 结束之后，意味着所有请求的 worker 都已经启动好了。因此，<a href="../../stdlib/Distributed/#Distributed.launch"><code>launch</code></a> 函数<strong>必须</strong>在所有 worker 启动之后，尽快退出。</p><p>新启动的 worker 之间采用的是多对多的连接方式。在命令行中指定参数 <code>--worker[=&lt;cookie&gt;]</code> 会让所有启动的进程把自己当作 worker，然后通过 TCP/IP 构建连接。</p><p>集群中所有的 worker 默认使用同一个 master 的 <a href="#man-cluster-cookie-1">cookie</a>。如果 cookie 没有指定，（比如没有通过 <code>--worker</code> 指定），那么 worker 会尝试从它的标准输入中读取。<code>LocalManager</code> 和 <code>SSHManager</code> 都是通过标准输入来将 cookie 传递给新启动的 worker。</p><p>默认情况下，一个 worker 会监听从 <a href="../../stdlib/Sockets/#Sockets.getipaddr"><code>getipaddr()</code></a> 函数返回的地址上的一个开放端口。若要指定监听的地址，可以通过额外的参数 <code>--bind-to bind_addr[:port]</code> 指定，这对于多 host 的情况来说很方便。</p><p>对于非 TCP/IP 传输，可以选择 MPI 作为一种实现，此时一定<strong>不要</strong>指定 <code>--worker</code> 参数，另外，新启动的 worker 必须调用 <code>init_worker(cookie)</code> 之后再使用并行的结构体。</p><p>对于每个已经启动的 worker，<a href="../../stdlib/Distributed/#Distributed.launch"><code>launch</code></a> 方法必须往 <code>launched</code> 中添加一个 <code>WorkerConfig</code> 对象（相应的值已经初始化）。</p><pre><code class="language-julia">mutable struct WorkerConfig
+    # Common fields relevant to all cluster managers
+    io::Union{IO, Nothing}
+    host::Union{AbstractString, Nothing}
+    port::Union{Integer, Nothing}
+
+    # Used when launching additional workers at a host
+    count::Union{Int, Symbol, Nothing}
+    exename::Union{AbstractString, Cmd, Nothing}
+    exeflags::Union{Cmd, Nothing}
+
+    # External cluster managers can use this to store information at a per-worker level
+    # Can be a dict if multiple fields need to be stored.
+    userdata::Any
+
+    # SSHManager / SSH tunnel connections to workers
+    tunnel::Union{Bool, Nothing}
+    bind_addr::Union{AbstractString, Nothing}
+    sshflags::Union{Cmd, Nothing}
+    max_parallel::Union{Integer, Nothing}
+
+    # Used by Local/SSH managers
+    connect_at::Any
+
+    [...]
+end</code></pre><p><code>WorkerConfig</code> 中的大多数字段都是内置的集群管理器会用到，对于自定义的管理器，通常只需要指定 <code>io</code> 或 <code>host</code>/<code>port</code>:</p><ul><li><p>如果指定了 <code>io</code>，那么就会用来读取 host/port 信息。每个 worker 会在启动时打印地址和端口，这样 worker 就可以自由监听可用的端口，而不必手动配置 worker 的端口。</p></li><li><p>如果 <code>io</code> 没有指定，那么 <code>host</code> 和 <code>port</code> 就会用来连接。</p></li><li><p><code>count</code>，<code>exename</code> 和 <code>exeflags</code> 用于从一个 worker 上启动额外的 worker。例如，一个集群管理器可能对每个节点都只启动一个 worker，然后再用它来启动额外的 worker。</p><ul><li><code>count</code> 可以是一个整数 <code>n</code>，用来指定启动 <code>n</code> 个 worker</li><li><code>count</code> 还可以是 <code>:auto</code>，用来启动跟那台机器上 CPU 个数（逻辑上的核的个数）相同的 worker</li><li><code>exename</code> 是 <code>julia</code> 可执行文件的全路径</li><li><code>exeflags</code> 应该设置成传递给将要启动的 worker 命令行参数</li></ul></li><li><p><code>tunnel</code>, <code>bind_addr</code>, <code>sshflags</code> 和 <code>max_parallel</code> 会在从 worker 与 master 进程建立 ssh 隧道时用到</p></li><li><p><code>userdata</code> 用来提供给自定义集群管理器存储自己的 worker 相关的信息</p></li></ul><p><code>manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symbol)</code> 会在一个 worker 生命周期中的不同时刻被调用，其中 op 的值可能是：</p><ul><li><code>:register</code>/<code>:deregister</code>，从 Julia 的 worker 池子中添加/删除一个 worker</li><li><code>:interrupt</code>，当 <code>interrupt(workers)</code> 被调用是，此时，<code>ClusterManager</code> 应该给相应的 worker 发送终端信号</li><li><code>:finalize</code>，用于清理操作。</li></ul><h3 id="自定义集群管理器的传输方式-1"><a class="docs-heading-anchor" href="#自定义集群管理器的传输方式-1">自定义集群管理器的传输方式</a><a class="docs-heading-anchor-permalink" href="#自定义集群管理器的传输方式-1" title="Permalink"></a></h3><p>将默认的 TCP/IP 多对多 socket 连接替换成一个自定义的传输层需要做很多工作。每个 Julia 进程都有与其连接的 worker 数量相同的通信 task。例如，在一个有 32 个进程的多对多集群中：</p><ul><li>每个进程都有31个通信task</li><li>每个 task 在一个<strong>消息处理循环</strong>中从一个远端 worker 读取所有的输入信息</li><li>每个消息处理循环等待一个 <code>IO</code> 对象（比如，在默认实现中是一个 <a href="../../stdlib/Sockets/#Sockets.TCPSocket"><code>TCPSocket</code></a>），然后读取整个信息，处理，等待下一个</li><li>发送消息则可以直接在任意 Julia task 中完成，而不只是通信 task，同样，也是通过相应的 <code>IO</code> 对象</li></ul><p>要替换默认的传输方式，需要新的实现能够在远程 worker 之间建立连接，同时提供一个可以用来被消息处理循环等待的 <code>IO</code> 对象。集群管理器的回调函数需要实现如下函数：</p><pre><code class="language-julia">connect(manager::FooManager, pid::Integer, config::WorkerConfig)
+kill(manager::FooManager, pid::Int, config::WorkerConfig)</code></pre><p>默认的实现（使用的是 TCP/IP socket）是 <code>connect(manager::ClusterManager, pid::Integer, config::WorkerConfig)</code>。</p><p><code>connect</code> 需要返回一对 <code>IO</code> 对象，一个用于从 <code>pid</code> worker 读取数据，另一个用于往 <code>pid</code> 写数据。自定义的集群管理器可以用内存中的 <code>BUfferStream</code> 作为一个管道将自定义的（很可能是非 <code>IO</code> 的）传输与 Julia 内置的并行基础设施衔接起来。</p><p><code>BufferStream</code> 是一个内存中的 <a href="../../base/io-network/#Base.IOBuffer"><code>IOBuffer</code></a>，其表现很像 <code>IO</code>，就是一个<strong>流</strong>（stream），可以异步地处理。</p><p>在 <a href="https://github.com/JuliaAttic/Examples">Examples repository</a> 的 <code>clustermanager/0mq</code> 目录中，包含一个使用 ZeroMQ 连接 Julia worker 的例子，用的是星型拓补结构。需要注意的是：Julia 的进程仍然是<strong>逻辑上</strong>相互连接的，任意 worker 都可以与其它 worker 直接相连而无需感知到 0MQ 作为传输层的存在。</p><p>在使用自定义传输的时候：</p><ul><li>Julia 的 workers 必须<strong>不能</strong>通过 <code>--worker</code> 启动。如果启动的时候使用了 <code>--worker</code>，那么新启动的 worker 会默认使用基于 TCP/IP socket 的实现</li><li>对于每个 worker 逻辑上的输入连接，必须调用 <code>Base.process_messages(rd::IO, wr::IO)()</code>，这会创建一个新的 task 来处理 worker 消息的读写</li><li><code>init_worker(cookie, manager::FooManager)</code> 必须作为 worker 进程初始化的一部分呢被调用</li><li><code>WorkerConfig</code>中的 <code>connect_at::Any</code> 字段可以被集群管理器在调用 <a href="../../stdlib/Distributed/#Distributed.launch"><code>launch</code></a> 的时候设置，该字段的值会发送到所有的 <a href="../../stdlib/Distributed/#Sockets.connect-Tuple{ClusterManager,Int64,WorkerConfig}"><code>connect</code></a> 回调中。通常，其中包含的是<strong>如何连接到</strong>一个 worker 的信息。例如，在 TCP/IP socket 传输中，用这个字段存储 <code>(host, port)</code> 来声明如何连接到一个 worker。</li></ul><p><code>kill(manager, pid, config)</code> 用来从一个集群中删除一个 worker，在 master 进程中，对应的 <code>IO</code> 对象必须通过对应的实现来关闭，从而保证正确地释放资源。默认的实现简单地对指定的远端 worker 执行 <code>exit()</code> 即可。</p><p>在例子目录中，<code>clustermanager/simple</code> 展示了一个简单地实现，使用的是 UNIX 下的 socket。</p><h3 id="LocalManager-和-SSHManager-的网络要求-1"><a class="docs-heading-anchor" href="#LocalManager-和-SSHManager-的网络要求-1">LocalManager 和 SSHManager 的网络要求</a><a class="docs-heading-anchor-permalink" href="#LocalManager-和-SSHManager-的网络要求-1" title="Permalink"></a></h3><p>Julia 集群设计的时候，默认是在一个安全的环境中执行，比如本地的笔记本，部门的集群，甚至是云端。这部分将介绍 <code>LocalManager</code> 和 <code>SSHManager</code> 的网络安全要点：</p><ul><li>master 进程不监听任何端口，它只负责向外连接 worker</li><li>每个 worker 都只绑定一个本地的接口，同时监听一个操作系统分配的临时端口。</li><li><code>addprocs(N)</code> 使用的 <code>LocalManager</code>，默认只会绑定到回环接口（loopback interface），这就意味着，之后在远程主机上（恶意）启动的 worker 无法连接到集群中，在执行 <code>addprocs(4)</code> 之后，又跟一个 <code>addprocs([&quot;remote_host&quot;])</code> 会失败。有些用户可能希望创建一个集群同时管理本地系统和几个远端系统，这可以通过在绑定 <code>LocalManager</code> 到外部网络接口的时候，指定一个 <code>restrict</code> 参数：<code>addprocs(4; restrict=false)</code></li><li><code>addprocs(list_of_remote_hosts)</code> 使用的 <code>SSHManager</code> 会通过 SSH 启动远程机上的 worker。</li></ul><p>默认 SSH 只会用来启动 Julia 的 worker。随后的 master-worker 和 worker-worker 连接使用的是普通的、未加密的 TCP/IP 通信。     远程机必须开启免密登陆。     额外的 SSH 标记或认证信息会通过关键字参数 <code>sshflags</code> 指定。</p><ul><li><p><code>addprocs(list_of_remote_hosts; tunnel=true, sshflags=&lt;ssh keys and other flags&gt;)</code> 在我们希望给 master-worker 也使用 SSH 连接的时候很有用。 一个典型的场景是本地的笔记本 运行 Julia ERPL （做为 master）和云上的其他机器，比如 Amazon EC2，构成集群。 这时候远程机器只要开启 22 端口就可以，然后要有 SSH 客户端 通过公约基础设施（PKI）认证过。授权信息可以通过 <code>sshflags</code> 生效，比如 <code>sshflags=`-i &lt;keyfile&gt;`</code>。</p><p>在一个所有节点联通的拓扑网中（默认情况下是这样的），所有的 worker 节点都通过普通 TCP socket 通信互相连接。 这样集群的安全策略就必须允许 worker 节点间 通过操作系统分配的临时端口范围自由连接。</p><p>所有 worker-worker 间（都是 SSH）的安全和加密或者信息的加密 都可以通过自定义 <code>ClusterManager</code> 完成。</p></li></ul><h3 id="man-cluster-cookie-1"><a class="docs-heading-anchor" href="#man-cluster-cookie-1">集群 Cookie</a><a class="docs-heading-anchor-permalink" href="#man-cluster-cookie-1" title="Permalink"></a></h3><p>集群上所有的进程都共享同一个 cookie，默认是 master 进程随机生成的字符串。</p><ul><li><a href="../../stdlib/Distributed/#Distributed.cluster_cookie-Tuple{}"><code>cluster_cookie()</code></a> 返回 cookie，而 <code>cluster_cookie(cookie)()</code> 设置并返回新的 cookie。</li><li>所有的连接都进行双向认证，从而保证只有 master 启动的 worker 才能相互连接。</li><li>cookie 可以在 worker 启动的时候，通过参数 <code>--worker=&lt;cookie&gt;</code> 指定，如果参数 <code>--worker</code> 没有指定 cookie，那么 worker 会从它的标准输入中 (<a href="../../base/io-network/#Base.stdin"><code>stdin</code></a>) 读取， <code>stdin</code> 会在 cookie 获取之后立即关闭。</li><li><code>ClusterManager</code> 可以通过 <a href="../../stdlib/Distributed/#Distributed.cluster_cookie-Tuple{}"><code>cluster_cookie()</code></a> 从 master 中过去 cookie，不适用默认 TCP/IP 传输的集群管理器（即没有指定 <code>--worker</code>）必须用于 master 相同的 cookie 调用 <code>init_worker(cookie, manager)</code>。</li></ul><p>注意，在对安全性要求很高的环境中，可以通过自定义 <code>ClusterManager</code> 实现。例如，cookie 可以提前共享，然后不必再启动参数中指定。</p><h2 id="指定网络拓补结构（实验性功能）-1"><a class="docs-heading-anchor" href="#指定网络拓补结构（实验性功能）-1">指定网络拓补结构（实验性功能）</a><a class="docs-heading-anchor-permalink" href="#指定网络拓补结构（实验性功能）-1" title="Permalink"></a></h2><p>可以通过传递到 <code>addprocs</code> 中的参数 <code>topology</code> 来指定 worker 之间如何连接。</p><ul><li><code>:all_to_all</code>，默认的，所有 worker 之间相互都连接</li><li><code>:master_worker</code>，只有主进程，即 <code>pid</code> 为 1 的进程能够与 worker 建立连接</li><li><code>:custom</code>: 集群管理器的 <code>launch</code> 方法通过 <code>WorkerConfig</code> 中的 <code>ident</code> 和 <code>connect_idents</code> 指定连接的拓补结构。一个 worker 通过集群管理器提供的 <code>ident</code> 来连接到所有 <code>connect_idents</code> 指定的 worker。</li></ul><p>关键字参数 <code>lazy=true|false</code> 只会影响 <code>topology</code> 选项中的 <code>:all_to_all</code>。如果是 <code>true</code>，那么集群启动的时候 master 会连接所有的 worker，然后 worker 之间的特定连接会在初次唤醒的是建立连接，这有利于降低集群初始化的时候对资源的分配。<code>lazy</code> 的默认值是 <code>true</code>。</p><p>目前，在没有建立连接的两个 worker 之间传递消息会出错，目前该行为是实验性的，未来的版本中可能会改变。</p><h2 id="一些值得关注的外部库-1"><a class="docs-heading-anchor" href="#一些值得关注的外部库-1">一些值得关注的外部库</a><a class="docs-heading-anchor-permalink" href="#一些值得关注的外部库-1" title="Permalink"></a></h2><p>除了 Julia 自带的并行机制之外，还有许多外部的库值得一提。例如 <a href="https://github.com/JuliaParallel/MPI.jl">MPI.jl</a> 提供了一个 <code>MPI</code> 协议的 Julia 的封装，或者是在 <a href="../../stdlib/SharedArrays/#共享数组-1">共享数组</a> 提到的 <a href="https://github.com/JuliaParallel/Distributedarrays.jl">DistributedArrays.jl</a>，此外尤其值得一提的是 Julia 的 GPU 编程生态，其包括：</p><ol><li><p>底层（C内核）的 <a href="https://github.com/JuliaGPU/OpenCL.jl">OpenCL.jl</a> 和 <a href="https://github.com/JuliaGPU/CUDAdrv.jl">CUDAdrv.jl</a>，分别提供了 OpenCL 和 CUDA 的封装。</p></li><li><p>底层（Julia 内核）的接口，如 <a href="https://github.com/JuliaGPU/CUDAnative.jl">CUDAnative.jl</a>，提供了 Julia 原生的 CUDA 实现。</p></li><li><p>高层的特定抽象，如 <a href="https://github.com/JuliaGPU/CuArrays.jl">CuArrays.jl</a> 和 <a href="https://github.com/JuliaGPU/CLArrays.jl">CLArrays.jl</a>。</p></li><li><p>高层的库，如 <a href="https://github.com/JuliaComputing/ArrayFire.jl">ArrayFire.jl</a> 和 <a href="https://github.com/JuliaGPU/GPUArrays.jl">GPUArrays.jl</a>。</p></li></ol><p>下面的例子将介绍如何用 <code>DistributedArrays.jl</code> 和 <code>CuArrays.jl</code> 通过 <code>distribute()</code> 和 <code>CuArray()</code> 将数组分配到多个进程。</p><p>记住在载入 <code>DistributedArrays.jl</code> 时，需要用 <a href="../../stdlib/Distributed/#Distributed.@everywhere"><code>@everywhere</code></a> 将其载入到多个进程中。</p><pre><code class="language-julia-repl">$ ./julia -p 4
+
+julia&gt; addprocs()
+
+julia&gt; @everywhere using DistributedArrays
+
+julia&gt; using CuArrays
+
+julia&gt; B = ones(10_000) ./ 2;
+
+julia&gt; A = ones(10_000) .* π;
+
+julia&gt; C = 2 .* A ./ B;
+
+julia&gt; all(C .≈ 4*π)
+true
+
+julia&gt; typeof(C)
+Array{Float64,1}
+
+julia&gt; dB = distribute(B);
+
+julia&gt; dA = distribute(A);
+
+julia&gt; dC = 2 .* dA ./ dB;
+
+julia&gt; all(dC .≈ 4*π)
+true
+
+julia&gt; typeof(dC)
+DistributedArrays.DArray{Float64,1,Array{Float64,1}}
+
+julia&gt; cuB = CuArray(B);
+
+julia&gt; cuA = CuArray(A);
+
+julia&gt; cuC = 2 .* cuA ./ cuB;
+
+julia&gt; all(cuC .≈ 4*π);
+true
+
+julia&gt; typeof(cuC)
+CuArray{Float64,1}</code></pre><p>要牢记，当前一些 Julia 的特性并没有被 CUDAnative.jl <sup class="footnote-reference"><a id="citeref-2" href="#footnote-2">[2]</a></sup> 支持，尤其是一些像 <code>sin</code> 之类的函数需要换成 <code>CUDAnative.sin</code>(cc: @maleadt)。</p><p>下面的例子中，通过 <code>DistributedArrays.jl</code> 和 <code>CuArrays.jl</code> 将一个数组分配到多个进程，然后调用一个函数。</p><pre><code class="language-julia">function power_method(M, v)
+    for i in 1:100
+        v = M*v
+        v /= norm(v)
+    end
+
+    return v, norm(M*v) / norm(v)  # or  (M*v) ./ v
+end</code></pre><p><code>power_method</code> 重复创建一个新的向量然后对其归一化，这里并没有在函数中指定类型信息，来看看是否对前面提到的类型适用：</p><pre><code class="language-julia-repl">julia&gt; M = [2. 1; 1 1];
+
+julia&gt; v = rand(2)
+2-element Array{Float64,1}:
+0.40395
+0.445877
+
+julia&gt; power_method(M,v)
+([0.850651, 0.525731], 2.618033988749895)
+
+julia&gt; cuM = CuArray(M);
+
+julia&gt; cuv = CuArray(v);
+
+julia&gt; curesult = power_method(cuM, cuv);
+
+julia&gt; typeof(curesult)
+CuArray{Float64,1}
+
+julia&gt; dM = distribute(M);
+
+julia&gt; dv = distribute(v);
+
+julia&gt; dC = power_method(dM, dv);
+
+julia&gt; typeof(dC)
+Tuple{DistributedArrays.DArray{Float64,1,Array{Float64,1}},Float64}</code></pre><p>最后，我们来看看 <code>MPI.jl</code>，这个库时 Julia 对 MPI 协议的封装。一一介绍其中的每个函数太累赘了，这里领会其实现协议的方法就够了。</p><p>考虑下面这个简单的脚本，它做的只是调用每个子进程，然后初始化其 rank，然后在 master 访问时，对 rank 求和。</p><pre><code class="language-julia">import MPI
+
+MPI.Init()
+
+comm = MPI.COMM_WORLD
+MPI.Barrier(comm)
+
+root = 0
+r = MPI.Comm_rank(comm)
+
+sr = MPI.Reduce(r, MPI.SUM, root, comm)
+
+if(MPI.Comm_rank(comm) == root)
+   @printf(&quot;sum of ranks: %s\n&quot;, sr)
+end
+
+MPI.Finalize()</code></pre><pre><code class="language-none">mpirun -np 4 ./julia example.jl</code></pre><section class="footnotes is-size-7"><ul><li class="footnote" id="footnote-1"><a class="tag is-link" href="#citeref-1">1</a>In this context, MPI refers to the MPI-1 standard. Beginning with MPI-2, the MPI standards committee introduced a new set of communication mechanisms, collectively referred to as Remote Memory Access (RMA). The motivation for adding rma to the MPI standard was to facilitate one-sided communication patterns. For additional information on the latest MPI standard, see <a href="https://mpi-forum.org/docs">https://mpi-forum.org/docs</a>.</li><li class="footnote" id="footnote-2"><a class="tag is-link" href="#citeref-2">2</a><a href="http://juliagpu.github.io/CUDAnative.jl/stable/man/usage.html#Julia-support-1">Julia GPU 手册</a></li></ul></section></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../networking-and-streams/">« 网络和流</a><a class="docs-footer-nextpage" href="../running-external-programs/">运行外部程序 »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 六月 20 周六 00:10">2020 六月 20 周六</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
