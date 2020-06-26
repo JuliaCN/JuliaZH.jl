@@ -2,6 +2,11 @@ module JuliaZH
 
 include("docstrings.jl")
 export dump_docstrings, dump_all_docstrings
+export replace_docstrings, replace_all_docstrings
+
+zh_CN() = replace_all_docstrings(:zh_CN)
+en() = replace_all_docstrings(:en)
+export zh_CN, en
 
 import Base.Docs: DocStr
 

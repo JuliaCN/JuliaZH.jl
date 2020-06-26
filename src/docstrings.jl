@@ -1,4 +1,4 @@
-using JSON3
+using JSON, JSON3
 
 const MODULE_MAP = Dict(
     "Base" => Base,
@@ -47,7 +47,6 @@ function dump_docstrings(m::Module)
         docstrings *= String(take!(buffer)) |> s -> strip(s, ['{', '}'])
         docstrings *= ","
     end
-
     return docstrings[1:end-1] * "}"
 end
 
@@ -57,5 +56,30 @@ function dump_all_docstrings()
     for (k, v) in MODULE_MAP
         s = dump_docstrings(v)
         write(joinpath(prefix, k*suffix), s)
+    end
+end
+
+function replace_docstrings(m::Module, locale=:en)
+    doc = getfield(m, Base.Docs.META)
+    module_name = string(m) |> s->split(s, ".") |> last
+    path = joinpath(@__DIR__, "..", string(locale), "docstrings", module_name*"_docstrings.json")
+    depot = JSON.parsefile(path)
+    for bind in keys(doc)
+        multidoc = doc[bind]
+        bind.mod == m || continue  # only dump current module
+        name = string(bind.mod) * "." * string(bind.var)
+        docvec = depot[name]
+        for (i,signature) in enumerate(keys(multidoc.docs))
+            for (sig,text) in docvec[i]
+                multidoc.docs[signature].text = Core.svec(text)
+            end
+        end
+    end
+    return true
+end
+
+function replace_all_docstrings(locale=:en)
+    for (k, v) in MODULE_MAP
+        replace_docstrings(v, locale)
     end
 end
