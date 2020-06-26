@@ -27,6 +27,9 @@ const MODULE_MAP = Dict(
     "Unicode" => Base.Unicode,
 )
 
+const DEFAULT_PREFIX = joinpath(@__DIR__, "..", "en", "docstrings")
+const DEFAULT_SUFFIX = "_docstrings.json"
+
 function dump_docstrings(m::Module)
     doc = getfield(m, Base.Docs.META)
     docstrings = "{"
@@ -48,8 +51,9 @@ function dump_docstrings(m::Module)
     return docstrings[1:end-1] * "}"
 end
 
-function dump_all_docstrings(prefix = joinpath(@__DIR__, "..", "en", "docstrings"),
-                             suffix = "_docstrings.json")
+function dump_all_docstrings()
+    prefix = haskey(ENV, "JULIAZH_DOCSTRINGS_PREFIX") ? ENV["JULIAZH_DOCSTRINGS_PREFIX"] : DEFAULT_PREFIX
+    suffix = haskey(ENV, "JULIAZH_DOCSTRINGS_SUFFIX") ? ENV["JULIAZH_DOCSTRINGS_SUFFIX"] : DEFAULT_SUFFIX
     for (k, v) in MODULE_MAP
         s = dump_docstrings(v)
         write(joinpath(prefix, k*suffix), s)
