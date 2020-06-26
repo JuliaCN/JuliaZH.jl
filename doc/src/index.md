@@ -7,6 +7,16 @@
 !!! note "关于中文文档"
     Julia 语言相关的本地化工作是一个由社区驱动的开源项目 [JuliaZH.jl](https://github.com/JuliaCN/JuliaZH.jl)，旨在方便 Julia 的中文用户。我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](https://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](https://discourse.juliacn.com/t/topic/277)。
 
+## 鸣谢
+
+```@raw html
+<a href="https://swarma.org">
+<img
+src="https://swarma.org/wp-content/uploads/2018/08/logochange_副本2.png"
+alt="集智俱乐部" width="210"></img>
+</a>
+```
+
 ## [简介](@id man-introduction)
 
 科学计算对性能一直有着最高的需求，但目前各领域的专家却大量使用较慢的动态语言来开展他们的日常工作。
