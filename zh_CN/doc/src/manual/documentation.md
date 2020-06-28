@@ -2,10 +2,9 @@
 
 自Julia 0.4 开始，Julia 允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。
 
-The basic syntax is simple: any string appearing at the toplevel right before an object
-(function, macro, type or instance) will be interpreted as documenting it (these are called
-*docstrings*). Note that no blank lines or comments may intervene between a docstring and
-the documented object. Here is a basic example:
+基础语法很简单：紧接在对象（函数，宏，类型和实例）之前的字符串都会被认为是对应对象的文档（称作 *docstrings*）。
+注意不要在 docstring 和文档对象之间有空行或者注释。
+这里有个基础的例子：
 
 ```julia
 "Tell whether there are too foo items in the array."
@@ -18,9 +17,7 @@ foo(xs::Array) = ...
 其它字符串宏并传递给 `@doc` 宏来使用其他格式。
 
 !!! note
-    Markdown support is implemented in the `Markdown` standard library
-    and for a full list of supported syntax see the
-    [documentation](@ref markdown_stdlib).
+    Markdown 支持由 `Markdown` 标准库实现，有关支持语法的完整列表，请参阅其[文档](@ref markdown_stdlib)。
 
 这里是一个更加复杂的例子，但仍然使用 Markdown：
 
@@ -183,20 +180,20 @@ function bar(x, y) ...
    f(x, y) = ...
    ```
 
-   This makes it clearer where docstrings start and end.
+   这将让 docstring 的起始和结束位置更加清楚。
 9. 请在代码中遵守单行长度限制。
 
    Docstring 是使用与代码相同的工具编辑的。所以应运用同样的约定。 建议一行 92 个字符后换行。
-   It is recommended that lines are at most 92 characters wide.
+    
 6. 请在 `# Implementation` 章节中提供自定义类型如何实现该函数的信息。这些实现细节是针对开发者而非用户的，解释了例如哪些函数应该被重写、哪些函数自动使用恰当的回退函数等信息，最好与描述函数的主体描述分开。
-   `# Implementation` section. These implementation details are intended for developers
-   rather than users, explaining e.g. which functions should be overridden and which
-   functions automatically use appropriate fallbacks. Such details are best kept separate
-   from the main description of the function's behavior.
-5. For long docstrings, consider splitting the documentation with an
-   `# Extended help` header. The typical help-mode will show only the
-   material above the header; you can access the full help by adding a '?'
-   at the beginning of the expression (i.e., "??foo" rather than "?foo").
+    
+    
+    
+    
+5. 对于长文档字符串，可以考虑使用 `# Extended help` 头拆分文档。典型的帮助模式将只显示标题上方的内容；你可以通过添加一个 `?` 在表达的开头来查看完整的文档（即 `??foo` 而不是 `?foo`）。
+    
+    
+    
 
 ## 访问文档
 
@@ -209,9 +206,7 @@ function bar(x, y) ...
 ?r""
 ```
 
-will show documentation for the relevant function, macro or string macro respectively. In
-[Juno](http://junolab.org) using `Ctrl-J, Ctrl-D` will show the documentation for the object
-under the cursor.
+会分别为相应的函数，宏或者字符显示文档。在 [Juno](http://junolab.org) 中，使用 `Ctrl-J, Ctrl-D` 会为光标处的对象显示文档。
 
 ## 函数与方法
 
@@ -259,8 +254,7 @@ search: * .*
 
 ## 进阶用法
 
-The `@doc` macro associates its first argument with its second in a per-module dictionary called
-`META`.
+`@doc` 宏将它的第一个参数与它的第二个参数关联在各个模块的名为 `META` 的字典中。
 
 为了让写文档更加简单，语法分析器对宏名`@doc`特殊对待：如果`@doc`的调用只有一个参数，但是在下一行出现了另外一个表达式，那么这个表达式就会追加为宏的参数。所以接下来的语法会被分析成`@doc`的2个参数的调用：
 
@@ -271,7 +265,7 @@ The `@doc` macro associates its first argument with its second in a per-module d
 f(x) = x
 ```
 
-This makes it possible to use expressions other than normal string literals (such as the `raw""` string macro) as a docstring.
+这就让使用任意对象（这里指的是原始字符串 `raw""`）作为 docstring 变得简单。
 
 当`@doc`宏（或者`doc`函数）用作抽取文档时，他会在所有的`META`字典寻找与对象相关的元数据并且返回。返回的对象（例如一些Markdown内容）会默认智能地显示。这个设计也让以编程方法使用文档系统变得容易；例如，在一个函数的不同版本中重用文档：
 
@@ -303,9 +297,7 @@ end
 
 会被加到`f(x)`的文档中，当`condition()`是`true`的时候。注意即使`f(x)`在块的末尾离开了作用域，他的文档还会保留。
 
-It is possible to make use of metaprogramming to assist in the creation of documentation.
-When using string-interpolation within the docstring you will need to use an extra `$` as
-shown with `$($name)`:
+可以利用元编程来帮助创建文档。当在文档字符串中使用字符串插值时，需要使用额外的 `$` 例如：`$($name)`
 
 ```julia
 for func in (:day, :dayofmonth)
@@ -339,17 +331,15 @@ y = MyType("y")
 
 ## 语法指南
 
-This guide provides a comprehensive overview of how to attach documentation to all Julia syntax
-constructs for which providing documentation is possible.
+本指南提供了如何将文档附加到所有可能的 Julia 语法构造的全面概述。
 
 在下述例子中`"..."`用来表示任意的docstring。
 
-### `$` and `\` characters
+### `$` 与 `\` 字符
 
-The `$` and `\` characters are still parsed as string interpolation or start of an escape sequence
-in docstrings too. The `raw""` string macro together with the `@doc` macro can be used to avoid
-having to escape them. This is handy when the docstrings include LaTeX or Julia source code examples
-containing interpolation:
+`$` 和 `\` 字符仍然被解析为字符串插值或转义序列的开始字符。
+`raw""` 字符串宏和 `@doc` 宏可以用来避免对它们进行转义。
+当文档字符串包含 LaTeX 或 Julia 源代码，且示例中包含插值时，这是很方便的:
 
 ````julia
 @doc raw"""
@@ -455,8 +445,7 @@ M
 end
 ```
 
-Adds docstring `"..."` to the `Module` `M`. Adding the docstring above the `Module` is the preferred
-syntax, however both are equivalent.
+把 docstring `"..."` 添加给了模块 `M`。首选的语法是在模块之前添加 docstring，虽然两者是等价的。
 
 ```julia
 "..."
@@ -519,8 +508,7 @@ global c = 3
 sym
 ```
 
-Adds docstring `"..."` to the value associated with `sym`. However, it is preferred that
-`sym` is documented where it is defined.
+把 docstring `"..."` 添加给值 `sym`。但是应首选在 `sym` 的定义处写文档。
 
 ### 多重对象
 
@@ -548,15 +536,12 @@ b
 @m expression
 ```
 
-Adds docstring `"..."` to the expression generated by expanding `@m expression`. This allows
-for expressions decorated with `@inline`, `@noinline`, `@generated`, or any other macro to
-be documented in the same way as undecorated expressions.
+把docstring `"..."` 添加给通过展开 `@m expression` 生成的表达式。
+这就允许由 `@inline`、`@noinline`、`@generated` 或者任意其他宏装饰的表达式，能和没有装饰的表达式以同样的方式写文档。
 
 宏作者应该注意到只有只生成单个表达式的宏才会自动支持docstring。如果宏返回的是含有多个子表达式的块，需要写文档的子表达式应该使用宏 [`@__doc__`](@ref Core.@__doc__) 标记。
 
-The [`@enum`](@ref) macro makes use of `@__doc__` to allow for documenting [`Enum`](@ref)s.
-Examining its definition
-should serve as an example of how to use `@__doc__` correctly.
+[`@enum`](@ref) 宏使用了 `@__doc__` 来允许给 `Enum` 写文档。它的做法可以作为如何正确使用 `@__doc__` 的范例。
 
 ```@docs
 Core.@__doc__

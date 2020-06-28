@@ -25,13 +25,7 @@ Julia 有一个提升系统，可以将数学运算符的参数提升为通用�
 
 ## 类型转换
 
-The standard way to obtain a value of a certain type `T` is to call the type's constructor, `T(x)`.
-However, there are cases where it's convenient to convert a value from one type to another
-without the programmer asking for it explicitly.
-One example is assigning a value into an array: if `A` is a `Vector{Float64}`, the expression
-`A[1] = 2` should work by automatically converting the `2` from `Int` to `Float64`, and
-storing the result in the array.
-This is done via the [`convert`](@ref) function.
+获取某种类型 `T` 的值的标准方法是调用该类型的构造函数 `T(x)`。但是，有些情况下，在程序员没有明确要求时，仍将值从一种类型转换为另一种类型是很方便的。其中一个例子是将值赋给一个数组：假设 `A` 是个 `Vector{Float64}`，表达式 `A[1] = 2` 执行时应该自动将 `2` 从 `Int` 转换为 `Float`，并将结果存储在该数组中。这通过 [`convert`](@ref) 函数完成。
 
 `convert` 函数通常接受两个参数：第一个是类型对象，第二个是需要转换为该类型的值。返回的是已转换后的值。理解这个函数最简单的办法就是尝试：
 
@@ -65,8 +59,7 @@ julia> convert(Array{Float64}, a)
  4.0  5.0  6.0
 ```
 
-Conversion isn't always possible, in which case a [`MethodError`](@ref) is thrown indicating that `convert`
-doesn't know how to perform the requested conversion:
+类型转换并不总是可行的，有时 `convert` 函数并不知道该如何执行所请求的类型转换就会抛出 [`MethodError`](@ref) 错误。例如下例：
 
 ```jldoctest
 julia> convert(AbstractFloat, "foo")
@@ -74,11 +67,7 @@ ERROR: MethodError: Cannot `convert` an object of type String to an object of ty
 [...]
 ```
 
-Some languages consider parsing strings as numbers or formatting numbers as strings to be conversions
-(many dynamic languages will even perform conversion for you automatically). This is not the case in Julia.
-Even though some strings can be parsed as numbers, most strings are not valid representations
-of numbers, and only a very limited subset of them are. Therefore in Julia the dedicated [`parse`](@ref)
-function must be used to perform this operation, making it more explicit.
+一些语言考虑将解析字符串为数字或格式化数字为字符串来进行转换（许多动态语言甚至会自动执行转换），但 Julia 不会：尽管某些字符串可以解析为数字，但大多数字符串都不是有效的数字表示形式，只有非常有限的子集才是。因此，在 Julia 中，必须使用专用的 [`parse`](@ref) 函数来执行此操作，这使其更加明确。
 
 ### 什么时候使用 `convert` 函数?
 
@@ -86,10 +75,10 @@ function must be used to perform this operation, making it more explicit.
 
   * 对一个数组赋值会转换为数组元素的类型。
   * 对一个对象的字段赋值会转换为已声明的字段类型。
-  * Constructing an object with [`new`](@ref) converts to the object's declared field types.
+  * 使用 [`new`](@ref) 构造对象会转换为该对象已声明的字段类型。
   * 对已声明类型的变量赋值（例如 `local x::T`）会转换为该类型。
   * 已声明返回类型的函数会转换其返回值为该类型。
-  * Passing a value to [`ccall`](@ref) converts it to the corresponding argument type.
+  * 把值传递给 [`ccall`](@ref) 会将其转换为相应参数的类型。
 
 ### 类型转换与构造
 
@@ -135,17 +124,14 @@ convert(::Type{T}, x::Number) where {T<:Number} = T(x)
 convert(::Type{T}, x::T) where {T<:Number} = x
 ```
 
-Similar definitions exist for `AbstractString`, [`AbstractArray`](@ref), and [`AbstractDict`](@ref).
+[`AbstractString`](@ref)、[`AbstractArray`](@ref) 和 [`AbstractDict`](@ref) 也存在类似的定义。
 
 ## 类型提升
 
 类型提升是指将一组混合类型的值转换为单个通用类型。尽管不是绝对必要的，但一般暗示被转换的值的通用类型可以忠实地表示所有原始值。此意义下，术语「类型提升」是合适的，因为值被转换为「更大」的类型——即能用一个通用类型表示所有输入值的类型。但重要的是，不要将它与面向对象（结构）超类或 Julia 的抽象超类型混淆：类型提升与类型层次结构无关，而与备选的表示之间的转换有关。例如，尽管每个 [`Int32`](@ref) 值可以表示为 [`Float64`](@ref) 值，但 `Int32` 不是 `Float64` 的子类型。
 
 
-Promotion to a common "greater" type is performed in Julia by the [`promote`](@ref) function, which takes
-any number of arguments, and returns a tuple of the same number of values, converted to a common
-type, or throws an exception if promotion is not possible. The most common use case for promotion
-is to convert numeric arguments to a common type:
+在 Julia 中，类型提升到一个通用的「更大」类型的操作是通过 [`promote`](@ref) 函数执行的，该函数接受任意数量的参数，并返回由相同数量的值组成的元组，值会被转换为一个通用类型，或在无法类型提升时抛出异常。类型提升的最常见用途是将数字参数转换为通用类型：
 
 ```jldoctest
 julia> promote(1, 2.5)
@@ -198,20 +184,13 @@ Rational{Int32}
 
 ### 定义类型提升规则
 
-Although one could, in principle, define methods for the `promote` function directly, this would
-require many redundant definitions for all possible permutations of argument types. Instead, the
-behavior of `promote` is defined in terms of an auxiliary function called [`promote_rule`](@ref), which
-one can provide methods for. The `promote_rule` function takes a pair of type objects and returns
-another type object, such that instances of the argument types will be promoted to the returned
-type. Thus, by defining the rule:
+虽然原则上可以直接为 `promote` 函数定义方法，但这需要为参数类型的所有可能排列下许多冗余的定义。相反地，`promote` 的行为是根据名为 [`promote_rule`](@ref) 的辅助函数定义的，该辅助函数可以为其提供方法。`promote_rule` 函数接受一对类型对象并返回另一个类型对象，这样参数类型的实例会被提升为被返回的类型。 因此，通过定义规则：
 
 ```julia
 promote_rule(::Type{Float64}, ::Type{Float32}) = Float64
 ```
 
-one declares that when 64-bit and 32-bit floating-point values are promoted together, they should
-be promoted to 64-bit floating-point. The promotion type does not need to be one of the argument
-types. For example, the following promotion rules both occur in Julia Base:
+声明当同时类型提升 64 位和 32 位浮点值时，它们应该被类型提升为 64 位浮点数。但是，提升类型不需要是参数类型之一；例如，在 Julia Base 中有以下类型提升规则：
 
 ```julia
 promote_rule(::Type{BigInt}, ::Type{Float64}) = BigFloat
@@ -220,10 +199,7 @@ promote_rule(::Type{BigInt}, ::Type{Int8}) = BigInt
 
 在后一种情况下，输出类型是 [`BigInt`](@ref)，因为 `BigInt` 是唯一一个足以容纳任意精度整数运算结果的类型。还要注意，不需要同时定义 `promote_rule(::Type{A}, ::Type{B})` 和 `promote_rule(::Type{B}, ::Type{A})`——对称性隐含在类型提升过程中使用 `promote_rule` 的方式。
 
-The `promote_rule` function is used as a building block to define a second function called [`promote_type`](@ref),
-which, given any number of type objects, returns the common type to which those values, as arguments
-to `promote` should be promoted. Thus, if one wants to know, in absence of actual values, what
-type a collection of values of certain types would promote to, one can use `promote_type`:
+以 `promote_rule` 函数为基础定义了 [`promote_type`](@ref) 函数，在给定任意数量的类型对象时，它返回这些值作为 `promote` 的参数应被提升的通用类型。因此，如果想知道在没有实际值情况下，具有确定类型的一些值会被类型提升为什么类型，可以使用 `promote_type`：
 
 ```jldoctest
 julia> promote_type(Int8, Int64)

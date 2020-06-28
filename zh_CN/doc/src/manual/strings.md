@@ -68,9 +68,8 @@ julia> isvalid(Char, 0x110000)
 false
 ```
 
-As of this writing, the valid Unicode code points are `U+0000` through `U+D7FF` and `U+E000` through
-`U+10FFFF`. These have not all been assigned intelligible meanings yet, nor are they necessarily
-interpretable by applications, but all of these values are considered to be valid Unicode characters.
+目前，有效的 Unicode 码点为，从 `U+0000` 至 `U+D7FF`，以及从 `U+E000` 至 `U+10FFFF`。
+它们还未全部被赋予明确的含义，也还没必要能被程序识别；然而，所有的这些值都被认为是有效的 Unicode 字符。
 
 你可以在单引号中输入任何 Unicode 字符，通过使用 `\u` 加上至多 ４ 个十六进制数字或者 `\U` 加上至多 ８ 个十六进制数（最长的有效值也只需要 6 个）：
 
@@ -157,13 +156,8 @@ julia> str[end]
 '\n': ASCII/Unicode U+000A (category Cc: Other, control)
 ```
 
-Many Julia objects, including strings, can be indexed with integers. The index of the first
-element (the first character of a string) is returned by [`firstindex(str)`](@ref), and the index of the last element (character)
-with [`lastindex(str)`](@ref). The keywords `begin` and `end` can be used inside an indexing
-operation as shorthand for the first and last indices, respectively, along the given dimension.
-String indexing, like most indexing in Julia, is 1-based: `firstindex` always returns `1` for any `AbstractString`.
-As we will see below, however, `lastindex(str)` is *not* in general the same as `length(str)` for a string,
-because some Unicode characters can occupy multiple "code units".
+许多的 Julia 对象包括字符串都可以用整数进行索引。第一个元素的索引由 [`firstindex(str)`](@ref) 返回，最后一个由 [`lastindex(str)`](@ref) 返回。关键字 `begin` 和 `end` 可以在索引操作中使用，它们分别表示给定维度上的第一个和最后一个索引。字符串索引就像 Julia 中的大多数索引一样，是从 1 开始的：对于任何 `AbstractString` `firstindex` 总是返回 `1`。
+下面我们将会看到，对于一个字符串来说 `lastindex(str)` 和 `length(str)` 的结果 **不一定相同**，因为 Unicode 字符可能由多个编码单元（code units）组成。
 
 你可以用 [`end`](@ref) 进行算术以及其它操作，就像普通值一样：
 
@@ -175,7 +169,7 @@ julia> str[end÷2]
 ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
 ```
 
-Using an index less than `begin` (`1`) or greater than `end` raises an error:
+下标小于开头 `begin` (`1`) 或者大于结尾 `end` 都会导致错误：
 
 ```jldoctest helloworldstring
 julia> str[begin-1]
@@ -196,7 +190,7 @@ julia> str[4:9]
 "lo, wo"
 ```
 
-Notice that the expressions `str[k]` and `str[k:k]` do not give the same result:
+注意到 `str[k]` 和 `str[k:k]` 输出的结果不一样：
 
 ```jldoctest helloworldstring
 julia> str[6]
@@ -232,17 +226,7 @@ julia> s = "\u2200 x \u2203 y"
 "∀ x ∃ y"
 ```
 
-Whether these Unicode characters are displayed as escapes or shown as special characters depends
-on your terminal's locale settings and its support for Unicode. String literals are encoded using
-the UTF-8 encoding. UTF-8 is a variable-width encoding, meaning that not all characters are encoded
-in the same number of bytes ("code units"). In UTF-8, ASCII characters — i.e. those with code points less than
-0x80 (128) -- are encoded as they are in ASCII, using a single byte, while code points 0x80 and
-above are encoded using multiple bytes — up to four per character.
-
-String indices in Julia refer to code units (= bytes for UTF-8), the fixed-width building blocks that
-are used to encode arbitrary characters (code points). This means that not every
-index into a `String` is necessarily a valid index for a character. If you index into
-a string at such an invalid byte index, an error is thrown:
+这些 Unicode 字符是作为转义还是特殊字符显示，取决于你终端的语言环境设置以及它对 Unicode 的支持。字符串字面量用 UTF-8 编码。UTF-8 是一种可变长度的编码，也就是说并非所有字符都以相同的字节数（code units）编码。在 UTF-8 中，ASCII 字符（小于 0x80(128) 的那些）如它们在 ASCII 中一样使用单字节编码；而 0x80 及以上的字符使用最多 4 个字节编码。在 Julia 中字符串索引指的是代码单元（对于 UTF-8 来说等同于字节/byte），固定宽度的构建块用于编码任意字符（code point）。这意味着并非每个索引到 UTF-8 字符串的字节都必须是一个字符的有效索引。如果在这种无效字节索引处索引字符串，将会报错：
 
 ```jldoctest unicodestring
 julia> s[1]
@@ -263,8 +247,7 @@ julia> s[4]
 
 在这种情况下，字符 `∀` 是一个三字节字符，因此索引 2 和 3 都是无效的，而下一个字符的索引是 4；这个接下来的有效索引可以用 [`nextind(s,1)`](@ref) 来计算，再接下来的用 `nextind(s,4)`，依此类推。
 
-Since `end` is always the last valid index into a collection, `end-1` references an invalid
-byte index if the second-to-last character is multibyte.
+如果倒数第二个字符是多字节字符，由于 `end` 总是集合中最后一个有效索引，这时 `end-1` 将会是无效索引。
 
 ```jldoctest unicodestring
 julia> s[end-1]
@@ -279,12 +262,9 @@ julia> s[prevind(s, end, 2)]
 '∃': Unicode U+2203 (category Sm: Symbol, math)
 ```
 
-The first case works, because the last character `y` and the space are one-byte characters,
-whereas `end-2` indexes into the middle of the `∃` multibyte representation. The correct
-way for this case is using `prevind(s, lastindex(s), 2)` or, if you're using that value to index
-into `s` you can write `s[prevind(s, end, 2)]` and `end` expands to `lastindex(s)`.
+第一种情况可以，因为最后一个字符 `y` 和空格都是一字节的字符，而 `end-2` 索引到中间的 `∃` 的多字节表示。这里正确的方法是使用 `prevind(s, lastindex(s), 2)`，或者如果你使用那个值来索引在 `s` 中可以写 `s[prevind(s, end, 2)]`， `end` 展开为 `lastindex(s)`。
 
-Extraction of a substring using range indexing also expects valid byte indices or an error is thrown:
+使用范围索引提取子字符串也需要有效的字节索引，不然就会抛出错误：
 
 ```jldoctest unicodestring
 julia> s[1:1]
@@ -299,12 +279,7 @@ julia> s[1:4]
 "∀ "
 ```
 
-Because of variable-length encodings, the number of characters in a string (given by [`length(s)`](@ref))
-is not always the same as the last index. If you iterate through the indices 1 through [`lastindex(s)`](@ref)
-and index into `s`, the sequence of characters returned when errors aren't thrown is the sequence
-of characters comprising the string `s`. Thus we have the identity that `length(s) <= lastindex(s)`,
-since each character in a string must have its own index. The following is an inefficient and
-verbose way to iterate through the characters of `s`:
+由于可变长度的编码，字符串中的字符数（由 [`length(s)`](@ref) 给出）并不总是等于最后一个索引的数字。如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。因此总有 `length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s` 的字符进行迭代的一个冗长而低效的方式：
 
 ```jldoctest unicodestring
 julia> for i = firstindex(s):lastindex(s)
@@ -323,9 +298,7 @@ x
 y
 ```
 
-The blank lines actually have spaces on them. Fortunately, the above awkward idiom is unnecessary
-for iterating through the characters in a string, since you can just use the string as an iterable
-object, no exception handling required:
+空行上面其实是有空格的。幸运的是，上面的笨拙写法不是对字符串中字符进行迭代所必须的——因为你只需把字符串本身用作迭代对象，而不需要额外处理：
 
 ```jldoctest unicodestring
 julia> for c in s
@@ -340,9 +313,7 @@ x
 y
 ```
 
-If you need to obtain valid indices for a string, you can use the [`nextind`](@ref) and
-[`prevind`](@ref) functions to increment/decrement to the next/previous valid index, as mentioned above.
-You can also use the [`eachindex`](@ref) function to iterate over the valid character indices:
+如果需要为字符串获取有效索引，可以使用 [`nextind`](@ref) 和 [`prevind`](@ref) 函数递增/递减到下一个/前一个有效索引，如前所述。你也可以使用 [`eachindex`](@ref) 函数迭代有效的字符索引：
 
 ```jldoctest unicodestring
 julia> collect(eachindex(s))
@@ -356,15 +327,10 @@ julia> collect(eachindex(s))
  11
 ```
 
-To access the raw code units (bytes for UTF-8) of the encoding, you can use the [`codeunit(s,i)`](@ref)
-function, where the index `i` runs consecutively from `1` to [`ncodeunits(s)`](@ref).  The [`codeunits(s)`](@ref)
-function returns an `AbstractVector{UInt8}` wrapper that lets you access these raw codeunits (bytes) as an array.
+要访问编码的原始代码单位（UTF-8 的字节），可以使用 [`codeunit(s,i)`](@ref)函数，其中索引 `i` 从 `1` 连续运行到 [`ncodeunits(s)`](@ref)。
+[`codeunits(s)`](@ref) 函数返回一个 `AbstractVector{UInt8}` 包装器，允许您以数组的形式访问这些原始代码单元（字节）。
 
-Strings in Julia can contain invalid UTF-8 code unit sequences. This convention allows to
-treat any byte sequence as a `String`. In such situations a rule is that when parsing
-a sequence of code units from left to right characters are formed by the longest sequence of
-8-bit code units that matches the start of one of the following bit patterns
-(each `x` can be `0` or `1`):
+Julia 中的字符串可以包含无效的 UTF-8 代码单元序列。这个惯例允许把任何字序列当作 `String`。在这种情形下的一个规则是，当从左到右解析代码单元序列时，字符由匹配下面开头位模式之一的最长的 8 位代码单元序列组成（每个 `x` 可以是 `0` 或者 `1`）：
 
 * `0xxxxxxx`;
 * `110xxxxx` `10xxxxxx`;
@@ -373,9 +339,7 @@ a sequence of code units from left to right characters are formed by the longest
 * `10xxxxxx`;
 * `11111xxx`.
 
-In particular this means that overlong and too-high code unit sequences and prefixes thereof are treated
-as a single invalid character rather than multiple invalid characters.
-This rule may be best explained with an example:
+特别地，这意味着过长和过高的代码单元序列及其前缀将被视为单个无效字符，而不是多个无效字符。这个规则最好用一个例子来解释：
 
 ```julia-repl
 julia> s = "\xc0\xa0\xe2\x88\xe2|"
@@ -467,8 +431,7 @@ julia> "$greet, $whom.\n"
 "Hello, world.\n"
 ```
 
-This is more readable and convenient and equivalent to the above string concatenation -- the system
-rewrites this apparent single string literal into the call `string(greet, ", ", whom, ".\n")`.
+这更易读更方便，而且等效于上面的字符串拼接——系统把这个显然一行的字符串字面量重写成带参数的字符串字面量拼接 `string(greet, ", ", whom, ".\n")`。
 
 在 `$` 之后最短的完整表达式被视为插入其值于字符串中的表达式。因此，你可以用括号向字符串中插入任何表达式：
 
@@ -478,12 +441,10 @@ julia> "1 + 2 = $(1 + 2)"
 "1 + 2 = 3"
 ```
 
-Both concatenation and string interpolation call [`string`](@ref) to convert objects into string
-form. However, `string` actually just returns the output of [`print`](@ref), so new types
-should add methods to [`print`](@ref) or [`show`](@ref) instead of `string`.
+拼接和插值都调用 [`string`](@ref) 以转换对象为字符串形式。
+然而，`string` 实际上仅仅返回了 [`print`](@ref) 的输出，因此，新的类型应该添加 [`print`](@ref) 或 [`show`](@ref) 方法，而不是 `string` 方法。
 
-Most non-`AbstractString` objects are converted to strings closely corresponding to how
-they are entered as literal expressions:
+多数非 `AbstractString` 对象被转换为和它们作为文本表达式输入的方式密切对应的字符串：
 
 ```jldoctest
 julia> v = [1,2,3]
@@ -571,7 +532,7 @@ julia> """
 
 尾随空格保持不变。
 
-Triple-quoted string literals can contain `"` characters without escaping.
+三引号字符串字面量可不带转义地包含 `"` 符号。
 
 注意，无论是用单引号还是三引号，在文本字符串中换行符都会生成一个换行 (LF) 字符 `\n`，即使你的编辑器使用回车组合符 `\r` (CR) 或 CRLF 来结束行。为了在字符串中包含 CR，总是应该使用显式转义符 `\r`；比如，可以输入文本字符串 `"a CRLF line ending\r\n"`。
 
@@ -667,13 +628,9 @@ julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
 
 ## 正则表达式
 
-Julia has Perl-compatible regular expressions (regexes), as provided by the [PCRE](http://www.pcre.org/)
-library (a description of the syntax can be found [here](http://www.pcre.org/current/doc/html/pcre2syntax.html)). Regular expressions are related to strings in two ways: the obvious connection is that
-regular expressions are used to find regular patterns in strings; the other connection is that
-regular expressions are themselves input as strings, which are parsed into a state machine that
-can be used to efficiently search for patterns in strings. In Julia, regular expressions are input
-using non-standard string literals prefixed with various identifiers beginning with `r`. The most
-basic regular expression literal without any options turned on just uses `r"..."`:
+Julia 具有与 Perl 兼容的正则表达式 (regexes)，就像 [PCRE](http://www.pcre.org/) 包所提供的那样，详细信息参见 [PCRE 的语法说明](http://www.pcre.org/current/doc/html/pcre2syntax.html)。
+正则表达式以两种方式和字符串相关：一个显然的关联是，正则表达式被用于找到字符串中的正则模式；另一个关联是，正则表达式自身就是作为字符串输入，它们被解析到可用来高效搜索字符串中模式的状态机中。
+在 Julia 中正则表达式的输入使用了前缀各类以 `r` 开头的标识符的非标准字符串字面量。最基本的不打开任何选项的正则表达式只用到了 `r"..."`：
 
 ```jldoctest
 julia> r"^\s*(?:#|$)"

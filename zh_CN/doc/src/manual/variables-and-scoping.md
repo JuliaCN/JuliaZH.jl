@@ -1,23 +1,14 @@
 # [变量作用域](@id scope-of-variables)
 
-The *scope* of a variable is the region of code within which a variable is visible. Variable scoping
-helps avoid variable naming conflicts. The concept is intuitive: two functions can both have
-arguments called `x` without the two `x`'s referring to the same thing. Similarly, there are many
-other cases where different blocks of code can use the same name without referring to the same
-thing. The rules for when the same variable name does or doesn't refer to the same thing are called
-scope rules; this section spells them out in detail.
+变量的 **作用域** 是代码的一个区域，在这个区域中这个变量是可见的。给变量划分作用域有助于解决变量命名冲突。这个概念是符合直觉的：两个函数可能同时都有叫做 `x` 的参量，而这两个 `x` 并不指向同一个东西。
+相似地，也有很多其他的情况，代码的不同块会使用同样名字，但并不指向同一个东西。相同的变量名是否指向同一个东西的规则被称为作用域规则；这一节会详细地把这个规则讲清楚。
 
-Certain constructs in the language introduce *scope blocks*, which are regions of code that are
-eligible to be the scope of some set of variables. The scope of a variable cannot be an arbitrary
-set of source lines; instead, it will always line up with one of these blocks. There are two main
-types of scopes in Julia, *global scope* and *local scope*. The latter can be nested. There is also
-a distinction in Julia between constructs which introduce a "hard scope" and those which only
-introduce a "soft scope", which affects whether shadowing a global variable by the same name is
-allowed or not.
+语言中的某些结构会引入**作用域块**，这是有资格成为一些变量集合的作用域的代码区域。一个变量的作用域不可能是源代码行的任意集合；相反，它始终与这些块之一关系密切。在 Julia 中主要有两种作用域，**全局作用域** 与 **局部作用域**，后者可以嵌套。
+在 Julia 中还存在引入“硬作用域”的构造和只引入“软作用域”的构造之间的区别，这影响到是否允许以相同的名称遮蔽全局变量。
 
 ### [作用域结构](@id man-scope-table)
 
-The constructs introducing scope blocks are:
+引入作用域块的结构有：
 
 结构 | 作用域类型 | Allowed within
 ----------|------------|---------------
@@ -27,10 +18,7 @@ The constructs introducing scope blocks are:
 [`macro`](@ref) | local (hard) | 全局
 [`let`](@ref), functions, comprehensions, generators | local (hard) | 全局或局部
 
-Notably missing from this table are
-[begin blocks](@ref man-compound-expressions) and [if blocks](@ref man-conditional-evaluation)
-which do *not* introduce new scopes.
-The three types of scopes follow somewhat different rules which will be explained below.
+值得注意的是，这个表内没有的是[ begin 块](@ref man-compound-experessions)和[ if 块](@ref man-conditional-evaluation)，这两个块**不会**引进新的作用域块。这两种作用域遵循的规则有点不一样，会在下面解释。
 
 Julia使用[词法作用域](https://en.wikipedia.org/wiki/Scope_%28computer_science%29#Lexical_scoping_vs._dynamic_scoping)，也就是说一个函数的作用域不会从其调用者的作用域继承，而从函数定义处的作用域继承。举个例子，在下列的代码中`foo`中的`x`指向的是模块`Bar`的全局作用域中的`x`。
 
@@ -59,14 +47,8 @@ contained. Outer scopes, on the other hand, cannot see variables in inner scopes
 
 ## 全局作用域
 
-Each module introduces a new global scope, separate from the global scope of all other modules—there
-is no all-encompassing global scope. Modules can introduce variables of other modules into their
-scope through the [using or import](@ref modules) statements or through qualified access using the
-dot-notation, i.e. each module is a so-called *namespace* as well as a first-class data structure
-associating names with values. Note that while variable bindings can be read externally, they can only
-be changed within the module to which they belong. As an escape hatch, you can always evaluate code
-inside that module to modify a variable; this guarantees, in particular, that module bindings cannot
-be modified externally by code that never calls `eval`.
+每个模块会引进一个新的全局作用域，与其他所有模块的全局作用域分开；无所不包的全局作用域不存在。模块可以把其他模块的变量引入到它的作用域中，通过[using 或者 import](@ref modules)语句或者通过点符号这种有资格的通路，也就是说每个模块都是所谓的*命名空间*。值得注意的是变量绑定只能在它们的全局作用域中改变，在外部模块中不行。
+作为一个逃生窗口，你总是可以执行该模块内的代码来修改一个变量；这特别保证了不调用“eval”的外部代码绝不会修改模块绑定。
 
 ```jldoctest
 julia> module A
@@ -553,8 +535,8 @@ julia> f()
 0
 ```
 
-However, it is occasionally useful to reuse an existing local variable as the iteration variable.
-This can be done conveniently by adding the keyword `outer`:
+但是，有时重复使用一个存在的局部变量作为迭代变量是有用的。
+这能够通过添加关键字 `outer` 来方便地做到：
 
 ```jldoctest
 julia> function f()
@@ -601,7 +583,7 @@ julia> const x = 1.0
 julia> x = 1
 ERROR: invalid redefinition of constant x
 ```
-* if a new value has the same type as the constant then a warning is printed:
+* 如果一个新值的类型与常量一样会打印一个警告：
 ```jldoctest
 julia> const y = 1.0
 1.0

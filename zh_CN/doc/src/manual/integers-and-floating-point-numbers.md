@@ -185,10 +185,7 @@ julia> for T in [Int8,Int16,Int32,Int64,Int128,UInt8,UInt16,UInt32,UInt64,UInt12
 UInt128: [0,340282366920938463463374607431768211455]
 ```
 
-The values returned by [`typemin`](@ref) and [`typemax`](@ref) are always of the given argument
-type. (The above expression uses several features that have yet to be introduced, including [for loops](@ref man-loops),
-[Strings](@ref man-strings), and [Interpolation](@ref string-interpolation), but should be easy enough to understand for users
-with some existing programming experience.)
+[`typemin`](@ref) 和 [`typemax`](@ref) 返回的值的类型总与所给参数的类型相同。（上面的表达式用了一些目前还没有介绍的功能，包括 [for 循环](@ref man-loops)、[字符串](@ref man-strings)和[插值](@ref)，但对于已有一些编程经验的用户应该是很容易理解的。）
 
 ### 溢出行为
 
@@ -207,7 +204,7 @@ true
 
 因此，Julia 的整数算术实际上是[模算数](https://zh.wikipedia.org/wiki/%E6%A8%A1%E7%AE%97%E6%95%B8)的一种形式，它反映了现代计算机实现底层算术的特点。在可能有溢出产生的程序中，对最值边界出现循环进行显式检查是必要的。否则，推荐使用[任意精度算术](@ref)中的 [`BigInt`](@ref) 类型作为替代。
 
-An example of overflow behavior and how to potentially resolve it is as follows:
+下面是溢出行为的一个例子以及如何解决溢出：
 
 ```jldoctest
 julia> 10^19
@@ -472,9 +469,8 @@ Julia 所使用的默认模式总是 [`RoundNearest`](@ref)，指舍入到最接
 
 为了允许使用任意精度的整数与浮点数，Julia 分别包装了 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org) 以及 [GNU MPFR Library](https://www.mpfr.org)。Julia 中的 [`BigInt`](@ref) 与 [`BigFloat`](@ref) 两种类型分别提供了任意精度的整数和浮点数。
 
-Constructors exist to create these types from primitive numerical types, and the [string literal](@ref non-standard-string-literals) [`@big_str`](@ref) or [`parse`](@ref)
-can be used to construct them from `AbstractString`s.  Once created, they participate in arithmetic
-with all other numeric types thanks to Julia's [type promotion and conversion mechanism](@ref conversion-and-promotion):
+构造函数可以从基本的数值类型或 [字符串字面量](@ref non-standard-string-literals)创建这些类型。 [`@big_str`](@ref) 和 [`parse`](@ref) 可以用来从 `AbstractString` 构造它们。
+一旦被创建，它们就可以像所有其它数值类型一样参与算术（这也多亏了 Julia 的[类型提升和转换机制](@ref conversion-and-promotion)）。
 
 ```jldoctest
 julia> BigInt(typemax(Int64)) + 1

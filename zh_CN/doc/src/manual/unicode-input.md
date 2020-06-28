@@ -1,6 +1,6 @@
 # Unicode 输入表
 
-在 Julia REPL 或其它编辑器中，可以像输入 LaTeX 符号一样，用 tab补全下表列出的 Unicode 字符。在 REPL 中，可以先按 `?` 进入帮助模式，然后将 Unicode 字符复制粘贴进去，一般在文档开头就会写输入方式。
+在 Julia REPL 或其它编辑器中，可以像输入 LaTeX 符号一样，用 tab 补全下表列出的 Unicode 字符。在 REPL 中，可以先按 `?` 进入帮助模式，然后将 Unicode 字符复制粘贴进去，一般在文档开头就会写输入方式。
 
 !!! warning
 

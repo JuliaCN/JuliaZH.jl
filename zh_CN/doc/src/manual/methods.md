@@ -4,7 +4,8 @@
 
 为了让对同样的概念使用许多不同的实现这件事更顺畅，函数没有必要马上全部都被定义，反而应该是一块一块地定义，为特定的参数类型和数量的组合提供指定的行为。对于一个函数的一个可能行为的定义叫做*方法*。直到这里，我们只展示了那些只定了一个方法的，对参数的所有类型都适用的函数。但是方法定义的特征是不仅能表明参数的数量，也能表明参数的类型，并且能提供多个方法定义。当一个函数被应用于特殊的一组参数时，能用于这一组参数的最特定的方法会被使用。所以，函数的全体行为是他的不同的方法定义的行为的组合。如果这个组合被设计得好，即使方法们的实现之间会很不一样，函数的外部行为也会显得无缝而自洽。
 
-当一个函数被应用时执行方法的选择被称为*分派*。Julia 允许分派过程来基于给的参数的个数和所有的参数的类型来选择调用函数的哪个方法。这与传统的面对对象的语言不一样，面对对象语言的分派只基于第一参数，经常有特殊的参数语法并且有时是暗含而非显式写成一个参数。[^1]使用函数的所有参数，而非只用第一个，来决定调用哪个方法被称为[多重分派](https://en.wikipedia.org/wiki/Multiple_dispatch)。多重分派对于数学代码来说特别有用，人工地将运算视为对于其中一个参数的属于程度比其他所有的参数都强的这个概念对于数学代码是几乎没有意义的：`x + y` 中的加法运算对 `x` 的属于程度比对 `y` 更强？一个数学运算符的实现普遍基于它所有的参数的类型。即使跳出数学运算，多重分派是对于结构和组织程序来说也是一个强大而方便的范式。
+当一个函数被应用时执行方法的选择被称为 **分派**。Julia 允许分派过程基于给定的参数个数和所有参数的类型来选择调用函数的哪个方法。这与传统的面对对象的语言不一样，面对对象语言的分派只基于第一参数，经常有特殊的参数语法，并且有时是暗含而非显式写成一个参数。
+[^1] 使用函数的所有参数，而非只用第一个，来决定调用哪个方法被称为[多重分派](https://en.wikipedia.org/wiki/Multiple_dispatch)。多重分派对于数学代码来说特别有用，人工地将运算视为对于其中一个参数的属于程度比其他所有的参数都强的这个概念对于数学代码是几乎没有意义的：`x + y` 中的加法运算对 `x` 的属于程度比对 `y` 更强？一个数学运算符的实现普遍基于它所有的参数的类型。即使跳出数学运算，多重分派是对于结构和组织程序来说也是一个强大而方便的范式。
 
 [^1]:
     In C++ or Java, for example, in a method call like `obj.meth(arg1,arg2)`, the object obj "receives"
@@ -422,9 +423,7 @@ julia> fetch(schedule(t, 1))
 abstract type AbstractArray{T, N} end
 eltype(::Type{<:AbstractArray{T}}) where {T} = T
 ```
-using so-called triangular dispatch.  Note that if `T` is a `UnionAll`
-type, as e.g. `eltype(Array{T} where T <: Integer)`, then `Any` is
-returned (as does the version of `eltype` in `Base`).
+使用了所谓的三角分派。注意如果 `T` 是一个 `UnionAll` 类型，比如 `eltype(Array{T} where T <: Integer)`，会返回 `Any`（如同 `Base` 中的 `eltype` 一样）。
 
 另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：
 
@@ -767,10 +766,7 @@ f(x::T, y::T) where {T} = ...
 f(x, y) = f(promote(x, y)...)
 ```
 
-One risk with this design is the possibility that if there is no
-suitable promotion method converting `x` and `y` to the same type, the
-second method will recurse on itself infinitely and trigger a stack
-overflow.
+这个设计的一个隐患是：如果没有合适的把 `x` 和 `y` 转换到同样类型的类型提升方法，第二个方法就可能无限自递归然后引发堆溢出。
 
 ### 一次只根据一个参数分派
 
@@ -831,19 +827,19 @@ myfilter(A, kernel) = myfilter(A, kernel, Replicate()) # replicate the edge by d
 更好的设计是像这样定义你的调用层级：
 
 ```julia
-struct NoPad end # indicate that no padding is desired, or that it's already applied
+struct NoPad end  # indicate that no padding is desired, or that it's already applied
 
-myfilter(A, kernel) = myfilter(A, kernel, Replicate()) # default boundary conditions
+myfilter(A, kernel) = myfilter(A, kernel, Replicate())  # default boundary conditions
 
 function myfilter(A, kernel, ::Replicate)
- Apadded = replicate_edges(A, size(kernel))
- myfilter(Apadded, kernel, NoPad()) # indicate the new boundary conditions
+    Apadded = replicate_edges(A, size(kernel))
+    myfilter(Apadded, kernel, NoPad())  # indicate the new boundary conditions
 end
 
 # other padding methods go here
 
 function myfilter(A, kernel, ::NoPad)
- # Here's the "real" implementation of the core computation
+    # Here's the "real" implementation of the core computation
 end
 ```
 

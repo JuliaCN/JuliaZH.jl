@@ -83,7 +83,7 @@ end
 
 此函数的返回值就像赋值给了一个类型已被声明的变量：返回值始终转换为`Float64`。
 
-## [Abstract Types](@id man-abstract-types)
+## [抽象类型](@id man-abstract-types)
 
 抽象类型不能实例化，只能作为类型图中的节点使用，从而描述由相关具体类型组成的集合：那些作为其后代的具体类型。我们从抽象类型开始，即使它们没有实例，因为它们是类型系统的主干：它们形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。
 
@@ -145,20 +145,14 @@ end
 
 因此，抽象类型允许程序员编写泛型函数，之后可以通过许多具体类型的组合将其用作默认方法。多亏了多重分派，程序员可以完全控制是使用默认方法还是更具体的方法。
 
-An important point to note is that there is no loss in performance if the programmer relies on
-a function whose arguments are abstract types, because it is recompiled for each tuple of argument
-concrete types with which it is invoked. (There may be a performance issue, however, in the case
-of function arguments that are containers of abstract types; see [Performance Tips](@ref man-performance-abstract-container).)
+需要注意的重点是，即使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅[性能建议](@ref man-performance-tips)。）
 
 ## 原始类型
 
 !!! warning
-  It is almost always preferable to wrap an existing primitive type in a new
-  composite type than to define your own primitive type.
+  在新的复合类型中包装现有的基元类型，几乎总是比定义自己的基元类型更好。
 
-  This functionality exists to allow Julia to bootstrap the standard primitive
-  types that LLVM supports. Once they are defined, there is very little reason
-  to define more.
+  这个功能允许 Julia 引导 LLVM 支持的标准基本类型。一旦它们被定义，就没有理由再定义更多了。
 
 原始类型是具体类型，其数据是由简单的位组成。原始类型的经典示例是整数和浮点数。与大多数语言不同，Julia 允许你声明自己的原始类型，而不是只提供一组固定的内置原始类型。实际上，标准原始类型都是在语言本身中定义的：
 
@@ -189,14 +183,7 @@ primitive type «name» «bits» end
 primitive type «name» <: «supertype» «bits» end
 ```
 
-The number of bits indicates how much storage the type requires and the name gives the new type
-a name. A primitive type can optionally be declared to be a subtype of some supertype. If a supertype
-is omitted, then the type defaults to having `Any` as its immediate supertype. The declaration
-of [`Bool`](@ref) above therefore means that a boolean value takes eight bits to store, and has
-[`Integer`](@ref) as its immediate supertype. Currently, only sizes that are multiples of
-8 bits are supported and you are likely to experience LLVM bugs with sizes other than those used above.
-Therefore, boolean values, although they really need just a single bit, cannot be declared to be any
-smaller than eight bits.
+bits 的数值表示该类型需要多少存储空间，name 为新类型指定名称。可以选择将一个原始类型声明为某个超类型的子类型。如果省略超类型，则默认 `Any` 为其直接超类型。上述声明中意味着 [`Bool`](@ref) 类型需要 8 位来储存，并且直接超类型为 [`Integer`](@ref)。目前支持的大小只能是 8 位的倍数，不然你就会遇到 LLVM 的 bug。因此，布尔值虽然确实只需要一位，但不能声明为小于 8 位的值。
 
 [`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 类型都具有相同的表现形式：它们都是 8 位内存块。然而，由于 Julia 的类型系统是主格的，它们尽管具有相同的结构，但不是通用的。它们之间的一个根本区别是它们具有不同的超类型：[`Bool`](@ref) 的直接超类型是 [`Integer`](@ref)、[`Int8`](@ref) 的是 [`Signed`](@ref) 而 [`UInt8`](@ref) 的是 [`Unsigned`](@ref)。[`Bool`](@ref)，[`Int8`](@ref) 和 [`UInt8`](@ref) 的所有其它差异是行为上的——定义函数的方式在这些类型的对象作为参数给定时起作用。这也是为什么主格的类型系统是必须的：如果结构确定类型，类型决定行为，就不可能使 [`Bool`](@ref) 的行为与 [`Int8`](@ref) 或 [`UInt8`](@ref) 有任何不同。
 
@@ -584,8 +571,7 @@ julia> struct DiagPoint{T} <: Pointy{T}
 julia> abstract type Pointy{T<:Real} end
 ```
 
-With such a declaration, it is acceptable to use any type that is a subtype of
-[`Real`](@ref) in place of `T`, but not types that are not subtypes of `Real`:
+在这样的声明中，可以使用任何 [`Real`](@ref) 的子类型替换 `T`，但不能使用不是 `Real` 子类型的类型：
 
 ```jldoctest realpointytype
 julia> Pointy{Float64}
@@ -696,8 +682,7 @@ julia> typeof((a=1,b="hello"))
 NamedTuple{(:a, :b),Tuple{Int64,String}}
 ```
 
-The [`@NamedTuple`](@ref) macro provides a more convenient `struct`-like syntax for declaring
-`NamedTuple` types via `key::Type` declarations, where an omitted `::Type` corresponds to `::Any`.
+[`@NamedTuple`](@ref) 宏提供了类结构体（`struct`）的具名元组（`NamedTuple`）声明，使用 `key::Type` 的语法，如果省略 `::Type` 则默认为 `::Any`。
 
 ```jldoctest
 julia> @NamedTuple{a::Int, b::String}
@@ -1066,12 +1051,8 @@ julia> firstlast(Val(false))
 "Last"
 ```
 
-For consistency across Julia, the call site should always pass a `Val` *instance* rather than using
-a *type*, i.e., use `foo(Val(:bar))` rather than `foo(Val{:bar})`.
+为了保证 Julia 的一致性，调用处应当始终传递 `Val` **实例** 而不是 **类型**，也就是使用 `foo(Val(:bar))` 而不是 `foo(Val{:bar})`。
 
-It's worth noting that it's extremely easy to mis-use parametric "value" types, including `Val`;
-in unfavorable cases, you can easily end up making the performance of your code much *worse*.
- In particular, you would never want to write actual code as illustrated above.  For more information
-about the proper (and improper) uses of `Val`, please read [the more extensive discussion in the performance tips](@ref man-performance-value-type).
+值得注意的是，参数「值」类型非常容易被误用，包括 `Val`；情况不太好时，你很容易使代码性能变得更*糟糕*。一般使用时，你可能从来不会想要写出上方示例那样的代码。有关 `Val` 的正确（和不正确）使用的更多信息，请阅读[性能建议](@ref man-performance-tips)中更广泛的讨论。
 
 [^1]: 「少数」由常数 `MAX_UNION_SPLITTING` 定义，目前设置为 4。

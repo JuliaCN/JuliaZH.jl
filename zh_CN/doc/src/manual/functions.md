@@ -1,8 +1,6 @@
 # [函数](@id man-functions)
 
-In Julia, a function is an object that maps a tuple of argument values to a return value. Julia
-functions are not pure mathematical functions, because they can alter and be affected
-by the global state of the program. The basic syntax for defining functions in Julia is:
+在 Julia 里，函数是一个将参数值元组映射到返回值的对象。Julia 的函数不是纯粹的数学函数，在某种意义上，函数可以改变并受程序的全局状态的影响。在Julia中定义函数的基本语法是：
 
 ```jldoctest
 julia> function f(x,y)
@@ -11,8 +9,7 @@ julia> function f(x,y)
 f (generic function with 1 method)
 ```
 
-This function accepts two arguments `x` and `y` and returns the value
-of the last expression evaluated, which is `x + y`.
+这个函数接收两个参数 `x` 和 `y` 并返回最后一个表达式的值，这里是 `x + y`。
 
 在 Julia 中定义函数还有第二种更简洁的语法。上述的传统函数声明语法等效于以下紧凑性的“赋值形式”：
 
@@ -30,8 +27,7 @@ julia> f(2,3)
 5
 ```
 
-Without parentheses, the expression `f` refers to the function object, and can be passed around
-like any other value:
+没有括号时，表达式 `f` 指的是函数对象，可以像任何值一样被传递：
 
 ```jldoctest fofxy
 julia> g = f;
@@ -56,12 +52,7 @@ Julia 函数参数遵循有时称为 “pass-by-sharing” 的约定，这意味
 
 ## `return` 关键字
 
-The value returned by a function is the value of the last expression evaluated, which, by default,
-is the last expression in the body of the function definition. In the example function, `f`, from
-the previous section this is the value of the expression `x + y`.
-As an alternative, as in many other languages,
-the `return` keyword causes a function to return immediately, providing
-an expression whose value is returned:
+函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在上一小节的示例函数 `f` 中，返回值是表达式的 `x + y` 值。与在 C 语言和大多数其他命令式或函数式语言中一样，`return` 关键字会让函数立即返回，从而提供返回值的表达式：
 
 ```julia
 function g(x,y)
@@ -117,8 +108,7 @@ julia> hypot(3, 4)
 
 ### 返回类型
 
-A return type can be specified in the function declaration using the `::` operator. This converts
-the return value to the specified type.
+也可以使用 `::` 运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。
 
 ```jldoctest
 julia> function g(x, y)::Int8
@@ -131,7 +121,7 @@ Int8
 
 这个函数将忽略 `x` 和 `y` 的类型，返回 `Int8` 类型的值。有关返回类型的更多信息，请参见[类型声明](@ref)。
 
-### Returning nothing
+### 返回 nothing
 
 For functions that do not need to return a value (functions used only for some side effects),
 the Julia convention is to return the value [`nothing`](@ref):
@@ -143,17 +133,12 @@ function printx(x)
 end
 ```
 
-This is a *convention* in the sense that `nothing` is not a Julia keyword
-but a only singleton object of type `Nothing`.
-Also, you may notice that the `printx` function example above is contrived,
-because `println` already returns `nothing`, so that the `return` line is redundant.
+这在某种意义上是一个“惯例”，在 julia 中 `nothing` 不是一个关键字，而是 `Nothing` 类型的一个单例（singleton）。
+也许你已经注意到 `printx` 函数有点不自然，因为 `println` 实际上已经会返回 `nothing`，所以 `return` 语句是多余的。
 
-There are two possible shortened forms for the `return nothing` expression.
-On the one hand, the `return` keyword implicitly returns `nothing`, so it can be used alone.
-On the other hand, since functions implicitly return their last expression evaluated,
-`nothing` can be used alone when it's the last expression.
-The preference for the expression `return nothing` as opposed to `return` or `nothing`
-alone is a matter of coding style.
+有两种比 `return nothing` 更短的写法：一种是直接写 `return` 这会隐式的返回 `nothing`。
+另一种是在函数的会后一行写上 `nothing`，因为函数会隐式的返回最后一个表达式的值。
+三种写法使用哪一种取决于代码风格的偏好。
 
 ## 操作符也是函数
 
@@ -231,7 +216,7 @@ julia> map(x -> x^2 + 2x - 1, [1, 3, -1])
 
 接受多个参数的匿名函数写法可以使用语法 `(x,y,z)->2x+y-z`，而无参匿名函数写作 `()->3` 。无参函数的这种写法看起来可能有些奇怪，不过它对于延迟计算很有必要。这种用法会把代码块包进一个无参函数中，后续把它当做 `f` 调用。
 
-As an example, consider this call to [`get`](@ref):
+例如，考虑对 [`get`](@ref) 的调用：
 
 ```julia
 get(dict, key) do
@@ -321,7 +306,7 @@ julia> y
 6
 ```
 
-You can also return multiple values using the `return` keyword:
+你也可以显式地使用 `return` 关键字来返回多个值：
 
 ```julia
 function foo(a,b)
@@ -456,12 +441,7 @@ baz(::Any, ::Any) at none:1
 
 ## 可选参数
 
-It is often possible to provide sensible default values for function arguments.
-This can save users from having to pass every argument on every call.
-For example, the function [`Date(y, [m, d])`](@ref)
-from `Dates` module constructs a `Date` type for a given year `y`, month `m` and day `d`.
-However, `m` and `d` arguments are optional and their default value is `1`.
-This behavior can be expressed concisely as:
+在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，`Dates` 模块中的 [`Date(y, [m, d])`](@ref) 函数对于给定的年（year）`y`、月（mouth）`m`、日（data）`d` 构造了 `Date` 类型。但是，`m` 和 `d` 参数都是可选的，默认值都是 `1`。这行为可以简述为：
 
 ```julia
 function Date(y::Int64, m::Int64=1, d::Int64=1)
@@ -704,9 +684,7 @@ julia> sin.(A)
  0.1411200080598672
 ```
 
-Of course, you can omit the dot if you write a specialized "vector" method of `f`, e.g. via `f(A::AbstractArray) = map(f, A)`,
-and this is just as efficient as `f.(A)`. The advantage of the `f.(A)` syntax is that which functions are vectorizable need not be decided upon
-in advance by the library writer.
+当然，你如果为 `f` 编写了一个专门的「向量化」方法，例如通过 `f(A::AbstractArray) = map(f, A)`，可以省略点号，这和 `f.(A)` 一样高效。但这种方法要求你事先决定要进行向量化的函数。
 
 更一般地，`f.(args...)` 实际上等价于 `broadcast(f, args...)`，它允许你操作多个数组（甚至是不同形状的），或是数组和标量的混合（请参阅 [Broadcasting](@ref)）。例如，如果有 `f(x,y) = 3x + 4y`，那么 `f.(pi,A)` 将为 `A` 中的每个 `a` 返回一个由 `f(pi,a)` 组成的新数组，而 `f.(vector1,vector2)` 将为每个索引 `i` 返回一个由 `f(vector1[i],vector2[i])` 组成的新向量（如果向量具有不同的长度则会抛出异常）。
 
@@ -732,15 +710,7 @@ julia> f.(A, B)
 
 此外，*嵌套的* `f.(args...)` 调用会被*融合*到一个 `broadcast` 循环中。例如，`sin.(cos.(X))` 等价于 `broadcast(x -> sin(cos(x)), X)`，类似于 `[sin(cos(x)) for x in X]`：在 `X` 上只有一个循环，并且只为结果分配了一个数组。[ 相反，在典型的「向量化」语言中，`sin(cos(X))` 首先会为 `tmp=cos(X)` 分配第一个临时数组，然后在单独的循环中计算 `sin(tmp)`，再分配第二个数组。] 这种循环融合不是可能发生也可能不发生的编译器优化，只要遇到了嵌套的 `f.(args...)` 调用，它就是一个*语法保证*。技术上，一旦遇到「非点」函数调用，融合就会停止；例如，在 `sin.(sort(cos.(X)))` 中，由于插入的 `sort` 函数，`sin` 和 `cos` 无法被合并。
 
-Finally, the maximum efficiency is typically achieved when the output array of a vectorized operation
-is *pre-allocated*, so that repeated calls do not allocate new arrays over and over again for
-the results (see [Pre-allocating outputs](@ref)). A convenient syntax for this is `X .= ...`, which
-is equivalent to `broadcast!(identity, X, ...)` except that, as above, the `broadcast!` loop is
-fused with any nested "dot" calls. For example, `X .= sin.(Y)` is equivalent to `broadcast!(sin, X, Y)`,
-overwriting `X` with `sin.(Y)` in-place. If the left-hand side is an array-indexing expression,
-e.g. `X[begin+1:end] .= sin.(Y)`, then it translates to `broadcast!` on a `view`, e.g.
-`broadcast!(sin, view(X, firstindex(X)+1:lastindex(X)), Y)`,
-so that the left-hand side is updated in-place.
+最后，最大效率通常在向量化操作的输出数组被*预分配*时实现，这样重复调用就不会一次又一次地为结果分配新数组（请参阅 [输出预分配](@ref)）。一个方便的语法是 `X .= ...`，它等价于 `broadcast!(identity, X, ...)`，除了上面提到的，`broadcast!` 循环可与任何嵌套的「点」调用融合。例如，`X .= sin.(Y)` 等价于 `broadcast!(sin, X, Y)`，用 `sin.(Y)` in-place 覆盖 `X`。如果左边是数组索引表达式，例如 `X[2:end] .= sin.(Y)`，那就将 `broadcast!` 转换在一个 `view` 上，例如 `broadcast!(sin, view(X, 2:lastindex(X)), Y)`，这样左侧就被 in-place 更新了。
 
 由于在表达式中为许多操作和函数调用添加点可能很乏味并导致难以阅读的代码，宏 [`@.`](@ref @__dot__) 用于将表达式中的*每个*函数调用、操作和赋值转换为「点」版本。
 

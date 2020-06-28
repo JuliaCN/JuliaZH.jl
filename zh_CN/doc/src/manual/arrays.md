@@ -42,7 +42,7 @@ Julia 提供了许多用于构造和初始化数组的函数。在下列函数�
 | [`reinterpret(T, A)`](@ref)                    | 与 `A` 具有相同二进制数据的数组，但元素类型为 `T`                                                                                                                                                                         |
 | [`rand(T, dims...)`](@ref)                     | 一个随机 `Array`，元素值是 ``[0, 1)`` 半开区间中的均匀分布且服从一阶独立同分布 [^1]                                                                                                                                       |
 | [`randn(T, dims...)`](@ref)                    | 一个随机 `Array`，元素为标准正态分布，服从独立同分布                                                                                                                                                                         |
-| [`Matrix{T}(I, m, n)`](@ref)                   | `m`-by-`n` identity matrix. Requires `using LinearAlgebra` for [`I`](@ref).                                                                                                                                                                                                                   |
+| [`Matrix{T}(I, m, n)`](@ref)                   | `m`-by-`n` 单位阵。 需要 `using LinearAlgebra` for [`I`](@ref).                                                                                                                                                                                                                   |
 | [`range(start, stop=stop, length=n)`](@ref)    | 从 `start` 到 `stop` 的带有 `n` 个线性间隔元素的范围                                                                                                                                                                                 |
 | [`fill!(A, x)`](@ref)                          | 用值 `x` 填充数组 `A`                                                                                                                                                                                                        |
 | [`fill(x, dims...)`](@ref)                     | 一个被值 `x` 填充的 `Array`                                                                                                                                                                                                         |
@@ -66,19 +66,12 @@ julia> zeros((2, 3))
  0.0  0.0  0.0
  0.0  0.0  0.0
 ```
-Here, `(2, 3)` is a [`Tuple`](@ref) and the first argument — the element type — is optional, defaulting to `Float64`.
+此处, `(2, 3)` 是一个元组 [`Tuple`](@ref) 并且第一个参数——元素类型是可选的, 默认值为 `Float64`.
 
 ## [Array literals](@id man-array-literals)
 
-Arrays can also be directly constructed with square braces; the syntax `[A, B, C, ...]`
-creates a one dimensional array (i.e., a vector) containing the comma-separated arguments as
-its elements. The element type ([`eltype`](@ref)) of the resulting array is automatically
-determined by the types of the arguments inside the braces. If all the arguments are the
-same type, then that is its `eltype`. If they all have a common
-[promotion type](@ref conversion-and-promotion) then they get converted to that type using
-[`convert`](@ref) and that type is the array's `eltype`. Otherwise, a heterogeneous array
-that can hold anything — a `Vector{Any}` — is constructed; this includes the literal `[]`
-where no arguments are given.
+数组也可以直接用方括号来构造; 语法为 `[A, B, C, ...]`
+创建一个一维数组(即一个矢量)，该一维数组的元素用逗号分隔。所创建的数组中元素的类型([`eltype`](@ref)) 自动由括号内参数的类型确定。如果所有参数类型都相同，则该类型称为数组的 `eltype`。 如果所有元素都有相同的[promotion type](@ref conversion-and-promotion)，那么个元素都由[`convert`](@ref)转换成该类型并且该类型为数组的 `eltype`. 否则, 生成一个可以包含任意类型的异构数组—— `Vector{Any}` ;该构造方法包含字符 `[]`，此时构造过程无参数给出。
 
 ```jldoctest
 julia> [1,2,3] # An array of `Int`s

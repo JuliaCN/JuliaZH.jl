@@ -2,7 +2,7 @@
 
 Julia 提供了大量的流程控制构件：
 
-  * [Compound Expressions](@ref man-compound-expressions): `begin` and `;`.
+  * [复合表达式](@ref man-compound-expressions)：`begin` 和 `;`。
   * [条件表达式](@ref man-conditional-evaluation)：`if`-`elseif`-`else` 和 `?:` (三元运算符)。
   * [短路求值](@ref)：`&&`、`||` 和链式比较。
   * [重复执行：循环](@ref man-loops)：`while` 和 `for`。
@@ -13,10 +13,7 @@ Julia 提供了大量的流程控制构件：
 
 ## [复合表达式](@id man-compound-expressions)
 
-Sometimes it is convenient to have a single expression which evaluates several subexpressions
-in order, returning the value of the last subexpression as its value. There are two Julia constructs
-that accomplish this: `begin` blocks and `;` chains. The value of both compound expression constructs
-is that of the last subexpression. Here's an example of a `begin` block:
+有时一个表达式能够有序地计算若干子表达式，并返回最后一个子表达式的值作为它的值是很方便的。Julia 有两个组件来完成这个： `begin` 代码块 和 `;` 链。这两个复合表达式组件的值都是最后一个子表达式的值。下面是一个 `begin` 代码块的例子：
 
 ```jldoctest
 julia> z = begin
@@ -27,17 +24,14 @@ julia> z = begin
 3
 ```
 
-Since these are fairly small, simple expressions, they could easily be placed onto a single line,
-which is where the `;` chain syntax comes in handy:
+因为这些是非常简短的表达式，它们可以简单地被放到一行里，这也是 `;` 链的由来：
 
 ```jldoctest
 julia> z = (x = 1; y = 2; x + y)
 3
 ```
 
-This syntax is particularly useful with the terse single-line function definition form introduced
-in [Functions](@ref man-functions). Although it is typical, there is no requirement that `begin` blocks be multiline
-or that `;` chains be single-line:
+这个语法在定义简洁的单行函数的时候特别有用，参见[函数](@id man-functions)。尽管很典型，但是并不要求 `begin` 代码块是多行的，或者 `;` 链是单行的：
 
 ```jldoctest
 julia> begin x = 1; y = 2; x + y end
@@ -577,16 +571,17 @@ julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defin
 ```
 
 !!! note
-    When writing an error message, it is preferred to make the first word lowercase. For example,
+    错误信息的第一个单词最好用小写。例如：
 
     `size(A) == size(B) || throw(DimensionMismatch("size of A not equal to size of B"))`
 
-    is preferred over
+    就比
 
     `size(A) == size(B) || throw(DimensionMismatch("Size of A not equal to size of B"))`.
 
-    However, sometimes it makes sense to keep the uppercase first letter, for instance if an argument
-    to a function is a capital letter:
+    更好。
+
+    但是，有时保留大写首字母是有意义的，例如函数的参数就是大写字母时：
 
     `size(A,1) == size(B,2) || throw(DimensionMismatch("A has first dimension..."))`.
 
@@ -727,6 +722,5 @@ end
 
 ## [`Task`（协程）](@id man-tasks)
 
-Tasks are a control flow feature that allows computations to be suspended and resumed in a flexible
-manner. We mention them here only for completeness; for a full discussion see
-[Asynchronous Programming](@ref man-asynchronous).
+`Task` 是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。
+我们提及它只是为了说明的完整性；详细的介绍参见：[异步编程](@ref man-asynchronous)。

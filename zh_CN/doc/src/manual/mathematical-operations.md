@@ -44,7 +44,7 @@ julia> 3*2/12
 
 习惯上我们会把优先运算的操作符紧邻操作数，比如 `-x + 2` 表示先要给 `x`  取反，然后再加 `2` 。
 
-When used in multiplication, `false` acts as a *strong zero*:
+在乘法操作中，`false` 被视作 **零**。
 
 ```jldoctest
 julia> NaN * false
@@ -54,7 +54,7 @@ julia> false * Inf
 0.0
 ```
 
-This is useful for preventing the propagation of `NaN` values in quantities that are known to be zero. See [Knuth (1992)](https://arxiv.org/abs/math/9205211) for motivation.
+这在已知某些量为零时，可以避免 `NaN` 的传播。详细的动机参见：[Knuth (1992)](https://arxiv.org/abs/math/9205211)。
 
 ## 位运算符
 
@@ -205,7 +205,7 @@ false
   * 有限数的大小顺序，和我们所熟知的相同。
   * `+0` 等于但不大于 `-0`.
   * `Inf` 等于自身，并且大于除了 `NaN` 外的所有数。
-  * `-Inf` is equal to itself and less than everything else except `NaN`.
+  * `-Inf` 等于自身，并且小于除了 `NaN` 外的所有数。
   * `NaN` 不等于、不小于且不大于任何数值，包括它自己。
 
 `NaN` 不等于它自己这一点可能会令人感到惊奇，所以需要注意：
@@ -342,7 +342,7 @@ Julia 提供了强大的数学函数和运算符集合。这些数学运算定�
 julia> Base.operator_precedence(:+), Base.operator_precedence(:*), Base.operator_precedence(:.)
 (11, 12, 17)
 
-julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (Note the necessary parens on `:(=)`)
+julia> Base.operator_precedence(:sin), Base.operator_precedence(:+=), Base.operator_precedence(:(=))  # (注意：等号前后必须有括号 `:(=)`)
 (0, 1, 1)
 ```
 

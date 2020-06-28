@@ -1,4 +1,4 @@
-# [Variables](@id man-variables)
+# [变量](@id man-variables)
 
 Julia 语言中，变量是与某个值相关联（或绑定）的名字。你可以用它来保存一个值（例如某些计算得到的结果），供之后的代码使用。例如：
 
@@ -95,7 +95,7 @@ Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其�
 大部分 Sm 类别中的 Unicode 中缀运算符，像 `⊕`，则会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 `const ⊗ = kron` 将 `⊗` 定义为中缀的 Kronecker 积）。
 运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 `+̂ₐ″` 被解析成一个与 `+` 具有相同优先级的中缀运算符。
 
-The only explicitly disallowed names for variables are the names of the built-in [Keywords](@ref):
+唯一明确禁止的变量名称是内置[关键字](@ref)的名称：
 
 ```julia-repl
 julia> else = false
@@ -105,12 +105,7 @@ julia> try = "No"
 ERROR: syntax: unexpected "="
 ```
 
-Some Unicode characters are considered to be equivalent in identifiers.
-Different ways of entering Unicode combining characters (e.g., accents)
-are treated as equivalent (specifically, Julia identifiers are [NFC](http://www.macchiato.com/unicode/nfc-faq)-normalized).
-The Unicode characters `ɛ` (U+025B: Latin small letter open e)
-and `µ` (U+00B5: micro sign) are treated as equivalent to the corresponding
-Greek letters, because the former are easily accessible via some input methods.
+一些 Unicode 字符在标识符中被认为是等效的。不同的输入 Unicode 组合字符的方法（例如：重音）被视为等价的（Julia 标识符是 [NFC](http://www.macchiato.com/unicode/nfc-faq) 标准化的）。Unicode 字符 `ɛ` (U+025B: Latin small letter open e) 和 `µ` (U+00B5: micro sign) 被视为等同于相应的希腊字母，因为前者很容易通过一些方法输入。
 
 ## 命名规范
 
