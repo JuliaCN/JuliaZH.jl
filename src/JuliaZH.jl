@@ -52,7 +52,7 @@ function generate_startup(mirror_name::String = "BFSU")
     pkg_matches = map(x->match(regex_PKG_SERVER, x), startup_lines)
     pkg_indices = findall(x->!isnothing(x), pkg_matches)
     if isempty(pkg_indices)
-        @info "添加 PkgServer" 服务器地址=new_upstream 配置文件=config_path
+        @info "添加 PkgServer" 服务器地址=new_upstream 配置文件=startup_path
         append!(startup_lines, ["", "# 以下这一行由 JuliaCN 自动生成", new_line, ""])
     else
         # only modify the last match
