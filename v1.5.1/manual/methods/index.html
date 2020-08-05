@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>方法 · Julia中文文档</title><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-28835595-9', 'auto');
+ga('send', 'pageview', {'page': location.pathname + location.search + location.hash});
+</script><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/methods/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia中文文档 logo"/></a><div class="docs-package-name"><span class="docs-autofit">Julia中文文档</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><span class="tocitem">手册</span><ul><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li class="is-active"><a class="tocitem" href>方法</a><ul class="internal"><li><a class="tocitem" href="#定义方法"><span>定义方法</span></a></li><li><a class="tocitem" href="#man-ambiguities"><span>方法歧义</span></a></li><li><a class="tocitem" href="#参数方法"><span>参数方法</span></a></li><li><a class="tocitem" href="#重定义方法"><span>重定义方法</span></a></li><li><a class="tocitem" href="#使用参数方法设计样式"><span>使用参数方法设计样式</span></a></li><li><a class="tocitem" href="#参数化约束的可变参数方法"><span>参数化约束的可变参数方法</span></a></li><li><a class="tocitem" href="#可选参数和关键字的参数的注意事项"><span>可选参数和关键字的参数的注意事项</span></a></li><li><a class="tocitem" href="#类函数对象"><span>类函数对象</span></a></li><li><a class="tocitem" href="#空泛型函数"><span>空泛型函数</span></a></li><li><a class="tocitem" href="#man-method-design-ambiguities"><span>方法设计与避免歧义</span></a></li></ul></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li></ul></li><li><span class="tocitem">Base</span><ul><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">Numbers</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><span class="tocitem">Standard Library</span><ul><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">分布式计算</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">交互式组件</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">线性代数</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><span class="tocitem">Developer Documentation</span><ul><li><a class="tocitem" href="../../devdocs/reflection/">反射 与 自我检查</a></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">High-level Overview of the Native-Code Generation Process</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>方法</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>方法</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://www.transifex.com/juliacn/manual-zh_cn/translate/#zh_CN/methodsmd" title=" 完善 Transifex 上的翻译"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch"> 完善 Transifex 上的翻译</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="设置"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="方法"><a class="docs-heading-anchor" href="#方法">方法</a><a id="方法-1"></a><a class="docs-heading-anchor-permalink" href="#方法" title="Permalink"></a></h1><p>我们回想一下，在<a href="../functions/#man-functions">函数</a>中我们知道函数是这么一个对象，它把一组参数映射成一个返回值，或者当没有办法返回恰当的值时扔出一个异常。具有相同概念的函数或者运算，经常会根据参数类型的不同而进行有很大差异的实现：两个整数的加法与两个浮点数的加法是相当不一样的，整数与浮点数之间的加法也不一样。除了它们实现上的不同，这些运算都归在&quot;加法&quot;这么一个广义的概念之下，因此在 Julia 中这些行为都属于同一个对象：<code>+</code> 函数。</p><p>为了让对同样的概念使用许多不同的实现这件事更顺畅，函数没有必要马上全部都被定义，反而应该是一块一块地定义，为特定的参数类型和数量的组合提供指定的行为。对于一个函数的一个可能行为的定义叫做<em>方法</em>。直到这里，我们只展示了那些只定了一个方法的，对参数的所有类型都适用的函数。但是方法定义的特征是不仅能表明参数的数量，也能表明参数的类型，并且能提供多个方法定义。当一个函数被应用于特殊的一组参数时，能用于这一组参数的最特定的方法会被使用。所以，函数的全体行为是他的不同的方法定义的行为的组合。如果这个组合被设计得好，即使方法们的实现之间会很不一样，函数的外部行为也会显得无缝而自洽。</p><p>当一个函数被应用时执行方法的选择被称为 <strong>分派</strong>。Julia 允许分派过程基于给定的参数个数和所有参数的类型来选择调用函数的哪个方法。这与传统的面对对象的语言不一样，面对对象语言的分派只基于第一参数，经常有特殊的参数语法，并且有时是暗含而非显式写成一个参数。 <sup class="footnote-reference"><a id="citeref-1" href="#footnote-1">[1]</a></sup> 使用函数的所有参数，而非只用第一个，来决定调用哪个方法被称为<a href="https://en.wikipedia.org/wiki/Multiple_dispatch">多重分派</a>。多重分派对于数学代码来说特别有用，人工地将运算视为对于其中一个参数的属于程度比其他所有的参数都强的这个概念对于数学代码是几乎没有意义的：<code>x + y</code> 中的加法运算对 <code>x</code> 的属于程度比对 <code>y</code> 更强？一个数学运算符的实现普遍基于它所有的参数的类型。即使跳出数学运算，多重分派是对于结构和组织程序来说也是一个强大而方便的范式。</p><h2 id="定义方法"><a class="docs-heading-anchor" href="#定义方法">定义方法</a><a id="定义方法-1"></a><a class="docs-heading-anchor-permalink" href="#定义方法" title="Permalink"></a></h2><p>直到这里，在我们的例子中，我们定义的函数只有一个不限制参数类型的方法。这种函数的行为就与传统动态类型语言中的函数一样。不过，我们已经在没有意识到的情况下已经使用了多重分派和方法：所有 Julia 标准函数和运算符，就像之前提到的 <code>+</code> 函数，都根据参数的类型和数量的不同组合而定义了大量方法。</p><p>当定义一个函数时，可以根据需要使用在<a href="../types/#复合类型">复合类型</a>中介绍的 <code>::</code> 类型断言运算符来限制参数类型，</p><pre><code class="language-julia-repl">julia&gt; f(x::Float64, y::Float64) = 2x + y
+f (generic function with 1 method)</code></pre><p>这个函数只在 <code>x</code> 和 <code>y</code> 的类型都是 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> 的情况下才会被调用：</p><pre><code class="language-julia-repl">julia&gt; f(2.0, 3.0)
+7.0</code></pre><p>用其它任意的参数类型则会导致 <a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>:</p><pre><code class="language-julia-repl">julia&gt; f(2.0, 3)
+ERROR: MethodError: no method matching f(::Float64, ::Int64)
+Closest candidates are:
+  f(::Float64, !Matched::Float64) at none:1
+
+julia&gt; f(Float32(2.0), 3.0)
+ERROR: MethodError: no method matching f(::Float32, ::Float64)
+Closest candidates are:
+  f(!Matched::Float64, ::Float64) at none:1
+
+julia&gt; f(2.0, &quot;3.0&quot;)
+ERROR: MethodError: no method matching f(::Float64, ::String)
+Closest candidates are:
+  f(::Float64, !Matched::Float64) at none:1
+
+julia&gt; f(&quot;2.0&quot;, &quot;3.0&quot;)
+ERROR: MethodError: no method matching f(::String, ::String)</code></pre><p>如同你所看到的，参数必须精确地是 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> 类型。其它数字类型，比如整数或者 32 位浮点数值，都不会自动转化成 64 位浮点数，字符串也不会解析成数字。由于 <code>Float64</code> 是一个具体类型，且在 Julia 中具体类型无法拥有子类，所以这种定义方式只能适用于函数的输入类型精确地是 <code>Float64</code> 的情况，但一个常见的做法是用抽象类型来定义通用的方法：</p><pre><code class="language-julia-repl">julia&gt; f(x::Number, y::Number) = 2x - y
+f (generic function with 2 methods)
+
+julia&gt; f(2.0, 3)
+1.0</code></pre><p>用上面这种方式定义的方法可以接收任意一对 <a href="../../base/numbers/#Core.Number"><code>Number</code></a> 的实例参数，且它们不需要是同一类型的，只要求都是数值。如何根据不同的类型来做相应的处理就可以委托给表达式 <code>2x - y</code> 中的代数运算。</p><p>为了定义一个有多个方法的函数，只需简单定义这个函数多次，使用不同的参数数量和类型。函数的第一个方法定义会建立这个函数对象，后续的方法定义会添加新的方法到存在的函数对象中去。当函数被应用时，最符合参数的数量和类型的特定方法会被执行。所以，上面的两个方法定义在一起定义了函数<code>f</code>对于所有的一对虚拟类型<code>Number</code>实例的行为 – 但是针对一对<a href="../../base/numbers/#Core.Float64"><code>Float64</code></a>值有不同的行为。如果一个参数是64位浮点数而另一个不是，<code>f(Float64,Float64)</code>方法不会被调用，而一定使用更加通用的<code>f(Number,Number)</code>方法：</p><pre><code class="language-julia-repl">julia&gt; f(2.0, 3.0)
+7.0
+
+julia&gt; f(2, 3.0)
+1.0
+
+julia&gt; f(2.0, 3)
+1.0
+
+julia&gt; f(2, 3)
+1</code></pre><p><code>2x + y</code> 定义只用于第一个情况，<code>2x - y</code> 定义用于其他的情况。没有使用任何自动的函数参数的指派或者类型转换：Julia中的所有转换都不是 magic 的，都是完全显式的。然而<a href="../conversion-and-promotion/#conversion-and-promotion">类型转换和类型提升</a>显示了足够先进的技术的智能应用能够与 magic 不可分辨到什么程度。<sup class="footnote-reference"><a id="citeref-Clarke61" href="#footnote-Clarke61">[Clarke61]</a></sup> 对于非数字值，和比两个参数更多或者更少的情况，函数 <code>f</code> 并没有定义，应用会导致 <a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>：</p><pre><code class="language-julia-repl">julia&gt; f(&quot;foo&quot;, 3)
+ERROR: MethodError: no method matching f(::String, ::Int64)
+Closest candidates are:
+  f(!Matched::Number, ::Number) at none:1
+
+julia&gt; f()
+ERROR: MethodError: no method matching f()
+Closest candidates are:
+  f(!Matched::Float64, !Matched::Float64) at none:1
+  f(!Matched::Number, !Matched::Number) at none:1</code></pre><p>可以简单地看到对于函数存在哪些方法，通过在交互式会话中键入函数对象本身：</p><pre><code class="language-julia-repl">julia&gt; f
+f (generic function with 2 methods)</code></pre><p>这个输出告诉我们<code>f</code>是有两个方法的函数对象。为了找出那些方法的特征是什么，使用 <a href="../../base/base/#Base.methods"><code>methods</code></a>函数：</p><pre><code class="language-julia-repl">julia&gt; methods(f)
+# 2 methods for generic function &quot;f&quot;:
+[1] f(x::Float64, y::Float64) in Main at none:1
+[2] f(x::Number, y::Number) in Main at none:1</code></pre><p>这表示<code>f</code>有两个方法，一个接受两个<code>Float64</code>参数一个接受两个<code>Number</code>类型的参数。它也显示了这些方法定义所在的文件和行数：因为这些方法是在REPL中定义的，我们得到了表面上的行数<code>none:1</code>.</p><p>没有<code>::</code>的类型声明，方法参数的类型默认为<code>Any</code>，这就意味着没有约束，因为Julia中的所有的值都是抽象类型<code>Any</code>的实例。所以，我们可以为<code>f</code>定义一个接受所有的方法，像这样：</p><pre><code class="language-julia-repl">julia&gt; f(x,y) = println(&quot;Whoa there, Nelly.&quot;)
+f (generic function with 3 methods)
+
+julia&gt; f(&quot;foo&quot;, 1)
+Whoa there, Nelly.</code></pre><p>这个接受所有的方法比其他的对一堆参数值的其他任意可能的方法定义更不专用。所以他只会被没有其他方法定义应用的一对参数调用。</p><p>虽然这像是一个简单的概念，基于值的类型的多重分派可能是Julia语言的一个最强大和中心特性。核心运算符都典型地含有很多方法：</p><pre><code class="language-julia-repl">julia&gt; methods(+)
+# 180 methods for generic function &quot;+&quot;:
+[1] +(x::Bool, z::Complex{Bool}) in Base at complex.jl:227
+[2] +(x::Bool, y::Bool) in Base at bool.jl:89
+[3] +(x::Bool) in Base at bool.jl:86
+[4] +(x::Bool, y::T) where T&lt;:AbstractFloat in Base at bool.jl:96
+[5] +(x::Bool, z::Complex) in Base at complex.jl:234
+[6] +(a::Float16, b::Float16) in Base at float.jl:373
+[7] +(x::Float32, y::Float32) in Base at float.jl:375
+[8] +(x::Float64, y::Float64) in Base at float.jl:376
+[9] +(z::Complex{Bool}, x::Bool) in Base at complex.jl:228
+[10] +(z::Complex{Bool}, x::Real) in Base at complex.jl:242
+[11] +(x::Char, y::Integer) in Base at char.jl:40
+[12] +(c::BigInt, x::BigFloat) in Base.MPFR at mpfr.jl:307
+[13] +(a::BigInt, b::BigInt, c::BigInt, d::BigInt, e::BigInt) in Base.GMP at gmp.jl:392
+[14] +(a::BigInt, b::BigInt, c::BigInt, d::BigInt) in Base.GMP at gmp.jl:391
+[15] +(a::BigInt, b::BigInt, c::BigInt) in Base.GMP at gmp.jl:390
+[16] +(x::BigInt, y::BigInt) in Base.GMP at gmp.jl:361
+[17] +(x::BigInt, c::Union{UInt16, UInt32, UInt64, UInt8}) in Base.GMP at gmp.jl:398
+...
+[180] +(a, b, c, xs...) in Base at operators.jl:424</code></pre><p>多重分派和灵活的参数类型系统让Julia有能力抽象地表达高层级算法，而与实现细节解耦，也能生成高效而专用的代码来在运行中处理每个情况。</p><h2 id="man-ambiguities"><a class="docs-heading-anchor" href="#man-ambiguities">方法歧义</a><a id="man-ambiguities-1"></a><a class="docs-heading-anchor-permalink" href="#man-ambiguities" title="Permalink"></a></h2><p>在一系列的函数方法定义时有可能没有单独的最专用的方法能适用于参数的某些组合：</p><pre><code class="language-julia-repl">julia&gt; g(x::Float64, y) = 2x + y
+g (generic function with 1 method)
+
+julia&gt; g(x, y::Float64) = x + 2y
+g (generic function with 2 methods)
+
+julia&gt; g(2.0, 3)
+7.0
+
+julia&gt; g(2, 3.0)
+8.0
+
+julia&gt; g(2.0, 3.0)
+ERROR: MethodError: g(::Float64, ::Float64) is ambiguous. Candidates:
+  g(x::Float64, y) in Main at none:1
+  g(x, y::Float64) in Main at none:1
+Possible fix, define
+  g(::Float64, ::Float64)</code></pre><p>这里<code>g(2.0,3.0)</code>的调用使用<code>g(Float64, Any)</code>和<code>g(Any, Float64)</code>都能处理，并且两个都不更加专用。在这样的情况下，Julia会扔出<a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>而非任意选择一个方法。你可以通过对交叉情况指定一个合适的方法来避免方法歧义：</p><pre><code class="language-julia-repl">julia&gt; g(x::Float64, y::Float64) = 2x + 2y
+g (generic function with 3 methods)
+
+julia&gt; g(2.0, 3)
+7.0
+
+julia&gt; g(2, 3.0)
+8.0
+
+julia&gt; g(2.0, 3.0)
+10.0</code></pre><p>建议先定义没有歧义的方法，因为不这样的话，歧义就会存在，即使是暂时性的，直到更加专用的方法被定义。</p><p>在更加复杂的情况下，解决方法歧义会会涉及到设计的某一个元素；这个主题将会在<a href="#man-method-design-ambiguities">下面</a>进行进一步的探索。</p><h2 id="参数方法"><a class="docs-heading-anchor" href="#参数方法">参数方法</a><a id="参数方法-1"></a><a class="docs-heading-anchor-permalink" href="#参数方法" title="Permalink"></a></h2><p>方法定义可以视需要存在限定特征的类型参数：</p><pre><code class="language-julia-repl">julia&gt; same_type(x::T, y::T) where {T} = true
+same_type (generic function with 1 method)
+
+julia&gt; same_type(x,y) = false
+same_type (generic function with 2 methods)</code></pre><p>第一个方法应用于两个参数都是同一个具体类型时，不管类型是什么，而第二个方法接受一切，涉及其他所有情况。所以，总得来说，这个定义了一个布尔函数来检查两个参数是否是同样的类型：</p><pre><code class="language-julia-repl">julia&gt; same_type(1, 2)
+true
+
+julia&gt; same_type(1, 2.0)
+false
+
+julia&gt; same_type(1.0, 2.0)
+true
+
+julia&gt; same_type(&quot;foo&quot;, 2.0)
+false
+
+julia&gt; same_type(&quot;foo&quot;, &quot;bar&quot;)
+true
+
+julia&gt; same_type(Int32(1), Int64(2))
+false</code></pre><p>这样的定义对应着那些类型签名是 <code>UnionAll</code> 类型的方法（参见 <a href="../types/#UnionAll-类型">UnionAll 类型</a>）。</p><p>在Julia中这种通过分派进行函数行为的定义是十分常见的，甚至是惯用的。方法类型参数并不局限于用作参数的类型：他们可以用在任意地方，只要值会在函数或者函数体的特征中。这里有个例子，例子中方法类型参数<code>T</code>用作方法特征中的参数类型<code>Vector{T}</code>的类型参数：</p><pre><code class="language-julia-repl">julia&gt; myappend(v::Vector{T}, x::T) where {T} = [v..., x]
+myappend (generic function with 1 method)
+
+julia&gt; myappend([1,2,3],4)
+4-element Array{Int64,1}:
+ 1
+ 2
+ 3
+ 4
+
+julia&gt; myappend([1,2,3],2.5)
+ERROR: MethodError: no method matching myappend(::Array{Int64,1}, ::Float64)
+Closest candidates are:
+  myappend(::Array{T,1}, !Matched::T) where T at none:1
+
+julia&gt; myappend([1.0,2.0,3.0],4.0)
+4-element Array{Float64,1}:
+ 1.0
+ 2.0
+ 3.0
+ 4.0
+
+julia&gt; myappend([1.0,2.0,3.0],4)
+ERROR: MethodError: no method matching myappend(::Array{Float64,1}, ::Int64)
+Closest candidates are:
+  myappend(::Array{T,1}, !Matched::T) where T at none:1</code></pre><p>如你所看到的，追加的元素的类型必须匹配它追加到的向量的元素类型，否则会引起<a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>。在下面的例子中，方法类型参量<code>T</code>用作返回值：</p><pre><code class="language-julia-repl">julia&gt; mytypeof(x::T) where {T} = T
+mytypeof (generic function with 1 method)
+
+julia&gt; mytypeof(1)
+Int64
+
+julia&gt; mytypeof(1.0)
+Float64</code></pre><p>就像你能在类型声明时通过类型参数对子类型进行约束一样（参见<a href="../types/#参数类型">参数类型</a>），你也可以约束方法的类型参数：</p><pre><code class="language-julia-repl">julia&gt; same_type_numeric(x::T, y::T) where {T&lt;:Number} = true
+same_type_numeric (generic function with 1 method)
+
+julia&gt; same_type_numeric(x::Number, y::Number) = false
+same_type_numeric (generic function with 2 methods)
+
+julia&gt; same_type_numeric(1, 2)
+true
+
+julia&gt; same_type_numeric(1, 2.0)
+false
+
+julia&gt; same_type_numeric(1.0, 2.0)
+true
+
+julia&gt; same_type_numeric(&quot;foo&quot;, 2.0)
+ERROR: MethodError: no method matching same_type_numeric(::String, ::Float64)
+Closest candidates are:
+  same_type_numeric(!Matched::T, ::T) where T&lt;:Number at none:1
+  same_type_numeric(!Matched::Number, ::Number) at none:1
+
+julia&gt; same_type_numeric(&quot;foo&quot;, &quot;bar&quot;)
+ERROR: MethodError: no method matching same_type_numeric(::String, ::String)
+
+julia&gt; same_type_numeric(Int32(1), Int64(2))
+false</code></pre><p><code>same_type_numeric</code>函数的行为与上面定义的<code>same_type</code>函数基本相似，但是它只对一对数定义。</p><p>参数方法允许与 <code>where</code> 表达式同样的语法用来写类型（参见 <a href="../types/#UnionAll-类型">UnionAll 类型</a>）。如果只有一个参数，封闭的大括号（在 <code>where {T}</code> 中）可以省略，但是为了清楚起见推荐写上。多个参数可以使用逗号隔开，例如 <code>where {T, S &lt;: Real}</code>，或者使用嵌套的 <code>where</code> 来写，例如 <code>where S&lt;:Real where T</code>。</p><h2 id="重定义方法"><a class="docs-heading-anchor" href="#重定义方法">重定义方法</a><a id="重定义方法-1"></a><a class="docs-heading-anchor-permalink" href="#重定义方法" title="Permalink"></a></h2><p>当重定义一个方法或者增加一个方法时，知道这个变化不会立即生效很重要。这是Julia能够静态推断和编译代码使其运行很快而没有惯常的JIT技巧和额外开销的关键。实际上，任意新的方法定义不会对当前运行环境可见，包括Tasks和线程（和所有的之前定义的<code>@generated</code>函数）。让我们通过一个例子说明这意味着什么：</p><pre><code class="language-julia-repl">julia&gt; function tryeval()
+           @eval newfun() = 1
+           newfun()
+       end
+tryeval (generic function with 1 method)
+
+julia&gt; tryeval()
+ERROR: MethodError: no method matching newfun()
+The applicable method may be too new: running in world age xxxx1, while current world is xxxx2.
+Closest candidates are:
+  newfun() at none:1 (method too new to be called from this world context.)
+ in tryeval() at none:1
+ ...
+
+julia&gt; newfun()
+1</code></pre><p>在这个例子中看到<code>newfun</code>的新定义已经被创建，但是并不能立即调用。新的全局变量立即对<code>tryeval</code>函数可见，所以你可以写<code>return newfun</code>（没有小括号）。但是你，你的调用器，和他们调用的函数等等都不能调用这个新的方法定义！</p><p>但是这里有个例外：之后的<em>在 REPL 中</em>的 <code>newfun</code> 的调用会按照预期工作，能够见到并调用<code>newfun</code> 的新定义。</p><p>但是，之后的 <code>tryeval</code> 的调用将会继续看到 <code>newfun</code> 的定义，因为该定义<em>位于 REPL 的前一个语句中</em>并因此在之后的 <code>tryeval</code> 的调用之前。</p><p>你可以试试这个来让自己了解这是如何工作的。</p><p>这个行为的实现通过一个「world age 计数器」。这个单调递增的值会跟踪每个方法定义操作。此计数器允许用单个数字描述「对于给定运行时环境可见的方法定义集」，或者说「world age」。它还允许仅仅通过其序数值来比较在两个 world 中可用的方法。在上例中，我们看到（方法 <code>newfun</code> 所存在的）「current world」比局部于任务的「runtime world」大一，后者在 <code>tryeval</code> 开始执行时是固定的。</p><p>有时规避这个是必要的（例如，如果你在实现上面的REPL）。幸运的是这里有个简单地解决方法：使用<a href="../../base/base/#Base.invokelatest"><code>Base.invokelatest</code></a>调用函数：</p><pre><code class="language-julia-repl">julia&gt; function tryeval2()
+           @eval newfun2() = 2
+           Base.invokelatest(newfun2)
+       end
+tryeval2 (generic function with 1 method)
+
+julia&gt; tryeval2()
+2</code></pre><p>最后，让我们看一些这个规则生效的更复杂的例子。 定义一个函数<code>f(x)</code>，最开始有一个方法：</p><pre><code class="language-julia-repl">julia&gt; f(x) = &quot;original definition&quot;
+f (generic function with 1 method)</code></pre><p>开始一些使用<code>f(x)</code>的运算：</p><pre><code class="language-julia-repl">julia&gt; g(x) = f(x)
+g (generic function with 1 method)
+
+julia&gt; t = @async f(wait()); yield();</code></pre><p>现在我们给<code>f(x)</code>加上一些新的方法：</p><pre><code class="language-julia-repl">julia&gt; f(x::Int) = &quot;definition for Int&quot;
+f (generic function with 2 methods)
+
+julia&gt; f(x::Type{Int}) = &quot;definition for Type{Int}&quot;
+f (generic function with 3 methods)</code></pre><p>比较一下这些结果如何不同：</p><pre><code class="language-julia-repl">julia&gt; f(1)
+&quot;definition for Int&quot;
+
+julia&gt; g(1)
+&quot;definition for Int&quot;
+
+julia&gt; fetch(schedule(t, 1))
+&quot;original definition&quot;
+
+julia&gt; t = @async f(wait()); yield();
+
+julia&gt; fetch(schedule(t, 1))
+&quot;definition for Int&quot;</code></pre><h2 id="使用参数方法设计样式"><a class="docs-heading-anchor" href="#使用参数方法设计样式">使用参数方法设计样式</a><a id="使用参数方法设计样式-1"></a><a class="docs-heading-anchor-permalink" href="#使用参数方法设计样式" title="Permalink"></a></h2><p>虽然复杂的分派逻辑对于性能或者可用性并不是必须的，但是有时这是表达某些算法的最好的方法。 这里有一些常见的设计样式，在以这个方法使用分派时有时会出现。</p><h3 id="从超类型中提取出类型参数"><a class="docs-heading-anchor" href="#从超类型中提取出类型参数">从超类型中提取出类型参数</a><a id="从超类型中提取出类型参数-1"></a><a class="docs-heading-anchor-permalink" href="#从超类型中提取出类型参数" title="Permalink"></a></h3><p>这里是一个正确地代码模板，它返回<code>AbstractArray</code>的任意子类型的元素类型<code>T</code>:</p><pre><code class="language-julia">abstract type AbstractArray{T, N} end
+eltype(::Type{&lt;:AbstractArray{T}}) where {T} = T</code></pre><p>使用了所谓的三角分派。注意如果 <code>T</code> 是一个 <code>UnionAll</code> 类型，比如 <code>eltype(Array{T} where T &lt;: Integer)</code>，会返回 <code>Any</code>（如同 <code>Base</code> 中的 <code>eltype</code> 一样）。</p><p>另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：</p><pre><code class="language-julia">abstract type AbstractArray{T, N} end
+eltype(::Type{AbstractArray}) = Any
+eltype(::Type{AbstractArray{T}}) where {T} = T
+eltype(::Type{AbstractArray{T, N}}) where {T, N} = T
+eltype(::Type{A}) where {A&lt;:AbstractArray} = eltype(supertype(A))</code></pre><p>另外一个可能性如下例，这可以对适配那些参数<code>T</code>需要更严格匹配的情况有用：</p><pre><code class="language-julia">eltype(::Type{AbstractArray{T, N} where {T&lt;:S, N&lt;:M}}) where {M, S} = Any
+eltype(::Type{AbstractArray{T, N} where {T&lt;:S}}) where {N, S} = Any
+eltype(::Type{AbstractArray{T, N} where {N&lt;:M}}) where {M, T} = T
+eltype(::Type{AbstractArray{T, N}}) where {T, N} = T
+eltype(::Type{A}) where {A &lt;: AbstractArray} = eltype(supertype(A))</code></pre><p>一个常见的错误是试着使用内省来得到元素类型：</p><pre><code class="language-julia">eltype_wrong(::Type{A}) where {A&lt;:AbstractArray} = A.parameters[1]</code></pre><p>但是创建一个这个方法会失败的情况不难：</p><pre><code class="language-julia">struct BitVector &lt;: AbstractArray{Bool, 1}; end</code></pre><p>这里我们已经创建了一个没有参数的类型<code>BitVector</code>，但是元素类型已经完全指定了，<code>T</code>等于<code>Bool</code>！</p><h3 id="用不同的类型参数构建相似的类型"><a class="docs-heading-anchor" href="#用不同的类型参数构建相似的类型">用不同的类型参数构建相似的类型</a><a id="用不同的类型参数构建相似的类型-1"></a><a class="docs-heading-anchor-permalink" href="#用不同的类型参数构建相似的类型" title="Permalink"></a></h3><p>当构建通用代码时，通常需要创建一些类似对象，在类型的布局上有一些变化，这就也让类型参数的变化变得必要。 例如，你会有一些任意元素类型的抽象数组，想使用特定的元素类型来编写你基于它的计算。你必须实现为每个<code>AbstractArray{T}</code>的子类型实现方法，这些方法描述了如何计算类型转换。从一个子类型转化成拥有一个不同参数的另一个子类型的通用方法在这里不存在。（快速复习：你明白为什么吗？）</p><p><code>AbstractArray</code>的子类型典型情况下会实现两个方法来完成这个： 一个方法把输入输入转换成特定的<code>AbstractArray{T,N}</code>抽象类型的子类型；一个方法用特定的元素类型构建一个新的未初始化的数组。这些的样例实现可以在Julia Base里面找到。这里是一个基础的样例使用，保证<code>输入</code>与<code>输出</code>是同一种类型：</p><pre><code class="language-julia">input = convert(AbstractArray{Eltype}, input)
+output = similar(input, Eltype)</code></pre><p>作为这个的扩展，在算法需要输入数组的拷贝的情况下，<a href="../../base/base/#Base.convert"><code>convert</code></a>使无法胜任的，因为返回值可能只是原始输入的别名。把<a href="../../base/arrays/#Base.similar"><code>similar</code></a>（构建输出数组）和<a href="../../base/c/#Base.copyto!"><code>copyto!</code></a>（用输入数据填满）结合起来是需要给出输入参数的可变拷贝的一个范用方法：</p><pre><code class="language-julia">copy_with_eltype(input, Eltype) = copyto!(similar(input, Eltype), input)</code></pre><h3 id="迭代分派"><a class="docs-heading-anchor" href="#迭代分派">迭代分派</a><a id="迭代分派-1"></a><a class="docs-heading-anchor-permalink" href="#迭代分派" title="Permalink"></a></h3><p>为了分派一个多层的参数参量列表，将每一层分派分开到不同的函数中常常是最好的。这可能听起来跟单分派的方法相似，但是你会在下面见到，这个更加灵活。</p><p>例如，尝试按照数组的元素类型进行分派常常会引起歧义。相反地，常见的代码会首先按照容易类型分派，然后基于eltype递归到更加更加专用的方法。在大部分情况下，算法会很方便地就屈从与这个分层方法，在其他情况下，这种严苛的工作必须手动解决。这个分派分支能被观察到，例如在两个矩阵的加法的逻辑中：</p><pre><code class="language-julia"># 首先分派选择了逐元素相加的map算法。
++(a::Matrix, b::Matrix) = map(+, a, b)
+# 然后分派处理了每个元素然后选择了计算的
+# 恰当的常见元素类型。
++(a, b) = +(promote(a, b)...)
+# 一旦元素有了相同类型，它们就可以相加。
+# 例如，通过处理器暴露出的原始运算。
++(a::Float64, b::Float64) = Core.add(a, b)</code></pre><h3 id="基于-Trait-的分派"><a class="docs-heading-anchor" href="#基于-Trait-的分派">基于 Trait 的分派</a><a id="基于-Trait-的分派-1"></a><a class="docs-heading-anchor-permalink" href="#基于-Trait-的分派" title="Permalink"></a></h3><p>对于上面的可迭代分派的一个自然扩展是给方法选择加一个内涵层，这个层允许按照那些与类型层级定义的集合相独立的类型的集合来分派。我们可以通过写出问题中的类型的一个<code>Union</code>来创建这个一个集合，但是这不能够扩展，因为<code>Union</code>类型在创建之后无法改变。但是这么一个可扩展的集合可以通过一个叫做<a href="https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633">&quot;Holy-trait&quot;</a>的一个设计样式来实现。</p><p>这个样式是通过定义一个范用函数来实现，这个函数为函数参数可能属于的每个trait集合都计算出不同的单例值（或者类型）。如果这个函数是单纯的，这与通常的分派对于性能没有任何影响。</p><p>上一节的例子掩盖了<a href="../../base/collections/#Base.map"><code>map</code></a>和<a href="../../base/base/#Base.promote"><code>promote</code></a>的实现细节，这两个都是依据trait来进行运算的。当对一个矩阵进行迭代，比如<code>map</code>的实现中，一个重要的问题是按照什么顺序去遍历数据。当<code>AbstractArray</code>的子类型实现了<a href="../../base/arrays/#Base.IndexStyle"><code>Base.IndexStyle</code></a>trait，其他函数，比如<code>map</code>就可以根据这个信息进行分派，以选择最好的算法（参见<a href="../interfaces/#man-interface-array">抽象数组接口</a>）。这意味着每个子类型就没有必要去实现对应的<code>map</code>版本，因为通用的定义加trait类就能让系统选择最快的版本。这里一个玩具似的<code>map</code>实现说明了基于trait的分派：</p><pre><code class="language-julia">map(f, a::AbstractArray, b::AbstractArray) = map(Base.IndexStyle(a, b), f, a, b)
+# generic implementation:
+map(::Base.IndexCartesian, f, a::AbstractArray, b::AbstractArray) = ...
+# linear-indexing implementation (faster)
+map(::Base.IndexLinear, f, a::AbstractArray, b::AbstractArray) = ...</code></pre><p>这个基于trait的方法也出现在<a href="../../base/base/#Base.promote"><code>promote</code></a>机制中，被标量<code>+</code>使用。 它使用了<a href="../../base/base/#Base.promote_type"><code>promote_type</code></a>，这在知道两个计算对象的类型的情况下返回计算这个运算的最佳的常用类型。这就使得我们不用为每一对可能的类型参数实现每一个函数，而把问题简化为对于每个类型实现一个类型转换运算这样一个小很多的问题，还有一个优选的逐对的类型提升规则的表格。</p><h3 id="输出类型计算"><a class="docs-heading-anchor" href="#输出类型计算">输出类型计算</a><a id="输出类型计算-1"></a><a class="docs-heading-anchor-permalink" href="#输出类型计算" title="Permalink"></a></h3><p>基于trait的类型提升的讨论可以过渡到我们的下一个设计样式：为矩阵运算计算输出元素类型。</p><p>为了实现像加法这样的原始运算，我们使用<a href="../../base/base/#Base.promote_type"><code>promote_type</code></a>函数来计算想要的输出类型。（像之前一样，我们在<code>+</code>调用中的<code>promote</code>调用中见到了这个工作）。</p><p>对于矩阵的更加复杂的函数，对于更加复杂的运算符序列来计算预期的返回类型是必要的。这经常按下列步骤进行：</p><ol><li>编写一个小函数<code>op</code>来表示算法核心中使用的运算的集合。</li><li>使用<code>promote_op(op, argument_types...)</code>计算结果矩阵的元素类型<code>R</code>， 这里<code>argument_types</code>是通过应用到每个输入数组的<code>eltype</code>计算的。</li><li>创建类似于<code>similar(R, dims)</code>的输出矩阵，这里<code>dims</code>是输出矩阵的预期维度数。</li></ol><p>作为一个更加具体的例子，一个范用的方阵乘法的伪代码是：</p><pre><code class="language-julia">function matmul(a::AbstractMatrix, b::AbstractMatrix)
+    op = (ai, bi) -&gt; ai * bi + ai * bi
+
+    ## this is insufficient because it assumes `one(eltype(a))` is constructable:
+    # R = typeof(op(one(eltype(a)), one(eltype(b))))
+
+    ## this fails because it assumes `a[1]` exists and is representative of all elements of the array
+    # R = typeof(op(a[1], b[1]))
+
+    ## this is incorrect because it assumes that `+` calls `promote_type`
+    ## but this is not true for some types, such as Bool:
+    # R = promote_type(ai, bi)
+
+    # this is wrong, since depending on the return value
+    # of type-inference is very brittle (as well as not being optimizable):
+    # R = Base.return_types(op, (eltype(a), eltype(b)))
+
+    ## but, finally, this works:
+    R = promote_op(op, eltype(a), eltype(b))
+    ## although sometimes it may give a larger type than desired
+    ## it will always give a correct type
+
+    output = similar(b, R, (size(a, 1), size(b, 2)))
+    if size(a, 2) &gt; 0
+        for j in 1:size(b, 2)
+            for i in 1:size(a, 1)
+                ## here we don&#39;t use `ab = zero(R)`,
+                ## since `R` might be `Any` and `zero(Any)` is not defined
+                ## we also must declare `ab::R` to make the type of `ab` constant in the loop,
+                ## since it is possible that typeof(a * b) != typeof(a * b + a * b) == R
+                ab::R = a[i, 1] * b[1, j]
+                for k in 2:size(a, 2)
+                    ab += a[i, k] * b[k, j]
+                end
+                output[i, j] = ab
+            end
+        end
+    end
+    return output
+end</code></pre><h3 id="分离转换和内核逻辑"><a class="docs-heading-anchor" href="#分离转换和内核逻辑">分离转换和内核逻辑</a><a id="分离转换和内核逻辑-1"></a><a class="docs-heading-anchor-permalink" href="#分离转换和内核逻辑" title="Permalink"></a></h3><p>能有效减少编译时间和测试复杂度的一个方法是将预期的类型和计算转换的逻辑隔离。这会让编译器将与大型内核的其他部分相独立的类型转换逻辑特别化并内联。</p><p>将更大的类型类转换成被算法实际支持的特定参数类是一个常见的设计样式：</p><pre><code class="language-julia">complexfunction(arg::Int) = ...
+complexfunction(arg::Any) = complexfunction(convert(Int, arg))
+
+matmul(a::T, b::T) = ...
+matmul(a, b) = matmul(promote(a, b)...)</code></pre><h2 id="参数化约束的可变参数方法"><a class="docs-heading-anchor" href="#参数化约束的可变参数方法">参数化约束的可变参数方法</a><a id="参数化约束的可变参数方法-1"></a><a class="docs-heading-anchor-permalink" href="#参数化约束的可变参数方法" title="Permalink"></a></h2><p>函数参数也可以用于约束应用于&quot;可变参数&quot;函数（<a href="../functions/#变参函数">变参函数</a>）的参数的数量。<code>Vararg{T,N}</code> 可用于表明这么一个约束。举个例子：</p><pre><code class="language-julia-repl">julia&gt; bar(a,b,x::Vararg{Any,2}) = (a,b,x)
+bar (generic function with 1 method)
+
+julia&gt; bar(1,2,3)
+ERROR: MethodError: no method matching bar(::Int64, ::Int64, ::Int64)
+Closest candidates are:
+  bar(::Any, ::Any, ::Any, !Matched::Any) at none:1
+
+julia&gt; bar(1,2,3,4)
+(1, 2, (3, 4))
+
+julia&gt; bar(1,2,3,4,5)
+ERROR: MethodError: no method matching bar(::Int64, ::Int64, ::Int64, ::Int64, ::Int64)
+Closest candidates are:
+  bar(::Any, ::Any, ::Any, ::Any) at none:1</code></pre><p>更加有用的是，用一个参数就约束可变参数的方法是可能的。例如：</p><pre><code class="language-julia">function getindex(A::AbstractArray{T,N}, indices::Vararg{Number,N}) where {T,N}</code></pre><p>只会在<code>indices</code>的个数与数组的维数相同时才会调用。</p><p>当只有提供的参数的类型需要被约束时，<code>Vararg{T}</code>可以写成<code>T...</code>。例如<code>f(x::Int...) = x</code>是<code>f(x::Vararg{Int}) = x</code>的简便写法。</p><h2 id="可选参数和关键字的参数的注意事项"><a class="docs-heading-anchor" href="#可选参数和关键字的参数的注意事项">可选参数和关键字的参数的注意事项</a><a id="可选参数和关键字的参数的注意事项-1"></a><a class="docs-heading-anchor-permalink" href="#可选参数和关键字的参数的注意事项" title="Permalink"></a></h2><p>与在<a href="../functions/#man-functions">函数</a>中简要提到的一样，可选参数是使用多方法定义语法来实现的。例如，这个定义：</p><pre><code class="language-julia">f(a=1,b=2) = a+2b</code></pre><p>翻译成下列三个方法：</p><pre><code class="language-julia">f(a,b) = a+2b
+f(a) = f(a,2)
+f() = f(1,2)</code></pre><p>这就意味着调用<code>f()</code>等于调用<code>f(1,2)</code>。在这个情况下结果是<code>5</code>，因为<code>f(1,2)</code>使用的是上面<code>f</code>的第一个方法。但是，不总是需要是这种情况。如果你定义了第四个对于整数更加专用的方法：</p><pre><code class="language-julia">f(a::Int,b::Int) = a-2b</code></pre><p>此时<code>f()</code>和<code>f(1,2)</code>的结果都是<code>-3</code>。换句话说，可选参数只与函数捆绑，而不是函数的任意一个特定的方法。这个决定于使用的方法的可选参数的类型。当可选参数是用全局变量的形式定义时，可选参数的类型甚至会在运行时改变。</p><p>关键字参数与普通的位置参数的行为很不一样。特别地，他们不参与到方法分派中。方法只基于位置参数分派，在匹配得方法确定之后关键字参数才会被处理。</p><h2 id="类函数对象"><a class="docs-heading-anchor" href="#类函数对象">类函数对象</a><a id="类函数对象-1"></a><a class="docs-heading-anchor-permalink" href="#类函数对象" title="Permalink"></a></h2><p>方法与类型相关，所以可以通过给类型加方法使得任意一个Julia类型变得&quot;可被调用&quot;。（这个&quot;可调用&quot;的对象有时称为&quot;函子&quot;。）</p><p>例如，你可以定义一个类型，存储着多项式的系数，但是行为像是一个函数，可以为多项式求值：</p><pre><code class="language-julia-repl">julia&gt; struct Polynomial{R}
+           coeffs::Vector{R}
+       end
+
+julia&gt; function (p::Polynomial)(x)
+           v = p.coeffs[end]
+           for i = (length(p.coeffs)-1):-1:1
+               v = v*x + p.coeffs[i]
+           end
+           return v
+       end
+
+julia&gt; (p::Polynomial)() = p(5)</code></pre><p>注意函数是通过类型而非名字来指定的。如同普通函数一样这里有一个简洁的语法形式。在函数体内，<code>p</code>会指向被调用的对象。<code>Polynomial</code>会按如下方式使用：</p><pre><code class="language-julia-repl">julia&gt; p = Polynomial([1,10,100])
+Polynomial{Int64}([1, 10, 100])
+
+julia&gt; p(3)
+931
+
+julia&gt; p()
+2551</code></pre><p>这个机制也是Julia中类型构造函数和闭包（指向其环境的内部函数）的工作原理。</p><h2 id="空泛型函数"><a class="docs-heading-anchor" href="#空泛型函数">空泛型函数</a><a id="空泛型函数-1"></a><a class="docs-heading-anchor-permalink" href="#空泛型函数" title="Permalink"></a></h2><p>有时引入一个没有添加方法的范用函数是有用的。这会用于分离实现与接口定义。这也可为了文档或者代码可读性。为了这个的语法是没有参数组的一个空<code>函数</code>块：</p><pre><code class="language-julia">function emptyfunc
+end</code></pre><h2 id="man-method-design-ambiguities"><a class="docs-heading-anchor" href="#man-method-design-ambiguities">方法设计与避免歧义</a><a id="man-method-design-ambiguities-1"></a><a class="docs-heading-anchor-permalink" href="#man-method-design-ambiguities" title="Permalink"></a></h2><p>Julia的方法多态性是其最有力的特性之一，利用这个功能会带来设计上的挑战。特别地，在更加复杂的方法层级中出现<a href="#man-ambiguities">歧义</a>不能说不常见。</p><p>在上面我们曾经指出我们可以像这样解决歧义</p><pre><code class="language-julia">f(x, y::Int) = 1
+f(x::Int, y) = 2</code></pre><p>靠定义一个方法</p><pre><code class="language-julia">f(x::Int, y::Int) = 3</code></pre><p>这是经常使用的对的方案；但是有些环境下盲目地遵从这个建议会适得其反。特别地，范用函数有的方法越多，出现歧义的可能性越高。当你的方法层级比这些简单的例子更加复杂时，就值得你花时间去仔细想想其他的方案。</p><p>下面我们会讨论特别的一些挑战和解决这些挑战的一些可选方法。</p><h3 id="元组和N元组参数"><a class="docs-heading-anchor" href="#元组和N元组参数">元组和N元组参数</a><a id="元组和N元组参数-1"></a><a class="docs-heading-anchor-permalink" href="#元组和N元组参数" title="Permalink"></a></h3><p><code>Tuple</code>（和<code>NTuple</code>）参数会带来特别的挑战。例如，</p><pre><code class="language-julia">f(x::NTuple{N,Int}) where {N} = 1
+f(x::NTuple{N,Float64}) where {N} = 2</code></pre><p>是有歧义的，因为存在<code>N == 0</code>的可能性：没有元素去确定<code>Int</code>还是<code>Float64</code>变体应该被调用。为了解决歧义，一个方法是为空元组定义方法：</p><pre><code class="language-julia">f(x::Tuple{}) = 3</code></pre><p>作为一种选择，对于其中一个方法之外的所有的方法可以坚持元组中至少有一个元素：</p><pre><code class="language-julia">f(x::NTuple{N,Int}) where {N} = 1           # this is the fallback
+f(x::Tuple{Float64, Vararg{Float64}}) = 2   # this requires at least one Float64</code></pre><h3 id="man-methods-orthogonalize"><a class="docs-heading-anchor" href="#man-methods-orthogonalize">正交化你的设计</a><a id="man-methods-orthogonalize-1"></a><a class="docs-heading-anchor-permalink" href="#man-methods-orthogonalize" title="Permalink"></a></h3><p>当你打算根据两个或更多的参数进行分派时，考虑一下，一个「包裹」函数是否会让设计简单一些。举个例子，与其编写多变量：</p><pre><code class="language-julia">f(x::A, y::A) = ...
+f(x::A, y::B) = ...
+f(x::B, y::A) = ...
+f(x::B, y::B) = ...</code></pre><p>不如考虑定义</p><pre><code class="language-julia">f(x::A, y::A) = ...
+f(x, y) = f(g(x), g(y))</code></pre><p>这里<code>g</code>把参数转变为类型<code>A</code>。这是更加普遍的<a href="https://en.wikipedia.org/wiki/Orthogonality_(programming)">正交设计</a>原理的一个特别特殊的例子，在正交设计中不同的概念被分配到不同的方法中去。这里<code>g</code>最可能需要一个fallback定义</p><pre><code class="language-julia">g(x::A) = x</code></pre><p>一个相关的方案使用<code>promote</code>来把<code>x</code>和<code>y</code>变成常见的类型：</p><pre><code class="language-julia">f(x::T, y::T) where {T} = ...
+f(x, y) = f(promote(x, y)...)</code></pre><p>这个设计的一个隐患是：如果没有合适的把 <code>x</code> 和 <code>y</code> 转换到同样类型的类型提升方法，第二个方法就可能无限自递归然后引发堆溢出。</p><h3 id="一次只根据一个参数分派"><a class="docs-heading-anchor" href="#一次只根据一个参数分派">一次只根据一个参数分派</a><a id="一次只根据一个参数分派-1"></a><a class="docs-heading-anchor-permalink" href="#一次只根据一个参数分派" title="Permalink"></a></h3><p>如果你你需要根据多个参数进行分派，并且有太多的为了能定义所有可能的变量而存在的组合，而存在很多回退函数，你可以考虑引入&quot;名字级联&quot;，这里（例如）你根据第一个参数分配然后调用一个内部的方法：</p><pre><code class="language-julia">f(x::A, y) = _fA(x, y)
+f(x::B, y) = _fB(x, y)</code></pre><p>接着内部方法<code>_fA</code>和<code>_fB</code>可以根据<code>y</code>进行分派，而不考虑有关<code>x</code>的歧义存在。</p><p>需要意识到这个方案至少有一个主要的缺点：在很多情况下，用户没有办法通过进一步定义你的输出函数<code>f</code>的具体行为来进一步定制<code>f</code>的行为。相反，他们需要去定义你的内部方法<code>_fA</code>和<code>_fB</code>的具体行为，这会模糊输出方法和内部方法之间的界线。</p><h3 id="抽象容器与元素类型"><a class="docs-heading-anchor" href="#抽象容器与元素类型">抽象容器与元素类型</a><a id="抽象容器与元素类型-1"></a><a class="docs-heading-anchor-permalink" href="#抽象容器与元素类型" title="Permalink"></a></h3><p>在可能的情况下要试图避免定义根据抽象容器的具体元素类型来分派的方法。举个例子，</p><pre><code class="language-julia">-(A::AbstractArray{T}, b::Date) where {T&lt;:Date}</code></pre><p>会引起歧义，当定义了这个方法：</p><pre><code class="language-julia">-(A::MyArrayType{T}, b::T) where {T}</code></pre><p>最好的方法是不要定义这些方法中的<em>任何一个</em>。相反，使用范用方法<code>-(A::AbstractArray, b)</code>并确认这个方法是使用<em>分别</em>对于每个容器类型和元素类型都是适用的通用调用(像<code>similar</code>和<code>-</code>)实现的。这只是建议<a href="#man-methods-orthogonalize">正交化</a>你的方法的一个更加复杂的变种而已。</p><p>当这个方法不可行时，这就值得与其他开发者开始讨论如果解决歧义；只是因为一个函数先定义并不总是意味着他不能改变或者被移除。作为最后一个手段，开发者可以定义&quot;创可贴&quot;方法</p><pre><code class="language-julia">-(A::MyArrayType{T}, b::Date) where {T&lt;:Date} = ...</code></pre><p>可以暴力解决歧义。</p><h3 id="与默认参数的复杂方法&quot;级联&quot;"><a class="docs-heading-anchor" href="#与默认参数的复杂方法&quot;级联&quot;">与默认参数的复杂方法&quot;级联&quot;</a><a id="与默认参数的复杂方法&quot;级联&quot;-1"></a><a class="docs-heading-anchor-permalink" href="#与默认参数的复杂方法&quot;级联&quot;" title="Permalink"></a></h3><p>如果你定义了提供默认的方法&quot;级联&quot;，要小心去掉对应着潜在默认的任何参数。例如，假设你在写一个数字过滤算法，你有一个通过应用padding来出来信号的边的方法：</p><pre><code class="language-julia">function myfilter(A, kernel, ::Replicate)
+    Apadded = replicate_edges(A, size(kernel))
+    myfilter(Apadded, kernel)  # now perform the &quot;real&quot; computation
+end</code></pre><p>这会与提供默认padding的方法产生冲突：</p><pre><code class="language-julia">myfilter(A, kernel) = myfilter(A, kernel, Replicate()) # replicate the edge by default</code></pre><p>这两个方法一起会生成无限的递归，<code>A</code>会不断变大。</p><p>更好的设计是像这样定义你的调用层级：</p><pre><code class="language-julia">struct NoPad end  # indicate that no padding is desired, or that it&#39;s already applied
+
+myfilter(A, kernel) = myfilter(A, kernel, Replicate())  # default boundary conditions
+
+function myfilter(A, kernel, ::Replicate)
+    Apadded = replicate_edges(A, size(kernel))
+    myfilter(Apadded, kernel, NoPad())  # indicate the new boundary conditions
+end
+
+# other padding methods go here
+
+function myfilter(A, kernel, ::NoPad)
+    # Here&#39;s the &quot;real&quot; implementation of the core computation
+end</code></pre><p><code>NoPad</code> 被置于与其他 padding 类型一致的参数位置上，这保持了分派层级的良好组织，同时降低了歧义的可能性。而且，它扩展了「公开」的 <code>myfilter</code> 接口：想要显式控制 padding 的用户可以直接调用 <code>NoPad</code> 变量。</p><section class="footnotes is-size-7"><ul><li class="footnote" id="footnote-1"><a class="tag is-link" href="#citeref-1">1</a>In C++ or Java, for example, in a method call like <code>obj.meth(arg1,arg2)</code>, the object obj &quot;receives&quot; the method call and is implicitly passed to the method via the <code>this</code> keyword, rather than as an explicit method argument. When the current <code>this</code> object is the receiver of a method call, it can be omitted altogether, writing just <code>meth(arg1,arg2)</code>, with <code>this</code> implied as the receiving object.</li><li class="footnote" id="footnote-Clarke61"><a class="tag is-link" href="#citeref-Clarke61">Clarke61</a>Arthur C. Clarke, <em>Profiles of the Future</em> (1961): Clarke&#39;s Third Law.</li></ul></section></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../types/">« 类型</a><a class="docs-footer-nextpage" href="../constructors/">构造函数 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>本文档在<span class="colophon-date" title="2020 八月 5 周三 17:10">2020 八月 5 周三</span>由<a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a>使用1.3.1版本的Julia生成。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
