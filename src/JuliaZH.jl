@@ -11,13 +11,15 @@ const mirrors = Dict{String,String}()
 
 mirrors["BFSU"] = "https://mirrors.bfsu.edu.cn/julia/static"
 mirrors["default"] = "https://pkg.julialang.org"
+mirrors["SJTUG"] = "https://mirrors.sjtug.sjtu.edu.cn/julia"
 
 """
     set_mirror(mirror_name="BFSU")
 
 设置镜像源为 `mirror_name`。目前可以选择的有：
 
-- `"BFSU"`: TUNA支持的境内源
+- `"BFSU"`: 北京外国语大学开源软件镜像站
+- `"SJTUG"`: 上海交通大学Linux用户组 (SJTUG) 软件源镜像服务
 - `"default"`: Julia官方默认源
 """
 function set_mirror(mirror_name = "BFSU")
@@ -61,7 +63,7 @@ function generate_startup(mirror_name::String = "BFSU")
 
         is_upstream_unchanged = occursin(new_upstream, old_upstream) || occursin(old_upstream, new_upstream)
         if !is_upstream_unchanged
-            @info "更新 PkgServer" 新服务器地址=new_upstream 原服务器地址=old_upstream 配置文件=config_path
+            @info "更新 PkgServer" 新服务器地址=new_upstream 原服务器地址=old_upstream 配置文件=startup_path
             startup_lines[idx] = new_line
         end
     end
