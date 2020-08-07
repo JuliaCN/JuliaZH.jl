@@ -29,16 +29,16 @@ Julia 语言在这其中扮演了这样一个角色：它是一门灵活的动�
 在理解了 Julia 的运作方式后，写出和 C 一样快的代码对你而言就是小菜一碟。
 
 Julia 拥有可选类型标注和多重派发这两个特性，同时还拥有很棒的性能。
-这些都得归功于使用 [LLVM][wiki-llvm] 实现的类型推导和[即时编译（JIT）][wiki-jit]技术。Julia 是一门支持过程式、函数式和面向对象的多范式语言。
+这些都得归功于使用 [LLVM](https://discourse.juliacn.com/t/topic/4203#llvm) 实现的类型推导和[即时编译（JIT）](https://discourse.juliacn.com/t/topic/4203#just-in-time-compilation)技术。Julia 是一门支持过程式、函数式和面向对象的多范式语言。
 它像 R、MATLAB 和 Python 一样简单，在高级数值计算方面有丰富的表现力，并且支持通用编程。
 为了实现这个目标，Julia 以数学编程语言（mathematical programming languages）为基础，同时也参考了不少流行的动态语言，例如
-[Lisp][wiki-lisp]、[Perl][wiki-perl]、[Python][wiki-python]、[Lua][wiki-lua]、和 [Ruby][wiki-ruby]。
+[Lisp](https://discourse.juliacn.com/t/topic/4203#lisp)、[Perl](https://discourse.juliacn.com/t/topic/4203#perl)、[Python](https://discourse.juliacn.com/t/topic/4203#python)、[Lua](https://discourse.juliacn.com/t/topic/4203#lua)、和 [Ruby](https://discourse.juliacn.com/t/topic/4203#ruby)。
 
 Julia 与传统动态语言最重要的区别是：
 
   * 核心语言很小：标准库是用 Julia 自身写的，包括整数运算这样的基础运算
   * 丰富的基础类型：既可用于定义和描述对象，也可用于做可选的类型标注
-  * 通过[多重派发][wiki-dispatch]，可以根据类型的不同，来调用同名函数的不同实现
+  * 通过[多重派发](https://discourse.juliacn.com/t/topic/4203#multiple-dispatch)，可以根据类型的不同，来调用同名函数的不同实现
   * 为不同的参数类型，自动生成高效、专用的代码
   * 接近 C 语言的性能
 
@@ -59,23 +59,10 @@ Julia 的目标是创建一个前所未有的集易用、强大、高效于一�
   * 用户自定义类型的速度与兼容性和内建类型一样好
   * 无需特意编写向量化的代码：非向量化的代码就很快
   * 为并行计算和分布式计算设计
-  * 轻量级的“绿色”线程：[协程][wiki-coroutine]
+  * 轻量级的“绿色”线程：[协程](https://discourse.juliacn.com/t/topic/4203#coroutine)
   * 低调又牛逼的类型系统
   * 优雅、可扩展的类型转换和类型提升
-  * 对 [Unicode][wiki-unicode] 的有效支持，包括但不限于 [UTF-8][wiki-utf-8]
+  * 对 [Unicode](https://discourse.juliacn.com/t/topic/4203#unicode) 的有效支持，包括但不限于 [UTF-8](https://discourse.juliacn.com/t/topic/4203#utf-8)
   * 直接调用 C 函数，无需封装或调用特别的 API
   * 像 Shell 一样强大的管理其他进程的能力
   * 像 Lisp 一样的宏和其他元编程工具
-
-
-[wiki-llvm]: https://discourse.juliacn.com/t/topic/4203#llvm
-[wiki-jit]: https://discourse.juliacn.com/t/topic/4203#just-in-time-compilation
-[wiki-lisp]: https://discourse.juliacn.com/t/topic/4203#lisp
-[wiki-perl]: https://discourse.juliacn.com/t/topic/4203#perl
-[wiki-python]: https://discourse.juliacn.com/t/topic/4203#python
-[wiki-lua]: https://discourse.juliacn.com/t/topic/4203#lua
-[wiki-ruby]: https://discourse.juliacn.com/t/topic/4203#ruby
-[wiki-dispatch]: https://discourse.juliacn.com/t/topic/4203#multiple-dispatch
-[wiki-coroutine]: https://discourse.juliacn.com/t/topic/4203#coroutine
-[wiki-unicode]: https://discourse.juliacn.com/t/topic/4203#unicode
-[wiki-utf-8]: https://discourse.juliacn.com/t/topic/4203#utf-8
