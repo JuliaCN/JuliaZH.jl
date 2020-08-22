@@ -9,7 +9,8 @@ const keywords = Dict{Symbol,DocStr}()
 """
 const mirrors = Dict{String,String}()
 
-mirrors["BFSU"] = "https://mirrors.bfsu.edu.cn/julia/static"
+mirrors["BFSU"] = "https://mirrors.bfsu.edu.cn/julia"
+mirrors["TUNA"] = "https://mirrors.tuna.tsinghua.edu.cn/julia"
 mirrors["default"] = "https://pkg.julialang.org"
 mirrors["SJTUG"] = "https://mirrors.sjtug.sjtu.edu.cn/julia"
 
@@ -19,6 +20,7 @@ mirrors["SJTUG"] = "https://mirrors.sjtug.sjtu.edu.cn/julia"
 设置镜像源为 `mirror_name`。目前可以选择的有：
 
 - `"BFSU"`: 北京外国语大学开源软件镜像站
+- `"TUNA"`: 清华大学开源软件镜像站 -- TUNA 协会
 - `"SJTUG"`: 上海交通大学Linux用户组 (SJTUG) 软件源镜像服务
 - `"default"`: Julia官方默认源
 """
