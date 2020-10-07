@@ -13,6 +13,7 @@ mirrors["BFSU"] = "https://mirrors.bfsu.edu.cn/julia"
 mirrors["TUNA"] = "https://mirrors.tuna.tsinghua.edu.cn/julia"
 mirrors["default"] = "https://pkg.julialang.org"
 mirrors["SJTUG"] = "https://mirrors.sjtug.sjtu.edu.cn/julia"
+mirrors["USTC"] = "https://mirrors.ustc.edu.cn/julia"
 
 """
     set_mirror(mirror_name="BFSU")
@@ -22,6 +23,7 @@ mirrors["SJTUG"] = "https://mirrors.sjtug.sjtu.edu.cn/julia"
 - `"BFSU"`: 北京外国语大学开源软件镜像站
 - `"TUNA"`: 清华大学开源软件镜像站 -- TUNA 协会
 - `"SJTUG"`: 上海交通大学Linux用户组 (SJTUG) 软件源镜像服务
+- `"USTC"`: 中国科学技术大学开源软件镜像
 - `"default"`: Julia官方默认源
 """
 function set_mirror(mirror_name = "BFSU")
