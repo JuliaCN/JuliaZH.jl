@@ -200,6 +200,7 @@ else
             "assets/julia-manual.css"
         ],
         lang = "zh-cn",
+        footer = "📢📢📢Julia中文社区现已加入“开源软件供应链点亮计划”，如果你想改善Julia中文文档的翻译，那就赶快来 <a href="https://summer.iscas.ac.cn/#/org/prodetail/210370191">报名</a> 吧！"
     )
 end
 
