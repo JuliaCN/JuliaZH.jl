@@ -1,5 +1,13 @@
 module JuliaZH
 
+include("docstrings.jl")
+export dump_docstrings, dump_all_docstrings
+export replace_docstrings, replace_all_docstrings
+
+zh_CN() = replace_all_docstrings(:zh_CN)
+en() = replace_all_docstrings(:en)
+export zh_CN, en
+
 import Base.Docs: DocStr
 
 const keywords = Dict{Symbol,DocStr}()
@@ -56,7 +64,7 @@ function generate_startup(mirror_name::String = "BFSU")
 
     new_upstream = mirrors[mirror_name]
     new_line = "ENV[\"JULIA_PKG_SERVER\"] = \"$(new_upstream)\""
-    
+
     pkg_matches = map(x->match(regex_PKG_SERVER, x), startup_lines)
     pkg_indices = findall(x->!isnothing(x), pkg_matches)
     if isempty(pkg_indices)

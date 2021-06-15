@@ -568,12 +568,6 @@ minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
-[stdlib-zh_cn.pkgmd]
-file_filter = <lang>/stdlib/Pkg/docs/src/index.md
-minimum_perc = 0
-source_lang = en
-type = GITHUBMARKDOWN
-
 [stdlib-zh_cn.printfmd]
 file_filter = <lang>/stdlib/Printf/docs/src/index.md
 minimum_perc = 0
@@ -628,12 +622,6 @@ minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
-[stdlib-zh_cn.statisticsmd]
-file_filter = <lang>/stdlib/Statistics/docs/src/index.md
-minimum_perc = 0
-source_lang = en
-type = GITHUBMARKDOWN
-
 [stdlib-zh_cn.testmd]
 file_filter = <lang>/stdlib/Test/docs/src/index.md
 minimum_perc = 0
@@ -651,3 +639,143 @@ file_filter = <lang>/stdlib/UUIDs/docs/src/index.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
+
+[docstrings-zh_cn.base_docstringsjson]
+file_filter = <lang>/docstrings/Base_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Base_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.cartesian_docstringsjson]
+file_filter = <lang>/docstrings/Cartesian_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Cartesian_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.enums_docstringsjson]
+file_filter = <lang>/docstrings/Enums_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Enums_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.experimental_docstringsjson]
+file_filter = <lang>/docstrings/Experimental_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Experimental_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.fastmath_docstringsjson]
+file_filter = <lang>/docstrings/FastMath_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/FastMath_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.filesystem_docstringsjson]
+file_filter = <lang>/docstrings/Filesystem_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Filesystem_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.gc_docstringsjson]
+file_filter = <lang>/docstrings/GC_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/GC_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.grisu_docstringsjson]
+file_filter = <lang>/docstrings/Grisu_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Grisu_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.iterators_docstringsjson]
+file_filter = <lang>/docstrings/Iterators_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Iterators_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.libc_docstringsjson]
+file_filter = <lang>/docstrings/Libc_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Libc_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.math_docstringsjson]
+file_filter = <lang>/docstrings/Math_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Math_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.mathconstants_docstringsjson]
+file_filter = <lang>/docstrings/MathConstants_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/MathConstants_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.meta_docstringsjson]
+file_filter = <lang>/docstrings/Meta_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Meta_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.mpfr_docstringsjson]
+file_filter = <lang>/docstrings/MPFR_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/MPFR_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.multimedia_docstringsjson]
+file_filter = <lang>/docstrings/Multimedia_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Multimedia_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.rounding_docstringsjson]
+file_filter = <lang>/docstrings/Rounding_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Rounding_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.simdloop_docstringsjson]
+file_filter = <lang>/docstrings/SimdLoop_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/SimdLoop_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.sys_docstringsjson]
+file_filter = <lang>/docstrings/Sys_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Sys_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.threads_docstringsjson]
+file_filter = <lang>/docstrings/Threads_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Threads_docstrings.json
+source_lang = en
+type = KEYVALUEJSON
+
+[docstrings-zh_cn.unicode_docstringsjson]
+file_filter = <lang>/docstrings/Unicode_docstrings.json
+minimum_perc = 0
+source_file = en/docstrings/Unicode_docstrings.json
+source_lang = en
+type = KEYVALUEJSON

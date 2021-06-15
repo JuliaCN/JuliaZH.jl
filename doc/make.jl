@@ -11,6 +11,9 @@ using Documenter, DocumenterLaTeX
 include("../contrib/HTMLWriter.jl")
 include("../contrib/LaTeXWriter.jl")
 
+using JuliaZH
+zh_CN()
+
 # Include the `build_sysimg` file.
 
 baremodule GenStdLib end
