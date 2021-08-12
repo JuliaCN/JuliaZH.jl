@@ -1,53 +1,49 @@
 # [Markdown](@id markdown_stdlib)
 
-This section describes Julia's markdown syntax, which is enabled by the
-Markdown standard library. The following Markdown elements are supported:
+本节描述 Julia 的 markdown 语法，它是由 Markdown 标准库启用的。它支持以下的 Markdown 元素:
 
-## Inline elements
+## 内联元素
 
-Here "inline" refers to elements that can be found within blocks of text, i.e. paragraphs. These
-include the following elements.
+此处的“内联”指可以在段落中找到的元素。包括下面的元素。
 
-### Bold
+### 粗体
 
-Surround words with two asterisks, `**`, to display the enclosed text in boldface.
+用两个 `**` 包围来将其内部的文本显示为粗体。
 
 ```
 A paragraph containing a **bold** word.
 ```
 
-### Italics
+### 斜体
 
-Surround words with one asterisk, `*`, to display the enclosed text in italics.
+用单个 `*` 包围来将其内部的文本显示为斜体。
 
 ```
 A paragraph containing an *italicized* word.
 ```
 
-### Literals
+### 文字
 
-Surround text that should be displayed exactly as written with single backticks, ``` ` ``` .
+用一个重音符号 ``` ` ``` 包围的文本将会原封不动地显示出来。
 
 ```
 A paragraph containing a `literal` word.
 ```
 
-Literals should be used when writing text that refers to names of variables, functions, or other
-parts of a Julia program.
+当文本指代变量名、函数名或者 Julia 程序的其他部分时，应当使用字面量。
 
 !!! tip
-    To include a backtick character within literal text use three backticks rather than one to enclose
-    the text.
+    为了在字面量中包含一个重音符，需要使用三个重音符而不是一个来包围文本。
 
     ```
     A paragraph containing ``` `backtick` characters ```.
     ```
 
-    By extension any odd number of backticks may be used to enclose a lesser number of backticks.
+    通过扩展，可以使用任何奇数个反引号来包围较少数量的反引号。
 
 ### ``\LaTeX``
 
-Surround text that should be displayed as mathematics using ``\LaTeX`` syntax with double backticks,
+使用两个重音符的 ``\LaTeX`` 语法来包围那些是数学表达式的文本，
 ``` `` ``` .
 
 ```
@@ -365,23 +361,26 @@ They can be defined using the following `!!!` syntax:
     This warning admonition has a custom title: `"Beware!"`.
 ```
 
-The type of the admonition can be any word made up of only lowercase Latin characters (a-z), but some types produce special styling,
-namely (in order of decreasing severity): `danger`, `warning`, `info`, `note`, and `tip`.
+The first word after `!!!` declares the type of the admonition.
+There are standard admonition types that should produce special styling.
+Namely (in order of decreasing severity): `danger`, `warning`, `info`/`note`, and `tip`.
 
-A custom title for the box can be provided as a string (in double quotes) after the admonition type.
-For that standard types (`danger`, `warning`... etc_, if no title text is specified after the
-admonition type, then the type title used will be the type of the block.
-E.g. `"Note"` in the case of the `note` admonition.
+You can also use your own admonition types, as long as the type name only contains lowercase Latin characters (a-z).
+For example, you could have a `terminology` block like this:
 
-If you would like to define your own block, for example a `terminology`  block
-used like so:
 ```
 !!! terminology "julia vs Julia"
-    Strictly speaking, Julia refers to the language,
-    and julia the standard implementation.
+
+    Strictly speaking, "Julia" refers to the language,
+    and "julia" to the standard implementation.
 ```
 
-Admonitions, like most other toplevel elements, can contain other toplevel elements.
+However, unless the code rendering the Markdown special-cases that particular admonition type, it will get the default styling.
+
+A custom title for the box can be provided as a string (in double quotes) after the admonition type.
+If no title text is specified after the admonition type, then the type name will be used as the title (e.g. `"Note"` for the `note` admonition).
+
+Admonitions, like most other toplevel elements, can contain other toplevel elements (e.g. lists, images).
 
 ## Markdown Syntax Extensions
 

@@ -36,16 +36,17 @@ julia> typeof(Point)
 DataType
 ```
 
-注意 `fieldnames(DataType)` 给出了 `DataType` 本身的每个字段的名称，其中的一个字段是上面示例中提到的 `types` 字段。
+Note that `fieldnames(DataType)` gives the names for each field of `DataType` itself, and one
+of these fields is the `types` field observed in the example above.
 
-## 子类型
+## Subtypes
 
-任何 `DataType` 的*直接*子类型都可以通过使用 [`subtypes`](@ref) 来列出。
-例如抽象 `DataType` [`AbstractFloat`](@ref) 有四个（具体的）子类型：
+The *direct* subtypes of any `DataType` may be listed using [`subtypes`](@ref). For example,
+the abstract `DataType` [`AbstractFloat`](@ref) has four (concrete) subtypes:
 
 ```jldoctest; setup = :(using InteractiveUtils)
 julia> subtypes(AbstractFloat)
-4-element Array{Any,1}:
+4-element Vector{Any}:
  BigFloat
  Float16
  Float32
@@ -87,7 +88,7 @@ as assignments, branches, and calls:
 ```jldoctest
 julia> Meta.lower(@__MODULE__, :( [1+2, sin(0.5)] ))
 :($(Expr(:thunk, CodeInfo(
-    @ none within `top-level scope'
+    @ none within `top-level scope`
 1 ─ %1 = 1 + 2
 │   %2 = sin(0.5)
 │   %3 = Base.vect(%1, %2)

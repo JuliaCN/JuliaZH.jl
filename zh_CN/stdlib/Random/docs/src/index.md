@@ -4,24 +4,32 @@
 DocTestSetup = :(using Random)
 ```
 
-Random number generation in Julia uses the [Mersenne Twister library](http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/#dSFMT)
-via `MersenneTwister` objects. Julia has a global RNG, which is used by default. Other RNG types
-can be plugged in by inheriting the `AbstractRNG` type; they can then be used to have multiple
-streams of random numbers. Besides `MersenneTwister`, Julia also provides the `RandomDevice` RNG
-type, which is a wrapper over the OS provided entropy.
+Random number generation in Julia uses the [Xoshiro256++](https://prng.di.unimi.it/) algorithm
+by default, with per-`Task` state.
+Other RNG types can be plugged in by inheriting the `AbstractRNG` type; they can then be used to
+obtain multiple streams of random numbers.
+Besides the default `TaskLocalRNG` type, the `Random` package also provides `MersenneTwister`,
+`RandomDevice` (which exposes OS-provided entropy), and `Xoshiro` (for explicitly-managed
+Xoshiro256++ streams).
 
-大部分与随机数生成相关的函数都接受一个可选的 `AbstractRNG` 对象作为第一个参数，如果不指定则使用全局默认的。此外，某些函数还接受一个可选的维度参数 `dims...` (可以是元组）来生成随机数组。
+Most functions related to random generation accept an optional `AbstractRNG` object as first argument.
+Some also accept dimension specifications `dims...` (which can also be given as a tuple) to generate
+arrays of random values.
+In a multi-threaded program, you should generally use different RNG objects from different threads
+or tasks in order to be thread-safe. However, the default RNG is thread-safe as of Julia 1.3
+(using a per-thread RNG up to version 1.6, and per-task thereafter).
 
-一个 `MersenneTwister` 或 `RandomDevice` RNG 能够生成如下类型的随机数：
+The provided RNGs can generate uniform random numbers of the following types:
 [`Float16`](@ref), [`Float32`](@ref), [`Float64`](@ref), [`BigFloat`](@ref), [`Bool`](@ref),
 [`Int8`](@ref), [`UInt8`](@ref), [`Int16`](@ref), [`UInt16`](@ref), [`Int32`](@ref),
 [`UInt32`](@ref), [`Int64`](@ref), [`UInt64`](@ref), [`Int128`](@ref), [`UInt128`](@ref),
-[`BigInt`](@ref) （或者这些类型的复数）。
-随机浮点数在 ``[0, 1)`` 区间均匀生成。由于 `BigInt` 代表无界的整数，必须要指定区间（如 `rand(big.(1:6))`）。
+[`BigInt`](@ref) (or complex numbers of those types).
+Random floating point numbers are generated uniformly in ``[0, 1)``. As `BigInt` represents
+unbounded integers, the interval must be specified (e.g. `rand(big.(1:6))`).
 
 另外，正态和指数分布是针对某些 `AbstractFloat` 和 `Complex` 类型，详细内容见 [`randn`](@ref) 和 [`randexp`](@ref)。
 
-!!! warn
+!!! warning
     Because the precise way in which random numbers are generated is considered an implementation detail, bug fixes and speed improvements may change the stream of numbers that are generated after a version change. Relying on a specific seed or generated stream of numbers during unit testing is thus discouraged - consider testing properties of the methods in question instead.
 
 ## Random numbers module
@@ -60,6 +68,8 @@ Random.shuffle!
 ```@docs
 Random.seed!
 Random.AbstractRNG
+Random.TaskLocalRNG
+Random.Xoshiro
 Random.MersenneTwister
 Random.RandomDevice
 ```
@@ -140,22 +150,22 @@ Scalar and array methods for `Die` now work as expected:
 
 ```jldoctest Die; setup = :(Random.seed!(1))
 julia> rand(Die)
-Die(10)
+Die(6)
 
 julia> rand(MersenneTwister(0), Die)
-Die(16)
+Die(11)
 
 julia> rand(Die, 3)
-3-element Array{Die,1}:
- Die(5)
- Die(20)
- Die(9)
+3-element Vector{Die}:
+ Die(15)
+ Die(19)
+ Die(4)
 
 julia> a = Vector{Die}(undef, 3); rand!(a)
-3-element Array{Die,1}:
- Die(11)
+3-element Vector{Die}:
+ Die(17)
  Die(20)
- Die(10)
+ Die(15)
 ```
 
 #### A simple sampler without pre-computed data
@@ -168,13 +178,13 @@ In order to define random generation out of objects of type `S`, the following m
 julia> Random.rand(rng::AbstractRNG, d::Random.SamplerTrivial{Die}) = rand(rng, 1:d[].nsides);
 
 julia> rand(Die(4))
-2
+1
 
 julia> rand(Die(4), 3)
-3-element Array{Any,1}:
- 1
+3-element Vector{Any}:
+ 3
  4
- 2
+ 1
 ```
 
 Given a collection type `S`, it's currently assumed that if `rand(::S)` is defined, an object of type `eltype(S)` will be produced. In the last example, a `Vector{Any}` is produced; the reason is that `eltype(Die) == Any`. The remedy is to define `Base.eltype(::Type{Die}) = Int`.
@@ -327,11 +337,25 @@ DocTestSetup = nothing
 
 # Reproducibility
 
-By using an RNG parameter initialized with a given seed, you can reproduce the same pseudorandom number sequence when running your program multiple times.  However, a minor release of Julia (e.g. 1.3 to 1.4) *may change* the sequence of pseudorandom numbers generated from a specific seed.  (Even if the sequence produced by a low-level function like [`rand`](@ref) does not change, the output of higher-level functions like [`randsubseq`](@ref) may change due to algorithm updates.)   Rationale: guaranteeing that pseudorandom streams never change prohibits many algorithmic improvements.
+By using an RNG parameter initialized with a given seed, you can reproduce the same pseudorandom
+number sequence when running your program multiple times. However, a minor release of Julia (e.g.
+1.3 to 1.4) *may change* the sequence of pseudorandom numbers generated from a specific seed, in
+particular if `MersenneTwister` is used. (Even if the sequence produced by a low-level function like
+[`rand`](@ref) does not change, the output of higher-level functions like [`randsubseq`](@ref) may
+change due to algorithm updates.) Rationale: guaranteeing that pseudorandom streams never change
+prohibits many algorithmic improvements.
 
-If you need to guarantee exact reproducibility of random data, it is advisable to simply *save the data* (e.g. as a supplementary attachment in a scientific publication).  (You can also, of course, specify a
-particular Julia version and package manifest, especially if you require bit reproducibility.)
+If you need to guarantee exact reproducibility of random data, it is advisable to simply *save the
+data* (e.g. as a supplementary attachment in a scientific publication). (You can also, of course,
+specify a particular Julia version and package manifest, especially if you require bit
+reproducibility.)
 
-Software tests that rely on *specific* "random" data should also generally save the data or embed it into the test code.  On the other hand, tests that should pass for *most* random data (e.g. testing `A \ (A*x) ≈ x` for a random matrix `A = randn(n,n)`) can use an RNG with a fixed seed to ensure that simply running the test many times does not encounter a failure due to very improbable data (e.g. an extremely ill-conditioned matrix).
+Software tests that rely on *specific* "random" data should also generally either save the data,
+embed it into the test code, or use third-party packages like
+[StableRNGs.jl](https://github.com/JuliaRandom/StableRNGs.jl). On the other hand, tests that should
+pass for *most* random data (e.g. testing `A \ (A*x) ≈ x` for a random matrix `A = randn(n,n)`) can
+use an RNG with a fixed seed to ensure that simply running the test many times does not encounter a
+failure due to very improbable data (e.g. an extremely ill-conditioned matrix).
 
-The statistical *distribution* from which random samples are drawn *is* guaranteed to be the same across any minor Julia releases.
+The statistical *distribution* from which random samples are drawn *is* guaranteed to be the same
+across any minor Julia releases.

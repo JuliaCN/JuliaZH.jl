@@ -1,4 +1,6 @@
-# 交互式组件
+# [Interactive Utilities](@id man-interactive-utils)
+
+This module is intended for interactive work. It is loaded automaticaly in [interactive mode](@ref command-line-options).
 
 ```@docs
 InteractiveUtils.apropos

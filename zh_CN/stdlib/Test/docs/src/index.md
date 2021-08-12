@@ -6,9 +6,9 @@ DocTestSetup = :(using Test)
 
 ## 测试 Julia Base 库
 
-Julia is under rapid development and has an extensive test suite to verify functionality across
-multiple platforms. If you build Julia from source, you can run this test suite with `make test`.
-In a binary install, you can run the test suite using `Base.runtests()`.
+Julia 处于快速开发中，有着可以扩展的测试套件，用来跨平台测试功能。
+如果你是通过源代码构建的 Julia ，你可以通过 `make test` 来运行这个测试套件。
+如果是通过二进制包安装的，你可以通过 `Base.runtests()` 来运行这个测试套件。
 
 ```@docs
 Base.runtests
@@ -21,14 +21,14 @@ see if your code is correct by checking that the results are what you expect. It
 to ensure your code still works after you make changes, and can be used when developing as a way
 of specifying the behaviors your code should have when complete.
 
-Simple unit testing can be performed with the `@test` and `@test_throws` macros:
+简单的单元测试可以通过 `@test` 和 `@test_throws` 宏来完成：
 
 ```@docs
 Test.@test
 Test.@test_throws
 ```
 
-For example, suppose we want to check our new function `foo(x)` works as expected:
+例如，假设我们想要测试新的函数 `foo(x)` 是否按照期望的方式工作：
 
 ```jldoctest testfoo
 julia> using Test
@@ -37,14 +37,18 @@ julia> foo(x) = length(x)^2
 foo (generic function with 1 method)
 ```
 
-如果条件为真，则返回 `Pass`：
+If the condition is true, a `Pass` is returned:
 
 ```jldoctest testfoo
 julia> @test foo("bar") == 9
 Test Passed
+  Expression: foo("bar") == 9
+   Evaluated: 9 == 9
 
 julia> @test foo("fizz") >= 10
 Test Passed
+  Expression: foo("fizz") >= 10
+   Evaluated: 16 >= 10
 ```
 
 如果条件为假，则返回 `Fail` 并抛出异常。
@@ -83,6 +87,7 @@ to check that this occurs:
 ```jldoctest testfoo
 julia> @test_throws MethodError foo(:cat)
 Test Passed
+  Expression: foo(:cat)
       Thrown: MethodError
 ```
 
@@ -93,12 +98,16 @@ of inputs. In the event a test fails, the default behavior is to throw an except
 However, it is normally preferable to run the rest of the tests first to get a better picture
 of how many errors there are in the code being tested.
 
+!!! note
+    The `@testset` will create a local scope of its own when running the tests in it.
+
 The `@testset` macro can be used to group tests into *sets*. All the tests in a test set will
 be run, and at the end of the test set a summary will be printed. If any of the tests failed,
 or could not be evaluated due to an error, the test set will then throw a `TestSetException`.
 
 ```@docs
 Test.@testset
+Test.TestSetException
 ```
 
 We can put our tests for the `foo(x)` function in a test set:
@@ -131,7 +140,28 @@ Foo Tests     |    8      8
 ```
 
 In the event that a nested test set has no failures, as happened here, it will be hidden in the
-summary. If we do have a test failure, only the details for the failed test sets will be shown:
+summary, unless the `verbose=true` option is passed:
+
+```jldoctest testfoo
+julia> @testset verbose = true "Foo Tests" begin
+           @testset "Animals" begin
+               @test foo("cat") == 9
+               @test foo("dog") == foo("cat")
+           end
+           @testset "Arrays $i" for i in 1:3
+               @test foo(zeros(i)) == i^2
+               @test foo(fill(1.0, i)) == i^2
+           end
+       end;
+Test Summary: | Pass  Total
+Foo Tests     |    8      8
+  Animals     |    2      2
+  Arrays 1    |    2      2
+  Arrays 2    |    2      2
+  Arrays 3    |    2      2
+```
+
+If we do have a test failure, only the details for the failed test sets will be shown:
 
 ```julia-repl
 julia> @testset "Foo Tests" begin
@@ -160,7 +190,7 @@ Foo Tests     |    3     1      4
 ERROR: Some tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken.
 ```
 
-## 其他测试宏
+## Other Test Macros
 
 As calculations on floating-point values can be imprecise, you can perform approximate equality
 checks using either `@test a ≈ b` (where `≈`, typed via tab completion of `\approx`, is the
@@ -169,6 +199,8 @@ checks using either `@test a ≈ b` (where `≈`, typed via tab completion of `\
 ```jldoctest
 julia> @test 1 ≈ 0.999999999
 Test Passed
+  Expression: 1 ≈ 0.999999999
+   Evaluated: 1 ≈ 0.999999999
 
 julia> @test 1 ≈ 0.999999
 Test Failed at none:1
@@ -176,6 +208,15 @@ Test Failed at none:1
    Evaluated: 1 ≈ 0.999999
 ERROR: There was an error during testing
 ```
+You can specify relative and absolute tolerances by setting the `rtol` and `atol` keyword arguments of `isapprox`, respectively,
+after the `≈` comparison:
+```jldoctest
+julia> @test 1 ≈ 0.999999  rtol=1e-5
+Test Passed
+  Expression: ≈(1, 0.999999, rtol = 1.0e-5)
+   Evaluated: ≈(1, 0.999999; rtol = 1.0e-5)
+```
+Note that this is not a specific feature of the `≈` but rather a general feature of the `@test` macro: `@test a <op> b key=val` is transformed by the macro into `@test op(a, b, key=val)`. It is, however, particularly useful for `≈` tests.
 
 ```@docs
 Test.@inferred
@@ -185,7 +226,7 @@ Test.@test_warn
 Test.@test_nowarn
 ```
 
-## 损坏的测试
+## Broken Tests
 
 If a test fails consistently it can be changed to use the `@test_broken` macro. This will denote
 the test as `Broken` if the test continues to fail and alerts the user via an `Error` if the test
@@ -202,7 +243,7 @@ in the test set reporting. The test will not run but gives a `Broken` `Result`.
 Test.@test_skip
 ```
 
-## 自定义 `AbstractTestSet` 类型
+## Creating Custom `AbstractTestSet` Types
 
 Packages can create their own `AbstractTestSet` subtypes by implementing the `record` and `finish`
 methods. The subtype should have a one-argument constructor taking a description string, with
@@ -228,7 +269,7 @@ subtype as their parent unless it is set explicitly. It does not propagate any p
 testset. Option inheritance behavior can be implemented by packages using the stack infrastructure
 that `Test` provides.
 
-定义一个基本的 `AbstractTestSet` 子类：
+Defining a basic `AbstractTestSet` subtype might look like:
 
 ```julia
 import Test: Test, record, finish
@@ -253,7 +294,7 @@ function finish(ts::CustomTestSet)
 end
 ```
 
-使用测试集：
+And using that testset looks like:
 
 ```julia
 @testset CustomTestSet foo=4 "custom testset inner 2" begin
@@ -262,6 +303,18 @@ end
         @test true
     end
 end
+```
+
+## Test utilities
+
+```@docs
+Test.GenericArray
+Test.GenericDict
+Test.GenericOrder
+Test.GenericSet
+Test.GenericString
+Test.detect_ambiguities
+Test.detect_unbound_args
 ```
 
 ```@meta
