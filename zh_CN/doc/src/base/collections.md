@@ -65,6 +65,7 @@ Base.LinRange
 Base.isempty
 Base.empty!
 Base.length
+Base.checked_length
 ```
 
 以下类型均完全实现了上述函数：
@@ -137,6 +138,7 @@ Base.filter!
 Base.replace(::Any, ::Pair...)
 Base.replace(::Base.Callable, ::Any)
 Base.replace!
+Base.rest
 ```
 
 ## 可索引集合
@@ -195,10 +197,8 @@ Base.IdDict
 Base.WeakKeyDict
 Base.ImmutableDict
 Base.haskey
-Base.get(::Any, ::Any, ::Any)
 Base.get
-Base.get!(::Any, ::Any, ::Any)
-Base.get!(::Function, ::Any, ::Any)
+Base.get!
 Base.getkey
 Base.delete!
 Base.pop!(::Any, ::Any, ::Any)
@@ -270,6 +270,7 @@ Base.pushfirst!
 Base.popfirst!
 Base.insert!
 Base.deleteat!
+Base.keepat!
 Base.splice!
 Base.resize!
 Base.append!

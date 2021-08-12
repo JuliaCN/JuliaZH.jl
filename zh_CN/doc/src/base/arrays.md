@@ -40,6 +40,7 @@ Base.trues
 Base.falses
 Base.fill
 Base.fill!
+Base.empty
 Base.similar
 ```
 
@@ -51,6 +52,7 @@ Base.size
 Base.axes(::Any)
 Base.axes(::AbstractArray, ::Any)
 Base.length(::AbstractArray)
+Base.keys(::AbstractArray)
 Base.eachindex
 Base.IndexStyle
 Base.IndexLinear
@@ -90,6 +92,7 @@ Base.Broadcast.result_style
 Base.getindex(::AbstractArray, ::Any...)
 Base.setindex!(::AbstractArray, ::Any, ::Any...)
 Base.copyto!(::AbstractArray, ::CartesianIndices, ::AbstractArray, ::CartesianIndices)
+Base.copy!
 Base.isassigned
 Base.Colon
 Base.CartesianIndex
@@ -99,21 +102,18 @@ Base.LinearIndices
 Base.to_indices
 Base.checkbounds
 Base.checkindex
+Base.elsize
 ```
 
 ## Views (SubArrays 以及其它 view 类型)
 
-A “view” is a data structure that acts like an array (it is a subtype of `AbstractArray`), but the underlying data is actually
-part of another array.
+“视图”是一种表现和数组相似的数据结构（它是 `AbstractArray` 的子类型），但是它的底层数据实际上是另一个数组的一部分。
 
-For example, if `x` is an array and `v = @view x[1:10]`, then `v` acts like a 10-element array, but its data is actually
-accessing the first 10 elements of `x`. Writing to a view, e.g. `v[3] = 2`, writes directly to the underlying array `x`
-(in this case modifying `x[3]`).
+例如，`x` 是一个数组，`v = @view x[1:10]`，则 `v` 表现得就像一个含有 10 个元素的数组，但是它的数据实际上是访问 `x` 的前 10 个元素。对视图的写入，如 `v[3] = 2`，直接写入了底层的数组 `x` （这里是修改 `x[3]`）。
 
-Slicing operations like `x[1:10]` create a copy by default in Julia. `@view x[1:10]` changes it to make a view. The
-`@views` macro can be used on a whole block of code (e.g. `@views function foo() .... end` or `@views begin ... end`)
-to change all the slicing operations in that block to use views.  Sometimes making a copy of the data is faster and
-sometimes using a view is faster, as described in the [performance tips](@ref man-performance-views).
+在 Julia 中，像 `x[1:10]` 这样的切片操作会创建一个副本。`@view x[1:10]` 将它变成创建一个视图。
+`@views`  宏可以用于整个代码块（如 `@views function foo() .... end` 或 `@views begin ... end`）来将整个代码块中的切片操作变为使用视图。
+如[性能建议](@ref man-performance-views)所描述的，有时候使用数据的副本更快，而有时候使用视图会更快。
 
 ```@docs
 Base.view
@@ -126,15 +126,17 @@ Base.reinterpret
 Base.reshape
 Base.dropdims
 Base.vec
+Base.SubArray
 ```
 
-## Concatenation and permutation
+## 拼接与排列
 
 ```@docs
 Base.cat
 Base.vcat
 Base.hcat
 Base.hvcat
+Base.hvncat
 Base.vect
 Base.circshift
 Base.circshift!
@@ -155,7 +157,7 @@ Base.PermutedDimsArray
 Base.promote_shape
 ```
 
-## Array functions
+## 数组函数
 
 ```@docs
 Base.accumulate
@@ -175,7 +177,7 @@ Base.eachcol
 Base.eachslice
 ```
 
-## Combinatorics
+## 组合学
 
 ```@docs
 Base.invperm

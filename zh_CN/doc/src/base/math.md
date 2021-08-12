@@ -49,6 +49,8 @@ Base.:(~)
 Base.:(&)
 Base.:(|)
 Base.xor
+Base.nand
+Base.nor
 Base.:(!)
 &&
 ||
@@ -65,8 +67,10 @@ Base.tan(::Number)
 Base.Math.sind
 Base.Math.cosd
 Base.Math.tand
+Base.Math.sincosd
 Base.Math.sinpi
 Base.Math.cospi
+Base.Math.sincospi
 Base.sinh(::Number)
 Base.cosh(::Number)
 Base.tanh(::Number)
@@ -161,6 +165,7 @@ Base.reim
 Base.conj
 Base.angle
 Base.cis
+Base.cispi
 Base.binomial
 Base.factorial
 Base.gcd
@@ -173,34 +178,34 @@ Base.nextprod
 Base.invmod
 Base.powermod
 Base.ndigits
+Base.add_sum
 Base.widemul
 Base.Math.evalpoly
 Base.Math.@evalpoly
 Base.FastMath.@fastmath
 ```
 
-## Customizable binary operators
+## 自定义二元运算符
 
-Some unicode characters can be used to define new binary operators
-that support infix notation.
-For example
+某些 unicode 字符可用于定义新的支持中缀表示法的二元运算符。
+例如，
 ```⊗(x,y) = kron(x,y)```
-defines the `⊗` (otimes) function to be the Kronecker product,
-and one can call it as binary operator using infix syntax:
+定义 `⊗` (otimes) 为 Kronecker 积，
+并且可以通过中缀语法将它作为一个二元运算符调用：
 ```C = A ⊗ B```
-as well as with the usual prefix syntax
-```C = ⊗(A,B)```.
+也可以使用常用的前缀语法
+```C = ⊗(A,B)```。
 
-Other characters that support such extensions include
+其他支持这种扩展的字符包括
 \odot `⊙`
-and
+和
 \oplus `⊕`
 
 The complete list is in the parser code:
-https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm
+<https://github.com/JuliaLang/julia/blob/master/src/julia-parser.scm>
 
-Those that are parsed like `*` (in terms of precedence) include
+像 `*` 一样解析的包括（按优先级排列）
 `* / ÷ % & ⋅ ∘ × |\\| ∩ ∧ ⊗ ⊘ ⊙ ⊚ ⊛ ⊠ ⊡ ⊓ ∗ ∙ ∤ ⅋ ≀ ⊼ ⋄ ⋆ ⋇ ⋉ ⋊ ⋋ ⋌ ⋏ ⋒ ⟑ ⦸ ⦼ ⦾ ⦿ ⧶ ⧷ ⨇ ⨰ ⨱ ⨲ ⨳ ⨴ ⨵ ⨶ ⨷ ⨸ ⨻ ⨼ ⨽ ⩀ ⩃ ⩄ ⩋ ⩍ ⩎ ⩑ ⩓ ⩕ ⩘ ⩚ ⩜ ⩞ ⩟ ⩠ ⫛ ⊍ ▷ ⨝ ⟕ ⟖ ⟗`
-and those that are parsed like `+` include
+像 `+` 一样解析的包括
 `+ - |\|| ⊕ ⊖ ⊞ ⊟ |++| ∪ ∨ ⊔ ± ∓ ∔ ∸ ≏ ⊎ ⊻ ⊽ ⋎ ⋓ ⧺ ⧻ ⨈ ⨢ ⨣ ⨤ ⨥ ⨦ ⨧ ⨨ ⨩ ⨪ ⨫ ⨬ ⨭ ⨮ ⨹ ⨺ ⩁ ⩂ ⩅ ⩊ ⩌ ⩏ ⩐ ⩒ ⩔ ⩖ ⩗ ⩛ ⩝ ⩡ ⩢ ⩣`
-There are many others that are related to arrows, comparisons, and powers.
+还有许多其他的与箭头、比较和幂相关的符号。
