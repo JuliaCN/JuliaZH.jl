@@ -2,36 +2,37 @@
 
 通常，我们把程序语言中的类型系统划分成两类：静态类型和动态类型。对于静态类型系统，在程序运行之前，我们就可计算每一个表达式的类型。而对于动态类型系统，我们只有通过运行那个程序，得到表达式具体的值，才能确定其具体的类型。通过让编写的代码无需在编译时知道值的确切类型，面向对象允许静态类型语言具有一定的灵活性。可以编写在不同类型上都能运行的代码的能力被称为多态。在经典的动态类型语言中，所有的代码都是多态的，这意味着这些代码对于其中值的类型没有约束，除非在代码中去具体的判断一个值的类型，或者对对象做一些它不支持的操作。
 
-Julia 类型系统是动态的，但通过允许指出某些变量具有特定类型，获得了静态类型系统的一些优点。这对于生成高效的代码非常有帮助，但更重要的是，它允许针对函数参数类型的方法派发与语言深度集成。方法派发将在[方法](@ref)中详细探讨，但它根植于此处提供的类型系统。
+Julia 类型系统是动态的，但由于允许指出某些变量具有特定类型，因此占有静态类型系统的一些优势。这对于生成高效的代码非常有帮助，但更重要的是，它允许针对函数参数类型的方法派发与语言深度集成。方法派发将在[方法](@ref)中详细探讨，但它根植于此处提供的类型系统。
 
-在类型被省略时，Julia 的默认行为是允许变量为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加类型注释主要有三个目的：利用 Julia 强大的多重派发机制、提高代码可读性以及捕获程序错误。
+在类型被省略时，Julia 的默认行为是允许值为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加类型注释主要有三个目的：利用 Julia 强大的多重派发机制、提高代码可读性以及捕获程序错误。
 
-Julia 用[类型系统](https://en.wikipedia.org/wiki/Type_system)的术语描述是动态（dynamic）、主格（nominative）和参数（parametric）的。泛型可以被参数化，并且类型之间的层次关系可以被[显式地声明](https://en.wikipedia.org/wiki/Nominal_type_system)，而不是[隐含地通过兼容的结构](https://en.wikipedia.org/wiki/Structural_type_system)。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的类型，并且只有抽象类型可以作为其超类型。虽然起初看起来这可能过于严格，但它有许多有益的结果，但缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：
+用[类型系统](https://zh.wikipedia.org/wiki/类型系统)的术语描述，Julia是动态（dynamic）、主格（nominative）和参数（parametric）的。泛型可以被参数化，并且类型之间的层次关系可以被[显式地声明](https://en.wikipedia.org/wiki/Nominal_type_system)，而不是[隐含地通过兼容的结构](https://en.wikipedia.org/wiki/Structural_type_system)。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的，并且超类只能是抽象类型。虽然这乍一看可能过于严格，但它有许多益处，且缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：
 
-  * 对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象其类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是头等的。
+  * 对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象且其类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是头等的。
      
      
   * 「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际类型。这在面向对象被称为「运行时类型」，其中静态编译和多态的组合使得这种区别变得显著。
      
      
-  * 值有类型，变量没有类型——变量仅仅是绑定给值的名字而已。
+  * 只有值，而不是变量，有类型——变量只是绑定到值的名称，尽管为了简单起见，我们可以说“变量的类型”作为“变量所引用的值的类型”的简写。
+     
   * 抽象类型和具体类型都可以通过其它类型进行参数化。它们的参数化还可通过符号、使得 [`isbits`](@ref) 返回 true 的任意类型的值（实质上，也就是像数字或布尔变量这样的东西，存储方式像 C 类型或不包含指向其它对象的指针的 `struct`）和其元组。类型参数在不需要被引用或限制时可以省略。
      
      
      
      
 
-Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从未感觉需要编写明确使用类型的代码。但是，某些场景的编程可通过声明类型变得更加清晰、简单、快速和健壮。
+Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从未感觉需要编写明确使用类型的代码。但是，某些场景的编程可通过声明类型变得更加清晰、简单、快速和稳健。
 
 ## 类型声明
 
 `::` 运算符可以用来在程序中给表达式和变量附加类型注释。这有两个主要原因：
 
 1. 作为断言，帮助程序确认能是否正常运行，
-2. 给编译器提供额外的类型信息，这可能帮助程序提升性能，在某些情况下
+2. 给编译器提供额外的类型信息，在一些情况下这可以提升程序性能。
     
 
-当被附加到一个计算值的表达式时，`::` 操作符读作「是······的实例」。在任何地方都可以用它来断言左侧表达式的值是右侧类型的实例。当右侧类型是具体类型时，左侧的值必须能够以该类型作为其实现——回想一下，所有具体类型都是最终的，因此没有任何实现是任何其它具体类型的子类型。当右侧类型是抽象类型时，值是由该抽象类型子类型中的某个具体类型实现的才能满足该断言。如果类型断言非真，抛出一个异常，否则返回左侧的值：
+置于到计算值的表达式后面时，`::` 操作符读作「是······的实例（is an instance of）」。在任何地方都可以用它来断言左侧表达式的值是右侧类型的实例。当右侧类型是具体类型时，左侧的值必须能够以该类型作为其实现——回想一下，所有具体类型都是最终的，因此没有任何实现是任何其它具体类型的子类型。当右侧类型是抽象类型时，值是由该抽象类型子类型中的某个具体类型实现的才能满足该断言。如果类型断言非真，抛出一个异常，否则返回左侧的值：
 
 ```jldoctest
 julia> (1+2)::AbstractFloat
@@ -41,9 +42,9 @@ julia> (1+2)::Int
 3
 ```
 
-可以在任何表达式的所在位置做类型断言。
+这将允许类型断言作用在任意表达式上。
 
-当被附加到赋值左侧的变量或作为 `local` 声明的一部分时，`::` 操作符的意义有所不同：它声明变量始终具有指定的类型，就像静态类型语言（如 C）中的类型声明。每个被赋给该变量的值都将使用 [`convert`](@ref) 转换为被声明的类型：
+置于赋值语句左侧的变量之后，或作为 `local` 声明的一部分时，`::` 操作符的意义有所不同：它声明变量始终具有指定的类型，就像静态类型语言（如 C）中的类型声明。每个被赋给该变量的值都将使用 [`convert`](@ref) 转换为被声明的类型：
 
 ```jldoctest
 julia> function foo()
@@ -52,14 +53,14 @@ julia> function foo()
        end
 foo (generic function with 1 method)
 
-julia> foo()
+julia> x = foo()
 100
 
-julia> typeof(ans)
+julia> typeof(x)
 Int8
 ```
 
-这个特性用于避免性能「陷阱」，即给一个变量赋值时意外更改了类型。
+这个特性对避免特定的性能「陷阱」很有帮助，比如给一个变量赋值时意外地更改了其类型。
 
 此「声明」行为仅发生在特定上下文中：
 
@@ -81,15 +82,15 @@ function sinc(x)::Float64
 end
 ```
 
-此函数的返回值就像赋值给了一个类型已被声明的变量：返回值始终转换为`Float64`。
+从函数返回时就如同给一个已被声明类型的变量赋值：返回值始终会被转换为`Float64`。
 
 ## [抽象类型](@id man-abstract-types)
 
-抽象类型不能实例化，只能作为类型图中的节点使用，从而描述由相关具体类型组成的集合：那些作为其后代的具体类型。我们从抽象类型开始，即使它们没有实例，因为它们是类型系统的主干：它们形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。
+抽象类型不能实例化，只能作为类型图中的节点使用，从而描述相关具体类型的集，即那些作为其后代的具体类型。即便抽象类型没有实例， 由于它们是类型系统的主干，故我们首先从抽象类型谈起：抽象类型形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。
 
-回想一下，在[整数和浮点数](@ref)中，我们介绍了各种数值的具体类型：[`Int8`](@ref)、[`UInt8`](@ref)、[`Int16`](@ref)、[`UInt16`](@ref)、[`Int32`](@ref)、[`UInt32`](@ref)、[`Int64`](@ref)、[`UInt64`](@ref)、[`Int128`](@ref)、[`UInt128`](@ref)、[`Float16`](@ref)、[`Float32`](@ref) 和 [`Float64`](@ref)。尽管 `Int8`、`Int16`、`Int32`、`Int64` 和 `Int128` 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，`UInt8`、`UInt16`、`UInt32`、`UInt64` 和 `UInt128` 都是无符号整数类型，而 `Float16`、`Float32` 和 `Float64` 是不同的浮点数类型而非整数类型。一段代码只对某些类型有意义是很常见的，比如，只在其参数是某种类型的整数，而不真正取决于特定*类型*的整数时有意义。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，提供了具体类型可以适应的上下文。例如，这允许你轻松地为任何类型的整数编程，而不用将算法限制为某种特殊类型的整数。
+回想一下，在[整数和浮点数](@ref)中，我们介绍了各种数值的具体类型：[`Int8`](@ref)、[`UInt8`](@ref)、[`Int16`](@ref)、[`UInt16`](@ref)、[`Int32`](@ref)、[`UInt32`](@ref)、[`Int64`](@ref)、[`UInt64`](@ref)、[`Int128`](@ref)、[`UInt128`](@ref)、[`Float16`](@ref)、[`Float32`](@ref) 和 [`Float64`](@ref)。尽管 `Int8`、`Int16`、`Int32`、`Int64` 和 `Int128` 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，`UInt8`、`UInt16`、`UInt32`、`UInt64` 和 `UInt128` 都是无符号整数类型，而 `Float16`、`Float32` 和 `Float64` 是不同的浮点数类型而非整数类型。一段代码只对某些类型有意义是很常见的，比如，只在其参数是某种类型的整数，而不真正取决于特定*类型*的整数时有意义。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，这给具体类型提供了可以适应的环境。例如，你可以轻松地为任何类型的整数编程，而不用将算法限制为某种特殊类型的整数。
 
-使用 [`abstract type`](@ref) 关键字来声明抽象类型。声明抽象类型的一般语法是：
+抽象类型可以由 [`abstract type`](@ref) 关键字来声明。声明抽象类型的一般语法是：
 
 ```
 abstract type «name» end
@@ -98,7 +99,7 @@ abstract type «name» <: «supertype» end
 
 该 `abstract type` 关键字引入了一个新的抽象类型，`«name»` 为其名称。此名称后面可以跟 [`<:`](@ref) 和一个已存在的类型，表示新声明的抽象类型是此「父」类型的子类型。
 
-如果没有给出超类型，则默认超类型为 `Any`——一个预定义的抽象类型，所有对象都是它的实例并且所有类型都是它的子类型。在类型理论中，`Any` 通常称为「top」，因为它位于类型图的顶点。Julia 还有一个预定义的抽象「bottom」类型，在类型图的最低点，写成 `Union{}`。这与 `Any` 完全相反：任何对象都不是 `Union{}` 的实例，所有的类型都是 `Union{}` 的超类型。
+如果没有给出超类型，则默认超类型为 `Any`——一个已经定义好的抽象类型，所有对象都是 `Any` 的实例并且所有类型都是 `Any` 的子类型。在类型理论中，`Any` 通常称为「top」，因为它位于类型图的顶点。Julia 还有一个预定义了的抽象「bottom」类型，在类型图的最低点，写成 `Union{}`。这与 `Any` 完全相反：任何对象都不是 `Union{}` 的实例，所有的类型都是 `Union{}` 的超类型。
 
 让我们考虑一些构成 Julia 数值类型层次结构的抽象类型：
 
@@ -111,9 +112,9 @@ abstract type Signed   <: Integer end
 abstract type Unsigned <: Integer end
 ```
 
-[`Number`](@ref) 类型为 `Any` 类型的直接子类型，并且 [`Real`](@ref) 为它的子类型。反过来，`Real` 有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到其它的子类型）： [`Integer`](@ref) 和 [`AbstractFloat`](@ref)，将世界分为整数的表示和实数的表示。实数的表示当然包括浮点类型，但也包括其他类型，例如有理数。因此，`AbstractFloat` 是一个 `Real` 的子类型，仅包括实数的浮点表示。整数被进一步细分为 [`Signed`](@ref) 和 [`Unsigned`](@ref) 两类。
+[`Number`](@ref) 类型为 `Any` 类型的直接子类型，并且 [`Real`](@ref) 为它的子类型。接下来，`Real` 有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到其它的子类型）： [`Integer`](@ref) 和 [`AbstractFloat`](@ref)，将世界分为整数的表示和实数的表示。实数的表示当然包括浮点类型，但也包括其他类型，例如有理数。因此，`AbstractFloat` 是一个 `Real` 的子类型，仅包括实数的浮点表示。整数被进一步细分为 [`Signed`](@ref) 和 [`Unsigned`](@ref) 两类。
 
-`<:` 运算符的通常意义为「是······的子类型」，并被用于像这样的声明右侧类型是新声明类型的直接超类型。它也可以在表达式中用作子类型运算符，在其左操作数为其右操作数的子类型时返回 `true`：
+`<:` 运算符的通常意义为「是······的子类型（is a subtype of）」，可以用在声明中，声明右侧类型是新声明类型的直接超类型；也可以在表达式中用作子类型运算符，在其左操作数为其右操作数的子类型时返回 `true`：
 
 ```jldoctest
 julia> Integer <: Number
@@ -133,7 +134,7 @@ end
 
 首先需要注意的是上述的参数声明等价于 `x::Any` 和 `y::Any`。当函数被调用时，例如 `myplus(2,5)`，派发器会选择与给定参数相匹配的名称为 `myplus` 的最具体方法。（有关多重派发的更多信息，请参阅[方法](@ref)。）
 
-假设没有找到比上述方法更具体的方法，Julia 接下来会在内部定义并编译一个名为 `myplus` 的方法，专门用于基于上面给出的泛型函数的两个 `Int` 参数，即它定义并编译：
+假设没有找到比上述方法更具体的方法，Julia 则会基于上面给出的泛型函数，在内部定义并编译一个名为 `myplus` 的方法，专门用于处理两个 `Int` 参数，即它隐式地定义并编译：
 
 ```julia
 function myplus(x::Int,y::Int)
@@ -143,16 +144,16 @@ end
 
 最后，调用这个具体的方法。
 
-因此，抽象类型允许程序员编写泛型函数，之后可以通过许多具体类型的组合将其用作默认方法。多亏了多重分派，程序员可以完全控制是使用默认方法还是更具体的方法。
+因此，抽象类型允许程序员编写泛型函数，泛型函数可以通过许多具体类型的组合用作默认方法。多重派发使得程序员可以完全控制是使用默认方法还是更具体的方法。
 
-需要注意的重点是，即使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅[性能建议](@ref man-performance-tips)。）
+需要注意的重点是，即使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅[性能建议](@ref man-performance-abstract-container)。）
 
 ## 原始类型
 
 !!! warning
-  在新的复合类型中包装现有的基元类型，几乎总是比定义自己的基元类型更好。
+    通常情况下更建议在新的复合类型中封装现有的原始类型，而不是重新定义自己的原始类型。
 
-  这个功能允许 Julia 引导 LLVM 支持的标准基本类型。一旦它们被定义，就没有理由再定义更多了。
+    这个功能的存在是为了允许 Julia 能引导受 LLVM 支持的标准基本类型。一旦一些标准类型被定义，就不需要再定义更多了。
 
 原始类型是具体类型，其数据是由简单的位组成。原始类型的经典示例是整数和浮点数。与大多数语言不同，Julia 允许你声明自己的原始类型，而不是只提供一组固定的内置原始类型。实际上，标准原始类型都是在语言本身中定义的：
 
@@ -215,7 +216,7 @@ julia> typeof(foo)
 Foo
 ```
 
-当像函数一样使用类型时，它被称为*构造函数*。有两个构造函数会被自动生成（这些构造函数称为*默认构造函数*）。一个接受任何参数并通过调用 [`convert`](@ref) 函数将它们转换为字段的类型，另一个接受与字段类型完全匹配的参数。两者都生成的原因是，这使得更容易添加新定义而不会在无意中替换默认构造函数。
+像函数一样使用的类型称为**构造函数**。有两个构造函数已被自动生成（这些构造函数称为**默认构造函数**）。其中一个接受任何参数并调用 [`convert`](@ref) 函数将它其转换为字段的类型，另一个接受与字段类型完全匹配的参数。两者都生成的原因是，这使得更容易添加新定义而不会在无意中替换默认构造函数。
 
 由于 `bar` 字段在类型上不受限制，因此任何值都可以。但是 `baz` 的值必须可转换为 `Int` 类型：
 
@@ -246,27 +247,27 @@ julia> foo.qux
 1.5
 ```
 
-使用 `struct` 声明的对象都是*不可变的*，它们在构造后无法修改。一开始看来这很奇怪，但它有几个优点：
+用 `struct` 声明的复合对象是*不可变的*；创建后不能修改。乍一看这似乎很奇怪，但它有几个优点：
 
-  * 它可以更高效。某些 struct 可以被高效地打包到数组中，并且在某些情况下，编译器可以避免完全分配不可变对象。
-  * 不可能违反由类型的构造函数提供的不变性。
-  * 使用不可变对象的代码更容易推理。
+* 它可以更高效。某些 struct 可以被高效地打包到数组中，并且在某些情况下，编译器可以避免完全分配不可变对象。
+* 不可能违反类型构造函数提供的不变性。
+* 使用不可变对象的代码更容易推理。
 
 不可变对象可以包含可变对象（比如数组）作为字段。那些被包含的对象将保持可变；只是不可变对象本身的字段不能更改为指向不同的对象。
 
-如果需要，可以使用关键字 [`mutable struct`](@ref) 声明可变复合对象，这将在下一节中讨论
+如果需要，可以使用关键字 [`mutable struct`](@ref) 声明可变复合对象，这将在下一节中讨论。
 
-没有字段的不可变复合类型是单态类型；这种类型只能有一个实例：
+如果一个不可变结构的所有字段都是不可区分的（`===`），那么包含这些字段的两个不可变值也是不可区分的：
 
 ```jldoctest
-julia> struct NoFields
-       end
+julia> struct X
+            a::Int
+            b::Float64
+        end
 
-julia> NoFields() === NoFields()
+julia> X(1, 2) === X(1, 2)
 true
 ```
-
-[`===`](@ref) 函数用来确认构造出来的「两个」`NoFields` 实例实际上是同一个。单态类型将在[下面](@ref man-singleton-types)进一步详细描述。
 
 关于如何构造复合类型的实例还有很多要说的，但这种讨论依赖于[参数类型](@ref)和[方法](@ref)，并且这是非常重要的，应该在专门的章节中讨论：[构造函数](@ref man-constructors)。
 
@@ -300,7 +301,7 @@ julia> bar.baz = 1//2
     * 特别地，这意味着足够小的不可变值（如整数和浮点数）通常在寄存器（或栈分配）中传递给函数。
     * 另一方面，可变值是堆分配的，并作为指向堆分配值的指针传递给函数，除非编译器确定没有办法知道这不是正在发生的事情。
 
-## 已声明的类型
+## [已声明的类型](@id man-declared-types)
 
 前面章节中讨论的三种类型（抽象、原始、复合）实际上都是密切相关的。它们共有相同的关键属性：
   * 它们都是显式声明的。
@@ -350,7 +351,7 @@ Julia 类型系统的一个重要和强大的特征是它是参数的：类型�
 
 所有已声明的类型（`DataType` 类型）都可被参数化，在每种情况下都使用一样的语法。我们将按一下顺序讨论它们：首先是参数复合类型，接着是参数抽象类型，最后是参数原始类型。
 
-### 参数复合类型
+### [参数复合类型](@id man-parametric-composite-types)
 
 类型参数在类型名称后引入，用大括号扩起来：
 
@@ -433,15 +434,15 @@ end
 
 稍后将在[方法](@ref)中讨论更多示例。
 
-如何构造一个 `Point` 对象？可以为复合类型定义自定义的构造函数，这将在[构造函数](@ref man-constructors)中详细讨论，但在没有任何特别的构造函数声明的情况下，有两种默认方式可以创建新的复合对象，一种是显式地给出类型参数，另一种是通过传给对象构造函数的参数隐含地给出。
+如何构造一个 `Point` 对象？可以为复合类型定义自定义的构造函数，这将在[构造函数](@ref man-constructors)中详细讨论，但在没有任何特别的构造函数声明的情况下，有两种默认方式可以创建新的复合对象，一种是显式地给出类型参数，另一种是通过传给对象构造函数的参数隐式地推断出。
 
 由于 `Point{Float64}` 类型等价于在 `Point` 声明时用 [`Float64`](@ref) 替换 `T` 得到的具体类型，它可以相应地作为构造函数使用：
 
 ```jldoctest pointtype
-julia> Point{Float64}(1.0, 2.0)
+julia> p = Point{Float64}(1.0, 2.0)
 Point{Float64}(1.0, 2.0)
 
-julia> typeof(ans)
+julia> typeof(p)
 Point{Float64}
 ```
 
@@ -459,19 +460,19 @@ ERROR: MethodError: no method matching Point{Float64}(::Float64, ::Float64, ::Fl
 
 参数类型只生成一个默认的构造函数，因为它无法覆盖。这个构造函数接受任何参数并将它们转换为字段的类型。
 
-在许多情况下，提供想要构造的 `Point` 对象的类型是多余的，因为构造函数调用参数的类型已经隐式地提供了类型信息。因此，你也可以将 `Point` 本身用作构造函数，前提是参数类型 `T` 的隐含值是确定的：
+许多情况下，没有必要提供想要构造的 `Point` 对象的类型，因为构造函数调用参数的类型已经隐式地提供了类型信息。因此，你也可以将 `Point` 本身用作构造函数，前提是参数类型 `T` 的隐含值是明确的：
 
 ```jldoctest pointtype
-julia> Point(1.0,2.0)
+julia> p1 = Point(1.0,2.0)
 Point{Float64}(1.0, 2.0)
 
-julia> typeof(ans)
+julia> typeof(p1)
 Point{Float64}
 
-julia> Point(1,2)
+julia> p2 = Point(1,2)
 Point{Int64}(1, 2)
 
-julia> typeof(ans)
+julia> typeof(p2)
 Point{Int64}
 ```
 
@@ -596,7 +597,7 @@ struct Point{T<:Real} <: Pointy{T}
 end
 ```
 
-在这里给出一个真实示例，展示了所有这些参数类型机制如何发挥作用，下面是 Julia 的不可变类型 [`Rational`](@ref) 的实际定义（除了我们为了简单起见省略了的构造函数），用来表示准确的整数比例：
+这里给出了一个真实示例，展示了所有这些参数类型机制如何发挥作用，下面是 Julia 的不可变类型 [`Rational`](@ref) 的实际定义（除了我们为了简单起见省略了的构造函数），用来表示准确的整数比例：
 
 ```julia
 struct Rational{T<:Integer} <: Real
@@ -609,7 +610,7 @@ end
 
 ### 元组类型
 
-元组类型是函数参数的抽象——不是函数本身的。函数参数的突出特征是它们的顺序和类型。因此，元组类型类似于参数化的不可变类型，其中每个参数都是一个字段的类型。例如，二元元组类型类似于以下不可变类型：
+元组类型是函数参数的抽象化——不带函数本身。函数参数的突出特征是它们的顺序和类型。因此，元组类型类似于参数化的不可变类型，其中每个参数都是一个字段的类型。例如，二元元组类型类似于以下不可变类型：
 
 ```julia
 struct Tuple2{A,B}
@@ -621,7 +622,7 @@ end
 然而，有三个主要差异：
 
   * 元组类型可以具有任意数量的参数。
-  * 元组类型的参数是*协变的*：`Tuple{Int}` 是 `Tuple{Any}` 的子类型。因此，`Tuple{Any}` 被认为是一种抽象类型，且元组类型只有在它们的参数都是具体类型时才是具体类型。 
+  * 元组类型的参数是**协变的**（covariant）：`Tuple{Int}` 是 `Tuple{Any}` 的子类型。因此，`Tuple{Any}` 被认为是一种抽象类型，且元组类型只有在它们的参数都是具体类型时才是具体类型。 
      
      
   * 元组没有字段名称; 字段只能通过索引访问。
@@ -630,7 +631,7 @@ end
 
 ```jldoctest
 julia> typeof((1,"foo",2.5))
-Tuple{Int64,String,Float64}
+Tuple{Int64, String, Float64}
 ```
 
 请注意协变性的含义：
@@ -650,11 +651,12 @@ false
 
 ### 变参元组类型
 
-元组类型的最后一个参数可以是特殊类型 [`Vararg`](@ref)，它表示任意数量的尾随参数：
+元组类型的最后一个参数可以是特殊值[`Vararg`](@ref)，它表示任意数量的尾随参数：
+ 
 
 ```jldoctest
 julia> mytupletype = Tuple{AbstractString,Vararg{Int}}
-Tuple{AbstractString,Vararg{Int64,N} where N}
+Tuple{AbstractString, Vararg{Int64}}
 
 julia> isa(("1",), mytupletype)
 true
@@ -669,9 +671,10 @@ julia> isa(("1",1,2,3.0), mytupletype)
 false
 ```
 
-请注意，`Vararg{T}` 对应于零个或更多的类型为 `T` 的元素。变参元组类型被用来表示变参方法接受的参数（请参阅[变参函数](@ref)）。
+此外，`Vararg{T}` 对应于零个或更多的类型为 `T` 的元素。变参元组类型被用来表示变参方法接受的参数（请参阅[变参函数](@ref)）。
+ 
 
-类型 `Vararg{T,N}` 对应于正好 `N` 个类型为 `T` 的元素。`NTuple{N,T}` 是 `Tuple{Vararg{T,N}}` 的别名，即包含正好 `N` 个类型为 `T` 元素的元组类型。
+特殊值 `Vararg{T,N}`（当用作元组类型的最后一个参数时）正好对应于类型为 `T` 的 `N` 个元素。 `NTuple{N,T}` 是 `Tuple{Vararg{T,N}}` 的一个方便的别名，即一个包含正好包含 `T` 类型的 `N` 个元素的元组类型。
 
 ### 具名元组类型
 
@@ -679,20 +682,20 @@ false
 
 ```jldoctest
 julia> typeof((a=1,b="hello"))
-NamedTuple{(:a, :b),Tuple{Int64,String}}
+NamedTuple{(:a, :b), Tuple{Int64, String}}
 ```
 
 [`@NamedTuple`](@ref) 宏提供了类结构体（`struct`）的具名元组（`NamedTuple`）声明，使用 `key::Type` 的语法，如果省略 `::Type` 则默认为 `::Any`。
 
 ```jldoctest
 julia> @NamedTuple{a::Int, b::String}
-NamedTuple{(:a, :b),Tuple{Int64,String}}
+NamedTuple{(:a, :b), Tuple{Int64, String}}
 
 julia> @NamedTuple begin
            a::Int
            b::String
        end
-NamedTuple{(:a, :b),Tuple{Int64,String}}
+NamedTuple{(:a, :b), Tuple{Int64, String}}
 ```
 
 `NamedTuple` 类型可以用作构造函数，接受一个单独的元组作为参数。构造出来的 `NamedTuple` 类型可以是具体类型，如果参数都被指定，也可以是只由字段名称所指定的类型：
@@ -706,51 +709,6 @@ julia> NamedTuple{(:a, :b)}((1,""))
 ```
 
 如果指定了字段类型，参数会被转换。否则，就直接使用参数的类型。
-
-### [单态类型](@id man-singleton-types)
-
-这里必须提到一种特殊的抽象类型：单态类型。对于每个类型 `T`，「单态类型」`Type{T}` 是个抽象类型且唯一的实例就是对象 `T`。由于定义有点难以解释，让我们看一些例子：
-
-```jldoctest
-julia> isa(Float64, Type{Float64})
-true
-
-julia> isa(Real, Type{Float64})
-false
-
-julia> isa(Real, Type{Real})
-true
-
-julia> isa(Float64, Type{Real})
-false
-```
-
-换种说法，[`isa(A,Type{B})`](@ref) 为真当且仅当 `A` 与 `B` 是同一对象且该对象是一个类型。不带参数时，`Type` 是个抽象类型，所有类型对象都是它的实例，当然也包括单态类型：
-
-```jldoctest
-julia> isa(Type{Float64}, Type)
-true
-
-julia> isa(Float64, Type)
-true
-
-julia> isa(Real, Type)
-true
-```
-
-只有对象是类型时，才是 `Type` 的实例：
-
-```jldoctest
-julia> isa(1, Type)
-false
-
-julia> isa("foo", Type)
-false
-```
-
-在我们讨论[参数方法](@ref)和[类型转换](@ref conversion-and-promotion)之前，很难解释单态类型的作用，但简而言之，它允许针对特定类型*值*专门指定函数行为。这对于编写方法（尤其是参数方法）很有用，这些方法的行为取决于作为显式参数给出的类型，而不是隐含在它的某个参数的类型中。
-
-一些流行的语言有单态类型，比如 Haskell、Scala 和 Ruby。在一般用法中，术语「单态类型」指的是唯一实例为单个值的类型。这定义适用于 Julia 的单态类型，但需要注意的是 Julia 里只有类型对象具有对应的单态类型。
 
 ### 参数原始类型
 
@@ -776,24 +734,24 @@ true
 
 ## UnionAll 类型
 
-我们已经说过像 `Ptr` 这样的参数类型充当它所有实例（`Ptr{Int64}` 等）的超类型。这是如何工作的？`Ptr` 本身不能是普通的数据类型，因为在不知道引用数据的类型时，该类型显然不能用于存储器操作。答案是 `Ptr`（或其它参数类型像 `Array`）是一种不同种类的类型，称为 [`UnionAll`](@ref) 类型。这种类型表示某些参数的所有值的类型的*迭代并集*。
+我们已经说过，像 `Ptr` 这样的参数类型可充当它所有实例（`Ptr{Int64}` 等）的超类型。这是如何办到的？`Ptr` 本身不能是普通的数据类型，因为在不知道引用数据的类型时，该类型显然不能用于存储器操作。答案是 `Ptr`（或其它参数类型像 `Array`）是一种不同种类的类型，称为 [`UnionAll`](@ref) 类型。这种类型表示某些参数的所有值的类型的*迭代并集*。
 
 `UnionAll` 类型通常使用关键字 `where` 编写。例如，`Ptr` 可以更精确地写为 `Ptr{T} where T`，也就是对于 `T` 的某些值，所有类型为 `Ptr{T}` 的值。在这种情况下，参数 `T` 也常被称为「类型变量」，因为它就像一个取值范围为类型的变量。每个 `where` 只引入一个类型变量，因此在具有多个参数的类型中这些表达式会被嵌套，例如 `Array{T,N} where N where T`。
 
-类型应用语法 `A{B,C}` 要求 `A` 是个 `UnionAll` 类型，并先把 `B` 替换为 `A` 中最外层的类型变量。结果应该是另一个 `UnionAll` 类型，然后把 `C` 替换为该类型的类型变量。所以 `A{B,C}` 等价于 `A{B}{C}`。这解释了为什么可以部分实例化一个类型，比如 `Array{Float64}`：第一个参数已经被固定，但第二个参数仍取遍所有可能值。通过使用 `where` 语法，任何参数子集都能被固定。例如，所有一维数组的类型可以写为 `Array{T,1} where T`。
+类型应用语法 `A{B,C}` 要求 `A` 是个 `UnionAll` 类型，并先代入 `B` 作为 `A` 中最外层的类型变量。结果应该是另一个 `UnionAll` 类型，然后再将 `C` 代入。所以 `A{B,C}` 等价于 `A{B}{C}`。这解释了为什么可以部分实例化一个类型，比如 `Array{Float64}`：第一个参数已经被固定，但第二个参数仍取遍所有可能值。通过使用 `where` 语法，任何参数子集都能被固定。例如，所有一维数组的类型可以写为 `Array{T,1} where T`。
 
 类型变量可以用子类型关系来加以限制。`Array{T} where T<:Integer` 指的是元素类型是某种 [`Integer`](@ref) 的所有数组。语法 `Array{<:Integer}` 是 `Array{T} where T<:Integer` 的便捷的缩写。类型变量可同时具有上下界。`Array{T} where Int<:T<:Number` 指的是元素类型为能够包含 `Int` 的 [`Number`](@ref) 的所有数组（因为 `T` 至少和 `Int` 一样大）。语法 `where T>:Int` 也能用来只指定类型变量的下界，且 `Array{>:Int}` 等价于 `Array{T} where T>:Int`。
 
-由于 `where` 表达式可以嵌套，类型变量界可以引用更外层的类型变量。比如 `Tuple{T,Array{S}} where S<:AbstractArray{T} where T<:Real` 指的是二元元组，其第一个元素是某个 [`Real`](@ref)，而第二个元素是任意种类的数组 `Array`，且该数组的元素类型包含于第一个元组元素的类型。
+由于 `where` 表达式可以嵌套，类型变量界可以引用更外层的类型变量。比如 `Tuple{T,Array{S}} where S<:AbstractArray{T} where T<:Real` 指的是二元元组，其第一个元素是某个 [`Real`](@ref)，而第二个元素是数组的数组 `Array`，其包含的内部数组的元素类型由元组的第一个元素类型决定。
 
 `where` 关键字本身可以嵌套在更复杂的声明里。例如，考虑由以下声明创建的两个类型：
 
 ```jldoctest
-julia> const T1 = Array{Array{T,1} where T, 1}
-Array{Array{T,1} where T,1}
+julia> const T1 = Array{Array{T, 1} where T, 1}
+Vector{Vector} (alias for Array{Array{T, 1} where T, 1})
 
-julia> const T2 = Array{Array{T,1}, 1} where T
-Array{Array{T,1},1} where T
+julia> const T2 = Array{Array{T, 1}, 1} where T
+Array{Vector{T}, 1} where T
 ```
 
 类型 `T1` 定义了由一维数组组成的一维数组；每个内部数组由相同类型的对象组成，但此类型对于不同内部数组可以不同。另一方面，类型 `T2` 定义了由一维数组组成的一维数组，其中的每个内部数组必须具有相同的类型。请注意，`T2` 是个抽象类型，比如 `Array{Array{Int,1},1} <: T2`，而 `T1` 是个具体类型。因此，`T1` 可由零参数构造函数 `a=T1()` 构造，但 `T2` 不行。
@@ -801,10 +759,134 @@ Array{Array{T,1},1} where T
 命名此类型有一种方便的语法，类似于函数定义语法的简短形式：
 
 ```julia
-Vector{T} = Array{T,1}
+Vector{T} = Array{T, 1}
 ```
 
 这等价于 `const Vector = Array{T,1} where T`。编写 `Vector{Float64}` 等价于编写 `Array{Float64,1}`，总类型 `Vector` 具有所有 `Array` 对象的实例，其中 `Array` 对象的第二个参数——数组维数——是 1，而不考虑元素类型是什么。在参数类型必须总被完整指定的语言中，这不是特别有用，但在 Julia 中，这允许只编写 `Vector` 来表示包含任何元素类型的所有一维密集数组的抽象类型。
+
+## [单例类型](@id man-singleton-types)
+
+没有字段的不可变复合类型称为 *单例类型*。正式地，如果
+
+1. `T` 是一个不可变的复合类型（即用 `struct` 定义），
+1. `a isa T && b isa T` 暗含 `a === b`,
+
+那么`T`是单例类型。[^2] [`Base.issingletontype`](@ref) 可以用来检查一个类型是否是单例类型。 [抽象类型](@ref man-abstract-types) 不能通过构造成为单例类型。
+
+根据定义，此类类型只能有一个实例：
+
+```jldoctest
+julia> struct NoFields
+       end
+
+julia> NoFields() === NoFields()
+true
+
+julia> Base.issingletontype(NoFields)
+true
+```
+
+[`===`](@ref) 函数确认`NoFields` 的构造实例实际上是一个且相同的。
+
+当上述条件成立时，参数类型可以是单例类型。例如，
+```jldoctest
+julia> struct NoFieldsParam{T}
+       end
+
+julia> Base.issingletontype(NoFieldsParam) # can't be a singleton type ...
+false
+
+julia> NoFieldsParam{Int}() isa NoFieldsParam # ... because it has ...
+true
+
+julia> NoFieldsParam{Bool}() isa NoFieldsParam # ... multiple instances
+true
+
+julia> Base.issingletontype(NoFieldsParam{Int}) # parametrized, it is a singleton
+true
+
+julia> NoFieldsParam{Int}() === NoFieldsParam{Int}()
+true
+```
+
+## [`Type{T}` 类型选择器](@id man-typet-type)
+
+对于每个类型`T`，`Type{T}` 是一个抽象的参数类型，它的唯一实例是对象`T`。 在我们讨论 [参数方法](@ref) 和 [类型转换](@ref conversion-and-promotion) 之前，很难解释这个构造的效用，但简而言之，它允许人们专门针对特定类型的函数行为 作为*值*。 这对于编写其行为取决于作为显式参数给出的类型而不是由其参数之一的类型隐含的类型的方法（尤其是参数方法）很有用。
+
+由于定义有点难理解，我们来看一些例子：
+
+```jldoctest
+julia> isa(Float64, Type{Float64})
+true
+
+julia> isa(Real, Type{Float64})
+false
+
+julia> isa(Real, Type{Real})
+true
+
+julia> isa(Float64, Type{Real})
+false
+```
+
+换句话说，[`is(A, Type{B})`](@ref) 当且仅当 `A` 和 `B` 是同一个对象并且该对象是一个类型时才为真。
+
+特别的，由于参数类型是 [不变量](@ref man-parametric-composite-types)，我们有
+
+```jldoctest
+julia> struct TypeParamExample{T}
+           x::T
+       end
+
+julia> TypeParamExample isa Type{TypeParamExample}
+true
+
+julia> TypeParamExample{Int} isa Type{TypeParamExample}
+false
+
+julia> TypeParamExample{Int} isa Type{TypeParamExample{Int}}
+true
+```
+
+如果没有参数，`Type` 只是一个抽象类型，所有类型对象都是其实例：
+
+```jldoctest
+julia> isa(Type{Float64}, Type)
+true
+
+julia> isa(Float64, Type)
+true
+
+julia> isa(Real, Type)
+true
+```
+
+不是类型的对象不是 `Type` 的实例：
+
+```jldoctest
+julia> isa(1, Type)
+false
+
+julia> isa("foo", Type)
+false
+```
+
+虽然 `Type` 与任何其他抽象参数类型一样是 Julia 类型层次结构的一部分，但它并不常用在方法签名之外，除非在某些特殊情况下。 `Type` 的另一个重要用法是使不太精确的字段类型更加清晰，例如[`DataType`](@ref man-declared-types) 在下面的示例中，默认构造函数可能会导致依赖精确包装类型的代码出现性能问题（类似于 [抽象类型参数](@ref man-performance-abstract-container））。
+
+```jldoctest
+julia> struct WrapType{T}
+       value::T
+       end
+
+julia> WrapType(Float64) # default constructor, note DataType
+WrapType{DataType}(Float64)
+
+julia> WrapType(::Type{T}) where T = WrapType{Type{T}}(T)
+WrapType
+
+julia> WrapType(Float64) # sharpened constructor, note more precise Type{Float64}
+WrapType{Type{Float64}}(Float64)
+```
 
 ## 类型别名
 
@@ -820,7 +902,7 @@ julia> UInt
 UInt64
 ```
 
-在 `base/boot.jl` 中，通过以下代码实现：
+这是由 `base/boot.jl` 中以下代码实现的：
 
 ```julia
 if Int === Int64
@@ -848,7 +930,7 @@ julia> isa(1, AbstractFloat)
 false
 ```
 
-已经在手册各处的示例中使用的 [`typeof`](@ref) 函数返回其参数的类型。如上所述，因为类型都是对象，所以它们也有类型，我们可以询问它们的类型：
+在文档示例中随处可见的 [`typeof`](@ref) 函数返回其参数的类型。如上所述，因为类型都是对象，所以它们也有类型，我们可以询问它们的类型：
 
 ```jldoctest
 julia> typeof(Rational{Int})
@@ -911,7 +993,7 @@ Polar
 
 在这里，我们添加了一个自定义的构造函数，这样就可以接受不同 [`Real`](@ref) 类型的参数并将它们类型提升为共同类型（请参阅[构造函数](@ref man-constructors)和[类型转换和类型提升](@ref conversion-and-promotion)）。（当然，为了让它表现地像个 [`Number`](@ref)，我们需要定义许多其它方法，例如 `+`、`*`、`one`、`zero` 及类型提升规则等。）默认情况下，此类型的实例只是相当简单地显示有关类型名称和字段值的信息，比如，`Polar{Float64}(3.0,4.0)`。
 
-如果我们希望它显示为 `3.0 * exp(4.0im)`，我们将定义以下方法来将对象打印到给定的输出对象 `io`（其代表文件、终端、及缓冲区等；请参阅[网络和流](@ref)）：
+如果我们希望它显示为 `3.0 * exp(4.0im)`，我们可定义以下方法来将对象打印到给定的输出对象 `io`（其代表文件、终端、及缓冲区等；请参阅[网络和流](@ref)）：
 
 ```jldoctest polartype
 julia> Base.show(io::IO, z::Polar) = print(io, z.r, " * exp(", z.Θ, "im)")
@@ -932,7 +1014,7 @@ Polar{Float64} complex number:
    3.0 * exp(4.0im)
 
 julia> [Polar(3, 4.0), Polar(4.0,5.3)]
-2-element Array{Polar{Float64},1}:
+2-element Vector{Polar{Float64}}:
  3.0 * exp(4.0im)
  4.0 * exp(5.3im)
 ```
@@ -947,7 +1029,7 @@ julia> Base.show(io::IO, ::MIME"text/html", z::Polar{T}) where {T} =
                    z.r, " <i>e</i><sup>", z.Θ, " <i>i</i></sup>")
 ```
 
-之后会在支持 HTML 显示的环境中自动使用 HTML 显示 `Polar` 对象，但如果你想，也可以手动调用 `show` 来获取 HTML 输出：
+之后会在支持 HTML 显示的环境中自动使用 HTML 显示 `Polar` 对象，但你也可以手动调用 `show` 来获取 HTML 输出：
 
 ```jldoctest polartype
 julia> show(stdout, "text/html", Polar(3.0,4.0))
@@ -969,7 +1051,7 @@ julia> print(:($a^2))
 3.0 * exp(4.0im) ^ 2
 ```
 
-因为运算符 `^` 的优先级高于 `*`（请参阅[运算符的优先级与结合性](@ref)），所以此输出不忠实地表示了表达式 `a ^ 2`，而该表达式等价于 `(3.0 * exp(4.0im)) ^ 2`。为了解决这个问题，我们必须为 `Base.show_unquoted(io::IO, z::Polar, indent::Int, precedence::Int)` 创建一个自定义方法，在打印时，表达式对象会在内部调用它：
+因为运算符 `^` 的优先级高于 `*`（请参阅[运算符的优先级与结合性](@ref)），所以此输出错误地表示了表达式 `a ^ 2`，而该表达式等价于 `(3.0 * exp(4.0im)) ^ 2`。为了解决这个问题，我们必须为 `Base.show_unquoted(io::IO, z::Polar, indent::Int, precedence::Int)` 创建一个自定义方法，在打印时，表达式对象会在内部调用它：
 
 ```jldoctest polartype
 julia> function Base.show_unquoted(io::IO, z::Polar, ::Int, precedence::Int)
@@ -986,7 +1068,7 @@ julia> :($a^2)
 :((3.0 * exp(4.0im)) ^ 2)
 ```
 
-当正在调用的运算符的优先级大于等于乘法的优先级时，上面定义的方法会在 `show` 调用的两侧加上括号。这个检查允许在没有括号的情况下被正确解析的表达式（例如 `:($a + 2)` 和 `:($a == 2)`）在打印时省略括号：
+当正在调用的运算符的优先级大于等于乘法的优先级时，上面定义的方法会在 `show` 调用的两侧加上括号。这个检查允许，在没有括号时也可被正确解析的表达式（例如 `:($a + 2)` 和 `:($a == 2)`），在打印时省略括号：
 
 ```jldoctest polartype
 julia> :($a + 2)
@@ -996,7 +1078,7 @@ julia> :($a == 2)
 :(3.0 * exp(4.0im) == 2)
 ```
 
-在某些情况下，根据上下文调整 `show` 方法的行为是很有用的。这可通过 [`IOContext`](@ref) 类型实现，它允许一起传递上下文属性和封装后的 IO 流。例如，我们可以在 `:compact` 属性设置为 `true` 时创建一个更短的表示，而在该属性为 `false` 或不存在时返回长的表示：
+在某些情况下，根据上下文调整 `show` 方法的行为是很有用的。这可通过 [`IOContext`](@ref) 类型实现，它允许同时传递上下文属性和封装后的 IO 流。例如，我们可以在 `:compact` 属性设置为 `true` 时创建一个更短的表示，而在该属性为 `false` 或不存在时返回长的表示：
 ```jldoctest polartype
 julia> function Base.show(io::IO, z::Polar)
            if get(io, :compact, false)
@@ -1007,13 +1089,13 @@ julia> function Base.show(io::IO, z::Polar)
        end
 ```
 
-当传入的 IO 流是设置了 `:compact`（译注：该属性还应当设置为 `true`）属性的 `IOContext` 对象时，将使用这个新的紧凑表示。特别地，当打印具有多列的数组（由于水平空间有限）时就是这种情况：
+当传入的 IO 流是设置了 `:compact`（译注：该属性还应当设置为 `true`）属性的 `IOContext` 对象时，新的紧凑表示将被使用。特别地，当打印具有多列的数组（由于水平空间有限）时就是这种情况：
 ```jldoctest polartype
 julia> show(IOContext(stdout, :compact=>true), Polar(3, 4.0))
 3.0ℯ4.0im
 
 julia> [Polar(3, 4.0) Polar(4.0,5.3)]
-1×2 Array{Polar{Float64},2}:
+1×2 Matrix{Polar{Float64}}:
  3.0ℯ4.0im  4.0ℯ5.3im
 ```
 
@@ -1021,9 +1103,9 @@ julia> [Polar(3, 4.0) Polar(4.0,5.3)]
 
 ## 值类型
 
-在 Julia 中，你无法根据诸如 `true` 或 `false` 之类的*值*进行分派。然而，你可以根据参数类型进行分派，Julia 允许你包含「plain bits」值（类型、符号、整数、浮点数和元组等）作为类型参数。`Array{T,N}` 里的维度参数就是一个常见的例子，在那里 `T` 是类型（比如 [`Float64`](@ref)），而 `N` 只是个 `Int`。
+在 Julia 中，你无法根据诸如 `true` 或 `false` 之类的*值*进行分派。然而，你可以根据参数类型进行分派，Julia 允许你包含「plain bits」值（类型、符号、整数、浮点数和元组等）作为类型参数。`Array{T,N}` 里的维度参数就是一个常见的例子，在这里 `T` 是类型（比如 [`Float64`](@ref)），而 `N` 只是个 `Int`。
 
-你可以创建把值作为参数的自定义类型，并使用它们控制自定义类型的分派。为了说明这个想法，让我们引入参数类型 `Val{x}` 和构造函数 `Val(x) = Val{x}()`，它可以作为一种习惯的方式来利用这种技术需要更精细的层次结构。这可以作为利用这种技术的惯用方式，而且不需要更精细的层次结构。
+你可以创建把值作为参数的自定义类型，并使用它们控制自定义类型的分派。为了说明这个想法，让我们引入参数类型 `Val{x}` 和构造函数 `Val(x) = Val{x}()`，在不需要更精细的层次结构时，这是利用此技巧的一种习惯的方式。
 
 [`Val`](@ref) 的定义为：
 
@@ -1053,6 +1135,7 @@ julia> firstlast(Val(false))
 
 为了保证 Julia 的一致性，调用处应当始终传递 `Val` **实例** 而不是 **类型**，也就是使用 `foo(Val(:bar))` 而不是 `foo(Val{:bar})`。
 
-值得注意的是，参数「值」类型非常容易被误用，包括 `Val`；情况不太好时，你很容易使代码性能变得更*糟糕*。一般使用时，你可能从来不会想要写出上方示例那样的代码。有关 `Val` 的正确（和不正确）使用的更多信息，请阅读[性能建议](@ref man-performance-tips)中更广泛的讨论。
+值得注意的是，参数「值」类型非常容易被误用，包括 `Val`；在不适用的情形下，你很容易使代码性能变得更*糟糕*。特别是，你可能永远都不会想要写出如上所示的代码。有关 `Val` 的正确（和不正确）使用的更多信息，请阅读[性能建议](@ref man-performance-value-type)中更广泛的讨论。
 
 [^1]: 「少数」由常数 `MAX_UNION_SPLITTING` 定义，目前设置为 4。
+[^2]: 一些流行的编程语言具有单例类型，包括 Haskell、Scala 和 Ruby。

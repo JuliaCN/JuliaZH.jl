@@ -36,7 +36,7 @@ Julia 的迭代器可以从对象外部跟踪迭代状态，而不是在迭代�
 也可以直接被应用到  [`for`](@ref) 循环中，因为根据语法：
 
 ```julia
-for i in iter   # or  "for i = iter"
+for item in iter   # or  "for item = iter"
     # body
 end
 ```
@@ -46,7 +46,7 @@ end
 ```julia
 next = iterate(iter)
 while next !== nothing
-    (i, state) = next
+    (item, state) = next
     # body
     next = iterate(iter, state)
 end
@@ -62,11 +62,12 @@ julia> struct Squares
 julia> Base.iterate(S::Squares, state=1) = state > S.count ? nothing : (state*state, state+1)
 ```
 
-仅仅定义了 [`iterate`](@ref) 函数的 `Squares` 类型就已经很强大了。我们现在可以迭代所有的元素了：
+With only [`iterate`](@ref) definition, the `Squares` type is already pretty powerful.
+We can iterate over all the elements:
 
 ```jldoctest squaretype
-julia> for i in Squares(7)
-           println(i)
+julia> for item in Squares(7)
+           println(item)
        end
 1
 4
@@ -100,11 +101,12 @@ julia> Base.eltype(::Type{Squares}) = Int # Note that this is defined for the ty
 julia> Base.length(S::Squares) = S.count
 ```
 
-现在，当我们让 Julia 去 [`collect`](@ref) 所有元素到一个数组中时，Julia 可以预分配一个适当大小的 `Vector{Int}`，而不是盲目地 [`push!`](@ref) 每一个元素到 `Vector{Any}`：
+Now, when we ask Julia to [`collect`](@ref) all the elements into an array it can preallocate a `Vector{Int}`
+of the right size instead of naively [`push!`](@ref)ing each element into a `Vector{Any}`:
 
 ```jldoctest squaretype
 julia> collect(Squares(4))
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
   1
   4
   9
@@ -128,7 +130,7 @@ julia> sum(Squares(1803))
 julia> Base.iterate(rS::Iterators.Reverse{Squares}, state=rS.itr.count) = state < 1 ? nothing : (state*state, state-1)
 
 julia> collect(Iterators.reverse(Squares(4)))
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  16
   9
   4
@@ -169,7 +171,13 @@ julia> Squares(23)[end]
 529
 ```
 
-但请注意，上面只定义了带有一个整数索引的 [`getindex`](@ref)。使用除 `Int` 外的任何值进行索引会抛出 [`MethodError`](@ref)，表示没有匹配的方法。为了支持使用某个范围内的 `Int` 或 `Int` 向量进行索引，必须编写单独的方法：
+For multi-dimensional `begin`/`end` indexing as in `a[3, begin, 7]`, for example,
+you should define `firstindex(a, dim)` and `lastindex(a, dim)`
+(which default to calling `first` and `last` on `axes(a, dim)`, respectively).
+
+Note, though, that the above *only* defines [`getindex`](@ref) with one integer index. Indexing with
+anything other than an `Int` will throw a [`MethodError`](@ref) saying that there was no matching method.
+In order to support indexing with ranges or vectors of `Int`s, separate methods must be written:
 
 ```jldoctest squaretype
 julia> Base.getindex(S::Squares, i::Number) = S[convert(Int, i)]
@@ -177,7 +185,7 @@ julia> Base.getindex(S::Squares, i::Number) = S[convert(Int, i)]
 julia> Base.getindex(S::Squares, I) = [S[i] for i in I]
 
 julia> Squares(10)[[3,4.,5]]
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
   9
  16
  25
@@ -196,8 +204,8 @@ julia> Squares(10)[[3,4.,5]]
 | `setindex!(A, v, I::Vararg{Int, N})`            |                                        | （若为 `IndexCartesian`，其中 `N = ndims(A)`）N 维标量索引元素赋值   |
 | **可选方法**                            | **默认定义**                 | **简短描述**                                                                 |
 | `IndexStyle(::Type)`                            | `IndexCartesian()`                     | 返回 `IndexLinear()` 或 `IndexCartesian()`。请参阅下文描述。      |
-| `getindex(A, I...)`                             | 基于标量 `getindex` 定义  | [多维非标量索引](@ref man-array-indexing)                    |
-| `setindex!(A, X, I...)`                            | 基于标量 `setindex!` 定义 | [多维非标量索引元素赋值](@ref man-array-indexing)          |
+| `getindex(A, I...)`                             | 基于标量 `getindex` 定义  | [Multidimensional and nonscalar indexing](@ref man-array-indexing)                    |
+| `setindex!(A, X, I...)`                            | 基于标量 `setindex!` 定义 | [Multidimensional and nonscalar indexed assignment](@ref man-array-indexing)          |
 | `iterate`                                       | 基于标量 `getindex` 定义  | Iteration                                                                             |
 | `length(A)`                                     | `prod(size(A))`                        | 元素数                                                                    |
 | `similar(A)`                                    | `similar(A, eltype(A), size(A))`       | 返回具有相同形状和元素类型的可变数组                           |
@@ -205,7 +213,7 @@ julia> Squares(10)[[3,4.,5]]
 | `similar(A, dims::Dims)`                        | `similar(A, eltype(A), dims)`          | 返回具有相同元素类型和大小为 *dims* 的可变数组                     |
 | `similar(A, ::Type{S}, dims::Dims)`             | `Array{S}(undef, dims)`                | 返回具有指定元素类型及大小的可变数组                       |
 | **不遵循惯例的索引**                     | **默认定义**                 | **简短描述**                                                                 |
-| `axes(A)`                                    | `map(OneTo, size(A))`                  | 返回有效索引的 `AbstractUnitRange`                                       |
+| `axes(A)`                                    | `map(OneTo, size(A))`                  | Return the a tuple of `AbstractUnitRange{<:Integer}` of valid indices                    |
 | `similar(A, ::Type{S}, inds)`              | `similar(A, S, Base.to_shape(inds))`   | 返回使用特殊索引 `inds` 的可变数组（详见下文）                  |
 | `similar(T::Union{Type,Function}, inds)`   | `T(Base.to_shape(inds))`               | 返回类似于 `T` 的使用特殊索引 `inds` 的数组（详见下文）          |
 
@@ -229,7 +237,10 @@ julia> Base.IndexStyle(::Type{<:SquaresVector}) = IndexLinear()
 julia> Base.getindex(S::SquaresVector, i::Int) = i*i
 ```
 
-请注意，指定 `AbstractArray` 的两个参数非常重要；第一个参数定义了 [`eltype`](@ref)，第二个则定义了 [`ndims`](@ref)。该超类型和这三个方法就足以使 `SquaresVector` 变成一个可迭代、可索引且功能齐全的数组：
+Note that it's very important to specify the two parameters of the `AbstractArray`; the first
+defines the [`eltype`](@ref), and the second defines the [`ndims`](@ref). That supertype and those three
+methods are all it takes for `SquaresVector` to be an iterable, indexable, and completely functional
+array:
 
 ```jldoctest squarevectype
 julia> s = SquaresVector(4)
@@ -240,19 +251,19 @@ julia> s = SquaresVector(4)
  16
 
 julia> s[s .> 8]
-2-element Array{Int64,1}:
+2-element Vector{Int64}:
   9
  16
 
 julia> s + s
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
   2
   8
  18
  32
 
 julia> sin.(s)
-4-element Array{Float64,1}:
+4-element Vector{Float64}:
   0.8414709848078965
  -0.7568024953079282
   0.4121184852417566
@@ -280,23 +291,25 @@ julia> Base.getindex(A::SparseArray{T,N}, I::Vararg{Int,N}) where {T,N} = get(A.
 julia> Base.setindex!(A::SparseArray{T,N}, v, I::Vararg{Int,N}) where {T,N} = (A.data[I] = v)
 ```
 
-请注意，这是个 `IndexCartesian` 数组，因此我们必须在数组的维度上手动定义 [`getindex`](@ref) 和 [`setindex!`](@ref)。与 `SquaresVector` 不同，我们可以定义 [`setindex!`](@ref)，这样便能更改数组：
+Notice that this is an `IndexCartesian` array, so we must manually define [`getindex`](@ref) and [`setindex!`](@ref)
+at the dimensionality of the array. Unlike the `SquaresVector`, we are able to define [`setindex!`](@ref),
+and so we can mutate the array:
 
 ```jldoctest squarevectype
 julia> A = SparseArray(Float64, 3, 3)
-3×3 SparseArray{Float64,2}:
+3×3 SparseArray{Float64, 2}:
  0.0  0.0  0.0
  0.0  0.0  0.0
  0.0  0.0  0.0
 
 julia> fill!(A, 2)
-3×3 SparseArray{Float64,2}:
+3×3 SparseArray{Float64, 2}:
  2.0  2.0  2.0
  2.0  2.0  2.0
  2.0  2.0  2.0
 
 julia> A[:] = 1:length(A); A
-3×3 SparseArray{Float64,2}:
+3×3 SparseArray{Float64, 2}:
  1.0  4.0  7.0
  2.0  5.0  8.0
  3.0  6.0  9.0
@@ -306,16 +319,20 @@ julia> A[:] = 1:length(A); A
 
 ```jldoctest squarevectype
 julia> A[1:2,:]
-2×3 SparseArray{Float64,2}:
+2×3 SparseArray{Float64, 2}:
  1.0  4.0  7.0
  2.0  5.0  8.0
 ```
 
-在此例中，创建合适的封装数组通过定义 `Base.similar{T}(A::SparseArray, ::Type{T}, dims::Dims)` 来实现。（请注意，虽然 `similar` 支持 1 参数和 2 参数形式，但在大多数情况下，你只需要专门定义 3 参数形式。）为此，`SparseArray` 是可变的（支持 `setindex!`）便很重要。为 `SparseArray` 定义 `similar`、`getindex` 和 `setindex!` 也使得该数组能够 [`copy`](@ref) 。
+In this example it is accomplished by defining `Base.similar(A::SparseArray, ::Type{T}, dims::Dims) where T`
+to create the appropriate wrapped array. (Note that while `similar` supports 1- and 2-argument
+forms, in most case you only need to specialize the 3-argument form.) For this to work it's important
+that `SparseArray` is mutable (supports `setindex!`). Defining `similar`, `getindex` and
+`setindex!` for `SparseArray` also makes it possible to [`copy`](@ref) the array:
 
 ```jldoctest squarevectype
 julia> copy(A)
-3×3 SparseArray{Float64,2}:
+3×3 SparseArray{Float64, 2}:
  1.0  4.0  7.0
  2.0  5.0  8.0
  3.0  6.0  9.0
@@ -325,7 +342,7 @@ julia> copy(A)
 
 ```jldoctest squarevectype
 julia> A[SquaresVector(3)]
-3-element SparseArray{Float64,1}:
+3-element SparseArray{Float64, 1}:
  1.0
  4.0
  9.0
@@ -334,22 +351,31 @@ julia> sum(A)
 45.0
 ```
 
-如果要定义允许非传统索引（索引以 1 之外的数字开始）的数组类型，你应该专门指定 [`axes`](@ref)。你也应该专门指定 [`similar`](@ref)，以便 `dims` 参数（通常是大小为 `Dims` 的元组）可以接收 `AbstractUnitRange` 对象，它也许是你自己设计的 range 类型 `Ind`。有关更多信息，请参阅[使用自定义索引的数组](@ref man-custom-indices)。
+If you are defining an array type that allows non-traditional indexing (indices that start at
+something other than 1), you should specialize [`axes`](@ref). You should also specialize [`similar`](@ref)
+so that the `dims` argument (ordinarily a `Dims` size-tuple) can accept `AbstractUnitRange` objects,
+perhaps range-types `Ind` of your own design. For more information, see
+[Arrays with custom indices](@ref man-custom-indices).
 
-## [Strided 数组](@id man-interface-strided-arrays)
+## [Strided Arrays](@id man-interface-strided-arrays)
 
-| 需要实现的方法 |   | 简短描述 |
+| Methods to implement                            |                                        | Brief description                                                                     |
 |:----------------------------------------------- |:-------------------------------------- |:------------------------------------------------------------------------------------- |
-| `strides(A)` |   | 返回每个维度中相邻元素之间的内存距离（以内存元素数量的形式）组成的元组。如果 `A` 是 `AbstractArray{T,0}`，这应该返回空元组。 |
-| `Base.unsafe_convert(::Type{Ptr{T}}, A)` |   | 返回数组的本地内存地址。 |
-| **可选方法** | **默认定义** | **简短描述** |
-| `stride(A, i::Int)` | `strides(A)[i]` | 返回维度 i（译注：原文为 k）上相邻元素之间的内存距离（以内存元素数量的形式）。 |
+| `strides(A)`                                    |                                        | Return the distance in memory (in number of elements) between adjacent elements in each dimension as a tuple. If `A` is an `AbstractArray{T,0}`, this should return an empty tuple.    |
+| `Base.unsafe_convert(::Type{Ptr{T}}, A)`        |                                        | Return the native address of an array.                                                             |
+| `Base.elsize(::Type{<:A})`                      |                                        | Return the stride between consecutive elements in the array.                                       |
+| **Optional methods**                            | **Default definition**                 | **Brief description**                                                                              |
+| `stride(A, i::Int)`                             |     `strides(A)[i]`                    | Return the distance in memory (in number of elements) between adjacent elements in dimension k.    |
 
-Strided 数组是 `AbstractArray` 的子类型，其条目以固定步长储存在内存中。如果数组的元素类型与 BLAS 兼容，则 strided 数组可以利用 BLAS 和 LAPACK 例程来实现更高效的线性代数例程。用户定义的 strided 数组的典型示例是把标准 `Array` 用附加结构进行封装的数组。
+A strided array is a subtype of `AbstractArray` whose entries are stored in memory with fixed strides.
+Provided the element type of the array is compatible with BLAS, a strided array can utilize BLAS and LAPACK routines
+for more efficient linear algebra routines.  A typical example of a user-defined strided array is one
+that wraps a standard `Array` with additional structure.
 
-警告：如果底层存储实际上不是 strided，则不要实现这些方法，因为这可能导致错误的结果或段错误。
+Warning: do not implement these methods if the underlying storage is not actually strided, as it
+may lead to incorrect results or segmentation faults.
 
-下面是一些示例，用来演示哪些数组类型是 strided 数组，哪些不是：
+Here are some examples to demonstrate which type of arrays are strided and which are not:
 ```julia
 1:5   # not strided (there is no storage associated with this array.)
 Vector(1:5)  # is strided with strides (1,)
@@ -388,7 +414,12 @@ V = view(A, [1,2,4], :)   # is not strided, as the spacing between rows is not f
 
 不是所有类型都支持 `axes` 和索引，但许多类型便于支持广播。[`Base.broadcastable`](@ref) 函数会在每个广播参数上调用，它能返回与广播参数不同的支持 `axes` 和索引的对象。默认情况下，对于所有 `AbstractArray` 和 `Number` 来说这是 identity 函数——因为它们已经支持 `axes` 和索引了。少数其它类型（包括但不限于类型本身、函数、像 [`missing`](@ref) 和 [`nothing`](@ref) 这样的特殊单态类型以及日期）为了能被广播，`Base.broadcastable` 会返回封装在 `Ref` 的参数来充当 0 维「标量」。自定义类型可以类似地指定 `Base.broadcastable` 来定义其形状，但是它们应当遵循 `collect(Base.broadcastable(x)) == collect(x)` 的约定。一个值得注意的例外是 `AbstractString`；字符串是个特例，为了能被广播其表现为标量，尽管它们是其字符的可迭代集合（详见 [字符串](@id man-strings)）。
 
-接下来的两个步骤（选择输出数组和实现）依赖于如何确定给定参数集的唯一解。广播必须接受其参数的所有不同类型，并把它们折叠到一个输出数组和实现。广播称此唯一解为「风格」。每个可广播对象都有自己的首选风格，并使用类似于类型提升的系统将这些风格组合成一个唯一解——「目标风格」。
+The next two steps (selecting the output array and implementation) are dependent upon
+determining a single answer for a given set of arguments. Broadcast must take all the varied
+types of its arguments and collapse them down to just one output array and one
+implementation. Broadcast calls this single answer a "style". Every broadcastable object
+each has its own preferred style, and a promotion-like system is used to combine these
+styles into a single answer — the "destination style".
 
 ### 广播风格
 
@@ -443,7 +474,7 @@ Base.showarg(io::IO, A::ArrayAndChar, toplevel) = print(io, typeof(A), " with ch
 
 ```
 
-你可能想要保留「元数据」`char`。为此，我们首先定义
+You might want broadcasting to preserve the `char` "metadata". First we define
 
 ```jldoctest ArrayAndChar; output = false
 Base.BroadcastStyle(::Type{<:ArrayAndChar}) = Broadcast.ArrayStyle{ArrayAndChar}()
@@ -471,20 +502,20 @@ find_aac(::Any, rest) = find_aac(rest)
 find_aac (generic function with 6 methods)
 ```
 
-在这些定义中，可以得到以下行为：
+From these definitions, one obtains the following behavior:
 ```jldoctest ArrayAndChar
 julia> a = ArrayAndChar([1 2; 3 4], 'x')
-2×2 ArrayAndChar{Int64,2} with char 'x':
+2×2 ArrayAndChar{Int64, 2} with char 'x':
  1  2
  3  4
 
 julia> a .+ 1
-2×2 ArrayAndChar{Int64,2} with char 'x':
+2×2 ArrayAndChar{Int64, 2} with char 'x':
  2  3
  4  5
 
 julia> a .+ [5,10]
-2×2 ArrayAndChar{Int64,2} with char 'x':
+2×2 ArrayAndChar{Int64, 2} with char 'x':
   6   7
  13  14
 ```
@@ -557,7 +588,7 @@ Base.BroadcastStyle(::Broadcast.Style{Tuple}, ::Broadcast.AbstractArrayStyle{0})
 BroadcastStyle(a::AbstractArrayStyle{Any}, ::DefaultArrayStyle) = a
 BroadcastStyle(a::AbstractArrayStyle{N}, ::DefaultArrayStyle{N}) where N = a
 BroadcastStyle(a::AbstractArrayStyle{M}, ::DefaultArrayStyle{N}) where {M,N} =
-    typeof(a)(_max(Val(M),Val(N)))
+    typeof(a)(Val(max(M, N)))
 ```
 
 除非你想要为两个或多个非 `DefaultArrayStyle` 的类型建立优先级，否则不需要编写二元 `BroadcastStyle` 规则。

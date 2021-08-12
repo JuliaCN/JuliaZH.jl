@@ -81,18 +81,16 @@ Symbol("~/julia/usr/share/julia/stdlib/v0.7/REPL/src/REPL.jl")
 julia> frame.line
 5
 
-julia> top_frame.linfo
+julia> frame.linfo
 MethodInstance for eval(::Module, ::Expr)
 
-julia> top_frame.inlined
+julia> frame.inlined
 false
 
-julia> top_frame.from_c
+julia> frame.from_c
 false
-```
 
-```julia-repl
-julia> top_frame.pointer
+julia> frame.pointer
 0x00007f92d6293171
 ```
 
@@ -121,7 +119,7 @@ julia> example()
 [...]
 ```
 
-你可能已经注意到了，上述例子中第一个栈帧指向了 [`stacktrace`](@ref) 被调用的第 4 行，而不是 `bad_function` 被调用的第 2 行，且完全没有出现 `bad_function` 的栈帧。这是也是可以理解的，因为 [`stacktrace`](@ref) 是在 `catch` 的上下文中被调用的。虽然在这个例子中很容易查找到错误的真正源头，但在复杂的情况下查找错误源并不是一件容易的事。
+你可能已经注意到了，上述例子中第一个栈帧指向了[`stacktrace`](@ref)被调用的第 4 行，而不是 *bad_function* 被调用的第 2 行，且完全没有出现 `bad_function` 的栈帧。这是也是可以理解的，因为 [`stacktrace`](@ref) 是在 *catch* 的上下文中被调用的。虽然在这个例子中很容易查找到错误的真正源头，但在复杂的情况下查找错误源并不是一件容易的事。
 
 为了补救，我们可以将 [`catch_backtrace`](@ref) 的输出传递给 [`stacktrace`](@ref)。[`catch_backtrace`](@ref) 会返回最近发生异常的上下文中的栈信息，而不是返回当前上下文中的调用栈信息。
 
@@ -172,14 +170,14 @@ ERROR: Whoops!
 [...]
 ```
 
-## 异常栈与`catch_stack`
+## 异常栈与[`current_exceptions`](@ref)
 
 !!! compat "Julia 1.1"
     异常栈需要 Julia 1.1 及以上版本。
 
 在处理一个异常时，后续的异常同样可能被抛出。观察这些异常对定位问题的源头极有帮助。Julia runtime 支持将每个异常发生后推入一个内部的*异常栈*。当代码正常退出一个`catch`语句，可认为所有被推入栈中的异常在相应的`try`语句中被成功处理并已从栈中移除。
 
-存放当前异常的栈可通过测试函数 [`Base.catch_stack`](@ref) 获取，例如
+存放当前异常的栈可通过测试函数 [`current_exceptions`](@ref) 获取，例如
 
 ```julia-repl
 julia> try
@@ -188,9 +186,9 @@ julia> try
            try
                error("(B) An exception while handling the exception")
            catch
-               for (exc, bt) in Base.catch_stack()
+               for (exc, bt) in current_exceptions()
                    showerror(stdout, exc, bt)
-                   println()
+                   println(stdout)
                end
            end
        end
@@ -214,7 +212,7 @@ Stacktrace:
 
 在本例中，根源异常（A）排在栈头，其后放置着延伸异常（B)。 在正常退出（例如，不抛出新异常）两个 catch 块后，所有异常都被移除出栈，无法访问。
 
-异常栈被存放于发生异常的 `Task` 处。当某个任务失败，出现意料外的异常时，`catch_stack(task)` 可能会被用于观察该任务的异常栈。
+异常栈被存放于发生异常的 `Task` 处。当某个任务失败，出现意料外的异常时，`current_exceptions(task)` 可被用于观察该任务的异常栈。
 
 ## [`stacktrace`](@ref) 与 [`backtrace`](@ref) 的比较
 

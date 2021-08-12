@@ -1,22 +1,36 @@
 # 常见问题
 
-## General
+## 概述
 
-### Is Julia named after someone or something?
+### Julia 的名字来源于某人或某事物吗？
 
-No.
+不。
 
-### Why don't you compile Matlab/Python/R/… code to Julia?
+### 为什么不把 Matlab/Python/R 或者其他语言的代码编译为 Julia 呢？
 
-Since many people are familiar with the syntax of other dynamic languages, and lots of code has already been written in those languages, it is natural to wonder why we didn't just plug a Matlab or Python front-end into a Julia back-end (or “transpile” code to Julia) in order to get all the performance benefits of Julia without requiring programmers to learn a new language.  Simple, right?
+由于大多数人对其他动态语言的语法很熟悉，而且已经在这些动态语言中编写了很多代码，人们也许会问：为什么我们不直接设计以Julia为后端的Matlab或是Python前端（也就是把其他代码“转译”到Julia）？这样既能获得Julia的高性能，也能避免程序员花费精力来学一门新的语言。这是一个简单的解决方案，不是吗？
 
-The basic issue is that there is *nothing special about Julia's compiler*: we use a commonplace compiler (LLVM) with no “secret sauce” that other language developers don't know about.  Indeed, Julia's compiler is in many ways much simpler than those of other dynamic languages (e.g. PyPy or LuaJIT).   Julia's performance advantage derives almost entirely from its front-end: its language semantics allow a [well-written Julia program](@ref man-performance-tips) to *give more opportunities to the compiler* to generate efficient code and memory layouts.  If you tried to compile Matlab or Python code to Julia, our compiler would be limited by the semantics of Matlab or Python to producing code no better than that of existing compilers for those languages (and probably worse).  The key role of semantics is also why several existing Python compilers (like Numba and Pythran) only attempt to optimize a small subset of the language (e.g. operations on Numpy arrays and scalars), and for this subset they are already doing at least as well as we could for the same semantics.  The people working on those projects are incredibly smart and have accomplished amazing things, but retrofitting a compiler onto a language that was designed to be interpreted is a very difficult problem.
+总的来说，我们这样做是因为 **Julia 编译器没有什么特别之处**：我们使用的是普通的编译器（LLVM），这里面没有什么其他语言开发者所不知道的“独家秘方”。诚然，Julia编译器在许多地方比其他动态语言的编译器更简单（比如 PyPy 和 LuaJIT）。Julia 的性能优势几乎完全来自其前端：它的语义学使得 [高质量的 Julia 程序](@ref man-performance-tips) 能够给予编译器更多的机会来产生高效的代码和内存结构。如果你尝试将 Matlab 或 Python 代码编译为 Julia，我们的编译器会被其语义学限制而不能产生相对现有编译器更好的代码（甚至更差）。语义学的关键角色也正是一些现存的 Python 编译器（像 Numba 和 Pythran）仅仅尝试优化语言的一小部分（比如 Numpy 的矢量与标量运算）的原因，而这些部分已经至少在相同的语义学上与我们做的一样好。致力于这些项目的人员难以置信得聪明并且已经取得了令人惊叹的成就，但为被解释而设计的语言加装编译器是十分困难的。
 
-Julia's advantage is that good performance is not limited to a small subset of “built-in” types and operations, and one can write high-level type-generic code that works on arbitrary user-defined types while remaining fast and memory-efficient.  Types in languages like Python simply don't provide enough information to the compiler for similar capabilities, so as soon as you used those languages as a Julia front-end you would be stuck.
+Julia 的优势在于好的性能不止被限制在一小部分的内置类型与操作，用户能够写出使用任意自定义类型的高级泛型代码，同时也能保证很高的运行与内存效率。在如 Python 一般的语言中，类型没有给编译器提供太多的信息来达成这样的目的，当你试图像使用 Julia 前端一样使用这些语言时，你会遇到困难。
 
-For similar reasons, automated translation to Julia would also typically generate unreadable, slow, non-idiomatic code that would not be a good starting point for a native Julia port from another language.
+出于类似的原因，自动翻译为 Julia 的代码一般来说会是可读性差、缓慢且违反习惯的代码。这些代码不是从其他语言迁移到 Julia 的好的起点。
 
-On the other hand, language *interoperability* is extremely useful: we want to exploit existing high-quality code in other languages from Julia (and vice versa)!  The best way to enable this is not a transpiler, but rather via easy inter-language calling facilities.  We have worked hard on this, from the built-in `ccall` intrinsic (to call C and Fortran libraries) to [JuliaInterop](https://github.com/JuliaInterop) packages that connect Julia to Python, Matlab, C++, and more.
+另一方面，语言**可迁移性**是极其有用的：我们会在一些时候想要将其他语言的高质量代码迁移到 Julia 中（也可能相反）。这一工作的最佳实践不是翻译器，而是使用简单的跨语言调用。我们对此有许多工作，从内置的 `ccall` （来调用 C 和 Fortran 模块）到[JuliaInterop](https://github.com/JuliaInterop) 包来链接 Julia 和 Python、Matlab、C++ 以及更多语言。
+
+## [公共 API](@id man-api)
+
+### Julia 如何定义其公共 API？
+
+对于 `julia` 版本的 [SemVer](https://semver.org/)，唯一稳定的接口是 Julia 的 `Base` 和 [文档](https://docs.julialang.org/) 中的标准库接口中且未标记为不稳定（例如，实验性的和内部性的）的部分。 如果函数、类型和常量未包含在文档中，则它们不是公共 API 的一部分，_即使它们具有文档_。
+
+### 有一个有用的非官方的函数/类型/常量。我可以使用它吗？
+
+如果您使用非公共 API，更新 Julia 可能会使你的代码失效。 如果代码是自洽的，最好将其复制到你的项目中。 如果你想依赖一个复杂的非公共 API，尤其是从稳定的包中使用它时，最好打开发起 [issue](https://github.com/JuliaLang/julia/issues) 或 [pull request](https://github.com/JuliaLang/julia/pulls) 开始讨论将其转换为公共 API。 尽管你可以在下游自己开发一个包来封装这个内部实现，并且屏蔽不同的 `Julia` 版本差异，但我们并不鼓励这样做。
+
+### 文档不够准确。 我可以依赖现有的行为吗？
+
+请发起一个 [issue](https://github.com/JuliaLang/julia/issues) 或 [pull request](https://github.com/JuliaLang/julia/pulls) 开始讨论将现有行为转换为公共 API。
 
 ## 会话和 REPL
 
@@ -24,7 +38,7 @@ On the other hand, language *interoperability* is extremely useful: we want to e
 
 Julia 没有类似于 MATLAB 的 `clear` 函数，某个名称一旦定义在 Julia 的会话中（准确地说，在 `Main` 模块中），它就会一直存在下去。
 
-如果关心内存用量，一个对象总能被一个占用更少内存的对象替换掉。例如，如果 `A` 是一个不再需要的 GB 量级的数组，可以使用 `A = nothing` 来释放内存。该内存将在下一次垃圾回收器运行时被释放，也可以使用 [`gc()`](@ref Base.GC.gc) 强制进行垃圾回收。另外，试图使用 `A` 很可能导致错误，因为大部分方法（method）在 `Nothing` 类型上没有定义。
+如果关心内存使用情况，你可以用消耗较少内存的对象替换原对象。 例如，如果 `A` 是一个你不再需要的千兆字节大小的数组，你可以使用 `A = nothing` 来释放内存。 下次垃圾收集器运行时会释放内存； 您可以使用 [`GC.gc()`](@ref Base.GC.gc) 强制执行此操作。 此外，尝试使用 `A` 可能会导致错误，因为大多数方法都没有在类型 `Nothing` 上定义。
 
 ### 如何在会话中修改某个类型的声明？
 
@@ -56,7 +70,7 @@ obj3 = MyModule.someotherfunction(obj2, c)
 
 当一个文件通过使用 `julia file.jl` 来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查 `abspath(PROGRAM_FILE) == @__FILE__` 是不是 `true`。
 
-### [How do I catch CTRL-C in a script?](@id catch-ctrl-c)
+### 怎样在脚本中捕获 CTRL-C ？
 
 通过 `julia file.jl` 方式运行的 Julia 脚本，在你尝试按 CTRL-C (SIGINT) 中止它时，并不会抛出 [`InterruptException`](@ref)。如果希望在脚本终止之后运行一些代码，请使用 [`atexit`](@ref)，注意：脚本的中止不一定是由 CTRL-C 导致的。
 另外你也可以通过 `julia -e 'include(popfirst!(ARGS))' file.jl` 命令运行脚本，然后可以通过 [`try`](@ref) 捕获 `InterruptException`。
@@ -81,7 +95,7 @@ exec julia --color=yes --startup-file=no "${BASH_SOURCE[0]}" "$@"
 在 `=#` 之后的 Julia 代码会被 `bash` 忽略，J因为当文件解析到 `exec` 语句时会停止解析，开始执行命令。
 
 !!! note
-    In order to [catch CTRL-C](@ref catch-ctrl-c) in the script you can use
+    为了在脚本中捕获 [catch CTRL-C](@ref catch-ctrl-c) ，我们可以使用
     ```julia
     #!/bin/bash
     #=
@@ -117,13 +131,11 @@ julia> x # x is unchanged!
 
 在 Julia 中，通过将 `x` 作为参数传递给函数，不能改变变量 `x` 的绑定。在上例中，调用 `change_value!(x)` 时，`y` 是一个新建变量，初始时与 `x` 的值绑定，即 `10`。然后 `y` 与常量 `17` 重新绑定，此时变量外作用域中的 `x` 并没有变动。
 
-However, if `x` is bound to an object of type `Array`
-(or any other *mutable* type). From within the function, you cannot "unbind" `x` from this Array,
-but you *can* change its content. For example:
+假设 `x` 被绑定至 `Array` 类型 (也有可能是其他 *可变* 的类型)。在函数中，你无法将 `x` 与 Array *解绑*，但是你可以改变其内容。
 
 ```jldoctest
 julia> x = [1,2,3]
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  2
  3
@@ -137,7 +149,7 @@ julia> change_array!(x)
 5
 
 julia> x
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  5
  2
  3
@@ -178,11 +190,11 @@ julia> x
 
 ### 运算符 `...` 有何作用？
 
-### `...` 运算符的两个用法：slurping 和 splatting
+#### `...` 运算符的两个用法：slurping 和 splatting
 
 很多 Julia 的新手会对运算符 `...` 的用法感到困惑。让 `...` 用法如此困惑的部分原因是根据上下文它有两种不同的含义。
 
-### `...` 在函数定义中将多个参数组合成一个参数
+#### `...` 在函数定义中将多个参数组合成一个参数
 
 在函数定义的上下文中，`...`运算符用来将多个不同的参数组合成单个参数。`...`运算符的这种将多个不同参数组合成单个参数的用法称为slurping：
 
@@ -196,7 +208,7 @@ julia> function printargs(args...)
 printargs (generic function with 1 method)
 
 julia> printargs(1, 2, 3)
-Tuple{Int64,Int64,Int64}
+Tuple{Int64, Int64, Int64}
 Arg #1 = 1
 Arg #2 = 2
 Arg #3 = 3
@@ -204,7 +216,7 @@ Arg #3 = 3
 
 如果Julia是一个使用ASCII字符更加自由的语言的话，slurping运算符可能会写作`<-...`而非`...`。
 
-### `...`在函数调用中将一个参数分解成多个不同参数
+#### `...`在函数调用中将一个参数分解成多个不同参数
 
 与在定义函数时表示将多个不同参数组合成一个参数的`...`运算符用法相对，当用在函数调用的上下文中`...`运算符也用来将单个的函数参数分成多个不同的参数。`...`函数的这个用法叫做splatting：
 
@@ -217,7 +229,7 @@ julia> function threeargs(a, b, c)
 threeargs (generic function with 1 method)
 
 julia> x = [1, 2, 3]
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  2
  3
@@ -256,23 +268,23 @@ julia> threefloat()
 相似地：
 
 ```jldoctest
-julia> function threetup()
-           x, y = [3, 3]
+julia> function twothreetup()
+           x, y = [2, 3] # assigns 2 to x and 3 to y
            x, y # returns a tuple
        end
-threetup (generic function with 1 method)
+twothreetup (generic function with 1 method)
 
-julia> function threearr()
-           x, y = [3, 3] # returns an array
+julia> function twothreearr()
+           x, y = [2, 3] # returns an array
        end
-threearr (generic function with 1 method)
+twothreearr (generic function with 1 method)
 
-julia> threetup()
-(3, 3)
+julia> twothreetup()
+(2, 3)
 
-julia> threearr()
-2-element Array{Int64,1}:
- 3
+julia> twothreearr()
+2-element Vector{Int64}:
+ 2
  3
 ```
 
@@ -293,10 +305,7 @@ julia> function unstable(flag::Bool)
 unstable (generic function with 1 method)
 ```
 
-It returns either an `Int` or a [`Float64`](@ref) depending on the value of its argument.
-Since Julia can't predict the return type of this function at compile-time, any computation
-that uses it must be able to cope with values of both types, which makes it hard to produce
-fast machine code.
+根据参数值的不同，该函数可能返回 `Int` 或 [`Float64`](@ref)。由于 Julia 无法在编译期预测该函数的返回值类型，任何使用该函数的计算都需要考虑这两种可能的返回类型，这样难以生成高效的机器码。
 
 ### [为何 Julia 对某个看似合理的操作返回 `DomainError`？](@id faq-domain-errors)
 
@@ -319,7 +328,7 @@ julia> sqrt(-2.0+0im)
 0.0 + 1.4142135623730951im
 ```
 
-### How can I constrain or compute type parameters?
+### 怎样限制或计算类型参数？
 
 The parameters of a [parametric type](@ref Parametric-Types) can hold either
 types or bits values, and the type itself chooses how it makes use of these parameters.
@@ -335,7 +344,7 @@ or subtraction) on type parameters.  Instead, these sorts of constraints and
 relationships may be expressed through additional type parameters that are computed
 and enforced within the type's [constructors](@ref man-constructors).
 
-As an example, consider
+例如，考虑
 ```julia
 struct ConstrainedType{T,N,N+1} # NOTE: INVALID SYNTAX
     A::Array{T,N}
@@ -358,21 +367,21 @@ This check is usually *costless*, as the compiler can elide the check for valid 
 ConstrainedType(A) = ConstrainedType(A, compute_B(A))
 ```
 
-### [Why does Julia use native machine integer arithmetic?](@id faq-integer-arithmetic)
+### [为什么Julia使用机器算法进行整数运算？](@id faq-integer-arithmetic)
 
 Julia使用机器算法进行整数计算。这意味着`Int`的范围是有界的，值在范围的两端循环，也就是说整数的加法，减法和乘法会出现上溢或者下溢，导致出现某些从开始就令人不安的结果：
 
 ```jldoctest
-julia> typemax(Int)
+julia> x = typemax(Int)
 9223372036854775807
 
-julia> ans+1
+julia> y = x+1
 -9223372036854775808
 
-julia> -ans
+julia> z = -y
 -9223372036854775808
 
-julia> 2*ans
+julia> 2*z
 0
 ```
 
@@ -521,7 +530,13 @@ Source line: 5
 
 因为编译器知道整数加法和乘法是满足结合律的并且乘法可以在加法上使用分配律 — 两者在饱和算法中都不成立 — 所以编译器就可以把整个循环优化到只有一个乘法和一个加法。饱和算法完全无法使用这种优化，因为在每个循环迭代中结合律和分配律都会失效导致不同的失效位置会得到不同的结果。编译器可以展开循环，但是不能代数上将多个操作简化到更少的等效操作。
 
-让整数算法静默溢出的最合理的备用方案是所有地方都使用检查算法，当加法、减法和乘法溢出，产生不正确的值时引发错误。在[blog post](http://danluu.com/integer-overflow/)中，Dan Luu分析了这个方案，发现这个方案理论上的性能微不足道，但是最终仍然会消耗大量的性能因为编译器（LLVM和GCC）无法在加法溢出检测处优雅地进行优化。如果未来有所进步我们会考虑在Julia中默认设置为检查整数算法，但是现在，我们需要和溢出可能共同相处。
+The most reasonable alternative to having integer arithmetic silently overflow is to do checked
+arithmetic everywhere, raising errors when adds, subtracts, and multiplies overflow, producing
+values that are not value-correct. In this [blog post](https://danluu.com/integer-overflow/), Dan
+Luu analyzes this and finds that rather than the trivial cost that this approach should in theory
+have, it ends up having a substantial cost due to compilers (LLVM and GCC) not gracefully optimizing
+around the added overflow checks. If this improves in the future, we could consider defaulting
+to checked integer arithmetic in Julia, but for now, we have to live with the possibility of overflow.
 
 In the meantime, overflow-safe integer operations can be achieved through the use of external libraries
 such as [SaferIntegers.jl](https://github.com/JeffreySarnoff/SaferIntegers.jl). Note that, as stated
@@ -603,6 +618,32 @@ julia> anon_bar  = ()->1
 julia> remotecall_fetch(anon_bar, 2)
 1
 ```
+
+## Troubleshooting "method not matched": parametric type invariance and `MethodError`s
+
+### Why doesn't it work to declare `foo(bar::Vector{Real}) = 42` and then call `foo([1])`?
+
+As you'll see if you try this, the result is a `MethodError`:
+
+```jldoctest
+julia> foo(x::Vector{Real}) = 42
+foo (generic function with 1 method)
+
+julia> foo([1])
+ERROR: MethodError: no method matching foo(::Vector{Int64})
+Closest candidates are:
+  foo(!Matched::Vector{Real}) at none:1
+```
+
+This is because `Vector{Real}` is not a supertype of `Vector{Int}`! You can solve this problem with something
+like `foo(bar::Vector{T}) where {T<:Real}` (or the short form `foo(bar::Vector{<:Real})` if the static parameter `T`
+is not needed in the body of the function). The `T` is a wild card: you first specify that it must be a
+subtype of Real, then specify the function takes a Vector of with elements of that type.
+
+This same issue goes for any composite type `Comp`, not just `Vector`. If `Comp` has a parameter declared of
+type `Y`, then another type `Comp2` with a parameter of type `X<:Y` is not a subtype of `Comp`. This is
+type-invariance (by contrast, Tuple is type-covariant in its parameters). See [Parametric Composite
+Types](@ref man-parametric-composite-types) for more explanation of these.
 
 ### 为什么 Julia 使用 `*` 进行字符串拼接？而不是使用 `+` 或其他符号？
 
@@ -743,9 +784,9 @@ julia> A = zeros()
 
 理解它与普通的标量之间的区别也很重要。标量不是一个可变的容器（尽管它们是可迭代的，可以定义像`length`，`getindex`这样的东西，*例如*`1[] == 1`）。特别地，如果`x = 0.0`是以一个标量来定义，尝试通过`x[] = 1.0`来改变它的值会报错。标量`x`能够通过`fill(x)`转化成包含它的零维数组，并且相对地，一个零维数组`a`可以通过`a[]`转化成其包含的标量。另外一个区别是标量可以参与到线性代数运算中，比如`2 * rand(2,2)`，但是零维数组的相似操作`fill(2) * rand(2,2)`会报错。
 
-### Why are my Julia benchmarks for linear algebra operations different from other languages?
+### 为什么我的Julia的线性代数操作测试与其他的语言不同。
 
-You may find that simple benchmarks of linear algebra building blocks like
+你可能找到一些简单的线性代数测试，比如，
 
 ```julia
 using BenchmarkTools
@@ -755,35 +796,51 @@ B = randn(1000, 1000)
 @btime $A * $B
 ```
 
-can be different when compared to other languages like Matlab or R.
+也许和其他语言不同比如Matlab或R。
 
-Since operations like this are very thin wrappers over the relevant BLAS functions, the reason for the discrepancy is very likely to be
+由于像这样的操作都非常直接地从相关的BLAS函数调用，这样做的原因是，
 
-1. the BLAS library each language is using,
+1. 在每种语言中使用的BLAS库
 
-2. the number of concurrent threads.
+2. 并发线程的数量
 
 Julia compiles and uses its own copy of OpenBLAS, with threads currently capped at `8` (or the number of your cores).
 
 Modifying OpenBLAS settings or compiling Julia with a different BLAS library, eg [Intel MKL](https://software.intel.com/en-us/mkl), may provide performance improvements. You can use [MKL.jl](https://github.com/JuliaComputing/MKL.jl), a package that makes Julia's linear algebra use Intel MKL BLAS and LAPACK instead of OpenBLAS, or search the discussion forum for suggestions on how to set this up manually. Note that Intel MKL cannot be bundled with Julia, as it is not open source.
 
+## 计算集群
+
+### 我该如何管理分布式文件系统的预编译缓存？
+
+When using `julia` in high-performance computing (HPC) facilities, invoking
+_n_ `julia` processes simultaneously creates at most _n_ temporary copies of
+precompilation cache files. If this is an issue (slow and/or small distributed
+file system), you may:
+
+1. Use `julia` with `--compiled-modules=no` flag to turn off precompilation.
+2. Configure a private writable depot using `pushfirst!(DEPOT_PATH, private_path)`
+   在这里`private_path`是一个路径单独地到这个`julia`进程
+   也可以通过设置环境变量 `JULIA_DEPOT_PATH` 到
+   `$private_path:$HOME/.julia`.
+3. 在scratch里创建到 `~/.julia/compiled`的符号链接。
+
 ## Julia 版本发布
 
-### Do I want to use the Stable, LTS, or nightly version of Julia?
+### 你希望使用稳定的、长期支持的或是每日构建版本的Julia？
 
 The Stable version of Julia is the latest released version of Julia, this is the version most people will want to run.
 It has the latest features, including improved performance.
 The Stable version of Julia is versioned according to [SemVer](https://semver.org/) as v1.x.y.
 A new minor release of Julia corresponding to a new Stable version is made approximately every 4-5 months after a few weeks of testing as a release candidate.
-Unlike the LTS version the a Stable version will not normally recieve bugfixes after another Stable version of Julia has been released.
+Unlike the LTS version the a Stable version will not normally receive bugfixes after another Stable version of Julia has been released.
 However, upgrading to the next Stable release will always be possible as each release of Julia v1.x will continue to run code written for earlier versions.
 
 You may prefer the LTS (Long Term Support) version of Julia if you are looking for a very stable code base.
 The current LTS version of Julia is versioned according to SemVer as v1.0.x;
-this branch will continue to recieve bugfixes until a new LTS branch is chosen, at which point the v1.0.x series will no longer recieved regular bug fixes and all but the most conservative users will be advised to upgrade to the new LTS version series.
+this branch will continue to receive bugfixes until a new LTS branch is chosen, at which point the v1.0.x series will no longer received regular bug fixes and all but the most conservative users will be advised to upgrade to the new LTS version series.
 As a package developer, you may prefer to develop for the LTS version, to maximize the number of users who can use your package.
 As per SemVer, code written for v1.0 will continue to work for all future LTS and Stable versions.
-In general, even if targetting the LTS, one can develop and run code in the latest Stable version, to take advantage of the improved performance; so long as one avoids using new features (such as added library functions or new methods).
+In general, even if targeting the LTS, one can develop and run code in the latest Stable version, to take advantage of the improved performance; so long as one avoids using new features (such as added library functions or new methods).
 
 You may prefer the nightly version of Julia if you want to take advantage of the latest updates to the language, and don't mind if the version available today occasionally doesn't actually work.
 As the name implies, releases to the nightly version are made roughly every night (depending on build infrastructure stability).
@@ -795,3 +852,11 @@ Finally, you may also consider building Julia from source for yourself. This opt
 If this describes you, you may also be interested in reading our [guidelines for contributing](https://github.com/JuliaLang/julia/blob/master/CONTRIBUTING.md).
 
 可以在[https://julialang.org/downloads/](https://julialang.org/downloads/)的下载页面上找到每种下载类型的链接。 请注意，并非所有版本的Julia都适用于所有平台。
+
+### How can I transfer the list of installed packages after updating my version of Julia?
+
+Each minor version of julia has its own default [environment](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1). As a result, upon installing a new minor version of Julia, the packages you added using the previous minor version will not be available by default. The environment for a given julia version is defined by the files `Project.toml` and `Manifest.toml` in a folder matching the version number in `.julia/environments/`, for instance, ` .julia/environments/v1.3`.
+
+If you install a new minor version of Julia, say `1.4`, and want to use in its default environment the same packages as in a previous version (e.g. `1.3`), you can copy the contents of the file `Project.toml` from the `1.3` folder to `1.4`. Then, in a session of the new Julia version, enter the "package management mode" by typing the key `]`, and run the command [`instantiate`](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.instantiate).
+
+This operation will resolve a set of feasible packages from the copied file that are compatible with the target Julia version, and will install or update them if suitable. If you want to reproduce not only the set of packages, but also the versions you were using in the previous Julia version, you should also copy the `Manifest.toml` file before running the Pkg command `instantiate`. However, note that packages may define compatibility constraints that may be affected by changing the version of Julia, so the exact set of versions you had in `1.3` may not work for `1.4`.

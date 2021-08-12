@@ -36,25 +36,25 @@ julia> x = 12
 julia> typeof(x)
 Int64
 
-julia> convert(UInt8, x)
+julia> xu = convert(UInt8, x)
 0x0c
 
-julia> typeof(ans)
+julia> typeof(xu)
 UInt8
 
-julia> convert(AbstractFloat, x)
+julia> xf = convert(AbstractFloat, x)
 12.0
 
-julia> typeof(ans)
+julia> typeof(xf)
 Float64
 
 julia> a = Any[1 2 3; 4 5 6]
-2×3 Array{Any,2}:
+2×3 Matrix{Any}:
  1  2  3
  4  5  6
 
 julia> convert(Array{Float64}, a)
-2×3 Array{Float64,2}:
+2×3 Matrix{Float64}:
  1.0  2.0  3.0
  4.0  5.0  6.0
 ```
@@ -110,7 +110,7 @@ ERROR: MethodError: Cannot `convert` an object of type String to an object of ty
 convert(::Type{MyType}, x) = MyType(x)
 ```
 
-此方法的第一个参数的类型是[单态类型](@ref man-singleton-types) `Type{MyType}`，其唯一实例是 `MyType`。因此，此方法仅在第一个参数是类型值 `MyType` 时才被调用。请注意第一个参数使用的语法：在 `::` 符号之前省略了参数名，只是给出了参数类型。这是 Julia 中用于函数参数的语法，该参数的类型已经指定，但其值无需通过名称引用。在此例中，由于参数类型是单态类型，我们已经知道其值而无需引用参数名称。
+这个方法的第一个参数的类型是[`Type{MyType}`](@ref man-typet-type)，它的唯一实例是`MyType`。 因此，仅当第一个参数是类型值`MyType`时才会调用此方法。注意第一个参数使用的语法：在`::`符号之前省略参数名称，只给出类型。 这是 Julia 中指定类型但不需要通过名称引用其值的函数参数的语法。
 
 某些抽象类型的所有实例默认都被认为是「足够相似的」，在 Julia Base 中也提供了通用的 `convert` 定义。例如，这个定义声明通过调用单参数构造函数将任何 `Number` 类型 `convert` 为其它任何 `Number` 类型是有效的：
 
@@ -173,10 +173,10 @@ Rational(n::Integer, d::Integer) = Rational(promote(n,d)...)
 这允许像下面这样的调用正常工作：
 
 ```jldoctest
-julia> Rational(Int8(15),Int32(-5))
+julia> x = Rational(Int8(15),Int32(-5))
 -3//1
 
-julia> typeof(ans)
+julia> typeof(x)
 Rational{Int32}
 ```
 

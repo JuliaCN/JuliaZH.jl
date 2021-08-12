@@ -1,6 +1,6 @@
 # [函数](@id man-functions)
 
-在 Julia 里，函数是一个将参数值元组映射到返回值的对象。Julia 的函数不是纯粹的数学函数，在某种意义上，函数可以改变并受程序的全局状态的影响。在Julia中定义函数的基本语法是：
+在 Julia 里，函数是将参数值组成的元组映射到返回值的一个对象。Julia 的函数不是纯粹的数学函数，因为这些函数可以改变程序的全局状态并且可能受其影响。在Julia中定义函数的基本语法是：
 
 ```jldoctest
 julia> function f(x,y)
@@ -49,6 +49,23 @@ julia> ∑(2, 3)
 ## 参数传递行为
 
 Julia 函数参数遵循有时称为 “pass-by-sharing” 的约定，这意味着变量在被传递给函数时其值并不会被复制。函数参数本身充当新的变量绑定（指向变量值的新地址），它们所指向的值与所传递变量的值完全相同。调用者可以看到对函数内可变值（如数组）的修改。这与 Scheme，大多数 Lisps，Python，Ruby 和 Perl 以及其他动态语言中的行为相同。
+
+## 参数类型声明
+
+您可以通过将 `::TypeName` 附加到参数名称来声明函数参数的类型，就像 Julia 中的 [类型声明](@ref) 一样。
+例如，以下函数递归计算 [斐波那契数列](https://en.wikipedia.org/wiki/Fibonacci_number)：
+```
+fib(n::Integer) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)
+```
+并且 `::Integer` 规范意味着它只有在 `n` 是 [抽象](@ref man-abstract-types) `Integer` 类型的子类型时才可调用。
+
+参数类型声明**通常对性能没有影响**：无论声明什么参数类型（如果有），Julia 都会为实际参数类型编译函数的特例版本。 例如，调用 `fib(1)` 将触发专门为 `Int` 参数优化的特例化的`fib` 的编译，它会在 `fib(7)` 或 `fib(15)` 调用时重新使用。 （参数类型声明不触发额外的编译器特化的情况很少；请参阅：[注意 Julia 何时不触发特例化](@ref)。）在 Julia 中声明参数类型的最常见原因是：
+
+* **派发：** 如 [方法](@ref) 中所述，对于不同的参数类型，你可以有不同版本（“方法”）的函数，在这种情况下，参数类型用于确定调用哪个版本的函数。例如，你可以使用 [Binet 公式](https://en.wikipedia.org/wiki/Fibonacci_number#Binet's_formula) 实现一个完全不同的算法 `fib(x::Number) = ...`，该算法扩展为了非整数值，适用于任何 `Number` 类型。
+* **正确性：** 如果函数只为某些参数类型返回正确的结果，则类型声明会很有用。例如，如果我们省略参数类型并写成 `fib(n) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)`，然后`fib(1.5)`会默默地给我们无意义的答案`1.0`。
+* **清晰性：** 类型声明可以作为一种关于预期参数的文档形式。
+
+但是，**过分限制参数类型是常见的错误**，这会不必要地限制函数的适用性，并防止它在未预料到的情况下被重用。例如，上面的 `fib(n::Integer)` 函数同样适用于 `Int` 参数（机器整数）和 `BigInt` 任意精度整数（参见 [BigFloats 和 BigInts](@ref)），这样十分有效，因为斐波那契数以指数方式快速增长，并且会迅速溢出任何固定精度类型，如 `Int`（参见 [溢出行为](@ref)）。但是，如果我们将函数声明为 `fib(n::Int)`，那么 `BigInt` 的应用就会被阻止。通常，应该对参数使用最通用的适用抽象类型，并且**如有不确定，就省略参数类型**。如果有必要，你可以随时添加参数类型规范，并且不会因为省略它们而牺牲性能或功能。
 
 ## `return` 关键字
 
@@ -121,10 +138,11 @@ Int8
 
 这个函数将忽略 `x` 和 `y` 的类型，返回 `Int8` 类型的值。有关返回类型的更多信息，请参见[类型声明](@ref)。
 
+返回类型声明在 Julia 中**很少使用**：通常，你应该编写“类型稳定”的函数，Julia 的编译器可以在其中自动推断返回类型。更多信息请参阅 [性能提示](@ref man-performance-tips) 一章。
+
 ### 返回 nothing
 
-For functions that do not need to return a value (functions used only for some side effects),
-the Julia convention is to return the value [`nothing`](@ref):
+对于不需要任何返回值的函数（只用来产生副作用的函数）， Julia 中的写法为返回值[`nothing`](@ref):
 
 ```julia
 function printx(x)
@@ -133,7 +151,7 @@ function printx(x)
 end
 ```
 
-这在某种意义上是一个“惯例”，在 julia 中 `nothing` 不是一个关键字，而是 `Nothing` 类型的一个单例（singleton）。
+这在某种意义上是一个“惯例”，在 Julia 中 `nothing` 不是一个关键字，而是 `Nothing` 类型的一个单例（singleton）。
 也许你已经注意到 `printx` 函数有点不自然，因为 `println` 实际上已经会返回 `nothing`，所以 `return` 语句是多余的。
 
 有两种比 `return nothing` 更短的写法：一种是直接写 `return` 这会隐式的返回 `nothing`。
@@ -198,7 +216,7 @@ julia> function (x)
 
 ```jldoctest
 julia> map(round, [1.2, 3.5, 1.7])
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  1.0
  4.0
  2.0
@@ -208,7 +226,7 @@ julia> map(round, [1.2, 3.5, 1.7])
 
 ```jldoctest
 julia> map(x -> x^2 + 2x - 1, [1, 3, -1])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
   2
  14
  -2
@@ -231,8 +249,7 @@ end
 get(()->time(), dict, key)
 ```
 
-The call to [`time`](@ref) is delayed by wrapping it in a 0-argument anonymous function
-that is called only when the requested key is absent from `dict`.
+这里对 [`time`](@ref) 的调用，被包裹了它的一个无参数的匿名函数延迟了。该匿名函数只当 `dict` 缺少被请求的键时，才被调用。
 
 ## 元组
 
@@ -271,13 +288,23 @@ julia> x.a
 2
 ```
 
-Named tuples are very similar to tuples, except that fields can additionally be accessed by name
-using dot syntax (`x.a`) in addition to the regular indexing syntax
-(`x[1]`).
+具名元组和元组十分类似，区别在于除了一般的下标语法（`x[1]`），还可以使用点运算符语法（`x.a`）通过元素的名字来访问它的元素。
 
-## 多返回值
+## [解构赋值和多返回值](@id destructuring-assignment)
 
-Julia 中，一个函数可以返回一个元组来实现返回多个值。不过，元组的创建和消除都不一定要用括号，这时候给人的感觉就是返回了多个值而非一个元组。比如下面这个例子，函数返回了两个值：
+逗号分隔的变量列表（可选地用括号括起来）可以出现在赋值的左侧：右侧的值通过迭代并依次分配给每个变量来_解构_：
+
+```jldoctest
+julia> (a,b,c) = 1:3
+1:3
+
+julia> b
+2
+```
+
+右边的值应该是一个至少与左边的变量数量一样长的迭代器（参见[迭代接口](@ref man-interface-iteration)）（迭代器的任何多余元素会被忽略）。
+
+可用于通过返回元组或其他可迭代值从函数返回多个值。例如，以下函数返回两个值：
 
 ```jldoctest foofunc
 julia> function foo(a,b)
@@ -293,7 +320,7 @@ julia> foo(2,3)
 (5, 6)
 ```
 
-这种值对的典型用法是把每个值抽取为一个变量。Julia 支持简洁的元组“解构”：
+解构赋值将每个值提取到一个变量中：
 
 ```jldoctest foofunc
 julia> x, y = foo(2,3)
@@ -306,15 +333,75 @@ julia> y
 6
 ```
 
-你也可以显式地使用 `return` 关键字来返回多个值：
+另一个常见用途是交换变量：
+```jldoctest foofunc
+julia> y, x = x, y
+(5, 6)
 
-```julia
-function foo(a,b)
-    return a+b, a*b
-end
+julia> x
+6
+
+julia> y
+5
 ```
 
-这与之前的定义的`foo`函数具有完全相同的效果。
+如果只需要迭代器元素的一个子集，一个常见的惯例是将忽略的元素分配给一个只包含下划线 `_` 的变量（这是一个无效的变量名，请参阅 [合法的变量名]（@ref man -allowed-variable-names)):
+
+```jldoctest
+julia> _, _, _, d = 1:10
+1:10
+
+julia> d
+4
+```
+
+其他有效的左侧表达式可以用作赋值列表的元素，它们将调用 [`setindex!`](@ref) 或 [`setproperty!`](@ref)，或者递归地解构迭代器的各个元素：
+
+```jldoctest
+julia> X = zeros(3);
+
+julia> X[1], (a,b) = (1, (2, 3))
+(1, (2, 3))
+
+julia> X
+3-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+
+julia> a
+2
+
+julia> b
+3
+```
+
+!!! compat "Julia 1.6"
+    带 `...` 的赋值需要 Julia 1.6
+
+如果赋值列表中的最后一个符号后缀为 `...`（称为 _slurping_），那么它将被分配给右侧迭代器剩余元素的集合或其惰性迭代器：
+
+```jldoctest
+julia> a, b... = "hello"
+"hello"
+
+julia> a
+'h': ASCII/Unicode U+0068 (category Ll: Letter, lowercase)
+
+julia> b
+"ello"
+
+julia> a, b... = Iterators.map(abs2, 1:4)
+Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4)
+
+julia> a
+1
+
+julia> b
+Base.Iterators.Rest{Base.Generator{UnitRange{Int64}, typeof(abs2)}, Int64}(Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4), 1)
+```
+
+有关特定迭代器的精确处理和自定义的详细信息，请参阅 [`Base.rest`](@ref)。
 
 ## 参数解构
 
@@ -330,14 +417,20 @@ julia> gap(minmax(10, 2))
 8
 ```
 
-Notice the extra set of parentheses in the definition of `gap`. Without those, `gap`
-would be a two-argument function, and this example would not work.
+注意在定义函数 `gap` 时额外的括号。 没有它们，`gap` 函数将会是一个双参数函数，这个例子也会无法正常运行。
+
+对于匿名函数，解构单个元组需要一个额外的逗号：
+
+```
+julia> map(((x,y),) -> x + y, [(1,2), (3,4)])
+2-element Array{Int64,1}:
+ 3
+ 7
+```
 
 ## 变参函数
 
-It is often convenient to be able to write functions taking an arbitrary number of arguments.
-Such functions are traditionally known as "varargs" functions, which is short for "variable number
-of arguments". You can define a varargs function by following the last positional argument with an ellipsis:
+定义有任意个参数的函数会带来很多便利。这类函数通常被称为“变参”函数，即“参数数量可变”的简称。你可以通过在最后一个参数后增加省略号来定义一个变参函数:
 
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
@@ -394,7 +487,7 @@ julia> bar(x...)
 
 ```jldoctest barfunc
 julia> x = [3,4]
-2-element Array{Int64,1}:
+2-element Vector{Int64}:
  3
  4
 
@@ -402,7 +495,7 @@ julia> bar(1,2,x...)
 (1, 2, (3, 4))
 
 julia> x = [1,2,3,4]
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  2
  3
@@ -412,29 +505,29 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-另外，参数可拆解的函数也不一定就是变参函数 —— 尽管一般都是：
+此外，参数被放入的函数不一定是可变参数函数（尽管经常是）：
 
 ```jldoctest
 julia> baz(a,b) = a + b;
 
 julia> args = [1,2]
-2-element Array{Int64,1}:
-1
-2
+2-element Vector{Int64}:
+ 1
+ 2
 
 julia> baz(args...)
 3
 
 julia> args = [1,2,3]
-3-element Array{Int64,1}:
-1
-2
-3
+3-element Vector{Int64}:
+ 1
+ 2
+ 3
 
 julia> baz(args...)
 ERROR: MethodError: no method matching baz(::Int64, ::Int64, ::Int64)
 Closest candidates are:
-baz(::Any, ::Any) at none:1
+  baz(::Any, ::Any) at none:1
 ```
 
 正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。
@@ -451,11 +544,9 @@ function Date(y::Int64, m::Int64=1, d::Int64=1)
 end
 ```
 
-Observe, that this definition calls another method of the `Date` function that takes one argument
-of type `UTInstant{Day}`.
+注意，这个定义调用了 `Date` 函数的另一个方法，该方法带有一个 `UTInstant{Day}` 类型的参数。
 
-With this definition, the function can be called with either one, two or three arguments, and
-`1` is automatically passed when only one or two of the arguments are specified:
+通过此定义，函数调用时可以带有一个、两个或三个参数，并且在只有一个或两个参数被指定时后，自动传递 `1` 为未指定参数值：
 
 ```jldoctest
 julia> using Dates
@@ -498,7 +589,7 @@ function f(;x::Int=1)
 end
 ```
 
-Keyword arguments can also be used in varargs functions:
+关键字参数也可以在变参函数中使用：
 
 ```julia
 function plot(x...; style="solid")
@@ -514,7 +605,7 @@ function f(x; y=0, kwargs...)
 end
 ```
 
-在 `f` 内部，`kwargs` 会是一个具名元组。具名元组（以及键类型为 `Symbol` 的字典）可作为关键字参数传递，这通过在调用中使用分号，例如 `f(x, z=1; kwargs...)`。
+在 `f` 中，`kwargs` 将是一个在命名元组上的不可变键值迭代器。 具名元组（以及带有`Symbol`键的字典）可以在调用中使用分号作为关键字参数传递，例如 `f(x, z=1; kwargs...)`。
 
 如果一个关键字参数在方法定义中未指定默认值，那么它就是*必需的*：如果调用者没有为其赋值，那么将会抛出一个 [`UndefKeywordError`](@ref) 异常：
 ```julia
@@ -527,9 +618,7 @@ f(3)      # throws UndefKeywordError(:y)
 
 在分号后也可传递 `key => value` 表达式。例如，`plot(x, y; :width => 2)` 等价于 `plot(x, y, width=2)`。当关键字名称需要在运行时被计算时，这就很实用了。
 
-When a bare identifier or dot expression occurs after a semicolon, the keyword argument name is
-implied by the identifier or field name. For example `plot(x, y; width)` is equivalent to
-`plot(x, y; width=width)` and `plot(x, y; options.width)` is equivalent to `plot(x, y; width=options.width)`.
+当分号后出现裸标识符或点表达式时，标识符或字段名称隐含关键字参数名称。 例如`plot(x, y; width)` 等价于`plot(x, y; width=width)`，`plot(x, y; options.width)` 等价于`plot(x, y; width=options.width)`。
 
 可选参数的性质使得可以多次指定同一参数的值。例如，在调用 `plot(x, y; options..., width=2)` 的过程中，`options` 结构也能包含一个 `width` 的值。在这种情况下，最右边的值优先级最高；在此例中，`width` 的值可以确定是 `2`。但是，显式地多次指定同一参数的值是不允许的，例如 `plot(x, y, width=2, width=3)`，这会导致语法错误。
 
@@ -576,7 +665,7 @@ map([A, B, C]) do x
 end
 ```
 
-`do x` 语法创建一个带有参数 `x` 的匿名函数，并将其作为第一个参数传递 [`map`](@ref)。类似地，`do a，b` 会创建一个双参数匿名函数，而一个简单的 `do` 会声明一个满足形式 `() -> ...` 的匿名函数。
+`do x` 语法创建一个带有参数 `x` 的匿名函数，并将其作为第一个参数传递给 [`map`](@ref)。 类似地，`do a,b` 将创建一个有两个参数的匿名函数。 请注意，`do (a,b)` 将创建一个单参数匿名函数，其参数是一个要解构的元组。 一个简单的 `do` 会声明接下来是一个形式为 `() -> ...` 的匿名函数。
 
 这些参数如何初始化取决于「外部」函数；在这里，[`map`](@ref) 将会依次将 `x` 设置为 `A`、`B`、`C`，再分别调用调用匿名函数，正如在 `map(func, [A, B, C])` 语法中所发生的。
 
@@ -605,21 +694,18 @@ end
 
 使用 `do` 代码块语法时，查阅文档或实现有助于了解用户函数的参数是如何初始化的。
 
-A `do` block, like any other inner function, can "capture" variables from its
-enclosing scope. For example, the variable `data` in the above example of
-`open...do` is captured from the outer scope. Captured variables
-can create performance challenges as discussed in [performance tips](@ref man-performance-captured).
+类似于其他的内部函数， `do` 代码块也可以“捕获”上一个作用域的变量。例如，上一个 `open...do` 的例子中变量 `data` 是从外部作用域捕获的。捕获变量可能会给性能优化带来挑战，详见 [性能建议](@ref man-performance-captured)。
 
-## Function composition and piping
+## 函数的复合与链式调用
 
-Functions in Julia can be combined by composing or piping (chaining) them together.
+Julia中的多个函数可以用函数复合或管道连接（链式调用）组合起来。
 
-Function composition is when you combine functions together and apply the resulting composition to arguments.
-You use the function composition operator (`∘`) to compose the functions, so `(f ∘ g)(args...)` is the same as `f(g(args...))`.
+函数的复合指的是把多个函数绑定到一起，然后作用于最先调用那个函数的参数。
+你可以使用函数复合运算符 (`∘`) 来组合函数，这样一来 `(f ∘ g)(args...)` 就等价于 `f(g(args...))`.
 
-You can type the composition operator at the REPL and suitably-configured editors using `\circ<tab>`.
+你可以在REPL和合理配置的编辑器中用 `\circ<tab>` 输入函数复合运算符。
 
-For example, the `sqrt` and `+` functions can be composed like this:
+例如， `sqrt` 和 `+` 可以用下面这种方式组合：
 
 ```jldoctest
 julia> (sqrt ∘ +)(3, 6)
@@ -628,11 +714,11 @@ julia> (sqrt ∘ +)(3, 6)
 
 这个语句先把数字相加，再对结果求平方根。
 
-The next example composes three functions and maps the result over an array of strings:
+下一个例子组合了三个函数并把新函数作用到一个字符串组成的数组上：
 
 ```jldoctest
 julia> map(first ∘ reverse ∘ uppercase, split("you can compose functions like this"))
-6-element Array{Char,1}:
+6-element Vector{Char}:
  'U': ASCII/Unicode U+0055 (category Lu: Letter, uppercase)
  'N': ASCII/Unicode U+004E (category Lu: Letter, uppercase)
  'E': ASCII/Unicode U+0045 (category Lu: Letter, uppercase)
@@ -641,25 +727,25 @@ julia> map(first ∘ reverse ∘ uppercase, split("you can compose functions lik
  'S': ASCII/Unicode U+0053 (category Lu: Letter, uppercase)
 ```
 
-Function chaining (sometimes called "piping" or "using a pipe" to send data to a subsequent function) is when you apply a function to the previous function's output:
+函数的链式调用（有时也称“使用管道”把数据送到一系列函数中去）指的是把一个函数作用到前一个函数的输出上：
 
 ```jldoctest
 julia> 1:10 |> sum |> sqrt
 7.416198487095663
 ```
 
-Here, the total produced by `sum` is passed to the `sqrt` function. The equivalent composition would be:
+在这里， `sum` 函数求出的和被传递到 `sqrt` 函数作为参数。等价的函数复合写法是：
 
 ```jldoctest
 julia> (sqrt ∘ sum)(1:10)
 7.416198487095663
 ```
 
-The pipe operator can also be used with broadcasting, as `.|>`, to provide a useful combination of the chaining/piping and dot vectorization syntax (described next).
+管道运算符还可以和广播一起使用（`.|>`），这提供了一个有用的链式调用/管道+向量化运算的组合语法（接下来将描述）。
 
 ```jldoctest
 julia> ["a", "list", "of", "strings"] .|> [uppercase, reverse, titlecase, length]
-4-element Array{Any,1}:
+4-element Vector{Any}:
   "A"
   "tsil"
   "Of"
@@ -672,13 +758,13 @@ julia> ["a", "list", "of", "strings"] .|> [uppercase, reverse, titlecase, length
 
 ```jldoctest
 julia> A = [1.0, 2.0, 3.0]
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  1.0
  2.0
  3.0
 
 julia> sin.(A)
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  0.8414709848078965
  0.9092974268256817
  0.1411200080598672
@@ -696,13 +782,13 @@ julia> A = [1.0, 2.0, 3.0];
 julia> B = [4.0, 5.0, 6.0];
 
 julia> f.(pi, A)
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  13.42477796076938
  17.42477796076938
  21.42477796076938
 
 julia> f.(A, B)
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  19.0
  26.0
  33.0
@@ -720,7 +806,7 @@ julia> Y = [1.0, 2.0, 3.0, 4.0];
 julia> X = similar(Y); # pre-allocate output array
 
 julia> @. X = sin(cos(Y)) # equivalent to X .= sin.(cos.(Y))
-4-element Array{Float64,1}:
+4-element Vector{Float64}:
   0.5143952585235492
  -0.4042391538522658
  -0.8360218615377305
@@ -732,7 +818,7 @@ julia> @. X = sin(cos(Y)) # equivalent to X .= sin.(cos.(Y))
 您也可以使用 [`|>`](@ref) 将点操作与函数链组合在一起，如本例所示：
 ```jldoctest
 julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]
-5-element Array{Real,1}:
+5-element Vector{Real}:
     1
     0.5
     6

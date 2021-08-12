@@ -2,11 +2,18 @@
 
 下面几节简要地介绍了一些使 Julia 代码运行得尽可能快的技巧。
 
+## 影响性能的关键代码应该在函数内部
+
+任何对性能至关重要的代码都应该在函数内部。 由于 Julia 编译器的工作方式，函数内部的代码往往比顶层代码运行得更快。
+
+函数的使用不仅对性能很重要：函数更可重用和可测试，并阐明正在执行哪些步骤以及它们的输入和输出是什么，[编写函数，而不仅仅是脚本]（@ref）也是 Julia 的风格指南。
+
+函数应该接收参数，而不是直接对全局变量进行操作，请参阅下一点。
+
 ## 避免全局变量
 
 全局变量的值和类型随时都会发生变化， 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。
 
-任何注重性能或者需要测试性能的代码都应该被放置在函数之中。
 
 我们发现全局变量经常是常量，将它们声明为常量可大幅提升性能。
 
@@ -31,9 +38,7 @@ end
 一个更好的编程风格是将变量作为参数传给函数。这样可以使得代码更易复用，以及清晰的展示函数的输入和输出。
 
 !!! note
-    All code in the REPL is evaluated in global scope, so a variable defined and assigned
-    at top level will be a **global** variable. Variables defined at top level scope inside
-    modules are also global.
+    所有的REPL中的代码都是在全局作用域中求值的，因此在顶层的变量的定义与赋值都会成为一个**全局**变量。在模块的顶层作用域定义的变量也是全局变量。
 
 在下面的REPL会话中：
 
@@ -65,19 +70,29 @@ julia> function sum_global()
        end;
 
 julia> @time sum_global()
-  0.017705 seconds (15.28 k allocations: 694.484 KiB)
-496.84883432553846
+  0.026328 seconds (9.30 k allocations: 416.747 KiB, 36.50% gc time, 99.48% compilation time)
+508.39048990953665
 
 julia> @time sum_global()
-  0.000140 seconds (3.49 k allocations: 70.313 KiB)
-496.84883432553846
+  0.000075 seconds (3.49 k allocations: 70.156 KiB)
+508.39048990953665
 ```
 
-在第一次调用函数(`@time sum_global()`)的时候，它会被编译。如果你这次会话中还没有使用过[`@time`](@ref)，这时也会编译计时需要的相关函数。你不必认真对待这次运行的结果。接下来看第二次运行，除了运行的耗时以外，它还表明了分配了大量的内存。我们这里仅仅是计算了一个64位浮点向量元素和，因此这里应该没有申请内存的必要（至少不用在`@time`报告的堆上申请内存）。
+On the first call (`@time sum_global()`) the function gets compiled. (If you've not yet used [`@time`](@ref)
+in this session, it will also compile functions needed for timing.)  You should not take the results
+of this run seriously. For the second run, note that in addition to reporting the time, it also
+indicated that a significant amount of memory was allocated. We are here just computing a sum over all elements in
+a vector of 64-bit floats so there should be no need to allocate memory (at least not on the heap which is what `@time` reports).
 
-未被预料的内存分配往往说明你的代码中存在一些问题，这些问题常常是由于类型的稳定性或者创建了太多临时的小数组。因此，除了分配内存本身，这也很可能说明你所写的函数远没有生成性能良好的代码。认真对待这些现象，遵循接下来的建议。
+Unexpected memory allocation is almost always a sign of some problem with your code, usually a
+problem with type-stability or creating many small temporary arrays.
+Consequently, in addition to the allocation itself, it's very likely
+that the code generated for your function is far from optimal. Take such indications seriously
+and follow the advice below.
 
-如果你换成将`x`作为参数传给函数，就可以避免内存的分配（这里报告的内存分配是由于在全局作用域中运行`@time`导致的），而且在第一次运行之后运行速度也会得到显著的提高。
+If we instead pass `x` as an argument to the function it no longer allocates memory
+(the allocation reported below is due to running the `@time` macro in global scope)
+and is significantly faster after the first call:
 
 ```jldoctest sumarg; setup = :(using Random; Random.seed!(1234)), filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(1000);
@@ -91,22 +106,23 @@ julia> function sum_arg(x)
        end;
 
 julia> @time sum_arg(x)
-  0.007701 seconds (821 allocations: 43.059 KiB)
-496.84883432553846
+  0.010298 seconds (4.23 k allocations: 226.021 KiB, 99.81% compilation time)
+508.39048990953665
 
 julia> @time sum_arg(x)
-  0.000006 seconds (5 allocations: 176 bytes)
-496.84883432553846
+  0.000005 seconds (1 allocation: 16 bytes)
+508.39048990953665
 ```
 
-这里出现的5个内存分配是由于在全局作用域中运行`@time`宏导致的。如果我们在函数内运行时间测试，我们将发现事实上并没有发生任何内存分配。
+The 1 allocation seen is from running the `@time` macro itself in global scope. If we instead run
+the timing in a function, we can see that indeed no allocations are performed:
 
 ```jldoctest sumarg; filter = r"[0-9\.]+ seconds"
 julia> time_sum(x) = @time sum_arg(x);
 
 julia> time_sum(x)
   0.000001 seconds
-496.84883432553846
+508.39048990953665
 ```
 
 In some situations, your function may need to allocate memory as part of its operation, and this
@@ -147,26 +163,34 @@ julia> a = Real[]
 Real[]
 
 julia> push!(a, 1); push!(a, 2.0); push!(a, π)
-3-element Array{Real,1}:
+3-element Vector{Real}:
  1
  2.0
  π = 3.1415926535897...
 ```
 
-因为`a`是一个抽象类型[`Real`](@ref)的数组，它必须能容纳任何一个`Real`值。因为`Real`对象可以有任意的大小和结构，`a`必须用指针的数组来表示，以便能独立地为`Real`对象进行内存分配。但是如果我们只允许同样类型的数，比如[`Float64`](@ref)，才能存在`a`中，它们就能被更有效率地存储：
+Because `a` is an array of abstract type [`Real`](@ref), it must be able to hold any
+`Real` value. Since `Real` objects can be of arbitrary size and structure, `a` must be
+represented as an array of pointers to individually allocated `Real` objects. However, if we instead
+only allow numbers of the same type, e.g. [`Float64`](@ref), to be stored in `a` these can be stored more
+efficiently:
 
 ```jldoctest
 julia> a = Float64[]
 Float64[]
 
 julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  1.0
  2.0
  3.141592653589793
 ```
 
 把数字赋值给`a`会即时将数字转换成`Float64`并且`a`会按照64位浮点数值的连续的块来储存，这就能高效地处理。
+
+If you cannot avoid containers with abstract value types, it is sometimes better to
+parametrize with `Any` to avoid runtime type checking. E.g. `IdDict{Any, Any}` performs
+better than `IdDict{Type, Vector}`
 
 也请参见在[参数类型](@ref)下的讨论。
 
@@ -306,7 +330,7 @@ julia> struct MyAmbiguousContainer{T}
        end
 ```
 
-例如:
+For example:
 
 ```jldoctest containers
 julia> c = MySimpleContainer(1:3);
@@ -317,7 +341,7 @@ MySimpleContainer{UnitRange{Int64}}
 julia> c = MySimpleContainer([1:3;]);
 
 julia> typeof(c)
-MySimpleContainer{Array{Int64,1}}
+MySimpleContainer{Vector{Int64}}
 
 julia> b = MyAmbiguousContainer(1:3);
 
@@ -399,7 +423,9 @@ end
 
 在没有确切知道 `a[1]` 的类型的情况下，`x` 可以通过 `x = convert(Int32, a[1])::Int32` 来声明。使用 [`convert`](@ref) 函数则允许 `a[1]` 是可转换为 `Int32` 的任何对象（比如 `UInt8`），从而通过放松类型限制来提高代码的通用性。请注意，`convert` 本身在此上下文中需要类型注释才能实现类型稳定性。这是因为除非该函数所有参数的类型都已知，否则编译器无法推导出该函数返回值的类型，即使其为 `convert`。
 
-如果类型注释中的类型是在运行时构造的，那么类型注释不会增强（并且实际上可能会降低）性能。这是因为编译器无法使用该类型注释来专门化代码，而类型检查本身又需要时间。例如，在以下代码中：
+Type annotation will not enhance (and can actually hinder) performance if the type is abstract,
+or constructed at run-time. This is because the compiler cannot use the annotation to specialize
+the subsequent code, and the type-check itself takes time. For example, in the code:
 
 ```julia
 function nr(a, prec)
@@ -424,7 +450,7 @@ c = (b + 1.0f0)::Complex{T}
 
 不会降低性能（但也不会提高），因为编译器可以在编译 `k` 时确定 `c` 的类型。
 
-### Be aware of when Julia avoids specializing
+### 注意Julia何时避免特例化
 
 As a heuristic, Julia avoids automatically specializing on argument type parameters in three
 specific cases: `Type`, `Function`, and `Vararg`. Julia will always specialize when the argument is
@@ -434,7 +460,7 @@ usually has no performance impact at runtime and
 performance impact at runtime in your case, you can trigger specialization by adding a type
 parameter to the method declaration. Here are some examples:
 
-This will not specialize:
+这不会特例化：
 
 ```julia
 function f_type(t)  # or t::Type
@@ -443,7 +469,7 @@ function f_type(t)  # or t::Type
 end
 ```
 
-but this will:
+但是这会：
 
 ```julia
 function g_type(t::Type{T}) where T
@@ -452,26 +478,26 @@ function g_type(t::Type{T}) where T
 end
 ```
 
-These will not specialize:
+这些不会特例化：
 
 ```julia
 f_func(f, num) = ntuple(f, div(num, 2))
 g_func(g::Function, num) = ntuple(g, div(num, 2))
 ```
 
-but this will:
+但是这会：
 
 ```julia
 h_func(h::H, num) where {H} = ntuple(h, div(num, 2))
 ```
 
-This will not specialize:
+这不会特例化：
 
 ```julia
 f_vararg(x::Int...) = tuple(x...)
 ```
 
-but this will:
+但是这会：
 
 ```julia
 g_vararg(x::Vararg{Int, N}) where {N} = tuple(x...)
@@ -550,11 +576,11 @@ end
 局部变量 `x` 一开始是整数，在一次循环迭代后变为浮点数（[`/`](@ref) 运算符的结果）。这使得编译器更难优化循环体。有几种可能的解决方法：
 
   * 使用 `x = 1.0` 初始化 `x`
-  * Declare the type of `x` explicitly as `x::Float64 = 1`
-  * Use an explicit conversion by `x = oneunit(Float64)`
+  * 显式声明 `x` 的类型：`x::Float64 = 1`
+  * 使用 `x = oneunit(Float64)` 进行显式的类型转换
   * 使用第一个循环迭代初始化，即 `x = 1 / rand()`，接着循环 `for i = 2:10`
 
-## [Separate kernel functions (aka, function barriers)](@id kernel-functions)
+## [分离核心函数（又称为函数屏障）] (@id kernel-functions)
 
 许多函数遵循这一模式：先执行一些设置工作，再通过多次迭代来执行核心计算。如果可行，将这些核心计算放在单独的函数中是个好主意。例如，以下做作的函数返回一个数组，其类型是随机选择的。
 
@@ -568,13 +594,13 @@ julia> function strange_twos(n)
        end;
 
 julia> strange_twos(3)
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  2.0
  2.0
  2.0
 ```
 
-这应该写作：
+它应该这样写：
 
 ```jldoctest; setup = :(using Random; Random.seed!(1234))
 julia> function fill_twos!(a)
@@ -590,7 +616,7 @@ julia> function strange_twos(n)
        end;
 
 julia> strange_twos(3)
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  2.0
  2.0
  2.0
@@ -610,7 +636,7 @@ Julia 的编译器会在函数边界处针对参数类型特化代码，因此�
 
 ```jldoctest
 julia> A = fill(5.0, (3, 3))
-3×3 Array{Float64,2}:
+3×3 Matrix{Float64}:
  5.0  5.0  5.0
  5.0  5.0  5.0
  5.0  5.0  5.0
@@ -627,7 +653,7 @@ julia> function array3(fillval, N)
 array3 (generic function with 1 method)
 
 julia> array3(5.0, 2)
-3×3 Array{Float64,2}:
+3×3 Matrix{Float64}:
  5.0  5.0  5.0
  5.0  5.0  5.0
  5.0  5.0  5.0
@@ -647,7 +673,7 @@ julia> function array3(fillval, ::Val{N}) where N
 array3 (generic function with 1 method)
 
 julia> array3(5.0, Val(2))
-3×3 Array{Float64,2}:
+3×3 Matrix{Float64}:
  5.0  5.0  5.0
  5.0  5.0  5.0
  5.0  5.0  5.0
@@ -732,31 +758,25 @@ or thousands of variants compiled for it. Each of these increases the size of th
 code, the length of internal lists of methods, etc. Excess enthusiasm for values-as-parameters
 can easily waste enormous resources.
 
-## [Access arrays in memory order, along columns](@id man-performance-column-major)
+## [沿列按内存顺序访问数组](@id man-performance-column-major)
 
 Julia 中的多维数组以列主序存储。这意味着数组一次堆叠一列。这可使用 `vec` 函数或语法 `[:]` 来验证，如下所示（请注意，数组的顺序是 `[1 3 2 4]`，而不是 `[1 2 3 4]`）：
 
 ```jldoctest
 julia> x = [1 2; 3 4]
-2×2 Array{Int64,2}:
+2×2 Matrix{Int64}:
  1  2
  3  4
 
 julia> x[:]
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  3
  2
  4
 ```
 
-This convention for ordering arrays is common in many languages like Fortran, Matlab, and R (to
-name a few). The alternative to column-major ordering is row-major ordering, which is the convention
-adopted by C and Python (`numpy`) among other languages. Remembering the ordering of arrays can
-have significant performance effects when looping over arrays. A rule of thumb to keep in mind
-is that with column-major arrays, the first index changes most rapidly. Essentially this means
-that looping will be faster if the inner-most loop index is the first to appear in a slice expression.
-Keep in mind that indexing an array with `:` is an implicit loop that iteratively accesses all elements within a particular dimension; it can be faster to extract columns than rows, for example.
+这种对数组进行排序的约定在许多语言中都很常见，例如 Fortran、Matlab 和 R（仅举几例）。 列优先排序的替代方法是行优先排序，在其它语言中，这是 C 和 Python (`numpy`) 采用的约定。 在遍历数组时，记住数组的顺序会对性能产生显着的影响。 要记住的一个经验法则是，对于列优先数组，第一个索引变化最快。 本质上，这意味着如果最内层的循环索引是第一个出现在切片表达式中的，则循环会更快。 请记住，使用 `:` 索引数组是一个隐式循环，它迭代访问特定维度内的所有元素； 例如，提取列比提取行更快。
 
 考虑以下人为示例。假设我们想编写一个接收 [`Vector`](@ref) 并返回方阵 [`Matrix`](@ref) 的函数，所返回方阵的行或列都用输入向量的副本填充。并假设用这些副本填充的是行还是列并不重要（也许可以很容易地相应调整剩余代码）。我们至少可以想到四种方式（除了建议的调用内置函数 [`repeat`](@ref)）：
 
@@ -935,10 +955,10 @@ julia> @views fview(x) = sum(x[2:end-1]);
 julia> x = rand(10^6);
 
 julia> @time fcopy(x);
-  0.003051 seconds (7 allocations: 7.630 MB)
+  0.003051 seconds (3 allocations: 7.629 MB)
 
 julia> @time fview(x);
-  0.001020 seconds (6 allocations: 224 bytes)
+  0.001020 seconds (1 allocation: 16 bytes)
 ```
 
 请注意，该函数的 `fview` 版本提速了 3 倍且减少了内存分配。
@@ -976,6 +996,12 @@ julia> @time begin
 ```
 
 倘若副本本身的内存足够大，那么将视图复制到数组的成本可能远远超过在连续数组上执行矩阵乘法所带来的加速。
+
+## 使用 StaticArrays.jl 进行小型固定大小的向量/矩阵运算
+
+如果您的应用程序涉及许多固定大小的小（`< 100` 个元素）数组（即在执行之前已知大小），那么你可能需要考虑使用 [StaticArrays.jl 包](https://github.com/JuliaArrays/StaticArrays.jl）。 这个包允许你以一种避免不必要的堆分配的方式来表示这样的数组，并允许编译器为数组的*大小*特例化代码，例如，通过完全展开向量操作（消除循环）并将元素存储在 CPU 寄存器中。
+
+例如，如果你正在使用 2d 几何图形进行计算，你可能会使用 2-分量向量进行许多计算。 通过使用 StaticArrays.jl 中的 `SVector` 类型，你可以在向量 `v` 和 `w` 上使用方便的向量符号和操作，例如 `norm(3v - w)`，同时允许编译器将代码展开到最小，计算等效于`@inbounds hypot(3v[1]-w[1], 3v[2]-w[2])`。
 
 ## 避免 I/0 中的字符串插值
 
@@ -1067,9 +1093,7 @@ responses = [fetch(r) for r in refs]
      
      
 
-The common idiom of using 1:n to index into an AbstractArray is not safe if the Array uses unconventional indexing,
-and may cause a segmentation fault if bounds checking is turned off. Use `LinearIndices(x)` or `eachindex(x)`
-instead (see also [Arrays with custom indices](@ref man-custom-indices)).
+如果 Array 使用非常规索引，那么使用 1:n 索引到 AbstractArray 的常见习惯用法是不安全的，如果关闭边界检查，可能会导致段错误。请改用`LinearIndices(x)` 或`eachindex(x)`（另请参阅[具有自定义索引的数组](@ref man-custom-indices)）。
 
 !!! note
     虽然 `@simd` 需要直接放在最内层 `for` 循环前面，但 `@inbounds` 和 `@fastmath` 都可作用于单个表达式或在嵌套代码块中出现的所有表达式，例如，可使用 `@inbounds begin` 或 `@inbounds for ...`。
@@ -1202,15 +1226,11 @@ julia> f_fast(NaN)
 false
 ```
 
-## Treat Subnormal Numbers as Zeros
+## 将次正规数视为零
 
-Subnormal numbers, formerly called [denormal numbers](https://en.wikipedia.org/wiki/Denormal_number),
-are useful in many contexts, but incur a performance penalty on some hardware. A call [`set_zero_subnormals(true)`](@ref)
-grants permission for floating-point operations to treat subnormal inputs or outputs as zeros,
-which may improve performance on some hardware. A call [`set_zero_subnormals(false)`](@ref) enforces
-strict IEEE behavior for subnormal numbers.
+次正规数，以前称为 [非正规数](https://en.wikipedia.org/wiki/Denormal_number)，在许多情况下都很有用，但会在某些硬件上造成性能损失。 调用 [`set_zero_subnormals(true)`](@ref) 授予浮点运算权限，将次正规输入或输出视为零，这可能会提高某些硬件的性能。 调用 [`set_zero_subnormals(false)`](@ref) 对次正规数强制执行严格的 IEEE 行为。
 
-Below is an example where subnormals noticeably impact performance on some hardware:
+下面是一个示例，其中次正规数显着影响某些硬件的性能：
 
 ```julia
 function timestep(b::Vector{T}, a::Vector{T}, Δt::T) where T
@@ -1239,7 +1259,7 @@ for trial=1:6
 end
 ```
 
-This gives an output similar to
+它的输出类似于
 
 ```
   0.002202 seconds (1 allocation: 4.063 KiB)
@@ -1250,13 +1270,11 @@ This gives an output similar to
   0.001455 seconds (1 allocation: 4.063 KiB)
 ```
 
-Note how each even iteration is significantly faster.
+注意，每个偶数迭代的速度明显更快。
 
-This example generates many subnormal numbers because the values in `a` become an exponentially
-decreasing curve, which slowly flattens out over time.
+这个例子产生了许多次正规数，因为`a`中的值变成了一个指数递减的曲线，随着时间的推移慢慢渐进趋于0。
 
-Treating subnormals as zeros should be used with caution, because doing so breaks some identities,
-such as `x-y == 0` implies `x == y`:
+应谨慎使用将次正规数视为零，因为这样做会破坏某些等式，例如 `x-y == 0` 意味着 `x == y`：
 
 ```jldoctest
 julia> x = 3f-38; y = 2f-38;
@@ -1268,8 +1286,7 @@ julia> set_zero_subnormals(false); (x - y, x == y)
 (1.0000001f-38, false)
 ```
 
-In some applications, an alternative to zeroing subnormal numbers is to inject a tiny bit of noise.
- For example, instead of initializing `a` with zeros, initialize it with:
+在某些应用程序中，将次正规数归零的另一种方法是加入一点点噪音。 例如，不是用零初始化`a`，而是用以下方法初始化它：
 
 ```julia
 a = rand(Float32,1000) * 1.f-9
@@ -1289,7 +1306,7 @@ julia> function f(x)
 
 julia> @code_warntype f(3.2)
 Variables
-  #self#::Core.Compiler.Const(f, false)
+  #self#::Core.Const(f)
   x::Float64
   y::UNION{FLOAT64, INT64}
 
@@ -1301,13 +1318,7 @@ Body::Float64
 └──      return %4
 ```
 
-Interpreting the output of [`@code_warntype`](@ref), like that of its cousins [`@code_lowered`](@ref),
-[`@code_typed`](@ref), [`@code_llvm`](@ref), and [`@code_native`](@ref), takes a little practice.
-Your code is being presented in form that has been heavily digested on its way to generating
-compiled machine code. Most of the expressions are annotated by a type, indicated by the `::T`
-(where `T` might be [`Float64`](@ref), for example). The most important characteristic of [`@code_warntype`](@ref)
-is that non-concrete types are displayed in red; since this document is written in Markdown, which has no color,
-in this document, red text is denoted by uppercase.
+解释 [`@code_warntype`](@ref) 的输出，就像它的表亲 [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_llvm`](@ ref) 和 [`@code_native`](@ref) 需要一些练习。你的代码以在生成编译机器代码的过程中经过大量摘要的形式呈现。大多数表达式都由类型注释，由 `::T` 表示（例如，其中 `T` 可能是 [`Float64`](@ref)）。 [`@code_warntype`](@ref) 最大的特点就是非具体类型用红色显示； 由于本文档是用Markdown 编写的，没有颜色，所以本文档中红色文字用大写表示。
 
 在顶部，该函数类型推导后的返回类型显示为 `Body::Float64`。下一行以 Julia 的 SSA IR 形式表示了 `f` 的主体。被数字标记的方块表示代码中（通过 `goto`）跳转的目标。查看主体，你会看到首先调用了 `pos`，其返回值经类型推导为 `Union` 类型 `UNION{FLOAT64, INT64}` 并以大写字母显示，因为它是非具体类型。这意味着我们无法根据输入类型知道 `pos` 的确切返回类型。但是，无论 `y` 是 `Float64` 还是 `Int64`，`y*x` 的结果都是 `Float64`。最终的结果是 `f(x::Float64)` 在其输出中不会是类型不稳定的，即使有些中间计算是类型不稳定的。
 
@@ -1329,7 +1340,7 @@ in this document, red text is denoted by uppercase.
          
 
   * `Base.getfield(%%x, :(:data))::ARRAY{FLOAT64,N} WHERE N`
-      * 解释：获取值为非叶类型的字段。在这种情况下，`ArrayContainer` 具有字段 `data::Array{T}`。但是 `Array` 也需要维度 `N` 来成为具体类型。
+      * Interpretation: getting a field that is of non-leaf type. In this case, the type of `x`, say `ArrayContainer`, had a
          
       * 建议：使用类似于 `Array{T,3}` 或 `Array{T,N}` 的具体类型，其中的 `N` 现在是 `ArrayContainer` 的参数
          
@@ -1379,11 +1390,3 @@ function abmult3(r::Int)
 end
 ```
 `let` 代码块创建了一个新的变量 `r`，它的作用域只是内部函数。第二种技术在捕获变量存在时完全恢复了语言性能。请注意，这是编译器的一个快速发展的方面，未来的版本可能不需要依靠这种程度的程序员注释来获得性能。与此同时，一些用户提供的包（如 [FastClosures](https://github.com/c42f/FastClosures.jl)）会自动插入像在 `abmult3` 中那样的 `let` 语句。
-
-# Checking for equality with a singleton
-
-When checking if a value is equal to some singleton it can be
-better for performance to check for identicality (`===`) instead of
-equality (`==`). The same advice applies to using `!==` over `!=`.
-These type of checks frequently occur e.g. when implementing the iteration
-protocol and checking if `nothing` is returned from [`iterate`](@ref).

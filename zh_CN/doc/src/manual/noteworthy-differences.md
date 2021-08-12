@@ -5,7 +5,7 @@
 虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的 Julia 用户感到困扰的显著差异：
 
   * Julia 数组使用方括号 `A[i,j]` 进行索引。
-  * Julia 的数组在赋值给另一个变量时不发生复制。执行 `A = B` 后，改变 `B` 中元素也会修改 `A`。
+  * Julia 数组在分配给另一个变量时不会被复制。 在`A = B`之后，改变`B`的元素也会改变`A`的元素。
      
   * Julia 的值在向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
      
@@ -16,9 +16,9 @@
      
   * 虚数单位 `sqrt(-1)` 在 Julia 中表示为 [`im`](@ref)，而不是在 MATLAB 中的 `i` 或 `j`。
   * 在 Julia 中，没有小数点的数字字面量（例如 `42`）会创建整数而不是浮点数。也支持任意大整数字面量。因此，某些操作（如 `2^-1`）将抛出 domain error，因为结果不是整数（有关的详细信息，请参阅[常见问题中有关 domain errors 的条目](@ref faq-domain-errors)）。
-    point numbers. As a result, some operations can throw
-    a domain error if they expect a float; for example, `julia> a = -1; 2^a` throws a domain error, as the
-    result is not an integer (see [the FAQ entry on domain errors](@ref faq-domain-errors) for details).
+    在 Julia 中，没有小数点的数字字面量（例如 `42`）会创建整数而不是浮点数。因此，某些操作会因为需要浮点数而抛出 domain error；例如 `julia > a = -1; 2^a` ，因为结果不是整数了。请参阅[常见问题中有关 domain errors 的条目](@ref faq-domain-errors)）。
+     
+     
   * 在 Julia 中，能返回多个值并将其赋值为元组，例如 `(a, b) = (1, 2)` 或 `a, b = 1, 2`。
     在 Julia 中不存在 MATLAB 的 `nargout`，它通常在 MATLAB 中用于根据返回值的数量执行可选工作。取而代之的是，用户可以使用可选参数和关键字参数来实现类似的功能。
      
@@ -67,8 +67,8 @@
   * 在 Julia 和 MATLAB 中，变量 `ans` 被设置为交互式会话中提交的最后一个表达式的值。在 Julia 中与 MATLAB 不同的是，当 Julia 代码以非交互式模式运行时并不会设置 `ans`。
      
      
-  * Julia 的 `struct` 不支持在运行时动态地添加字段，这与 MATLAB 的 `class` 不同。如需支持，请使用 [`Dict`](@ref)。
-     
+  * Julia 的 `struct` 不支持在运行时动态地添加字段，这与 MATLAB 的 `class` 不同。
+    如需支持，请使用 [`Dict`](@ref)。Julia 中的字典不是有序的。
   * 在 Julia 中，每个模块有自身的全局作用域/命名空间，而在 MATLAB 中只有一个全局作用域。
      
   * 在 MATLAB 中，删除不需要的值的惯用方法是使用逻辑索引，如表达式 `x(x>3)` 或语句 `x(x>3) = []` 来 in-place 修改 `x`。相比之下，Julia 提供了更高阶的函数 [`filter`](@ref) 和 [`filter!`](@ref)，允许用户编写 `filter(z->z>3, x)` 和 `filter!(z->z>3, x)` 来代替相应直译 `x[x.>3]` 和 `x = x[x.>3]`。使用 [`filter!`](@ref) 可以减少临时数组的使用。
@@ -78,8 +78,10 @@
      
   * 类似于提取（或「解引用」）元胞数组的所有元素的操作，例如 MATLAB 中的 `vertcat(A{:})`，在 Julia 中是使用 splat 运算符编写的，例如 `vcat(A...)`。
      
-  * In Julia, the `adjoint` function performs conjugate transposition; in MATLAB, `adjoint` provides the "adjugate" or
-    classical adjoint, which is the transpose of the matrix of cofactors.
+  * 在 Julia 中，`adjoint` 函数执行共轭转置；在 MATLAB 中，`adjoint` 提供了经典伴随，它是余子式的转置。
+     
+  * 在 Julia 中，a^b^c 被认为是 a^(b^c) 而在 MATLAB 中它是 (a^b)^c。
+
 ## 与 R 的显著差异
 
 Julia 的目标之一是为数据分析和统计编程提供高效的语言。对于从 R 转到 Julia 的用户来说，这是一些显著差异：
@@ -194,59 +196,69 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
 
 ## 与 Python 的显著差异
 
-  * Julia 的 `for`、`if`、`while`等代码块由`end`关键字终止。缩进级别并不像在 Python 中那么重要。
-    is not significant as it is in Python. Unlike Python, Julia has no `pass` keyword.
-  * Strings are denoted by double quotation marks (`"text"`) in Julia (with three double quotation marks for multi-line strings), whereas in Python they can be denoted either by single (`'text'`) or double quotation marks (`"text"`). Single quotation marks are used for characters in Julia (`'c'`).
-  * String concatenation is done with `*` in Julia, not `+` like in Python. Analogously, string repetition is done with `^`, not `*`. Implicit string concatenation of string literals like in Python (e.g. `'ab' 'cd' == 'abcd'`) is not done in Julia.
-  * Python Lists—flexible but slow—correspond to the Julia `Vector{Any}` type or more generally `Vector{T}` where `T` is some non-concrete element type. "Fast" arrays like Numpy arrays that store elements in-place (i.e., `dtype` is `np.float64`, `[('f1', np.uint64), ('f2', np.int32)]`, etc.) can be represented by `Array{T}` where `T` is a concrete, immutable element type. This includes built-in types like `Float64`, `Int32`, `Int64` but also more complex types like `Tuple{UInt64,Float64}` and many user-defined types as well.
-  * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
-  * Julia 的切片索引包含最后一个元素，这与 Python 不同。Julia 中的 `a[2:3]` 就是 Python 中的 `a[1:3]`。
+  * Julia 的 `for`, `if`, `while` 等语句块都以 `end` 关键字结束。代码的缩进不像在 Python 中那样重要。Julia 也没有 `pass` 关键字。 
      
+  * Julia 中的字符串使用双引号构造，如 `"text"`，也可以使用三引号构造多行字符串。而在 Python 中可以使用单引号（`'text'`）或者双引号（`"text"`）。单引号在 Julia 中用来表示单个字符，例如 `'c'`。
+  * 在 Julia 中字符串的拼接使用 `*`，而不是像 Python 一样使用 `+`。类似的，字符串重复多次 Julia 使用 `^` 而不是 `*`。Julia 也不支持隐式的字符串拼接，例如 Python 中的 `'ab' 'cd' == 'abcd'`。
+  * Python 列表——灵活但缓慢——对应于 Julia 的 `Vector{Any}` 类型或更一般的 `Vector{T}`，其中 `T` 是一些非具体元素类型。 “快”的数组，如 NumPy 数组，它们就地存储元素（即，`dtype` 是 `np.float64`、`[('f1', np.uint64), ('f2', np.int32)]`， 等）可以用 `Array{T}` 表示，其中 `T` 是一个具体的、不可变的元素类型。 这包括内置类型，如 `Float64`、`Int32`、`Int64`，也包括更复杂的类型，如 `Tuple{UInt64,Float64}` 和许多用户定义的类型。
+  * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
+  * Julia 里的切片包含最后一个元素。Julia 里的 `a[2:3]` 等同于 Python 中的 `a[1:3]`。
+      
   * Julia 不支持负数索引。特别地，列表或数组的最后一个元素在 Julia 中使用 `end` 索引，而不像在 Python 中使用 `-1`。
      
-  * Julia requires `end` for indexing until the last element. `x[1:]` in Python is equivalent to `x[2:end]` in Julia.
-  * Julia's range indexing has the format of `x[start:step:stop]`, whereas Python's format is `x[start:(stop+1):step]`. Hence, `x[0:10:2]` in Python is equivalent to `x[1:2:10]` in Julia. Similarly, `x[::-1]` in Python, which refers to the reversed array, is equivalent to `x[end:-1:1]` in Julia.
-  * In Julia, indexing a matrix with arrays like `X[[1,2], [1,3]]` refers to a sub-matrix that contains the intersections of the first and second rows with the first and third columns. In Python, `X[[1,2], [1,3]]` refers to a vector that contains the values of cell `[1,1]` and `[2,3]` in the matrix. `X[[1,2], [1,3]]` in Julia is equivalent with `X[np.ix_([0,1],[0,2])]` in Python. `X[[0,1], [0,2]]` in Python is equivalent with `X[[CartesianIndex(1,1), CartesianIndex(2,3)]]` in Julia.
+  * Julia 的索引必须写全。Python 中的 `x[1:]` 等价于 Julia 中的 `x[2:end]`。
+  * Julia 的范围语法为 `x[start:step:stop]`，而 Python 的格式为 `x[start:(stop+1):step]`。
+因此 Python 中的 `x[0:10:2]` 等价于 Julia 里的 `x[1:2:10]`。类似的 Python 中的反转数组 `x[::-1]` 等价于 Julia 中的 `x[end:-1:1]`。
+  * 在 Julia 中队一个矩阵取索引 `X[[1,2], [1,3]]` 返回一个子矩阵，它包含了第一和第二行与第一和第三列的交集。
+在 Python 中 `X[[1,2], [1,3]]` 返回一个向量，它包含索引 `[1,1]` 和 `[2,3]` 的值。Julia 中的 `X[[1,2], [1,3]]` 等价于 Python 中的 `X[np.ix_([0,1],[0,2])]`。Python 中的 `X[[1,2], [1,3]]` 等价于 Julia 中的 `X[[CartesianIndex(1,1), CartesianIndex(2,3)]]`。
   * Julia 没有用来续行的语法：如果在行的末尾，到目前为止的输入是一个完整的表达式，则认为其已经结束；否则，认为输入继续。强制表达式继续的一种方式是将其包含在括号中。
      
      
-  * 默认情况下，Julia 数组是列优先的（Fortran 顺序），而 NumPy 数组是行优先（C 顺序）。为了在循环数组时获得最佳性能，循环顺序应该在 Julia 中相对于 NumPy 反转（请参阅 [Performance Tips](@ref man-performance-tips) 中的对应章节）。
-     
-    be reversed in Julia relative to NumPy (see [relevant section of Performance Tips](@ref man-performance-column-major)).
-  * Julia 的更新运算符（例如 `+=`，`-=`，···）是 *not in-place*，而 Numpy 的是。这意味着 `A = [1, 1]; B = A; B += [3, 3]` 不会改变 `A` 中的值，而将名称 `B` 重新绑定到右侧表达式 `B = B + 3` 的结果，这是一个新的数组。对于 in-place 操作，使用 `B .+= 3`（另请参阅 [dot operators](@ref man-dot-operators)）、显式的循环或者 `InplaceOps.jl`。
+  * 默认情况下，Julia 数组是列优先（Fortran 排序），而 NumPy 数组是行优先（C 排序）。为了在循环数组时获得最佳性能，Julia 中的循环顺序应相对于 NumPy 颠倒（请参阅[性能提示的相关部分](@ref man-performance-column-major)）。
      
      
+  * Julia 的更新运算符（例如 `+=`，`-=`，···）是非原位操作（not in-place），而 Numpy 的是。这意味着 `A = [1, 1]; B = A; B += [3, 3]` 不会改变 `A` 中的值，而将名称 `B` 重新绑定到右侧表达式 `B = B + 3` 的结果，这是一个新的数组。对于 in-place 操作，使用 `B .+= 3`（另请参阅 [dot operators](@ref man-dot-operators)）、显式的循环或者 `InplaceOps.jl`。
      
-  * 每次调用方法时，Julia 都会计算函数参数的默认值，不像在 Python 中，默认值只会在函数定义时被计算一次。例如，每次无输入参数调用时，函数`f(x=rand()) = x`都返回一个新的随机数在另一方面，函数 `g(x=[1,2]) = push!(x,3)` 在每次以 `g()` 调用时返回 `[1,2,3]`。
      
      
+  * Julia 的函数在调用时，每次都对默认参数重新求值，不像 Python 只在函数定义时对默认参数求一次值。
+举例来说：Julia 的函数 `f(x=rand()) = x` 在无参数调用时（`f()`），每次都会返回不同的随机数。
+另一方面，函数 `g(x=[1,2]) = push!(x,3)` 无参数调用时 `g()`，永远返回 `[1,2,3]`。
+     
+     
+     
+     
+  * 在 Julia 中，必须使用关键字来传递关键字参数，这与 Python 中通常可以按位置传递它们不同。尝试按位置传递关键字参数会改变方法签名，从而导致 `MethodError` 或调用错误的方法。
      
      
   * 在 Julia 中，`%` 是余数运算符，而在 Python 中是模运算符。
-  * In Julia, the commonly used `Int` type corresponds to the machine integer type (`Int32` or `Int64`), unlike in Python, where `int` is an arbitrary length integer.
-    This means in Julia the `Int` type will overflow, such that `2^64 == 0`. If you need larger values use another appropriate type,
-    such as `Int128`, [`BigInt`](@ref) or a floating point type like `Float64`.
-  * The imaginary unit `sqrt(-1)` is represented in Julia as `im`, not `j` as in Python.
-  * In Julia, the exponentiation operator is `^`, not `**` as in Python.
-  * Julia uses `nothing` of type `Nothing` to represent a null value, whereas Python uses `None` of type `NoneType`.
-  * In Julia, the standard operators over a matrix type are matrix operations, whereas, in Python, the standard operators are element-wise operations. When both `A` and `B` are matrices, `A * B` in Julia performs matrix multiplication, not element-wise multiplication as in Python. `A * B` in Julia is equivalent with `A @ B` in Python, whereas `A * B` in Python is equivalent with `A .* B` in Julia.
-  * The adjoint operator `'` in Julia returns an adjoint of a vector (a lazy representation of row vector), whereas the transpose operator `.T` over a vector in Python returns the original vector (non-op).
-  * In Julia, a function may contain multiple concrete implementations (called *Methods*), selected via multiple dispatch, whereas functions in Python have a single implementation (no polymorphism).
-  * There are no classes in Julia. Instead they are structures (mutable or immutable), containing data but no methods.
-  * Calling a method of a class in Python (`a = MyClass(x), x.func(y)`) corresponds to a function call in Julia, e.g. `a = MyStruct(x), func(x::MyStruct, y)`. In general, multiple dispatch is more flexible and powerful than the Python class system.
-  * Julia structures may have exactly one abstract supertype, whereas Python classes can inherit from one or more (abstract or concrete) superclasses.
-  * The logical Julia program structure (Packages and Modules) is independent of the file strucutre (`include` for additional files), whereas the Python code structure is defined by directories (Packages) and files (Modules).
-  * The ternary operator `x > 0 ? 1 : -1` in Julia corresponds to conditional expression in Python `1 if x > 0 else -1`.
-  * In Julia the `@` symbol refers to a macro, whereas in Python it refers to a decorator.
-  * Exception handling in Julia is done using `try` — `catch` — `finally`, instead of `try` — `except` — `finally`. In contrast to Python, it is not recommended to use exception handling as part of the normal workflow in Julia due to performance reasons.
-  * In Julia loops are fast, there is no need to write "vectorized" code for performance reasons.
-  * Be careful with non-constant global variables in Julia, especially in tight loops. Since you can write close-to-metal code in Julia (unlike Python), the effect of globals can be drastic (see [Performance Tips](@ref man-performance-tips)).
-  * In Python, the majority of values can be used in logical contexts (e.g. `if "a":` means the following block is executed, and `if "":` means it is not). In Julia, you need explicit conversion to `Bool` (e.g. `if "a"` throws an exception). If you want to test for a non-empty string in Julia, you would explicitly write `if !isempty("")`.
-  * In Julia, a new local scope is introduced by most code blocks, including loops and `try` — `catch` — `finally`. Note that comprehensions (list, generator, etc.) introduce a new local scope both in Python and Julia, whereas `if` blocks do not introduce a new local scope in both languages.
+（译注：二者在参数有负数时有区别）
+  * 在 Julia 中，常用的整数类型 Int 对应机器的整数类型，`Int32` 或 `Int64`。不像 Python 中的整数 int 是任意精度的。这意味着 Julia 中默认的整数类型会溢出，因此 `2^64 == 0`。如果你要表示一个大数，请选择一个合适的类型。如：`Int128`、任意精度的 `BigInt` 或者浮点类型 `Flost64`。
+     
+     
+  * Julia 中虚数单位 `sqrt(-1)` 是 `im`，而不是 Python 中的 `j`。
+  * Julia 中指数是 `^`，而不是 Python 中的 `**`。
+  * Julia 使用 `Nothing` 类型的实例 `nothing` 代表空值（null），而不是 Python 中 `NoneType` 类的 `None`。
+  * 在 Julia 中，标准的运算符作用在矩阵上就得到矩阵操作，不像 Python 标准运算符默认是逐元素操作。当 A 和 B 都是矩阵时，`A * B` 在 Julia 中代表着矩阵乘法，而不是 Python 中的逐元素相乘。即：Julia 中的 `A * B` 等同于 Python 的 `A @ B`；Python 中的 `A * B` 等同于 Julia 中的 `A .* B`。
+  * Julia 中的伴随操作符 `'` 返回向量的转置（一种行向量的懒惰表示法）。Python 中对向量执行 `.T` 返回它本身（没有效果）。
+  * 在Julia中，一个函数可能包含多个具体实现（称为*方法*），与Python中的函数相比，这些实现是根据调用的所有参数的类型通过多重派发选择的，它只有一个实现，没有多态性（与Python方法调用相反，Python方法调用使用不同的语法，并允许在方法的接收者上进行派发）。
+  * Julia 没有类（class），取而代替的是结构体（structures），可以是可变的或不可变的，它们只包含数据而不包含方法。
+
+
+  * 在 Python 中调用类实例的方法 (`x = MyClass(*args); x.f(y)`) 对应于 Julia 中的函数调用，例如 `x = MyType(args...); f(x, y)`。 总的来说，多重派发比 Python 类系统更灵活和强大。
+  * Julia 的结构体有且只能有一个抽象超类型（abstract supertype），而 Python 的类可以纪成一个或多个、抽象或具体的超类（superclasses）。
+  * 逻辑 Julia 程序结构（包和模块）独立于文件结构（`include` 用于附加文件），而 Python 代码结构由目录（包）和文件（模块）定义。
+  * Julia 中的三元运算符 `x > 0 ? 1 :  -1` 对应于 Python 中的条件表达式 `1 if x > 0 else -1`。
+  * Julia 中以 `@` 开头的符号是宏（macro），而 Python 中是装饰器（decorator）。
+  * Julia 的异常处理使用 `try` — `catch` — `finally`，而不是 Python 的 `try` — `except` — `finally`。与 Python 不同的是，因为性能的原因，Julia 不推荐在正常流程中使用异常处理。
+  * Julia 的循环很快，所以没必要手动向量化（vectorized）。
+  * 小心 Julia 中的非常量全局变量，尤其它出现在循环中时。因为你在 Julia 中可以写出贴近硬件的代码，这时使用全局变量的影响非常大（参见[性能建议](@ref man-performance-tips)）
+  * Python 中大多数的值都能用在逻辑运算中。例如：`if "a"` 永真，`if ""` 恒假。在 Julia 中你只能使用布尔类型的值，或者显示的将其他值转为布尔类型，否则就会抛出异常。例如当你想测试字符串是否为空是，请使用 `if !isempty("")`。
+  * 在 Julia 中大多数代码块都会引入新的本地作用域（local scope）。例如：循环和异常处理的 try — catch — finally。注意：列表推断（comprehensions）与生成器在 Julia 和 Python 中都会引入新的作用域；而 if 分支则都不会引入。
 
 ## 与 C/C++ 的显著差异
 
-  * Julia 的数组由方括号索引，方括号中可以包含不止一个维度 `A[i,j]`。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见关于数组构造的语法的 Julia 文档（依版本不同有所变动）。
+  * Julia 的数组由方括号索引，方括号中可以包含不止一个维度 `A[i,j]`。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见[关于数组构造的语法的 Julia 文档](@ref man-multi-dim-arrays)。
      
      
   * 在 Julia 中，数组、字符串等的索引从 1 开始，而不是从 0 开始。
@@ -255,7 +267,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
   * Julia 的数组是列优先的（Fortran 顺序），而 C/C++ 的数组默认是行优先的。要使数组上的循环性能最优，在 Julia 中循环的顺序应该与 C/C++ 相反（参见 [性能建议](@ref man-performance-tips)）。
      
-    reversed in Julia relative to C/C++ (see [relevant section of Performance Tips](@ref man-performance-column-major)).
+     
   * Julia 的值在赋值或向函数传递时不发生复制。如果某个函数修改了数组，这一修改对调用者是可见的。
      
   * 在 Julia 中，空格是有意义的，这与 C/C++ 不同，所以向 Julia 程序中添加或删除空格时必须谨慎。
@@ -274,6 +286,12 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
      
      
+     
+     
+     
+  * 在 Julia 中，当两个操作数都是整数类型时，除法运算符 `/` 返回一个浮点数。 要执行整数除法，请使用 `div` 或 `÷`。
+     
+  * 使用浮点类型索引数组在 Julia 中通常是错误的。 C 表达式 `a[i / 2]` 的 Julia 等价写法是 `a[i ÷ 2 + 1]`，其中 `i` 是整数类型。
      
   * 字符串字面量可用 `"` 或 `"""` 分隔，用 `"""` 分隔的字面量可以包含 `"` 字符而无需像 `"\""` 这样来引用它。字符串字面量可以包含插入其中的其他变量或表达式，由 `$variablename` 或 `$(expression)` 表示，它在该函数所处的上下文中计算变量名或表达式。
      
@@ -295,8 +313,8 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
      
   * Julia 的 [`^`](@ref) 是取幂（pow），而非 C/C++ 中的按位 XOR（在 Julia 中请使用 [`⊻`](@ref xor) 或 `xor`）
-    [ ](@ref), in Julia)
-  * Julia 中有两个右移运算符，`>>` 和 `>>>`。`>>>` 执行逻辑移位，`>>` 总是执行算术移位（译注：此处原文为「`>>>` performs an arithmetic shift, `>>` always performs a logical shift」，疑误），与 C/C++ 不同，C/C++ 中的 `>>` 的含义依赖于被移位的值的类型。
+     
+  * Julia 有两个右移运算符，`>>` 和 `>>>`。 `>>` 执行算术移位，`>>>` 始终执行逻辑移位，这与 C/C++ 不同，其中 `>>` 的含义取决于被移位的值的类型。
      
      
   * Julia 的 `->` 创建一个匿名函数，它并不通过指针访问成员。
@@ -329,24 +347,30 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
      
 
-## Noteworthy differences from Common Lisp
+## 与 Common Lisp 的显著差异
 
-- Julia uses 1-based indexing for arrays by default, and it can also handle arbitrary [index offsets](@ref man-custom-indices).
+- Julia 默认使用 1 开始的数组索引，它也能处理任意的[索引顺序](@ref man-custom-indices)。
 
-- Functions and variables share the same namespace (“Lisp-1”).
+- 函数和变量共用一个命名空间（"Lisp-1"）。
 
-- There is a [`Pair`](@ref) type, but it is not meant to be used as a `COMMON-LISP:CONS`. Various iterable collections can be used interchangeably in most parts of the language (eg splatting, tuples, etc). `Tuple`s are the closest to Common Lisp lists for *short* collections of heterogeneous elements. Use `NamedTuple`s in place of alists. For larger collections of homogeneous types, `Array`s and `Dict`s should be used.
+- Julia 中有 [`Pair`](@ref) 类型，但这并不意味着它能用作 `COMMON-LISP:CONS`。在 Julia 中绝大多数可迭代的集合都能互换使用，例如：集合解包（splatting）、元组等。`Tuple` 最接近 Common Lisp 中用于异构元素的**短**列表。使用 `NamedTuple` 来代替关联表（alists）。对于更大的、同类型元素的集合，应该使用 `Array` 和 `Dict`。
 
-- The typical Julia workflow for prototyping also uses continuous manipulation of the image, implemented with the [Revise.jl](https://github.com/timholy/Revise.jl) package.
+- 典型的使用 Julia 进行原型开发时，也会对镜像进行连续的修改，[Revise.jl](https://github.com/timholy/Revise.jl) 包提供了这个功能。
 
-- Bignums are supported, but conversion is not automatic; ordinary integers [overflow](@ref faq-integer-arithmetic).
+- 对于性能，Julia 更喜欢操作具有 [类型稳定性](@ref man-type-stability)。 Common Lisp 从底层机器操作中抽象出来，而 Julia 则更接近它们。 例如：
+  - 使用 `/` 的整数除法总是返回浮点结果，即使计算是精确的。
+    - `//` 总是返回一个有理数结果
+    - `÷` 总是返回一个（被截断的）整数结果
+  - Julia 支持大整数，但不会自动转换。默认的整数类型会[溢出](@ref faq-integer-arithmetic)。
+  - 支持复数，但要获得复数结果，[你需要复数输入](@ref faq-domain-errors)。
+  - 有多种 Complex 和 Rational 类型，具有不同的组成类型。
 
-- Modules (namespaces) can be hierarchical. [`import`](@ref) and [`using`](@ref) have a dual role: they load the code and make it available in the namespace. `import` for only the module name is possible (roughly equivalent to `ASDF:LOAD-OP`). Slot names don't need to be exported separately. Global variables can't be assigned to from outside the module (except with `eval(mod, :(var = val))` as an escape hatch).
+- 模块（名称空间）可以是分层的。[`import`](@ref) 和 [`using`](@ref) 有着双重角色：他们加载代码并让代码在命名空间中可用。`import` 用于仅有模块名是可用的情况，大致等价于 `ASDF:LOAD-OP`。槽名（Slot name）不需要单独导出。全局变量不能从模块的外部赋值，除了 `eval(mod, :(var = val))` 这个例外情况。
 
-- Macros start with `@`, and are not as seamlessly integrated into the language as Common Lisp; consequently, macro usage is not as widespread as in the latter. A form of hygiene for [macros](@ref Metaprogramming) is supported by the language. Because of the different surface syntax, there is no equivalent to `COMMON-LISP:&BODY`.
+- 宏以 `@` 开头，并没有像 Common Lisp 那样无缝地集成到语言中；因此在 Julia 中，宏的使用不像在 Common Lisp 中那样广泛。Julia 支持[宏](@ref Metaprogramming)的一种卫生（hygiene）形式。因为不同的表层语法，Julia 中没有 `COMMON-LISP:&BODY` 的等价形式。
 
-- *All* functions are generic and use multiple dispatch. Argument lists don't have to follow the same template, which leads to a powerful idiom (see [`do`](@ref)). Optional and keyword arguments are handled differently. Method ambiguities are not resolved like in the Common Lisp Object System, necessitating the definition of a more specific method for the intersection.
+- **所有的**函数都是通用的并且使用多重分派。函数的参数列表也无需遵循一样的模板，这让我们有了一个强大的范式：[`do`](@ref)。可选参数与关键字参数的处理方式不同。方法的歧义没有像在 Common Lisp 对象系统中那样得到解决，因此需要为交集定义更具体的方法。
 
-- Symbols do not belong to any package, and do not contain any values *per se*. `M.var` evaluates the symbol `var` in the module `M`.
+- 符号不属于任何包，它**本身**也不包含任何值。`M.var` 会对 `M` 模块里的  `var` 符号求值。
 
-- A functional programming style is fully supported by the language, including closures, but isn't always the idiomatic solution for Julia. Some [workarounds](@ref man-performance-captured) may be necessary for performance when modifying captured variables.
+- Julia 完全支持函数式编程风格，包括闭包等特性。但这并不是 Julia 的惯用风格。修改捕获变量时需要一些额外的[变通](@ref man-performance-captured)以便提高性能。

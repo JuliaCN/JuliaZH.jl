@@ -10,7 +10,7 @@
 
 尽管有这些限制，但抽样分析器仍然有很大的优势：
 
-  * You do not have to make any modifications to your code to take timing measurements.
+  * 你无需对代码进行任何修改即可进行时间测量。
   * 它可以分析 Julia 的核心代码，甚至（可选）可以分析 C 和 Fortran 库。
   * 通过「偶尔」运行，它只有很少的性能开销；代码在性能分析时能以接近本机的速度运行。
      
@@ -42,17 +42,16 @@ julia> using Profile
 julia> @profile myfunc()
 ```
 
-To see the profiling results, there are several graphical browsers.
-One "family" of visualizers is based on [FlameGraphs.jl](https://github.com/timholy/FlameGraphs.jl), with each family member providing a different user interface:
-- [Juno](https://junolab.org/) is a full IDE with built-in support for profile visualization
-- [ProfileView.jl](https://github.com/timholy/ProfileView.jl) is a stand-alone visualizer based on GTK
-- [ProfileVega.jl](https://github.com/davidanthoff/ProfileVega.jl) uses VegaLight and integrates well with Jupyter notebooks
-- [StatProfilerHTML](https://github.com/tkluck/StatProfilerHTML.jl) produces HTML and presents some additional summaries, and also integrates well with Jupyter notebooks
-- [ProfileSVG](https://github.com/timholy/ProfileSVG.jl) renders SVG
+有一些图形界面可以查看性能分析的结果。这其中有一类是基于 [FlameGraphs.jl](https://github.com/timholy/FlameGraphs.jl)打造的，只不过提供了不同的用户接口：
+- [Juno](https://junolab.org/) 是一个完整的 IDE，内置对性能分析可视化的支持
+- [ProfileView.jl](https://github.com/timholy/ProfileView.jl) 是一个基于 GTK 的独立可视化工具
+- [ProfileVega.jl](https://github.com/davidanthoff/ProfileVega.jl) 使用 VegaLight 并与 Jupyter notebooks 很好地集成
+- [StatProfilerHTML](https://github.com/tkluck/StatProfilerHTML.jl) 生成 HTML 并提供一些额外的摘要，并且还与 Jupyter 笔记本很好地集成
+- [ProfileSVG](https://github.com/timholy/ProfileSVG.jl) 渲染 SVG
 
-An entirely independent approach to profile visualization is [PProf.jl](https://github.com/vchuravy/PProf.jl), which uses the external `pprof` tool.
+一种完全独立的性能分析可视化方法是 [PProf.jl](https://github.com/vchuravy/PProf.jl)，它使用外部 `pprof` 工具。
 
-Here, though, we'll use the text-based display that comes with the standard library:
+不过，在这里，我们将使用标准库附带的基于文本的显示：
 
 ```julia-repl
 julia> Profile.print()
@@ -233,7 +232,7 @@ Profile.init(n = 10^7, delay = 0.01)
 
 因此，你更可能需要修改 `delay`，它以秒为单位，设置在快照之间 Julia 用于执行所请求计算的时长。长时间运行的工作可能不需要经常回溯。默认设置为 `delay = 0.001`。当然，你可以减少和增加 delay；但是，一旦 delay 接近执行一次回溯所需的时间（在作者的笔记本上约为 30 微妙），性能分析的开销就会增加。
 
-# 内存分配分析
+## 内存分配分析
 
 减少内存分配是提高性能的最常用技术之一。内存分配总量可以用 [`@time`](@ref) 和 [`@allocated`](@ref)，触发内存分配的特定行通常可以通过这些行产生的垃圾分配成本从性能分析中推断出来。但是，直接测量每行代码的内存分配总量有时会更高效。
 
@@ -241,7 +240,7 @@ Profile.init(n = 10^7, delay = 0.01)
 
 在解释结果时，有一些需要注意的细节。在 `user` 设定下，直接从 REPL 调用的任何函数的第一行都将会显示内存分配，这是由发生在 REPL 代码本身的事件造成的。更重要的是，JIT 编译也会添加内存分配计数，因为 Julia 的编译器大部分是用 Julia 编写的（并且编译通常需要内存分配）。建议的分析过程是先通过执行待分析的所有命令来强制编译，然后调用 [`Profile.clear_malloc_data()`](@ref) 来重置所有内存计数器。最后，执行所需的命令并退出 Julia 以触发 `.mem` 文件的生成。
 
-# 外部性能分析
+## 外部性能分析
 
 Julia 目前支持的外部性能分析工具有 `Intel VTune`、`OProfile` 和 `perf`。
 
@@ -256,11 +255,12 @@ Julia 目前支持的外部性能分析工具有 `Intel VTune`、`OProfile` 和 
 >opreport -l `which ./julia`
 ```
 
-Or similary with `perf` :
+或与 `perf` 类似：
 
 ```
-$ ENABLE_JITPROFILING=1 perf record -o /tmp/perf.data --call-graph dwarf ./julia /test/fastmath.jl
-$ perf report --call-graph -G
+$ ENABLE_JITPROFILING=1 perf record -o /tmp/perf.data --call-graph dwarf -k 1 ./julia /test/fastmath.jl
+$ perf inject --jit --input /tmp/perf.data --output /tmp/perf-jit.data
+$ perf report --call-graph -G -i /tmp/perf-jit.data
 ```
 
 你可以测量关于程序的更多有趣数据，若要获得详尽的列表，请阅读 [Linux perf 示例页面](http://www.brendangregg.com/perf.html)。

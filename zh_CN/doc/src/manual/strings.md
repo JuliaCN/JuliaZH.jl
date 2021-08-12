@@ -8,7 +8,7 @@
 
 关于 Julia 的字符串类型有一些值得注意的高级特性：
 
-  * Julia 中用于字符串（和字符串文字）的内置具体类型是 [`String`](@ref)。
+  * Julia 中用于字符串（和字符串字面量）的内置具体类型是 [`String`](@ref)。
     它支持全部 [Unicode](https://en.wikipedia.org/wiki/Unicode) 字符
     通过 [UTF-8](https://en.wikipedia.org/wiki/UTF-8) 编码。（[`transcode`](@ref) 函数是
     提供 Unicode 编码和其他编码转换的函数。）
@@ -34,24 +34,24 @@
 
 
 ```jldoctest
-julia> 'x'
+julia> c = 'x'
 'x': ASCII/Unicode U+0078 (category Ll: Letter, lowercase)
 
-julia> typeof(ans)
+julia> typeof(c)
 Char
 ```
 
 你可以轻松地将 `Char` 转换为其对应的整数值，即 Unicode 代码：
 
 ```jldoctest
-julia> Int('x')
+julia> c = Int('x')
 120
 
-julia> typeof(ans)
+julia> typeof(c)
 Int64
 ```
 
-在 32 位架构中，[`typeof(ans)`](@ref) 将显示为 [`Int32`](@ref)。你可以轻松地将一个整数值转回 `Char`。
+在 32 位的计算机中，[`typeof(c)`](@ref) 将显示为 [`Int32`](@ref)。你可以轻松地将一个整数值转回 Char：
 
 ```jldoctest
 julia> Char(120)
@@ -140,7 +140,15 @@ julia> """Contains "quote" characters"""
 "Contains \"quote\" characters"
 ```
 
-If you want to extract a character from a string, you index into it:
+Long lines in strings can be broken up by preceding the newline with a backslash (`\`):
+
+```jldoctest
+julia> "This is a long \
+       line"
+"This is a long line"
+```
+
+如果要字符串中提取字符，可以对其进行索引：
 
 ```jldoctest helloworldstring
 julia> str[begin]
@@ -156,10 +164,9 @@ julia> str[end]
 '\n': ASCII/Unicode U+000A (category Cc: Other, control)
 ```
 
-许多的 Julia 对象包括字符串都可以用整数进行索引。第一个元素的索引由 [`firstindex(str)`](@ref) 返回，最后一个由 [`lastindex(str)`](@ref) 返回。关键字 `begin` 和 `end` 可以在索引操作中使用，它们分别表示给定维度上的第一个和最后一个索引。字符串索引就像 Julia 中的大多数索引一样，是从 1 开始的：对于任何 `AbstractString` `firstindex` 总是返回 `1`。
-下面我们将会看到，对于一个字符串来说 `lastindex(str)` 和 `length(str)` 的结果 **不一定相同**，因为 Unicode 字符可能由多个编码单元（code units）组成。
+许多的 Julia 对象，包括字符串，都可以用整数进行索引。第一个元素的索引（字符串的第一个字符）由 [`firstindex(str)`](@ref) 返回，最后一个元素（字符）的索引由 [`lastindex(str)` ](@ref) 返回。关键字 `begin` 和 `end` 可以在索引操作中使用，它们分别表示给定维度上的第一个和最后一个索引。字符串索引就像 Julia 中的大多数索引一样，是从 1 开始的：对于任何 `AbstractString`， `firstindex` 方法总是返回 `1`。但是，下面我们将会看到，对于一个字符串来说 `lastindex(str)` 和 `length(str)` 的结果*不一定*相同，因为 Unicode 字符可能由多个编码单元组成。
 
-你可以用 [`end`](@ref) 进行算术以及其它操作，就像普通值一样：
+你可以用 [`end`](@ref) 进行算术以及其它操作，就像一个普通值一样：
 
 ```jldoctest helloworldstring
 julia> str[end-1]
@@ -169,17 +176,15 @@ julia> str[end÷2]
 ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
 ```
 
-下标小于开头 `begin` (`1`) 或者大于结尾 `end` 都会导致错误：
+使用小于 `begin` (`1`) 或大于 `end` 的索引会引发错误：
 
 ```jldoctest helloworldstring
 julia> str[begin-1]
-ERROR: BoundsError: attempt to access String
-  at index [0]
+ERROR: BoundsError: attempt to access 14-codeunit String at index [0]
 [...]
 
 julia> str[end+1]
-ERROR: BoundsError: attempt to access String
-  at index [15]
+ERROR: BoundsError: attempt to access 14-codeunit String at index [15]
 [...]
 ```
 
@@ -190,7 +195,7 @@ julia> str[4:9]
 "lo, wo"
 ```
 
-注意到 `str[k]` 和 `str[k:k]` 输出的结果不一样：
+注意，表达式 `str[k]` 和 `str[k:k]` 不会给出相同的结果：
 
 ```jldoctest helloworldstring
 julia> str[6]
@@ -200,9 +205,10 @@ julia> str[6:6]
 ","
 ```
 
-前者是 `Char` 类型的单个字符值，后者是碰巧只有单个字符的字符串值。在 Julia 里面两者大不相同。
+前者是一个 `Char` 类型的单个字符，而后者是一个恰好只包含一个字符的字符串。在 Julia 中，这些是不同的。
 
-范围索引复制了原字符串的选定部分。此外，也可以用 [`SubString`](@ref) 类型创建字符串的 `view`，例如：
+范围索引复制原始字符串的选定部分。此外，可以使用类型 [`SubString`](@ref)，将视图创建为字符串，
+例如：
 
 ```jldoctest
 julia> str = "long string"
@@ -226,18 +232,21 @@ julia> s = "\u2200 x \u2203 y"
 "∀ x ∃ y"
 ```
 
-这些 Unicode 字符是作为转义还是特殊字符显示，取决于你终端的语言环境设置以及它对 Unicode 的支持。字符串字面量用 UTF-8 编码。UTF-8 是一种可变长度的编码，也就是说并非所有字符都以相同的字节数（code units）编码。在 UTF-8 中，ASCII 字符（小于 0x80(128) 的那些）如它们在 ASCII 中一样使用单字节编码；而 0x80 及以上的字符使用最多 4 个字节编码。在 Julia 中字符串索引指的是代码单元（对于 UTF-8 来说等同于字节/byte），固定宽度的构建块用于编码任意字符（code point）。这意味着并非每个索引到 UTF-8 字符串的字节都必须是一个字符的有效索引。如果在这种无效字节索引处索引字符串，将会报错：
+这些 Unicode 字符是作为转义还是特殊字符显示，取决于你终端的语言环境设置以及它对 Unicode 的支持。字符串字面量用 UTF-8 编码。UTF-8 是一种可变长度的编码，也就是说并非所有字符都以相同的字节数（code units）编码。在 UTF-8 中，ASCII 字符（小于 0x80(128) 的那些）如它们在 ASCII 中一样使用单字节编码；而 0x80 及以上的字符使用最多 4 个字节编码。
+
+在 Julia 中字符串索引指的是代码单元（对于 UTF-8 来说等同于字节/byte），固定宽度的构建块用于编码任意字符（code point）。这意味着并非每个索引到 UTF-8 字符串的字节都必须是一个字符的有效索引。如果在这种无效字节索引处索引字符串，将会报错：
 
 ```jldoctest unicodestring
 julia> s[1]
 '∀': Unicode U+2200 (category Sm: Symbol, math)
 
 julia> s[2]
-ERROR: StringIndexError("∀ x ∃ y", 2)
+ERROR: StringIndexError: invalid index [2], valid nearby indices [1]=>'∀', [4]=>' '
+Stacktrace:
 [...]
 
 julia> s[3]
-ERROR: StringIndexError("∀ x ∃ y", 3)
+ERROR: StringIndexError: invalid index [3], valid nearby indices [1]=>'∀', [4]=>' '
 Stacktrace:
 [...]
 
@@ -254,7 +263,7 @@ julia> s[end-1]
 ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
 
 julia> s[end-2]
-ERROR: StringIndexError("∀ x ∃ y", 9)
+ERROR: StringIndexError: invalid index [9], valid nearby indices [7]=>'∃', [10]=>' '
 Stacktrace:
 [...]
 
@@ -262,16 +271,16 @@ julia> s[prevind(s, end, 2)]
 '∃': Unicode U+2203 (category Sm: Symbol, math)
 ```
 
-第一种情况可以，因为最后一个字符 `y` 和空格都是一字节的字符，而 `end-2` 索引到中间的 `∃` 的多字节表示。这里正确的方法是使用 `prevind(s, lastindex(s), 2)`，或者如果你使用那个值来索引在 `s` 中可以写 `s[prevind(s, end, 2)]`， `end` 展开为 `lastindex(s)`。
+第一种情况可以，因为最后一个字符 `y` 和空格都是一字节的字符，而 `end-2` 索引到中间的 `∃` 由多字节表示。正确的方法是使用 `prevind(s, lastindex(s), 2)`，或者，如果你使用该值来索引`s`，则可以写为`s[prevind(s, end, 2) ]` ， `end` 展开为 `lastindex(s)`。
 
 使用范围索引提取子字符串也需要有效的字节索引，不然就会抛出错误：
-
+ 
 ```jldoctest unicodestring
 julia> s[1:1]
 "∀"
 
 julia> s[1:2]
-ERROR: StringIndexError("∀ x ∃ y", 2)
+ERROR: StringIndexError: invalid index [2], valid nearby indices [1]=>'∀', [4]=>' '
 Stacktrace:
 [...]
 
@@ -279,7 +288,7 @@ julia> s[1:4]
 "∀ "
 ```
 
-由于可变长度的编码，字符串中的字符数（由 [`length(s)`](@ref) 给出）并不总是等于最后一个索引的数字。如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。因此总有 `length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s` 的字符进行迭代的一个冗长而低效的方式：
+由于可变长度的编码，字符串中的字符数（由 [`length(s)` ](@ref) 给出）并不总是等于最后一个索引的数字。如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。所以，总是有 `length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s` 的字符进行迭代的一个冗长而低效的方式：
 
 ```jldoctest unicodestring
 julia> for i = firstindex(s):lastindex(s)
@@ -317,7 +326,7 @@ y
 
 ```jldoctest unicodestring
 julia> collect(eachindex(s))
-7-element Array{Int64,1}:
+7-element Vector{Int64}:
   1
   4
   5
@@ -448,7 +457,7 @@ julia> "1 + 2 = $(1 + 2)"
 
 ```jldoctest
 julia> v = [1,2,3]
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  2
  3
@@ -528,6 +537,15 @@ julia> """
          Hello,
          world."""
 "Hello,\nworld."
+```
+
+如果使用反斜杠消除换行符，下一行的缩进也会被消除：
+
+```jldoctest
+julia> """
+         Averylong\
+         word"""
+"Averylongword"
 ```
 
 尾随空格保持不变。
@@ -624,19 +642,22 @@ julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
 
 ## 非标准字符串字面量
 
-有时当你想构造字符串或者使用字符串语义，标准的字符串构造却不能很好的满足需求。Julia 为这种情形提供了非标准字符串字面量。非标准字符串字面量看似常规双引号字符串字面量，但却直接加上了标识符前缀因而并不那么像普通的字符串字面量。下面将提到，正则表达式，字节数组字面量和版本号字面量都是非标准字符串字面量的例子。其它例子见[元编程](@ref)章。
+有时当你想构造字符串或者使用字符串语义，标准的字符串构造却不能很好的满足需求。Julia 为这种情形提供了非标准字符串字面量。非标准字符串字面量看似常规双引号字符串字面量，但却直接加上了标识符前缀因而并不那么像普通的字符串字面量。
 
-## 正则表达式
+下面将提到，[正则表达式](@ref man-regex-literals)，[字节数组字面量] (@ref man-byte-array-literals) 和 [版本号字面量](@ref man-version-number-literals) 都是非标准字符串字面量的例子。
+更详细的文档见 [元编程](@ref meta-non-standard-string-literals) 章。
+
+## [正则表达式](@id man-regex-literals)
 
 Julia 具有与 Perl 兼容的正则表达式 (regexes)，就像 [PCRE](http://www.pcre.org/) 包所提供的那样，详细信息参见 [PCRE 的语法说明](http://www.pcre.org/current/doc/html/pcre2syntax.html)。
 正则表达式以两种方式和字符串相关：一个显然的关联是，正则表达式被用于找到字符串中的正则模式；另一个关联是，正则表达式自身就是作为字符串输入，它们被解析到可用来高效搜索字符串中模式的状态机中。
 在 Julia 中正则表达式的输入使用了前缀各类以 `r` 开头的标识符的非标准字符串字面量。最基本的不打开任何选项的正则表达式只用到了 `r"..."`：
 
 ```jldoctest
-julia> r"^\s*(?:#|$)"
+julia> re = r"^\s*(?:#|$)"
 r"^\s*(?:#|$)"
 
-julia> typeof(ans)
+julia> typeof(re)
 Regex
 ```
 
@@ -670,8 +691,7 @@ else
 end
 ```
 
-如果正则表达式匹配，[`match`](@ref) 的返回值是 `RegexMatch` 对象。这些对象记录了表达式是如何匹配的，包括该模式匹配的子字符串和任何可能被捕获的子字符串。上面的例子仅仅捕获了匹配的部分子字符串，但也许我们想要捕获的是公共字符后面的任何非空文本。我们可以这样做：
-
+如果正则表达式匹配，[`match`](@ref) 的返回值是一个 [`RegexMatch`](@ref) 对象。这些对象记录了表达式是如何匹配的，包括该模式匹配的子字符串和任何可能被捕获的子字符串。上面的例子仅仅捕获了匹配的部分子字符串，但也许我们想要捕获的是注释字符后面的任何非空文本。我们可以这样做：
 
 ```jldoctest
 julia> m = match(r"^\s*(?:#\s*(.*?)\s*$|$)", "# a comment ")
@@ -708,7 +728,7 @@ julia> m.match
 "acd"
 
 julia> m.captures
-3-element Array{Union{Nothing, SubString{String}},1}:
+3-element Vector{Union{Nothing, SubString{String}}}:
  "a"
  "c"
  "d"
@@ -717,7 +737,7 @@ julia> m.offset
 1
 
 julia> m.offsets
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  2
  3
@@ -729,7 +749,7 @@ julia> m.match
 "ad"
 
 julia> m.captures
-3-element Array{Union{Nothing, SubString{String}},1}:
+3-element Vector{Union{Nothing, SubString{String}}}:
  "a"
  nothing
  "d"
@@ -738,16 +758,16 @@ julia> m.offset
 1
 
 julia> m.offsets
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  0
  2
 ```
 
-让捕获作为数组返回是很方便的，这样就可以用解构语法把它们和局域变量绑定起来：
+让捕获作为数组返回是很方便的，这样就可以用解构语法把它们和局域变量绑定起来。为了方便，`RegexMatch` 对象实现了传递到 `captures` 字段的迭代器方法，因此您可以直接解构匹配对象：
 
 ```jldoctest acdmatch
-julia> first, second, third = m.captures; first
+julia> first, second, third = m; first
 "a"
 ```
 
@@ -842,15 +862,17 @@ RegexMatch("Day 10")
 julia> name = "Jon"
 "Jon"
 
-julia> regex_name = Regex("[\"( ]$name[\") ]")  # 插入 name 的值
-r"[\"( ]Jon[\") ]"
+julia> regex_name = Regex("[\"( ]\\Q$name\\E[\") ]")  # interpolate value of name
+r"[\"( ]\QJon\E[\") ]"
 
-julia> match(regex_name," Jon ")
+julia> match(regex_name, " Jon ")
 RegexMatch(" Jon ")
 
-julia> match(regex_name,"[Jon]") === nothing
+julia> match(regex_name, "[Jon]") === nothing
 true
 ```
+
+注意 `\Q...\E` 转义序列的使用。 `\Q` 和 `\E` 之间的所有字符都被解释为字符字面量（在字符串插值之后）。在插入可能是恶意的用户输入时，此转义序列非常有用。
 
 ## 字节数组字面量
 
@@ -864,7 +886,7 @@ true
 
 ```jldoctest
 julia> b"DATA\xff\u2200"
-8-element Base.CodeUnits{UInt8,String}:
+8-element Base.CodeUnits{UInt8, String}:
  0x44
  0x41
  0x54
@@ -882,11 +904,13 @@ julia> isvalid("DATA\xff\u2200")
 false
 ```
 
-如前所述，`CodeUnits{UInt8,String}` 类型的行为类似于只读 `UInt8` 数组。如果需要标准数组，你可以 `Vector{UInt8} 进行转换。
+正如前面所述，`CodeUnits{UInt8,String}` 类型的行为类似于只读 `UInt8` 数组。如果需要标准数组，你可使用 `Vector{UInt8}` 进行转换。
+
+ 
 
 ```jldoctest
 julia> x = b"123"
-3-element Base.CodeUnits{UInt8,String}:
+3-element Base.CodeUnits{UInt8, String}:
  0x31
  0x32
  0x33
@@ -895,11 +919,11 @@ julia> x[1]
 0x31
 
 julia> x[1] = 0x32
-ERROR: setindex! not defined for Base.CodeUnits{UInt8,String}
+ERROR: setindex! not defined for Base.CodeUnits{UInt8, String}
 [...]
 
 julia> Vector{UInt8}(x)
-3-element Array{UInt8,1}:
+3-element Vector{UInt8}:
  0x31
  0x32
  0x33
@@ -909,11 +933,11 @@ julia> Vector{UInt8}(x)
 
 ```jldoctest
 julia> b"\xff"
-1-element Base.CodeUnits{UInt8,String}:
+1-element Base.CodeUnits{UInt8, String}:
  0xff
 
 julia> b"\uff"
-2-element Base.CodeUnits{UInt8,String}:
+2-element Base.CodeUnits{UInt8, String}:
  0xc3
  0xbf
 ```

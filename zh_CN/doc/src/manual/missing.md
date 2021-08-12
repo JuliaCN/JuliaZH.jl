@@ -4,11 +4,7 @@ Julia 支持表示统计意义上的缺失值，即某个变量在观察中没�
 
 ## 缺失值的传播
 
-`missing` values *propagate* automatically when passed to standard mathematical
-operators and functions.
-For these functions, uncertainty about the value of one of the operands
-induces uncertainty about the result. In practice, this means a math operation
-involving a `missing` value generally returns `missing`
+`missing`  值会自动在标准数学运算符和函数中*传播*。对于这类函数，其某个运算对象的值的不确定性会导致其结果的不确定性。在应用中，上述情形意味着若在数学操作中包括 `missing`  值，其结果也常常返回 `missing` 值。
 ```jldoctest
 julia> missing + 1
 missing
@@ -20,20 +16,9 @@ julia> abs(missing)
 missing
 ```
 
-As `missing` is a normal Julia object, this propagation rule only works
-for functions which have opted in to implement this behavior. This can be
-achieved either via a specific method defined for arguments of type `Missing`,
-or simply by accepting arguments of this type, and passing them to functions
-which propagate them (like standard math operators). Packages should consider
-whether it makes sense to propagate missing values when defining new functions,
-and define methods appropriately if that is the case. Passing a `missing` value
-to a function for which no method accepting arguments of type `Missing` is defined
-throws a [`MethodError`](@ref), just like for any other type.
+由于`missing` 是 Julia 中的正常对象，此传播规则仅在可实现该对象的函数中应用。这可通过定义包含 `Missing` 类的实参的特定方法，或是简单地让函数可接受此类实参，并将该它们传入已具备传播规则的函数（如标准数学运算符）中实现。在包中定义新传播规则时，应考虑缺失值的传播是否具有实际意义，并在传播有意义时定义合适的方法。在某个不包含接受 `Missing` 类实参方法的函数中传递缺失值，则抛出 [`MethodError`](@ref)的报错，正如其它类型一样。
 
-Functions that do not propagate `missing` values can be made to do so by wrapping
-them in the `passmissing` function provided by the
-[Missings.jl](https://github.com/JuliaData/Missings.jl) package.
-For example, `f(x)` becomes `passmissing(f)(x)`.
+若希望函数不传播缺失值，可将其按照 [Missings.jl](https://github.com/JuliaData/Missings.jl) 库中的 `passmissing` 函数封装起来。例如，将 `f(x)` 封装为 `passmissing(f)(x)`。
 
 ## 相等和比较运算符
 
@@ -186,35 +171,38 @@ false
 包含缺失值的数组的创建就像其它数组
 ```jldoctest
 julia> [1, missing]
-2-element Array{Union{Missing, Int64},1}:
+2-element Vector{Union{Missing, Int64}}:
  1
   missing
 ```
 
-如此示例所示，此类数组的元素类型为 `Union{Missing, T}`，其中 `T` 为非缺失值的类型。这简单地反映了以下事实：数组条目可以具有类型 `T`（在这是 `Int64`）或类型 `Missing`。此类数组使用高效的内存存储，其等价于一个 `Array{T}` 组合一个 `Array{UInt8}`，前者保存实际值，后者表示条目类型（即它是 `Missing` 还是 `T`）。
+如此示例所示，此类数组的元素类型为 `Union{Missing, T}`，其中 `T` 为非缺失值的类型。这简单地反映了以下事实：数组条目可以具有类型 `T`（此处为 `Int64`）或类型 `Missing`。此类数组使用高效的内存存储，其等价于一个 `Array{T}` 和一个 `Array{UInt8}` 的组合，前者保存实际值，后者表示条目类型（即它是 `Missing` 还是 `T`）。
 
 允许缺失值的数组可以使用标准语法构造。使用 `Array{Union{Missing, T}}(missing, dims)` 来创建填充缺失值的数组：
 ```jldoctest
 julia> Array{Union{Missing, String}}(missing, 2, 3)
-2×3 Array{Union{Missing, String},2}:
+2×3 Matrix{Union{Missing, String}}:
  missing  missing  missing
  missing  missing  missing
 ```
 
+!!! note
+    使用 `undef` 或 `similar` 目前可能会给出一个填充有 `missing` 的数组，但这不是获得这样一个数组的正确方法。 请使用如上所示的 `missing` 构造函数。
+
 允许但不包含 `missing` 值的数组可使用 [`convert`](@ref) 转换回不允许缺失值的数组。如果该数组包含 `missing` 值，在类型转换时会抛出 `MethodError`
 ```jldoctest
 julia> x = Union{Missing, String}["a", "b"]
-2-element Array{Union{Missing, String},1}:
+2-element Vector{Union{Missing, String}}:
  "a"
  "b"
 
 julia> convert(Array{String}, x)
-2-element Array{String,1}:
+2-element Vector{String}:
  "a"
  "b"
 
 julia> y = Union{Missing, String}[missing, "b"]
-2-element Array{Union{Missing, String},1}:
+2-element Vector{Union{Missing, String}}:
  missing
  "b"
 
@@ -235,8 +223,7 @@ julia> sum(skipmissing([1, missing]))
 1
 ```
 
-This convenience function returns an iterator which filters out `missing` values
-efficiently. It can therefore be used with any function which supports iterators
+此函数方便地返回一个可高效滤除 `missing` 值的迭代器。因此，它可应用于所有支持迭代器的函数 
 ```jldoctest skipmissing; setup = :(using Statistics)
 julia> x = skipmissing([3, missing, 2, 1])
 skipmissing(Union{Missing, Int64}[3, missing, 2, 1])
@@ -249,12 +236,10 @@ julia> mean(x)
 
 julia> mapreduce(sqrt, +, x)
 4.146264369941973
+
 ```
 
-Objects created by calling `skipmissing` on an array can be indexed using indices
-from the parent array. Indices corresponding to missing values are not valid for
-these objects and an error is thrown when trying to use them (they are also skipped
-by `keys` and `eachindex`)
+通过在某数组中调用 `skipmissing` 生成的对象能以其在所属数组中的位置进行索引。对应缺失值的指标并不有效，若尝试使用之会丢出报错（它们在 `keys` 和 `eachindex` 中同样是被跳过的）。
 ```jldoctest skipmissing
 julia> x[1]
 3
@@ -264,13 +249,10 @@ ERROR: MissingException: the value at index (2,) is missing
 [...]
 ```
 
-This allows functions which operate on indices to work in combination with `skipmissing`.
-This is notably the case for search and find functions, which return indices
-valid for the object returned by `skipmissing` which are also the indices of the
-matching entries *in the parent array*
-```jldoctest skipmissing
+这允许对索引进行操作的函数与`skipmissing`结合使用。搜索和查找函数尤其如此，它们返回对`skipmissing` 函数返回的对象有效的索引，这些索引也是*在父数组中*匹配条目的索引。
+```jldoctest skipmissin
 julia> findall(==(1), x)
-1-element Array{Int64,1}:
+1-element Vector{Int64}:
  4
 
 julia> findfirst(!iszero, x)
@@ -280,10 +262,10 @@ julia> argmax(x)
 1
 ```
 
-Use [`collect`](@ref) to extract non-`missing` values and store them in an array
+使用 [`collect`](@ref) 提取非 `missing` 值并将它们存储在一个数组里
 ```jldoctest skipmissing
 julia> collect(x)
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  3
  2
  1

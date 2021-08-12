@@ -263,13 +263,13 @@ julia> Point(x::T, y::T) where {T<:Real} = Point{T}(x,y);
 julia> Point(x::Int64, y::Float64) = Point(convert(Float64,x),y);
 ```
 
-此方法采用了 [`convert`](@ref) 函数，显式地将 `x` 转化成了 [`Float64`](@ref) 类型，之后再委托前面讲到的那个通用的外部构造函数来进行具体的构造工作，经过转化，两个参数的类型都是 [`Float64`](@ref)，所以可以正确构造出一个 `Point{Float64}` 对象，而不会像之前那样触发 [`MethodError`](@ref)。
+此方法使用 [`convert`](@ref) 函数将 `x` 显式转换为 [`Float64`](@ref)，然后在两个参数都是 [`Float64`](@ref) 的情况下使用通用的构造函数。通过这个方法定义，以前的报[`MethodError`](@ref)的代码现在可以成功地创建一个类型为 `Point{Float64}` 的点：
 
 ```jldoctest parametric2
-julia> Point(1,2.5)
+julia> p = Point(1,2.5)
 Point{Float64}(1.0, 2.5)
 
-julia> typeof(ans)
+julia> typeof(p)
 Point{Float64}
 ```
 
@@ -301,11 +301,17 @@ julia> Point(1.0,1//2)
 Point{Float64}(1.0, 0.5)
 ```
 
-所以，即使 Julia 提供的默认内部构造函数对于类型参数的要求非常严格，我们也有方法将其变得更加易用。正因为构造函数可以充分发挥类型系统、方法以及多重分派的作用，定义复杂的行为也会变得非常简单。
+Thus, while the implicit type parameter constructors provided by default in Julia are fairly strict,
+it is possible to make them behave in a more relaxed but sensible manner quite easily. Moreover,
+since constructors can leverage all of the power of the type system, methods, and multiple dispatch,
+defining sophisticated behavior is typically quite simple.
 
-## 案例分析：分数的实现
+## Case Study: Rational
 
-上文主要讲了关于参数复合类型及其构造函数的一些零散内容，或许将这些内容结合起来的一个最佳方法是分析一个真实的案例。为此，我们来实现一个我们自己的分数类型 `OurRational`，它与 Julia 内置的分数类型 [`Rational`](@ref) 很相似，它的定义在 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl) 里：
+Perhaps the best way to tie all these pieces together is to present a real world example of a
+parametric composite type and its constructor methods. To that end, we implement our own rational number type
+`OurRational`, similar to Julia's built-in [`Rational`](@ref) type, defined in
+[`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl):
 
 
 ```jldoctest rational
@@ -316,7 +322,9 @@ julia> struct OurRational{T<:Integer} <: Real
                if num == 0 && den == 0
                     error("invalid rational: 0//0")
                end
-               g = gcd(den, num)
+               num = flipsign(num, den)
+               den = flipsign(den, den)
+               g = gcd(num, den)
                num = div(num, g)
                den = div(den, g)
                new(num, den)
@@ -357,11 +365,28 @@ julia> function ⊘(x::Complex, y::Complex)
 
 第一行 -- `struct OurRational{T<:Integer} <: Real` -- 声明了 `OurRational` 会接收一个整数类型的类型参数，且它自己属于实数类型。它声明了两个成员：`num::T` 和 `den::T`。这表明一个 `OurRational{T}` 的实例中会包含一对整数，且类型为 `T`，其中一个表示分子，另一个表示分母。
 
-现在事情开始变得有意思了，`OurRational` 只有一个内部构造函数，它的作用是检查 `num` 和 `den` 是否为 0，并确保构建的每个分数都是经过约分化简的形式，且分母为非负数。这可以令分子和分母同时除以它们的最大公约数来实现，最大公约数可以用 Julia 内置的 `gcd` 函数计算。由于 `gcd` 返回的最大公约数的符号是跟第一个参数 `den` 一致的，所以约分后一定会保证 `den` 的值为非负数。因为这是 `OurRational` 的唯一一个内部构造函数，所以我们可以确保构建出的 `OurRational` 对象一定是这种化简的形式。
+Now things get interesting. `OurRational` has a single inner constructor method which checks that
+`num` and `den` aren't both zero and ensures that every rational is constructed in "lowest
+terms" with a non-negative denominator. This is accomplished by first flipping the signs of numerator
+and denominator if the denominator is negative. Then, both are divided by their greatest common
+divisor (`gcd` always returns a non-negative number, regardless of the sign of its arguments). Because
+this is the only inner constructor for `OurRational`, we can be certain that `OurRational` objects are
+always constructed in this normalized form.
 
 为了方便，`OurRational` 也提供了一些其它的外部构造函数。第一个外部构造函数是“标准的”通用构造函数，当分子和分母的类型一致时，它就可以推导出类型参数 `T`。第二个外部构造函数可以用于分子和分母的类型不一致的情景，它会将分子和分母的类型提升至一个共同的类型，然后再委托第一个外部构造函数进行构造。第三个构造函数会将一个整数转化为分数，方法是将 1 当作分母。
 
-在定义了外部构造函数之后，我们为 `⊘` 算符定义了一系列的方法，之后就可以使用 `⊘` 算符来写分数，比如 `1 ⊘ 2`。Julia 的 `Rational` 类型采用的是 [`//`](@ref) 算符。在做上述定义之前，`⊘` 是一个无意的且未被定义的算符。它的行为与在[有理数](@ref)一节中描述的一致，注意它的所有行为都是那短短几行定义的。第一个也是最基础的定义只是将 `a ⊘ b` 中的 `a` 和 `b` 当作参数传递给 `OurRational` 的构造函数来实例化 `OurRational`，当然这要求 `a` 和 `b` 分别都是整数。在 `⊘` 的某个操作数已经是分数的情况下，我们采用了一个有点不一样的方法来构建新的分数，这实际上等价于用分数除以一个整数。最后，我们也可以让 `⊘` 作用于复数，用来创建一个类型为 `Complex{OurRational}` 的对象，即一个实部和虚部都是分数的复数：
+Following the outer constructor definitions, we defined a number of methods for the `⊘`
+operator, which provides a syntax for writing rationals (e.g. `1 ⊘ 2`). Julia's `Rational`
+type uses the [`//`](@ref) operator for this purpose. Before these definitions, `⊘`
+is a completely undefined operator with only syntax and no meaning. Afterwards, it behaves just
+as described in [Rational Numbers](@ref) -- its entire behavior is defined in these few lines.
+The first and most basic definition just makes `a ⊘ b` construct a `OurRational` by applying the
+`OurRational` constructor to `a` and `b` when they are integers. When one of the operands of `⊘`
+is already a rational number, we construct a new rational for the resulting ratio slightly differently;
+this behavior is actually identical to division of a rational with an integer.
+Finally, applying
+`⊘` to complex integral values creates an instance of `Complex{<:OurRational}` -- a complex
+number whose real and imaginary parts are rationals:
 
 ```jldoctest rational
 julia> z = (1 + 2im) ⊘ (1 - 2im);
@@ -369,17 +394,26 @@ julia> z = (1 + 2im) ⊘ (1 - 2im);
 julia> typeof(z)
 Complex{OurRational{Int64}}
 
-julia> typeof(z) <: Complex{OurRational}
-false
+julia> typeof(z) <: Complex{<:OurRational}
+true
 ```
 
-因此，尽管 `⊘` 算符通常会返回一个 `OurRational` 的实例，但倘若其中一个操作数是复整数，那么就会返回 `Complex{OurRational}`。感兴趣的话可以读一读 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl)：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自包涵的。
+Thus, although the `⊘` operator usually returns an instance of `OurRational`, if either
+of its arguments are complex integers, it will return an instance of `Complex{<:OurRational}` instead.
+The interested reader should consider perusing the rest of [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl):
+it is short, self-contained, and implements an entire basic Julia type.
 
 ## Outer-only constructors
 
-正如我们所看到的，典型的参数类型都有一个内部构造函数，它仅在全部的类型参数都已知的情况下才会被调用。例如，可以用 `Point{Int}` 调用，但`Point` 就不行。我们可以选择性的添加外部构造函数来自动推导并添加类型参数，比如，调用 `Point(1,2)` 来构造 `Point{Int}`。外部构造函数调用内部构造函数来实际创建实例。然而，在某些情况下，我们可能并不想要内部构造函数，从而达到禁止手动指定类型参数的目的。
+As we have seen, a typical parametric type has inner constructors that are called when type parameters
+are known; e.g. they apply to `Point{Int}` but not to `Point`. Optionally, outer constructors
+that determine type parameters automatically can be added, for example constructing a `Point{Int}`
+from the call `Point(1,2)`. Outer constructors call inner constructors to actually
+make instances. However, in some cases one would rather not provide inner constructors, so
+that specific type parameters cannot be requested manually.
 
-例如，假设我们要定义一个类型用于存储数组以及其累加和：
+For example, say we define a type that stores a vector along with an accurate representation of
+its sum:
 
 ```jldoctest
 julia> struct SummedArray{T<:Number,S<:Number}
@@ -388,7 +422,7 @@ julia> struct SummedArray{T<:Number,S<:Number}
        end
 
 julia> SummedArray(Int32[1; 2; 3], Int32(6))
-SummedArray{Int32,Int32}(Int32[1, 2, 3], 6)
+SummedArray{Int32, Int32}(Int32[1, 2, 3], 6)
 ```
 
 问题在于我们想让 `S` 的类型始终比 `T` 大，这样做是为了确保累加过程不会丢失信息。例如，当 `T` 是 [`Int32`](@ref) 时，我们想让 `S` 是 [`Int64`](@ref)。所以我们想要一种接口来禁止用户创建像 `SummedArray{Int32,Int32}` 这种类型的实例。一种实现方式是只提供一个 `SummedArray` 构造函数，当需要将其放入 `struct`-block 中，从而不让 Julia 提供默认的构造函数：
@@ -404,9 +438,11 @@ julia> struct SummedArray{T<:Number,S<:Number}
        end
 
 julia> SummedArray(Int32[1; 2; 3], Int32(6))
-ERROR: MethodError: no method matching SummedArray(::Array{Int32,1}, ::Int32)
+ERROR: MethodError: no method matching SummedArray(::Vector{Int32}, ::Int32)
 Closest candidates are:
-  SummedArray(::Array{T,1}) where T at none:4
+  SummedArray(::Vector{T}) where T at none:4
+Stacktrace:
+[...]
 ```
 
 此构造函数将会被 `SummedArray(a)` 这种写法触发。`new{T,S}` 的这种写法允许指定待构建类型的参数，也就是说调用它会返回一个 `SummedArray{T,S}` 的实例。`new{T,S}` 也可以用于其它构造函数的定义中，但为了方便，Julia 会根据正在构造的类型自动推导出 `new{}` 花括号里的参数（如果可行的话）。
