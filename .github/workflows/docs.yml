@@ -3,7 +3,6 @@ name: Documentation
 on:
   push:
     paths:
-      - '.github/workflows/docs.yml'
       - 'zh_CN/**'
     tags: 'v*'
 
