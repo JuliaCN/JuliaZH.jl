@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build and deploy
         timeout-minutes: 90
-        uses: JuliaCN/documenter-latex-action@v0.1
+        uses: JuliaCN/documenter-latex-action@v0.1.0
         with:
           project_dir: 'doc'
           format: pdf # trigger the pdf compilation in our doc/make.jl
