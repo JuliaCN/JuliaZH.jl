@@ -7,6 +7,12 @@ minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
+[manual-zh_cn.asynchronous-programmingmd]
+file_filter = <lang>/doc/src/manual/asynchronous-programming.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
 [manual-zh_cn.calling-c-and-fortran-codemd]
 file_filter = <lang>/doc/src/manual/calling-c-and-fortran-code.md
 minimum_perc = 0
@@ -15,6 +21,12 @@ type = GITHUBMARKDOWN
 
 [manual-zh_cn.code-loadingmd]
 file_filter = <lang>/doc/src/manual/code-loading.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.command-line-optionsmd]
+file_filter = <lang>/doc/src/manual/command-line-options.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
@@ -39,6 +51,12 @@ type = GITHUBMARKDOWN
 
 [manual-zh_cn.conversion-and-promotionmd]
 file_filter = <lang>/doc/src/manual/conversion-and-promotion.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[manual-zh_cn.distributed-computingmd]
+file_filter = <lang>/doc/src/manual/distributed-computing.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
@@ -133,6 +151,12 @@ minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
+[manual-zh_cn.multi-threadingmd]
+file_filter = <lang>/doc/src/manual/multi-threading.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
 [manual-zh_cn.networking-and-streamsmd]
 file_filter = <lang>/doc/src/manual/networking-and-streams.md
 minimum_perc = 0
@@ -216,7 +240,6 @@ file_filter = <lang>/doc/src/manual/workflow-tips.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
-
 
 [devdocs-zh_cn.astmd]
 file_filter = <lang>/doc/src/devdocs/ast.md
@@ -380,7 +403,6 @@ minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
-
 [base-zh_cn.arraysmd]
 file_filter = <lang>/doc/src/base/arrays.md
 minimum_perc = 0
@@ -490,6 +512,12 @@ source_lang = en
 type = GITHUBMARKDOWN
 
 
+[stdlib-zh_cn.artifactsmd]
+file_filter = <lang>/stdlib/Artifacts/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
 [stdlib-zh_cn.base64md]
 file_filter = <lang>/stdlib/Base64/docs/src/index.md
 minimum_perc = 0
@@ -526,8 +554,20 @@ minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
+[stdlib-zh_cn.futuremd]
+file_filter = <lang>/stdlib/Future/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
 [stdlib-zh_cn.interactiveutilsmd]
 file_filter = <lang>/stdlib/InteractiveUtils/docs/src/index.md
+minimum_perc = 0
+source_lang = en
+type = GITHUBMARKDOWN
+
+[stdlib-zh_cn.lazyartifactsmd]
+file_filter = <lang>/stdlib/LazyArtifacts/docs/src/index.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
@@ -564,12 +604,6 @@ type = GITHUBMARKDOWN
 
 [stdlib-zh_cn.mmapmd]
 file_filter = <lang>/stdlib/Mmap/docs/src/index.md
-minimum_perc = 0
-source_lang = en
-type = GITHUBMARKDOWN
-
-[stdlib-zh_cn.pkgmd]
-file_filter = <lang>/stdlib/Pkg/docs/src/index.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
@@ -628,14 +662,14 @@ minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
-[stdlib-zh_cn.statisticsmd]
-file_filter = <lang>/stdlib/Statistics/docs/src/index.md
+[stdlib-zh_cn.testmd]
+file_filter = <lang>/stdlib/Test/docs/src/index.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
 
-[stdlib-zh_cn.testmd]
-file_filter = <lang>/stdlib/Test/docs/src/index.md
+[stdlib-zh_cn.tomlmd]
+file_filter = <lang>/stdlib/TOML/docs/src/index.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
@@ -651,3 +685,4 @@ file_filter = <lang>/stdlib/UUIDs/docs/src/index.md
 minimum_perc = 0
 source_lang = en
 type = GITHUBMARKDOWN
+
