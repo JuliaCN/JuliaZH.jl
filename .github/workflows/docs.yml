@@ -1,15 +1,14 @@
 name: Documentation
 
 on:
-  pull_request:
   push:
-    branches:
-      - 'master'
-      - 'release-'
-    tags: '*'
+    paths:
+      - '.github/workflows/docs.yml'
+      - 'zh_CN/**'
+    tags: 'v*'
 
 jobs:
-  deploy_html:
+  HTML:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,17 +25,19 @@ jobs:
         run: |
           julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
           julia --project=doc/ doc/make.jl deploy
-  # build_pdf:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Build and deploy
-  #       uses: docker://tianjun2018/documenter-latex:latest
-  #       run: |
-  #         apt-get update -q && apt-get install python3-pip -yq
-  #         pip3 install jill && jill install --confirm
-  #         julia -e 'using InteractiveUtils; versioninfo()'
-  #         ls -al
-  #         julia --project=doc/ -e 'using Pkg; Pkg.develop(PacakageSpec(path=pwd())); Pkg.instantiate()'
-  #         julia --project=doc/ doc/make.jl pdf texplatform=native
+  PDF:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and deploy
+        timeout-minutes: 90
+        uses: JuliaCN/documenter-latex-action@v0.1
+        with:
+          project_dir: 'doc'
+          format: pdf # trigger the pdf compilation in our doc/make.jl
+      - name: upload complied PDF file
+        uses: actions/upload-artifact@v2
+        with:
+          name: compiled contents
+          path: doc/build/*.pdf
 
