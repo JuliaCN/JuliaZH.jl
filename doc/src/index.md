@@ -1,8 +1,6 @@
 # Julia 1.7 中文文档
 
 欢迎来到 Julia 1.7 中文文档([PDF版本](https://docs.juliacn.com/pdf/dev/Julia中文文档.pdf))!
-<!-- 暂时还没部署新的版本， 所以使用 dev -->
-<!-- 欢迎来到 Julia 1.7 中文文档([PDF版本](https://docs.juliacn.com/pdf/v1.7.0/Julia中文文档-1.7.0.pdf))! -->
 
 请先阅读 [Julia 1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观。我们推荐刚刚开始学习 Julia 语言的朋友阅读中文社区提供的 [Julia入门指引](https://discourse.juliacn.com/t/topic/159)，也推荐你在[中文论坛](https://discourse.juliacn.com)对遇到的问题进行提问。
 
