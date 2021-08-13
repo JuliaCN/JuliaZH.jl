@@ -1,10 +1,11 @@
 name: Documentation
 
 on:
+  create:
+    tags:
   push:
-    paths:
-      - 'zh_CN/**'
-    tags: 'v*'
+    branches:
+      - master
 
 jobs:
   HTML:
