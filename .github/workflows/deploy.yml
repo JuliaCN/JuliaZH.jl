@@ -16,4 +16,4 @@ jobs:
           username: ${{ secrets.MIRROR_SERVER_USERNAME }}
           key: ${{ secrets.MIRROR_SERVER_SSH_KEY }}
           source: "./*"
-          target: "/gs/JuliaZH.jl.pdf/"
+          target: "/gs/JuliaZH.jl/pdf/"
