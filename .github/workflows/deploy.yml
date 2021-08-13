@@ -1,0 +1,19 @@
+name: Deploy to mirror server
+on:
+  push:
+
+jobs:
+  # server maintainers: @findmyway @johnnychen94 @Roger-luo @staticfloat
+  deploy_juliacn:
+    runs-on: ubuntu-latest
+    environment: github-pages-mirror
+    steps:
+      - uses: actions/checkout@v2
+      - name: deploy to juliacn docs server
+        uses: appleboy/scp-action@master
+        with:
+          host: juliacn.com
+          username: ${{ secrets.MIRROR_SERVER_USERNAME }}
+          key: ${{ secrets.MIRROR_SERVER_SSH_KEY }}
+          source: "./*"
+          target: "/gs/JuliaZH.jl.pdf/"
