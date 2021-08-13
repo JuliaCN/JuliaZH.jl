@@ -10,7 +10,7 @@ __Note__: 本节包含可运行在类 Unix 系统上的、使用 C 编写的嵌�
 
 ```c
 #include <julia.h>
-JULIA_DEFINE_FAST_TLS() // only define this once, in an executable (not in a shared library) if you want fast code.
+JULIA_DEFINE_FAST_TLS // only define this once, in an executable (not in a shared library) if you want fast code.
 
 int main(int argc, char *argv[])
 {
@@ -36,8 +36,9 @@ int main(int argc, char *argv[])
 gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib -Wl,-rpath,$JULIA_DIR/lib test.c -ljulia
 ```
 
-或者查看 Julia 源代码目录 `test/embedding/` 文件夹下的 `embedding.c` 文件。
-文件 `ui/repl.c` 则是另一个简单示例，用于设置链接 `libjulia` 时 `jl_options` 的选项 。
+Alternatively, look at the `embedding.c` program in the Julia source tree in the `test/embedding/` folder.
+The file `cli/loader_exe.c` program is another simple example of how to set `jl_options` options while
+linking against `libjulia`.
 
 在调用任何其他 Julia C 函数之前第一件必须要做的事是初始化 Julia，通过调用 `jl_init` 尝试自动确定 Julia 的安装位置来实现。如果需要自定义位置或指定要加载的系统映像，请改用 `jl_init_with_image`。
 
@@ -493,5 +494,5 @@ void jl_errorf(const char *fmt, ...);
 jl_errorf("argument x = %d is too large", x);
 ```
 
-在这个例子中假定 `x` 是一个 int 值。
+在这个例子中假定 `x` 是一个整数值。
 

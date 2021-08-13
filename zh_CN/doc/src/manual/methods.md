@@ -13,6 +13,8 @@
     an explicit method argument. When the current `this` object is the receiver of a method call,
     it can be omitted altogether, writing just `meth(arg1,arg2)`, with `this` implied as the receiving
     object.
+!!! note
+    本章中的所有示例都假定是为*相同*模块中的函数定义模块。 如果你想给*另一个*模块中的函数添加方法，你必须`import`它或使用模块名称限定的名称。 请参阅有关 [命名空间管理](@ref namespace-management) 的部分。
 
 ## 定义方法
 
@@ -105,9 +107,9 @@ julia> f
 f (generic function with 2 methods)
 ```
 
-这个输出告诉我们`f`是有两个方法的函数对象。为了找出那些方法的特征是什么，使用 [`methods`](@ref)函数：
+这个输出展示了`f`有两个方法。为了找到这些方法的前面，使用[`methods`](@ref)函数：
 
-```julia-repl
+```jldoctest fofxy
 julia> methods(f)
 # 2 methods for generic function "f":
 [1] f(x::Float64, y::Float64) in Main at none:1
@@ -122,13 +124,21 @@ julia> methods(f)
 julia> f(x,y) = println("Whoa there, Nelly.")
 f (generic function with 3 methods)
 
+julia> methods(f)
+# 3 methods for generic function "f":
+[1] f(x::Float64, y::Float64) in Main at none:1
+[2] f(x::Number, y::Number) in Main at none:1
+[3] f(x, y) in Main at none:1
+
 julia> f("foo", 1)
 Whoa there, Nelly.
 ```
 
-这个接受所有的方法比其他的对一堆参数值的其他任意可能的方法定义更不专用。所以他只会被没有其他方法定义应用的一对参数调用。
+这个接受所有参数类型的方法比其他的对一对参数值的其他任意可能的方法定义更不专用。所以他只会被没有其他方法定义应用的一对参数调用。
 
-虽然这像是一个简单的概念，基于值的类型的多重分派可能是Julia语言的一个最强大和中心特性。核心运算符都典型地含有很多方法：
+注意到第三个方法的签名中并没有指定参数`x`和`y`的类型。它是`f(x::Any, y::Any)`的简写。
+
+尽管这看起来很简单，但对值类型的多重派发可能是 Julia 语言最强大和最核心的特性。 核心运算通常有几十种方法：
 
 ```julia-repl
 julia> methods(+)
@@ -244,28 +254,32 @@ julia> myappend(v::Vector{T}, x::T) where {T} = [v..., x]
 myappend (generic function with 1 method)
 
 julia> myappend([1,2,3],4)
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  2
  3
  4
 
 julia> myappend([1,2,3],2.5)
-ERROR: MethodError: no method matching myappend(::Array{Int64,1}, ::Float64)
+ERROR: MethodError: no method matching myappend(::Vector{Int64}, ::Float64)
 Closest candidates are:
-  myappend(::Array{T,1}, !Matched::T) where T at none:1
+  myappend(::Vector{T}, !Matched::T) where T at none:1
+Stacktrace:
+[...]
 
 julia> myappend([1.0,2.0,3.0],4.0)
-4-element Array{Float64,1}:
+4-element Vector{Float64}:
  1.0
  2.0
  3.0
  4.0
 
 julia> myappend([1.0,2.0,3.0],4)
-ERROR: MethodError: no method matching myappend(::Array{Float64,1}, ::Int64)
+ERROR: MethodError: no method matching myappend(::Vector{Float64}, ::Int64)
 Closest candidates are:
-  myappend(::Array{T,1}, !Matched::T) where T at none:1
+  myappend(::Vector{T}, !Matched::T) where T at none:1
+Stacktrace:
+[...]
 ```
 
 如你所看到的，追加的元素的类型必须匹配它追加到的向量的元素类型，否则会引起[`MethodError`](@ref)。在下面的例子中，方法类型参量`T`用作返回值：
@@ -417,32 +431,14 @@ julia> fetch(schedule(t, 1))
 ### 从超类型中提取出类型参数
 
 
-这里是一个正确地代码模板，它返回`AbstractArray`的任意子类型的元素类型`T`:
+以下是一个正确的代码模板，用于返回具有明确定义的元素类型的 `AbstractArray` 的任意子类型的元素类型 `T`：
 
 ```julia
 abstract type AbstractArray{T, N} end
 eltype(::Type{<:AbstractArray{T}}) where {T} = T
 ```
-使用了所谓的三角分派。注意如果 `T` 是一个 `UnionAll` 类型，比如 `eltype(Array{T} where T <: Integer)`，会返回 `Any`（如同 `Base` 中的 `eltype` 一样）。
 
-另外一个方法，这是在Julia v0.6中的三角分派到来之前的唯一正确方法，是：
-
-```julia
-abstract type AbstractArray{T, N} end
-eltype(::Type{AbstractArray}) = Any
-eltype(::Type{AbstractArray{T}}) where {T} = T
-eltype(::Type{AbstractArray{T, N}}) where {T, N} = T
-eltype(::Type{A}) where {A<:AbstractArray} = eltype(supertype(A))
-```
-
-另外一个可能性如下例，这可以对适配那些参数`T`需要更严格匹配的情况有用：
-```julia
-eltype(::Type{AbstractArray{T, N} where {T<:S, N<:M}}) where {M, S} = Any
-eltype(::Type{AbstractArray{T, N} where {T<:S}}) where {N, S} = Any
-eltype(::Type{AbstractArray{T, N} where {N<:M}}) where {M, T} = T
-eltype(::Type{AbstractArray{T, N}}) where {T, N} = T
-eltype(::Type{A}) where {A <: AbstractArray} = eltype(supertype(A))
-```
+使用所谓的三角派发。 请注意，`UnionAll` 类型，对于示例`eltype(AbstractArray{T} where T <: Integer)`，与上述方法不符。 在这种情况下，`Base` 中 `eltype` 的实现为 `Any` 增加了一个回退方法。
 
 
 一个常见的错误是试着使用内省来得到元素类型：
@@ -459,6 +455,23 @@ struct BitVector <: AbstractArray{Bool, 1}; end
 
 这里我们已经创建了一个没有参数的类型`BitVector`，但是元素类型已经完全指定了，`T`等于`Bool`！
 
+
+另一个错误是尝试使用 `supertype` 沿着类型层次结构向上走：
+```julia
+eltype_wrong(::Type{AbstractArray{T}}) where {T} = T
+eltype_wrong(::Type{AbstractArray{T, N}}) where {T, N} = T
+eltype_wrong(::Type{A}) where {A<:AbstractArray} = eltype_wrong(supertype(A))
+```
+
+虽然这适用于声明的类型，但对于不适用于没有超类型的类型：
+
+```julia-repl
+julia> eltype_wrong(Union{AbstractArray{Int}, AbstractArray{Float64}})
+ERROR: MethodError: no method matching supertype(::Type{Union{AbstractArray{Float64,N} where N, AbstractArray{Int64,N} where N}})
+Closest candidates are:
+  supertype(::DataType) at operators.jl:43
+  supertype(::UnionAll) at operators.jl:48
+```
 
 ### 用不同的类型参数构建相似的类型
 
@@ -502,7 +515,7 @@ copy_with_eltype(input, Eltype) = copyto!(similar(input, Eltype), input)
 
 这个样式是通过定义一个范用函数来实现，这个函数为函数参数可能属于的每个trait集合都计算出不同的单例值（或者类型）。如果这个函数是单纯的，这与通常的分派对于性能没有任何影响。
 
-上一节的例子掩盖了[`map`](@ref)和[`promote`](@ref)的实现细节，这两个都是依据trait来进行运算的。当对一个矩阵进行迭代，比如`map`的实现中，一个重要的问题是按照什么顺序去遍历数据。当`AbstractArray`的子类型实现了[`Base.IndexStyle`](@ref)trait，其他函数，比如`map`就可以根据这个信息进行分派，以选择最好的算法（参见[抽象数组接口](@ref man-interface-array)）。这意味着每个子类型就没有必要去实现对应的`map`版本，因为通用的定义加trait类就能让系统选择最快的版本。这里一个玩具似的`map`实现说明了基于trait的分派：
+上一部分中的示例掩盖了 [`map`](@ref) 和 [`promote`](@ref) 的实现细节，这两个都是依据trait来进行运算的。 在迭代矩阵时，例如在 `map` 的实现中，一个重要的问题是使用什么顺序遍历数据。 当 `AbstractArray` 子类型实现 [`Base.IndexStyle`](@ref) trait 时，`map` 等其他函数可以根据此信息进行派发以选择最佳算法（请参阅 [抽象数组接口](@ref man-interface-array））。这意味着每个子类型不需要实现`map`的自定义版本，因为通用定义+trait类将使系统能够选择最快的版本。 下面是 `map` 的一个简单实现，说明了基于 trait 的调度：
 
 ```julia
 map(f, a::AbstractArray, b::AbstractArray) = map(Base.IndexStyle(a, b), f, a, b)
@@ -688,8 +701,7 @@ julia> p()
 有时引入一个没有添加方法的范用函数是有用的。这会用于分离实现与接口定义。这也可为了文档或者代码可读性。为了这个的语法是没有参数组的一个空`函数`块：
 
 ```julia
-function emptyfunc
-end
+function emptyfunc end
 ```
 
 ## [方法设计与避免歧义](@id man-method-design-ambiguities)
@@ -709,7 +721,7 @@ f(x::Int, y) = 2
 f(x::Int, y::Int) = 3
 ```
 
-这是经常使用的对的方案；但是有些环境下盲目地遵从这个建议会适得其反。特别地，范用函数有的方法越多，出现歧义的可能性越高。当你的方法层级比这些简单的例子更加复杂时，就值得你花时间去仔细想想其他的方案。
+这通常是正确的方案； 然而，在某些情况下，盲目地遵循这一建议可能会适得其反。 特别是，泛型函数的方法越多，产生歧义的可能性就越大。 当方法层次结构变得比这个简单的示例更复杂时，仔细考虑替代策略可能是值得的。
 
 下面我们会讨论特别的一些挑战和解决这些挑战的一些可选方法。
 

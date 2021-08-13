@@ -4,7 +4,7 @@ Julia 拥有为数众多的灵活的 API，用于对已经排序的值数组进�
 
 ```jldoctest
 julia> sort([2,3,1])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  2
  3
@@ -14,7 +14,7 @@ julia> sort([2,3,1])
 
 ```jldoctest
 julia> sort([2,3,1], rev=true)
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  3
  2
  1
@@ -28,7 +28,7 @@ julia> a = [2,3,1];
 julia> sort!(a);
 
 julia> a
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  2
  3
@@ -121,6 +121,7 @@ Base.issorted
 Base.Sort.searchsorted
 Base.Sort.searchsortedfirst
 Base.Sort.searchsortedlast
+Base.Sort.insorted
 Base.Sort.partialsort!
 Base.Sort.partialsort
 Base.Sort.partialsortperm
@@ -168,3 +169,32 @@ defalg(v::AbstractArray{<:Number}) = QuickSort
 ```
 
 对于数值型数组，选择非稳定的默认排序算法的原则是稳定的排序算法没有必要的（例如：但两个值相比较时相等且不可区分时）。
+
+## Alternate orderings
+
+By default, `sort` and related functions use [`isless`](@ref) to compare two
+elements in order to determine which should come first. The
+[`Base.Order.Ordering`](@ref) abstract type provides a mechanism for defining
+alternate orderings on the same set of elements. Instances of `Ordering` define
+a [total order](https://en.wikipedia.org/wiki/Total_order) on a set of elements,
+so that for any elements `a`, `b`, `c` the following hold:
+
+* Exactly one of the following is true: `a` is less than `b`, `b` is less than
+  `a`, or `a` and `b` are equal (according to [`isequal`](@ref)).
+* The relation is transitive - if `a` is less than `b` and `b` is less than `c`
+  then `a` is less than `c`.
+
+The [`Base.Order.lt`](@ref) function works as a generalization of `isless` to
+test whether `a` is less than `b` according to a given order.
+
+```@docs
+Base.Order.Ordering
+Base.Order.lt
+Base.Order.ord
+Base.Order.Forward
+Base.Order.ReverseOrdering
+Base.Order.Reverse
+Base.Order.By
+Base.Order.Lt
+Base.Order.Perm
+```

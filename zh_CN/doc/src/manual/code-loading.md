@@ -1,4 +1,4 @@
-# 代码加载
+# [代码加载](@id code-loading)
 
 !!! note
     这一章包含了加载包的技术细节。如果要安装包，使用 Julia 的内置包管理器[`Pkg`](@ref Pkg)将包加入到你的活跃环境中。如果要使用已经在你的活跃环境中的包，使用 `import X` 或 `using X`，正如在[模块](@ref 模块)中所描述的那样。
@@ -17,7 +17,7 @@ Julia加载代码有两种机制：
 这些问题可通过查询各项目文件（`Project.toml` 或 `JuliaProject.toml`）、清单文件（`Manifest.toml` 或 `JuliaManifest.toml`），或是源文件的文件夹列在[`LOAD_PATH`](@ref) 中的项目环境解决。
 
 
-## 包的联合
+## [包的联合生态](@ref Federation-of-packages)
 
 大多数时候，一个包可以通过它的名字唯一确定。但有时在一个项目中，可能需要使用两个有着相同名字的不同的包。尽管你可以通过重命名其中一个包来解决这个问题，但在一个大型的、共享的代码库中被迫做这件事可能是有高度破坏性的。相反，Julia的包加载机制允许相同的包名在一个应用的不同部分指向不同的包。
 
@@ -31,7 +31,7 @@ Julia 支持联合的包管理，这意味着多个独立的部分可以维护�
 
 **环境**决定了 `import X` 和 `using X` 语句在不同的代码上下文中的含义以及什么文件会被加载。Julia 有两类环境（environment）：
 
-1. **A project environment** is a directory with a project file and an optional manifest file, and forms an *explicit environment*. The project file determines what the names and identities of the direct dependencies of a project are. The manifest file, if present, gives a complete dependency graph, including all direct and indirect dependencies, exact versions of each dependency, and sufficient information to locate and load the correct version.
+1. **项目环境（project environment）**是包含项目文件和清单文件（可选）的目录，并形成一个*显式环境*。项目文件确定项目的直接依赖项的名称和标识。清单文件（如果存在）提供完整的依赖关系图，包括所有直接和间接依赖关系，每个依赖的确切版本以及定位和加载正确版本的足够信息。
 2. **包目录（package directory）**是包含一组包的源码树子目录的目录，并形成一个*隐式环境*。如果 `X` 是包目录的子目录并且存在 `X/src/X.jl`，那么程序包 `X` 在包目录环境中可用，而 `X/src/X.jl` 是加载它使用的源文件。
 
 这些环境可以混合并用来创建**堆栈环境（stacked environment）**：是一组有序的项目环境和包目录，重叠为一个复合环境。然后，结合优先级规则和可见性规则，确定哪些包是可用的以及从哪里加载它们。例如，Julia 的负载路径是一个堆栈环境。
@@ -160,11 +160,11 @@ graph[UUID("c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1")][:Priv]
 项目环境的 **路径映射** 从 manifest 文件中提取得到。而包的路径 `uuid` 和名称 `X` 则 (循序) 依据这些规则确定。
 
 1. 如果目录中的项目文件与要求的 `uuid` 以及名称 `X` 匹配，那么可能出现以下情况的一种：
-  - 若该文件具有顶层 `路径` 入口，则 `uuid` 会被映射到该路径，文件的执行与包含项目文件的目录相关。
-  - 此外，`uuid` 依照包含项目文件的目录，映射至与`src/X.jl`。
+   - 若该文件具有顶层 `路径` 入口，则 `uuid` 会被映射到该路径，文件的执行与包含项目文件的目录相关。
+   - 此外，`uuid` 依照包含项目文件的目录，映射至与`src/X.jl`。
 2. 若非上述情况，且项目文件具有对应的清单文件，且该清单文件包含匹配 `uuid` 的节（stanza），那么：
-  - 若其具有一个 `路径` 入口，则使用该路径（与包含清单文件的目录相关）。
-  - 若其具有一个 `git-tree-sha1` 入口，计算一个确定的 `uuid` 与 `git-tree-sha1` 函数——我们把这个函数称为 `slug`——并在每个 Julia `DEPOT_PATH` 的全局序列中的目录查询名为 `packages/X/$slug` 的目录。使用存在的第一个此类目录。
+   - 若其具有一个 `路径` 入口，则使用该路径（与包含清单文件的目录相关）。
+   - 若其具有一个 `git-tree-sha1` 入口，计算一个确定的 `uuid` 与 `git-tree-sha1` 函数——我们把这个函数称为 `slug`——并在每个 Julia `DEPOT_PATH` 的全局序列中的目录查询名为 `packages/X/$slug` 的目录。使用存在的第一个此类目录。
 
 若某些结果成功，源码入口点的路径会是这些结果中的某个，结果的相对路径+`src/X.jl`；否则，`uuid` 不存在路径映射。当加载 `X` 时，如果没找到源码路径，查找即告失败，用户可能会被提示安装适当的包版本或采取其他纠正措施（例如，将 `X` 声明为某种依赖性）。
 
@@ -211,7 +211,7 @@ paths = Dict(
 
 ### 包目录
 
-包目录提供了一种更简单的环境，但不能处理名称冲突。在包目录中， 顶层包集合是“类似”包的子目录集合。“X”包存在于包目录中的条件，是目录包含下列“入口点”文件之一：
+包目录提供了一种更简单的环境，但不能处理名称冲突。在包目录中， 顶层包集合是“类似”包的子目录集合。`X`包存在于包目录中的条件，是目录包含下列“入口点”文件之一：
 
 - `X.jl`
 - `X/src/X.jl`
@@ -298,7 +298,7 @@ graph = Dict(
 )
 ```
 
-需要注意的一些概括性规则：
+值得注意的一些通用规则：
 
 1. 缺少项目文件的包能依赖于任何顶层依赖项， 并且由于包目录中的每个包在顶层依赖中可用，因此它可以导入在环境中的所有包。
 2. 含有项目文件的包不能依赖于缺少项目文件的包。 因为有项目文件的包只能加载那些在`graph`中的包，而没有项目文件的包不会出现在`graph`。

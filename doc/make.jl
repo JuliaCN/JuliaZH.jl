@@ -110,6 +110,9 @@ const PAGES = [
         "manual/missing.md",
         "manual/networking-and-streams.md",
         "manual/parallel-computing.md",
+        "manual/asynchronous-programming.md",
+        "manual/multi-threading.md",
+        "manual/distributed-computing.md",
         "manual/running-external-programs.md",
         "manual/calling-c-and-fortran-code.md",
         "manual/handling-operating-system-variation.md",
@@ -124,6 +127,7 @@ const PAGES = [
         "manual/faq.md",
         "manual/noteworthy-differences.md",
         "manual/unicode-input.md",
+        "manual/command-line-options.md",
     ],
     "Base" => [
         "base/base.md",
@@ -170,12 +174,15 @@ const PAGES = [
             "devdocs/offset-arrays.md",
             "devdocs/require.md",
             "devdocs/inference.md",
+            "devdocs/ssair.md",
+            "devdocs/gc-sa.md",
         ],
         "Developing/debugging Julia's C code" => [
             "devdocs/backtraces.md",
             "devdocs/debuggingtips.md",
             "devdocs/valgrind.md",
             "devdocs/sanitizers.md",
+            # "devdocs/probes.md" # seems not synced from transifix
         ],
     ],
 ]

@@ -19,6 +19,10 @@ julia> `echo hello`
      
      
 
+
+!!! note
+    下面假设在 Linux 或 MacOS 上使用 Posix 环境。 在 Windows 上，许多类似的命令，例如 `echo` 和 `dir`，不是外部程序，而是内置在 shell `cmd.exe` 本身中。 运行这些命令的一种选择是调用 `cmd.exe`，例如 `cmd /C echo hello`。 或者，Julia 可以在 Posix 环境中运行，例如 Cygwin。
+
 这是运行外部程序的简单示例：
 
 ```jldoctest
@@ -32,16 +36,16 @@ julia> run(mycommand);
 hello
 ```
 
-`hello` 是 `echo` 命令的输出，会被发送到 [`stdout`](@ref) 中去。run 方法本身返回 `nothing`，如果外部命令未能成功运行，则抛出 [`ErrorException`](@ref)。
+`hello` 是 `echo` 命令的输出，发送到 [`stdout`](@ref)。 如果外部命令无法成功运行，则 run 方法会抛出 [`ErrorException`](@ref)。
 
-如果要读取外部命令的输出，可以使用 [`read`](@ref)：
+如果要读取外部命令的输出，可以使用 [`read`](@ref) 或 [`readchomp`](@ref) 代替：
 
 ```jldoctest
-julia> a = read(`echo hello`, String)
+julia> read(`echo hello`, String)
 "hello\n"
 
-julia> chomp(a) == "hello"
-true
+julia> readchomp(`echo hello`)
+"hello"
 ```
 
 更一般地，你可以使用 [`open`](@ref) 来读取或写入外部命令。
@@ -60,7 +64,7 @@ julia> open(`less`, "w", stdout) do io
 命令中的程序名称和各个参数可以访问和迭代，这就好像命令也是一个字符串数组：
 ```jldoctest
 julia> collect(`echo "foo bar"`)
-2-element Array{String,1}:
+2-element Vector{String}:
  "echo"
  "foo bar"
 
@@ -110,7 +114,7 @@ julia> `sort $path/$name.$ext`
 
 ```jldoctest
 julia> files = ["/etc/passwd","/Volumes/External HD/data.csv"]
-2-element Array{String,1}:
+2-element Vector{String}:
  "/etc/passwd"
  "/Volumes/External HD/data.csv"
 
@@ -122,7 +126,7 @@ julia> `grep foo $files`
 
 ```jldoctest
 julia> names = ["foo","bar","baz"]
-3-element Array{String,1}:
+3-element Vector{String}:
  "foo"
  "bar"
  "baz"
@@ -135,13 +139,13 @@ julia> `grep xylophone $names.txt`
 
 ```jldoctest
 julia> names = ["foo","bar","baz"]
-3-element Array{String,1}:
+3-element Vector{String}:
  "foo"
  "bar"
  "baz"
 
 julia> exts = ["aux","log"]
-2-element Array{String,1}:
+2-element Vector{String}:
  "aux"
  "log"
 
@@ -273,6 +277,8 @@ wait(writer)
 fetch(reader)
 ```
 
+（通常，reader 不是一个单独的任务，因为无论如何我们都会立即`fetch`它）。
+
 ### 复杂示例
 
 高级编程语言、头等的命令抽象以及进程间管道的自动设置，三者组合起来非常强大。为了更好地理解可被轻松创建的复杂管道，这里有一些更复杂的例子，以避免对单行 Perl 程序的滥用。
@@ -308,3 +314,35 @@ B Z 5
 此示例与前一个类似，不同之处在于本例中的消费者有两个阶段，并且阶段间有不同的延迟，因此它们使用不同数量的并行 worker 来维持饱和的吞吐量。
 
 我们强烈建议你尝试所有这些例子，以便了解它们的工作原理。
+
+## `Cmd`对象
+反引号语法创建一个 [`Cmd`](@ref) 类型的对象。 此类对象也可以直接从现有的 `Cmd` 或参数列表构造：
+
+```julia
+run(Cmd(`pwd`, dir=".."))
+run(Cmd(["pwd"], detach=true, ignorestatus=true))
+```
+
+这允许你通过关键字参数指定 `Cmd` 的执行环境的几个方面。 例如，`dir` 关键字提供对 `Cmd` 工作目录的控制：
+
+```jldoctest
+julia> run(Cmd(`pwd`, dir="/"));
+/
+```
+
+并且 `env` 关键字允许您设置执行环境变量：
+
+```jldoctest
+julia> run(Cmd(`sh -c "echo foo \$HOWLONG"`, env=("HOWLONG" => "ever!",)));
+foo ever!
+```
+
+有关其它关键字参数，请参阅 [`Cmd`](@ref)。 [`setenv`](@ref) 和 [`addenv`](@ref) 命令分别提供了另一种替换或添加到 `Cmd` 执行环境变量的方法：
+
+```jldoctest
+julia> run(setenv(`sh -c "echo foo \$HOWLONG"`, ("HOWLONG" => "ever!",)));
+foo ever!
+
+julia> run(addenv(`sh -c "echo foo \$HOWLONG"`, "HOWLONG" => "ever!"));
+foo ever!
+```

@@ -8,11 +8,12 @@ to figure out why your script is running slower than expected.
 If you've been directed to this page, find the symptom that best matches what you're experiencing
 and follow the instructions to generate the debugging information requested.  Table of symptoms:
 
-  * [自举启动阶段的段错误 (`sysimg.jl`)](@ref)
-  * [运行脚本时的段错误](@ref)
-  * [启动 Julia 时发生的段错误](@ref)
+  * [Segfaults during bootstrap (`sysimg.jl`)](@ref)
+  * [Segfaults when running a script](@ref)
+  * [Errors during Julia startup](@ref)
+  * [Other generic segfaults or unreachables reached](@ref)
 
-## [版本/环境信息](@id dev-version-info)
+## [Version/Environment info](@id dev-version-info)
 
 No matter the error, we will always need to know what version of Julia you are running. When Julia
 first starts up, a header is printed out with a version number and date. Please also include the output of `versioninfo()` (exported from the [`InteractiveUtils`](@ref InteractiveUtils.versioninfo) standard library) in any report you create:
@@ -106,7 +107,23 @@ Create a [gist](https://gist.github.com) with the `strace`/ `dtruss` output, the
 and any other pertinent information and open a new [issue](https://github.com/JuliaLang/julia/issues?q=is%3Aopen)
 on Github with a link to the gist.
 
-## 术语表
+## Other generic segfaults or unreachables reached
+
+As mentioned elsewhere, `julia` has good integration with `rr` for generating traces; this includes, on Linux, the ability to automatically run `julia` under `rr` and share the trace after a crash. This can be immensely helpful when debugging such crashes and is strongly encouraged when reporting crash issues to the JuliaLang/julia repo. To run `julia` under `rr` automatically, do:
+
+```julia
+julia --bug-report=rr
+```
+
+To generate the `rr` trace locally, but not share, you can do:
+
+```julia
+julia --bug-report=rr-local
+```
+
+Note that this is only works on Linux. The blog post on [Time Travelling Bug Reporting](https://julialang.org/blog/2020/05/rr/) has many more details.
+
+## Glossary
 
 A few terms have been used as shorthand in this guide:
 
