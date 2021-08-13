@@ -182,7 +182,7 @@ const PAGES = [
             "devdocs/debuggingtips.md",
             "devdocs/valgrind.md",
             "devdocs/sanitizers.md",
-            "devdocs/probes.md"
+            # "devdocs/probes.md" # seems not synced from transifix
         ],
     ],
 ]
