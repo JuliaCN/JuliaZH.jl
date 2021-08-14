@@ -4,6 +4,9 @@
 
 请先阅读 [Julia 1.0 正式发布博文](https://julialang.org/blog/2018/08/one-point-zero-zh_cn) 以获得对这门语言的总体概观。我们推荐刚刚开始学习 Julia 语言的朋友阅读中文社区提供的 [Julia入门指引](https://discourse.juliacn.com/t/topic/159)，也推荐你在[中文论坛](https://discourse.juliacn.com)对遇到的问题进行提问。
 
+!!! tip "镜像加速"
+    使用镜像站来加速下载几乎是每个国内用户都需要了解的事情，关于镜像站的使用说明及汇总可以在 [Julia PkgServer 镜像服务及镜像站索引](https://discourse.juliacn.com/t/topic/2969) 中可以看到。
+
 !!! note "关于中文文档"
     Julia 语言相关的本地化工作是一个由社区驱动的开源项目 [JuliaZH.jl](https://github.com/JuliaCN/JuliaZH.jl)，旨在方便 Julia 的中文用户。我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。翻译工作正在进行，有任何疑问或建议请到[社区论坛文档区](https://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](https://discourse.juliacn.com/t/topic/277)。
 
