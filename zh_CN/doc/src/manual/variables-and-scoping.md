@@ -87,9 +87,9 @@ ERROR: cannot assign variables in other modules
 
 1. **现存的局部变量：**如果 `x` **已经是一个局部变量**，那现存的局部变量 `x` 将被
    赋值；
-2. **硬作用域：**如果 `x` **并非已经是局部变量**，并且赋值发生
-   hard scope construct (i.e. within a `let` block, function or macro body, comprehension, or
-   生成器），这次赋值最终会在该作用域创建名为 `x` 的新局部变量；
+2. **硬作用域：如果 `x` 还*不是局部变量*并且赋值发生的作用域结构是硬作用域（即在 `let` 语句块、函数体、宏、推导式或生成器中），则会在赋值作用域中创建一个名为 `x` 的新局部变量；
+    
+    
 3. **软作用域：**如果 `x` **并非已经是局部变量**，并且所有包含
    此次赋值的作用域结构是软作用域（循环、`try`/`catch` 块、或者 `struct` 块），
    最后行为取决于全局变量 `x` 是否被定义：
@@ -104,8 +104,7 @@ ERROR: cannot assign variables in other modules
 
 既然你知道这个规则，那就看看一些例子。每个例子都是一个新的REPL会话中进行的，因此每个片段中唯一的全局变量就是在该代码块中分配的全局变量。
 
-We'll begin with a nice and clear-cut situation—assignment inside of a hard scope, in this case a
-function body, when no local variable by that name already exists:
+我们将从一个良好且明确的情况开始——在一个硬作用域内赋值，在这个情况下是一个函数体，当同名的局部变量不存在时：
 
 ```jldoctest
 julia> function greet()
@@ -222,14 +221,11 @@ julia> sum_to_def_closure(10)
     
     
 
-2. It doesn't matter if the definition of an outer local happens below where it
-   is updated, the rule remains the same. The entire enclosing local scope is
-   parsed and its locals determined before inner local meanings are resolved.
+2. 外部的局部变量的定义是否发生在更新位置的下方并不重要，规则保持不变。在解析内部的局部变量含义之前，解析整个封闭局部作用域并确定其局部变量。
+    
+    
 
-This design means that you can generally move code in or out of an inner
-function without changing its meaning, which facilitates a number of common
-idioms in the language using closures (see [do blocks](@ref
-Do-Block-Syntax-for-Function-Arguments)).
+这种设计意味着你通常可以将代码移入或移出内部函数而不改变其含义，这给使用闭包语言中的许多常见习语提供了便利。（参见 [do blocks](@ref Do-Block-Syntax-for-Function-Arguments))。
 
 让我们继续讨论软作用域规则涵盖的一些更模糊的情况。 我们将通过将 `gree`t 和 `sum_to_def `函数的主体提取到软作用域上下文中来探索这一点。 首先，让我们将 `greet` 的主体放在一个 `for` 循环中——它是软的，而不是硬的——并在 REPL 中运行：
 
@@ -360,30 +356,20 @@ for i = 1:10
 end
 ```
 
-Do you see that `global` annotation in there? Hideous. Obviously this situation could not be
-tolerated. But seriously, there are two main issues with requiring `global` for this kind of
-top-level code:
+你看到那里的`global`注解了吗？非常令人讨厌。 显然，这种情况是不能容忍的。但更严重的是，这种需要`global`顶层代码的情况有两个主要问题：
 
 1. 从函数体内部复制和粘贴代码到 REPL 来debug不再方便——你必须加上`global`注释，然后把它删了再复制回去。
     
 
-2. Beginners will write this kind of code without the `global` and have no idea why their code
-   doesn't work—the error that they get is that `s` is undefined, which does not seem to enlighten
-   anyone who happens to make this mistake.
+2. 初学者编写这种代码往往不会加 `global` ，并且不知道为什么他们的代码不起作用 - 他们得到的错误是 `s` 未定义，这似乎并没有启发犯错的人。
+    
+    
 
-As of Julia 1.5, this code works without the `global` annotation in interactive contexts like the
-REPL or Jupyter notebooks (just like Julia 0.6) and in files and other non-interactive contexts, it
-prints this very direct warning:
+从 Julia 1.5 开始，此代码在 REPL 或 Jupyter 笔记本（就像 Julia 0.6）等交互式上下文中无需`global`注解即可正确执行，同时，在文件和其他非交互式上下文中，它会打印出以下非常直接的警告：
 
-> Assignment to `s` in soft scope is ambiguous because a global variable by the same name exists:
-> `s` will be treated as a new local. Disambiguate by using `local s` to suppress this warning or
-> `global s` to assign to the existing global variable.
+> 在软作用域中对 `s` 的赋值是不明确的，因为存在同名的全局变量：`s` 将被视为新的局部变量。 通过使用 `local s` 来消除此警告或使用 `global s` 赋值给现有的全局变量来消除歧义。
 
-This addresses both issues while preserving the "programming at scale" benefits of the 1.0 behavior:
-global variables have no spooky effect on the meaning of code that may be far away; in the REPL
-copy-and-paste debugging works and beginners don't have any issues; any time someone either forgets
-a `global` annotation or accidentally shadows an existing global with a local in a soft scope,
-which would be confusing anyway, they get a nice clear warning.
+这解决了这两个问题，同时保留了 1.0 行为的“大规模编程”好处：全局变量对可能很远的代码的含义没有幽灵般的影响； 在 REPL 复制粘贴调试工作，初学者没有任何问题； 任何时候有人忘记`global`注解或不小心用软作用域中的局部变量遮蔽了现有的全局变量，这无论如何都会令人困惑，他们会得到一个很好的明确警告。
 
 这种设计的一个重要特点是，在没有警告的情况下在文件中执行的任何代码在新的 REPL 中的行为方式相同。 另一方面，如果您使用 REPL 会话并将其保存到文件中，如果它的行为与 REPL 中的行为不同，那么您将收到警告。
 
@@ -464,7 +450,7 @@ julia> let x = 1
 
 ### 循环和数组推导
 
-对于循环和[数组推导](@ref)：在其内部作用域中引入的新变量在每次循环迭代中都会被新分配一块内存，如同被 `let` 块包围。
+对于循环和[数组推导](@ref man-comprehensions)：在其内部作用域中引入的新变量在每次循环迭代中都会被新分配一块内存，如同被 `let` 块包围。
 
 ```jldoctest
 julia> Fs = Vector{Any}(undef, 2);

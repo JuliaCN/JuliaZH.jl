@@ -57,15 +57,11 @@ julia> Threads.threadid()
 !!! note
     使用 `-t`/`--threads` 指定的线程数传播到使用 `-p`/`--procs` 或 `--machine-file` 命令行选项产生的工作进程。 例如，`julia -p2 -t2` 产生 1 个主进程和 2 个工作进程，并且所有三个进程都启用了 2 个线程。 要对工作线程进行更细粒度的控制，请使用 [`addprocs`](@ref) 并将 `-t`/`--threads` 作为 `exeflags` 传递。
 
-## Data-race freedom
+## 数据竞争自由
 
-You are entirely responsible for ensuring that your program is data-race free,
-and nothing promised here can be assumed if you do not observe that
-requirement. The observed results may be highly unintuitive.
+你有责任确保程序没有数据竞争，如果你不遵守该要求，则不能假设这里承诺的任何内容。 观察到的结果可能是反直觉的。
 
-The best way to ensure this is to acquire a lock around any access to data that
-can be observed from multiple threads. For example, in most cases you should
-use the following code pattern:
+为了确保这一点，最好的办法是获取多线程同时访问的数据的锁。 例如，在大多数情况下，你应该使用以下代码模板：
 
 ```julia-repl
 julia> lock(lk) do
@@ -83,10 +79,7 @@ julia> begin
 ```
 其中 `lk` 是一个锁（例如 `ReentrantLock()`）， `a` 是数据。
 
-Additionally, Julia is not memory safe in the presence of a data race. Be very
-careful about reading _any_ data if another thread might write to it!
-Instead, always use the lock pattern above when changing data (such as assigning
-to a global or closure variable) accessed by other threads.
+此外，Julia 在出现数据竞争时不是内存安全的。如果另一个线程可能会写入数据，则在读取_任何_数据时都要非常小心！ 相反，在更改其他线程访问的数据（例如分配给全局或闭包变量）时，请始终使用上述锁模式。
 
 ```julia
 Thread 1:
@@ -133,8 +126,7 @@ julia> Threads.@threads for i = 1:10
        end
 ```
 
-The iteration space is split among the threads, after which each thread writes its thread ID
-to its assigned locations:
+根据线程调度，迭代在各线程中进行拆分，之后各线程将自己的线程ID写入对应区域。
 
 ```julia-repl
 julia> a
@@ -217,110 +209,77 @@ julia> acc[]
 ```
 
 
-## [Per-field atomics](@id man-atomics)
+## [field粒度的原子操作](@id man-atomics)
 
-We can also use atomics on a more granular level using the [`@atomic`](@ref
-Base.@atomic), [`@atomicswap`](@ref Base.@atomicswap), and
-[`@atomicreplace`](@ref Base.@atomicreplace) macros.
+我们还可以使用[`@atomic`](@ref Base.@atomic)、[`@atomicswap`](@ref Base.@atomicswap)和[`@atomicreplace`](@ref Base.@atomicreplace) 宏在更细粒度的级别上使用原子。
 
-Specific details of the memory model and other details of the design are written
-in the [Julia Atomics
-Manifesto](https://gist.github.com/vtjnash/11b0031f2e2a66c9c24d33e810b34ec0),
-which will later be published formally.
+内存模型的具体细节和设计的其他细节写在[Julia Atomics Manifesto](https://gist.github.com/vtjnash/11b0031f2e2a66c9c24d33e810b34ec0)中，稍后将正式发布。
 
-Any field in a struct declaration can be decorated with `@atomic`, and then any
-write must be marked with `@atomic` also, and must use one of the defined atomic
-orderings (:monotonic, :acquire, :release, :acquire\_release, or
-:sequentially\_consistent). Any read of an atomic field can also be annotated
-with an atomic ordering constraint, or will be done with monotonic (relaxed)
-ordering if unspecified.
+struct 声明中的任何字段都可以用 `@atomic` 修饰，然后任何写入也必须用 `@atomic` 标记，并且必须使用定义的原子顺序之一（:monotonic、:acquire、:release、:acquire \_release 或 :sequentially\_consistent)。 对原子字段的任何读取也可以使用原子排序约束进行注释，或者如果未指定，将使用单调（宽松）排序完成。
+
+!!! compat "Julia 1.7"
+    field粒度的原子操作至少需要 Julia 1.7.
 
 
 ## 副作用和可变的函数参数
 
 
-When using multi-threading we have to be careful when using functions that are not
-[pure](https://en.wikipedia.org/wiki/Pure_function) as we might get a wrong answer.
-For instance functions that have a
-[name ending with `!`](@ref bang-convention)
-by convention modify their arguments and thus are not pure.
+使用多线程时，我们必须小心使用非 [纯](https://en.wikipedia.org/wiki/Pure_function) 的函数，因为我们可能会得到错误的答案。 例如，按照惯例具有 [名称以`!` 结尾](@ref bang-convention) 的函数会修改它们的参数，因此不是纯函数。
 
 
 ## @threadcall
 
-External libraries, such as those called via [`ccall`](@ref), pose a problem for
-Julia's task-based I/O mechanism.
-If a C library performs a blocking operation, that prevents the Julia scheduler
-from executing any other tasks until the call returns.
-(Exceptions are calls into custom C code that call back into Julia, which may then
-yield, or C code that calls `jl_yield()`, the C equivalent of [`yield`](@ref).)
+外部库，例如通过 [`ccall`](@ref) 调用的库，给 Julia 基于任务的 I/O 机制带来了问题。 如果 C 库执行阻塞操作，这会阻止 Julia 调度程序执行任何其他任务，直到调用返回。（例外情况是调用回调到 Julia 的自定义 C 代码，然后它可能会 yield，或者调用 `jl_yield()` 的 C 代码，`jl_yield` 是 [`yield`](@ref) 的 C 等价物。）
 
-The [`@threadcall`](@ref) macro provides a way to avoid stalling execution in such
-a scenario.
-It schedules a C function for execution in a separate thread. A threadpool with a
-default size of 4 is used for this. The size of the threadpool is controlled via environment variable
-`UV_THREADPOOL_SIZE`. While waiting for a free thread, and during function execution once a thread
-is available, the requesting task (on the main Julia event loop) yields to other tasks. Note that
-`@threadcall` does not return until the execution is complete. From a user point of view, it is
-therefore a blocking call like other Julia APIs.
+[`@threadcall`](@ref) 宏提供了一种避免在这种情况下停止执行的方法。它调度一个 C 函数以在单独的线程中执行。为此使用默认大小为 4 的线程池。线程池的大小由环境变量`UV_THREADPOOL_SIZE`控制。 在等待空闲线程时，以及一旦线程可用后的函数执行期间，请求任务（在主 Julia 事件循环上）让步给其他任务。 注意，`@threadcall` 在执行完成之前不会返回。 因此，从用户的角度来看，它与其他 Julia API 一样是一个阻塞调用。
 
 非常关键的一点是，被调用的函数不会再调用回 Julia。
 
 `@threadcall` 在 Julia 未来的版本中可能会被移除或改变。
 
 
-## Caveats
+## 注意！
 
-At this time, most operations in the Julia runtime and standard libraries
-can be used in a thread-safe manner, if the user code is data-race free.
-However, in some areas work on stabilizing thread support is ongoing.
-Multi-threaded programming has many inherent difficulties, and if a program
-using threads exhibits unusual or undesirable behavior (e.g. crashes or
-mysterious results), thread interactions should typically be suspected first.
+此时，如果用户代码没有数据竞争，Julia 运行时和标准库中的大多数操作都可以以线程安全的方式使用。 然而，在某些领域，稳定线程支持的工作正在进行中。多线程编程有许多内在的困难，如果使用线程的程序表现出异常或与预期不符的行为（例如崩溃或神秘的结果），通常应该首先怀疑线程交互。
 
-There are a few specific limitations and warnings to be aware of when using
-threads in Julia:
+在 Julia 中使用线程时需要注意以下这些特定的限制和警告：
 
-  * Base collection types require manual locking if used simultaneously by
-    multiple threads where at least one thread modifies the collection
-    (common examples include `push!` on arrays, or inserting
-    items into a `Dict`).
-  * After a task starts running on a certain thread (e.g. via `@spawn`), it
-    will always be restarted on the same thread after blocking. In the future
-    this limitation will be removed, and tasks will migrate between threads.
-  * `@threads` currently uses a static schedule, using all threads and assigning
-    equal iteration counts to each. In the future the default schedule is likely
-    to change to be dynamic.
-  * The schedule used by `@spawn` is nondeterministic and should not be relied on.
-  * Compute-bound, non-memory-allocating tasks can prevent garbage collection from
-    running in other threads that are allocating memory. In these cases it may
-    be necessary to insert a manual call to `GC.safepoint()` to allow GC to run.
-    This limitation will be removed in the future.
-  * Avoid running top-level operations, e.g. `include`, or `eval` of type,
-    method, and module definitions in parallel.
-  * Be aware that finalizers registered by a library may break if threads are enabled.
-    This may require some transitional work across the ecosystem before threading
-    can be widely adopted with confidence. See the next section for further details.
+  * 如果多个线程同时使用基本容器类型，且至少有一个线程修改容器时，需要手动加锁（常见示例包括 `push!` 数组，或将项插入 `Dict`）。
+     
+     
+     
+  * 任务开始在某个线程上运行后（例如通过`@spawn`），它会在阻塞后始终在同一线程上重新启动。 将来这个限制将被移除，任务会在线程之间迁移。
+     
+     
+  * `@threads` 当前使用静态调度，使用所有线程并为每个线程分配相等的迭代计数。将来，默认时间表可能会更改为动态的。
+     
+     
+  * `@spawn` 使用的时间表是不确定的，不应依赖。
+  * 计算绑定、非内存分配任务可以防止垃圾回收在其他正在分配内存的线程中运行。 在这些情况下，可能需要手动调用 `GC.safepoint()` 以允许 GC 运行。
+     
+     
+    该限制在未来会被移除。
+  * 避免并行运行顶层操作，例如，`include` 或 `eval` 评估类型、方法和模块定义。
+     
+  * 请注意，如果启用线程，则库注册的终结器可能会中断。
+    这可能需要在整个生态系统中进行一些过渡工作，然后才能放心地广泛采用线程。 有关更多详细信息，请参阅下一节。
+     
 
-## Safe use of Finalizers
+## 终结器的安全使用
 
-Because finalizers can interrupt any code, they must be very careful in how
-they interact with any global state. Unfortunately, the main reason that
-finalizers are used is to update global state (a pure function is generally
-rather pointless as a finalizer). This leads us to a bit of a conundrum.
-There are a few approaches to dealing with this problem:
+因为终结器可以中断任何代码，所以它们在如何与任何全局状态交互时必须非常小心。 不幸的是，使用终结器的主要原因是更新全局状态（纯函数作为终结器通常毫无意义）。 这让我们陷入了一个难题。 有几种方法可以处理这个问题：
 
-1. When single-threaded, code could call the internal `jl_gc_enable_finalizers`
-   C function to prevent finalizers from being scheduled
-   inside a critical region. Internally, this is used inside some functions (such
-   as our C locks) to prevent recursion when doing certain operations (incremental
-   package loading, codegen, etc.). The combination of a lock and this flag
-   can be used to make finalizers safe.
+1. 当单线程时，代码可以调用内部 `jl_gc_enable_finalizers` C 函数以防止在关键区域内调度终结器。 在内部，这在某些函数（例如我们的 C locks）中使用，以防止在执行某些操作（增量包加载、代码生成等）时发生递归。 锁和此标志的组合可用于使终结器安全。
+    
+    
+    
+    
+    
 
-2. A second strategy, employed by Base in a couple places, is to explicitly
-   delay a finalizer until it may be able to acquire its lock non-recursively.
-   The following example demonstrates how this strategy could be applied to
-   `Distributed.finalize_ref`:
+2. Base 在几个地方采用的第二种策略是显式延迟终结器，直到它可以非递归地获取其锁。 以下示例演示了如何将此策略应用于 `Distributed.finalize_ref`：
+    
+    
+    
 
    ```julia
    function finalize_ref(r::AbstractRemoteRef)
@@ -343,15 +302,15 @@ There are a few approaches to dealing with this problem:
    end
    ```
 
-3. A related third strategy is to use a yield-free queue. We don't currently
-   have a lock-free queue implemented in Base, but
-   `Base.InvasiveLinkedListSynchronized{T}` is suitable. This can frequently be a
-   good strategy to use for code with event loops. For example, this strategy is
-   employed by `Gtk.jl` to manage lifetime ref-counting. In this approach, we
-   don't do any explicit work inside the `finalizer`, and instead add it to a queue
-   to run at a safer time. In fact, Julia's task scheduler already uses this, so
-   defining the finalizer as `x -> @spawn do_cleanup(x)` is one example of this
-   approach. Note however that this doesn't control which thread `do_cleanup`
-   runs on, so `do_cleanup` would still need to acquire a lock. That
-   doesn't need to be true if you implement your own queue, as you can explicitly
-   only drain that queue from your thread.
+3. 相关的第三种策略是使用不需要 yield 的队列。 我们目前没有在 Base 中实现无锁队列，但 `Base.InvasiveLinkedListSynchronized{T}` 是合适的。 这通常是用于带有事件循环的代码的好策略。 例如，这个策略被 `Gtk.jl` 用来管理生命周期引用计数。 在这种方法中，我们不会在终结器内部做任何显式工作，而是将其添加到队列中以在更安全的时间运行。 事实上，Julia 的任务调度器已经使用了这种方法，因此将终结器定义为 `x -> @spawn do_cleanup(x)` 就是这种方法的一个示例。 但是请注意，这并不控制 `do_cleanup` 在哪个线程上运行，因此 `do_cleanup` 仍需要获取锁。 如果你实现自己的队列，则不必如此，因为你只能明确地从线程中排出该队列。
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

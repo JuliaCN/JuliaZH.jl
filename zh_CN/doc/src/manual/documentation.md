@@ -88,14 +88,14 @@ function bar(x, y) ...
 5. 给相关函数提供提示。
 
    有时会存在具有功能相联系的函数。为了更易于发现相关函数，请在段落 `See also:` 中为其提供一个小列表。
-   a short list of these in a `See also` paragraph.
+    
 
    ```
    See also [`bar!`](@ref), [`baz`](@ref), [`baaz`](@ref).
    ```
 6. 请在 `# Examples` 中包含一些代码例子。
 
-   例子应尽可能按照 *doctest* 来写。*doctest* 是一个栅栏分隔开的代码块（请参阅[代码块](@ref)），其以 ````` ```jldoctest````` 开头并包含任意数量的提示符 `julia>` 以及用来模拟 Julia REPL 的输入和预期输出。
+   例子应尽可能按照 *doctest* 来写。*doctest* 是一个栅栏分隔开的代码块（请参阅[代码块](@ref Code-blocks)），其以 ````` ```jldoctest````` 开头并包含任意数量的提示符 `julia>` 以及用来模拟 Julia REPL 的输入和预期输出。
     
     
 

@@ -36,9 +36,7 @@ int main(int argc, char *argv[])
 gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib -Wl,-rpath,$JULIA_DIR/lib test.c -ljulia
 ```
 
-Alternatively, look at the `embedding.c` program in the Julia source tree in the `test/embedding/` folder.
-The file `cli/loader_exe.c` program is another simple example of how to set `jl_options` options while
-linking against `libjulia`.
+或者，查看 `test/embedding/` 文件夹中 Julia 源代码树中的 `embedding.c` 程序。 文件 `cli/loader_exe.c` 程序是另一个简单的例子，说明如何在链接 `libjulia` 时设置 `jl_options` 选项。
 
 在调用任何其他 Julia C 函数之前第一件必须要做的事是初始化 Julia，通过调用 `jl_init` 尝试自动确定 Julia 的安装位置来实现。如果需要自定义位置或指定要加载的系统映像，请改用 `jl_init_with_image`。
 
@@ -111,17 +109,15 @@ all: embed_example
 
 ## 在 Windows 使用 Visual Studio 进行高级别嵌入
 
-If the `JULIA_DIR` environment variable hasn't been setup, add it using the System panel before
-starting Visual Studio. The `bin` folder under JULIA_DIR should be on the system PATH.
+如果尚未设置`JULIA_DIR`环境变量，请在启动 Visual Studio 之前使用系统面板添加它。JULIA_DIR 下的`bin` 文件夹应该在系统路径上。
 
-We start by opening Visual Studio and creating a new Console Application project. To the 'stdafx.h'
-header file, add the following lines at the end:
+我们首先打开 Visual Studio 并创建一个新的控制台应用程序项目。 在`stdafx.h`头文件的末尾添加以下几行：
 
 ```c
 #include <julia.h>
 ```
 
-Then, replace the main() function in the project with this code:
+然后，将项目中的 main() 函数替换为以下代码：
 
 ```c
 int main(int argc, char *argv[])
@@ -142,16 +138,11 @@ int main(int argc, char *argv[])
 }
 ```
 
-The next step is to set up the project to find the Julia include files and the libraries. It's important to
-know whether the Julia installation is 32- or 64-bits. Remove any platform configuration that doesn't correspond
-to the Julia installation before proceeding.
+下一步是设置项目以查找 Julia 包含的文件和库。 了解 Julia 安装的是 32 位还是 64 位非常重要。 在继续之前删除与 Julia 安装不对应的任何平台配置。
 
-Using the project Properties dialog, go to `C/C++` | `General` and add `$(JULIA_DIR)\include\julia\` to the
-Additional Include Directories property. Then, go to the `Linker` | `General` section and add `$(JULIA_DIR)\lib`
-to the Additional Library Directories property. Finally, under `Linker` | `Input`, add `libjulia.dll.a;libopenlibm.dll.a;`
-to the list of libraries.
+使用项目属性对话框，转到`C/C++` | `General` 并将 `$(JULIA_DIR)\include\julia\` 添加到 Additional Include Directories 属性。 然后，转到`Linker` | `General` 部分并将 `$(JULIA_DIR)\lib` 添加到 Additional Library Directories 属性。最后，在`Linker`| `Input`下，将`libjulia.dll.a;libopenlibm.dll.a;`添加到库列表中。
 
-At this point, the project should build and run.
+到这里，该项目应该成功构建和运行。
 
 ## 转换类型
 
@@ -209,14 +200,7 @@ jl_value_t *jl_call(jl_function_t *f, jl_value_t **args, int32_t nargs)
 
 通常，Julia 对象由垃圾收集器（GC）释放，但 GC 不会自动就懂我们正C中保留对Julia值的引用。这意味着 GC 会在你的掌控之外释放对象，从而使指针无效。
 
-The GC can only run when Julia objects are allocated. Calls like `jl_box_float64` perform allocation,
-and allocation might also happen at any point in running Julia code. However, it is generally
-safe to use pointers in between `jl_...` calls. But in order to make sure that values can survive
-`jl_...` calls, we have to tell Julia that we still hold a reference to Julia
-[root](https://www.cs.purdue.edu/homes/hosking/690M/p611-fenichel.pdf) values, a process
-called "GC rooting". Rooting a value will ensure that the garbage collector does not accidentally
-identify this value as unused and free the memory backing that value. This can be done using the
-`JL_GC_PUSH` macros:
+GC 只能在分配 Julia 对象时运行。 像 `jl_box_float64` 这样的调用执行分配，分配可能发生在运行 Julia 代码的任何时候。 然而，在 `jl_...` 调用之间使用指针通常是安全的。 但是为了确保值可以在 `jl_...` 调用后留存下来，我们必须告诉 Julia 我们仍然持有对 Julia [root](https://www.cs.purdue.edu/homes/hosking/690M/p611-fenichel.pdf) 的引用，这个过程称为“GC rooting”。把一个值”扎根“将确保垃圾收集器不会意外地将此值识别为未使用并释放该值的内存。 这可以使用 `JL_GC_PUSH` 宏来完成：
 
 ```c
 jl_value_t *ret = jl_eval_string("sqrt(2.0)");
@@ -225,14 +209,9 @@ JL_GC_PUSH1(&ret);
 JL_GC_POP();
 ```
 
-The `JL_GC_POP` call releases the references established by the previous `JL_GC_PUSH`. Note that
-`JL_GC_PUSH` stores references on the C stack, so it must be exactly paired with a `JL_GC_POP`
-before the scope is exited. That is, before the function returns, or control flow otherwise
-leaves the block in which the `JL_GC_PUSH` was invoked.
+`JL_GC_POP` 调用会释放之前的 `JL_GC_PUSH` 建立的引用。 请注意，`JL_GC_PUSH` 将引用存储在 C 堆栈上，因此在退出作用域之前，它必须与一个 `JL_GC_POP` 精确配对。 也就是说，在函数返回之前，或者流程控制以其他方式离开调用了`JL_GC_PUSH` 的块。
 
-Several Julia values can be pushed at once using the `JL_GC_PUSH2` , `JL_GC_PUSH3` , `JL_GC_PUSH4` ,
-`JL_GC_PUSH5` , and `JL_GC_PUSH6` macros. To push an array of Julia values one can use the
-`JL_GC_PUSHARGS` macro, which can be used as follows:
+可以使用 `JL_GC_PUSH2`、`JL_GC_PUSH3`、`JL_GC_PUSH4`、`JL_GC_PUSH5` 和 `JL_GC_PUSH6` 宏一次推送多个 Julia 值。 要推送一个 Julia 数组，可以使用 `JL_GC_PUSHARGS` 宏，其用法如下：
 
 ```c
 jl_value_t **args;
@@ -243,9 +222,7 @@ args[1] = some_other_value;
 JL_GC_POP();
 ```
 
-Each scope must have only one call to `JL_GC_PUSH*`. Hence, if all variables cannot be pushed once by
-a single call to `JL_GC_PUSH*`, or if there are more than 6 variables to be pushed and using an array
-of arguments is not an option, then one can use inner blocks:
+每个作用域必须只有一次对 `JL_GC_PUSH*` 的调用。 因此，如果不能通过一次调用`JL_GC_PUSH*` 一次推送所有变量，或者如果要推送的变量超过 6 个并且使用参数数组不是一种选择，那么可以使用内部块：
 
 ```c
 jl_value_t *ret1 = jl_eval_string("sqrt(2.0)");
@@ -261,11 +238,7 @@ jl_value_t *ret2 = 0;
 JL_GC_POP();    // This pops ret1.
 ```
 
-If it is required to hold the pointer to a variable between functions (or block scopes), then it is
-not possible to use `JL_GC_PUSH*`. In this case, it is necessary to create and keep a reference to the
-variable in the Julia global scope. One simple way to accomplish this is to use a global `IdDict` that
-will hold the references, avoiding deallocation by the GC. However, this method will only work
-properly with mutable types.
+如果需要在函数（或块作用域）之间保存指向变量的指针，则不能使用 `JL_GC_PUSH*`。 在这种情况下，有必要在 Julia 全局作用域内创建并保留对变量的引用。 实现这一点的一种简单方法是使用一个全局的`IdDict`来保存引用，避免 GC 释放。 但是，此方法仅适用于可变类型。
 
 ```c
 // This functions shall be executed only once, during the initialization.
@@ -286,10 +259,7 @@ var = jl_eval_string("[sqrt(2.0); sqrt(4.0); sqrt(6.0)]");
 jl_call3(setindex, refs, var, var);
 ```
 
-If the variable is immutable, then it needs to be wrapped in an equivalent mutable container or,
-preferably, in a `RefValue{Any}` before it is pushed to `IdDict`. In this approach, the container has
-to be created or filled in via C code using, for example, the function `jl_new_struct`. If the
-container is created by `jl_call*`, then you will need to reload the pointer to be used in C code.
+如果变量是不可变的，则需要将其包装在等效的可变容器中，或者最好在将其推送到`IdDict`之前包装在`RefValue{Any}`中。 在这种方法中，容器必须通过 C 代码创建或填充，例如使用函数`jl_new_struct`。 如果容器是由`jl_call*` 创建的，那么你将需要重新加载要在 C 代码中使用的指针。
 
 ```c
 // This functions shall be executed only once, during the initialization.
@@ -317,27 +287,22 @@ JL_GC_POP();
 jl_call3(setindex, refs, rvar, rvar);
 ```
 
-The GC can be allowed to deallocate a variable by removing the reference to it from `refs` using
-the function `delete!`, provided that no other reference to the variable is kept anywhere:
+GC 可以通过使用函数`delete!` 从`refs` 中删除对变量的引用来释放变量，前提是没有其它对该变量的引用保留在任何地方：
 
 ```c
 jl_function_t* delete = jl_get_function(jl_base_module, "delete!");
 jl_call2(delete, refs, rvar);
 ```
 
-As an alternative for very simple cases, it is possible to just create a global container of type
-`Vector{Any}` and fetch the elements from that when necessary, or even to create one global variable
-per pointer using
+作为非常简单情况的替代方案，可以只创建一个类型为`Vector{Any}`的全局容器，并在必要时从中获取元素，甚至可以使用以下方法为每个指针创建一个全局变量
 
 ```c
 jl_set_global(jl_main_module, jl_symbol("var"), var);
 ```
 
-### Updating fields of GC-managed objects
+### 更新 GC 管理对象的字段
 
-The garbage collector operates under the assumption that it is aware of every old-generation
-object pointing to a young-generation one. Any time a pointer is updated breaking that assumption,
-it must be signaled to the collector with the `jl_gc_wb` (write barrier) function like so:
+垃圾回收器的运行假设它知道每个年老代对象都指向一个年轻代对象。 任何时候一个指针被更新打破了这个假设，它必须用`jl_gc_wb`（写屏障）函数向回收器发出信号，如下所示：
 
 ```c
 jl_value_t *parent = some_old_value, *child = some_young_value;

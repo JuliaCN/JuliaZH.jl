@@ -1,81 +1,41 @@
-# [Asynchronous Programming](@id man-asynchronous)
+# [异步编程](@id man-asynchronous)
 
-When a program needs to interact with the outside world, for example communicating
-with another machine over the internet, operations in the program may need to
-happen in an unpredictable order.
-Say your program needs to download a file. We would like to initiate the download
-operation, perform other operations while we wait for it to complete, and then
-resume the code that needs the downloaded file when it is available.
-This sort of scenario falls in the domain of asynchronous programming, sometimes
-also referred to as concurrent programming (since, conceptually, multiple things
-are happening at once).
+当程序需要与外部世界交互时，例如通过互联网与另一台机器通信时，程序中的操作可能需要以无法预测的顺序发生。假设你的程序需要下载一个文件。我们想启动下载操作，在等待下载完成的同时执行其他操作，然后在空闲时继续执行下载文件的代码。这种场景属于异步编程，有时也称为并发编程（因为从概念上讲，同时发生多种事情）。
 
-To address these scenarios, Julia provides [`Task`](@ref)s (also known by several other
-names, such as symmetric coroutines, lightweight threads, cooperative multitasking,
-or one-shot continuations).
-When a piece of computing work (in practice, executing a particular function) is designated as
-a [`Task`](@ref), it becomes possible to interrupt it by switching to another [`Task`](@ref).
-The original [`Task`](@ref) can later be resumed, at which point it will pick up right where it
-left off. At first, this may seem similar to a function call. However there are two key differences.
-First, switching tasks does not use any space, so any number of task switches can occur without
-consuming the call stack. Second, switching among tasks can occur in any order, unlike function
-calls, where the called function must finish executing before control returns to the calling function.
+为了解决这些可能的情况，Julia 提供了任务 [`Task`](@ref)（也有其他几个名称，例如对称协程、轻量级线程、协作多任务处理或one-shot continuations）。当一项计算工作（实际上，执行特定功能）被指定为 [`Task`](@ref) 时，可以通过切换到另一个 [`Task`](@ref) 来中断它。 最初的 [`Task`](@ref) 稍后可以恢复，此时它将从上次中断的地方开始。 初看这似乎类似于函数调用。 但是，有两个关键区别。 首先，切换任务不占用任何空间，因此可以在不消耗调用堆栈的情况下进行任意数量的任务切换。 其次，任务之间的切换可以以任何顺序发生，这与函数调用不同，在函数调用中，被调用的函数必须在返回到调用函数之前完成执行。
 
-## Basic `Task` operations
+## 基本 `Task` 操作
 
-You can think of a `Task` as a handle to a unit of computational work to be performed.
-It has a create-start-run-finish lifecycle.
-Tasks are created by calling the `Task` constructor on a 0-argument function to run,
-or using the [`@task`](@ref) macro:
+你可以将`Task`视为要执行的计算工作单元的句柄。 它有一个创建-开始-运行-结束的生命周期。 Task 是通过在要运行的 0 参数函数上调用 `Task` 构造函数来创建的，或者使用 [`@task`](@ref) 宏：
 
 ```julia-repl
 julia> t = @task begin; sleep(5); println("done"); end
 Task (runnable) @0x00007f13a40c0eb0
 ```
 
-`@task x` is equivalent to `Task(()->x)`.
+`@task x` 等价于 `Task(()->x)`。
 
-This task will wait for five seconds, and then print `done`. However, it has not
-started running yet. We can run it whenever we're ready by calling [`schedule`](@ref):
+此任务将等待五秒钟，然后打印`done`。 但是，它还没有开始运行。 我们可以随时通过调用 [`schedule`](@ref) 来运行它：
 
 ```julia-repl
 julia> schedule(t);
 ```
 
-If you try this in the REPL, you will see that `schedule` returns immediately.
-That is because it simply adds `t` to an internal queue of tasks to run.
-Then, the REPL will print the next prompt and wait for more input.
-Waiting for keyboard input provides an opportunity for other tasks to run,
-so at that point `t` will start.
-`t` calls [`sleep`](@ref), which sets a timer and stops execution.
-If other tasks have been scheduled, they could run then.
-After five seconds, the timer fires and restarts `t`, and you will see `done`
-printed. `t` is then finished.
+如果你在 REPL 中尝试这个，你会看到 `schedule` 立即有返回值。那是因为它只是将 `t` 添加到要运行的内部任务队列中。然后，REPL 将打印下一个提示并等待更多输入。等待键盘输入为其他任务提供了运行的机会，因此此时 `t` 将启动。 `t` 调用 [`sleep`](@ref)，它设置一个计时器并停止执行。 如果已经安排了其他任务，那么它们就可以运行了。五秒后，计时器触发并重新启动`t`，你将看到打印的`done`。 然后`t` 执行完毕了。
 
-The [`wait`](@ref) function blocks the calling task until some other task finishes.
-So for example if you type
+[`wait`](@ref) 函数会阻塞调用任务，直到其他任务完成。 例如，如果输入：
 
 ```julia-repl
 julia> schedule(t); wait(t)
 ```
 
-instead of only calling `schedule`, you will see a five second pause before
-the next input prompt appears. That is because the REPL is waiting for `t`
-to finish before proceeding.
+在下一个输入提示出现之前，你将看到五秒钟的停顿，而不是只调用 `schedule`。 那是因为 REPL 等待 `t` 完成之后才继续。
 
-It is common to want to create a task and schedule it right away, so the
-macro [`@async`](@ref) is provided for that purpose --- `@async x` is
-equivalent to `schedule(@task x)`.
+一般来说，创建一个任务会想立即执行它，为此提供了宏 [`@async`](@ref) --- `@async x` 等价于 `schedule(@task x )`。
 
-## Communicating with Channels
+## 在 Channel 中进行通信
 
-In some problems,
-the various pieces of required work are not naturally related by function calls; there is no obvious
-"caller" or "callee" among the jobs that need to be done. An example is the producer-consumer
-problem, where one complex procedure is generating values and another complex procedure is consuming
-them. The consumer cannot simply call a producer function to get a value, because the producer
-may have more values to generate and so might not yet be ready to return. With tasks, the producer
-and consumer can both run as long as they need to, passing values back and forth as necessary.
+在某些问题中，所需的各种工作并不是通过函数调用自然关联的； 在需要完成的工作中没有明显的“调用者”或“被调用者”。 一个典型的例子是生产者-消费者问题，其中一个复杂的过程正在生成值，而另一个复杂的过程正在消耗它们。消费者不能简单地调用生产者函数来获取一个值，因为生产者可能有更多的值要生成，因此可能还没有准备好返回。对于任务，生产者和消费者都可以根据需要运行，根据需要来回传递值。
 
 Julia 提供了 [`Channel`](@ref) 机制来解决这个问题。一个 [`Channel`](@ref) 是一个先进先出的队列，允许多个 `Task` 对它可以进行读和写。
 
@@ -129,10 +89,7 @@ stop
 
 注意我们并不需要显式地在生产者中关闭 [`Channel`](@ref)。这是因为 [`Channel`](@ref) 对 [`Task`](@ref) 的绑定同时也意味着 `Channel` 的生命周期与绑定的 `Task` 一致。当 `Task` 结束时，`Channel` 对象会自动关闭。多个 `Channel` 可以绑定到一个 `Task`，反之亦然。
 
-While the [`Task`](@ref) constructor expects a 0-argument function, the [`Channel`](@ref)
-method that creates a task-bound channel expects a function that accepts a single argument of
-type [`Channel`](@ref). A common pattern is for the producer to be parameterized, in which case a partial
-function application is needed to create a 0 or 1 argument [anonymous function](@ref man-anonymous-functions).
+[`Task`](@ref) 构造函数需要一个不带参数的函数，而创建任务绑定的 channel 的 [`Channel`](@ref) 方法需要一个接受 [`Channel`](@ref)类型的单个参数的函数。 一个常见的模式是对生产者进行参数化，在这种情况下，需要一个偏函数来创建一个 0 或 1 个参数 [匿名函数](@ref man-anonymous-functions)。
 
 对于 [`Task`](@ref) 对象，可以直接用，也可以为了方便用宏。
 
@@ -148,7 +105,7 @@ taskHdl = @task mytask(7)
 
 为了安排更高级的工作分配模式，[`bind`](@ref) 和 [`schedule`](@ref) 可以与 [`Task`](@ref) 和 [`Channel`](@ref) 构造函数配合使用，显式地连接一些 `Channel` 和生产者或消费者 `Task`。
 
-### More on Channels
+### 更多关于 Channel 的知识
 
 一个管道可以形象得看做是一个管子，一端可读，另一端可写：
 
@@ -184,7 +141,7 @@ taskHdl = @task mytask(7)
      
   * 如果一个 [`Channel`](@ref) 是空的，读取的 task(即执行 [`take!`](@ref) 的 task)会被阻塞直到有新的数据准备好了。
   * 如果一个 [`Channel`](@ref) 是满的，那么写入的 task(即执行 [`put!`](@ref) 的 task)则会被阻塞，直到 Channel 有空余。
-  * [`isready`](@ref) tests for the presence of any object in the channel, while [`wait`](@ref)
+  *  
      
   * 一个 [`Channel`](@ref) 一开始处于开启状态，也就是说可以被 [`take!`](@ref) 读取和 [`put!`](@ref) 写入。[`close`](@ref) 会关闭一个 [`Channel`](@ref)，对于一个已经关闭的 [`Channel`](@ref)，[`put!`](@ref) 会失败，例如：
      
@@ -273,18 +230,11 @@ julia> @elapsed while n > 0 # print out results
 0.029772311
 ```
 
-Instead of `errormonitor(t)`, a more robust solution may be use use `bind(results, t)`, as that will
-not only log any unexpected failures, but also force the associated resources to close and propagate
-the exception everywhere.
+不用 `errormonitor(t)`，一个更稳健的解决方案是使用 `bind(results, t)`，这不仅会记录任何意外故障，还会强制相关资源关闭并向上抛出错误。
 
-## More task operations
+## 更多任务操作
 
-Task operations are built on a low-level primitive called [`yieldto`](@ref).
-`yieldto(task, value)` suspends the current task, switches to the specified `task`, and causes
-that task's last [`yieldto`](@ref) call to return the specified `value`. Notice that [`yieldto`](@ref)
-is the only operation required to use task-style control flow; instead of calling and returning
-we are always just switching to a different task. This is why this feature is also called "symmetric
-coroutines"; each task is switched to and from using the same mechanism.
+任务操作建立在称为 [`yieldto`](@ref) 的底层原始运算上。 `yieldto(task, value)` 挂起当前 task，然后切换到指定的 `task`，并使该任务的最后一个 [`yieldto`](@ref) 调用返回指定的 `value`。 请注意，[`yieldto`](@ref) 是使用任务式流程控制所需的唯一操作；我们总是切换到不同的任务，而不是调用和返回。 这就是为什么这个特性也被称为“对称协程”； 每个任务都使用相同的机制来回切换。
 
 [`yieldto`](@ref) 功能强大，但大多数 `Task` 的使用都不会直接调用它。思考为什么会这样。如果你切换当前 `Task`，你很可能会在某个时候想切换回来。但知道什么时候切换回来和那个 `Task` 负责切换回来需要大量的协调。例如，[`put!`](@ref) 和 [`take!`](@ref) 是阻塞操作，当在渠道环境中使用时，维持状态以记住消费者是谁。不需要人为地记录消费 `Task`，正是使得 [`put!`](@ref) 比底层 [`yieldto`](@ref) 易用的原因。
 
@@ -303,7 +253,4 @@ coroutines"; each task is switched to and from using the same mechanism.
 
 在所有这些情况下，[`wait`](@ref) 最终会操作一个 [`Condition`](@ref) 对象，由它负责排队和重启 `Task`。当 `Task` 在一个 [`Condition`](@ref) 上调用 [`wait`](@ref) 时，该 Task 就被标记为不可执行，加到条件的队列中，并切回调度器。调度器将选择另一个 `Task` 来运行，或者阻止外部事件的等待。如果所有运行良好，最终一个事件处理器将在这个条件下调用 [`notify`](@ref)，使得等待该条件的 `Task` 又变成可运行。
 
-A task created explicitly by calling [`Task`](@ref) is initially not known to the scheduler. This
-allows you to manage tasks manually using [`yieldto`](@ref) if you wish. However, when such
-a task waits for an event, it still gets restarted automatically when the event happens, as you
-would expect.
+通过调用 [`Task`](@ref) 显式创建的任务，一开始并不被调度器知道。这允许你根据需要使用 [`yieldto`](@ref) 手动管理任务。 但是，当此类任务等待事件时，它仍会在事件发生时自动重新启动，正如你所期望。
