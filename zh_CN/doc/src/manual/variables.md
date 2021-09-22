@@ -101,7 +101,7 @@ julia> y = ___
 ERROR: syntax: all-underscore identifier used as rvalue
 ```
 
-唯一明确禁止的变量名称是内置[关键字](@ref)的名称：
+唯一明确禁止的变量名称是内置[关键字](@ref Keywords)的名称：
 
 ```julia-repl
 julia> else = false

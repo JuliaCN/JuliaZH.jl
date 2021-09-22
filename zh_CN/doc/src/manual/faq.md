@@ -330,19 +330,7 @@ julia> sqrt(-2.0+0im)
 
 ### 怎样限制或计算类型参数？
 
-The parameters of a [parametric type](@ref Parametric-Types) can hold either
-types or bits values, and the type itself chooses how it makes use of these parameters.
-For example, `Array{Float64, 2}` is parameterized by the type `Float64` to express its
-element type and the integer value `2` to express its number of dimensions.  When
-defining your own parametric type, you can use subtype constraints to declare that a
-certain parameter must be a subtype ([`<:`](@ref)) of some abstract type or a previous
-type parameter.  There is not, however, a dedicated syntax to declare that a parameter
-must be a _value_ of a given type — that is, you cannot directly declare that a
-dimensionality-like parameter [`isa`](@ref) `Int` within the `struct` definition, for
-example.  Similarly, you cannot do computations (including simple things like addition
-or subtraction) on type parameters.  Instead, these sorts of constraints and
-relationships may be expressed through additional type parameters that are computed
-and enforced within the type's [constructors](@ref man-constructors).
+[参数类型](@ref Parametric-Types) 的参数可以包含类型或比特值，并且类型本身选择如何使用这些参数。例如，`Array{Float64, 2}` 由类型 `Float64` 参数化以表示其元素类型，并通过整数值 `2` 来表示其维度数。在定义自己的参数类型时，可以使用子类型约束来声明某个参数必须是某个抽象类型的子类型 ([`<:`](@ref)) 或以前的类型参数。但是，没有专用的语法来声明参数必须是给定类型的_值_ — 也就是说，例如，你不能在`struct`定义中直接声明一个维度参数 [`isa`](@ref) `Int`。同样，你不能对类型参数进行计算（包括简单的加法或减法）。相反，这些类型的约束和关系可以通过在类型的 [构造函数](@ref man-constructors) 中计算和强制执行的附加类型参数来表达。
 
 例如，考虑
 ```julia
@@ -351,7 +339,7 @@ struct ConstrainedType{T,N,N+1} # NOTE: INVALID SYNTAX
     B::Array{T,N+1}
 end
 ```
-where the user would like to enforce that the third type parameter is always the second plus one. This can be implemented with an explicit type parameter that is checked by an [inner constructor method](@ref man-inner-constructor-methods) (where it can be combined with other checks):
+其中，用户希望强制第三个类型参数始终是第二个参数加一。 这可以使用显式类型参数来实现，该参数由 [内部构造函数方法](@ref man-inner-constructor-methods)（可以与其他检查结合使用）进行检查：
 ```julia
 struct ConstrainedType{T,N,M}
     A::Array{T,N}
@@ -362,7 +350,7 @@ struct ConstrainedType{T,N,M}
     end
 end
 ```
-This check is usually *costless*, as the compiler can elide the check for valid concrete types. If the second argument is also computed, it may be advantageous to provide an [outer constructor method](@ref man-outer-constructor-methods) that performs this calculation:
+这种检查通常是*无成本的*，因为编译器可以省略对有效具体类型的检查。 如果还计算了第二个参数，则提供执行此计算的 [外部构造函数方法](@ref man-outer-constructor-methods) 可能更好：
 ```julia
 ConstrainedType(A) = ConstrainedType(A, compute_B(A))
 ```
@@ -530,20 +518,9 @@ Source line: 5
 
 因为编译器知道整数加法和乘法是满足结合律的并且乘法可以在加法上使用分配律 — 两者在饱和算法中都不成立 — 所以编译器就可以把整个循环优化到只有一个乘法和一个加法。饱和算法完全无法使用这种优化，因为在每个循环迭代中结合律和分配律都会失效导致不同的失效位置会得到不同的结果。编译器可以展开循环，但是不能代数上将多个操作简化到更少的等效操作。
 
-The most reasonable alternative to having integer arithmetic silently overflow is to do checked
-arithmetic everywhere, raising errors when adds, subtracts, and multiplies overflow, producing
-values that are not value-correct. In this [blog post](https://danluu.com/integer-overflow/), Dan
-Luu analyzes this and finds that rather than the trivial cost that this approach should in theory
-have, it ends up having a substantial cost due to compilers (LLVM and GCC) not gracefully optimizing
-around the added overflow checks. If this improves in the future, we could consider defaulting
-to checked integer arithmetic in Julia, but for now, we have to live with the possibility of overflow.
+让整数算术沉默地溢出的最合理替代方法是在任何地方进行检查算术，在加法、减法和乘法溢出时引发错误，产生不正确的值。 在这篇[博文](https://danluu.com/integer-overflow/)中，Dan Luu 对此进行了分析，并发现这种方法在理论上应该具有的微不足道的成本，但由于编译器（LLVM 和 GCC）没有优雅地围绕添加的溢出检查进行优化，它最终会产生大量成本。 如果这在未来有所改善，我们可以考虑在 Julia 中默认使用检查整数算法，但现在，我们必须忍受可能会溢出这一现状。
 
-In the meantime, overflow-safe integer operations can be achieved through the use of external libraries
-such as [SaferIntegers.jl](https://github.com/JeffreySarnoff/SaferIntegers.jl). Note that, as stated
-previously, the use of these libraries significantly increases the execution time of code using the
-checked integer types. However, for limited usage, this is far less of an issue than if it were used
-for all integer operations. You can follow the status of the discussion
-[here](https://github.com/JuliaLang/julia/issues/855).
+同时，可以通过使用[SaferIntegers.jl](https://github.com/JeffreySarnoff/SaferIntegers.jl)等外部库来实现溢出安全的整数运算。 请注意，如前所述，使用这些库会显着增加使用已检查整数类型的代码的执行时间。 但是，对于有限的使用，这远比将其用于所有整数运算时的问题要小得多。你可以在 [此处](https://github.com/JuliaLang/julia/issues/855) 中关注讨论的状态。
 
 
 ### 在远程执行中`UndefVarError`的可能原因有哪些？
@@ -619,11 +596,11 @@ julia> remotecall_fetch(anon_bar, 2)
 1
 ```
 
-## Troubleshooting "method not matched": parametric type invariance and `MethodError`s
+## “method not matched”故障排除：参数类型不变性和`MethodError`
 
-### Why doesn't it work to declare `foo(bar::Vector{Real}) = 42` and then call `foo([1])`?
+### 为什么声明 `foo(bar::Vector{Real}) = 42` 然后调用 `foo([1])` 不起作用？
 
-As you'll see if you try this, the result is a `MethodError`:
+如果你尝试了，结果就会看到`MethodError`:
 
 ```jldoctest
 julia> foo(x::Vector{Real}) = 42
@@ -635,15 +612,9 @@ Closest candidates are:
   foo(!Matched::Vector{Real}) at none:1
 ```
 
-This is because `Vector{Real}` is not a supertype of `Vector{Int}`! You can solve this problem with something
-like `foo(bar::Vector{T}) where {T<:Real}` (or the short form `foo(bar::Vector{<:Real})` if the static parameter `T`
-is not needed in the body of the function). The `T` is a wild card: you first specify that it must be a
-subtype of Real, then specify the function takes a Vector of with elements of that type.
+这是因为 `Vector{Real}` 不是 `Vector{Int}` 的超类型！ 您可以使用类似 `foo(bar::Vector{T}) where {T<:Real}`（或缩写 `foo(bar::Vector{<:Real})` 如果静态参数函数体中不需要`T`）。`T` 是一个通配符：首先指定它必须是 Real 的子类型，然后指定函数采用具有该类型元素的 Vector 。
 
-This same issue goes for any composite type `Comp`, not just `Vector`. If `Comp` has a parameter declared of
-type `Y`, then another type `Comp2` with a parameter of type `X<:Y` is not a subtype of `Comp`. This is
-type-invariance (by contrast, Tuple is type-covariant in its parameters). See [Parametric Composite
-Types](@ref man-parametric-composite-types) for more explanation of these.
+同样的问题适用于任何复合类型`Comp`，而不仅仅是`Vector`。 如果`Comp` 有一个声明为`Y` 类型的参数，那么另一个带有`X<:Y` 类型参数的类型`Comp2` 不是`Comp` 的子类型。 这是类型不变性（相比之下，元组在其参数中是类型协变的）。 有关这些的更多解释，请参阅 [参数复合类型](@ref man-parametric-composite-types)。
 
 ### 为什么 Julia 使用 `*` 进行字符串拼接？而不是使用 `+` 或其他符号？
 
@@ -673,9 +644,7 @@ Types](@ref man-parametric-composite-types) for more explanation of these.
 
 在统计环境下表示缺失的数据（R 中的 `NA` 或者 SQL 中的 `NULL`）请使用 [`missing`](@ref) 对象。请参照[`缺失值`](@ref missing)章节来获取详细信息。
 
-In some languages, the empty tuple (`()`) is considered the canonical
-form of nothingness. However, in julia it is best thought of as just
-a regular tuple that happens to contain zero values.
+在某些语言中，空元组 (`()`) 被认为是"没有“的规范形式。但是，在 julia 中，最好将其视为恰好包含零个值的常规元组。
 
 空（或者"底层"）类型，写作`Union{}`（空的union类型）是没有值和子类型（除了自己）的类型。通常你没有必要用这个类型。
 
@@ -777,10 +746,10 @@ julia> A = zeros()
 * 我们定义`prod(())`为1，一个数组中的所有的元素个数是
   大小的乘积。零维数组的大小为`()`，所以
   它的长度为`1`。
-* 零维数组原生没有任何你可以索引的维度
-  -- 它们仅仅是`A[]`。我们可以给它们应用同样的"trailing one"规则，
-  as for all other array dimensionalities, so you can indeed index them as `A[1]`, `A[1,1]`, etc; see
-  [Omitted and extra indices](@ref).
+* 零维数组没有任何你可以索引的维度——它们仅仅是`A[]`。我们可以给它们应用同样的"尾一"规则就像对其它维度数组那样，比如`A[1]`，`A[1,1]`，等；参见[Omitted and extra indices](@ref).
+   
+   
+   
 
 理解它与普通的标量之间的区别也很重要。标量不是一个可变的容器（尽管它们是可迭代的，可以定义像`length`，`getindex`这样的东西，*例如*`1[] == 1`）。特别地，如果`x = 0.0`是以一个标量来定义，尝试通过`x[] = 1.0`来改变它的值会报错。标量`x`能够通过`fill(x)`转化成包含它的零维数组，并且相对地，一个零维数组`a`可以通过`a[]`转化成其包含的标量。另外一个区别是标量可以参与到线性代数运算中，比如`2 * rand(2,2)`，但是零维数组的相似操作`fill(2) * rand(2,2)`会报错。
 
@@ -804,21 +773,18 @@ B = randn(1000, 1000)
 
 2. 并发线程的数量
 
-Julia compiles and uses its own copy of OpenBLAS, with threads currently capped at `8` (or the number of your cores).
+Julia 编译并使用自己的 OpenBLAS 副本，当前线程数上限为 8（或内核数）。
 
-Modifying OpenBLAS settings or compiling Julia with a different BLAS library, eg [Intel MKL](https://software.intel.com/en-us/mkl), may provide performance improvements. You can use [MKL.jl](https://github.com/JuliaComputing/MKL.jl), a package that makes Julia's linear algebra use Intel MKL BLAS and LAPACK instead of OpenBLAS, or search the discussion forum for suggestions on how to set this up manually. Note that Intel MKL cannot be bundled with Julia, as it is not open source.
+修改 OpenBLAS 设置或使用不同的 BLAS 库编译 Julia，例如 [Intel MKL](https://software.intel.com/en-us/mkl)，可能会提高性能。 你可以使用 [MKL.jl](https://github.com/JuliaComputing/MKL.jl)，这是一个使 Julia 的线性代数使用英特尔 MKL BLAS 和 LAPACK 而不是 OpenBLAS 的包，或搜索论坛以获取有关如何使用的建议。 请注意，英特尔 MKL 不能与 Julia 捆绑在一起，因为它不是开源的。
 
 ## 计算集群
 
 ### 我该如何管理分布式文件系统的预编译缓存？
 
-When using `julia` in high-performance computing (HPC) facilities, invoking
-_n_ `julia` processes simultaneously creates at most _n_ temporary copies of
-precompilation cache files. If this is an issue (slow and/or small distributed
-file system), you may:
+在高性能计算 (HPC) 设施中使用 `julia` 时，同时调用 _n_ 个 `julia` 进程最多会创建 _n_ 个预编译缓存文件的临时副本。 如果这是一个问题（缓慢和/或小型分布式文件系统），你可以：
 
-1. Use `julia` with `--compiled-modules=no` flag to turn off precompilation.
-2. Configure a private writable depot using `pushfirst!(DEPOT_PATH, private_path)`
+1. 使用 `julia`的 `--compiled-modules=no` 标志来关掉预编译。
+2. 使用 `pushfirst!(DEPOT_PATH, private_path)` 配置一个私有的可写仓库
    在这里`private_path`是一个路径单独地到这个`julia`进程
    也可以通过设置环境变量 `JULIA_DEPOT_PATH` 到
    `$private_path:$HOME/.julia`.
@@ -828,35 +794,20 @@ file system), you may:
 
 ### 你希望使用稳定的、长期支持的或是每日构建版本的Julia？
 
-The Stable version of Julia is the latest released version of Julia, this is the version most people will want to run.
-It has the latest features, including improved performance.
-The Stable version of Julia is versioned according to [SemVer](https://semver.org/) as v1.x.y.
-A new minor release of Julia corresponding to a new Stable version is made approximately every 4-5 months after a few weeks of testing as a release candidate.
-Unlike the LTS version the a Stable version will not normally receive bugfixes after another Stable version of Julia has been released.
-However, upgrading to the next Stable release will always be possible as each release of Julia v1.x will continue to run code written for earlier versions.
+Julia 的稳定版是最新发布的 Julia 版本，这是大多数人想要运行的版本。 它具有最新的功能，包括改进的性能。 Julia 的稳定版本根据 [SemVer](https://semver.org/) 版本化为 v1.x.y。 在作为候选版本进行几周的测试后，大约每 4-5 个月就会发布一个与新稳定版本相对应的新 Julia 次要版本。 与 LTS 版本不同，在 Julia 的另一个稳定版本发布后，稳定版本通常不会收到错误修正。 但是，始终可以升级到下一个稳定版本，因为 Julia v1.x 的每个版本都将继续运行为早期版本编写的代码。
 
-You may prefer the LTS (Long Term Support) version of Julia if you are looking for a very stable code base.
-The current LTS version of Julia is versioned according to SemVer as v1.0.x;
-this branch will continue to receive bugfixes until a new LTS branch is chosen, at which point the v1.0.x series will no longer received regular bug fixes and all but the most conservative users will be advised to upgrade to the new LTS version series.
-As a package developer, you may prefer to develop for the LTS version, to maximize the number of users who can use your package.
-As per SemVer, code written for v1.0 will continue to work for all future LTS and Stable versions.
-In general, even if targeting the LTS, one can develop and run code in the latest Stable version, to take advantage of the improved performance; so long as one avoids using new features (such as added library functions or new methods).
+如果正在寻找非常稳定的代码库，你可能更喜欢 Julia 的 LTS（长期支持）版本。 Julia 当前的 LTS 版本根据 SemVer 版本为 v1.0.x； 此分支将继续接收错误修复，直到选择新的 LTS 分支，此时 v1.0.x 系列将不再收到常规错误修复，建议除最保守的用户之外的所有用户升级到新的 LTS 版本系列。作为软件包开发人员，你可能更喜欢针对 LTS 版本进行开发，以最大限度地增加可以使用你的软件包的用户数量。 根据 SemVer，为 v1.0 编写的代码将继续适用于所有未来的 LTS 和稳定版本。 一般来说，即使针对 LTS，也可以在最新的 Stable 版本中开发和运行代码，以利用改进的性能； 只要避免使用新功能（例如添加的库函数或新方法）。
 
-You may prefer the nightly version of Julia if you want to take advantage of the latest updates to the language, and don't mind if the version available today occasionally doesn't actually work.
-As the name implies, releases to the nightly version are made roughly every night (depending on build infrastructure stability).
-In general nightly released are fairly safe to use—your code will not catch on fire.
-However, they may be occasional regressions and or issues that will not be found until more thorough pre-release testing.
-You may wish to test against the nightly version to ensure that such regressions that affect your use case are caught before a release is made.
+如果您想利用该语言的最新更新，您可能更喜欢 Julia 的每日构建版本，并且不介意今天可用的版本是否偶尔无法正常工作。 顾名思义，每日构建版本的发布大约每晚发布一次（取决于构建基础设施的稳定性）。 一般来说，每日构建的发布是相当安全的——你的代码不会着火。 然而，它们可能出现偶尔的版本倒退和问题，直到更彻底的预发布测试才会发现。 你可能希望针对每日构建版本进行测试，以确保在发布之前捕获影响你的用例的版本倒退。
 
-Finally, you may also consider building Julia from source for yourself. This option is mainly for those individuals who are comfortable at the command line, or interested in learning.
-If this describes you, you may also be interested in reading our [guidelines for contributing](https://github.com/JuliaLang/julia/blob/master/CONTRIBUTING.md).
+最后，您也可以考虑为自己从源代码构建 Julia。 此选项主要适用于那些熟悉命令行或对学习感兴趣的人。 如果你是这样的人，你可能也有兴趣阅读我们的 [贡献指南](https://github.com/JuliaLang/julia/blob/master/CONTRIBUTING.md)。
 
 可以在[https://julialang.org/downloads/](https://julialang.org/downloads/)的下载页面上找到每种下载类型的链接。 请注意，并非所有版本的Julia都适用于所有平台。
 
-### How can I transfer the list of installed packages after updating my version of Julia?
+### 更新我的 Julia 版本后，如何转移已安装软件包的列表？
 
-Each minor version of julia has its own default [environment](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1). As a result, upon installing a new minor version of Julia, the packages you added using the previous minor version will not be available by default. The environment for a given julia version is defined by the files `Project.toml` and `Manifest.toml` in a folder matching the version number in `.julia/environments/`, for instance, ` .julia/environments/v1.3`.
+julia 的每个次要版本都有自己的默认 [环境](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1)。 因此，在安装新的 Julia 次要版本时，默认情况下你使用先前次要版本添加的包将不可用。 给定 julia 版本的环境由文件`Project.toml`和`Manifest.toml`定义，文件夹中的文件与`.julia/environments/`中的版本号匹配，例如`.julia/environments/v1.3`。
 
-If you install a new minor version of Julia, say `1.4`, and want to use in its default environment the same packages as in a previous version (e.g. `1.3`), you can copy the contents of the file `Project.toml` from the `1.3` folder to `1.4`. Then, in a session of the new Julia version, enter the "package management mode" by typing the key `]`, and run the command [`instantiate`](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.instantiate).
+如果你安装了一个新的 Julia 次要版本，比如 `1.4`，并且想要在它的默认环境中使用与以前版本（例如 `1.3`）相同的包，你可以从`1.3` 文件夹复制文件 `Project.toml` 的内容到`1.4`。然后，在新的 Julia 版本的会话中，输入`]` 键进入“包管理模式”，并运行命令 [`instantiate`](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.instantiate)。
 
-This operation will resolve a set of feasible packages from the copied file that are compatible with the target Julia version, and will install or update them if suitable. If you want to reproduce not only the set of packages, but also the versions you were using in the previous Julia version, you should also copy the `Manifest.toml` file before running the Pkg command `instantiate`. However, note that packages may define compatibility constraints that may be affected by changing the version of Julia, so the exact set of versions you had in `1.3` may not work for `1.4`.
+此操作将从复制的文件中解析一组与目标 Julia 版本兼容的可行包，并在合适时安装或更新它们。 如果你不仅要重现软件包，还要重现在以前的 Julia 版本中使用的版本，您还应该在运行 Pkg 命令 `instantiate` 之前复制 `Manifest.toml` 文件。 但是，请注意，包可能定义了兼容性约束，这些约束可能会受到更改 Julia 版本的影响，因此你在`1.3`中拥有的确切版本集可能不适用于`1.4`。

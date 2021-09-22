@@ -124,7 +124,7 @@ convert(::Type{T}, x::Number) where {T<:Number} = T(x)
 convert(::Type{T}, x::T) where {T<:Number} = x
 ```
 
-[`AbstractString`](@ref)、[`AbstractArray`](@ref) 和 [`AbstractDict`](@ref) 也存在类似的定义。
+`AbstractString`、[`AbstractArray`](@ref) 和 [`AbstractDict`](@ref) 也存在类似的定义。
 
 ## 类型提升
 

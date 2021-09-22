@@ -12,10 +12,9 @@ julia> prog = "1 + 1"
 "1 + 1"
 ```
 
-**What happens next?**
+**接下来会发生什么？**
 
-The next step is to [parse](https://en.wikipedia.org/wiki/Parsing#Computer_languages) each string
-into an object called an expression, represented by the Julia type [`Expr`](@ref):
+下一步是 [parse](https://en.wikipedia.org/wiki/Parsing#Computer_languages) 每个字符串到一个称为表达式的对象，由 Julia 的类型 [`Expr`](@ref) 表示：
 
 ```jldoctest prog
 julia> ex1 = Meta.parse(prog)
@@ -36,7 +35,7 @@ julia> ex1.head
 :call
 ```
 
-  * the expression arguments, which may be symbols, other expressions, or literal values:
+  * 表达式的参数，可能是符号、其他表达式或字面量：
 
 ```jldoctest prog
 julia> ex1.args
@@ -88,11 +87,9 @@ julia> Meta.show_sexpr(ex3)
 (:call, :/, (:call, :+, 4, 4), 2)
 ```
 
-### Symbols
+### 符号
 
-The `:` character has two syntactic purposes in Julia. The first form creates a [`Symbol`](@ref),
-an [interned string](https://en.wikipedia.org/wiki/String_interning) used as one building-block
-of expressions:
+字符 `:` 在 Julia 中有两个作用。第一种形式构造一个 [`Symbol`](@ref)，这是作为表达式组成部分的一个 [interned string](https://en.wikipedia.org/wiki/String_interning)：
 
 ```jldoctest
 julia> s = :foo
@@ -133,10 +130,7 @@ julia> :(::)
 
 ### 引用
 
-The second syntactic purpose of the `:` character is to create expression objects without using
-the explicit [`Expr`](@ref) constructor. This is referred to as *quoting*. The `:` character, followed
-by paired parentheses around a single statement of Julia code, produces an `Expr` object based
-on the enclosed code. Here is an example of the short form used to quote an arithmetic expression:
+`:` 的第二个语义是不显式调用 [`Expr`](@ref) 构造器来创建表达式对象。这被称为*引用*。`:` 后面跟着包围着单个 Julia 语句括号，可以基于被包围的代码生成一个 `Expr` 对象。下面是一个引用算数表达式的例子：
 
 ```jldoctest
 julia> ex = :(a+b*c+1)
@@ -293,10 +287,8 @@ Expr
         3: Int64 2
 ```
 
-As we have seen, such expressions support interpolation with `$`.
-However, in some situations it is necessary to quote code *without* performing interpolation.
-This kind of quoting does not yet have syntax, but is represented internally
-as an object of type `QuoteNode`:
+正如我们所看到的，这些表达式支持插值符号 `$`。但是，在某些情况下，需要在*不执行*插值的情况下引用代码。 这种引用还没有语法，但在内部表示为 `QuoteNode` 类型的对象：
+
 ```jldoctest interp1
 julia> eval(Meta.quot(Expr(:$, :(1+2))))
 3
@@ -304,19 +296,18 @@ julia> eval(Meta.quot(Expr(:$, :(1+2))))
 julia> eval(QuoteNode(Expr(:$, :(1+2))))
 :($(Expr(:$, :(1 + 2))))
 ```
-The parser yields `QuoteNode`s for simple quoted items like symbols:
+解析器为简单的引用项（如符号）生成 `QuoteNode`：
 ```jldoctest interp1
 julia> dump(Meta.parse(":x"))
 QuoteNode
   value: Symbol x
 ```
 
-`QuoteNode` can also be used for certain advanced metaprogramming tasks.
+`QuoteNode` 也可用于某些高级的元编程任务。
 
-### Evaluating expressions
+### 表达式求值
 
-Given an expression object, one can cause Julia to evaluate (execute) it at global scope using
-[`eval`](@ref):
+给定一个表达式对象，可以使用 [`eval`](@ref) 使 Julia 在全局作用域内评估（执行）它：
 
 ```jldoctest interp1
 julia> ex1 = :(1 + 2)
@@ -420,10 +411,7 @@ julia> eval(ex)
 
 ## [宏](@id man-macros)
 
-Macros provide a mechanism to include generated code in the final body of a program. A macro maps
-a tuple of arguments to a returned *expression*, and the resulting expression is compiled directly
-rather than requiring a runtime [`eval`](@ref) call. Macro arguments may include expressions,
-literal values, and symbols.
+宏提供了一种机制，可以将生成的代码包含在程序的最终主体中。 宏将一组参数映射到返回的 *表达式*，并且生成的表达式被直接编译，而不需要运行时 [`eval`](@ref) 调用。 宏参数可能包括表达式、字面量和符号。
 
 ### 基础
 
@@ -464,8 +452,7 @@ julia> @sayhello("human")
 Hello, human
 ```
 
-We can view the quoted return expression using the function [`macroexpand`](@ref) (**important note:**
-this is an extremely useful tool for debugging macros):
+我们可以使用函数 [`macroexpand`](@ref) 查看引用的返回表达式（**重要提示：** 这是一个非常有用的调试宏的工具）：
 
 ```julia-repl sayhello2
 julia> ex = macroexpand(Main, :(@sayhello("human")) )
@@ -485,14 +472,11 @@ julia> @macroexpand @sayhello "human"
 :(println("Hello, ", "human"))
 ```
 
-### Hold up: why macros?
+### 停：为什么需要宏？
 
-We have already seen a function `f(::Expr...) -> Expr` in a previous section. In fact, [`macroexpand`](@ref)
-is also such a function. So, why do macros exist?
+我们已经在上一节中看到了一个函数 `f(::Expr...) -> Expr`。 其实[`macroexpand`](@ref)也是这样一个函数。 那么，为什么会要设计宏呢？
 
-Macros are necessary because they execute when code is parsed, therefore, macros allow the programmer
-to generate and include fragments of customized code *before* the full program is run. To illustrate
-the difference, consider the following example:
+宏是必需的，因为它们在解析代码时执行，因此，宏允许程序员在运行完整程序*之前*生成定制代码的片段。 为了说明差异，请考虑以下示例：
 
 ```julia-repl whymacros
 julia> macro twostep(arg)
@@ -620,11 +604,7 @@ julia> macro assert(ex, msgs...)
 @assert (macro with 1 method)
 ```
 
-Now `@assert` has two modes of operation, depending upon the number of arguments it receives!
-If there's only one argument, the tuple of expressions captured by `msgs` will be empty and it
-will behave the same as the simpler definition above. But now if the user specifies a second argument,
-it is printed in the message body instead of the failing expression. You can inspect the result
-of a macro expansion with the aptly named [`@macroexpand`](@ref) macro:
+现在`@assert` 有两种操作模式，这取决于它接收到的参数数量！如果只有一个参数，`msgs` 捕获的表达式元组将为空，并且其行为与上面更简单的定义相同。 但是现在如果用户指定了第二个参数，它会打印在消息正文中而不是不相等的表达式中。你可以使用恰当命名的 [`@macroexpand`](@ref) 宏检查宏展开的结果：
 
 ```julia-repl assert2
 julia> @macroexpand @assert a == b
@@ -684,19 +664,9 @@ macro time(ex)
 end
 ```
 
-Here, we want `t0`, `t1`, and `val` to be private temporary variables, and we want `time_ns` to refer
-to the [`time_ns`](@ref) function in Julia Base, not to any `time_ns` variable the user
-might have (the same applies to `println`). Imagine the problems that could occur if the user
-expression `ex` also contained assignments to a variable called `t0`, or defined its own `time_ns`
-variable. We might get errors, or mysteriously incorrect behavior.
+在这里，我们希望 `t0`、`t1` 和 `val` 成为私有临时变量，并且我们希望 `time_ns` 引用 Julia Base 中的 [`time_ns`](@ref) 函数，而不是任何用户可能拥有的 `time_ns` 变量（同样适用于 `println`）。 想象一下，如果用户表达式 `ex` 还包含对名为 `t0` 的变量的赋值，或者定义了自己的 `time_ns` 变量，可能会出现什么问题。 程序可能会报错，或者进行未知的行为。
 
-Julia's macro expander solves these problems in the following way. First, variables within a macro
-result are classified as either local or global. A variable is considered local if it is assigned
-to (and not declared global), declared local, or used as a function argument name. Otherwise,
-it is considered global. Local variables are then renamed to be unique (using the [`gensym`](@ref)
-function, which generates new symbols), and global variables are resolved within the macro definition
-environment. Therefore both of the above concerns are handled; the macro's locals will not conflict
-with any user variables, and `time_ns` and `println` will refer to the Julia Base definitions.
+Julia 的宏展开器通过以下方式解决了这些问题。 首先，宏结果中的变量分为局部变量或全局变量。 如果变量被赋值（并且不是声明为全局的）、声明为局部、或用作函数参数名称，则该变量被视为局部变量。 否则，它被认为是全局的。 然后将局部变量重命名为唯一的（使用 [`gensym`](@ref) 函数，该函数生成新符号），并在宏定义环境中解析全局变量。 因此，上述两个问题都得到了处理； 宏的局部变量不会与任何用户变量冲突，并且 `time_ns` 和 `println` 将引用 Julia Base 定义。
 
 然而，仍有另外的问题。考虑此宏的以下用法：
 
@@ -710,9 +680,7 @@ time_ns() = ... # compute something
 end
 ```
 
-Here the user expression `ex` is a call to `time_ns`, but not the same `time_ns` function that the macro
-uses. It clearly refers to `MyModule.time_ns`. Therefore we must arrange for the code in `ex` to
-be resolved in the macro call environment. This is done by "escaping" the expression with [`esc`](@ref):
+这里的用户表达式`ex` 是对`time_ns` 的调用，但与宏使用的`time_ns` 函数不同。 它清楚地指向`MyModule.time_ns`。 因此我们必须安排在宏调用环境中解析`ex`中的代码。 这是通过使用 [`esc`](@ref)“转义”表达式来完成的：
 
 ```julia
 macro time(ex)
@@ -865,12 +833,12 @@ end
 end
 ```
 
-## [Non-Standard String Literals](@id meta-non-standard-string-literals)
+## [非标准字符串字面量](@id meta-non-standard-string-literals)
 
 回想一下在[字符串](@ref non-standard-string-literals)的文档中，以标识符为前缀的字符串字面量被称为非标准字符串字面量，它们可以具有与未加前缀的字符串字面量不同的语义。例如：
 
-  * `r"^\s*(?:#|$)"` produces a [regular expression object](@ref man-regex-literals) rather than a string
-  * `b"DATA\xff\u2200"` is a [byte array literal](@ref man-byte-array-literals) for `[68,65,84,65,255,226,136,128]`.
+  * `r"^\s*(?:#|$)"` 产生一个[正则表达式对象](@ref man-regex-literals)而不是一个字符串
+  * `b"DATA\xff\u2200"` 是一个[字节数组字面量](@ref man-byte-array-literals) ，表示`[68,65,84,65,255,226,136,128]`。
 
 可能令人惊讶的是，这些行为并没有被硬编码到 Julia 的解释器或编译器中。相反，它们是由一个通用机制实现的自定义行为，且任何人都可以使用该机制：带前缀的字符串字面量被解析为特定名称的宏的调用。例如，正则表达式宏如下：
 
@@ -915,9 +883,7 @@ end
 
 此外，如果编译器无法确定在所有循环中正则表达式对象都是常量，可能无法进行某些优化，使得此版本的效率依旧低于上面的更方便的字面量形式。当然，在某些情况下，非字面量形式更方便：如果需要向正则表达式中插入变量，就必须采用这种更冗长的方法；如果正则表达式模式本身是动态的，可能在每次循环迭代时发生变化，就必须在每次迭代中构造新的正则表达式对象。然而，在绝大多数用例中，正则表达式不是基于运行时的数据构造的。在大多数情况下，将正则表达式编写为编译期值的能力是无法估量的。
 
-The mechanism for user-defined string literals is deeply, profoundly powerful. Not only are Julia's
-non-standard literals implemented using it, but the command literal syntax (``` `echo "Hello, $person"` ```)
-is also implemented using the following innocuous-looking macro:
+用户定义字符串文字的机制非常强大。不仅使用它实现了 Julia 的非标准字面量，而且还使用以下看起来无害的宏实现了命令行字面量语法（``` `echo "Hello, $person"` ```）：
 
 ```julia
 macro cmd(str)
@@ -927,31 +893,25 @@ end
 
 当然，这个宏的定义中使用的函数隐藏了许多复杂性，但它们只是函数且完全用 Julia 编写。你可以阅读它们的源代码并精确地看到它们的行为——它们所做的一切就是构造要插入到你的程序的语法树的表达式对象。
 
-Like string literals, command literals can also be prefixed by an identifier
-to form what are called non-standard command literals. These command literals are parsed
-as calls to specially-named macros. For example, the syntax ```custom`literal` ``` is parsed
-as `@custom_cmd "literal"`.
-Julia itself does not contain any non-standard command literals, but packages can make use of
-this syntax. Aside from the different syntax and the `_cmd` suffix instead of the `_str` suffix,
-non-standard command literals behave exactly like non-standard string literals.
+与字符串字面量一样，命令行字面量也可以以标识符为前缀，以形成所谓的非标准命令行字面量。 这些命令行字面量被解析为对特殊命名的宏的调用。 例如，语法 ```custom`literal` ``` 被解析为 `@custom_cmd "literal"`。 Julia 本身不包含任何非标准的命令行字面量，但包可以使用这种语法。 除了不同的语法和 `_cmd` 后缀而不是 `_str` 后缀，非标准命令行字面量的行为与非标准字符串字面量完全一样。
 
 如果两个模块提供了同名的非标准字符串或命令字面量，能使用模块名限定该字符串或命令字面量。例如，如果 `Foo` 和 `Bar` 提供了相同的字符串字面量 `@x_str`，那么可以编写 `Foo.x"literal"` 或 `Bar.x"literal"` 来消除两者的歧义。
 
 
-Another way to define a macro would be like this:
+以下是另一种定义宏的方式：
 
 ```julia
 macro foo_str(str, flag)
     # do stuff
 end
 ```
-This macro can then be called with the following syntax:
+可以使用如下语法来调用这个宏
 
 ```julia
 foo"str"flag
 ```
 
-The type of flag in the above mentioned syntax would be a `String` with contents of whatever trails after the string literal.
+上述语法中 flag 的类型可以是一个`String`，在字符串字面量之后包含的内容。
 
 ## 生成函数
 
