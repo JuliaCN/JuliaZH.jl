@@ -335,7 +335,7 @@ Float32[ 0.25*x[i-1] + 0.5*x[i] + 0.25*x[i+1] for i=2:length(x)-1 ]
 
 ## 生成器表达式
 
-也可以在没有方括号的情况下编写（数组）推导，从而产生称为生成器的对象。可以迭代此对象以按需生成值，而不是预先分配数组并存储它们（请参阅 [迭代](@ref)）。例如，以下表达式在不分配内存的情况下对一个序列进行求和：
+也可以在没有方括号的情况下编写（数组）推导，从而产生称为生成器的对象。可以迭代此对象以按需生成值，而不是预先分配数组并存储它们（请参阅 [迭代](@ref Iteration)）。例如，以下表达式在不分配内存的情况下对一个序列进行求和：
 
 ```jldoctest
 julia> sum(1/n^2 for n=1:1000)
@@ -730,7 +730,7 @@ julia> LinearIndices(A)[2, 2]
 
 需要注意的是，这些转换的性能存在很大的不对称性。 将线性索引转换为一组笛卡尔索引需要做除法取余数，而相反的转换只是相乘和相加。 在现代处理器中，整数除法比乘法慢 10-50 倍。 虽然一些数组——比如 [`Array`](@ref) 本身——是使用线性内存块实现的，并在它们的实现中直接使用线性索引，但其他数组——比如 [`Diagonal`](@ref)——需要完整的笛卡尔索引集进行查找（请参阅 [`IndexStyle`](@ref) 以仔细推敲）。 因此，当遍历整个数组时，最好遍历 [`eachindex(A)`](@ref) 而不是 `1:length(A)`。 在 `A` 是 `IndexCartesian` 的情况下，前者不仅会快得多，而且它还支持 OffsetArrays（译者注：OffsetArrays.jl是Julia的一个包，支持矩阵的下标不从1开始）。
 
-#### 省略和额外的索引
+#### [省略和额外的索引](@id Omitted-and-extra-indices)
 
 除了线性索引，在某些情况下， `N` 维数组的可能少于或多余  `N` 。
 
@@ -774,7 +774,7 @@ julia> A[2,1]
 6
 ```
 
-## 迭代
+## [迭代](@id Iteration)
 
 迭代整个数组的推荐方法是
 
@@ -826,7 +826,7 @@ Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 2. 二元运算符 -- `-`, `+`, `*`, `/`, `\`, `^`
 3. 比较操作符 -- `==`, `!=`, `≈` ([`isapprox`](@ref)), `≉`
 
-另外，为了便于数学上和其他运算的向量化，Julia [提供了点语法（dot syntax）](@ref man-vectorized) `f.(args...)`，例如，`sin.(x)` 或 `min.(x,y)`，用于数组或数组和标量的混合上的按元素运算（[广播](@ref)运算）；当与其他点调用（dot call）结合使用时，它们的额外优点是能「融合」到单个循环中，例如，`sin.(cos.(x))`。
+另外，为了便于数学上和其他运算的向量化，Julia [提供了点语法（dot syntax）](@ref man-vectorized) `f.(args...)`，例如，`sin.(x)` 或 `min.(x,y)`，用于数组或数组和标量的混合上的按元素运算（[广播](@ref Broadcasting)运算）；当与其他点调用（dot call）结合使用时，它们的额外优点是能「融合」到单个循环中，例如，`sin.(cos.(x))`。
 
 此外，*每个*二元运算符支持相应的[点操作版本](@ref man-dot-operators)，可以应用于此类[融合 broadcasting 操作](@ref man-vectorized)的数组（以及数组和标量的组合），例如 `z .== sin.(x .* y)`。
 
@@ -834,7 +834,7 @@ Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()
 
 还要注意 `max.(a,b)` 和 [`maximum(a)`](@ref) 之间的区别，`max.(a,b)` 对 `a` 和 `b` 的每个元素 [`broadcast`](@ref)s [`max`](@ref)，[`maximum(a)`](@ref) 寻找在 `a` 中的最大值。`min.(a,b)` 和 `minimum(a)` 也有同样的关系。
 
-## 广播
+## [广播](@id Broadcasting)
 
 有时需要在不同尺寸的数组上执行元素对元素的操作，例如将矩阵的每一列加一个向量。一种低效的方法是将向量复制成矩阵的大小：
 
@@ -865,7 +865,7 @@ julia> broadcast(+, a, b)
  1.73659  0.873631
 ```
 
-[点运算符](@ref man-dot-operators) 如`.+` 和`.*` 等价于`broadcast` 调用（除了它们结合使用，[如上所述](@ref man-array-and -vectorized-operators-and-functions)）。 还有一个 [`broadcast!`](@ref) 函数来指定一个明确的方式（也可以通过`.=` 赋值以融合方式访问）。 事实上，`f.(args...)` 等价于`broadcast(f, args...)`，提供了一种方便的语法来广播任何函数([dot syntax](@ref man-vectorized))。 嵌套的“点运算符调用”`f.(...)`（包括对`.+` 等的调用）[自动融合](@ref man-dot-operators) 到单个`broadcast` 调用中。
+[点运算符](@ref man-dot-operators) 如`.+` 和`.*` 等价于`broadcast` 调用（除了它们结合使用，[如上所述](@ref man-array-and-vectorized-operators-and-functions)）。 还有一个 [`broadcast!`](@ref) 函数来指定一个明确的方式（也可以通过`.=` 赋值以融合方式访问）。 事实上，`f.(args...)` 等价于`broadcast(f, args...)`，提供了一种方便的语法来广播任何函数([dot syntax](@ref man-vectorized))。 嵌套的“点运算符调用”`f.(...)`（包括对`.+` 等的调用）[自动融合](@ref man-dot-operators) 到单个`broadcast` 调用中。
 
 此外，[`broadcast`](@ref) 不限于数组（参见函数文档）； 它还处理标量、元组和其它容器。 默认情况下，只有一些参数类型被认为是标量，包括（但不限于）`Number`s、`String`s、`Symbol`s、`Type`s、`Function`s 和一些常见的单例，如 `missing` 和`nothing`。 所有其他参数都被迭代或逐个索引。
 
@@ -908,13 +908,7 @@ Julia 中的基本数组类型是抽象类型 [`AbstractArray{T,N}`](@ref)。它
 
 [`BitArray`](@ref) 是节省空间“压缩”的布尔数组，每个比特（bit）存储一个布尔值。 它们可以类似于 `Array{Bool}` 数组（每个字节（byte）存储一个布尔值），并且可以分别通过 `Array(bitarray)` 和 `BitArray(array)` 相互转换。
 
-An array is "strided" if it is stored in memory with well-defined spacings (strides) between
-its elements. A strided array with a supported element type may be passed to an external
-(non-Julia) library like BLAS or LAPACK by simply passing its [`pointer`](@ref) and the
-stride for each dimension. The [`stride(A, d)`](@ref) is the distance between elements along
-dimension `d`. For example, the builtin `Array` returned by `rand(5,7,2)` has its elements
-arranged contiguously in column major order. This means that the stride of the first
-dimension — the spacing between elements in the same column — is `1`:
+如果数组存储在内存中，其元素之间具有明确定义的间距（步长），则该数组是“等步长的”的。 通过简单地传递其 [`pointer`](@ref) 和每个维度的步长，可以将有支持元素类型的等步长数组传递给外部（非 Julia）库，如 BLAS 或 LAPACK。 [`stride(A, d)`](@ref) 是元素之间沿维度 `d` 的距离。 例如，`rand(5,7,2)` 返回的内置 `Array` 的元素按列优先顺序连续排列。 这意味着第一个维度的步长——同一列中元素之间的间距——是`1`：
 
 ```julia-repl
 julia> A = rand(5,7,2);
@@ -923,23 +917,14 @@ julia> stride(A,1)
 1
 ```
 
-The stride of the second dimension is the spacing between elements in the same row, skipping
-as many elements as there are in a single column (`5`). Similarly, jumping between the two
-"pages" (in the third dimension) requires skipping `5*7 == 35` elements.  The [`strides`](@ref)
-of this array is the tuple of these three numbers together:
+第二个维度的步长是同一行中元素之间的间距，跳过与单列（`5`）中的元素一样多的元素。 类似地，在两个“页面”（在第三维中）之间跳转需要跳过 `5*7 == 35` 元素。 这个数组的 [`strides`](@ref) 是这三个数字组成的元组：
 
 ```julia-repl
 julia> strides(A)
 (1, 5, 35)
 ```
 
-In this particular case, the number of elements skipped _in memory_ matches the number of
-_linear indices_ skipped. This is only the case for contiguous arrays like `Array` (and
-other `DenseArray` subtypes) and is not true in general. Views with range indices are a good
-example of _non-contiguous_ strided arrays; consider `V = @view A[1:3:4, 2:2:6, 2:-1:1]`.
-This view `V` refers to the same memory as `A` but is skipping and re-arranging some of its
-elements. The stride of the first dimension of `V` is `3` because we're only selecting every
-third row from our original array:
+在这种特殊情况下，在_内存_中跳过的元素数与跳过的_线性索引_数相匹配。 这仅适用于像 `Array`（和其他 `DenseArray` 子类型）这样的连续数组，通常情况下并非如此。 具有范围索引的视图是 _非连续_ 等步长数组的一个很好的例子； 考虑`V = @view A[1:3:4, 2:2:6, 2:-1:1]`。 这个视图 `V` 与 `A` 引用了相同的内存，但它跳过并重新排列了它的一些元素。 `V` 的第一维的步幅是 `3`，因为我们只从原始数组中选择每第三行：
 
 ```julia-repl
 julia> V = @view A[1:3:4, 2:2:6, 2:-1:1];
@@ -948,9 +933,7 @@ julia> stride(V, 1)
 3
 ```
 
-This view is similarly selecting every other column from our original `A` — and thus it
-needs to skip the equivalent of two five-element columns when moving between indices in the
-second dimension:
+这个视图类似于从我们原来的`A`中每隔一列选择一列——因此当在第二维的索引之间移动时，它需要跳过相当于两个五元素列的内容：
 
 ```julia-repl
 julia> stride(V, 2)
@@ -965,12 +948,6 @@ julia> stride(V, 3)
 -35
 ```
 
-This means that the `pointer` for `V` is actually pointing into the middle of `A`'s memory
-block, and it refers to elements both backwards and forwards in memory. See the
-[interface guide for strided arrays](@ref man-interface-strided-arrays) for more details on
-defining your own strided arrays. [`StridedVector`](@ref) and [`StridedMatrix`](@ref) are
-convenient aliases for many of the builtin array types that are considered strided arrays,
-allowing them to dispatch to select specialized implementations that call highly tuned and
-optimized BLAS and LAPACK functions using just the pointer and strides.
+这意味着`V` 的`pointer` 实际上指向`A` 的内存块的中间，并且它在内存中指向元素是同时向后和向前的。 有关定义你自己的跨距数组的更多详细信息，请参阅 [等步长数组的接口指南](@ref man-interface-strided-arrays)。 [`StridedVector`](@ref) 和 [`StridedMatrix`](@ref) 被认为是等步长数组的内置数组类型的方便别名，允许它们仅使用指针和步幅，来分派选择调用调整和优化后的 BLAS 和 LAPACK 函数。
 
 需要强调的是 strides 是关于内存而不是索引中的偏移。如果你在找在线性（单索引）索引和笛卡尔（多索引）索引间切换的方法，见 [`LinearIndices`](@ref) 和 [`CartesianIndices`](@ref).

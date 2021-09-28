@@ -98,9 +98,7 @@ $(DEPOT_PATH[1])/logs/repl_history.jl
 
 ### `JULIA_PKG_SERVER`
 
-Used by `Pkg.jl`, for downloading packages and updating the registry. By default, `Pkg` uses `https://pkg.julialang.org` to
-fetch Julia packages. You can use this environment variable to select a different server. In addition, you can disable the use of the
-PkgServer protocol, and instead access the packages directly from their hosts (GitHub, GitLab, etc.) by setting:
+由`Pkg.jl` 使用，用于下载软件包和更新注册表。默认情况下，`Pkg` 使用 `https://pkg.julialang.org` 来获取 Julia 包。你可以使用此环境变量来选择不同的服务器。 此外，你可以禁用 PkgServer 协议的使用，并通过设置直接从它们的主机（GitHub、GitLab 等）访问包：
 ```
 export JULIA_PKG_SERVER=""
 ```
@@ -133,23 +131,18 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 ### [`JULIA_NUM_THREADS`](@id JULIA_NUM_THREADS)
 
-An unsigned 64-bit integer (`uint64_t`) that sets the maximum number of threads
-available to Julia.  If `$JULIA_NUM_THREADS` is not positive or is not set, or
-if the number of CPU threads cannot be determined through system calls, then the
-number of threads is set to `1`.
+一个无符号 64 位整数 (`uint64_t`)，用于设置 Julia 可用的最大线程数。 如果`$JULIA_NUM_THREADS` 不为正数或未设置，或者无法通过系统调用确定CPU 线程数，则将线程数设置为`1`。
 
-If `$JULIA_NUM_THREADS` is set to `auto`, then the number of threads will be set
-to the number of CPU threads.
+如果`$JULIA_NUM_THREADS` 设置为`auto`，则线程数将设置为CPU线程数。
 
 !!! note
-    `JULIA_NUM_THREADS` must be defined before starting julia; defining it in
-    `startup.jl` is too late in the startup process.
+    `JULIA_NUM_THREADS` 必须在启动 julia 之前定义； 启动过程中在`startup.jl` 中定义它是不能奏效的。
 
 !!! compat "Julia 1.5"
     在 Julia 1.5 和更高版本中，也可在启动时使用 `-t`/`--threads` 命令行参数指定线程数。
 
 !!! compat "Julia 1.7"
-    The `auto` value for `$JULIA_NUM_THREADS` requires Julia 1.7 or above.
+    `$JULIA_NUM_THREADS` 的 `auto` 值需要 Julia 1.7 或更高版本。
 
 ### `JULIA_THREAD_SLEEP_THRESHOLD`
 
@@ -232,19 +225,14 @@ to the number of CPU threads.
 
 !!! note
 
-    This environment variable only has an effect if Julia was compiled with JIT
-    profiling support, using either
-    * Intel's [VTune™ Amplifier](https://software.intel.com/en-us/vtune)
-      (`USE_INTEL_JITEVENTS` set to `1` in the build configuration), or
-    * [OProfile](http://oprofile.sourceforge.net/news/) (`USE_OPROFILE_JITEVENTS` set to `1`
-      in the build configuration).
-    * [Perf](https://perf.wiki.kernel.org) (`USE_PERF_JITEVENTS` set to `1`
-      in the build configuration). This integration is enabled by default.
+    此环境变量仅在使用 JIT 性能分析支持编译 Julia 时有效，使用如下之一：
+    * Intel's [VTune™ Amplifier](https://software.intel.com/en-us/vtune)(`USE_INTEL_JITEVENTS` 在配置中设置为`1`), 或
+    * [OProfile](http://oprofile.sourceforge.net/news/)(`USE_OPROFILE_JITEVENTS` 在配置中设置为`1`)。
+    * [Perf](https://perf.wiki.kernel.org) (`USE_PERF_JITEVENTS` 在构建配置中设置为 `1`)。 默认情况下启用此集成。
 
 ### `ENABLE_GDBLISTENER`
 
-If set to anything besides `0` enables GDB registration of Julia code on release builds.
-On debug builds of Julia this is always enabled. Recommended to use with `-g 2`.
+如果设置为除`0`之外的任何内容，则在发布版本上启用 Julia 代码的 GDB 注册。 在 Julia 的调试版本中，这始终处于启用状态。 推荐与 `-g 2` 一起使用。
 
 
 ### `JULIA_LLVM_ARGS`

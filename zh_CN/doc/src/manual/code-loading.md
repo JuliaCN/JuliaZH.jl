@@ -17,7 +17,7 @@ Julia加载代码有两种机制：
 这些问题可通过查询各项目文件（`Project.toml` 或 `JuliaProject.toml`）、清单文件（`Manifest.toml` 或 `JuliaManifest.toml`），或是源文件的文件夹列在[`LOAD_PATH`](@ref) 中的项目环境解决。
 
 
-## [包的联合生态](@ref Federation-of-packages)
+## [包的联合生态](@id Federation-of-packages)
 
 大多数时候，一个包可以通过它的名字唯一确定。但有时在一个项目中，可能需要使用两个有着相同名字的不同的包。尽管你可以通过重命名其中一个包来解决这个问题，但在一个大型的、共享的代码库中被迫做这件事可能是有高度破坏性的。相反，Julia的包加载机制允许相同的包名在一个应用的不同部分指向不同的包。
 

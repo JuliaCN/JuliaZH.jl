@@ -70,7 +70,7 @@ obj3 = MyModule.someotherfunction(obj2, c)
 
 当一个文件通过使用 `julia file.jl` 来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查 `abspath(PROGRAM_FILE) == @__FILE__` 是不是 `true`。
 
-### 怎样在脚本中捕获 CTRL-C ？
+### [怎样在脚本中捕获 CTRL-C ？](@id catch-ctrl-c)
 
 通过 `julia file.jl` 方式运行的 Julia 脚本，在你尝试按 CTRL-C (SIGINT) 中止它时，并不会抛出 [`InterruptException`](@ref)。如果希望在脚本终止之后运行一些代码，请使用 [`atexit`](@ref)，注意：脚本的中止不一定是由 CTRL-C 导致的。
 另外你也可以通过 `julia -e 'include(popfirst!(ARGS))' file.jl` 命令运行脚本，然后可以通过 [`try`](@ref) 捕获 `InterruptException`。

@@ -1,4 +1,4 @@
-# 元编程
+# [元编程](@id Metaprogramming)
 
 Lisp 留给 Julia 最大的遗产就是它的元编程支持。和 Lisp 一样，Julia 把自己的代码表示为语言中的数据结构。既然代码被表示为了可以在语言中创建和操作的对象，程序就可以变换和生成自己的代码。这允许在没有额外构建步骤的情况下生成复杂的代码，并且还允许在 [abstract syntax trees](https://en.wikipedia.org/wiki/Abstract_syntax_tree) 级别上运行的真正的 Lisp 风格的宏。与之相对的是预处理器“宏”系统，比如 C 和 C++ 中的，它们在解析和解释代码之前进行文本操作和变换。由于 Julia 中的所有数据类型和代码都被表示为 Julia 的 数据结构，强大的 [reflection](https://en.wikipedia.org/wiki/Reflection_omputer_%28cprogramming%29)
 功能可用于探索程序的内部及其类型，就像任何其他数据一样。
