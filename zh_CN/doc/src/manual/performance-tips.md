@@ -124,9 +124,9 @@ julia> time_sum(x)
 
 Julia 及其包生态系统包括可以帮助您诊断问题和提高代码性能的工具：
 
-  * [Profiling](@ref) 允许你测量正在运行的代码的性能并识别作为瓶颈的行。对于复杂的项目，[ProfileView](https://github.com/timholy/ProfileView.jl) 包可以帮助你可视化分析结果。
+  * [Profiling](@ref profiling) 允许你测量正在运行的代码的性能并识别作为瓶颈的行。对于复杂的项目，[ProfileView](https://github.com/timholy/ProfileView.jl) 包可以帮助你可视化分析结果。
   * [Traceur](https://github.com/JunoLab/Traceur.jl) 包可以帮助你找到代码中常见的性能问题。
-  * 预期之外的大内存分配——正如 [`@time`](@ref)、[`@allocated`](@ref) 或 Profiler（通过调用垃圾收集例程）所报告的那样——暗示你的代码可能有问题。 如果你没有看到分配的其他原因，请怀疑是类型问题。还可以使用 `--track allocation=user` 选项启动 Julia 并检查生成的 `*.mem` 文件以查看有关这些分配发生位置的信息。 参见[内存分配分析](@ref Memory allocation analysis)。
+  * 预期之外的大内存分配——正如 [`@time`](@ref)、[`@allocated`](@ref) 或 Profiler（通过调用垃圾收集例程）所报告的那样——暗示你的代码可能有问题。 如果你没有看到分配的其他原因，请怀疑是类型问题。还可以使用 `--track allocation=user` 选项启动 Julia 并检查生成的 `*.mem` 文件以查看有关这些分配发生位置的信息。 参见[内存分配分析](@ref memory-allocation-analysis)。
   * `@code_warntype` 生成代码的表示形式，这有助于查找导致类型不确定性的表达式。 请参阅下面的 [`@code_warntype`](@ref)。
 
 ## [避免使用抽象类型参数的容器](@id man-performance-abstract-container)
@@ -413,7 +413,7 @@ c = (b + 1.0f0)::Complex{T}
 
 不会降低性能（但也不会有帮助），因为编译器可以在编译 `k` 时确定 `c` 的类型。
 
-### 注意Julia何时避免特例化
+### [注意Julia何时避免特例化](@id Be-aware-of-when-Julia-avoids-specializing)
 
 作为一种启发式方法，Julia 避免在三种特定情况下自动特例化参数类型参数：`Type`、`Function` 和 `Vararg`。 当在方法中使用参数时，Julia 将始终特例化，但如果参数只是传递给另一个函数，则不会。 这通常在运行时没有性能影响并且[提高编译器性能](@ref compiler-efficiency-issues)。 如果你发现它在你的案例中在运行时确实有性能影响，您可以通过向方法声明添加类型参数来触发特例化。这里有些例子：
 
@@ -757,7 +757,7 @@ copy_row_col: 1.721531501
 
 请注意，`copy_cols` 比 `copy_rows` 快得多。这与预料的一致，因为 `copy_cols` 尊重 `Matrix` 基于列的内存布局。另外，`copy_col_row` 比 `copy_row_col` 快得多，因为它遵循我们的经验法则，即切片表达式中出现的第一个元素应该与最内层循环耦合。
 
-## 输出预分配
+## [输出预分配](@id Pre-allocating-outputs)
 
 如果函数返回 `Array` 或其它复杂类型，则可能需要分配内存。不幸的是，内存分配及其反面垃圾收集通常是很大的瓶颈。
 

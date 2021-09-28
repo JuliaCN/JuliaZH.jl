@@ -476,7 +476,7 @@ Julia 所使用的默认模式总是 [`RoundNearest`](@ref)，指舍入到最接
      
      
 
-## 任意精度算术
+## [任意精度算术](@id Arbitrary-Precision-Arithmetic)
 
 为了允许使用任意精度的整数与浮点数，Julia 分别包装了 [GNU Multiple Precision Arithmetic Library (GMP)](https://gmplib.org) 以及 [GNU MPFR Library](https://www.mpfr.org)。Julia 中的 [`BigInt`](@ref) 与 [`BigFloat`](@ref) 两种类型分别提供了任意精度的整数和浮点数。
 

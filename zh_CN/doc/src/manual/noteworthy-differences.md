@@ -1,6 +1,6 @@
 # 与其他语言的显著差异
 
-## 与 MATLAB 的显著差异
+## [与 MATLAB 的显著差异](@id Noteworthy-differences-from-MATLAB)
 
 虽然 MATLAB 用户可能会发现 Julia 的语法很熟悉，但 Julia 不是 MATLAB 的克隆。 它们之间存在重大的语法和功能差异。 以下是一些可能会使习惯于 MATLAB 的 Julia 用户感到困扰的显著差异：
 
@@ -82,7 +82,7 @@
      
   * 在 Julia 中，a^b^c 被认为是 a^(b^c) 而在 MATLAB 中它是 (a^b)^c。
 
-## 与 R 的显著差异
+## [与 R 的显著差异](@id Noteworthy-differences-from-R)
 
 Julia 的目标之一是为数据分析和统计编程提供高效的语言。对于从 R 转到 Julia 的用户来说，这是一些显著差异：
 
@@ -194,7 +194,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
      
 
-## 与 Python 的显著差异
+## [与 Python 的显著差异](@id Noteworthy-differences-from-Python)
 
   * Julia 的 `for`, `if`, `while` 等语句块都以 `end` 关键字结束。代码的缩进不像在 Python 中那样重要。Julia 也没有 `pass` 关键字。 
      
@@ -256,7 +256,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
   * Python 中大多数的值都能用在逻辑运算中。例如：`if "a"` 永真，`if ""` 恒假。在 Julia 中你只能使用布尔类型的值，或者显示的将其他值转为布尔类型，否则就会抛出异常。例如当你想测试字符串是否为空是，请使用 `if !isempty("")`。
   * 在 Julia 中大多数代码块都会引入新的本地作用域（local scope）。例如：循环和异常处理的 try — catch — finally。注意：列表推断（comprehensions）与生成器在 Julia 和 Python 中都会引入新的作用域；而 if 分支则都不会引入。
 
-## 与 C/C++ 的显著差异
+## [与 C/C++ 的显著差异](@id Noteworthy-differences-from-C/C++)
 
   * Julia 的数组由方括号索引，方括号中可以包含不止一个维度 `A[i,j]`。这样的语法不仅仅是像 C/C++ 中那样对指针或者地址引用的语法糖，参见[关于数组构造的语法的 Julia 文档](@ref man-multi-dim-arrays)。
      
@@ -347,7 +347,7 @@ Julia 的目标之一是为数据分析和统计编程提供高效的语言。�
      
      
 
-## 与 Common Lisp 的显著差异
+## [与 Common Lisp 的显著差异](@id Noteworthy-differences-from-Common-Lisp)
 
 - Julia 默认使用 1 开始的数组索引，它也能处理任意的[索引顺序](@ref man-custom-indices)。
 

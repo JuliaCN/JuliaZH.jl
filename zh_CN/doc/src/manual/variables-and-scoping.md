@@ -17,7 +17,7 @@
 | [`macro`](@ref) | 局部（硬） | 全局 |
 | 函数， [`do`](@ref) 语句块, [`let`](@ref)语句块, 数组推导, 生成器 | 局部（硬） | global, local |
 
-值得注意的是，这个表内没有的是[ begin 块](@ref man-compound-experessions)和[ if 块](@ref man-conditional-evaluation)，这两个块**不会**引进新的作用域块。这两种作用域遵循的规则有点不一样，会在下面解释。
+值得注意的是，这个表内没有的是 [begin 块](@ref man-compound-expressions)和[ if 块](@ref man-conditional-evaluation)，这两个块**不会**引进新的作用域块。这两种作用域遵循的规则有点不一样，会在下面解释。
 
 Julia 使用[词法作用域](https://en.wikipedia.org/wiki/Scope_%28computer_science%29#Lexical_scoping_vs._dynamic_scoping)，也就是说一个函数的作用域不继承自调用了函数的调用者作用域，而继承自该函数定义处作用域。举例如下，`foo` 中的 `x` 指向模块 `Bar` 的全局作用域中 `x`。
 
