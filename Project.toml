@@ -1,6 +1,6 @@
 name = "JuliaZH"
 uuid = "652e05fd-ed22-5b6c-bf99-44e63a676e5f"
-version = "1.5.4"
+version = "1.6.0"
 
 [deps]
 PkgServerClient = "9c9e696b-6b05-402c-8ae4-5dc38852c714"
