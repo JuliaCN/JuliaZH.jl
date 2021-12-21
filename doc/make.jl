@@ -207,7 +207,8 @@ else
             "assets/julia-manual.css"
         ],
         lang = "zh-cn",
-        footer = "📢📢📢Julia中文社区将于2021年12月10日至12日之间举办线上会议，抢先预览[会议日程](https://discourse.juliacn.com/t/topic/5717)！"
+        # 文档全局页脚
+        footer = ""
     )
 end
 
