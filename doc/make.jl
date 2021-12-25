@@ -208,7 +208,7 @@ else
         ],
         lang = "zh-cn",
         # 文档全局页脚
-        footer = ""
+        # footer = ""
     )
 end
 
