@@ -20,6 +20,14 @@ alt="集智俱乐部" width="210"></img>
 </a>
 ```
 
+特别感谢[集智俱乐部](https://swarma.org)对[Julia中文文档](https://docs.juliacn.com/)和[Julia中文论坛](https://discourse.juliacn.com/)相关服务器资源的赞助！
+
+❤❤❤如果您或您所属的组织有意资助Julia中文社区的发展，欢迎前往论坛的[社区](https://discourse.juliacn.com/c/community/13)板块发帖咨询。❤❤❤
+
+## 其它中文资料
+
+- [Julia Data Science 中文版](https://cn.julialang.org/JuliaDataScience/)
+
 ## [简介](@id man-introduction)
 
 科学计算对性能一直有着最高的需求，但目前各领域的专家却大量使用较慢的动态语言来开展他们的日常工作。
