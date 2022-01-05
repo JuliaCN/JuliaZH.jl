@@ -84,7 +84,7 @@ julia> fetch(s)
 
 ## [访问代码以及加载库](@id code-availability)
 
-对于想要并行执行的代码，需要所有对所有线程都可见。例如，在 Julia 命令行中输入以下命令：
+对于想要并行执行的代码，需要所有对所有进程都可见。例如，在 Julia 命令行中输入以下命令：
 
 ```julia-repl
 julia> function rand2(dims...)
@@ -123,7 +123,7 @@ println("loaded")
 end
 ```
 
-为了在所有进程中引用 `MyType`，`DummyModule.jl` 需要在每个进程中载入。单独执行 `include("DummyModule.jl")` 只会在一个线程中将其载入。为了让每个线程都载入它，可以用 [`@everywhere`](@ref) 宏来实现(启动 Julia 的时候，执行 `julia -p 2`)。
+为了在所有进程中引用 `MyType`，`DummyModule.jl` 需要在每个进程中载入。单独执行 `include("DummyModule.jl")` 只会在一个进程中将其载入。为了让每个进程都载入它，可以用 [`@everywhere`](@ref) 宏来实现(启动 Julia 的时候，执行 `julia -p 2`)。
 
 ```julia-repl
 julia> @everywhere include("DummyModule.jl")
