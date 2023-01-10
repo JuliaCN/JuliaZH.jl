@@ -13,11 +13,11 @@ Julia 可以直接调用 C/Fortran 的函数，不需要任何"胶水"代码，�
 
 最终，你能使用 [`ccall`](@ref) 来实际生成一个对库函数的调用。[`ccall`](@ref) 的参数是：
 
-1. 一个 `(:function, "library")` 对（最常见）
+1. 一对 `(:function, "library")` （最常见）
 
    或
 
-   一个 `:function` 名称符号或 `"function"` 名称字符串（用于当前进程或 libc 中的符号），
+   一个名称符号 `:function` 或名称字符串 `"function"`（用于当前进程或 libc 中的符号），
 
    或
 
@@ -70,7 +70,7 @@ julia> (Cstring,)
 (Cstring,)
 ```
 
-在实践中，尤其是在提供可重用功能时，通常会在 Julia 函数中包装 [`ccall`](@ref) 使用，这些函数设置参数，然后以 C 或 Fortran 函数指定的任何方式检查错误。 如果发生错误，它会作为普通的 Julia 异常抛出。 这一点尤其重要，因为 C 和 Fortran API 在它们指示错误条件的方式上是出了名的不一致。 例如，`getenv` C 库函数被包裹在下面的 Julia 函数中，它是 [`env.jl`](https://github.com/JuliaLang/julia/blob/master/base/env.jl)：
+在实践中，尤其是在提供可重用功能时，通常会在 Julia 函数中包装 [`ccall`](@ref) 使用，这些函数设置参数，然后以 C 或 Fortran 函数指定的任何方式检查错误。 如果发生错误，它会作为普通的 Julia 异常抛出。 这一点尤其重要，因为 C 和 Fortran API 在它们指示错误条件的方式上是出了名的不一致。 例如，`getenv` C 库函数被包裹在下面的 Julia 函数中，它是 [`env.jl`](https://github.com/JuliaLang/julia/blob/master/base/env.jl) 实际定义的简化版本：
 
 ```julia
 function getenv(var::AbstractString)
@@ -215,17 +215,17 @@ ccall((:foo, "libfoo"), Cvoid, (Int32, Float64),
 
 首先，让我们回顾一些相关的 Julia 类型术语：
 
-| 语法 / 关键字              | 例子                                     | 描述                                                                                                                                                                                                                                                                    |
-|:----------------------------- |:------------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `mutable struct`              | `BitSet`                                    | `Leaf Type`：包含 `type-tag` 的一组相关数据，由 Julia GC 管理，通过 `object-identity` 来定义。为了保证实例可以被构造，`Leaf Type` 必须是完整定义的，即不允许使用 `TypeVars`。              |
-| `abstract type`               | `Any`, `AbstractArray{T, N}`, `Complex{T}`  | `Super Type`：用于描述一组类型，它不是 `Leaf-Type`，也无法被实例化。                                                                                                                                                      |
-| `T{A}`                        | `Vector{Int}`                               | `Type Parameter`：某种类型的一种具体化，通常用于分派或存储优化。                                                                                                                                                                          |
-|                               |                                             | `TypeVar`：`Type parameter` 声明中的 `T` 是一个 `TypeVar`，它是类型变量的简称。                                                                                                                                                                  |
-| `primitive type`              | `Int`, `Float64`                            | `Primitive Type`：一种没有成员变量的类型，但是它有大小。它是按值存储和定义的。                                                                                                                                                                                           |
-| `struct`                      | `Pair{Int, Int}`                            | "Struct" :: 所有字段都定义为常量的类型。 它是按值定义的，并且可以与类型标签一起存储。                                                                                                                                                       |
-|                               | `ComplexF64` (`isbits`)                     | "Is-Bits" :: 一个 `primitive type`，或者一个 `struct` 类型，其中所有字段都是其他 `isbits` 类型。 它是按值定义的，并且在没有类型标签的情况下存储。                                                                                                                       |
-| `struct ...; end`             | `nothing`                                   | `Singleton`：没有成员变量的 `Leaf Type` 或 `Struct`。                                                                                                                                                                                                                        |
-| `(...)` or `tuple(...)`       | `(1, 2, 3)`                                 | “元组” :: 类似于匿名结构类型或常量数组的不可变数据结构。 表示为数组或结构。                                                                                                                                |
+| 语法 / 关键字                   | 例子                                        | 描述                                                                                                                                                                     |
+|:----------------------------- |:------------------------------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mutable struct`              | `BitSet`                                    | `Leaf Type`：包含 `type-tag` 的一组相关数据，由 Julia GC 管理，通过 `object-identity` 来定义。为了保证实例可以被构造，`Leaf Type` 必须是完整定义的，即不允许使用 `TypeVars`。            |
+| `abstract type`               | `Any`, `AbstractArray{T, N}`, `Complex{T}`  | `Super Type`：用于描述一组类型，它不是 `Leaf-Type`，也无法被实例化。                                                                                                            |
+| `T{A}`                        | `Vector{Int}`                               | `Type Parameter`：某种类型的一种具体化，通常用于分派或存储优化。                                                                                                                |
+|                               |                                             | `TypeVar`：`Type parameter` 声明中的 `T` 是一个 `TypeVar`，它是类型变量的简称。                                                                                                |
+| `primitive type`              | `Int`, `Float64`                            | `Primitive Type`：一种没有成员变量的类型，但是它有大小。它是按值存储和定义的。                                                                                                     |
+| `struct`                      | `Pair{Int, Int}`                            | "Struct" :: 所有字段都定义为常量的类型。 它是按值定义的，并且可以与类型标签一起存储。                                                                                                |
+|                               | `ComplexF64` (`isbits`)                     | "Is-Bits" :: 一个 `primitive type`，或者一个 `struct` 类型，其中所有字段都是其他 `isbits` 类型。 它是按值定义的，并且在没有类型标签的情况下存储。                                        |
+| `struct ...; end`             | `nothing`                                   | `Singleton`：没有成员变量的 `Leaf Type` 或 `Struct`。                                                                                                                       |
+| `(...)` or `tuple(...)`       | `(1, 2, 3)`                                 | “元组” :: 类似于匿名结构类型或常量数组的不可变数据结构。 表示为数组或结构。                                                                                                         |
 
 ### [Bits Types](@id man-bits-types)
 
@@ -480,101 +480,88 @@ println(call_dist(a,b))
 
 在 Julia 代码包装对外部 Fortran 例程的调用中，所有输入参数都应声明为`Ref{T}`类型，因为 Fortran 通过指向内存位置的指针传递所有变量。 Fortran 子程序的返回类型应该是 `Cvoid`，或者 Fortran 函数的返回类型应该是 `T`，返回类型是 `T`。
 
-## Mapping C Functions to Julia
+# 将 C 函数映射到 Julia
 
-### `ccall` / `@cfunction` argument translation guide
+### `ccall` / `@cfunction` 参数翻译指南
 
-For translating a C argument list to Julia:
+将 C 参数列表翻译为 Julia：
 
-  * `T`, where `T` is one of the primitive types: `char`, `int`, `long`, `short`, `float`, `double`,
-    `complex`, `enum` or any of their `typedef` equivalents
+   * `T`，其中 `T` 取值为：`char`、`int`、`long`、`short`、`float`、`double`、`complex`、`enum` 或其等价的 `typedef` 类型
 
-      * `T`, where `T` is an equivalent Julia Bits Type (per the table above)
-      * if `T` is an `enum`, the argument type should be equivalent to `Cint` or `Cuint`
-      * argument value will be copied (passed by value)
-  * `struct T` (including typedef to a struct)
+      * `T`，其中 `T` 是等价的 Julia Bits 类型（参见上表）
+      * 如果 `T` 是 `enum`，则参数类型应等价于 `Cint` 或 `Cuint`
+      * 参数值将被复制（按值传递）
+  * `struct T` （包括 struct 的 typedef）
 
-      * `T`, where `T` is a Julia leaf type
-      * argument value will be copied (passed by value)
+      * `T`，其中 `T` 是 Julia 叶类型
+      * 参数值将被复制（按值传递）
   * `void*`
-
-      * depends on how this parameter is used, first translate this to the intended pointer type, then
-        determine the Julia equivalent using the remaining rules in this list
-      * this argument may be declared as `Ptr{Cvoid}`, if it really is just an unknown pointer
+    
+     * 取决于如何使用此参数，首先将其翻译为所需的指针类型，然后使用此列表中的其余规则确定 Julia 等价项
+     * 这个参数可以声明为 `Ptr{Cvoid}`，如果它真的只是一个未知的指针
   * `jl_value_t*`
 
       * `Any`
-      * argument value must be a valid Julia object
+      * 参数值必须是有效的 Julia 对象
   * `jl_value_t* const*`
 
       * `Ref{Any}`
       * 参数列表必须是有效的 Julia 对象（或 C_NULL）
       * 不能用于输出参数，除非用户能够单独安排要GC保留的对象
-         
-  * `T*`
+  * `T*` 
 
-      * `Ref{T}`, where `T` is the Julia type corresponding to `T`
-      * 如果参数值是 `inlinealloc` 类型（否则包括 `isbits`，该值必须是有效的 Julia 对象）将被复制
-         
-  * `T (*)(...)` (e.g. a pointer to a function)
+     * `Ref{T}`，其中 `T` 是与 `T` 对应的 Julia 类型
+     * 如果它是 `inlinealloc` 类型，则将复制参数值（包括 `isbits`，否则，值必须是有效的 Julia 对象）
+  * `T (*)(...)` （例如，指向函数的指针）
 
-      * `Ptr{Cvoid}`（你可能需要显式使用 [`@cfunction`](@ref) 来创建这个指针）
-         
-  * `...` (e.g. a vararg)
+     * `Ptr{Cvoid}`（您可能需要显式使用 [`@cfunction`](@ref) 来创建此指针）
+  * `...` （例如，可变参数）
 
-      * [[for `ccall`]: `T...`，其中 `T` 是所有剩余参数的单个 Julia 类型]: `T...`, where `T` is the single Julia type of all
-         
-      * [[for `@ccall`]：`; va_arg1::T、va_arg2::S` 等，其中 `T` 和 `S` 是 Julia 类型（即用 `;` 将常规参数与可变参数分开）]: `; va_arg1::T, va_arg2::S, etc`, where `T` and `S` are
-         
-         
-      * `@cfunction` 目前不支持
+     * [对于 `ccall`]：`T...`，其中 `T` 是所有剩余参数的单个 Julia 类型
+     * [对于 `@ccall`]：`; va_arg1::T, va_arg2::S, etc`，其中 `T` 和 `S` 是 Julia 类型（即，使用 `;` 将常规参数与可变参数分开）
+     * 目前不支持 `@cfunction`
   * `va_arg`
 
-      * `ccall` 或 `@cfunction` 不支持
+     * `ccall` 或 `@cfunction` 不支持
 
-### `ccall` / `@cfunction` return type translation guide
-
-For translating a C return type to Julia:
+### `ccall` / `@cfunction` 返回类型翻译指南
+将 C 返回类型翻译为 Julia：
 
   * `void`
 
-      * `Cvoid` (this will return the singleton instance `nothing::Cvoid`)
-  * `T`, where `T` is one of the primitive types: `char`, `int`, `long`, `short`, `float`, `double`,
-    `complex`, `enum` or any of their `typedef` equivalents
+      * `Cvoid`（这将返回单例实例 `nothing::Cvoid`）
+  * `T`，其中 `T` 是原始类型之一：`char`，`int`，`long`，`short`，`float`，`double`，`complex`，`enum` 或任何等效的 `typedef`
 
-      * `T`, where `T` is an equivalent Julia Bits Type (per the table above)
-      * if `T` is an `enum`, the argument type should be equivalent to `Cint` or `Cuint`
-      * argument value will be copied (returned by-value)
-  * `struct T` (including typedef to a struct)
+      * `T`, 其中 `T` 是等效的 Julia Bits 类型（请参阅上表）
+      * 如果 `T` 是 `enum`，则参数类型应等效于 `Cint` 或 `Cuint`
+      * 参数值将被复制（按值返回）
+  * `struct T` （包括 typedef 到结构体）
 
-      * `T`, where `T` is a Julia Leaf Type
-      * argument value will be copied (returned by-value)
+      * `T`，其中 `T` 是 Julia 叶类型
+      * 参数值将被复制（按值返回）
   * `void*`
 
-      * depends on how this parameter is used, first translate this to the intended pointer type, then
-        determine the Julia equivalent using the remaining rules in this list
-      * this argument may be declared as `Ptr{Cvoid}`, if it really is just an unknown pointer
+        * 取决于如何使用此参数，首先将其翻译为所需的指针类型，然后使用此列表中的其余规则确定 Julia 等效项
+        * 如果它确实只是一个未知指针，则可以将此参数声明为 `Ptr{Cvoid}`
   * `jl_value_t*`
 
       * `Any`
-      * argument value must be a valid Julia object
+      * 参数值必须是有效的 Julia 对象
   * `jl_value_t**`
-
-      * `Ptr{Any}` (`Ref{Any}` is invalid as a return type)
+    
+      * `Ptr{Any}`（`Ref{Any}` 是无效的返回类型）
   * `T*`
 
-      * If the memory is already owned by Julia, or is an `isbits` type, and is known to be non-null:
+      * 如果内存已由 Julia 拥有，或者是 `isbits` 类型，并且已知为非空：
 
-          * `Ref{T}`, where `T` is the Julia type corresponding to `T`
-          * `Ref{Any}` 的返回类型无效，它应该是 `Any`（对应于 `jl_value_t*`）或 `Ptr{Any}`（对应于 `jl_value_t**`）
-             
-          * C **MUST NOT** modify the memory returned via `Ref{T}` if `T` is an `isbits` type
-      * If the memory is owned by C:
+          * `Ref{T}`，其中 `T` 是对应于 `T` 的 Julia 类型
+          * 返回类型 `Ref{Any}` 无效，它应该是 `Any`（对应于 `jl_value_t*`）或 `Ptr{Any}`（对应于 `jl_value_t**`）
+          * C **不得** 修改通过 `Ref{T}` 返回的内存，如果 `T` 是 `isbits` 类型
+      * 如果内存由 C 拥有：
+          * `Ptr{T}`，其中 `T` 是对应于 `T` 的 Julia 类型
+  * `T (*)(...)`（例如，指向函数的指针）
 
-          * `Ptr{T}`, where `T` is the Julia type corresponding to `T`
-  * `T (*)(...)` (e.g. a pointer to a function)
-
-      * `Ptr{Cvoid}` (you may need to use [`@cfunction`](@ref) explicitly to create this pointer)
+      * `Ptr{Cvoid}`，以便从 Julia 直接调用此函数，你需要将此作为 [`ccall`](@ref) 的第一个参数传递。 请参阅 [间接调用](@ref)。
 
 ### 传递修改输入的指针
 
