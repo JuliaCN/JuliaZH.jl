@@ -8,12 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: github-pages-mirror
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: deploy to juliacn docs server
-        uses: appleboy/scp-action@master
+        uses: easingthemes/ssh-deploy@main
         with:
-          host: juliacn.com
-          username: ${{ secrets.MIRROR_SERVER_USERNAME }}
-          key: ${{ secrets.MIRROR_SERVER_SSH_KEY }}
-          source: "./*"
-          target: "/gs/JuliaZH.jl/"
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: "./"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
