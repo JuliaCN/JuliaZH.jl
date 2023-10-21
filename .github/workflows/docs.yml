@@ -27,15 +27,6 @@ jobs:
         run: |
           julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
           julia --project=doc/ doc/make.jl deploy
-      - name: Upload to mirror
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-rlgoDzvc -i --delete"
-          SOURCE: "doc/build/"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.REMOTE_TARGET }}
   PDF:
     runs-on: ubuntu-latest
     steps:
@@ -51,13 +42,3 @@ jobs:
         with:
           name: compiled contents
           path: doc/build/*.pdf
-      - name: Upload to mirror
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-rlgoDzvc -i"
-          SOURCE: "doc/build/"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.REMOTE_TARGET }}
-
