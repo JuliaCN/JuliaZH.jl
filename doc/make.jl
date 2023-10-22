@@ -208,7 +208,7 @@ else
         ],
         lang = "zh-cn",
         # 文档全局页脚
-        footer = "📢📢📢 JuliaCN 2022 冬季见面会 报告[征集](https://cn.julialang.org/meetup-website/2022/)"
+        footer = ""
     )
 end
 
