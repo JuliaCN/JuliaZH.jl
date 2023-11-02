@@ -26,7 +26,17 @@ alt="集智俱乐部" width="210"></img>
 
 ## 其它中文资料
 
+通用教程类：
+
+- [北大李东风 Julia 语言入门](https://www.math.pku.edu.cn/teachers/lidf/docs/Julia/html/_book/index.html)
+- [Julia Roadmap 入门](https://learn.juliacn.com/)
 - [Julia Data Science 中文版](https://cn.julialang.org/JuliaDataScience/)
+
+专题类：
+
+- [JuliaLogging 文档 中文版](https://cn.julialang.org/julialogging.github.io/)
+- [Julia Pkg.jl 中文版](https://cn.julialang.org/Pkg.jl/dev/)
+- [每个科研工作者在写高性能代码时都需了解的硬件知识](https://guixinliu.github.io/hardware_introduction/pluto.jl.html)
 
 ## [简介](@id man-introduction)
 
