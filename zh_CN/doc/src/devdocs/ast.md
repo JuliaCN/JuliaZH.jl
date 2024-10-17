@@ -1,26 +1,22 @@
-# Julia ASTs
+# Julia 的 AST
 
-Julia has two representations of code. First there is a surface syntax AST returned by the parser
-(e.g. the [`Meta.parse`](@ref) function), and manipulated by macros. It is a structured representation
-of code as it is written, constructed by `julia-parser.scm` from a character stream. Next there
-is a lowered form, or IR (intermediate representation), which is used by type inference and code
-generation. In the lowered form there are fewer types of nodes, all macros are expanded, and all
-control flow is converted to explicit branches and sequences of statements. The lowered form is
-constructed by `julia-syntax.scm`.
+Julia 有两种代码的表现形式。
+第一种是解析器返回的表面语法 AST （例如 [`Meta.parse`](@ref) 函数），由宏来操控。是代码编写时的结构化表示，由 `julia-parser.scm` 用字符流构造而成。
+另一种则是底层形式，或者 IR（中间表示），这种形式在进行类型推导和代码生成的时候被使用。在这种底层形式中结点的类型相对更少，所有的宏都会被展开，所有的控制流会被转化成显式的分支和语句的序列。底层的形式由 `julia-syntax.scm` 构建。
 
-First we will focus on the AST, since it is needed to write macros.
+首先，我们将关注AST，因为需要它来编写宏。
 
-## Surface syntax AST
+## 表面语法AST
 
-Front end ASTs consist almost entirely of [`Expr`](@ref)s and atoms (e.g. symbols, numbers).
-There is generally a different expression head for each visually distinct syntactic form.
-Examples will be given in s-expression syntax.
-Each parenthesized list corresponds to an Expr, where the first element is the head.
-For example `(call f x)` corresponds to `Expr(:call, :f, :x)` in Julia.
+前端AST几乎由 [`Expr`](@ref) 和原子（例如 符号、数字）。
+对于视觉上不同的语法形式，通常有不同的表达式头。
+示例将在s-expression 语法中给出。
+每个圆括号括着的列表都对应着一个 Expr，其中第一个元素是它的头部。
+例如` (call f x) `对应于Julia中的 ` Expr(:call，:f，:x) ` 。
 
-### Calls
+### 调用
 
-| Input            | AST                                |
+| 输入            | AST                                |
 |:---------------- |:---------------------------------- |
 | `f(x)`           | `(call f x)`                       |
 | `f(x, y=1, z=2)` | `(call f x (kw y 1) (kw z 2))`     |
@@ -37,7 +33,7 @@ end
 
 parses as `(do (call f x) (-> (tuple a b) (block body)))`.
 
-### Operators
+### 运算符
 
 Most uses of operators are just function calls, so they are parsed with the head `call`. However
 some operators are special forms (not necessarily function calls), and in those cases the operator
@@ -63,23 +59,25 @@ call. Finally, chains of comparisons have their own special expression structure
 
 ### Bracketed forms
 
-| Input                    | AST                                  |
-|:------------------------ |:------------------------------------ |
-| `a[i]`                   | `(ref a i)`                          |
-| `t[i;j]`                 | `(typed_vcat t i j)`                 |
-| `t[i j]`                 | `(typed_hcat t i j)`                 |
-| `t[a b; c d]`            | `(typed_vcat t (row a b) (row c d))` |
-| `a{b}`                   | `(curly a b)`                        |
-| `a{b;c}`                 | `(curly a (parameters c) b)`         |
-| `[x]`                    | `(vect x)`                           |
-| `[x,y]`                  | `(vect x y)`                         |
-| `[x;y]`                  | `(vcat x y)`                         |
-| `[x y]`                  | `(hcat x y)`                         |
-| `[x y; z t]`             | `(vcat (row x y) (row z t))`         |
-| `[x for y in z, a in b]` | `(comprehension x (= y z) (= a b))`  |
-| `T[x for y in z]`        | `(typed_comprehension T x (= y z))`  |
-| `(a, b, c)`              | `(tuple a b c)`                      |
-| `(a; b; c)`              | `(block a (block b c))`              |
+| Input                    | AST                                               |
+|:------------------------ |:------------------------------------------------- |
+| `a[i]`                   | `(ref a i)`                                       |
+| `t[i;j]`                 | `(typed_vcat t i j)`                              |
+| `t[i j]`                 | `(typed_hcat t i j)`                              |
+| `t[a b; c d]`            | `(typed_vcat t (row a b) (row c d))`              |
+| `t[a b;;; c d]`          | `(typed_ncat t 3 (row a b) (row c d))`            |
+| `a{b}`                   | `(curly a b)`                                     |
+| `a{b;c}`                 | `(curly a (parameters c) b)`                      |
+| `[x]`                    | `(vect x)`                                        |
+| `[x,y]`                  | `(vect x y)`                                      |
+| `[x;y]`                  | `(vcat x y)`                                      |
+| `[x y]`                  | `(hcat x y)`                                      |
+| `[x y; z t]`             | `(vcat (row x y) (row z t))`                      |
+| `[x;y;; z;t;;;]`         | `(ncat 3 (nrow 2 (nrow 1 x y) (nrow 1 z t)))`     |
+| `[x for y in z, a in b]` | `(comprehension x (= y z) (= a b))`               |
+| `T[x for y in z]`        | `(typed_comprehension T x (= y z))`               |
+| `(a, b, c)`              | `(tuple a b c)`                                   |
+| `(a; b; c)`              | `(block a (block b c))`                           |
 
 ### Macros
 
@@ -254,7 +252,7 @@ types exist in lowered form:
     Identifies arguments and local variables by consecutive numbering. `Slot` is an abstract type
     with subtypes `SlotNumber` and `TypedSlot`. Both types have an integer-valued `id` field giving
     the slot index. Most slots have the same type at all uses, and so are represented with `SlotNumber`.
-    The types of these slots are found in the `slottypes` field of their `MethodInstance` object.
+    The types of these slots are found in the `slottypes` field of their `CodeInfo` object.
     Slots that require per-use type annotations are represented with `TypedSlot`, which has a `typ`
     field.
 

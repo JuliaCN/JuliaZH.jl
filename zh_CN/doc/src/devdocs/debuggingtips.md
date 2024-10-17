@@ -1,29 +1,26 @@
-# gdb debugging tips
+# gdb 调试提示
 
-## Displaying Julia variables
+## 显示 Julia 变量
 
-Within `gdb`, any `jl_value_t*` object `obj` can be displayed using
+在 `gdb` 中, 任何 `jl_value_t*` 类型的变量 `obj` 的展示可以通过使用：
 
 ```
 (gdb) call jl_(obj)
 ```
 
-The object will be displayed in the `julia` session, not in the gdb session. This is a useful
-way to discover the types and values of objects being manipulated by Julia's C code.
+这个对象会在 `julia` 会话中展示，而不是在 gdb 会话中。这是一种行之有效的方式来发现由 Julia 的 C 代码操控的对象的类型和值。
 
-Similarly, if you're debugging some of Julia's internals (e.g., `compiler.jl`), you can print
-`obj` using
+同样，如果你在调试一些 Julia 内部的东西 （比如 `compiler.jl` ），你可以通过使用这些来打印 `obj` ：
 
 ```julia
 ccall(:jl_, Cvoid, (Any,), obj)
 ```
 
-This is a good way to circumvent problems that arise from the order in which julia's output streams
-are initialized.
+这是一种很好的方法，可以避免 Julia 的输出流初始化顺序引起的问题。
 
-Julia's flisp interpreter uses `value_t` objects; these can be displayed with `call fl_print(fl_ctx, ios_stdout, obj)`.
+Julia的 flisp 解释器使用 `value_t` 对象；能够通过  `call fl_print(fl_ctx, ios_stdout, obj)` 来展示。
 
-## Useful Julia variables for Inspecting
+## 有用的用于检查的 Julia 变量
 
 While the addresses of many variables, like singletons, can be useful to print for many failures,
 there are a number of additional variables (see `julia.h` for a complete list) that are even more

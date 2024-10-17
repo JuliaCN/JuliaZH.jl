@@ -1,7 +1,6 @@
-# SIMD Support
+# SIMD 支持
 
-Type `VecElement{T}` is intended for building libraries of SIMD operations. Practical use of it
-requires using `llvmcall`. The type is defined as:
+`VecElement{T}` 类型是为了构建 SIMD 运算符的库。实际使用中要求使用 `llvmcall`。类型按下文定义：
 
 ```julia
 struct VecElement{T}
@@ -12,9 +11,8 @@ end
 It has a special compilation rule: a homogeneous tuple of `VecElement{T}` maps to an LLVM `vector`
 type when `T` is a primitive bits type.
 
-At `-O3`, the compiler *might* automatically vectorize operations on such tuples. For example,
-the following program, when compiled with `julia -O3` generates two SIMD addition instructions
-(`addps`) on x86 systems:
+使用 `-O3` 参数时，编译器 *可能* 自动为这样的元组向量化运算符。
+例如接下来的程序，使用 `julia -O3` 编译，在x86系统中会生成两个 SIMD 附加指令（`addps`）：
 
 ```julia
 const m128 = NTuple{4,VecElement{Float32}}
@@ -31,5 +29,4 @@ triple(c::m128) = add(add(c,c),c)
 code_native(triple,(m128,))
 ```
 
-However, since the automatic vectorization cannot be relied upon, future use will mostly be via
-libraries that use `llvmcall`.
+然而，因为无法依靠自动向量化，以后将主要通过使用基于 `llvmcall` 的库来提供 SIMD 支持。

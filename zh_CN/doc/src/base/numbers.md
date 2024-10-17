@@ -1,8 +1,8 @@
 # [Numbers](@id lib-numbers)
 
-## Standard Numeric Types
+## 标准数值类型
 
-### Abstract number types
+### 抽象数值类型
 
 ```@docs
 Core.Number
@@ -14,7 +14,7 @@ Core.Unsigned
 Base.AbstractIrrational
 ```
 
-### Concrete number types
+### 具象数值类型
 
 ```@docs
 Core.Float16
@@ -38,7 +38,7 @@ Base.Rational
 Base.Irrational
 ```
 
-## Data Formats
+## 数据格式
 
 ```@docs
 Base.digits
@@ -59,7 +59,7 @@ Base.hex2bytes!
 Base.bytes2hex
 ```
 
-## General Number Functions and Constants
+## 常用数值函数和常量
 
 ```@docs
 Base.one
@@ -96,7 +96,7 @@ Base.Rounding.get_zero_subnormals
 Base.Rounding.set_zero_subnormals
 ```
 
-### Integers
+### 整型
 
 ```@docs
 Base.count_ones

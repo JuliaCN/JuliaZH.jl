@@ -1,7 +1,6 @@
-# SubArrays
+# 子数组
 
-Julia's `SubArray` type is a container encoding a "view" of a parent [`AbstractArray`](@ref).  This page
-documents some of the design principles and implementation of `SubArray`s.
+Julia 的 `SubArray` 类型是编码父类型 [`AbstractArray`](@ref) 的“视图”的一个容器。本页介绍了 `SubArray` 的一些设计原则和实现。
 
 One of the major design goals is to ensure high performance for views of both [`IndexLinear`](@ref) and
 [`IndexCartesian`](@ref) arrays. Furthermore, views of `IndexLinear` arrays should themselves be
@@ -19,14 +18,14 @@ julia> A = rand(2,3,4);
 
 julia> S1 = view(A, :, 1, 2:3)
 2×2 view(::Array{Float64, 3}, :, 1, 2:3) with eltype Float64:
- 0.200586  0.066423
- 0.298614  0.956753
+ 0.342284  0.831961
+ 0.237287  0.435938
 
 julia> S2 = view(A, 1, :, 2:3)
 3×2 view(::Array{Float64, 3}, 1, :, 2:3) with eltype Float64:
- 0.200586  0.066423
- 0.246837  0.646691
- 0.648882  0.276021
+ 0.342284  0.831961
+ 0.988944  0.927795
+ 0.178426  0.404876
 ```
 ```@meta
 DocTestSetup = nothing

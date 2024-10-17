@@ -1,23 +1,17 @@
-# Complex and Rational Numbers
+# 复数和有理数
 
-Julia includes predefined types for both complex and rational numbers, and supports
-all the standard [Mathematical Operations and Elementary Functions](@ref) on them. [Conversion and Promotion](@ref conversion-and-promotion) are defined
-so that operations on any combination of predefined numeric types, whether primitive or composite,
-behave as expected.
+Julia 语言包含了预定义的复数和有理数类型，并且支持它们的各种标准[数学运算和初等函数](@ref)。由于也定义了复数与分数的[类型转换与类型提升](@ref conversion-and-promotion)，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。
 
-## Complex Numbers
+## 复数
 
-The global constant [`im`](@ref) is bound to the complex number *i*, representing the principal
-square root of -1. (Using mathematicians' `i` or engineers' `j` for this global constant were rejected since they are such popular index variable names.) Since Julia allows numeric literals to be [juxtaposed with identifiers as coefficients](@ref man-numeric-literal-coefficients),
-this binding suffices to provide convenient syntax for complex numbers, similar to the traditional
-mathematical notation:
+全局常量 [`im`](@ref) 被绑定到复数 *i*，表示 -1 的主平方根。（不应使用数学家习惯的 `i` 或工程师习惯的 `j` 来表示此全局常量，因为它们是非常常用的索引变量名。）由于 Julia 允许数值字面量作为[数值字面量系数](@ref man-numeric-literal-coefficients)，这种绑定就足以为复数提供很方便的语法，类似于传统的数学记法：
 
 ```jldoctest
 julia> 1+2im
 1 + 2im
 ```
 
-You can perform all the standard arithmetic operations with complex numbers:
+你可以对复数进行各种标准算术操作：
 
 ```jldoctest
 julia> (1 + 2im)*(2 - 3im)
@@ -51,7 +45,7 @@ julia> 3(2 - 5im)^-1.0
 0.20689655172413796 + 0.5172413793103449im
 ```
 
-The promotion mechanism ensures that combinations of operands of different types just work:
+类型提升机制也确保你可以使用不同类型的操作数的组合：
 
 ```jldoctest
 julia> 2(1 - 1im)
@@ -82,39 +76,34 @@ julia> 1 + 3/4im
 1.0 - 0.75im
 ```
 
-Note that `3/4im == 3/(4*im) == -(3/4*im)`, since a literal coefficient binds more tightly than
-division.
+注意 `3/4im == 3/(4*im) == -(3/4*im)`，因为系数比除法的优先级更高。
 
-Standard functions to manipulate complex values are provided:
+Julia 提供了一些操作复数的标准函数：
 
 ```jldoctest
 julia> z = 1 + 2im
 1 + 2im
 
-julia> real(1 + 2im) # real part of z
+julia> real(1 + 2im) # z 的实部
 1
 
-julia> imag(1 + 2im) # imaginary part of z
+julia> imag(1 + 2im) # z 的虚部
 2
 
-julia> conj(1 + 2im) # complex conjugate of z
+julia> conj(1 + 2im) # z 的复共轭
 1 - 2im
 
-julia> abs(1 + 2im) # absolute value of z
+julia> abs(1 + 2im) # z 的绝对值
 2.23606797749979
 
-julia> abs2(1 + 2im) # squared absolute value
+julia> abs2(1 + 2im) # 取平方后的绝对值
 5
 
-julia> angle(1 + 2im) # phase angle in radians
+julia> angle(1 + 2im) # 以弧度为单位的相位角
 1.1071487177940904
 ```
 
-As usual, the absolute value ([`abs`](@ref)) of a complex number is its distance from zero.
-[`abs2`](@ref) gives the square of the absolute value, and is of particular use for complex
-numbers since it avoids taking a square root. [`angle`](@ref) returns the phase angle in radians
-(also known as the *argument* or *arg* function). The full gamut of other [Elementary Functions](@ref)
-is also defined for complex numbers:
+按照惯例，复数的绝对值（[`abs`](@ref)）是从零点到它的距离。[`abs2`](@ref) 给出绝对值的平方，作用于复数上时非常有用，因为它避免了取平方根。[`angle`](@ref) 返回以弧度为单位的相位角（也被称为辐角函数）。所有其它的[初等函数](@ref)在复数上也都有完整的定义：
 
 ```jldoctest
 julia> sqrt(1im)
@@ -133,9 +122,7 @@ julia> sinh(1 + 2im)
 -0.4890562590412937 + 1.4031192506220405im
 ```
 
-Note that mathematical functions typically return real values when applied to real numbers and
-complex values when applied to complex numbers. For example, [`sqrt`](@ref) behaves differently
-when applied to `-1` versus `-1 + 0im` even though `-1 == -1 + 0im`:
+注意数学函数通常应用于实数就返回实数值，应用于复数就返回复数值。例如，当 [`sqrt`](@ref) 应用于 `-1` 与 `-1 + 0im` 会有不同的表现，虽然 `-1 == -1 + 0im`：
 
 ```jldoctest
 julia> sqrt(-1)
@@ -148,26 +135,23 @@ julia> sqrt(-1 + 0im)
 0.0 + 1.0im
 ```
 
-The [literal numeric coefficient notation](@ref man-numeric-literal-coefficients) does not work when constructing a complex number
-from variables. Instead, the multiplication must be explicitly written out:
+从变量构建复数时，[文本型数值系数记法](@ref man-numeric-literal-coefficients)不再适用。相反地，乘法必须显式地写出：
 
 ```jldoctest
 julia> a = 1; b = 2; a + b*im
 1 + 2im
 ```
 
-However, this is *not* recommended. Instead, use the more efficient [`complex`](@ref) function to construct
-a complex value directly from its real and imaginary parts:
+然而，我们**并不**推荐这样做，而应改为使用更高效的 [`complex`](@ref) 函数直接通过实部与虚部构建一个复数值：
 
 ```jldoctest
 julia> a = 1; b = 2; complex(a, b)
 1 + 2im
 ```
 
-This construction avoids the multiplication and addition operations.
+这种构建避免了乘法和加法操作。
 
-[`Inf`](@ref) and [`NaN`](@ref) propagate through complex numbers in the real and imaginary parts
-of a complex number as described in the [Special floating-point values](@ref) section:
+[`Inf`](@ref) 和 [`NaN`](@ref) 可能出现在复数的实部和虚部，正如[特殊的浮点值](@ref)章节所描述的：
 
 ```jldoctest
 julia> 1 + Inf*im
@@ -177,18 +161,16 @@ julia> 1 + NaN*im
 1.0 + NaN*im
 ```
 
-## Rational Numbers
+## 有理数
 
-Julia has a rational number type to represent exact ratios of integers. Rationals are constructed
-using the [`//`](@ref) operator:
+Julia 有一个用于表示整数精确比值的分数类型。分数通过 [`//`](@ref) 运算符构建：
 
 ```jldoctest
 julia> 2//3
 2//3
 ```
 
-If the numerator and denominator of a rational have common factors, they are reduced to lowest
-terms such that the denominator is non-negative:
+如果一个分数的分子和分母含有公因子，它们会被约分到最简形式且分母非负：
 
 ```jldoctest
 julia> 6//9
@@ -204,10 +186,8 @@ julia> -4//-12
 1//3
 ```
 
-This normalized form for a ratio of integers is unique, so equality of rational values can be
-tested by checking for equality of the numerator and denominator. The standardized numerator and
-denominator of a rational value can be extracted using the [`numerator`](@ref) and [`denominator`](@ref)
-functions:
+整数比值的这种标准化形式是唯一的，所以分数值的相等性可由校验分子与分母都相等来测试。分数值的标准化分子和分母可以使用 [`numerator`](@ref) 和 [`denominator`](@ref) 函数得到：
+
 
 ```jldoctest
 julia> numerator(2//3)
@@ -217,8 +197,7 @@ julia> denominator(2//3)
 3
 ```
 
-Direct comparison of the numerator and denominator is generally not necessary, since the standard
-arithmetic and comparison operations are defined for rational values:
+分子和分母的直接比较通常是不必要的，因为标准算术和比较操作对分数值也有定义：
 
 ```jldoctest
 julia> 2//3 == 6//9
@@ -246,15 +225,14 @@ julia> 6//5 / 10//7
 21//25
 ```
 
-Rationals can easily be converted to floating-point numbers:
+分数可以很容易地转换成浮点数：
 
 ```jldoctest
 julia> float(3//4)
 0.75
 ```
 
-Conversion from rational to floating-point respects the following identity for any integral values
-of `a` and `b`, with the exception of the case `a == 0` and `b == 0`:
+对任意整数值 `a` 和 `b`（除了 `a == 0` 且 `b == 0` 时），从分数到浮点数的转换遵从以下的一致性：
 
 ```jldoctest
 julia> a = 1; b = 2;
@@ -263,7 +241,7 @@ julia> isequal(float(a//b), a/b)
 true
 ```
 
-Constructing infinite rational values is acceptable:
+Julia接受构建无穷分数值：
 
 ```jldoctest
 julia> 5//0
@@ -276,7 +254,7 @@ julia> typeof(x)
 Rational{Int64}
 ```
 
-Trying to construct a [`NaN`](@ref) rational value, however, is invalid:
+但不接受试图构建一个 [`NaN`](@ref) 分数值：
 
 ```jldoctest
 julia> 0//0
@@ -285,7 +263,7 @@ Stacktrace:
 [...]
 ```
 
-As usual, the promotion system makes interactions with other numeric types effortless:
+像往常一样，类型提升系统使得分数可以轻松地同其它数值类型进行交互：
 
 ```jldoctest
 julia> 3//5 + 1

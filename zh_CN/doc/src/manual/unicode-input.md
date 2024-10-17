@@ -1,19 +1,10 @@
-# Unicode Input
+# [Unicode 输入表](@id Unicode-Input)
 
-The following table lists Unicode characters that can be entered via
-tab completion of LaTeX-like abbreviations in the Julia REPL (and
-in various other editing environments).  You can also get information on how to
-type a symbol by entering it in the REPL help, i.e. by typing `?` and then
-entering the symbol in the REPL (e.g., by copy-paste from somewhere you saw
-the symbol).
+在 Julia REPL 或其它编辑器中，可以像输入 LaTeX 符号一样，用 tab 补全下表列出的 Unicode 字符。在 REPL 中，可以先按 `?` 进入帮助模式，然后将 Unicode 字符复制粘贴进去，一般在文档开头就会写输入方式。
 
 !!! warning
 
-    This table may appear to contain missing characters in the second column, or even
-    show characters that are inconsistent with the characters as they are rendered in
-    the Julia REPL. In these cases, users are strongly advised to check their choice
-    of fonts in their browser and REPL environment, as there are known issues with
-    glyphs in many fonts.
+    此表第二列可能会缺失一些字符，对某些字符的显示效果也可能会与在 Julia REPL 中不一致。如果发生了这种状况，强烈建议用户检查一下浏览器或 REPL 的字体设置，目前已知很多字体都有显示问题。
 
 ```@eval
 #
@@ -31,7 +22,7 @@ function tab_completions(symbols...)
 end
 
 function unicode_data()
-    file = normpath(@__DIR__, "..", "..", "..", "..", "..", "doc", "UnicodeData.txt")
+    file = normpath(Sys.BINDIR, "..", "UnicodeData.txt")
     names = Dict{UInt32, String}()
     open(file) do unidata
         for line in readlines(unidata)

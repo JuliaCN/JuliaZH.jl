@@ -1,73 +1,52 @@
-# Environment Variables
+# 环境变量
 
-Julia can be configured with a number of environment variables, set either in
-the usual way for each operating system, or in a portable way from within Julia.
-Supposing that you want to set the environment variable `JULIA_EDITOR` to `vim`,
-you can type `ENV["JULIA_EDITOR"] = "vim"` (for instance, in the REPL) to make
-this change on a case by case basis, or add the same to the user configuration
-file `~/.julia/config/startup.jl` in the user's home directory to have a
-permanent effect. The current value of the same environment variable can be
-determined by evaluating `ENV["JULIA_EDITOR"]`.
+Julia 可以配置许多环境变量，一种常见的方式是直接配置操作系统环境变量，另一种更便携的方式是在 Julia 中配置。假设你要将环境变量 `JULIA_EDITOR` 设置为 `vim`，可以直接在 REPL 中输入 `ENV["JULIA_EDITOR"] = "vim"`（请根据具体情况对此进行修改），也可以将其添加到用户主目录中的配置文件 `~/.julia/config/startup.jl`，这样做会使其永久生效。环境变量的当前值是通过执行 `ENV["JULIA_EDITOR"]` 来确定的。
 
-The environment variables that Julia uses generally start with `JULIA`. If
-[`InteractiveUtils.versioninfo`](@ref) is called with the keyword `verbose=true`, then the
-output will list any defined environment variables relevant for Julia,
-including those which include `JULIA` in their names.
+Julia 使用的环境变量通常以 `JULIA` 开头。如果调用 [`InteractiveUtils.versioninfo`](@ref) 时使用关键字参数 `verbose = true`，那么输出结果将列出与 Julia 相关的已定义环境变量，即包括那些名称中包含 `JULIA` 的环境变量。
 
 !!! note
 
-    Some variables, such as `JULIA_NUM_THREADS` and `JULIA_PROJECT`, need to be set before Julia
-    starts, therefore adding these to `~/.julia/config/startup.jl` is too late in the startup process.
-    In Bash, environment variables can either be set manually by running, e.g.,
-    `export JULIA_NUM_THREADS=4` before starting Julia, or by adding the same command to
-    `~/.bashrc` or `~/.bash_profile` to set the variable each time Bash is started.
+    某些变量需要在 Julia 启动之前设置，比如 `JULIA_NUM_THREADS` 和 `JULIA_PROJECT`，因为在启动过程中将这些变量添加到 `~/.julia/config/startup.jl` 中为时已晚。在 Bash 中，环境变量可以手动设置，这可通过在 Julia 启动前运行诸如 `export JULIA_NUM_THREADS=4` 的命令，亦可通过向 `~/.bashrc` 或 `~/.bash_profile` 添加相同命令来在 Bash 每次启动时设置该变量。
 
-## File locations
+## 文件位置
 
 ### `JULIA_BINDIR`
 
-The absolute path of the directory containing the Julia executable, which sets
-the global variable [`Sys.BINDIR`](@ref). If `$JULIA_BINDIR` is not set, then
-Julia determines the value `Sys.BINDIR` at run-time.
+包含 Julia 可执行文件的目录的绝对路径，它会设置全局变量 [`Sys.BINDIR`](@ref)。`$JULIA_BINDIR` 如果没有设置，那么 Julia 会在运行时确定 `Sys.BINDIR` 的值。
 
-The executable itself is one of
+在默认情况下，可执行文件是指：
 
 ```
 $JULIA_BINDIR/julia
 $JULIA_BINDIR/julia-debug
 ```
 
-by default.
+ 
 
-The global variable `Base.DATAROOTDIR` determines a relative path from
-`Sys.BINDIR` to the data directory associated with Julia. Then the path
+全局变量 `Base.DATAROOTDIR` 是一个从 `Sys.BINDIR` 到 Julia 数据目录的相对路径。
 
 ```
 $JULIA_BINDIR/$DATAROOTDIR/julia/base
 ```
 
-determines the directory in which Julia initially searches for source files (via
-`Base.find_source_file()`).
+上述路径是 Julia 最初搜索源文件的路径（通过 `Base.find_source_file()`）。
 
-Likewise, the global variable `Base.SYSCONFDIR` determines a relative path to the
-configuration file directory. Then Julia searches for a `startup.jl` file at
+同样，全局变量 `Base.SYSCONFDIR` 是一个到配置文件目录的相对路径。在默认情况下，Julia 会在下列文件中搜索 `startup.jl` 文件（通过 `Base.load_julia_startup()`）
 
 ```
 $JULIA_BINDIR/$SYSCONFDIR/julia/startup.jl
 $JULIA_BINDIR/../etc/julia/startup.jl
 ```
 
-by default (via `Base.load_julia_startup()`).
+ 
 
-For example, a Linux installation with a Julia executable located at
-`/bin/julia`, a `DATAROOTDIR` of `../share`, and a `SYSCONFDIR` of `../etc` will
-have `JULIA_BINDIR` set to `/bin`, a source-file search path of
+例如，在 Linux 下安装的 Julia 可执行文件位于 `/bin/julia`，`DATAROOTDIR` 为 `../share`，`SYSCONFDIR` 为 `../etc`，`JULIA_BINDIR` 会被设置为 `/bin`，会有一个源文件搜索路径：
 
 ```
 /share/julia/base
 ```
 
-and a global configuration search path of
+和一个全局配置文件搜索路径：
 
 ```
 /etc/julia/startup.jl
@@ -75,258 +54,188 @@ and a global configuration search path of
 
 ### `JULIA_PROJECT`
 
-A directory path that indicates which project should be the initial active project.
-Setting this environment variable has the same effect as specifying the `--project`
-start-up option, but `--project` has higher precedence. If the variable is set to `@.`
-then Julia tries to find a project directory that contains `Project.toml` or
-`JuliaProject.toml` file from the current directory and its parents. See also
-the chapter on [Code Loading](@ref code-loading).
+指示哪个项目应该是初始活动项目的目录路径。 设置这个环境变量和指定`--project`启动选项效果一样，但是`--project`优先级更高。 如果变量设置为 `@.`，那么 Julia 会尝试从当前目录及其父目录中查找包含 `Project.toml` 或 `JuliaProject.toml` 文件的项目目录。 另请参阅有关 [代码加载](@ref code-loading) 的章节。
 
 !!! note
 
-    `JULIA_PROJECT` must be defined before starting julia; defining it in `startup.jl`
-    is too late in the startup process.
+    `JULIA_PROJECT` 必须在启动 julia 前定义；于 `startup.jl` 中定义它对于启动的过程为时已晚。
 
 ### `JULIA_LOAD_PATH`
 
-The `JULIA_LOAD_PATH` environment variable is used to populate the global Julia
-[`LOAD_PATH`](@ref) variable, which determines which packages can be loaded via
-`import` and `using` (see [Code Loading](@ref code-loading)).
+`JULIA_LOAD_PATH` 环境变量用于补充全局的 Julia 变量 [`LOAD_PATH`](@ref) ，该变量可用于确定通过 `import` 和 `using` 可以加载哪些包（请参阅 [Code Loading](@ref code-loading)）。
 
-Unlike the shell `PATH` variable, empty entries in `JULIA_LOAD_PATH` are expanded to
-the default value of `LOAD_PATH`, `["@", "@v#.#", "@stdlib"]` when populating
-`LOAD_PATH`. This allows easy appending, prepending, etc. of the load path value in
-shell scripts regardless of whether `JULIA_LOAD_PATH` is already set or not. For
-example, to prepend the directory `/foo/bar` to `LOAD_PATH` just do
+与 shell 使用的 `PATH` 变量不同， 在 `JULIA_LOAD_PATH` 中的空条目将会在填充 `LOAD_PATH` 时被扩展为 `LOAD_PATH` 的默认值 `["@", "@v#.#", "@stdlib"]` 。这样，无论 `JULIA_LOAD_PATH` 是否已被设置，均可以使用 shell 脚本轻松地在加载路径前面或后面添加值。例如要将 `/foo/bar` 添加到 `LOAD_PATH` 之前，只需要使用下列脚本：
 ```sh
 export JULIA_LOAD_PATH="/foo/bar:$JULIA_LOAD_PATH"
 ```
-If the `JULIA_LOAD_PATH` environment variable is already set, its old value will be
-prepended with `/foo/bar`. On the other hand, if `JULIA_LOAD_PATH` is not set, then
-it will be set to `/foo/bar:` which will expand to a `LOAD_PATH` value of
-`["/foo/bar", "@", "@v#.#", "@stdlib"]`. If `JULIA_LOAD_PATH` is set to the empty
-string, it expands to an empty `LOAD_PATH` array. In other words, the empty string
-is interpreted as a zero-element array, not a one-element array of the empty string.
-This behavior was chosen so that it would be possible to set an empty load path via
-the environment variable. If you want the default load path, either unset the
-environment variable or if it must have a value, set it to the string `:`.
-
-### `JULIA_DEPOT_PATH`
-
-The `JULIA_DEPOT_PATH` environment variable is used to populate the global Julia
-[`DEPOT_PATH`](@ref) variable, which controls where the package manager, as well
-as Julia's code loading mechanisms, look for package registries, installed
-packages, named environments, repo clones, cached compiled package images,
-configuration files, and the default location of the REPL's history file.
-
-Unlike the shell `PATH` variable but similar to `JULIA_LOAD_PATH`, empty entries in
-`JULIA_DEPOT_PATH` are expanded to the default value of `DEPOT_PATH`. This allows
-easy appending, prepending, etc. of the depot path value in shell scripts regardless
-of whether `JULIA_DEPOT_PATH` is already set or not. For example, to prepend the
-directory `/foo/bar` to `DEPOT_PATH` just do
-```sh
-export JULIA_DEPOT_PATH="/foo/bar:$JULIA_DEPOT_PATH"
-```
-If the `JULIA_DEPOT_PATH` environment variable is already set, its old value will be
-prepended with `/foo/bar`. On the other hand, if `JULIA_DEPOT_PATH` is not set, then
-it will be set to `/foo/bar:` which will have the effect of prepending `/foo/bar` to
-the default depot path. If `JULIA_DEPOT_PATH` is set to the empty string, it expands
-to an empty `DEPOT_PATH` array. In other words, the empty string is interpreted as a
-zero-element array, not a one-element array of the empty string. This behavior was
-chosen so that it would be possible to set an empty depot path via the environment
-variable. If you want the default depot path, either unset the environment variable
-or if it must have a value, set it to the string `:`.
+如果已经设置了 `JULIA_LOAD_PATH` 环境变量，那么 `/foo/bar` 将被添加在原有值之前。另一方面，如果 `JULIA_LOAD_PATH` 尚未设置，那么它会被设置为 `/foo/bar:` ，而这将使用 `LOAD_PATH` 的值扩展为 `["/foo/bar", "@", "@v#.#", "@stdlib"]` 。如果 `JULIA_LOAD_PATH` 被设置为空字符串，那么它将被扩展为一个空的 `LOAD_PATH` 数组。换句话说，这个空字符串数组将被认为是零元素的数组，而非是一个空字符串单元素的数组。使用这样的加载行为是为了可以通过环境变量设置空的加载路径。如果你需要使用默认的加载路径，请不要设置这一环境变量，如果它必须有值，那么可将其设置为字符串 `:` 。
 
 !!! note
 
-    On Windows, path elements are separated by the `;` character, as is the case with
-    most path lists on Windows.
+    在 Windows 上，路径元素由 `;` 字符分隔，就像 Windows 上的大多数路径列表一样。 将上一段中的 `:` 替换为 `;`。
+
+### `JULIA_DEPOT_PATH`
+
+`JULIA_DEPOT_PATH` 环境变量用于填充全局的 Julia 变量 [`DEPOT_PATH`](@ref) ，该变量用于控制包管理器以及 Juila 代码加载机制在何处查找包注册表、已安装的包、命名环境、克隆的存储库、缓存的预编译包映像、配置文件和 REPL 历史记录文件的默认位置。
+
+与 shell 使用的 `PATH` 变量不同，但与 `JULIA_LOAD_PATH` 类似， 在 `JULIA_DEPOT_PATH` 中的空条目将会被扩展为 `DEPOT_PATH` 的默认值。这样，无论 `JULIA_DEPOT_PATH` 是否已被设置，均可以使用 shell 脚本轻松地在仓库路径前面或后面添加值。例如要将 `/foo/bar` 添加到 `DEPOT_PATH` 之前，只需要使用下列脚本：
+```sh
+export JULIA_DEPOT_PATH="/foo/bar:$JULIA_DEPOT_PATH"
+```
+如果已经设置了 `JULIA_DEPOT_PATH` 环境变量，那么 `/foo/bar` 将被添加在原有值之前。另一方面，如果 `JULIA_DEPOT_PATH` 尚未设置，那么它会被设置为 `/foo/bar:` ，而这将使 `/foo/bar` 被添加到默认仓库路径之前。如果 `JULIA_DEPOT_PATH` 被设置为空字符串，那么它将扩展为一个空的 `DEPOT_PATH` 数组。换句话说，这个空字符串数组将被认为是零元素的数组，而非是一个空字符串单元素的数组。使用这样的加载行为是为了可以通过环境变量设置空的仓库路径。如果你需要使用默认的仓库路径，请不要设置这一环境变量，如果它必须有值，那么可将其设置为字符串 `:` 。
+
+!!! note
+
+    在 Windows 上，路径元素由 `;` 字符分隔，就像 Windows 上的大多数路径列表一样。 将上一段中的 `:` 替换为 `;`。
 
 ### `JULIA_HISTORY`
 
-The absolute path `REPL.find_hist_file()` of the REPL's history file. If
-`$JULIA_HISTORY` is not set, then `REPL.find_hist_file()` defaults to
+REPL 历史文件中 `REPL.find_hist_file()` 的绝对路径。如果没有设置 `$JULIA_HISTORY`，那么 `REPL.find_hist_file()` 默认为
 
 ```
 $(DEPOT_PATH[1])/logs/repl_history.jl
 ```
 
-## External applications
+### `JULIA_PKG_SERVER`
+
+由`Pkg.jl` 使用，用于下载软件包和更新注册表。默认情况下，`Pkg` 使用 `https://pkg.julialang.org` 来获取 Julia 包。你可以使用此环境变量来选择不同的服务器。 此外，你可以禁用 PkgServer 协议的使用，并通过设置直接从它们的主机（GitHub、GitLab 等）访问包：
+```
+export JULIA_PKG_SERVER=""
+```
+
+## 外部应用
 
 ### `JULIA_SHELL`
 
-The absolute path of the shell with which Julia should execute external commands
-(via `Base.repl_cmd()`). Defaults to the environment variable `$SHELL`, and
-falls back to `/bin/sh` if `$SHELL` is unset.
+Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd()`）。默认为环境变量 `$SHELL`，如果 `$SHELL` 未设置，则为 `/bin/sh`。
 
 !!! note
 
-    On Windows, this environment variable is ignored, and external commands are
-    executed directly.
+    在 Windows 上，此环境变量将被忽略，并且外部命令会直接被执行。
 
 ### `JULIA_EDITOR`
 
-The editor returned by `InteractiveUtils.editor()` and used in, e.g., [`InteractiveUtils.edit`](@ref),
-referring to the command of the preferred editor, for instance `vim`.
+`InteractiveUtils.editor()` 的返回值--编辑器，例如，[`InteractiveUtils.edit`](@ref)，会启动偏好编辑器，比如 `vim`。
 
-`$JULIA_EDITOR` takes precedence over `$VISUAL`, which in turn takes precedence
-over `$EDITOR`. If none of these environment variables is set, then the editor
-is taken to be `open` on Windows and OS X, or `/etc/alternatives/editor` if it
-exists, or `emacs` otherwise.
+`$JULIA_EDITOR` 优先于 `$VISUAL`，而后者优先于 `$EDITOR`。如果这些环境变量都没有设置，那么在 Windows 和 OS X 上会设置为 `open`，或者 `/etc/alternatives/editor`（如果存在的话），否则为 `emacs`。
 
-## Parallelization
+## 并行
 
 ### `JULIA_CPU_THREADS`
 
-Overrides the global variable [`Base.Sys.CPU_THREADS`](@ref), the number of
-logical CPU cores available.
+改写全局变量 [`Base.Sys.CPU_THREADS`](@ref)，逻辑 CPU 核心数。
 
 ### `JULIA_WORKER_TIMEOUT`
 
-A [`Float64`](@ref) that sets the value of `Distributed.worker_timeout()` (default: `60.0`).
-This function gives the number of seconds a worker process will wait for
-a master process to establish a connection before dying.
+一个 [`Float64`](@ref) 值，用来确定 `Distributed.worker_timeout()` 的值（默认：`60.0`）。此函数提供 worker 进程在死亡之前等待 master 进程建立连接的秒数。
 
 ### [`JULIA_NUM_THREADS`](@id JULIA_NUM_THREADS)
 
-An unsigned 64-bit integer (`uint64_t`) that sets the maximum number of threads
-available to Julia. If `$JULIA_NUM_THREADS` is not positive or is not set, or if
-the number of CPU threads cannot be determined through system calls, then the number
-of threads is set to `1`.
+一个无符号 64 位整数 (`uint64_t`)，用于设置 Julia 可用的最大线程数。 如果`$JULIA_NUM_THREADS` 不为正数或未设置，或者无法通过系统调用确定CPU 线程数，则将线程数设置为`1`。
+
+如果`$JULIA_NUM_THREADS` 设置为`auto`，则线程数将设置为CPU线程数。
 
 !!! note
-
-    `JULIA_NUM_THREADS` must be defined before starting julia; defining it in `startup.jl` is too late in the startup process.
+    `JULIA_NUM_THREADS` 必须在启动 julia 之前定义； 启动过程中在`startup.jl` 中定义它是不能奏效的。
 
 !!! compat "Julia 1.5"
-    In Julia 1.5 and above the number of threads can also be specified on startup
-    using the `-t`/`--threads` command line argument.
+    在 Julia 1.5 和更高版本中，也可在启动时使用 `-t`/`--threads` 命令行参数指定线程数。
+
+!!! compat "Julia 1.7"
+    `$JULIA_NUM_THREADS` 的 `auto` 值需要 Julia 1.7 或更高版本。
 
 ### `JULIA_THREAD_SLEEP_THRESHOLD`
 
-If set to a string that starts with the case-insensitive substring `"infinite"`,
-then spinning threads never sleep. Otherwise, `$JULIA_THREAD_SLEEP_THRESHOLD` is
-interpreted as an unsigned 64-bit integer (`uint64_t`) and gives, in
-nanoseconds, the amount of time after which spinning threads should sleep.
+如果被设置为字符串，并且以大小写敏感的子字符串 `"infinite"` 开头，那么自旋线程从不睡眠。否则，`$JULIA_THREAD_SLEEP_THRESHOLD` 被解释为一个无符号 64 位整数（`uint64_t`），并且提供以纳秒为单位的自旋线程睡眠的时间量。
 
 ### `JULIA_EXCLUSIVE`
 
-If set to anything besides `0`, then Julia's thread policy is consistent with
-running on a dedicated machine: the master thread is on proc 0, and threads are
-affinitized. Otherwise, Julia lets the operating system handle thread policy.
+如果设置为 `0` 以外的任何值，那么 Julia 的线程策略与在专用计算机上一致：主线程在 proc 0 上且线程间是关联的。否则，Julia 让操作系统处理线程策略。
 
-## REPL formatting
+## REPL 格式化输出
 
-Environment variables that determine how REPL output should be formatted at the
-terminal. Generally, these variables should be set to [ANSI terminal escape
-sequences](http://ascii-table.com/ansi-escape-sequences.php). Julia provides
-a high-level interface with much of the same functionality; see the section on
-[The Julia REPL](@ref).
+决定 REPL 应当如何格式化输出的环境变量。通常，这些变量应当被设置为 [ANSI 终端转义序列](http://ascii-table.com/ansi-escape-sequences.php)。Julia 提供了具有相同功能的高级接口；请参阅 [Julia REPL](@ref) 章节。
 
 ### `JULIA_ERROR_COLOR`
 
-The formatting `Base.error_color()` (default: light red, `"\033[91m"`) that
-errors should have at the terminal.
+`Base.error_color()`（默认值：亮红，`"\033[91m"`），errors 在终端中的格式。
 
 ### `JULIA_WARN_COLOR`
 
-The formatting `Base.warn_color()` (default: yellow, `"\033[93m"`) that warnings
-should have at the terminal.
+`Base.warn_color()`（默认值：黄，`"\033[93m"`），warnings 在终端中的格式。
 
 ### `JULIA_INFO_COLOR`
 
-The formatting `Base.info_color()` (default: cyan, `"\033[36m"`) that info
-should have at the terminal.
+`Base.info_color()`（默认值：青，`"\033[36m"`），info 在终端中的格式。
 
 ### `JULIA_INPUT_COLOR`
 
-The formatting `Base.input_color()` (default: normal, `"\033[0m"`) that input
-should have at the terminal.
+`Base.input_color()`（默认值：标准，`"\033[0m"`），在终端中，输入应有的格式。
 
 ### `JULIA_ANSWER_COLOR`
 
-The formatting `Base.answer_color()` (default: normal, `"\033[0m"`) that output
-should have at the terminal.
+`Base.answer_color()`（默认值：标准，`"\033[0m"`），在终端中，输出应有的格式。
 
-## Debugging and profiling
+## 调试和性能分析
 
 ### `JULIA_DEBUG`
 
-Enable debug logging for a file or module, see [`Logging`](@ref Logging) for more information.
+为文件或模块启动调试日志记录，请参阅 [日志](@ref Logging) 了解更多信息。
 
 ### `JULIA_GC_ALLOC_POOL`, `JULIA_GC_ALLOC_OTHER`, `JULIA_GC_ALLOC_PRINT`
 
-If set, these environment variables take strings that optionally start with the
-character `'r'`, followed by a string interpolation of a colon-separated list of
-three signed 64-bit integers (`int64_t`). This triple of integers `a:b:c`
-represents the arithmetic sequence `a`, `a + b`, `a + 2*b`, ... `c`.
+这些环境变量取值为字符串，可以以字符 `‘r’` 开头，后接一个由三个带符号 64 位整数（`int64_t`）组成的、以冒号分割的列表的插值字符串。这个整数的三元组 `a:b:c` 代表算术序列 `a`, `a + b`, `a + 2*b`, ... `c`。
 
-*   If it's the `n`th time that `jl_gc_pool_alloc()` has been called, and `n`
-    belongs to the arithmetic sequence represented by `$JULIA_GC_ALLOC_POOL`,
-    then garbage collection is forced.
-*   If it's the `n`th time that `maybe_collect()` has been called, and `n` belongs
-    to the arithmetic sequence represented by `$JULIA_GC_ALLOC_OTHER`, then garbage
-    collection is forced.
-*   If it's the `n`th time that `jl_gc_collect()` has been called, and `n` belongs
-    to the arithmetic sequence represented by `$JULIA_GC_ALLOC_PRINT`, then counts
-    for the number of calls to `jl_gc_pool_alloc()` and `maybe_collect()` are
-    printed.
+*   如果是第 `n` 次调用 `jl_gc_pool_alloc()`，并且 `n`
+    属于 `$JULIA_GC_ALLOC_POOL` 代表的算术序列，
+    那么垃圾回收是强制的。
+*   如果是第 `n` 次调用 `maybe_collect()`，并且 `n` 属于
+    `$JULIA_GC_ALLOC_OTHER` 代表的算术序列，那么垃圾
+    回收是强制的。
+*   如果是第 `n` 次调用 `jl_gc_alloc()`，并且 `n` 属于
+    `$JULIA_GC_ALLOC_PRINT` 代表的算术序列，那么
+    调用 `jl_gc_pool_alloc()` 和 `maybe_collect()` 的次数会
+    被打印。
 
-If the value of the environment variable begins with the character `'r'`, then
-the interval between garbage collection events is randomized.
+如果这些环境变量的值以字符 `‘r'` 开头，那么垃圾回收事件间的间隔是随机的。
 
 !!! note
 
-    These environment variables only have an effect if Julia was compiled with
-    garbage-collection debugging (that is, if `WITH_GC_DEBUG_ENV` is set to `1`
-    in the build configuration).
+    这些环境变量生效要求 Julia 在编译时带有垃圾收集调试支持（也就是，在构建配置中将 `WITH_GC_DEBUG_ENV` 设置为 `1`）。
 
 ### `JULIA_GC_NO_GENERATIONAL`
 
-If set to anything besides `0`, then the Julia garbage collector never performs
-"quick sweeps" of memory.
+如果设置为 `0` 以外的任何值，那么 Julia 的垃圾收集器将从不执行「快速扫描」内存。
 
 !!! note
 
-    This environment variable only has an effect if Julia was compiled with
-    garbage-collection debugging (that is, if `WITH_GC_DEBUG_ENV` is set to `1`
-    in the build configuration).
+    此环境变量生效要求 Julia 在编译时带有垃圾收集调试支持（也就是，在构建配置中将 `WITH_GC_DEBUG_ENV` 设置为 `1`）。
 
 ### `JULIA_GC_WAIT_FOR_DEBUGGER`
 
-If set to anything besides `0`, then the Julia garbage collector will wait for
-a debugger to attach instead of aborting whenever there's a critical error.
+如果设置为 `0` 以外的任何值，Julia 的垃圾收集器每当出现严重错误时将等待调试器连接而不是中止。
 
 !!! note
 
-    This environment variable only has an effect if Julia was compiled with
-    garbage-collection debugging (that is, if `WITH_GC_DEBUG_ENV` is set to `1`
-    in the build configuration).
+    此环境变量生效要求 Julia 在编译时带有垃圾收集调试支持（也就是，在构建配置中将 `WITH_GC_DEBUG_ENV` 设置为 `1`）。
 
 ### `ENABLE_JITPROFILING`
 
-If set to anything besides `0`, then the compiler will create and register an
-event listener for just-in-time (JIT) profiling.
+如果设置为 `0` 以外的任何值，那么编译器将为即时（JIT）性能分析创建并注册一个事件监听器。
 
 !!! note
 
-    This environment variable only has an effect if Julia was compiled with JIT
-    profiling support, using either
-    * Intel's [VTune™ Amplifier](https://software.intel.com/en-us/vtune)
-      (`USE_INTEL_JITEVENTS` set to `1` in the build configuration), or
-    * [OProfile](http://oprofile.sourceforge.net/news/) (`USE_OPROFILE_JITEVENTS` set to `1`
-      in the build configuration).
-    * [Perf](https://perf.wiki.kernel.org) (`USE_PERF_JITEVENTS` set to `1`
-      in the build configuration). This integration is enabled by default.
+    此环境变量仅在使用 JIT 性能分析支持编译 Julia 时有效，使用如下之一：
+    * Intel's [VTune™ Amplifier](https://software.intel.com/en-us/vtune)(`USE_INTEL_JITEVENTS` 在配置中设置为`1`), 或
+    * [OProfile](http://oprofile.sourceforge.net/news/)(`USE_OPROFILE_JITEVENTS` 在配置中设置为`1`)。
+    * [Perf](https://perf.wiki.kernel.org) (`USE_PERF_JITEVENTS` 在构建配置中设置为 `1`)。 默认情况下启用此集成。
 
 ### `ENABLE_GDBLISTENER`
 
-If set to anything besides `0` enables GDB registration of Julia code on release builds.
-On debug builds of Julia this is always enabled. Recommended to use with `-g 2`.
+如果设置为除`0`之外的任何内容，则在发布版本上启用 Julia 代码的 GDB 注册。 在 Julia 的调试版本中，这始终处于启用状态。 推荐与 `-g 2` 一起使用。
 
 
 ### `JULIA_LLVM_ARGS`
 
-Arguments to be passed to the LLVM backend.
-
+传递给 LLVM 后端的参数。
 

@@ -1,4 +1,4 @@
-# Base.Cartesian
+# 笛卡尔
 
 The (non-exported) Cartesian module provides macros that facilitate writing multidimensional algorithms.
 Most often you can write such algorithms with [straightforward techniques](https://julialang.org/blog/2016/02/iteration); however, there are a few cases where `Base.Cartesian` is still useful or necessary.
@@ -30,7 +30,7 @@ the nested loops in this example.  Other applications include repeated expressio
 unwinding) or creating function calls with variable numbers of arguments without using the "splat"
 construct (`i...`).
 
-## Basic syntax
+## 基本语法
 
 The (basic) syntax of `@nloops` is as follows:
 

@@ -1,20 +1,17 @@
-# [Workflow Tips](@id man-workflow-tips)
+# [工作流程建议](@id man-workflow-tips)
 
-Here are some tips for working with Julia efficiently.
+这里是高效使用 Julia 的一些建议。
 
-## REPL-based workflow
+## 基于 REPL 的工作流程
 
-As already elaborated in [The Julia REPL](@ref), Julia's REPL provides rich functionality
-that facilitates an efficient interactive workflow. Here are some tips that might further enhance
-your experience at the command line.
+正如在 [Julia REPL](@ref) 中演示的那样，Julia 的 REPL 为高效的交互式工作流程提供了丰富的功能。这里是一些可能进一步提升你在命令行下的体验的建议。
 
-### A basic editor/REPL workflow
+### 一个基本的编辑器 / REPL 工作流程
 
-The most basic Julia workflows involve using a text editor in conjunction with the `julia` command
-line. A common pattern includes the following elements:
+最基本的 Julia 工作流程是将一个文本编辑器配合 `julia` 的命令行使用。一般会包含下面一些步骤：
 
-  * **Put code under development in a temporary module.** Create a file, say `Tmp.jl`, and include
-    within it
+  * **把还在开发中的代码放到一个临时的模块中。**新建一个文件，例如 `Tmp.jl`，并放到模块中。
+     
 
     ```julia
     module Tmp
@@ -26,7 +23,7 @@ line. A common pattern includes the following elements:
 
     end
     ```
-  * **Put your test code in another file.** Create another file, say `tst.jl`, which looks like
+  * **把测试代码放到另一个文件中。**新建另一个文件，例如 `tst.jl`，开头为
 
     ```julia
     include("Tmp.jl")
@@ -39,8 +36,8 @@ line. A common pattern includes the following elements:
     # your other test code here
     ```
 
-    and includes tests for the contents of `Tmp`.
-    Alternatively, you can wrap the contents of your test file in a module, as
+    并把测试作为 `Tmp` 的内容。或者，你可以把测试文件的内容打包到一个模块中，例如
+     
 
     ```julia
     module Tst
@@ -55,36 +52,33 @@ line. A common pattern includes the following elements:
     end
     ```
 
-    The advantage is that your testing code is now contained in a module and does not use the global scope in `Main` for
-    definitions, which is a bit more tidy.
+    优点是你的测试代码现在包含在一个模块中，并且不会在 `Main` 的全局作用域中引入新定义，这样更加整洁。
+     
 
-  * `include` the `tst.jl` file in the Julia REPL with `include("tst.jl")`.
+  * 使用 `include("tst.jl")` 来在 Julia REPL 中 `include` `tst.jl` 文件。
 
-  * **Lather. Rinse. Repeat.** Explore ideas at the `julia` command prompt. Save good ideas in `tst.jl`. To execute `tst.jl` after it has been changed, just `include` it again.
+  * **打肥皂，冲洗，重复。**（译者注：此为英语幽默，被称为[“洗发算法”](https://en.wikipedia.org/wiki/Lather,_rinse,_repeat）描述洗头发的过程)在 `julia` REPL 中摸索不同的想法，把好的想法存入 `tst.jl`。要在 `tst.jl` 被更改后执行它，只需再次 `include` 它。
 
-## Browser-based workflow
+## 基于浏览器的工作流程
 
-It is also possible to interact with a Julia REPL in the browser via [IJulia](https://github.com/JuliaLang/IJulia.jl).
-See the package home for details.
+也可以通过 [IJulia](https://github.com/JuliaLang/IJulia.jl) 在浏览器中与 Julia REPL 进行交互，请到该库的主页查看详细用法。
 
-## Revise-based workflows
+## 基于Revise的工作流程
 
-Whether you're at the REPL or in IJulia, you can typically improve
-your development experience with
-[Revise](https://github.com/timholy/Revise.jl).
-It is common to configure Revise to start whenever julia is started,
-as per the instructions in the [Revise documentation](https://timholy.github.io/Revise.jl/stable/).
-Once configured, Revise will track changes to files in any loaded modules,
-and to any files loaded in to the REPL with `includet` (but not with plain `include`);
-you can then edit the files and the changes take effect without restarting your julia session.
-A standard workflow is similar to the REPL-based workflow above, with
-the following modifications:
+无论你是在REPL还是在IJulia，你通常可以通过
+[Revise](https://github.com/timholy/Revise.jl)优化
+你的开发经历。
+通常情况，无论何时启动Julia，就请按照[Revise文档](https://timholy.github.io/Revise.jl/stable/)中的说明配置好Revise。
+一旦配置好，Revise将跟踪任何加载模块中的文件变化。
+和任何用`includet`加载到 REPL 的文件 (但不包括普通的`include`);
+然后你就可以编辑这些文件，并且更改会在不重新启动julia会话的情况下生效。
+标准工作流与上面基于 REPL 的工作流类似，区别如下：
 
-1. Put your code in a module somewhere on your load path. There are
-   several options for achieving this, of which two recommended choices are:
+1. 把你的代码放到一个在你的加载路径里的模块中。
+   要这样做有很多种方法，通常推荐以下两种选择：
 
-   - For long-term projects, use
-     [PkgTemplates](https://github.com/invenia/PkgTemplates.jl):
+   - 对于长期的项目，使用[PkgTemplates](https://github.com/invenia/PkgTemplates.jl):
+      
 
      ```julia
      using PkgTemplates
@@ -92,36 +86,36 @@ the following modifications:
      t("MyPkg")
      ```
 
-     This will create a blank package, `"MyPkg"`, in your `.julia/dev` directory.
-     Note that PkgTemplates allows you to control many different options
-     through its `Template` constructor.
+     这将在 `.julia/dev` 目录中创建一个空白包`"MyPkg"`。
+     请注意，通过它的 `Template` 构造器，PkgTemplates 允许控制许多不同的选项。
+      
 
-     In step 2 below, edit `MyPkg/src/MyPkg.jl` to change the source code, and
-     `MyPkg/test/runtests.jl` for the tests.
+     在下面的第 2 步中，编辑 `MyPkg/src/MyPkg.jl` 以更改源代码，并编辑 `MyPkg/test/runtests.jl` 以进行测试。
+      
 
-   - For "throw-away" projects, you can avoid any need for cleanup
-     by doing your work in your temporary directory (e.g., `/tmp`).
+   - 对于“一次性”项目，您可以通过在临时目录（例如 `/tmp`）中进行工作来避免任何清理需求。
+      
 
-     Navigate to your temporary directory and launch Julia, then do the following:
+     切换到临时目录并启动 Julia，然后执行以下操作：
 
      ```julia
      pkg> generate MyPkg            # type ] to enter pkg mode
      julia> push!(LOAD_PATH, pwd())   # hit backspace to exit pkg mode
      ```
-     If you restart your Julia session you'll have to re-issue that command
-     modifying `LOAD_PATH`.
+     如果你重新启动 Julia 会话，则必须重新发出修改 `LOAD_PATH` 的命令。
+      
 
-     In step 2 below, edit `MyPkg/src/MyPkg.jl` to change the source code, and create any
-     test file of your choosing.
+     在下面的第 2 步中，编辑 `MyPkg/src/MyPkg.jl` 以更改源代码，并创建你选择的任何测试文件。
+      
 
-2. Develop your package
+2. 构建你自己的包
 
-   *Before* loading any code, make sure you're running Revise: say
-   `using Revise` or follow its documentation on configuring it to run
-   automatically.
+   **在加载任何代码之前**， 确保 Revise 已经被启用：
+   `using Revise` 或者按照教程设置自动加载。
+    
 
-   Then navigate to the directory containing your test file (here
-   assumed to be `"runtests.jl"`) and do the following:
+   然后切换到包含测试文件（假设文件为`"runtests.jl"`）的目录下，并：
+    
 
    ```julia
    julia> using MyPkg
@@ -129,6 +123,6 @@ the following modifications:
    julia> include("runtests.jl")
    ```
 
-   You can iteratively modify the code in MyPkg in your editor and re-run the
-   tests with `include("runtests.jl")`.  You generally should not need to restart
-   your Julia session to see the changes take effect (subject to a few [limitations](https://timholy.github.io/Revise.jl/stable/limitations/)).
+   你可以修改在 MyPkg 文件夹中的代码然后用`include("runtests.jl")`重新跑一遍测试。
+   通常，你可能需要重新启动Julia 会话来使得这些变化生效（受一些 [限制](https://timholy.github.io/Revise.jl/stable/limitations/)）。
+    

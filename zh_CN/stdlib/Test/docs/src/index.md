@@ -1,34 +1,34 @@
-# Unit Testing
+# 单元测试
 
 ```@meta
 DocTestSetup = :(using Test)
 ```
 
-## Testing Base Julia
+## 测试 Julia Base 库
 
-Julia is under rapid development and has an extensive test suite to verify functionality across
-multiple platforms. If you build Julia from source, you can run this test suite with `make test`.
-In a binary install, you can run the test suite using `Base.runtests()`.
+Julia 处于快速开发中，有着可以扩展的测试套件，用来跨平台测试功能。
+如果你是通过源代码构建的 Julia ，你可以通过 `make test` 来运行这个测试套件。
+如果是通过二进制包安装的，你可以通过 `Base.runtests()` 来运行这个测试套件。
 
 ```@docs
 Base.runtests
 ```
 
-## Basic Unit Tests
+## 基本的单元测试
 
 The `Test` module provides simple *unit testing* functionality. Unit testing is a way to
 see if your code is correct by checking that the results are what you expect. It can be helpful
 to ensure your code still works after you make changes, and can be used when developing as a way
 of specifying the behaviors your code should have when complete.
 
-Simple unit testing can be performed with the `@test` and `@test_throws` macros:
+简单的单元测试可以通过 `@test` 和 `@test_throws` 宏来完成：
 
 ```@docs
 Test.@test
 Test.@test_throws
 ```
 
-For example, suppose we want to check our new function `foo(x)` works as expected:
+例如，假设我们想要测试新的函数 `foo(x)` 是否按照期望的方式工作：
 
 ```jldoctest testfoo
 julia> using Test
@@ -42,12 +42,16 @@ If the condition is true, a `Pass` is returned:
 ```jldoctest testfoo
 julia> @test foo("bar") == 9
 Test Passed
+  Expression: foo("bar") == 9
+   Evaluated: 9 == 9
 
 julia> @test foo("fizz") >= 10
 Test Passed
+  Expression: foo("fizz") >= 10
+   Evaluated: 16 >= 10
 ```
 
-If the condition is false, then a `Fail` is returned and an exception is thrown:
+如果条件为假，则返回 `Fail` 并抛出异常。
 
 ```jldoctest testfoo
 julia> @test foo("f") == 20
@@ -83,6 +87,7 @@ to check that this occurs:
 ```jldoctest testfoo
 julia> @test_throws MethodError foo(:cat)
 Test Passed
+  Expression: foo(:cat)
       Thrown: MethodError
 ```
 
@@ -102,6 +107,7 @@ or could not be evaluated due to an error, the test set will then throw a `TestS
 
 ```@docs
 Test.@testset
+Test.TestSetException
 ```
 
 We can put our tests for the `foo(x)` function in a test set:
@@ -116,7 +122,7 @@ Test Summary: | Pass  Total
 Foo Tests     |    3      3
 ```
 
-Test sets can also be nested:
+测试集可以嵌套：
 
 ```jldoctest testfoo
 julia> @testset "Foo Tests" begin
@@ -193,6 +199,8 @@ checks using either `@test a ≈ b` (where `≈`, typed via tab completion of `\
 ```jldoctest
 julia> @test 1 ≈ 0.999999999
 Test Passed
+  Expression: 1 ≈ 0.999999999
+   Evaluated: 1 ≈ 0.999999999
 
 julia> @test 1 ≈ 0.999999
 Test Failed at none:1
@@ -200,6 +208,15 @@ Test Failed at none:1
    Evaluated: 1 ≈ 0.999999
 ERROR: There was an error during testing
 ```
+You can specify relative and absolute tolerances by setting the `rtol` and `atol` keyword arguments of `isapprox`, respectively,
+after the `≈` comparison:
+```jldoctest
+julia> @test 1 ≈ 0.999999  rtol=1e-5
+Test Passed
+  Expression: ≈(1, 0.999999, rtol = 1.0e-5)
+   Evaluated: ≈(1, 0.999999; rtol = 1.0e-5)
+```
+Note that this is not a specific feature of the `≈` but rather a general feature of the `@test` macro: `@test a <op> b key=val` is transformed by the macro into `@test op(a, b, key=val)`. It is, however, particularly useful for `≈` tests.
 
 ```@docs
 Test.@inferred
@@ -286,6 +303,18 @@ And using that testset looks like:
         @test true
     end
 end
+```
+
+## Test utilities
+
+```@docs
+Test.GenericArray
+Test.GenericDict
+Test.GenericOrder
+Test.GenericSet
+Test.GenericString
+Test.detect_ambiguities
+Test.detect_unbound_args
 ```
 
 ```@meta

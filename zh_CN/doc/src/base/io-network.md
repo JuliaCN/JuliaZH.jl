@@ -1,6 +1,6 @@
-# I/O and Network
+# I/O 与网络
 
-## General I/O
+## 通用 I/O
 
 ```@docs
 Base.stdout
@@ -36,6 +36,7 @@ Base.iswritable
 Base.isreadable
 Base.isopen
 Base.fd
+Base.redirect_stdio
 Base.redirect_stdout
 Base.redirect_stdout(::Function, ::Any)
 Base.redirect_stderr
@@ -53,7 +54,7 @@ Base.IOContext(::IO, ::Pair)
 Base.IOContext(::IO, ::IOContext)
 ```
 
-## Text I/O
+## 文本 I/O
 
 ```@docs
 Base.show(::IO, ::Any)
@@ -72,22 +73,22 @@ Base.eachline
 Base.displaysize
 ```
 
-## Multimedia I/O
+## 多媒体 I/O
 
-Just as text output is performed by [`print`](@ref) and user-defined types can indicate their textual
-representation by overloading [`show`](@ref), Julia provides a standardized mechanism for rich multimedia
-output (such as images, formatted text, or even audio and video), consisting of three parts:
+就像文本输出用 [`print`](@ref) 实现，用户自定义类型可以通过重载 [`show`](@ref) 来指定其文本化表示，
+Julia 提供了一个应用于富多媒体输出的标准化机制
+（例如图片、格式化文本、甚至音频和视频），由以下三部分组成：
 
-  * A function [`display(x)`](@ref) to request the richest available multimedia display of a Julia object
-    `x` (with a plain-text fallback).
-  * Overloading [`show`](@ref) allows one to indicate arbitrary multimedia representations (keyed by standard
-    MIME types) of user-defined types.
+  * 函数 [`display(x)`](@ref) 来请求一个 Julia 对象 `x` 最丰富的多媒体展示，并以纯文本作为后备模式。
+     
+  * 重载 [`show`](@ref) 允许指定用户自定义类型的任意多媒体表现形式（以标准MIME类型为键值）。
+     
   * Multimedia-capable display backends may be registered by subclassing a generic [`AbstractDisplay`](@ref) type
-    and pushing them onto a stack of display backends via [`pushdisplay`](@ref).
+    并通过 [`pushdisplay`](@ref) 将其压进显示后端的栈中。
 
-The base Julia runtime provides only plain-text display, but richer displays may be enabled by
-loading external modules or by using graphical Julia environments (such as the IPython-based IJulia
-notebook).
+基础 Julia 运行环境只提供纯文本显示，
+但是更富的显示可以通过加载外部模块或者使用图形化 Julia 环境
+（比如基于 IPython 的 IJulia notebook）来实现。
 
 ```@docs
 Base.AbstractDisplay
@@ -101,9 +102,9 @@ Base.MIME
 Base.@MIME_str
 ```
 
-As mentioned above, one can also define new display backends. For example, a module that can display
-PNG images in a window can register this capability with Julia, so that calling [`display(x)`](@ref) on
-types with PNG representations will automatically display the image using the module's window.
+如上面提到的，用户可以定义新的显示后端。
+例如，可以在窗口显示 PNG 图片的模块可以在 Julia 中注册这个能力，
+以便为有 PNG 表示的类型调用 [`display(x)`](@ref) 时可以在模块窗口中自动显示图片。
 
 In order to define a new display backend, one should first create a subtype `D` of the abstract
 class [`AbstractDisplay`](@ref).  Then, for each MIME type (`mime` string) that can be displayed on `D`, one should
@@ -127,7 +128,7 @@ Base.Multimedia.TextDisplay
 Base.Multimedia.istextmime
 ```
 
-## Network I/O
+## 网络 I/O
 
 ```@docs
 Base.bytesavailable

@@ -1,7 +1,6 @@
-# Sorting and Related Functions
+# 排序及相关函数
 
-Julia has an extensive, flexible API for sorting and interacting with already-sorted arrays of
-values. By default, Julia picks reasonable algorithms and sorts in standard ascending order:
+Julia 拥有为数众多的灵活的 API，用于对已经排序的值数组进行排序和交互。默认情况下，Julia 会选择合理的算法并按标准升序进行排序：
 
 ```jldoctest
 julia> sort([2,3,1])
@@ -11,7 +10,7 @@ julia> sort([2,3,1])
  3
 ```
 
-You can easily sort in reverse order as well:
+你同样可以轻松实现逆序排序：
 
 ```jldoctest
 julia> sort([2,3,1], rev=true)
@@ -21,7 +20,7 @@ julia> sort([2,3,1], rev=true)
  1
 ```
 
-To sort an array in-place, use the "bang" version of the sort function:
+对数组进行 in-place 排序时，要使用 `!` 版的排序函数：
 
 ```jldoctest
 julia> a = [2,3,1];
@@ -35,8 +34,7 @@ julia> a
  3
 ```
 
-Instead of directly sorting an array, you can compute a permutation of the array's indices that
-puts the array into sorted order:
+你可以计算用于排列的索引，而不是直接对数组进行排序：
 
 ```julia-repl
 julia> v = randn(5)
@@ -64,7 +62,7 @@ julia> v[p]
   0.382396
 ```
 
-Arrays can easily be sorted according to an arbitrary transformation of their values:
+数组可以根据对其值任意的转换结果来进行排序；
 
 ```julia-repl
 julia> sort(v, by=abs)
@@ -76,7 +74,7 @@ julia> sort(v, by=abs)
  -0.839027
 ```
 
-Or in reverse order by a transformation:
+或者通过转换来进行逆序排序
 
 ```julia-repl
 julia> sort(v, by=abs, rev=true)
@@ -88,7 +86,7 @@ julia> sort(v, by=abs, rev=true)
  -0.0104452
 ```
 
-If needed, the sorting algorithm can be chosen:
+如有必要，可以选择排序算法：
 
 ```julia-repl
 julia> sort(v, alg=InsertionSort)
@@ -100,11 +98,9 @@ julia> sort(v, alg=InsertionSort)
   0.382396
 ```
 
-All the sorting and order related functions rely on a "less than" relation defining a total order
-on the values to be manipulated. The `isless` function is invoked by default, but the relation
-can be specified via the `lt` keyword.
+所有与排序和顺序相关的函数依赖于“小于”关系，该关系定义了要操纵的值的总顺序。默认情况下会调用 `isless` 函数，但可以通过 `lt` 关键字指定关系。
 
-## Sorting Functions
+## 排序函数
 
 ```@docs
 Base.sort!
@@ -118,7 +114,7 @@ Base.Sort.sortperm!
 Base.Sort.sortslices
 ```
 
-## Order-Related Functions
+## 排列顺序相关的函数
 
 ```@docs
 Base.issorted
@@ -132,25 +128,20 @@ Base.Sort.partialsortperm
 Base.Sort.partialsortperm!
 ```
 
-## Sorting Algorithms
+## 排序算法
 
-There are currently four sorting algorithms available in base Julia:
+目前，Julia Base 中有四种可用的排序算法：
 
   * [`InsertionSort`](@ref)
   * [`QuickSort`](@ref)
   * [`PartialQuickSort(k)`](@ref)
   * [`MergeSort`](@ref)
 
-`InsertionSort` is an O(n^2) stable sorting algorithm. It is efficient for very small `n`, and
-is used internally by `QuickSort`.
+`InsertionSort` 是一个在 `QuickSort` 中使用的时间复杂度为 O(n^2) 的稳定的排序算法，它通常在 `n` 比较小的时候才具有较高的效率。
 
-`QuickSort` is an O(n log n) sorting algorithm which is in-place, very fast, but not stable –
-i.e. elements which are considered equal will not remain in the same order in which they originally
-appeared in the array to be sorted. `QuickSort` is the default algorithm for numeric values, including
-integers and floats.
+`QuickSort` 是一个内置并且非常快，但是不稳定的时间复杂度为 O(n log n）的排序算法，例如即使数组两个元素相等的，它们排序之后的顺序也可能和在原数组中顺序不一致。`QuickSort` 是内置的包括整数和浮点数在内的数字值的默认排序算法。
 
-`PartialQuickSort(k)` is similar to `QuickSort`, but the output array is only sorted up to index
-`k` if `k` is an integer, or in the range of `k` if `k` is an `OrdinalRange`. For example:
+`PartialQuickSort(k)` 类似于 `QuickSort`，但是如果 `k` 是一个整数，输出数组只排序到索引 `k`，如果 `k` 是 `OrdinalRange`，则输出数组排在 `k` 范围内。 例如：
 
 ```julia
 x = rand(1:500, 100)
@@ -166,28 +157,18 @@ s[1:k] == ps[1:k]                      # => true
 s[k2] == qs[k2]                        # => true
 ```
 
-`MergeSort` is an O(n log n) stable sorting algorithm but is not in-place – it requires a temporary
-array of half the size of the input array – and is typically not quite as fast as `QuickSort`.
-It is the default algorithm for non-numeric data.
+`MergeSort` 是一个时间复杂度为 O(n log n) 的稳定但是非 in-place 的算法，它需要一个大小为输入数组一般的临时数组——同时也不像 `QuickSort` 一样快。`MergeSort` 是非数值型数据的默认排序算法。
 
-The default sorting algorithms are chosen on the basis that they are fast and stable, or *appear*
-to be so. For numeric types indeed, `QuickSort` is selected as it is faster and indistinguishable
-in this case from a stable sort (unless the array records its mutations in some way). The stability
-property comes at a non-negligible cost, so if you don't need it, you may want to explicitly specify
-your preferred algorithm, e.g. `sort!(v, alg=QuickSort)`.
+默认排序算法的选择是基于它们的快速稳定，或者 *appear* 之类的。对于数值类型，实际上选择了 `QuickSort`，因为在这种情况下，它更快，与稳定排序没有区别(除非数组以某种方式记录了突变)
 
-The mechanism by which Julia picks default sorting algorithms is implemented via the `Base.Sort.defalg`
-function. It allows a particular algorithm to be registered as the default in all sorting functions
-for specific arrays. For example, here are the two default methods from [`sort.jl`](https://github.com/JuliaLang/julia/blob/master/base/sort.jl):
+Julia选择默认排序算法的机制是通过 `Base.Sort.defalg` 来实现的，其允许将特定算法注册为特定数组的所有排序函数中的默认值。例如，这有两个默认算法 [`sort.jl`](https://github.com/JuliaLang/julia/blob/master/base/sort.jl):
 
 ```julia
 defalg(v::AbstractArray) = MergeSort
 defalg(v::AbstractArray{<:Number}) = QuickSort
 ```
 
-As for numeric arrays, choosing a non-stable default algorithm for array types for which the notion
-of a stable sort is meaningless (i.e. when two values comparing equal can not be distinguished)
-may make sense.
+对于数值型数组，选择非稳定的默认排序算法的原则是稳定的排序算法没有必要的（例如：但两个值相比较时相等且不可区分时）。
 
 ## Alternate orderings
 

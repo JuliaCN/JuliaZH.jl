@@ -1,29 +1,27 @@
-# [Variables](@id man-variables)
+# [变量](@id man-variables)
 
-A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to
-store a value (that you obtained after some math, for example) for later use. For example:
+Julia 语言中，变量是与某个值相关联（或绑定）的名字。你可以用它来保存一个值（例如某些计算得到的结果），供之后的代码使用。例如：
 
 ```julia-repl
-# Assign the value 10 to the variable x
+# 将 10 赋值给变量 x
 julia> x = 10
 10
 
-# Doing math with x's value
+# 使用 x 的值做计算
 julia> x + 1
 11
 
-# Reassign x's value
+# 重新给 x 赋值
 julia> x = 1 + 1
 2
 
-# You can assign values of other types, like strings of text
+# 也可以给 x 赋其它类型的值, 比如字符串文本
 julia> x = "Hello World!"
 "Hello World!"
 ```
 
-Julia provides an extremely flexible system for naming variables. Variable names are case-sensitive,
-and have no semantic meaning (that is, the language will not treat variables differently based
-on their names).
+Julia 提供了非常灵活的变量命名策略。变量名是大小写敏感的，且不包含语义，意思是说，Julia 不会根据变量的名字来区别对待它们。
+（译者注：Julia **不会**自动将全大写的变量识别为常量，也**不会**将有特定前后缀的变量自动识别为某种特定类型的变量，即不会根据变量名字，自动判断变量的任何属性。）
 
 ```jldoctest
 julia> x = 1.0
@@ -42,7 +40,7 @@ julia> UniversalDeclarationOfHumanRightsStart = "人人生而自由，在尊严�
 "人人生而自由，在尊严和权利上一律平等。"
 ```
 
-Unicode names (in UTF-8 encoding) are allowed:
+你还可以使用 UTF-8 编码的 Unicode 字符作为变量名：
 
 ```jldoctest
 julia> δ = 0.00001
@@ -52,15 +50,9 @@ julia> 안녕하세요 = "Hello"
 "Hello"
 ```
 
-In the Julia REPL and several other Julia editing environments, you can type many Unicode math
-symbols by typing the backslashed LaTeX symbol name followed by tab. For example, the variable
-name `δ` can be entered by typing `\delta`-*tab*, or even `α̂⁽²⁾` by `\alpha`-*tab*-`\hat`-
-*tab*-`\^(2)`-*tab*. (If you find a symbol somewhere, e.g. in someone else's code,
-that you don't know how to type, the REPL help will tell you: just type `?` and
-then paste the symbol.)
+在 Julia REPL 和一些其它 Julia 的编辑器中，很多 Unicode 数学符号可以使用反斜杠加 LaTeX 符号接 tab 健打出。例如： 变量名 `δ` 可以通过 `\delta`-*tab* 来输入，甚至可以用 `\alpha`-*tab*-`\hat`-*tab*-`\^(2)`-*tab*来输入 `α̂⁽²⁾` 这种复杂的变量名。（如果你在某个地方发现了一个不知道怎么输入的符号，比如在别人的代码里，输入`?` 接着复制那个符号，REPL的帮助功能会告诉你输入方法。）
 
-Julia will even let you redefine built-in constants and functions if needed (although
-this is not recommended to avoid potential confusions):
+如果有需要的话，Julia 甚至允许你重定义内置常量和函数。（这样做可能引发潜在的混淆，所以并不推荐）
 
 ```jldoctest
 julia> pi = 3
@@ -73,8 +65,7 @@ julia> sqrt = 4
 4
 ```
 
-However, if you try to redefine a built-in constant or function already in use, Julia will give
-you an error:
+然而，如果你试图重定义一个已经在使用中的内置常量或函数，Julia 会报错：
 
 ```jldoctest
 julia> pi
@@ -90,27 +81,27 @@ julia> sqrt = 4
 ERROR: cannot assign a value to variable Base.sqrt from module Main
 ```
 
-## Allowed Variable Names
+## [合法的变量名](@id man-allowed-variable-names)
 
-Variable names must begin with a letter (A-Z or a-z), underscore, or a subset of Unicode code
-points greater than 00A0; in particular, [Unicode character categories](http://www.fileformat.info/info/unicode/category/index.htm)
-Lu/Ll/Lt/Lm/Lo/Nl (letters), Sc/So (currency and other symbols), and a few other letter-like characters
-(e.g. a subset of the Sm math symbols) are allowed. Subsequent characters may also include ! and
-digits (0-9 and other characters in categories Nd/No), as well as other Unicode code points: diacritics
-and other modifying marks (categories Mn/Mc/Me/Sk), some punctuation connectors (category Pc),
-primes, and a few other characters.
+变量名字必须以英文字母（A-Z 或 a-z）、下划线或编码大于 00A0 的 Unicode 字符的一个子集开头。
+具体来说指的是，[Unicode字符分类](http://www.fileformat.info/info/unicode/category/index.htm)中的
+Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其它像字母的符号（例如 Sm 类别数学符号中的一部分）。
+变量名的非首字符还允许使用惊叹号 `!`、数字（包括 0-9 和其他 Nd/No 类别中的 Unicode 字符）以及其它 Unicode 字符：变音符号和其他修改标记（Mn/Mc/Me/Sk 类别）、标点和连接符（Pc 类别）、引号和少许其他字符。
 
-Operators like `+` are also valid identifiers, but are parsed specially. In some contexts, operators
-can be used just like variables; for example `(+)` refers to the addition function, and `(+) = f`
-will reassign it. Most of the Unicode infix operators (in category Sm), such as `⊕`, are parsed
-as infix operators and are available for user-defined methods (e.g. you can use `const ⊗ = kron`
-to define `⊗` as an infix Kronecker product).  Operators can also be suffixed with modifying marks,
-primes, and sub/superscripts, e.g. `+̂ₐ″` is parsed as an infix operator with the same precedence as `+`.
-A space is required between an operator that ends with a subscript/superscript letter and a subsequent
-variable name. For example, if `+ᵃ` is an operator, then `+ᵃx` must be written as `+ᵃ x` to distinguish
-it from `+ ᵃx` where `ᵃx` is the variable name.
+像 `+` 这样的运算符也是合法的标识符，但是它们会被特别地解析。 在一些上下文中，运算符可以像变量一样使用，比如 `(+)` 表示加函数，语句 `(+) = f`会把它重新赋值。大部分 Unicode 中缀运算符（Sm 类别），像 `⊕`，会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 `const ⊗ = kron `将 `⊗` 定义为中缀的 Kronecker 积）。 运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 `+̂ₐ″` 被解析成一个与 `+` 具有相同优先级的中缀运算符。以下标/上标字母结尾的运算符与后续变量名之间需要一个空格。举个例子，如果 `+ᵃ` 是一个运算符，那么 `+ᵃx` 应该被写为`+ᵃ x`，以区分表达式 `+ ᵃx` ，其中 `ᵃx` 是变量名。
 
-The only explicitly disallowed names for variables are the names of the built-in [Keywords](@ref):
+
+一类特定的变量名是只包含下划线的变量名。这些标识符只能赋值，不能用于给其他变量赋值。严格来说，它们只能用作[左值](https://en.wikipedia.org/wiki/Value_(computer_science)#lrvalue) 而不能作[右值](https://en.wikipedia.org/wiki/R-value):
+
+```julia-repl
+julia> x, ___ = size([2 2; 1 1])
+(2, 2)
+
+julia> y = ___
+ERROR: syntax: all-underscore identifier used as rvalue
+```
+
+唯一明确禁止的变量名称是内置[关键字](@ref Keywords)的名称：
 
 ```julia-repl
 julia> else = false
@@ -120,26 +111,20 @@ julia> try = "No"
 ERROR: syntax: unexpected "="
 ```
 
-Some Unicode characters are considered to be equivalent in identifiers.
-Different ways of entering Unicode combining characters (e.g., accents)
-are treated as equivalent (specifically, Julia identifiers are [NFC](http://www.macchiato.com/unicode/nfc-faq)-normalized).
-The Unicode characters `ɛ` (U+025B: Latin small letter open e)
-and `µ` (U+00B5: micro sign) are treated as equivalent to the corresponding
-Greek letters, because the former are easily accessible via some input methods.
+某些 Unicode 字符被认为是等效的标识符。不同的输入 Unicode 组合字符的方法（例如：重音）被视为等价的（Julia 标识符采用 [NFC](http://www.macchiato.com/unicode/nfc-faq) 标准）。Julia 还加入了一些非标准的等价字符，用于在视觉上相似且易于通过某些输入法输入的字符。Unicode 字符 `ɛ` (U+025B: Latin small letter open e) 和 `µ` (U+00B5: micro sign) 被视为等同于相应的希腊字母。点 `·` (U+00B7) 和希腊字符[间断](https://en.wikipedia.org/wiki/Interpunct) `·` (U+0387) 都被当作数学上的点积运算符 `⋅` (U+22C5)。减号 `−` (U+2212) 与连接号 `-` (U+002D) 也被视作相同的符号。
 
-## Stylistic Conventions
+## 命名规范
 
-While Julia imposes few restrictions on valid names, it has become useful to adopt the following
-conventions:
+虽然 Julia 语言对合法名字的限制非常少，但是遵循以下这些命名规范是非常有用的：
 
-  * Names of variables are in lower case.
-  * Word separation can be indicated by underscores (`'_'`), but use of underscores is discouraged
-    unless the name would be hard to read otherwise.
-  * Names of `Type`s and `Module`s begin with a capital letter and word separation is shown with upper
-    camel case instead of underscores.
-  * Names of `function`s and `macro`s are in lower case, without underscores.
-  * Functions that write to their arguments have names that end in `!`. These are sometimes called
-    "mutating" or "in-place" functions because they are intended to produce changes in their arguments
-    after the function is called, not just return a value.
+  * 变量的名字采用小写。
+  * 使用下划线（`'_'`）来分隔名字中的单词，但是不鼓励使用下划线
+    除非在不使用下划线时名字会非常难读。
+  * 类型 (`Type`) 和模块（`Module`）的名字使用大写字母开头，并且用大写字母
+    而不是用下划线分隔单词。
+  * 函数（`function`）和宏（`macro`）的名字使用小写，不使用下划线。
+  * 会对输入参数进行更改的函数要使用 `!` 结尾。这些函数有时叫做
+    “mutating” 或 “in-place” 函数，因为它们在被调用后会修改他们的输入参数的内容
+    而不仅仅只是返回一个值。
 
-For more information about stylistic conventions, see the [Style Guide](@ref).
+关于命名规范的更多信息，可查看[代码风格指南](@ref)。

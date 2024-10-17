@@ -1,7 +1,7 @@
 # SHA
 
 
-Usage is very straightforward:
+用法非常直接：
 ```julia
 julia> using SHA
 

@@ -1,10 +1,6 @@
-# The Julia REPL
+# Julia REPL
 
-Julia comes with a full-featured interactive command-line REPL (read-eval-print loop) built into
-the `julia` executable. In addition to allowing quick and easy evaluation of Julia statements,
-it has a searchable history, tab-completion, many helpful keybindings, and dedicated help and
-shell modes. The REPL can be started by simply calling `julia` with no arguments or double-clicking
-on the executable:
+Julia 附带了一个全功能的交互式命令行 REPL（read-eval-print loop），其内置于 `julia` 可执行文件中。它除了允许快速简便地执行 Julia 语句外，还具有可搜索的历史记录，tab 补全，许多有用的按键绑定以及专用的 help 和 shell 模式。只需不附带任何参数地调用 `julia` 或双击可执行文件即可启动 REPL：
 
 ```@eval
 io = IOBuffer()
@@ -14,13 +10,11 @@ import Markdown
 Markdown.parse("```\n\$ julia\n\n$(banner)\njulia>\n```")
 ```
 
-To exit the interactive session, type `^D` -- the control key together with the `d` key on a blank
-line -- or type `exit()` followed by the return or enter key. The REPL greets you with a banner
-and a `julia>` prompt.
+要退出交互式会话，在空白行上键入 `^D`——control 键和 `d` 键，或者先键入 `quit()`，然后键入 return 或 enter 键。REPL 用横幅和 `julia>` 提示符欢迎你。
 
-## The different prompt modes
+## 不同的提示符模式
 
-### The Julian mode
+### Julian 模式
 
 The REPL has five main modes of operation. The first and most common is the Julian prompt. It
 is the default mode of operation; each new line initially starts with `julia>`. It is here that
@@ -32,9 +26,7 @@ julia> string(1 + 2)
 "3"
 ```
 
-There are a number useful features unique to interactive work. In addition to showing the result,
-the REPL also binds the result to the variable `ans`. A trailing semicolon on the line can be
-used as a flag to suppress showing the result.
+交互式运行有许多独特的实用功能。除了显示结果外，REPL 还将结果绑定到变量 `ans` 上。一行的尾随分号可用作禁止显示结果的标志。
 
 ```jldoctest
 julia> string(3 * 4);
@@ -84,7 +76,7 @@ atreplinit() do repl
 end
 ```
 
-### Help mode
+### 帮助模式
 
 When the cursor is at the beginning of the line, the prompt can be changed to a help mode by typing
 `?`. Julia will attempt to print help or documentation for anything entered in help mode:

@@ -1,8 +1,6 @@
-# [Functions](@id man-functions)
+# [函数](@id man-functions)
 
-In Julia, a function is an object that maps a tuple of argument values to a return value. Julia
-functions are not pure mathematical functions, because they can alter and be affected
-by the global state of the program. The basic syntax for defining functions in Julia is:
+在 Julia 里，函数是将参数值组成的元组映射到返回值的一个对象。Julia 的函数不是纯粹的数学函数，因为这些函数可以改变程序的全局状态并且可能受其影响。在Julia中定义函数的基本语法是：
 
 ```jldoctest
 julia> function f(x,y)
@@ -11,31 +9,25 @@ julia> function f(x,y)
 f (generic function with 1 method)
 ```
 
-This function accepts two arguments `x` and `y` and returns the value
-of the last expression evaluated, which is `x + y`.
+这个函数接收两个参数 `x` 和 `y` 并返回最后一个表达式的值，这里是 `x + y`。
 
-There is a second, more terse syntax for defining a function in Julia. The traditional function
-declaration syntax demonstrated above is equivalent to the following compact "assignment form":
+在 Julia 中定义函数还有第二种更简洁的语法。上述的传统函数声明语法等效于以下紧凑性的“赋值形式”：
 
 ```jldoctest fofxy
 julia> f(x,y) = x + y
 f (generic function with 1 method)
 ```
 
-In the assignment form, the body of the function must be a single expression, although it can
-be a compound expression (see [Compound Expressions](@ref man-compound-expressions)). Short, simple function definitions
-are common in Julia. The short function syntax is accordingly quite idiomatic, considerably reducing
-both typing and visual noise.
+尽管函数可以是复合表达式 (见 [复合表达式](@ref man-compound-expressions))，但在赋值形式下，函数体必须是一个一行的表达式。简短的函数定义在 Julia 中是很常见的。非常惯用的短函数语法大大减少了打字和视觉方面的干扰。
 
-A function is called using the traditional parenthesis syntax:
+使用传统的括号语法调用函数：
 
 ```jldoctest fofxy
 julia> f(2,3)
 5
 ```
 
-Without parentheses, the expression `f` refers to the function object, and can be passed around
-like any other value:
+没有括号时，表达式 `f` 指的是函数对象，可以像任何值一样被传递：
 
 ```jldoctest fofxy
 julia> g = f;
@@ -44,7 +36,7 @@ julia> g(2,3)
 5
 ```
 
-As with variables, Unicode can also be used for function names:
+和变量名一样，Unicode 字符也可以用作函数名：
 
 ```jldoctest
 julia> ∑(x,y) = x + y
@@ -54,23 +46,30 @@ julia> ∑(2, 3)
 5
 ```
 
-## Argument Passing Behavior
+## 参数传递行为
 
-Julia function arguments follow a convention sometimes called "pass-by-sharing", which means that
-values are not copied when they are passed to functions. Function arguments themselves act as
-new variable *bindings* (new locations that can refer to values), but the values they refer to
-are identical to the passed values. Modifications to mutable values (such as `Array`s) made within
-a function will be visible to the caller. This is the same behavior found in Scheme, most Lisps,
-Python, Ruby and Perl, among other dynamic languages.
+Julia 函数参数遵循有时称为 “pass-by-sharing” 的约定，这意味着变量在被传递给函数时其值并不会被复制。函数参数本身充当新的变量绑定（指向变量值的新地址），它们所指向的值与所传递变量的值完全相同。调用者可以看到对函数内可变值（如数组）的修改。这与 Scheme，大多数 Lisps，Python，Ruby 和 Perl 以及其他动态语言中的行为相同。
 
-## The `return` Keyword
+## 参数类型声明
 
-The value returned by a function is the value of the last expression evaluated, which, by default,
-is the last expression in the body of the function definition. In the example function, `f`, from
-the previous section this is the value of the expression `x + y`.
-As an alternative, as in many other languages,
-the `return` keyword causes a function to return immediately, providing
-an expression whose value is returned:
+您可以通过将 `::TypeName` 附加到参数名称来声明函数参数的类型，就像 Julia 中的 [类型声明](@ref Type-Declarations) 一样。
+例如，以下函数递归计算 [斐波那契数列](https://en.wikipedia.org/wiki/Fibonacci_number)：
+```
+fib(n::Integer) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)
+```
+并且 `::Integer` 规范意味着它只有在 `n` 是 [抽象](@ref man-abstract-types) `Integer` 类型的子类型时才可调用。
+
+参数类型声明**通常对性能没有影响**：无论声明什么参数类型（如果有），Julia 都会为实际参数类型编译函数的特例版本。 例如，调用 `fib(1)` 将触发专门为 `Int` 参数优化的特例化的`fib` 的编译，它会在 `fib(7)` 或 `fib(15)` 调用时重新使用。 （参数类型声明不触发额外的编译器特化的情况很少；请参阅：[注意 Julia 何时不触发特例化](@ref Be-aware-of-when-Julia-avoids-specializing)。）在 Julia 中声明参数类型的最常见原因是：
+
+* **派发：** 如 [方法](@ref) 中所述，对于不同的参数类型，你可以有不同版本（“方法”）的函数，在这种情况下，参数类型用于确定调用哪个版本的函数。例如，你可以使用 [Binet 公式](https://en.wikipedia.org/wiki/Fibonacci_number#Binet's_formula) 实现一个完全不同的算法 `fib(x::Number) = ...`，该算法扩展为了非整数值，适用于任何 `Number` 类型。
+* **正确性：** 如果函数只为某些参数类型返回正确的结果，则类型声明会很有用。例如，如果我们省略参数类型并写成 `fib(n) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)`，然后`fib(1.5)`会默默地给我们无意义的答案`1.0`。
+* **清晰性：** 类型声明可以作为一种关于预期参数的文档形式。
+
+但是，**过分限制参数类型是常见的错误**，这会不必要地限制函数的适用性，并防止它在未预料到的情况下被重用。例如，上面的 `fib(n::Integer)` 函数同样适用于 `Int` 参数（机器整数）和 `BigInt` 任意精度整数（参见 [BigFloats 和 BigInts](@ref BigFloats-and-BigInts)），这样十分有效，因为斐波那契数以指数方式快速增长，并且会迅速溢出任何固定精度类型，如 `Int`（参见 [溢出行为](@ref)）。但是，如果我们将函数声明为 `fib(n::Int)`，那么 `BigInt` 的应用就会被阻止。通常，应该对参数使用最通用的适用抽象类型，并且**如有不确定，就省略参数类型**。如果有必要，你可以随时添加参数类型规范，并且不会因为省略它们而牺牲性能或功能。
+
+## `return` 关键字
+
+函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在上一小节的示例函数 `f` 中，返回值是表达式的 `x + y` 值。与在 C 语言和大多数其他命令式或函数式语言中一样，`return` 关键字会让函数立即返回，从而提供返回值的表达式：
 
 ```julia
 function g(x,y)
@@ -79,8 +78,7 @@ function g(x,y)
 end
 ```
 
-Since function definitions can be entered into interactive sessions, it is easy to compare these
-definitions:
+由于函数定义可以输入到交互式会话中，因此可以很容易的比较这些定义：
 
 ```jldoctest
 julia> f(x,y) = x + y
@@ -99,11 +97,9 @@ julia> g(2,3)
 6
 ```
 
-Of course, in a purely linear function body like `g`, the usage of `return` is pointless since
-the expression `x + y` is never evaluated and we could simply make `x * y` the last expression
-in the function and omit the `return`. In conjunction with other control flow, however, `return`
-is of real use. Here, for example, is a function that computes the hypotenuse length of a right
-triangle with sides of length `x` and `y`, avoiding overflow:
+当然，在一个单纯的线性执行的函数体内，例如 `g`，使用 `return` 是没有意义的，因为表达式 `x + y` 永远不会被执行到，我们可以简单地把 `x * y` 写为最后一个表达式从而省略掉 `return`。
+然而在使用其他控制流程的函数体内，`return` 却是有用的。
+例如，在计算两条边长分别为 `x` 和 `y` 的三角形的斜边长度时可以避免溢出：
 
 ```jldoctest
 julia> function hypot(x,y)
@@ -125,14 +121,11 @@ julia> hypot(3, 4)
 5.0
 ```
 
-There are three possible points of return from this function, returning the values of three different
-expressions, depending on the values of `x` and `y`. The `return` on the last line could be omitted
-since it is the last expression.
+这个函数有三个可能的返回处，返回三个不同表达式的值，具体取决于 `x` 和 `y` 的值。 最后一行的 `return` 可以省略，因为它是最后一个表达式。
 
-### Return type
+### 返回类型
 
-A return type can be specified in the function declaration using the `::` operator. This converts
-the return value to the specified type.
+也可以使用 `::` 运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。
 
 ```jldoctest
 julia> function g(x, y)::Int8
@@ -143,13 +136,13 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-This function will always return an `Int8` regardless of the types of `x` and `y`.
-See [Type Declarations](@ref) for more on return types.
+这个函数将忽略 `x` 和 `y` 的类型，返回 `Int8` 类型的值。有关返回类型的更多信息，请参见[类型声明](@ref Type-Declarations)。
 
-### Returning nothing
+返回类型声明在 Julia 中**很少使用**：通常，你应该编写“类型稳定”的函数，Julia 的编译器可以在其中自动推断返回类型。更多信息请参阅 [性能提示](@ref man-performance-tips) 一章。
 
-For functions that do not need to return a value (functions used only for some side effects),
-the Julia convention is to return the value [`nothing`](@ref):
+### 返回 nothing
+
+对于不需要任何返回值的函数（只用来产生副作用的函数）， Julia 中的写法为返回值[`nothing`](@ref):
 
 ```julia
 function printx(x)
@@ -158,25 +151,16 @@ function printx(x)
 end
 ```
 
-This is a *convention* in the sense that `nothing` is not a Julia keyword
-but a only singleton object of type `Nothing`.
-Also, you may notice that the `printx` function example above is contrived,
-because `println` already returns `nothing`, so that the `return` line is redundant.
+这在某种意义上是一个“惯例”，在 Julia 中 `nothing` 不是一个关键字，而是 `Nothing` 类型的一个单例（singleton）。
+也许你已经注意到 `printx` 函数有点不自然，因为 `println` 实际上已经会返回 `nothing`，所以 `return` 语句是多余的。
 
-There are two possible shortened forms for the `return nothing` expression.
-On the one hand, the `return` keyword implicitly returns `nothing`, so it can be used alone.
-On the other hand, since functions implicitly return their last expression evaluated,
-`nothing` can be used alone when it's the last expression.
-The preference for the expression `return nothing` as opposed to `return` or `nothing`
-alone is a matter of coding style.
+有两种比 `return nothing` 更短的写法：一种是直接写 `return` 这会隐式的返回 `nothing`。
+另一种是在函数的会后一行写上 `nothing`，因为函数会隐式的返回最后一个表达式的值。
+三种写法使用哪一种取决于代码风格的偏好。
 
-## Operators Are Functions
+## 操作符也是函数
 
-In Julia, most operators are just functions with support for special syntax. (The exceptions are
-operators with special evaluation semantics like `&&` and `||`. These operators cannot be functions
-since [Short-Circuit Evaluation](@ref) requires that their operands are not evaluated before evaluation
-of the operator.) Accordingly, you can also apply them using parenthesized argument lists, just
-as you would any other function:
+在 Julia中，大多数操作符只不过是支持特殊语法的函数（ `&&` 和`||` 等具有特殊评估语义的操作符除外，他们不能是函数，因为[短路求值](@ref)要求在计算整个表达式的值之前不计算每个操作数）。因此，您也可以使用带括号的参数列表来使用它们，就和任何其他函数一样：
 
 ```jldoctest
 julia> 1 + 2 + 3
@@ -186,9 +170,7 @@ julia> +(1,2,3)
 6
 ```
 
-The infix form is exactly equivalent to the function application form -- in fact the former is
-parsed to produce the function call internally. This also means that you can assign and pass around
-operators such as [`+`](@ref) and [`*`](@ref) just like you would with other function values:
+中缀表达式和函数形式完全等价。—— 事实上，前一种形式会被编译器转换为函数调用。这也意味着你可以对操作符，例如 [`+`](@ref) 和 [`*`](@ref) ，进行赋值和传参，就像其它函数传参一样。
 
 ```jldoctest
 julia> f = +;
@@ -197,13 +179,13 @@ julia> f(1,2,3)
 6
 ```
 
-Under the name `f`, the function does not support infix notation, however.
+然而，函数以`f`命名时不再支持中缀表达式。
 
-## Operators With Special Names
+## 具有特殊名称的操作符
 
-A few special expressions correspond to calls to functions with non-obvious names. These are:
+有一些特殊的表达式对应的函数调用没有显示的函数名称，它们是：
 
-| Expression        | Calls                   |
+| 表达式        | 函数调用                   |
 |:----------------- |:----------------------- |
 | `[A B C ...]`     | [`hcat`](@ref)          |
 | `[A; B; C; ...]`  | [`vcat`](@ref)          |
@@ -214,13 +196,9 @@ A few special expressions correspond to calls to functions with non-obvious name
 | `A.n`             | [`getproperty`](@ref Base.getproperty) |
 | `A.n = x`         | [`setproperty!`](@ref Base.setproperty!) |
 
-## [Anonymous Functions](@id man-anonymous-functions)
+## [匿名函数](@id man-anonymous-functions)
 
-Functions in Julia are [first-class objects](https://en.wikipedia.org/wiki/First-class_citizen):
-they can be assigned to variables, and called using the standard function call syntax from the
-variable they have been assigned to. They can be used as arguments, and they can be returned as
-values. They can also be created anonymously, without being given a name, using either of these
-syntaxes:
+函数在Julia里是[一等公民](https://en.wikipedia.org/wiki/First-class_citizen)：可以指定给变量，并使用标准函数调用语法通过被指定的变量调用。函数可以用作参数，也可以当作返回值。函数也可以不带函数名称地匿名创建，使用语法如下：
 
 ```jldoctest
 julia> x -> x^2 + 2x - 1
@@ -232,13 +210,9 @@ julia> function (x)
 #3 (generic function with 1 method)
 ```
 
-This creates a function taking one argument `x` and returning the value of the polynomial `x^2 +
-2x - 1` at that value. Notice that the result is a generic function, but with a compiler-generated
-name based on consecutive numbering.
+这样就创建了一个接受一个参数 `x` 并返回当前值的多项式 `x^2+2x-1` 的函数。注意结果是个泛型函数，但是带了编译器生成的连续编号的名字。
 
-The primary use for anonymous functions is passing them to functions which take other functions
-as arguments. A classic example is [`map`](@ref), which applies a function to each value of
-an array and returns a new array containing the resulting values:
+匿名函数最主要的用法是传递给接收函数作为参数的函数。一个经典的例子是 [`map`](@ref) ，为数组的每个元素应用一次函数，然后返回一个包含结果值的新数组：
 
 ```jldoctest
 julia> map(round, [1.2, 3.5, 1.7])
@@ -248,10 +222,7 @@ julia> map(round, [1.2, 3.5, 1.7])
  2.0
 ```
 
-This is fine if a named function effecting the transform already exists to pass as the first argument
-to [`map`](@ref). Often, however, a ready-to-use, named function does not exist. In these
-situations, the anonymous function construct allows easy creation of a single-use function object
-without needing a name:
+如果做为第一个参数传递给 [`map`](@ref) 的转换函数已经存在，那直接使用函数名称是没问题的。但是通常要使用的函数还没有定义好，这样使用匿名函数就更加方便：
 
 ```jldoctest
 julia> map(x -> x^2 + 2x - 1, [1, 3, -1])
@@ -261,12 +232,9 @@ julia> map(x -> x^2 + 2x - 1, [1, 3, -1])
  -2
 ```
 
-An anonymous function accepting multiple arguments can be written using the syntax `(x,y,z)->2x+y-z`.
-A zero-argument anonymous function is written as `()->3`. The idea of a function with no arguments
-may seem strange, but is useful for "delaying" a computation. In this usage, a block of code is
-wrapped in a zero-argument function, which is later invoked by calling it as `f`.
+接受多个参数的匿名函数写法可以使用语法 `(x,y,z)->2x+y-z`，而无参匿名函数写作 `()->3` 。无参函数的这种写法看起来可能有些奇怪，不过它对于延迟计算很有必要。这种用法会把代码块包进一个无参函数中，后续把它当做 `f` 调用。
 
-As an example, consider this call to [`get`](@ref):
+例如，考虑对 [`get`](@ref) 的调用：
 
 ```julia
 get(dict, key) do
@@ -275,23 +243,19 @@ get(dict, key) do
 end
 ```
 
-The code above is equivalent to calling `get` with an anonymous function containing the code
-enclosed between `do` and `end`, like so:
+上面的代码等效于使用包含代码的匿名函数调用`get`。 被包围在do和end之间，如下所示
 
 ```julia
 get(()->time(), dict, key)
 ```
 
-The call to [`time`](@ref) is delayed by wrapping it in a 0-argument anonymous function
-that is called only when the requested key is absent from `dict`.
+这里对 [`time`](@ref) 的调用，被包裹了它的一个无参数的匿名函数延迟了。该匿名函数只当 `dict` 缺少被请求的键时，才被调用。
 
-## Tuples
+## 元组
 
-Julia has a built-in data structure called a *tuple* that is closely related to function
-arguments and return values.
-A tuple is a fixed-length container that can hold any values, but cannot be modified
-(it is *immutable*).
-Tuples are constructed with commas and parentheses, and can be accessed via indexing:
+Julia 有一个和函数参数与返回值密切相关的内置数据结构叫做元组（*tuple*）。
+一个元组是一个固定长度的容器，可以容纳任何值，但不可以被修改(是*immutable*的)。
+元组通过圆括号和逗号来构造，其内容可以通过索引来访问：
 
 ```jldoctest
 julia> (1, 1+1)
@@ -307,14 +271,11 @@ julia> x[2]
 "hello"
 ```
 
-Notice that a length-1 tuple must be written with a comma, `(1,)`, since `(1)` would just
-be a parenthesized value.
-`()` represents the empty (length-0) tuple.
+注意，长度为1的元组必须使用逗号 `(1,)`，而 `(1)` 只是一个带括号的值。`()` 表示空元组（长度为0）。
 
-## Named Tuples
+## 具名元组
 
-The components of tuples can optionally be named, in which case a *named tuple* is
-constructed:
+元组的元素可以有名字，这时候就有了*具名元组*：
 
 ```jldoctest
 julia> x = (a=2, b=1+2)
@@ -327,16 +288,23 @@ julia> x.a
 2
 ```
 
-Named tuples are very similar to tuples, except that fields can additionally be accessed by name
-using dot syntax (`x.a`) in addition to the regular indexing syntax
-(`x[1]`).
+具名元组和元组十分类似，区别在于除了一般的下标语法（`x[1]`），还可以使用点运算符语法（`x.a`）通过元素的名字来访问它的元素。
 
-## Multiple Return Values
+## [解构赋值和多返回值](@id destructuring-assignment)
 
-In Julia, one returns a tuple of values to simulate returning multiple values. However, tuples
-can be created and destructured without needing parentheses, thereby providing an illusion that
-multiple values are being returned, rather than a single tuple value. For example, the following
-function returns a pair of values:
+逗号分隔的变量列表（可选地用括号括起来）可以出现在赋值的左侧：右侧的值通过迭代并依次分配给每个变量来_解构_：
+
+```jldoctest
+julia> (a,b,c) = 1:3
+1:3
+
+julia> b
+2
+```
+
+右边的值应该是一个至少与左边的变量数量一样长的迭代器（参见[迭代接口](@ref man-interface-iteration)）（迭代器的任何多余元素会被忽略）。
+
+可用于通过返回元组或其他可迭代值从函数返回多个值。例如，以下函数返回两个值：
 
 ```jldoctest foofunc
 julia> function foo(a,b)
@@ -345,16 +313,14 @@ julia> function foo(a,b)
 foo (generic function with 1 method)
 ```
 
-If you call it in an interactive session without assigning the return value anywhere, you will
-see the tuple returned:
+如果你在交互式会话中调用它且不把返回值赋值给任何变量，你会看到返回的元组：
 
 ```jldoctest foofunc
 julia> foo(2,3)
 (5, 6)
 ```
 
-A typical usage of such a pair of return values, however, extracts each value into a variable.
-Julia supports simple tuple "destructuring" that facilitates this:
+解构赋值将每个值提取到一个变量中：
 
 ```jldoctest foofunc
 julia> x, y = foo(2,3)
@@ -367,21 +333,80 @@ julia> y
 6
 ```
 
-You can also return multiple values using the `return` keyword:
+另一个常见用途是交换变量：
+```jldoctest foofunc
+julia> y, x = x, y
+(5, 6)
 
-```julia
-function foo(a,b)
-    return a+b, a*b
-end
+julia> x
+6
+
+julia> y
+5
 ```
 
-This has the exact same effect as the previous definition of `foo`.
+如果只需要迭代器元素的一个子集，一个常见的惯例是将忽略的元素分配给一个只包含下划线 `_` 的变量（这是一个无效的变量名，请参阅 [合法的变量名]（@ref man -allowed-variable-names)):
 
-## Argument destructuring
+```jldoctest
+julia> _, _, _, d = 1:10
+1:10
 
-The destructuring feature can also be used within a function argument.
-If a function argument name is written as a tuple (e.g. `(x, y)`) instead of just
-a symbol, then an assignment `(x, y) = argument` will be inserted for you:
+julia> d
+4
+```
+
+其他有效的左侧表达式可以用作赋值列表的元素，它们将调用 [`setindex!`](@ref) 或 [`setproperty!`](@ref)，或者递归地解构迭代器的各个元素：
+
+```jldoctest
+julia> X = zeros(3);
+
+julia> X[1], (a,b) = (1, (2, 3))
+(1, (2, 3))
+
+julia> X
+3-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+
+julia> a
+2
+
+julia> b
+3
+```
+
+!!! compat "Julia 1.6"
+    带 `...` 的赋值需要 Julia 1.6
+
+如果赋值列表中的最后一个符号后缀为 `...`（称为 _slurping_），那么它将被分配给右侧迭代器剩余元素的集合或其惰性迭代器：
+
+```jldoctest
+julia> a, b... = "hello"
+"hello"
+
+julia> a
+'h': ASCII/Unicode U+0068 (category Ll: Letter, lowercase)
+
+julia> b
+"ello"
+
+julia> a, b... = Iterators.map(abs2, 1:4)
+Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4)
+
+julia> a
+1
+
+julia> b
+Base.Iterators.Rest{Base.Generator{UnitRange{Int64}, typeof(abs2)}, Int64}(Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4), 1)
+```
+
+有关特定迭代器的精确处理和自定义的详细信息，请参阅 [`Base.rest`](@ref)。
+
+## 参数解构
+
+析构特性也可以被用在函数参数中。
+如果一个函数的参数被写成了元组形式 (如  `(x, y)`) 而不是简单的符号，那么一个赋值运算 `(x, y) = argument` 将会被默认插入：
 
 ```julia
 julia> minmax(x, y) = (y < x) ? (y, x) : (x, y)
@@ -392,23 +417,27 @@ julia> gap(minmax(10, 2))
 8
 ```
 
-Notice the extra set of parentheses in the definition of `gap`. Without those, `gap`
-would be a two-argument function, and this example would not work.
+注意在定义函数 `gap` 时额外的括号。 没有它们，`gap` 函数将会是一个双参数函数，这个例子也会无法正常运行。
 
-## Varargs Functions
+对于匿名函数，解构单个元组需要一个额外的逗号：
 
-It is often convenient to be able to write functions taking an arbitrary number of arguments.
-Such functions are traditionally known as "varargs" functions, which is short for "variable number
-of arguments". You can define a varargs function by following the last positional argument with an ellipsis:
+```
+julia> map(((x,y),) -> x + y, [(1,2), (3,4)])
+2-element Array{Int64,1}:
+ 3
+ 7
+```
+
+## 变参函数
+
+定义有任意个参数的函数会带来很多便利。这类函数通常被称为“变参”函数，即“参数数量可变”的简称。你可以通过在最后一个参数后增加省略号来定义一个变参函数:
 
 ```jldoctest barfunc
 julia> bar(a,b,x...) = (a,b,x)
 bar (generic function with 1 method)
 ```
 
-The variables `a` and `b` are bound to the first two argument values as usual, and the variable
-`x` is bound to an iterable collection of the zero or more values passed to `bar` after its first
-two arguments:
+变量 `a` 和 `b` 和以前一样被绑定给前两个参数，后面的参数整个做为迭代集合被绑定到变量 `x` 上 :
 
 ```jldoctest barfunc
 julia> bar(1,2)
@@ -424,14 +453,11 @@ julia> bar(1,2,3,4,5,6)
 (1, 2, (3, 4, 5, 6))
 ```
 
-In all these cases, `x` is bound to a tuple of the trailing values passed to `bar`.
+在所有这些情况下，`x` 被绑定到传递给 `bar` 的尾随值的元组。
 
-It is possible to constrain the number of values passed as a variable argument; this will be discussed
-later in [Parametrically-constrained Varargs methods](@ref).
+也可以限制可以传递给函数的参数的数量，这部分内容稍后在  [参数化约束的可变参数方法](@ref)  中讨论。
 
-On the flip side, it is often handy to "splat" the values contained in an iterable collection
-into a function call as individual arguments. To do this, one also uses `...` but in the function
-call instead:
+另一方面，将可迭代集中包含的值拆解为单独的参数进行函数调用通常很方便。 要实现这一点，需要在函数调用中额外使用 `...` 而不仅仅只是变量：
 
 ```jldoctest barfunc
 julia> x = (3, 4)
@@ -441,8 +467,7 @@ julia> bar(1,2,x...)
 (1, 2, (3, 4))
 ```
 
-In this case a tuple of values is spliced into a varargs call precisely where the variable number
-of arguments go. This need not be the case, however:
+在这个情况下一组值会被精确切片成一个可变参数调用，这里参数的数量是可变的。但是并不需要成为这种情况：
 
 ```jldoctest barfunc
 julia> x = (2, 3, 4)
@@ -458,7 +483,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Furthermore, the iterable object splatted into a function call need not be a tuple:
+进一步，拆解给函数调用中的可迭代对象不需要是个元组：
 
 ```jldoctest barfunc
 julia> x = [3,4]
@@ -480,8 +505,7 @@ julia> bar(x...)
 (1, 2, (3, 4))
 ```
 
-Also, the function that arguments are splatted into need not be a varargs function (although it
-often is):
+此外，参数被放入的函数不一定是可变参数函数（尽管经常是）：
 
 ```jldoctest
 julia> baz(a,b) = a + b;
@@ -506,17 +530,11 @@ Closest candidates are:
   baz(::Any, ::Any) at none:1
 ```
 
-As you can see, if the wrong number of elements are in the splatted container, then the function
-call will fail, just as it would if too many arguments were given explicitly.
+正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。
 
-## Optional Arguments
+## 可选参数
 
-It is often possible to provide sensible default values for function arguments.
-This can save users from having to pass every argument on every call.
-For example, the function [`Date(y, [m, d])`](@ref)
-from `Dates` module constructs a `Date` type for a given year `y`, month `m` and day `d`.
-However, `m` and `d` arguments are optional and their default value is `1`.
-This behavior can be expressed concisely as:
+在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，`Dates` 模块中的 [`Date(y, [m, d])`](@ref) 函数对于给定的年（year）`y`、月（mouth）`m`、日（data）`d` 构造了 `Date` 类型。但是，`m` 和 `d` 参数都是可选的，默认值都是 `1`。这行为可以简述为：
 
 ```julia
 function Date(y::Int64, m::Int64=1, d::Int64=1)
@@ -526,11 +544,9 @@ function Date(y::Int64, m::Int64=1, d::Int64=1)
 end
 ```
 
-Observe, that this definition calls another method of the `Date` function that takes one argument
-of type `UTInstant{Day}`.
+注意，这个定义调用了 `Date` 函数的另一个方法，该方法带有一个 `UTInstant{Day}` 类型的参数。
 
-With this definition, the function can be called with either one, two or three arguments, and
-`1` is automatically passed when only one or two of the arguments are specified:
+通过此定义，函数调用时可以带有一个、两个或三个参数，并且在只有一个或两个参数被指定时后，自动传递 `1` 为未指定参数值：
 
 ```jldoctest
 julia> using Dates
@@ -545,24 +561,15 @@ julia> Date(2000)
 2000-01-01
 ```
 
-Optional arguments are actually just a convenient syntax for writing multiple method definitions
-with different numbers of arguments (see [Note on Optional and keyword Arguments](@ref)).
-This can be checked for our `Date` function example by calling `methods` function.
+可选参数实际上只是一种方便的语法，用于编写多种具有不同数量参数的方法定义（请参阅 [可选参数和关键字的参数的注意事项](@ref)）。这可通过调用 `methods` 函数来检查我们的 `Date` 函数示例。
 
-## Keyword Arguments
+## 关键字参数
 
-Some functions need a large number of arguments, or have a large number of behaviors. Remembering
-how to call such functions can be difficult. Keyword arguments can make these complex interfaces
-easier to use and extend by allowing arguments to be identified by name instead of only by position.
+某些函数需要大量参数，或者具有大量行为。记住如何调用这样的函数可能很困难。关键字参数允许通过名称而不是仅通过位置来识别参数，使得这些复杂接口易于使用和扩展。
 
-For example, consider a function `plot` that plots a line. This function might have many options,
-for controlling line style, width, color, and so on. If it accepts keyword arguments, a possible
-call might look like `plot(x, y, width=2)`, where we have chosen to specify only line width. Notice
-that this serves two purposes. The call is easier to read, since we can label an argument with
-its meaning. It also becomes possible to pass any subset of a large number of arguments, in any
-order.
+例如，考虑绘制一条线的函数 `plot`。这个函数可能有很多选项，用来控制线条的样式、宽度、颜色等。如果它接受关键字参数，一个可行的调用可能看起来像 `plot(x, y, width=2)`，这里我们仅指定线的宽度。请注意，这样做有两个目的。调用更可读，因为我们能以其意义标记参数。也使得大量参数的任意子集都能以任意次序传递。
 
-Functions with keyword arguments are defined using a semicolon in the signature:
+具有关键字参数的函数在签名中使用分号定义：
 
 ```julia
 function plot(x, y; style="solid", width=1, color="black")
@@ -570,15 +577,11 @@ function plot(x, y; style="solid", width=1, color="black")
 end
 ```
 
-When the function is called, the semicolon is optional: one can either call `plot(x, y, width=2)`
-or `plot(x, y; width=2)`, but the former style is more common. An explicit semicolon is required
-only for passing varargs or computed keywords as described below.
+在函数调用时，分号是可选的：可以调用 `plot(x, y, width=2)` 或 `plot(x, y; width=2)`，但前者的风格更为常见。显式的分号只有在传递可变参数或下文中描述的需计算的关键字时是必要的。
 
-Keyword argument default values are evaluated only when necessary (when a corresponding keyword
-argument is not passed), and in left-to-right order. Therefore default expressions may refer to
-prior keyword arguments.
+关键字参数的默认值只在必需时求值（当相应的关键字参数没有被传入），并且按从左到右的顺序求值，因为默认值的表达式可能会参照先前的关键字参数。
 
-The types of keyword arguments can be made explicit as follows:
+关键字参数的类型可以通过如下的方式显式指定：
 
 ```julia
 function f(;x::Int=1)
@@ -586,7 +589,7 @@ function f(;x::Int=1)
 end
 ```
 
-Keyword arguments can also be used in varargs functions:
+关键字参数也可以在变参函数中使用：
 
 ```julia
 function plot(x...; style="solid")
@@ -594,7 +597,7 @@ function plot(x...; style="solid")
 end
 ```
 
-Extra keyword arguments can be collected using `...`, as in varargs functions:
+附加的关键字参数可用 `...` 收集，正如在变参函数中：
 
 ```julia
 function f(x; y=0, kwargs...)
@@ -602,13 +605,9 @@ function f(x; y=0, kwargs...)
 end
 ```
 
-Inside `f`, `kwargs` will be an immutable key-value iterator over a named tuple.
-Named tuples (as well as dictionaries with keys of `Symbol`) can be passed as
-keyword arguments using a semicolon in a call, e.g. `f(x, z=1; kwargs...)`.
+在 `f` 中，`kwargs` 将是一个在命名元组上的不可变键值迭代器。 具名元组（以及带有`Symbol`键的字典）可以在调用中使用分号作为关键字参数传递，例如 `f(x, z=1; kwargs...)`。
 
-If a keyword argument is not assigned a default value in the method definition,
-then it is *required*: an [`UndefKeywordError`](@ref) exception will be thrown
-if the caller does not assign it a value:
+如果一个关键字参数在方法定义中未指定默认值，那么它就是*必需的*：如果调用者没有为其赋值，那么将会抛出一个 [`UndefKeywordError`](@ref) 异常：
 ```julia
 function f(x; y)
     ###
@@ -617,26 +616,15 @@ f(3, y=5) # ok, y is assigned
 f(3)      # throws UndefKeywordError(:y)
 ```
 
-One can also pass `key => value` expressions after a semicolon. For example, `plot(x, y; :width => 2)`
-is equivalent to `plot(x, y, width=2)`. This is useful in situations where the keyword name is computed
-at runtime.
+在分号后也可传递 `key => value` 表达式。例如，`plot(x, y; :width => 2)` 等价于 `plot(x, y, width=2)`。当关键字名称需要在运行时被计算时，这就很实用了。
 
-When a bare identifier or dot expression occurs after a semicolon, the keyword argument name is
-implied by the identifier or field name. For example `plot(x, y; width)` is equivalent to
-`plot(x, y; width=width)` and `plot(x, y; options.width)` is equivalent to `plot(x, y; width=options.width)`.
+当分号后出现裸标识符或点表达式时，标识符或字段名称隐含关键字参数名称。 例如`plot(x, y; width)` 等价于`plot(x, y; width=width)`，`plot(x, y; options.width)` 等价于`plot(x, y; width=options.width)`。
 
-The nature of keyword arguments makes it possible to specify the same argument more than once.
-For example, in the call `plot(x, y; options..., width=2)` it is possible that the `options` structure
-also contains a value for `width`. In such a case the rightmost occurrence takes precedence; in
-this example, `width` is certain to have the value `2`. However, explicitly specifying the same keyword
-argument multiple times, for example `plot(x, y, width=2, width=3)`, is not allowed and results in
-a syntax error.
+可选参数的性质使得可以多次指定同一参数的值。例如，在调用 `plot(x, y; options..., width=2)` 的过程中，`options` 结构也能包含一个 `width` 的值。在这种情况下，最右边的值优先级最高；在此例中，`width` 的值可以确定是 `2`。但是，显式地多次指定同一参数的值是不允许的，例如 `plot(x, y, width=2, width=3)`，这会导致语法错误。
 
-## Evaluation Scope of Default Values
+## 默认值作用域的计算
 
-When optional and keyword argument default expressions are evaluated, only *previous* arguments are in
-scope.
-For example, given this definition:
+当计算可选和关键字参数的默认值表达式时，只有*先前*的参数才在作用域内。例如，给出以下定义：
 
 ```julia
 function f(x, a=b, b=1)
@@ -644,14 +632,11 @@ function f(x, a=b, b=1)
 end
 ```
 
-the `b` in `a=b` refers to a `b` in an outer scope, not the subsequent argument `b`.
+`a=b` 中的 `b` 指的是外部作用域内的 `b`，而不是后续参数中的 `b`。
 
-## Do-Block Syntax for Function Arguments
+## [函数参数中的 Do 结构](@id Do-Block-Syntax-for-Function-Arguments)
 
-Passing functions as arguments to other functions is a powerful technique, but the syntax for
-it is not always convenient. Such calls are especially awkward to write when the function argument
-requires multiple lines. As an example, consider calling [`map`](@ref) on a function with several
-cases:
+把函数作为参数传递给其他函数是一种强大的技术，但它的语法并不总是很方便。当函数参数占据多行时，这样的调用便特别难以编写。例如，考虑在具有多种情况的函数上调用 [`map`](@ref)：
 
 ```julia
 map(x->begin
@@ -666,7 +651,7 @@ map(x->begin
     [A, B, C])
 ```
 
-Julia provides a reserved word `do` for rewriting this code more clearly:
+Julia 提供了一个保留字 `do`，用于更清楚地重写此代码：
 
 ```julia
 map([A, B, C]) do x
@@ -680,18 +665,11 @@ map([A, B, C]) do x
 end
 ```
 
-The `do x` syntax creates an anonymous function with argument `x` and passes it as the first argument
-to [`map`](@ref). Similarly, `do a,b` would create a two-argument anonymous function, and a
-plain `do` would declare that what follows is an anonymous function of the form `() -> ...`.
+`do x` 语法创建一个带有参数 `x` 的匿名函数，并将其作为第一个参数传递给 [`map`](@ref)。 类似地，`do a,b` 将创建一个有两个参数的匿名函数。 请注意，`do (a,b)` 将创建一个单参数匿名函数，其参数是一个要解构的元组。 一个简单的 `do` 会声明接下来是一个形式为 `() -> ...` 的匿名函数。
 
-How these arguments are initialized depends on the "outer" function; here, [`map`](@ref) will
-sequentially set `x` to `A`, `B`, `C`, calling the anonymous function on each, just as would happen
-in the syntax `map(func, [A, B, C])`.
+这些参数如何初始化取决于「外部」函数；在这里，[`map`](@ref) 将会依次将 `x` 设置为 `A`、`B`、`C`，再分别调用调用匿名函数，正如在 `map(func, [A, B, C])` 语法中所发生的。
 
-This syntax makes it easier to use functions to effectively extend the language, since calls look
-like normal code blocks. There are many possible uses quite different from [`map`](@ref), such
-as managing system state. For example, there is a version of [`open`](@ref) that runs code ensuring
-that the opened file is eventually closed:
+这种语法使得更容易使用函数来有效地扩展语言，因为调用看起来就像普通代码块。有许多可能的用法与 [`map`](@ref) 完全不同，比如管理系统状态。例如，有一个版本的 [`open`](@ref) 可以通过运行代码来确保已经打开的文件最终会被关闭：
 
 ```julia
 open("outfile", "w") do io
@@ -699,7 +677,7 @@ open("outfile", "w") do io
 end
 ```
 
-This is accomplished by the following definition:
+这是通过以下定义实现的：
 
 ```julia
 function open(f::Function, args...)
@@ -712,38 +690,31 @@ function open(f::Function, args...)
 end
 ```
 
-Here, [`open`](@ref) first opens the file for writing and then passes the resulting output stream
-to the anonymous function you defined in the `do ... end` block. After your function exits, [`open`](@ref)
-will make sure that the stream is properly closed, regardless of whether your function exited
-normally or threw an exception. (The `try/finally` construct will be described in [Control Flow](@ref).)
+在这里，[`open`](@ref) 首先打开要写入的文件，接着将结果输出流传递给你在 `do ... end` 代码快中定义的匿名函数。在你的函数退出后，[`open`](@ref) 将确保流被正确关闭，无论你的函数是正常退出还是抛出了一个异常（`try/finally` 结构会在 [流程控制](@ref) 中描述）。
 
-With the `do` block syntax, it helps to check the documentation or implementation to know how
-the arguments of the user function are initialized.
+使用 `do` 代码块语法时，查阅文档或实现有助于了解用户函数的参数是如何初始化的。
 
-A `do` block, like any other inner function, can "capture" variables from its
-enclosing scope. For example, the variable `data` in the above example of
-`open...do` is captured from the outer scope. Captured variables
-can create performance challenges as discussed in [performance tips](@ref man-performance-captured).
+类似于其他的内部函数， `do` 代码块也可以“捕获”上一个作用域的变量。例如，上一个 `open...do` 的例子中变量 `data` 是从外部作用域捕获的。捕获变量可能会给性能优化带来挑战，详见 [性能建议](@ref man-performance-captured)。
 
-## Function composition and piping
+## 函数的复合与链式调用
 
-Functions in Julia can be combined by composing or piping (chaining) them together.
+Julia中的多个函数可以用函数复合或管道连接（链式调用）组合起来。
 
-Function composition is when you combine functions together and apply the resulting composition to arguments.
-You use the function composition operator (`∘`) to compose the functions, so `(f ∘ g)(args...)` is the same as `f(g(args...))`.
+函数的复合指的是把多个函数绑定到一起，然后作用于最先调用那个函数的参数。
+你可以使用函数复合运算符 (`∘`) 来组合函数，这样一来 `(f ∘ g)(args...)` 就等价于 `f(g(args...))`.
 
-You can type the composition operator at the REPL and suitably-configured editors using `\circ<tab>`.
+你可以在REPL和合理配置的编辑器中用 `\circ<tab>` 输入函数复合运算符。
 
-For example, the `sqrt` and `+` functions can be composed like this:
+例如， `sqrt` 和 `+` 可以用下面这种方式组合：
 
 ```jldoctest
 julia> (sqrt ∘ +)(3, 6)
 3.0
 ```
 
-This adds the numbers first, then finds the square root of the result.
+这个语句先把数字相加，再对结果求平方根。
 
-The next example composes three functions and maps the result over an array of strings:
+下一个例子组合了三个函数并把新函数作用到一个字符串组成的数组上：
 
 ```jldoctest
 julia> map(first ∘ reverse ∘ uppercase, split("you can compose functions like this"))
@@ -756,21 +727,21 @@ julia> map(first ∘ reverse ∘ uppercase, split("you can compose functions lik
  'S': ASCII/Unicode U+0053 (category Lu: Letter, uppercase)
 ```
 
-Function chaining (sometimes called "piping" or "using a pipe" to send data to a subsequent function) is when you apply a function to the previous function's output:
+函数的链式调用（有时也称“使用管道”把数据送到一系列函数中去）指的是把一个函数作用到前一个函数的输出上：
 
 ```jldoctest
 julia> 1:10 |> sum |> sqrt
 7.416198487095663
 ```
 
-Here, the total produced by `sum` is passed to the `sqrt` function. The equivalent composition would be:
+在这里， `sum` 函数求出的和被传递到 `sqrt` 函数作为参数。等价的函数复合写法是：
 
 ```jldoctest
 julia> (sqrt ∘ sum)(1:10)
 7.416198487095663
 ```
 
-The pipe operator can also be used with broadcasting, as `.|>`, to provide a useful combination of the chaining/piping and dot vectorization syntax (described next).
+管道运算符还可以和广播一起使用（`.|>`），这提供了一个有用的链式调用/管道+向量化运算的组合语法（接下来将描述）。
 
 ```jldoctest
 julia> ["a", "list", "of", "strings"] .|> [uppercase, reverse, titlecase, length]
@@ -781,17 +752,9 @@ julia> ["a", "list", "of", "strings"] .|> [uppercase, reverse, titlecase, length
  7
 ```
 
-## [Dot Syntax for Vectorizing Functions](@id man-vectorized)
+## [向量化函数的点语法](@id man-vectorized)
 
-In technical-computing languages, it is common to have "vectorized" versions of functions, which
-simply apply a given function `f(x)` to each element of an array `A` to yield a new array via
-`f(A)`. This kind of syntax is convenient for data processing, but in other languages vectorization
-is also often required for performance: if loops are slow, the "vectorized" version of a function
-can call fast library code written in a low-level language. In Julia, vectorized functions are
-*not* required for performance, and indeed it is often beneficial to write your own loops (see
-[Performance Tips](@ref man-performance-tips)), but they can still be convenient. Therefore, *any* Julia function
-`f` can be applied elementwise to any array (or other collection) with the syntax `f.(A)`.
-For example, `sin` can be applied to all elements in the vector `A` like so:
+在科学计算语言中，通常会有函数的「向量化」版本，它简单地将给定函数 `f(x)` 作用于数组 `A` 的每个元素，接着通过 `f(A)` 生成一个新数组。这种语法便于数据处理，但在其它语言中，向量化通常也是性能所需要的：如果循环很慢，函数的「向量化」版本可以调用由低级语言编写的、快速的库代码。在 Julia 中，向量化函数*不*是性能所必需的，实际上编写自己的循环通常也是有益的（请参阅 [Performance Tips](@ref man-performance-tips)），但它们仍然很方便。因此，*任何* Julia 函数 `f` 能够以元素方式作用于任何数组（或者其它集合），这通过语法 `f.(A)` 实现。例如，`sin` 可以作用于向量 `A` 中的所有元素，如下所示：
 
 ```jldoctest
 julia> A = [1.0, 2.0, 3.0]
@@ -807,16 +770,9 @@ julia> sin.(A)
  0.1411200080598672
 ```
 
-Of course, you can omit the dot if you write a specialized "vector" method of `f`, e.g. via `f(A::AbstractArray) = map(f, A)`,
-and this is just as efficient as `f.(A)`. The advantage of the `f.(A)` syntax is that which functions are vectorizable need not be decided upon
-in advance by the library writer.
+当然，你如果为 `f` 编写了一个专门的「向量化」方法，例如通过 `f(A::AbstractArray) = map(f, A)`，可以省略点号，这和 `f.(A)` 一样高效。但这种方法要求你事先决定要进行向量化的函数。
 
-More generally, `f.(args...)` is actually equivalent to `broadcast(f, args...)`, which allows
-you to operate on multiple arrays (even of different shapes), or a mix of arrays and scalars (see
-[Broadcasting](@ref)). For example, if you have `f(x,y) = 3x + 4y`, then `f.(pi,A)` will return
-a new array consisting of `f(pi,a)` for each `a` in `A`, and `f.(vector1,vector2)` will return
-a new vector consisting of `f(vector1[i],vector2[i])` for each index `i` (throwing an exception
-if the vectors have different length).
+更一般地，`f.(args...)` 实际上等价于 `broadcast(f, args...)`，它允许你操作多个数组（甚至是不同形状的），或是数组和标量的混合（请参阅 [Broadcasting](@ref)）。例如，如果有 `f(x,y) = 3x + 4y`，那么 `f.(pi,A)` 将为 `A` 中的每个 `a` 返回一个由 `f(pi,a)` 组成的新数组，而 `f.(vector1,vector2)` 将为每个索引 `i` 返回一个由 `f(vector1[i],vector2[i])` 组成的新向量（如果向量具有不同的长度则会抛出异常）。
 
 ```jldoctest
 julia> f(x,y) = 3x + 4y;
@@ -838,30 +794,11 @@ julia> f.(A, B)
  33.0
 ```
 
-Moreover, *nested* `f.(args...)` calls are *fused* into a single `broadcast` loop. For example,
-`sin.(cos.(X))` is equivalent to `broadcast(x -> sin(cos(x)), X)`, similar to `[sin(cos(x)) for x in X]`:
-there is only a single loop over `X`, and a single array is allocated for the result. [In contrast,
-`sin(cos(X))` in a typical "vectorized" language would first allocate one temporary array for
-`tmp=cos(X)`, and then compute `sin(tmp)` in a separate loop, allocating a second array.] This
-loop fusion is not a compiler optimization that may or may not occur, it is a *syntactic guarantee*
-whenever nested `f.(args...)` calls are encountered. Technically, the fusion stops as soon as
-a "non-dot" function call is encountered; for example, in `sin.(sort(cos.(X)))` the `sin` and `cos`
-loops cannot be merged because of the intervening `sort` function.
+此外，*嵌套的* `f.(args...)` 调用会被*融合*到一个 `broadcast` 循环中。例如，`sin.(cos.(X))` 等价于 `broadcast(x -> sin(cos(x)), X)`，类似于 `[sin(cos(x)) for x in X]`：在 `X` 上只有一个循环，并且只为结果分配了一个数组。[ 相反，在典型的「向量化」语言中，`sin(cos(X))` 首先会为 `tmp=cos(X)` 分配第一个临时数组，然后在单独的循环中计算 `sin(tmp)`，再分配第二个数组。] 这种循环融合不是可能发生也可能不发生的编译器优化，只要遇到了嵌套的 `f.(args...)` 调用，它就是一个*语法保证*。技术上，一旦遇到「非点」函数调用，融合就会停止；例如，在 `sin.(sort(cos.(X)))` 中，由于插入的 `sort` 函数，`sin` 和 `cos` 无法被合并。
 
-Finally, the maximum efficiency is typically achieved when the output array of a vectorized operation
-is *pre-allocated*, so that repeated calls do not allocate new arrays over and over again for
-the results (see [Pre-allocating outputs](@ref)). A convenient syntax for this is `X .= ...`, which
-is equivalent to `broadcast!(identity, X, ...)` except that, as above, the `broadcast!` loop is
-fused with any nested "dot" calls. For example, `X .= sin.(Y)` is equivalent to `broadcast!(sin, X, Y)`,
-overwriting `X` with `sin.(Y)` in-place. If the left-hand side is an array-indexing expression,
-e.g. `X[begin+1:end] .= sin.(Y)`, then it translates to `broadcast!` on a `view`, e.g.
-`broadcast!(sin, view(X, firstindex(X)+1:lastindex(X)), Y)`,
-so that the left-hand side is updated in-place.
+最后，最大效率通常在向量化操作的输出数组被*预分配*时实现，这样重复调用就不会一次又一次地为结果分配新数组（请参阅 [输出预分配](@ref)）。一个方便的语法是 `X .= ...`，它等价于 `broadcast!(identity, X, ...)`，除了上面提到的，`broadcast!` 循环可与任何嵌套的「点」调用融合。例如，`X .= sin.(Y)` 等价于 `broadcast!(sin, X, Y)`，用 `sin.(Y)` in-place 覆盖 `X`。如果左边是数组索引表达式，例如 `X[2:end] .= sin.(Y)`，那就将 `broadcast!` 转换在一个 `view` 上，例如 `broadcast!(sin, view(X, 2:lastindex(X)), Y)`，这样左侧就被 in-place 更新了。
 
-Since adding dots to many operations and function calls in an expression
-can be tedious and lead to code that is difficult to read, the macro
-[`@.`](@ref @__dot__) is provided to convert *every* function call,
-operation, and assignment in an expression into the "dotted" version.
+由于在表达式中为许多操作和函数调用添加点可能很乏味并导致难以阅读的代码，宏 [`@.`](@ref @__dot__) 用于将表达式中的*每个*函数调用、操作和赋值转换为「点」版本。
 
 ```jldoctest
 julia> Y = [1.0, 2.0, 3.0, 4.0];
@@ -876,12 +813,9 @@ julia> @. X = sin(cos(Y)) # equivalent to X .= sin.(cos.(Y))
  -0.6080830096407656
 ```
 
-Binary (or unary) operators like `.+` are handled with the same mechanism:
-they are equivalent to `broadcast` calls and are fused with other nested "dot" calls.
- `X .+= Y` etcetera is equivalent to `X .= X .+ Y` and results in a fused in-place assignment;
- see also [dot operators](@ref man-dot-operators).
+像 `.+` 这样的二元（或一元）运算符使用相同的机制进行管理：它们等价于 `broadcast` 调用且可与其它嵌套的「点」调用融合。`X .+= Y` 等等价于 `X .= X .+ Y`，结果为一个融合的 in-place 赋值；另见 [dot operators](@ref man-dot-operators)。
 
-You can also combine dot operations with function chaining using [`|>`](@ref), as in this example:
+您也可以使用 [`|>`](@ref) 将点操作与函数链组合在一起，如本例所示：
 ```jldoctest
 julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]
 5-element Vector{Real}:
@@ -892,10 +826,6 @@ julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]
  true
 ```
 
-## Further Reading
+## 更多阅读
 
-We should mention here that this is far from a complete picture of defining functions. Julia has
-a sophisticated type system and allows multiple dispatch on argument types. None of the examples
-given here provide any type annotations on their arguments, meaning that they are applicable to
-all types of arguments. The type system is described in [Types](@ref man-types) and defining a function
-in terms of methods chosen by multiple dispatch on run-time argument types is described in [Methods](@ref).
+我们应该在这里提到，这远不是定义函数的完整图景。Julia 拥有一个复杂的类型系统并且允许对参数类型进行多重分派。这里给出的示例都没有为它们的参数提供任何类型注释，意味着它们可以作用于任何类型的参数。类型系统在[类型](@ref man-types)中描述，而[方法](@ref)则描述了根据运行时参数类型上的多重分派所选择的方法定义函数。

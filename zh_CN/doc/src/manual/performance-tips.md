@@ -1,24 +1,27 @@
-# [Performance Tips](@id man-performance-tips)
+# [性能建议](@id man-performance-tips)
 
-In the following sections, we briefly go through a few techniques that can help make your Julia
-code run as fast as possible.
+下面几节简要地介绍了一些使 Julia 代码运行得尽可能快的技巧。
 
-## Avoid global variables
+## 影响性能的关键代码应该在函数内部
 
-A global variable might have its value, and therefore its type, change at any point. This makes
-it difficult for the compiler to optimize code using global variables. Variables should be local,
-or passed as arguments to functions, whenever possible.
+任何对性能至关重要的代码都应该在函数内部。 由于 Julia 编译器的工作方式，函数内部的代码往往比顶层代码运行得更快。
 
-Any code that is performance critical or being benchmarked should be inside a function.
+函数的使用不仅对性能很重要：函数更可重用和可测试，并阐明正在执行哪些步骤以及它们的输入和输出是什么，[编写函数，而不仅仅是脚本]（@ref）也是 Julia 的风格指南。
 
-We find that global names are frequently constants, and declaring them as such greatly improves
-performance:
+函数应该接收参数，而不是直接对全局变量进行操作，请参阅下一点。
+
+## 避免全局变量
+
+全局变量的值和类型随时都会发生变化， 这使编译器难以优化使用全局变量的代码。 变量应该是局部的，或者尽可能作为参数传递给函数。
+
+
+我们发现全局变量经常是常量，将它们声明为常量可大幅提升性能。
 
 ```julia
 const DEFAULT_VAL = 0
 ```
 
-Uses of non-constant globals can be optimized by annotating their types at the point of use:
+对于非常量的全局变量可以通过在使用的时候标注它们的类型来优化。
 
 ```julia
 global x = rand(1000)
@@ -32,31 +35,28 @@ function loop_over_global()
 end
 ```
 
-Passing arguments to functions is better style. It leads to more reusable code and clarifies what the inputs and outputs are.
+一个更好的编程风格是将变量作为参数传给函数。这样可以使得代码更易复用，以及清晰的展示函数的输入和输出。
 
 !!! note
-    All code in the REPL is evaluated in global scope, so a variable defined and assigned
-    at top level will be a **global** variable. Variables defined at top level scope inside
-    modules are also global.
+    所有的REPL中的代码都是在全局作用域中求值的，因此在顶层的变量的定义与赋值都会成为一个**全局**变量。在模块的顶层作用域定义的变量也是全局变量。
 
-In the following REPL session:
+在下面的REPL会话中：
 
 ```julia-repl
 julia> x = 1.0
 ```
 
-is equivalent to:
+等价于：
 
 ```julia-repl
 julia> global x = 1.0
 ```
 
-so all the performance issues discussed previously apply.
+因此，所有上文关于性能问题的讨论都适用于它们。
 
-## Measure performance with [`@time`](@ref) and pay attention to memory allocation
+## 使用 [`@time`](@ref)评估性能以及注意内存分配
 
-A useful tool for measuring performance is the [`@time`](@ref) macro. We here repeat the example
-with the global variable above, but this time with the type annotation removed:
+[`@time`](@ref) 宏是一个有用的性能评估工具。这里我们将重复上面全局变量的例子，但是这次移除类型声明：
 
 ```jldoctest; setup = :(using Random; Random.seed!(1234)), filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(1000);
@@ -70,29 +70,19 @@ julia> function sum_global()
        end;
 
 julia> @time sum_global()
-  0.009639 seconds (7.36 k allocations: 300.310 KiB, 98.32% compilation time)
-496.84883432553846
+  0.010414 seconds (9.07 k allocations: 373.448 KiB, 98.40% compilation time)
+493.6199223951192
 
 julia> @time sum_global()
-  0.000140 seconds (3.49 k allocations: 70.313 KiB)
-496.84883432553846
+  0.000108 seconds (3.49 k allocations: 70.156 KiB)
+493.6199223951192
 ```
 
-On the first call (`@time sum_global()`) the function gets compiled. (If you've not yet used [`@time`](@ref)
-in this session, it will also compile functions needed for timing.)  You should not take the results
-of this run seriously. For the second run, note that in addition to reporting the time, it also
-indicated that a significant amount of memory was allocated. We are here just computing a sum over all elements in
-a vector of 64-bit floats so there should be no need to allocate memory (at least not on the heap which is what `@time` reports).
+在第一次调用（`@time sum_global()`）时，函数被编译。 （如果不在此会话中使用 [`@time`](@ref)，它还会编译计时所需的函数。）你不用把此次运行的结果放在心上。对于第二次运行，请注意，除了报告时间外，它还表明分配了大量内存。 我们在这里只是计算 64 位浮点数向量中所有元素的总和，因此不需要分配内存（至少不是在堆上，这就是 `@time` 报告的内容）。
 
-Unexpected memory allocation is almost always a sign of some problem with your code, usually a
-problem with type-stability or creating many small temporary arrays.
-Consequently, in addition to the allocation itself, it's very likely
-that the code generated for your function is far from optimal. Take such indications seriously
-and follow the advice below.
+预料之外的内存分配几乎总是表示你的代码存在问题，通常是类型稳定性问题或创建了许多小的临时数组。 因此，除了分配本身之外，你的函数的代码很可能远非最优。请认真对待此类迹象并遵循以下建议。
 
-If we instead pass `x` as an argument to the function it no longer allocates memory
-(the allocation reported below is due to running the `@time` macro in global scope)
-and is significantly faster after the first call:
+如果我们改为将 `x` 作为参数传递给函数，它不再分配内存（下面报告的分配是由于在全局范围内运行 `@time` 宏）并且在第一次调用后明显更快：
 
 ```jldoctest sumarg; setup = :(using Random; Random.seed!(1234)), filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(1000);
@@ -106,57 +96,44 @@ julia> function sum_arg(x)
        end;
 
 julia> @time sum_arg(x)
-  0.006202 seconds (4.18 k allocations: 217.860 KiB, 99.72% compilation time)
-496.84883432553846
+  0.007971 seconds (3.96 k allocations: 200.171 KiB, 99.83% compilation time)
+493.6199223951192
 
 julia> @time sum_arg(x)
-  0.000005 seconds (1 allocation: 16 bytes)
-496.84883432553846
+  0.000003 seconds (1 allocation: 16 bytes)
+493.6199223951192
 ```
 
-The 1 allocation seen is from running the `@time` macro itself in global scope. If we instead run
-the timing in a function, we can see that indeed no allocations are performed:
+看到的 1 allocation 来自在全局范围内运行 `@time` 宏本身。 如果我们改为在函数中运行计时，我们可以看到确实没有执行任何分配：
 
 ```jldoctest sumarg; filter = r"[0-9\.]+ seconds"
 julia> time_sum(x) = @time sum_arg(x);
 
 julia> time_sum(x)
   0.000001 seconds
-496.84883432553846
+493.6199223951192
 ```
 
-In some situations, your function may need to allocate memory as part of its operation, and this
-can complicate the simple picture above. In such cases, consider using one of the [tools](@ref tools)
-below to diagnose problems, or write a version of your function that separates allocation from
-its algorithmic aspects (see [Pre-allocating outputs](@ref)).
+在某些情况下，你的函数可能需要将分配内存作为其操作的一部分，这比上面的简单例子复杂的多。 在这种情况下，请考虑使用下面的 [工具](@ref tools) 之一来诊断问题，或者编写一个将分配内存与算法方面分开的函数版本（请参阅 [输出预分配](@ref Pre-allocating outputs)）。
+
 
 !!! note
-    For more serious benchmarking, consider the [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)
-    package which among other things evaluates the function multiple times in order to reduce noise.
+    对于更严格的基准测试，请考虑 [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) 包，该包会多次评估函数以减少噪音。
 
-## [Tools](@id tools)
+## [工具](@id tools)
 
-Julia and its package ecosystem includes tools that may help you diagnose problems and improve
-the performance of your code:
+Julia 及其包生态系统包括可以帮助您诊断问题和提高代码性能的工具：
 
-  * [Profiling](@ref) allows you to measure the performance of your running code and identify lines
-    that serve as bottlenecks. For complex projects, the [ProfileView](https://github.com/timholy/ProfileView.jl)
-    package can help you visualize your profiling results.
-  * The [Traceur](https://github.com/JunoLab/Traceur.jl) package can help you find common performance problems in your code.
-  * Unexpectedly-large memory allocations--as reported by [`@time`](@ref), [`@allocated`](@ref), or
-    the profiler (through calls to the garbage-collection routines)--hint that there might be issues
-    with your code. If you don't see another reason for the allocations, suspect a type problem.
-     You can also start Julia with the `--track-allocation=user` option and examine the resulting
-    `*.mem` files to see information about where those allocations occur. See [Memory allocation analysis](@ref).
-  * `@code_warntype` generates a representation of your code that can be helpful in finding expressions
-    that result in type uncertainty. See [`@code_warntype`](@ref) below.
+  * [Profiling](@ref profiling) 允许你测量正在运行的代码的性能并识别作为瓶颈的行。对于复杂的项目，[ProfileView](https://github.com/timholy/ProfileView.jl) 包可以帮助你可视化分析结果。
+  * [Traceur](https://github.com/JunoLab/Traceur.jl) 包可以帮助你找到代码中常见的性能问题。
+  * 预期之外的大内存分配——正如 [`@time`](@ref)、[`@allocated`](@ref) 或 Profiler（通过调用垃圾收集例程）所报告的那样——暗示你的代码可能有问题。 如果你没有看到分配的其他原因，请怀疑是类型问题。还可以使用 `--track allocation=user` 选项启动 Julia 并检查生成的 `*.mem` 文件以查看有关这些分配发生位置的信息。 参见[内存分配分析](@ref memory-allocation-analysis)。
+  * `@code_warntype` 生成代码的表示形式，这有助于查找导致类型不确定性的表达式。 请参阅下面的 [`@code_warntype`](@ref)。
 
-## [Avoid containers with abstract type parameters](@id man-performance-abstract-container)
+## [避免使用抽象类型参数的容器](@id man-performance-abstract-container)
 
-When working with parameterized types, including arrays, it is best to avoid parameterizing with
-abstract types where possible.
+使用参数化类型（包括数组）时，最好尽可能避免使用抽象类型进行参数化。
 
-Consider the following:
+考虑如下：
 
 ```jldoctest
 julia> a = Real[]
@@ -169,11 +146,7 @@ julia> push!(a, 1); push!(a, 2.0); push!(a, π)
  π = 3.1415926535897...
 ```
 
-Because `a` is an array of abstract type [`Real`](@ref), it must be able to hold any
-`Real` value. Since `Real` objects can be of arbitrary size and structure, `a` must be
-represented as an array of pointers to individually allocated `Real` objects. However, if we instead
-only allow numbers of the same type, e.g. [`Float64`](@ref), to be stored in `a` these can be stored more
-efficiently:
+因为 `a` 是一个抽象类型 [`Real`](@ref) 的数组，所以它能够保存任何 `Real` 值。 由于`Real`对象允许具有任意大小和结构，因此`a`必须表示为指向单独分配的`Real`对象的指针数组。 但是，如果我们只允许相同类型的数字，例如 [`Float64`](@ref),  `a` 可以更有效地存储：
 
 ```jldoctest
 julia> a = Float64[]
@@ -186,25 +159,19 @@ julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
  3.141592653589793
 ```
 
-Assigning numbers into `a` will now convert them to `Float64` and `a` will be stored as
-a contiguous block of 64-bit floating-point values that can be manipulated efficiently.
+把数字赋值给`a`会即时将数字转换成`Float64`并且`a`会按照64位浮点数值的连续的块来储存，这就能高效地处理。
 
-If you cannot avoid containers with abstract value types, it is sometimes better to
-parametrize with `Any` to avoid runtime type checking. E.g. `IdDict{Any, Any}` performs
-better than `IdDict{Type, Vector}`
+如果无法避免使用抽象值类型的容器，有时最好使用`Any`参数化以避免运行时类型检查。 例如。 `IdDict{Any, Any}` 的性能优于 `IdDict{Type, Vector}`。
 
-See also the discussion under [Parametric Types](@ref).
+也请参见在[参数类型](@ref)下的讨论。
 
-## Type declarations
+## 类型声明
 
-In many languages with optional type declarations, adding declarations is the principal way to
-make code run faster. This is *not* the case in Julia. In Julia, the compiler generally knows
-the types of all function arguments, local variables, and expressions. However, there are a few
-specific instances where declarations are helpful.
+在有可选类型声明的语言中，添加声明是使代码运行更快的原则性方法。在Julia中*并不是*这种情况。在Julia中，编译器都知道所有的函数参数，局部变量和表达式的类型。但是，有一些特殊的情况下声明是有帮助的。
 
-### Avoid fields with abstract type
+### 避免有抽象类型的字段
 
-Types can be declared without specifying the types of their fields:
+类型能在不指定其字段的类型的情况下被声明：
 
 ```jldoctest myambig
 julia> struct MyAmbiguousType
@@ -212,10 +179,7 @@ julia> struct MyAmbiguousType
        end
 ```
 
-This allows `a` to be of any type. This can often be useful, but it does have a downside: for
-objects of type `MyAmbiguousType`, the compiler will not be able to generate high-performance
-code. The reason is that the compiler uses the types of objects, not their values, to determine
-how to build code. Unfortunately, very little can be inferred about an object of type `MyAmbiguousType`:
+这就允许`a`可以是任意类型。这经常很有用，但是有个缺点：对于类型`MyAmbiguousType`的对象，编译器不能够生成高性能的代码。原因是编译器使用对象的类型，而非值，来确定如何构建代码。不幸的是，几乎没有信息可以从类型`MyAmbiguousType`的对象中推导出来：
 
 ```jldoctest myambig
 julia> b = MyAmbiguousType("Hello")
@@ -231,14 +195,9 @@ julia> typeof(c)
 MyAmbiguousType
 ```
 
-The values of `b` and `c` have the same type, yet their underlying representation of data in memory is very
-different. Even if you stored just numeric values in field `a`, the fact that the memory representation
-of a [`UInt8`](@ref) differs from a [`Float64`](@ref) also means that the CPU needs to handle
-them using two different kinds of instructions. Since the required information is not available
-in the type, such decisions have to be made at run-time. This slows performance.
+`b` 和 `c` 的值具有相同类型，但它们在内存中的数据的底层表示十分不同。即使你只在字段 `a` 中存储数值，[`UInt8`](@ref) 的内存表示与 [`Float64`](@ref) 也是不同的，这也意味着 CPU 需要使用两种不同的指令来处理它们。因为该类型中不提供所需的信息，所以必须在运行时进行这些判断。而这会降低性能。
 
-You can do better by declaring the type of `a`. Here, we are focused on the case where `a` might
-be any one of several types, in which case the natural solution is to use parameters. For example:
+通过声明 `a` 的类型，你能够做得更好。这里我们关注 `a` 可能是几种类型中任意一种的情况，在这种情况下，自然的一个解决方法是使用参数。例如：
 
 ```jldoctest myambig2
 julia> mutable struct MyType{T<:AbstractFloat}
@@ -246,7 +205,7 @@ julia> mutable struct MyType{T<:AbstractFloat}
        end
 ```
 
-This is a better choice than
+比下面这种更好
 
 ```jldoctest myambig2
 julia> mutable struct MyStillAmbiguousType
@@ -254,8 +213,8 @@ julia> mutable struct MyStillAmbiguousType
        end
 ```
 
-because the first version specifies the type of `a` from the type of the wrapper object. For
-example:
+因为第一种通过包装对象的类型指定了 `a` 的类型。
+例如：
 
 ```jldoctest myambig2
 julia> m = MyType(3.2)
@@ -271,8 +230,7 @@ julia> typeof(t)
 MyStillAmbiguousType
 ```
 
-The type of field `a` can be readily determined from the type of `m`, but not from the type of
-`t`. Indeed, in `t` it's possible to change the type of the field `a`:
+字段 `a` 的类型可以很容易地通过 `m` 的类型确定，而不是通过 `t` 的类型确定。事实上，在 `t` 中是可以改变字段 `a` 的类型的：
 
 ```jldoctest myambig2
 julia> typeof(t.a)
@@ -285,7 +243,7 @@ julia> typeof(t.a)
 Float32
 ```
 
-In contrast, once `m` is constructed, the type of `m.a` cannot change:
+反之，一旦 `m` 被构建出来，`m.a` 的类型就不能够更改了。
 
 ```jldoctest myambig2
 julia> m.a = 4.5f0
@@ -295,12 +253,8 @@ julia> typeof(m.a)
 Float64
 ```
 
-The fact that the type of `m.a` is known from `m`'s type—coupled with the fact that its type
-cannot change mid-function—allows the compiler to generate highly-optimized code for objects
-like `m` but not for objects like `t`.
-
-Of course, all of this is true only if we construct `m` with a concrete type. We can break this
-by explicitly constructing it with an abstract type:
+`m.a` 的类型是通过 `m` 的类型得知这一事实加上它的类型不能改变在函数中改变这一事实，这两者使得对于像 `m` 这样的对象编译器可以生成高度优化后的代码，但是对 `t` 这样的对象却不可以。
+当然，如果我们将 `m` 构造成一个具体类型，那么这两者都可以。我们可以通过明确地使用一个抽象类型去构建它来破坏这一点：
 
 ```jldoctest myambig2
 julia> m = MyType{AbstractFloat}(3.2)
@@ -316,28 +270,26 @@ julia> typeof(m.a)
 Float32
 ```
 
-For all practical purposes, such objects behave identically to those of `MyStillAmbiguousType`.
+对于一个实际的目的来说，这样的对象表现起来和那些 `MyStillAmbiguousType` 的对象一模一样。
 
-It's quite instructive to compare the sheer amount code generated for a simple function
+比较为一个简单函数生成的代码的绝对数量是十分有指导意义的，
 
 ```julia
 func(m::MyType) = m.a+1
 ```
 
-using
+使用
 
 ```julia
 code_llvm(func, Tuple{MyType{Float64}})
 code_llvm(func, Tuple{MyType{AbstractFloat}})
 ```
 
-For reasons of length the results are not shown here, but you may wish to try this yourself. Because
-the type is fully-specified in the first case, the compiler doesn't need to generate any code
-to resolve the type at run-time. This results in shorter and faster code.
+由于长度的原因，代码的结果没有在这里显示出来，但是你可能会希望自己去验证这一点。因为在第一种情况中，类型被完全指定了，在运行时，编译器不需要生成任何代码来决定类型。这就带来了更短和更快的代码。
 
-### Avoid fields with abstract containers
+### 避免使用带抽象容器的字段
 
-The same best practices also work for container types:
+上面的做法同样也适用于容器的类型：
 
 ```jldoctest containers
 julia> struct MySimpleContainer{A<:AbstractVector}
@@ -349,7 +301,7 @@ julia> struct MyAmbiguousContainer{T}
        end
 ```
 
-For example:
+例如:
 
 ```jldoctest containers
 julia> c = MySimpleContainer(1:3);
@@ -373,12 +325,9 @@ julia> typeof(b)
 MyAmbiguousContainer{Int64}
 ```
 
-For `MySimpleContainer`, the object is fully-specified by its type and parameters, so the compiler
-can generate optimized functions. In most instances, this will probably suffice.
+对于 `MySimpleContainer` 来说，它被它的类型和参数完全确定了，因此编译器能够生成优化过的代码。在大多数实例中，这点能够实现。
 
-While the compiler can now do its job perfectly well, there are cases where *you* might wish that
-your code could do different things depending on the *element type* of `a`. Usually the best
-way to achieve this is to wrap your specific operation (here, `foo`) in a separate function:
+尽管编译器现在可以将它的工作做得非常好，但是还是有**你**可能希望你的代码能够能够根据 `a` 的**元素类型**做不同的事情的时候。通常达成这个目的最好的方式是将你的具体操作 (here, `foo`) 打包到一个独立的函数中。
 
 ```jldoctest containers
 julia> function sumfoo(c::MySimpleContainer)
@@ -397,11 +346,9 @@ julia> foo(x::AbstractFloat) = round(x)
 foo (generic function with 2 methods)
 ```
 
-This keeps things simple, while allowing the compiler to generate optimized code in all cases.
+这使事情变得简单，同时也允许编译器在所有情况下生成经过优化的代码。
 
-However, there are cases where you may need to declare different versions of the outer function
-for different element types or types of the `AbstractVector` of the field `a` in `MySimpleContainer`.
-You could do it like this:
+但是，在某些情况下，你可能需要声明外部函数的不同版本，这可能是为了不同的元素类型，也可能是为了 `MySimpleContainer` 中的字段 `a` 所具有的不同 `AbstractVector` 类型。你可以这样做：
 
 ```jldoctest containers
 julia> function myfunc(c::MySimpleContainer{<:AbstractArray{<:Integer}})
@@ -431,11 +378,9 @@ julia> myfunc(MySimpleContainer([1:3;]))
 4
 ```
 
-### Annotate values taken from untyped locations
+### 对从无类型位置获取的值进行类型注释
 
-It is often convenient to work with data structures that may contain values of any type (arrays
-of type `Array{Any}`). But, if you're using one of these structures and happen to know the type
-of an element, it helps to share this knowledge with the compiler:
+使用可能包含任何类型的值的数据结构（如类型为 `Array{Any}` 的数组）经常是很方便的。但是，如果你正在使用这些数据结构之一，并且恰巧知道某个元素的类型，那么让编译器也知道这一点会有所帮助：
 
 ```julia
 function foo(a::Array{Any,1})
@@ -445,21 +390,11 @@ function foo(a::Array{Any,1})
 end
 ```
 
-Here, we happened to know that the first element of `a` would be an [`Int32`](@ref). Making
-an annotation like this has the added benefit that it will raise a run-time error if the
-value is not of the expected type, potentially catching certain bugs earlier.
+在这里，我们恰巧知道 `a` 的第一个元素是个 [`Int32`](@ref)。留下这样的注释还有另外的好处，它将在该值不是预期类型时引发运行时错误，而这可能会更早地捕获某些错误。
 
-In the case that the type of `a[1]` is not known precisely, `x` can be declared via
-`x = convert(Int32, a[1])::Int32`. The use of the [`convert`](@ref) function allows `a[1]`
-to be any object convertible to an `Int32` (such as `UInt8`), thus increasing the genericity
-of the code by loosening the type requirement. Notice that `convert` itself needs a type
-annotation in this context in order to achieve type stability. This is because the compiler
-cannot deduce the type of the return value of a function, even `convert`, unless the types of
-all the function's arguments are known.
+在没有确切知道 `a[1]` 的类型的情况下，`x` 可以通过 `x = convert(Int32, a[1])::Int32` 来声明。使用 [`convert`](@ref) 函数则允许 `a[1]` 是可转换为 `Int32` 的任何对象（比如 `UInt8`），从而通过放松类型限制来提高代码的通用性。请注意，`convert` 本身在此上下文中需要类型注释才能实现类型稳定性。这是因为除非该函数所有参数的类型都已知，否则编译器无法推导出该函数返回值的类型，即使其为 `convert`。
 
-Type annotation will not enhance (and can actually hinder) performance if the type is abstract,
-or constructed at run-time. This is because the compiler cannot use the annotation to specialize
-the subsequent code, and the type-check itself takes time. For example, in the code:
+如果类型是抽象的或在运行时构造的，则类型注释不会增强（实际上可能会阻碍）性能。 这是因为编译器无法使用注解来特例化后续代码，并且类型检查本身需要时间。 例如，在代码中：
 
 ```julia
 function nr(a, prec)
@@ -470,32 +405,19 @@ function nr(a, prec)
 end
 ```
 
-the annotation of `c` harms performance. To write performant code involving types constructed at
-run-time, use the [function-barrier technique](@ref kernel-functions) discussed below, and ensure
-that the constructed type appears among the argument types of the kernel function so that the kernel
-operations are properly specialized by the compiler. For example, in the above snippet, as soon as
-`b` is constructed, it can be passed to another function `k`, the kernel. If, for example, function
-`k` declares `b` as an argument of type `Complex{T}`, where `T` is a type parameter, then a type annotation
-appearing in an assignment statement within `k` of the form:
+`c` 的注释会损害性能。要编写涉及在运行时构造类型的高性能代码，请使用下面讨论的 [函数障碍技巧](@ref kernel-functions)，并确保构造的类型出现在内核函数的参数类型中，以便内核操作由编译器合理地特例化。例如，在上面的代码片段中，一旦构建了 `b`，它就可以传递给另一个函数 `k`，即内核。 例如，如果函数 `k` 将 `b` 声明为类型为 `Complex{T}` 的参数，其中 `T` 是一个类型参数，那么出现在`k`的赋值语句中的类型注释的形式：
 
 ```julia
 c = (b + 1.0f0)::Complex{T}
 ```
 
-does not hinder performance (but does not help either) since the compiler can determine the type of `c`
-at the time `k` is compiled.
+不会降低性能（但也不会有帮助），因为编译器可以在编译 `k` 时确定 `c` 的类型。
 
-### Be aware of when Julia avoids specializing
+### [注意Julia何时避免特例化](@id Be-aware-of-when-Julia-avoids-specializing)
 
-As a heuristic, Julia avoids automatically specializing on argument type parameters in three
-specific cases: `Type`, `Function`, and `Vararg`. Julia will always specialize when the argument is
-used within the method, but not if the argument is just passed through to another function. This
-usually has no performance impact at runtime and
-[improves compiler performance](@ref compiler-efficiency-issues). If you find it does have a
-performance impact at runtime in your case, you can trigger specialization by adding a type
-parameter to the method declaration. Here are some examples:
+作为一种启发式方法，Julia 避免在三种特定情况下自动特例化参数类型参数：`Type`、`Function` 和 `Vararg`。 当在方法中使用参数时，Julia 将始终特例化，但如果参数只是传递给另一个函数，则不会。 这通常在运行时没有性能影响并且[提高编译器性能](@ref compiler-efficiency-issues)。 如果你发现它在你的案例中在运行时确实有性能影响，您可以通过向方法声明添加类型参数来触发特例化。这里有些例子：
 
-This will not specialize:
+这不会特例化：
 
 ```julia
 function f_type(t)  # or t::Type
@@ -504,7 +426,7 @@ function f_type(t)  # or t::Type
 end
 ```
 
-but this will:
+但是这会：
 
 ```julia
 function g_type(t::Type{T}) where T
@@ -513,48 +435,43 @@ function g_type(t::Type{T}) where T
 end
 ```
 
-These will not specialize:
+这些不会特例化：
 
 ```julia
 f_func(f, num) = ntuple(f, div(num, 2))
 g_func(g::Function, num) = ntuple(g, div(num, 2))
 ```
 
-but this will:
+但是这会：
 
 ```julia
 h_func(h::H, num) where {H} = ntuple(h, div(num, 2))
 ```
 
-This will not specialize:
+这不会特例化：
 
 ```julia
 f_vararg(x::Int...) = tuple(x...)
 ```
 
-but this will:
+但是这会：
 
 ```julia
 g_vararg(x::Vararg{Int, N}) where {N} = tuple(x...)
 ```
 
-One only needs to introduce a single type parameter to force specialization, even if the other types are unconstrained. For example, this will also specialize, and is useful when the arguments are not all of the same type:
+只需要引入一个类型参数就可以强制特例化，即使其他类型不受约束。比如下面这个例子，它会特例化，并且在参数不是全部相同类型时很有用：
 ```julia
 h_vararg(x::Vararg{Any, N}) where {N} = tuple(x...)
 ```
 
-Note that [`@code_typed`](@ref) and friends will always show you specialized code, even if Julia
-would not normally specialize that method call. You need to check the
-[method internals](@ref ast-lowered-method) if you want to see whether specializations are generated
-when argument types are changed, i.e., if `(@which f(...)).specializations` contains specializations
-for the argument in question.
+请注意， [`@code_typed`](@ref) 和你的朋友给你的始终是特例化的代码，即使 Julia 通常不会特例化该方法调用。如果要查看更改参数类型时是否生成特例化，则需要检查 [method internals](@ref ast-lowered-method)，即是否 `(@which f(...)).specializations` 包含相关参数的特例化。
 
-## Break functions into multiple definitions
+## 将函数拆分为多个定义
 
-Writing a function as many small definitions allows the compiler to directly call the most applicable
-code, or even inline it.
+将一个函数写成许多小的定义能让编译器直接调用最适合的代码，甚至能够直接将它内联。
 
-Here is an example of a "compound function" that should really be written as multiple definitions:
+这是一个真的该被写成许多小的定义的**复合函数**的例子：
 
 ```julia
 using LinearAlgebra
@@ -570,40 +487,34 @@ function mynorm(A)
 end
 ```
 
-This can be written more concisely and efficiently as:
+这可以更简洁有效地写成：
 
 ```julia
 norm(x::Vector) = sqrt(real(dot(x, x)))
 norm(A::Matrix) = maximum(svdvals(A))
 ```
 
-It should however be noted that the compiler is quite efficient at optimizing away the dead branches in code
-written as the `mynorm` example.
+然而，应该注意的是，编译器会十分高效地优化掉编写得如同 `mynorm` 例子的代码中的死分支。
 
-## Write "type-stable" functions
+## 编写「类型稳定的」函数
 
-When possible, it helps to ensure that a function always returns a value of the same type. Consider
-the following definition:
+如果可能，确保函数总是返回相同类型的值是有好处的。考虑以下定义：
 
 ```julia
 pos(x) = x < 0 ? 0 : x
 ```
 
-Although this seems innocent enough, the problem is that `0` is an integer (of type `Int`) and
-`x` might be of any type. Thus, depending on the value of `x`, this function might return a value
-of either of two types. This behavior is allowed, and may be desirable in some cases. But it can
-easily be fixed as follows:
+虽然这看起来挺合法的，但问题是 `0` 是一个（`Int` 类型的）整数而 `x` 可能是任何类型。于是，根据 `x` 的值，此函数可能返回两种类型中任何一种的值。这种行为是允许的，并且在某些情况下可能是合乎需要的。但它可以很容易地以如下方式修复：
 
 ```julia
 pos(x) = x < 0 ? zero(x) : x
 ```
 
-There is also a [`oneunit`](@ref) function, and a more general [`oftype(x, y)`](@ref) function, which
-returns `y` converted to the type of `x`.
+还有 [`oneunit`](@ref) 函数，以及更通用的 [`oftype(x, y)`](@ref) 函数，它返回被转换为 `x` 的类型的 `y`。
 
-## Avoid changing the type of a variable
+## 避免更改变量类型
 
-An analogous "type-stability" problem exists for variables used repeatedly within a function:
+类似的「类型稳定性」问题存在于在函数内重复使用的变量：
 
 ```julia
 function foo()
@@ -615,21 +526,16 @@ function foo()
 end
 ```
 
-Local variable `x` starts as an integer, and after one loop iteration becomes a floating-point
-number (the result of [`/`](@ref) operator). This makes it more difficult for the compiler to
-optimize the body of the loop. There are several possible fixes:
+局部变量 `x` 一开始是整数，在一次循环迭代后变为浮点数（[`/`](@ref) 运算符的结果）。这使得编译器更难优化循环体。有几种可能的解决方法：
 
-  * Initialize `x` with `x = 1.0`
-  * Declare the type of `x` explicitly as `x::Float64 = 1`
-  * Use an explicit conversion by `x = oneunit(Float64)`
-  * Initialize with the first loop iteration, to `x = 1 / rand()`, then loop `for i = 2:10`
+  * 使用 `x = 1.0` 初始化 `x`
+  * 显式声明 `x` 的类型：`x::Float64 = 1`
+  * 使用 `x = oneunit(Float64)` 进行显式的类型转换
+  * 使用第一个循环迭代初始化，即 `x = 1 / rand()`，接着循环 `for i = 2:10`
 
-## [Separate kernel functions (aka, function barriers)](@id kernel-functions)
+## [分离核心函数（又称为函数屏障）] (@id kernel-functions)
 
-Many functions follow a pattern of performing some set-up work, and then running many iterations
-to perform a core computation. Where possible, it is a good idea to put these core computations
-in separate functions. For example, the following contrived function returns an array of a randomly-chosen
-type:
+许多函数遵循这一模式：先执行一些设置工作，再通过多次迭代来执行核心计算。如果可行，将这些核心计算放在单独的函数中是个好主意。例如，以下做作的函数返回一个数组，其类型是随机选择的。
 
 ```jldoctest; setup = :(using Random; Random.seed!(1234))
 julia> function strange_twos(n)
@@ -641,13 +547,13 @@ julia> function strange_twos(n)
        end;
 
 julia> strange_twos(3)
-3-element Vector{Float64}:
- 2.0
- 2.0
- 2.0
+3-element Vector{Int64}:
+ 2
+ 2
+ 2
 ```
 
-This should be written as:
+它应该这么写：
 
 ```jldoctest; setup = :(using Random; Random.seed!(1234))
 julia> function fill_twos!(a)
@@ -663,30 +569,23 @@ julia> function strange_twos(n)
        end;
 
 julia> strange_twos(3)
-3-element Vector{Float64}:
- 2.0
- 2.0
- 2.0
+3-element Vector{Int64}:
+ 2
+ 2
+ 2
 ```
 
-Julia's compiler specializes code for argument types at function boundaries, so in the original
-implementation it does not know the type of `a` during the loop (since it is chosen randomly).
-Therefore the second version is generally faster since the inner loop can be recompiled as part
-of `fill_twos!` for different types of `a`.
+Julia 的编译器会在函数边界处针对参数类型特化代码，因此在原始的实现中循环期间无法得知 `a` 的类型（因为它是随即选择的）。于是，第二个版本通常更快，因为对于不同类型的 `a`，内层循环都可被重新编译为 `fill_twos!` 的一部分。
 
-The second form is also often better style and can lead to more code reuse.
+第二种形式通常是更好的风格，并且可以带来更多的代码的重复利用。
 
-This pattern is used in several places in Julia Base. For example, see `vcat` and `hcat`
-in [`abstractarray.jl`](https://github.com/JuliaLang/julia/blob/40fe264f4ffaa29b749bcf42239a89abdcbba846/base/abstractarray.jl#L1205-L1206),
-or the [`fill!`](@ref) function, which we could have used instead of writing our own `fill_twos!`.
+这个模式在 Julia Base 的几个地方中有使用。相关的例子，请参阅 [`abstractarray.jl`](https://github.com/JuliaLang/julia/blob/40fe264f4ffaa29b749bcf42239a89abdcbba846/base/abstractarray.jl#L1205-L1206) 中的 `vcat` 和 `hcat`，或者 [`fill!`](@ref) 函数，我们可使用该函数而不是编写自己的 `fill_twos!`。
 
-Functions like `strange_twos` occur when dealing with data of uncertain type, for example data
-loaded from an input file that might contain either integers, floats, strings, or something else.
+诸如 `strange_twos` 的函数会在处理具有不确定类型的数据时出现，例如从可能包含整数、浮点数、字符串或其它内容的输入文件中加载的数据。
 
-## [Types with values-as-parameters](@id man-performance-value-type)
+## [具有值作为参数的类型](@id man-performance-value-type)
 
-Let's say you want to create an `N`-dimensional array that has size 3 along each axis. Such arrays
-can be created like this:
+比方说你想创建一个每个维度大小都是3的 `N` 维数组。这种数组可以这样创建：
 
 ```jldoctest
 julia> A = fill(5.0, (3, 3))
@@ -696,13 +595,9 @@ julia> A = fill(5.0, (3, 3))
  5.0  5.0  5.0
 ```
 
-This approach works very well: the compiler can figure out that `A` is an `Array{Float64,2}` because
-it knows the type of the fill value (`5.0::Float64`) and the dimensionality (`(3, 3)::NTuple{2,Int}`).
-This implies that the compiler can generate very efficient code for any future usage of `A` in
-the same function.
+这个方法工作得很好：编译器可以识别出来 `A` 是一个 `Array{Float64,2}` 因为它知道填充值 (`5.0::Float64`) 的类型和维度 (`(3, 3)::NTuple{2,Int}`).
 
-But now let's say you want to write a function that creates a 3×3×... array in arbitrary dimensions;
-you might be tempted to write a function
+但是现在打比方说你想写一个函数，在任何一个维度下，它都创建一个 3×3×... 的数组；你可能会心动地写下一个函数
 
 ```jldoctest
 julia> function array3(fillval, N)
@@ -717,16 +612,9 @@ julia> array3(5.0, 2)
  5.0  5.0  5.0
 ```
 
-This works, but (as you can verify for yourself using `@code_warntype array3(5.0, 2)`) the problem
-is that the output type cannot be inferred: the argument `N` is a *value* of type `Int`, and type-inference
-does not (and cannot) predict its value in advance. This means that code using the output of this
-function has to be conservative, checking the type on each access of `A`; such code will be very
-slow.
+这确实有用，但是（你可以自己使用 `@code_warntype array3(5.0, 2)` 来验证）问题是输出地类型不能被推断出来：参数 `N` 是一个 `Int` 类型的**值**，而且类型推断不会（也不能）提前预测它的值。这意味着使用这个函数的结果的代码在每次获取 `A` 时都不得不保守地检查其类型；这样的代码将会是非常缓慢的。
 
-Now, one very good way to solve such problems is by using the [function-barrier technique](@ref kernel-functions).
-However, in some cases you might want to eliminate the type-instability altogether. In such cases,
-one approach is to pass the dimensionality as a parameter, for example through `Val{T}()` (see
-["Value types"](@ref)):
+现在，解决此类问题的一种很好的方法是使用 [函数障碍技巧](@ref kernel-functions)。 但是，在某些情况下，你可能希望完全消除类型不稳定性。 在这种情况下，一种方法是将维度作为参数传递，例如通过 `Val{T}()`（参见 ["Value types"](@ref)）：
 
 ```jldoctest
 julia> function array3(fillval, ::Val{N}) where N
@@ -741,12 +629,9 @@ julia> array3(5.0, Val(2))
  5.0  5.0  5.0
 ```
 
-Julia has a specialized version of `ntuple` that accepts a `Val{::Int}` instance as the second
-parameter; by passing `N` as a type-parameter, you make its "value" known to the compiler.
-Consequently, this version of `array3` allows the compiler to predict the return type.
+Julia 有一个特别版本的 `ntuple`，它接受一个 `Val{::Int}` 实例作为第二个参数； 通过将 `N` 作为类型参数传递，你可以让编译器知道它的“值”。 因此，这个版本的 `array3` 允许编译器预测返回类型。
 
-However, making use of such techniques can be surprisingly subtle. For example, it would be of
-no help if you called `array3` from a function like this:
+然而，使用这些技术可能非常微妙。 例如，如果你从这样的函数中调用 `array3` 将没有任何帮助：
 
 ```julia
 function call_array3(fillval, n)
@@ -754,13 +639,9 @@ function call_array3(fillval, n)
 end
 ```
 
-Here, you've created the same problem all over again: the compiler can't guess what `n` is,
-so it doesn't know the *type* of `Val(n)`. Attempting to use `Val`, but doing so incorrectly, can
-easily make performance *worse* in many situations. (Only in situations where you're effectively
-combining `Val` with the function-barrier trick, to make the kernel function more efficient, should
-code like the above be used.)
+在这里，你又一次创造了同样的问题：编译器无法猜测 `n` 是什么，所以它不知道 `Val(n)` 的 *类型*。 在许多情况下，尝试使用 `Val` 但不正确地使用很容易使性能*变差*。 （只有在有效地将 `Val` 与函数障碍技巧结合起来的情况下，为了使内核函数更有效，才应使用上述代码。）
 
-An example of correct usage of `Val` would be:
+一个正确使用 `Val` 的例子是这样的：
 
 ```julia
 function filter3(A::AbstractArray{T,N}) where {T,N}
@@ -769,15 +650,11 @@ function filter3(A::AbstractArray{T,N}) where {T,N}
 end
 ```
 
-In this example, `N` is passed as a parameter, so its "value" is known to the compiler. Essentially,
-`Val(T)` works only when `T` is either hard-coded/literal (`Val(3)`) or already specified in the
-type-domain.
+在此示例中，`N` 作为参数传递，因此编译器知道其“值”。 本质上，`Val(T)` 仅在 `T` 是硬编码/i字面量 (`Val(3)`) 或已在类型域中指定时才起作用。
 
-## The dangers of abusing multiple dispatch (aka, more on types with values-as-parameters)
+## 滥用多重派发的危险（也就是更多关于以值作为参数的类型）
 
-Once one learns to appreciate multiple dispatch, there's an understandable tendency to go overboard
-and try to use it for everything. For example, you might imagine using it to store information,
-e.g.
+一旦一个人理解了多重派发，就会有一个倾向，即过度使用它并尝试将其用于所有事情。 例如，您可能会想象使用它来存储信息，例如
 
 ```
 struct Car{Make, Model}
@@ -786,45 +663,27 @@ struct Car{Make, Model}
 end
 ```
 
-and then dispatch on objects like `Car{:Honda,:Accord}(year, args...)`.
+然后派发到像 `Car{:Honda,:Accord}(year, args...)` 的对象上。
 
-This might be worthwhile when either of the following are true:
+当存在以下任一情况，这可能是值得做的：
 
-  * You require CPU-intensive processing on each `Car`, and it becomes vastly more efficient if you
-    know the `Make` and `Model` at compile time and the total number of different `Make` or `Model`
-    that will be used is not too large.
-  * You have homogenous lists of the same type of `Car` to process, so that you can store them all
-    in an `Array{Car{:Honda,:Accord},N}`.
+  * 你需要对每个 `Car` 进行 CPU 密集型处理，如果你在编译时知道 `Make` 和 `Model`，并且将使用的不同`Make`或`Model`的总数不太大，则效率会大大提高。
+     
+     
+  * 你需要处理相同类型的 `Car` 的同类列表，因此可以将它们全部存储在一个数组`{Car{:Honda,:Accord},N}` 中。
+     
 
-When the latter holds, a function processing such a homogenous array can be productively specialized:
-Julia knows the type of each element in advance (all objects in the container have the same concrete
-type), so Julia can "look up" the correct method calls when the function is being compiled (obviating
-the need to check at run-time) and thereby emit efficient code for processing the whole list.
+当后者成立时，处理此类同型数组的函数可以高效地特例化：Julia 预先知道每个元素的类型（容器中的所有对象都具有相同的具体类型），因此当函数被编译时， Julia 可以“查找”正确的方法调用（不需要在运行时检查），从而产生有效的代码来处理整个列表。
 
-When these do not hold, then it's likely that you'll get no benefit; worse, the resulting "combinatorial
-explosion of types" will be counterproductive. If `items[i+1]` has a different type than `item[i]`,
-Julia has to look up the type at run-time, search for the appropriate method in method tables,
-decide (via type intersection) which one matches, determine whether it has been JIT-compiled yet
-(and do so if not), and then make the call. In essence, you're asking the full type- system and
-JIT-compilation machinery to basically execute the equivalent of a switch statement or dictionary
-lookup in your own code.
+当这些都不成立时，你很可能不会获得任何好处；更糟糕的是，由此产生的“类型组合爆炸”将适得其反。 如果 `items[i+1]` 与 `item[i]` 的类型不同，Julia 必须在运行时查找类型，在方法表中搜索适当的方法，决定（通过类型交集）哪一个匹配，确定它是否已经被 JIT 编译（如果没有，则执行），然后进行调用。 本质上，你是在要求完整的类型系统和 JIT 编译机制在你自己的代码中基本上执行相当于 switch 语句或字典查找的操作。
 
-Some run-time benchmarks comparing (1) type dispatch, (2) dictionary lookup, and (3) a "switch"
-statement can be found [on the mailing list](https://groups.google.com/forum/#!msg/julia-users/jUMu9A3QKQQ/qjgVWr7vAwAJ).
+[在邮件列表中](https://groups.google.com/forum/#!msg/julia-users/jUMu9A3QKQQ/qjgVWr7vAwAJ) 可以找到一些运行时基准比较 (1) 类型派发、(2) 字典查找和 (3) “switch”语句 
 
-Perhaps even worse than the run-time impact is the compile-time impact: Julia will compile specialized
-functions for each different `Car{Make, Model}`; if you have hundreds or thousands of such types,
-then every function that accepts such an object as a parameter (from a custom `get_year` function
-you might write yourself, to the generic `push!` function in Julia Base) will have hundreds
-or thousands of variants compiled for it. Each of these increases the size of the cache of compiled
-code, the length of internal lists of methods, etc. Excess enthusiasm for values-as-parameters
-can easily waste enormous resources.
+也许比运行时影响更糟糕的是编译期影响：Julia 将为每个不同的 `Car{Make, Model}` 编译专门的函数； 如果你有成百上千个这样的类型，那么每个接受这样一个对象作为参数的函数（从你可能自己编写的自定义 `get_year` 函数，到 Julia Base 中的通用 `push!` 函数）都将成百上千个为它编译了的变体。 这些都会增加编译代码缓存的大小、内部方法列表的长度等。对值作为参数的过度热情很容易浪费大量资源。
 
-## [Access arrays in memory order, along columns](@id man-performance-column-major)
+## [沿列按内存顺序访问数组](@id man-performance-column-major)
 
-Multidimensional arrays in Julia are stored in column-major order. This means that arrays are
-stacked one column at a time. This can be verified using the `vec` function or the syntax `[:]`
-as shown below (notice that the array is ordered `[1 3 2 4]`, not `[1 2 3 4]`):
+Julia 中的多维数组以列主序存储。这意味着数组一次堆叠一列。这可使用 `vec` 函数或语法 `[:]` 来验证，如下所示（请注意，数组的顺序是 `[1 3 2 4]`，而不是 `[1 2 3 4]`）：
 
 ```jldoctest
 julia> x = [1 2; 3 4]
@@ -840,19 +699,9 @@ julia> x[:]
  4
 ```
 
-This convention for ordering arrays is common in many languages like Fortran, Matlab, and R (to
-name a few). The alternative to column-major ordering is row-major ordering, which is the convention
-adopted by C and Python (`numpy`) among other languages. Remembering the ordering of arrays can
-have significant performance effects when looping over arrays. A rule of thumb to keep in mind
-is that with column-major arrays, the first index changes most rapidly. Essentially this means
-that looping will be faster if the inner-most loop index is the first to appear in a slice expression.
-Keep in mind that indexing an array with `:` is an implicit loop that iteratively accesses all elements within a particular dimension; it can be faster to extract columns than rows, for example.
+这种对数组进行排序的约定在许多语言中都很常见，例如 Fortran、Matlab 和 R（仅举几例）。 列优先排序的替代方法是行优先排序，在其它语言中，这是 C 和 Python (`numpy`) 采用的约定。 在遍历数组时，记住数组的顺序会对性能产生显着的影响。 要记住的一个经验法则是，对于列优先数组，第一个索引变化最快。 本质上，这意味着如果最内层的循环索引是第一个出现在切片表达式中的，则循环会更快。 请记住，使用 `:` 索引数组是一个隐式循环，它迭代访问特定维度内的所有元素； 例如，提取列比提取行更快。
 
-Consider the following contrived example. Imagine we wanted to write a function that accepts a
-[`Vector`](@ref) and returns a square [`Matrix`](@ref) with either the rows or the columns filled with copies
-of the input vector. Assume that it is not important whether rows or columns are filled with these
-copies (perhaps the rest of the code can be easily adapted accordingly). We could conceivably
-do this in at least four ways (in addition to the recommended call to the built-in [`repeat`](@ref)):
+考虑以下人为示例。假设我们想编写一个接收 [`Vector`](@ref) 并返回方阵 [`Matrix`](@ref) 的函数，所返回方阵的行或列都用输入向量的副本填充。并假设用这些副本填充的是行还是列并不重要（也许可以很容易地相应调整剩余代码）。我们至少可以想到四种方式（除了建议的调用内置函数 [`repeat`](@ref)）：
 
 ```julia
 function copy_cols(x::Vector{T}) where T
@@ -892,7 +741,7 @@ function copy_row_col(x::Vector{T}) where T
 end
 ```
 
-Now we will time each of these functions using the same random `10000` by `1` input vector:
+现在，我们使用相同的 `10000` 乘 `1` 的随机输入向量来对这些函数计时。
 
 ```julia-repl
 julia> x = randn(10000);
@@ -906,18 +755,13 @@ copy_col_row: 0.415630047
 copy_row_col: 1.721531501
 ```
 
-Notice that `copy_cols` is much faster than `copy_rows`. This is expected because `copy_cols`
-respects the column-based memory layout of the `Matrix` and fills it one column at a time. Additionally,
-`copy_col_row` is much faster than `copy_row_col` because it follows our rule of thumb that the
-first element to appear in a slice expression should be coupled with the inner-most loop.
+请注意，`copy_cols` 比 `copy_rows` 快得多。这与预料的一致，因为 `copy_cols` 尊重 `Matrix` 基于列的内存布局。另外，`copy_col_row` 比 `copy_row_col` 快得多，因为它遵循我们的经验法则，即切片表达式中出现的第一个元素应该与最内层循环耦合。
 
-## Pre-allocating outputs
+## [输出预分配](@id Pre-allocating-outputs)
 
-If your function returns an `Array` or some other complex type, it may have to allocate memory.
-Unfortunately, oftentimes allocation and its converse, garbage collection, are substantial bottlenecks.
+如果函数返回 `Array` 或其它复杂类型，则可能需要分配内存。不幸的是，内存分配及其反面垃圾收集通常是很大的瓶颈。
 
-Sometimes you can circumvent the need to allocate memory on each function call by preallocating
-the output. As a trivial example, compare
+有时，你可以通过预分配输出结果来避免在每个函数调用上分配内存的需要。作为一个简单的例子，比较
 
 ```jldoctest prealloc
 julia> function xinc(x)
@@ -934,7 +778,7 @@ julia> function loopinc()
        end;
 ```
 
-with
+和
 
 ```jldoctest prealloc
 julia> function xinc!(ret::AbstractVector{T}, x::T) where T
@@ -955,7 +799,7 @@ julia> function loopinc_prealloc()
        end;
 ```
 
-Timing results:
+计时结果：
 
 ```jldoctest prealloc; filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> @time loopinc()
@@ -967,30 +811,15 @@ julia> @time loopinc_prealloc()
 50000015000000
 ```
 
-Preallocation has other advantages, for example by allowing the caller to control the "output"
-type from an algorithm. In the example above, we could have passed a `SubArray` rather than an
-[`Array`](@ref), had we so desired.
+预分配还有其它优点，例如允许调用者在算法中控制「输出」类型。在上述例子中，我们如果需要，可以传递 `SubArray` 而不是 [`Array`](@ref)。
 
-Taken to its extreme, pre-allocation can make your code uglier, so performance measurements and
-some judgment may be required. However, for "vectorized" (element-wise) functions, the convenient
-syntax `x .= f.(y)` can be used for in-place operations with fused loops and no temporary arrays
-(see the [dot syntax for vectorizing functions](@ref man-vectorized)).
+极端情况下，预分配可能会使你的代码更丑陋，所以可能需要做性能测试和一些判断。但是，对于「向量化」（逐元素）函数，方便的语法 `x .= f.(y)` 可用于具有融合循环的 in-place 操作且无需临时数组（请参阅[向量化函数的点语法](@ref man-vectorized)）。
 
-## More dots: Fuse vectorized operations
+## 点语法：融合向量化操作
 
-Julia has a special [dot syntax](@ref man-vectorized) that converts
-any scalar function into a "vectorized" function call, and any operator
-into a "vectorized" operator, with the special property that nested
-"dot calls" are *fusing*: they are combined at the syntax level into
-a single loop, without allocating temporary arrays. If you use `.=` and
-similar assignment operators, the result can also be stored in-place
-in a pre-allocated array (see above).
+Julia 有特殊的[点语法](@ref man-vectorized)，它可以将任何标量函数转换为「向量化」函数调用，将任何运算符转换为「向量化」运算符，其具有的特殊性质是嵌套「点调用」是*融合的*：它们在语法层级被组合为单个循环，无需分配临时数组。如果你使用 `.=` 和类似的赋值运算符，则结果也可以 in-place 存储在预分配的数组（参见上文）。
 
-In a linear-algebra context, this means that even though operations like
-`vector + vector` and `vector * scalar` are defined, it can be advantageous
-to instead use `vector .+ vector` and `vector .* scalar` because the
-resulting loops can be fused with surrounding computations. For example,
-consider the two functions:
+在线性代数的上下文中，这意味着即使诸如 `vector + vector` 和 `vector * scalar` 之类的运算，使用 `vector .+ vector` 和 `vector .* scalar` 来替代也可能是有利的，因为生成的循环可与周围的计算融合。例如，考虑两个函数：
 
 ```jldoctest dotfuse
 julia> f(x) = 3x.^2 + 4x + 7x.^3;
@@ -998,9 +827,7 @@ julia> f(x) = 3x.^2 + 4x + 7x.^3;
 julia> fdot(x) = @. 3x^2 + 4x + 7x^3 # equivalent to 3 .* x.^2 .+ 4 .* x .+ 7 .* x.^3;
 ```
 
-Both `f` and `fdot` compute the same thing. However, `fdot`
-(defined with the help of the [`@.`](@ref @__dot__) macro) is
-significantly faster when applied to an array:
+`f` 和 `fdot` 都做相同的计算。但是，`fdot`（在 [`@.`](@ref @__dot__) 宏的帮助下定义）在作用于数组时明显更快：
 
 ```jldoctest dotfuse; filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(10^6);
@@ -1015,33 +842,13 @@ julia> @time f.(x);
   0.002626 seconds (8 allocations: 7.630 MiB)
 ```
 
-That is, `fdot(x)` is ten times faster and allocates 1/6 the
-memory of `f(x)`, because each `*` and `+` operation in `f(x)` allocates
-a new temporary array and executes in a separate loop. (Of course,
-if you just do `f.(x)` then it is as fast as `fdot(x)` in this
-example, but in many contexts it is more convenient to just sprinkle
-some dots in your expressions rather than defining a separate function
-for each vectorized operation.)
+也就是说，`fdot(x)` 的速度是 `f(x)` 的 10 倍，分配的内存是 `f(x)` 的 1/6，因为 f(x) 中的每个 `*` 和 `+` 操作都会分配一个新的临时数组并在单独的循环中执行。 （当然，如果你只做 `f.(x)` 那么在这个例子中它和 `fdot(x)` 一样快，但在许多情况下，只在表达式中写一些点比为每个向量化操作定义单独的函数更方便。）
 
-## [Consider using views for slices](@id man-performance-views)
+## [考虑对切片使用视图](@id man-performance-views)
 
-In Julia, an array "slice" expression like `array[1:5, :]` creates
-a copy of that data (except on the left-hand side of an assignment,
-where `array[1:5, :] = ...` assigns in-place to that portion of `array`).
-If you are doing many operations on the slice, this can be good for
-performance because it is more efficient to work with a smaller
-contiguous copy than it would be to index into the original array.
-On the other hand, if you are just doing a few simple operations on
-the slice, the cost of the allocation and copy operations can be
-substantial.
+在 Julia 中，像 `array[1:5, :]` 这样的数组“切片”表达式会创建该数据的副本（赋值的左侧除外，其中 `array[1:5, :] = ...` 原地对 `array` 的那一部分进行赋值）。 如果你在切片上执行许多操作，这对性能有好处，因为使用较小的连续副本比索引原始数组更有效。 另一方面，如果你只是对切片进行一些简单的操作，那么分配和复制操作的成本可能会很高。
 
-An alternative is to create a "view" of the array, which is
-an array object (a `SubArray`) that actually references the data
-of the original array in-place, without making a copy. (If you
-write to a view, it modifies the original array's data as well.)
-This can be done for individual slices by calling [`view`](@ref),
-or more simply for a whole expression or block of code by putting
-[`@views`](@ref) in front of that expression. For example:
+另一种方法是创建数组的“视图”，它是一个数组对象（一个`SubArray`），它实际上就地引用了原始数组的数据，而不进行复制。（如果你写入视图，它也会修改原始数组的数据。）这可以通过调用 [`view`](@ref) 对单个切片完成，或者更简单地通过将整个表达式或代码块放入 [`@views`](@ref) 在该表达式前面。 例如：
 
 ```jldoctest; filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> fcopy(x) = sum(x[2:end-1]);
@@ -1057,20 +864,13 @@ julia> @time fview(x);
   0.001020 seconds (1 allocation: 16 bytes)
 ```
 
-Notice both the 3× speedup and the decreased memory allocation
-of the `fview` version of the function.
+请注意，该函数的 `fview` 版本提速了 3 倍且减少了内存分配。
 
-## Copying data is not always bad
+## 复制数据不总是坏的
 
-Arrays are stored contiguously in memory, lending themselves to CPU vectorization
-and fewer memory accesses due to caching. These are the same reasons that it is recommended
-to access arrays in column-major order (see above). Irregular access patterns and non-contiguous views
-can drastically slow down computations on arrays because of non-sequential memory access.
+数组被连续地存储在内存中，这使其可被 CPU 向量化，并且会由于缓存减少内存访问。这与建议以列序优先方式访问数组的原因相同（请参见上文）。由于不按顺序访问内存，无规律的访问方式和不连续的视图可能会大大减慢数组上的计算速度。
 
-Copying irregularly-accessed data into a contiguous array before operating on it can result
-in a large speedup, such as in the example below. Here, a matrix and a vector are being accessed at
-800,000 of their randomly-shuffled indices before being multiplied. Copying the views into
-plain arrays speeds up the multiplication even with the cost of the copying operation.
+在对无规律访问的数据进行操作前，将其复制到连续的数组中可能带来巨大的加速，正如下例所示。其中，矩阵和向量在相乘前会访问其 800,000 个已被随机混洗的索引处的值。将视图复制到普通数组会加速乘法，即使考虑了复制操作的成本。
 
 ```julia-repl
 julia> using Random
@@ -1098,52 +898,43 @@ julia> @time begin
 -4256.759568345134
 ```
 
-Provided there is enough memory for the copies, the cost of copying the view to an array is
-far outweighed by the speed boost from doing the matrix multiplication on a contiguous array.
+倘若副本本身的内存足够大，那么将视图复制到数组的成本可能远远超过在连续数组上执行矩阵乘法所带来的加速。
 
-## Consider StaticArrays.jl for small fixed-size vector/matrix operations
+## 使用 StaticArrays.jl 进行小型固定大小的向量/矩阵运算
 
-If your application involves many small (`< 100` element) arrays of fixed sizes (i.e. the size is
-known prior to execution), then you might want to consider using the [StaticArrays.jl package](https://github.com/JuliaArrays/StaticArrays.jl).
-This package allows you to represent such arrays in a way that avoids unnecessary heap allocations and allows the compiler to
-specialize code for the *size* of the array, e.g. by completely unrolling vector operations (eliminating the loops) and storing elements in CPU registers.
+如果您的应用程序涉及许多固定大小的小（`< 100` 个元素）数组（即在执行之前已知大小），那么你可能需要考虑使用 [StaticArrays.jl 包](https://github.com/JuliaArrays/StaticArrays.jl）。 这个包允许你以一种避免不必要的堆分配的方式来表示这样的数组，并允许编译器为数组的*大小*特例化代码，例如，通过完全展开向量操作（消除循环）并将元素存储在 CPU 寄存器中。
 
-For example, if you are doing computations with 2d geometries, you might have many computations with 2-component vectors.  By
-using the `SVector` type from StaticArrays.jl, you can use convenient vector notation and operations like `norm(3v - w)` on
-vectors `v` and `w`, while allowing the compiler to unroll the code to a minimal computation equivalent to `@inbounds hypot(3v[1]-w[1], 3v[2]-w[2])`.
+例如，如果你正在使用 2d 几何图形进行计算，你可能会使用 2-分量向量进行许多计算。 通过使用 StaticArrays.jl 中的 `SVector` 类型，你可以在向量 `v` 和 `w` 上使用方便的向量符号和操作，例如 `norm(3v - w)`，同时允许编译器将代码展开到最小，计算等效于`@inbounds hypot(3v[1]-w[1], 3v[2]-w[2])`。
 
-## Avoid string interpolation for I/O
+## 避免 I/0 中的字符串插值
 
-When writing data to a file (or other I/O device), forming extra intermediate strings is a source
-of overhead. Instead of:
+将数据写入到文件（或其他 I/0 设备）中时，生成额外的中间字符串会带来开销。请不要写成这样：
 
 ```julia
 println(file, "$a $b")
 ```
 
-use:
+请写成这样：
 
 ```julia
 println(file, a, " ", b)
 ```
 
-The first version of the code forms a string, then writes it to the file, while the second version
-writes values directly to the file. Also notice that in some cases string interpolation can be
-harder to read. Consider:
+第一个版本的代码生成一个字符串，然后将其写入到文件中，而第二个版本直接将值写入到文件中。另请注意，在某些情况下，字符串插值可能更难阅读。请考虑：
 
 ```julia
 println(file, "$(f(a))$(f(b))")
 ```
 
-versus:
+与：
 
 ```julia
 println(file, f(a), f(b))
 ```
 
-## Optimize network I/O during parallel execution
+## 并发执行时优化网络 I/O
 
-When executing a remote function in parallel:
+当并发地执行一个远程函数时：
 
 ```julia
 using Distributed
@@ -1156,7 +947,7 @@ responses = Vector{Any}(undef, nworkers())
 end
 ```
 
-is faster than:
+会快于：
 
 ```julia
 using Distributed
@@ -1168,56 +959,49 @@ end
 responses = [fetch(r) for r in refs]
 ```
 
-The former results in a single network round-trip to every worker, while the latter results in
-two network calls - first by the [`@spawnat`](@ref) and the second due to the [`fetch`](@ref)
-(or even a [`wait`](@ref)).
-The [`fetch`](@ref)/[`wait`](@ref) is also being executed serially resulting in an overall poorer performance.
+第一种方式导致每个worker一次网络往返，而第二种方式是两次网络调用：一次 [`@spawnat`](@ref) 一次[`fetch`](@ref)
+（甚至是 [`wait`](@ref)）。
+[`fetch`](@ref) 和[`wait`](@ref) 都是同步执行，会导致较差的性能。
 
-## Fix deprecation warnings
+## 修复过期警告
 
-A deprecated function internally performs a lookup in order to print a relevant warning only once.
-This extra lookup can cause a significant slowdown, so all uses of deprecated functions should
-be modified as suggested by the warnings.
+过期的函数在内部会执行查找，以便仅打印一次相关警告。
+这种额外查找可能会显著影响性能，因此应根据警告建议修复掉过期函数的所有使用。
 
-## Tweaks
+## 小技巧
 
-These are some minor points that might help in tight inner loops.
+有一些小的注意事项可能会帮助改善循环性能。
 
-  * Avoid unnecessary arrays. For example, instead of [`sum([x,y,z])`](@ref) use `x+y+z`.
-  * Use [`abs2(z)`](@ref) instead of [`abs(z)^2`](@ref) for complex `z`. In general, try to rewrite
-    code to use [`abs2`](@ref) instead of [`abs`](@ref) for complex arguments.
-  * Use [`div(x,y)`](@ref) for truncating division of integers instead of [`trunc(x/y)`](@ref), [`fld(x,y)`](@ref)
-    instead of [`floor(x/y)`](@ref), and [`cld(x,y)`](@ref) instead of [`ceil(x/y)`](@ref).
+  * 避免使用不必要的数组。比如，使用 `x+y+z` 而不是 [`sum([x,y,z])`](@ref)。
+  * 对于复数 `z`，使用 [`abs2(z)`](@ref) 而不是 [`abs(z)^2`](@ref)。一般的，
+    对于复数参数，用 [`abs2`](@ref) 代替[`abs`](@ref)。
+  * 对于直接截断的整除，使用 [`div(x,y)`](@ref) 而不是 [`trunc(x/y)`](@ref)，使用[`fld(x,y)`](@ref)
+    而不是 [`floor(x/y)`](@ref)，使用 [`cld(x,y)`](@ref) 而不是 [`ceil(x/y)`](@ref)。
 
-## [Performance Annotations](@id man-performance-annotations)
+## [性能标注](@id man-performance-annotations)
 
-Sometimes you can enable better optimization by promising certain program properties.
+有时，你可以通过承诺某些程序性质来启用更好的优化。
 
-  * Use [`@inbounds`](@ref) to eliminate array bounds checking within expressions. Be certain before doing
-    this. If the subscripts are ever out of bounds, you may suffer crashes or silent corruption.
-  * Use [`@fastmath`](@ref) to allow floating point optimizations that are correct for real numbers, but lead
-    to differences for IEEE numbers. Be careful when doing this, as this may change numerical results.
-    This corresponds to the `-ffast-math` option of clang.
-  * Write [`@simd`](@ref) in front of `for` loops to promise that the iterations are independent and may be
-    reordered.  Note that in many cases, Julia can automatically vectorize code without the `@simd` macro;
-    it is only beneficial in cases where such a transformation would otherwise be illegal, including cases
-    like allowing floating-point re-associativity and ignoring dependent memory accesses (`@simd ivdep`).
-    Again, be very careful when asserting `@simd` as erroneously annotating a loop with dependent iterations
-    may result in unexpected results. In particular, note that `setindex!` on some `AbstractArray` subtypes is
-    inherently dependent upon iteration order. **This feature is experimental**
-    and could change or disappear in future versions of Julia.
+  * 使用 [`@inbounds`](@ref) 来取消表达式中的数组边界检查。使用前请再三确定，如果下标越界，可能会发生崩溃或潜在的故障。
+     
+  * 使用 [`@fastmath`](@ref) 来允许对于实数是正确的、但是对于 IEEE 数字会导致差异的浮点数优化。使用时请多多小心，因为这可能改变数值结果。这对应于 clang 的 `-ffast-math` 选项。
+     
+     
+  * 在 `for` 循环前编写 [`@simd`](@ref) 来承诺迭代是相互独立且可以重新排序的。请注意，在许多情况下，Julia 可以在没有 `@simd` 宏的情况下自动向量化代码；只有在这种转换原本是非法的情况下才有用，包括允许浮点数重新结合和忽略相互依赖的内存访问（`@simd ivdep`）等情况。此外，在断言 `@simd` 时要十分小心，因为错误地标注一个具有相互依赖的迭代的循环可能导致意外结果。尤其要注意的是，某些 `AbstractArray` 子类型的 `setindex!` 本质上依赖于迭代顺序。**此功能是实验性的**，在 Julia 未来的版本中可能会更改或消失。
+     
+     
+     
+     
+     
+     
+     
 
-The common idiom of using 1:n to index into an AbstractArray is not safe if the Array uses unconventional indexing,
-and may cause a segmentation fault if bounds checking is turned off. Use `LinearIndices(x)` or `eachindex(x)`
-instead (see also [Arrays with custom indices](@ref man-custom-indices)).
+如果 Array 使用非常规索引，那么使用 1:n 索引到 AbstractArray 的常见习惯用法是不安全的，如果关闭边界检查，可能会导致段错误。请改用`LinearIndices(x)` 或`eachindex(x)`（另请参阅[具有自定义索引的数组](@ref man-custom-indices)）。
 
 !!! note
-    While `@simd` needs to be placed directly in front of an innermost `for` loop, both `@inbounds` and `@fastmath`
-    can be applied to either single expressions or all the expressions that appear within nested blocks of code, e.g.,
-    using `@inbounds begin` or `@inbounds for ...`.
+    虽然 `@simd` 需要直接放在最内层 `for` 循环前面，但 `@inbounds` 和 `@fastmath` 都可作用于单个表达式或在嵌套代码块中出现的所有表达式，例如，可使用 `@inbounds begin` 或 `@inbounds for ...`。
 
-Here is an example with both `@inbounds` and `@simd` markup (we here use `@noinline` to prevent
-the optimizer from trying to be too clever and defeat our benchmark):
+下面是一个具有 `@inbounds` 和 `@simd` 标记的例子（我们这里使用 `@noinline` 来防止因优化器过于智能而破坏我们的基准测试）：
 
 ```julia
 @noinline function inner(x, y)
@@ -1253,23 +1037,22 @@ end
 timeit(1000, 1000)
 ```
 
-On a computer with a 2.4GHz Intel Core i5 processor, this produces:
+在配备 2.4GHz Intel Core i5 处理器的计算机上，其结果为：
 
 ```
 GFlop/sec        = 1.9467069505224963
 GFlop/sec (SIMD) = 17.578554163920018
 ```
 
-(`GFlop/sec` measures the performance, and larger numbers are better.)
+（`GFlop/sec` 用来测试性能，数值越大越好。）
 
-Here is an example with all three kinds of markup. This program first calculates the finite difference
-of a one-dimensional array, and then evaluates the L2-norm of the result:
+下面是一个具有三种标记的例子。此程序首先计算一个一维数组的有限差分，然后计算结果的 L2 范数：
 
 ```julia
 function init!(u::Vector)
     n = length(u)
     dx = 1.0 / (n-1)
-    @fastmath @inbounds @simd for i in 1:n #by asserting that `u` is a `Vector` we can assume it has 1-based indexing
+    @fastmath @inbounds @simd for i in 1:n # 通过断言 `u` 是一个 `Vector`，我们可以假定它具有 1-based 索引
         u[i] = sin(2pi*dx*i)
     end
 end
@@ -1314,7 +1097,7 @@ end
 main()
 ```
 
-On a computer with a 2.7 GHz Intel Core i7 processor, this produces:
+在配备 2.7 GHz Intel Core i7 处理器的计算机上，其结果为：
 
 ```
 $ julia wave.jl;
@@ -1326,26 +1109,13 @@ $ julia --math-mode=ieee wave.jl;
 4.443986180758249
 ```
 
-Here, the option `--math-mode=ieee` disables the `@fastmath` macro, so that we can compare results.
+在这里，选项 `--math-mode=ieee` 禁用 `@fastmath` 宏，好让我们可以比较结果。
 
-In this case, the speedup due to `@fastmath` is a factor of about 3.7. This is unusually large
-– in general, the speedup will be smaller. (In this particular example, the working set of the
-benchmark is small enough to fit into the L1 cache of the processor, so that memory access latency
-does not play a role, and computing time is dominated by CPU usage. In many real world programs
-this is not the case.) Also, in this case this optimization does not change the result – in
-general, the result will be slightly different. In some cases, especially for numerically unstable
-algorithms, the result can be very different.
+在这种情况下，`@fastmath` 加速了大约 3.7 倍。这非常大——通常来说，加速会更小。（在这个特定的例子中，基准测试的工作集足够小，可以放在该处理器的 L1 缓存中，因此内存访问延迟不起作用，计算时间主要由 CPU 使用率决定。在许多现实世界的程序中，情况并非如此。）此外，在这种情况下，此优化不会改变计算结果——通常来说，结果会略有不同。在某些情况下，尤其是数值不稳定的算法，计算结果可能会差很多。
 
-The annotation `@fastmath` re-arranges floating point expressions, e.g. changing the order of
-evaluation, or assuming that certain special cases (inf, nan) cannot occur. In this case (and
-on this particular computer), the main difference is that the expression `1 / (2*dx)` in the function
-`deriv` is hoisted out of the loop (i.e. calculated outside the loop), as if one had written
-`idx = 1 / (2*dx)`. In the loop, the expression `... / (2*dx)` then becomes `... * idx`, which
-is much faster to evaluate. Of course, both the actual optimization that is applied by the compiler
-as well as the resulting speedup depend very much on the hardware. You can examine the change
-in generated code by using Julia's [`code_native`](@ref) function.
+标注 `@fastmath` 会重新排列浮点数表达式，例如更改求值顺序，或者假设某些特殊情况（如 inf、nan）不出现。在这种情况中（以及在这个特定的计算机上），主要区别是函数 `deriv` 中的表达式 `1 / (2*dx)` 会被提升出循环（即在循环外计算），就像编写了 `idx = 1 / (2*dx)`，然后，在循环中，表达式 `... / (2*dx)` 变为 `... * idx`，后者计算起来快得多。当然，编译器实际上采用的优化以及由此产生的加速都在很大程度上取决于硬件。你可以使用 Julia 的 [`code_native`](@ref) 函数来检查所生成代码的更改。
 
-Note that `@fastmath` also assumes that `NaN`s will not occur during the computation, which can lead to surprising behavior:
+请注意，`@fastmath` 也假设了在计算中不会出现 `NaN`，这可能导致意想不到的行为：
 
 ```julia-repl
 julia> f(x) = isnan(x);
@@ -1359,15 +1129,11 @@ julia> f_fast(NaN)
 false
 ```
 
-## Treat Subnormal Numbers as Zeros
+## 将次正规数视为零
 
-Subnormal numbers, formerly called [denormal numbers](https://en.wikipedia.org/wiki/Denormal_number),
-are useful in many contexts, but incur a performance penalty on some hardware. A call [`set_zero_subnormals(true)`](@ref)
-grants permission for floating-point operations to treat subnormal inputs or outputs as zeros,
-which may improve performance on some hardware. A call [`set_zero_subnormals(false)`](@ref) enforces
-strict IEEE behavior for subnormal numbers.
+次正规数，以前称为 [非正规数](https://en.wikipedia.org/wiki/Denormal_number)，在许多情况下都很有用，但会在某些硬件上造成性能损失。 调用 [`set_zero_subnormals(true)`](@ref) 授予浮点运算权限，将次正规输入或输出视为零，这可能会提高某些硬件的性能。 调用 [`set_zero_subnormals(false)`](@ref) 对次正规数强制执行严格的 IEEE 行为。
 
-Below is an example where subnormals noticeably impact performance on some hardware:
+下面是一个示例，其中次正规数显着影响某些硬件的性能：
 
 ```julia
 function timestep(b::Vector{T}, a::Vector{T}, Δt::T) where T
@@ -1396,7 +1162,7 @@ for trial=1:6
 end
 ```
 
-This gives an output similar to
+它的输出类似于
 
 ```
   0.002202 seconds (1 allocation: 4.063 KiB)
@@ -1407,13 +1173,11 @@ This gives an output similar to
   0.001455 seconds (1 allocation: 4.063 KiB)
 ```
 
-Note how each even iteration is significantly faster.
+注意，每个偶数迭代的速度明显更快。
 
-This example generates many subnormal numbers because the values in `a` become an exponentially
-decreasing curve, which slowly flattens out over time.
+这个例子产生了许多次正规数，因为`a`中的值变成了一个指数递减的曲线，随着时间的推移慢慢渐进趋于0。
 
-Treating subnormals as zeros should be used with caution, because doing so breaks some identities,
-such as `x-y == 0` implies `x == y`:
+应谨慎使用将次正规数视为零，因为这样做会破坏某些等式，例如 `x-y == 0` 意味着 `x == y`：
 
 ```jldoctest
 julia> x = 3f-38; y = 2f-38;
@@ -1425,8 +1189,7 @@ julia> set_zero_subnormals(false); (x - y, x == y)
 (1.0000001f-38, false)
 ```
 
-In some applications, an alternative to zeroing subnormal numbers is to inject a tiny bit of noise.
- For example, instead of initializing `a` with zeros, initialize it with:
+在某些应用程序中，将次正规数归零的另一种方法是加入一点点噪音。 例如，不是用零初始化`a`，而是用以下方法初始化它：
 
 ```julia
 a = rand(Float32,1000) * 1.f-9
@@ -1434,8 +1197,7 @@ a = rand(Float32,1000) * 1.f-9
 
 ## [[`@code_warntype`](@ref)](@id man-code-warntype)
 
-The macro [`@code_warntype`](@ref) (or its function variant [`code_warntype`](@ref)) can sometimes
-be helpful in diagnosing type-related problems. Here's an example:
+宏 [`@code_warntype`](@ref)（或其函数变体 [`code_warntype`](@ref)）有时可以帮助诊断类型相关的问题。这是一个例子：
 
 ```julia-repl
 julia> @noinline pos(x) = x < 0 ? 0 : x;
@@ -1459,62 +1221,36 @@ Body::Float64
 └──      return %4
 ```
 
-Interpreting the output of [`@code_warntype`](@ref), like that of its cousins [`@code_lowered`](@ref),
-[`@code_typed`](@ref), [`@code_llvm`](@ref), and [`@code_native`](@ref), takes a little practice.
-Your code is being presented in form that has been heavily digested on its way to generating
-compiled machine code. Most of the expressions are annotated by a type, indicated by the `::T`
-(where `T` might be [`Float64`](@ref), for example). The most important characteristic of [`@code_warntype`](@ref)
-is that non-concrete types are displayed in red; since this document is written in Markdown, which has no color,
-in this document, red text is denoted by uppercase.
+理解 [`@code_warntype`](@ref) 的输出，就像理解它的同类工具 [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_llvm`](@ ref) 和 [`@code_native`](@ref) 一样需要一些练习。你的代码以在生成编译机器代码的过程中经过大量摘要的形式呈现。大多数表达式都由类型注释，由 `::T` 表示（例如，其中 `T` 可能是 [`Float64`](@ref)）。 [`@code_warntype`](@ref) 最大的特点就是非具体类型用红色显示； 由于本文档是用Markdown 编写的，没有颜色，所以本文档中红色文字用大写表示。
 
-At the top, the inferred return type of the function is shown as `Body::Float64`.
-The next lines represent the body of `f` in Julia's SSA IR form.
-The numbered boxes are labels and represent targets for jumps (via `goto`) in your code.
-Looking at the body, you can see that the first thing that happens is that `pos` is called and the
-return value has been inferred as the `Union` type `UNION{FLOAT64, INT64}` shown in uppercase since
-it is a non-concrete type. This means that we cannot know the exact return type of `pos` based on the
-input types. However, the result of `y*x`is a `Float64` no matter if `y` is a `Float64` or `Int64`
-The net result is that `f(x::Float64)` will not be type-unstable
-in its output, even if some of the intermediate computations are type-unstable.
+在顶部，该函数类型推导后的返回类型显示为 `Body::Float64`。下一行以 Julia 的 SSA IR 形式表示了 `f` 的主体。被数字标记的方块表示代码中（通过 `goto`）跳转的目标。查看主体，你会看到首先调用了 `pos`，其返回值经类型推导为 `Union` 类型 `UNION{FLOAT64, INT64}` 并以大写字母显示，因为它是非具体类型。这意味着我们无法根据输入类型知道 `pos` 的确切返回类型。但是，无论 `y` 是 `Float64` 还是 `Int64`，`y*x` 的结果都是 `Float64`。最终的结果是 `f(x::Float64)` 在其输出中不会是类型不稳定的，即使有些中间计算是类型不稳定的。
 
-How you use this information is up to you. Obviously, it would be far and away best to fix `pos`
-to be type-stable: if you did so, all of the variables in `f` would be concrete, and its performance
-would be optimal. However, there are circumstances where this kind of *ephemeral* type instability
-might not matter too much: for example, if `pos` is never used in isolation, the fact that `f`'s
-output is type-stable (for [`Float64`](@ref) inputs) will shield later code from the propagating
-effects of type instability. This is particularly relevant in cases where fixing the type instability
-is difficult or impossible. In such cases, the tips above (e.g., adding type annotations and/or
-breaking up functions) are your best tools to contain the "damage" from type instability.
-Also, note that even Julia Base has functions that are type unstable.
-For example, the function [`findfirst`](@ref) returns the index into an array where a key is found,
-or `nothing` if it is not found, a clear type instability. In order to make it easier to find the
-type instabilities that are likely to be important, `Union`s containing either `missing` or `nothing`
-are color highlighted in yellow, instead of red.
+如何使用这些信息取决于你。显然，最好将 `pos` 修改为类型稳定的：如果这样做，`f` 中的所有变量都是具体的，其性能将是最佳的。但是，在某些情况下，这种*短暂的*类型不稳定性可能无关紧要：例如，如果 `pos` 从不单独使用，那么 `f` 的输出（对于 [`Float64`](@ref) 输入）是类型稳定的这一事实将保护之后的代码免受类型不稳定性的传播影响。这与类型不稳定性难以或不可能修复的情况密切相关。在这些情况下，上面的建议（例如，添加类型注释并/或分解函数）是你控制类型不稳定性的「损害」的最佳工具。另请注意，即使是 Julia Base 也有类型不稳定的函数。例如，函数 [`findfirst`](@ref) 如果找到键则返回数组索引，如果没有找到键则返回 `nothing`，这是明显的类型不稳定性。为了更易于找到可能很重要的类型不稳定性，包含 `missing` 或 `nothing` 的 `Union` 会用黄色着重显示，而不是用红色。
 
-The following examples may help you interpret expressions marked as containing non-leaf types:
+以下示例可以帮助你解释被标记为包含非叶类型的表达式：
 
-  * Function body starting with `Body::UNION{T1,T2})`
-      * Interpretation: function with unstable return type
-      * Suggestion: make the return value type-stable, even if you have to annotate it
+  * 函数体以 `Body::UNION{T1,T2})` 开头
+      * 解释：函数具有不稳定返回类型
+      * 建议：使返回值类型稳定，即使你必须对其进行类型注释
 
   * `invoke Main.g(%%x::Int64)::UNION{FLOAT64, INT64}`
-      * Interpretation: call to a type-unstable function `g`.
-      * Suggestion: fix the function, or if necessary annotate the return value
+      * 解释：调用类型不稳定的函数 `g`。
+      * 建议：修改该函数，或在必要时对其返回值进行类型注释
 
   * `invoke Base.getindex(%%x::Array{Any,1}, 1::Int64)::ANY`
-      * Interpretation: accessing elements of poorly-typed arrays
-      * Suggestion: use arrays with better-defined types, or if necessary annotate the type of individual
-        element accesses
+      * 解释：访问缺乏类型信息的数组的元素
+      * 建议：使用具有更佳定义的类型的数组，或在必要时对访问的单个元素进行类型注释
+         
 
   * `Base.getfield(%%x, :(:data))::ARRAY{FLOAT64,N} WHERE N`
-      * Interpretation: getting a field that is of non-leaf type. In this case, `ArrayContainer` had a
-        field `data::Array{T}`. But `Array` needs the dimension `N`, too, to be a concrete type.
-      * Suggestion: use concrete types like `Array{T,3}` or `Array{T,N}`, where `N` is now a parameter
-        of `ArrayContainer`
+      * 解释：获取一个非叶子类型的字段。 在这种情况下，`x` 的类型，比如说 `ArrayContainer`，有一个字段 `data::Array{T}`。 但是 `Array` 也需要维度 `N` 作为具体类型。
+         
+      * 建议：使用类似于 `Array{T,3}` 或 `Array{T,N}` 的具体类型，其中的 `N` 现在是 `ArrayContainer` 的参数
+         
 
-## [Performance of captured variable](@id man-performance-captured)
+## [被捕获变量的性能](@id man-performance-captured)
 
-Consider the following example that defines an inner function:
+请考虑以下定义内部函数的示例：
 ```julia
 function abmult(r::Int)
     if r < 0
@@ -1525,40 +1261,15 @@ function abmult(r::Int)
 end
 ```
 
-Function `abmult` returns a function `f` that multiplies its argument by
-the absolute value of `r`. The inner function assigned to `f` is called a
-"closure". Inner functions are also used by the
-language for `do`-blocks and for generator expressions.
+函数 `abmult` 返回一个函数 `f`，它将其参数乘以 `r` 的绝对值。赋值给 `f` 的函数称为「闭包」。内部函数还被语言用于 `do` 代码块和生成器表达式。
 
-This style of code presents performance challenges for the language.
-The parser, when translating it into lower-level instructions,
-substantially reorganizes the above code by extracting the
-inner function to a separate code block.  "Captured" variables such as `r`
-that are shared by inner functions and their enclosing scope are
-also extracted into a heap-allocated "box" accessible to both inner and
-outer functions because the language specifies that `r` in the
-inner scope must be identical to `r` in the outer scope even after the
-outer scope (or another inner function) modifies `r`.
+这种代码风格为语言带来了性能挑战。解析器在将其转换为较低级别的指令时，基本上通过将内部函数提取到单独的代码块来重新组织上述代码。「被捕获的」变量，比如 `r`，被内部函数共享，且包含它们的作用域会被提取到内部函数和外部函数皆可访问的堆分配「box」中，这是因为语言指定内部作用域中的 `r` 必须与外部作用域中的 `r` 相同，就算在外部作用域（或另一个内部函数）修改 `r` 后也需如此。
 
-The discussion in the preceding paragraph referred to the "parser", that is, the phase
-of compilation that takes place when the module containing `abmult` is first loaded,
-as opposed to the later phase when it is first invoked. The parser does not "know" that
-`Int` is a fixed type, or that the statement `r = -r` transforms an `Int` to another `Int`.
-The magic of type inference takes place in the later phase of compilation.
+前一段的讨论中提到了「解析器」，也就是，包含 `abmult` 的模块被首次加载时发生的编译前期，而不是首次调用它的编译后期。解析器不「知道」`Int` 是固定类型，也不知道语句 `r = -r` 将一个 `Int` 转换为另一个 `Int`。类型推断的魔力在编译后期生效。
 
-Thus, the parser does not know that `r` has a fixed type (`Int`).
-nor that `r` does not change value once the inner function is created (so that
-the box is unneeded).  Therefore, the parser emits code for
-box that holds an object with an abstract type such as `Any`, which
-requires run-time type dispatch for each occurrence of `r`.  This can be
-verified by applying `@code_warntype` to the above function.  Both the boxing
-and the run-time type dispatch can cause loss of performance.
+因此，解析器不知道 `r` 具有固定类型（`Int`）。一旦内部函数被创建，`r` 的值也不会改变（因此也不需要 box）。因此，解析器向包含具有抽象类型（比如 `Any`）的对象的 box 发出代码，这对于每次出现的 `r` 都需要运行时类型分派。这可以通过在上述函数中使用 `@code_warntype` 来验证。装箱和运行时的类型分派都有可能导致性能损失。
 
-If captured variables are used in a performance-critical section of the code,
-then the following tips help ensure that their use is performant. First, if
-it is known that a captured variable does not change its type, then this can
-be declared explicitly with a type annotation (on the variable, not the
-right-hand side):
+如果捕获的变量用于代码的性能关键部分，那么以下提示有助于确保它们的使用具有高效性。首先，如果已经知道被捕获的变量不会改变类型，则可以使用类型注释来显式声明类型（在变量上，而不是在右侧）：
 ```julia
 function abmult2(r0::Int)
     r::Int = r0
@@ -1569,11 +1280,7 @@ function abmult2(r0::Int)
     return f
 end
 ```
-The type annotation partially recovers lost performance due to capturing because
-the parser can associate a concrete type to the object in the box.
-Going further, if the captured variable does not need to be boxed at all (because it
-will not be reassigned after the closure is created), this can be indicated
-with `let` blocks as follows.
+类型注释部分恢复由于捕获而导致的丢失性能，因为解析器可以将具体类型与 box 中的对象相关联。更进一步，如果被捕获的变量不再需要 box（因为它不会在闭包创建后被重新分配），就可以用 `let` 代码块表示，如下所示。
 ```julia
 function abmult3(r::Int)
     if r < 0
@@ -1585,19 +1292,4 @@ function abmult3(r::Int)
     return f
 end
 ```
-The `let` block creates a new variable `r` whose scope is only the
-inner function. The second technique recovers full language performance
-in the presence of captured variables. Note that this is a rapidly
-evolving aspect of the compiler, and it is likely that future releases
-will not require this degree of programmer annotation to attain performance.
-In the mean time, some user-contributed packages like
-[FastClosures](https://github.com/c42f/FastClosures.jl) automate the
-insertion of `let` statements as in `abmult3`.
-
-## Checking for equality with a singleton
-
-When checking if a value is equal to some singleton it can be
-better for performance to check for identicality (`===`) instead of
-equality (`==`). The same advice applies to using `!==` over `!=`.
-These type of checks frequently occur e.g. when implementing the iteration
-protocol and checking if `nothing` is returned from [`iterate`](@ref).
+`let` 代码块创建了一个新的变量 `r`，它的作用域只是内部函数。第二种技术在捕获变量存在时完全恢复了语言性能。请注意，这是编译器的一个快速发展的方面，未来的版本可能不需要依靠这种程度的程序员注释来获得性能。与此同时，一些用户提供的包（如 [FastClosures](https://github.com/c42f/FastClosures.jl)）会自动插入像在 `abmult3` 中那样的 `let` 语句。

@@ -1,26 +1,19 @@
-# Control Flow
+# 流程控制
 
-Julia provides a variety of control flow constructs:
+Julia 提供了大量的流程控制构件：
 
-  * [Compound Expressions](@ref man-compound-expressions): `begin` and `;`.
-  * [Conditional Evaluation](@ref man-conditional-evaluation): `if`-`elseif`-`else` and `?:` (ternary operator).
-  * [Short-Circuit Evaluation](@ref): logical operators `&&` (“and”) and `||` (“or”), and also chained comparisons.
-  * [Repeated Evaluation: Loops](@ref man-loops): `while` and `for`.
-  * [Exception Handling](@ref): `try`-`catch`, [`error`](@ref) and [`throw`](@ref).
-  * [Tasks (aka Coroutines)](@ref man-tasks): [`yieldto`](@ref).
+  * [复合表达式](@ref man-compound-expressions)：`begin` 和 `;`。
+  * [条件表达式](@ref man-conditional-evaluation)：`if`-`elseif`-`else` 和 `?:` (三元运算符)。
+  * [短路求值](@ref)：逻辑运算符 `&&`（与）和 `||`（或），以及链式比较。
+  * [重复执行：循环](@ref man-loops)：`while` 和 `for`。
+  * [异常处理](@ref)：`try`-`catch`、[`error`](@ref) 和 [`throw`](@ref)。
+  * [`Task`（协程）](@ref man-tasks)：[`yieldto`](@ref)。
 
-The first five control flow mechanisms are standard to high-level programming languages. [`Task`](@ref)s
-are not so standard: they provide non-local control flow, making it possible to switch between
-temporarily-suspended computations. This is a powerful construct: both exception handling and
-cooperative multitasking are implemented in Julia using tasks. Everyday programming requires no
-direct usage of tasks, but certain problems can be solved much more easily by using tasks.
+前五个流程控制机制是高级编程语言的标准。[`Task`](@ref) 不是那么的标准：它提供了非局部的流程控制，这使得在暂时挂起的计算任务之间进行切换成为可能。这是一个功能强大的构件：Julia 中的异常处理和协同多任务都是通过 `Task` 实现的。虽然日常编程并不需要直接使用 `Task`，但某些问题用 `Task` 处理会更加简单。
 
-## [Compound Expressions](@id man-compound-expressions)
+## [复合表达式](@id man-compound-expressions)
 
-Sometimes it is convenient to have a single expression which evaluates several subexpressions
-in order, returning the value of the last subexpression as its value. There are two Julia constructs
-that accomplish this: `begin` blocks and `;` chains. The value of both compound expression constructs
-is that of the last subexpression. Here's an example of a `begin` block:
+有时一个表达式能够有序地计算若干子表达式，并返回最后一个子表达式的值作为它的值是很方便的。Julia 有两个组件来完成这个： `begin` 代码块 和 `;` 链。这两个复合表达式组件的值都是最后一个子表达式的值。下面是一个 `begin` 代码块的例子：
 
 ```jldoctest
 julia> z = begin
@@ -31,17 +24,14 @@ julia> z = begin
 3
 ```
 
-Since these are fairly small, simple expressions, they could easily be placed onto a single line,
-which is where the `;` chain syntax comes in handy:
+因为这些是非常简短的表达式，它们可以简单地被放到一行里，这也是 `;` 链的由来：
 
 ```jldoctest
 julia> z = (x = 1; y = 2; x + y)
 3
 ```
 
-This syntax is particularly useful with the terse single-line function definition form introduced
-in [Functions](@ref man-functions). Although it is typical, there is no requirement that `begin` blocks be multiline
-or that `;` chains be single-line:
+这个语法在定义简洁的单行函数的时候特别有用，参见[函数](@id man-functions)。尽管很典型，但是并不要求 `begin` 代码块是多行的，或者 `;` 链是单行的：
 
 ```jldoctest
 julia> begin x = 1; y = 2; x + y end
@@ -53,10 +43,9 @@ julia> (x = 1;
 3
 ```
 
-## [Conditional Evaluation](@id man-conditional-evaluation)
+## [条件表达式](@id man-conditional-evaluation)
 
-Conditional evaluation allows portions of code to be evaluated or not evaluated depending on the
-value of a boolean expression. Here is the anatomy of the `if`-`elseif`-`else` conditional syntax:
+条件表达式（Conditional evaluation）可以根据布尔表达式的值，让部分代码被执行或者不被执行。下面是对 `if`-`elseif`-`else` 条件语法的分析：
 
 ```julia
 if x < y
@@ -68,9 +57,7 @@ else
 end
 ```
 
-If the condition expression `x < y` is `true`, then the corresponding block is evaluated; otherwise
-the condition expression `x > y` is evaluated, and if it is `true`, the corresponding block is
-evaluated; if neither expression is true, the `else` block is evaluated. Here it is in action:
+如果表达式 `x < y` 是 `true`，那么对应的代码块会被执行；否则判断条件表达式 `x > y`，如果它是 `true`，则执行对应的代码块；如果没有表达式是 true，则执行 `else` 代码块。下面是一个例子：
 
 ```jldoctest
 julia> function test(x, y)
@@ -94,14 +81,10 @@ julia> test(1, 1)
 x is equal to y
 ```
 
-The `elseif` and `else` blocks are optional, and as many `elseif` blocks as desired can be used.
-The condition expressions in the `if`-`elseif`-`else` construct are evaluated until the first
-one evaluates to `true`, after which the associated block is evaluated, and no further condition
-expressions or blocks are evaluated.
+`elseif` 和 `else` 代码块是可选的，并且可以使用任意多个 `elseif` 代码块。
+`if`-`elseif`-`else` 组件中的第一个条件表达式为 `true` 时，其他条件表达式才会被执行，当对应的代码块被执行后，其余的表达式或者代码块将不会被执行。
 
-`if` blocks are "leaky", i.e. they do not introduce a local scope. This means that new variables
-defined inside the `if` clauses can be used after the `if` block, even if they weren't defined
-before. So, we could have defined the `test` function above as
+`if` 代码块是"有渗漏的"，也就是说它们不会引入局部作用域。这意味着在 `if` 语句中新定义的变量依然可以在 `if` 代码块之后使用，尽管这些变量没有在 `if` 语句之前定义过。所以，我们可以将上面的 `test` 函数定义为
 
 ```jldoctest
 julia> function test(x,y)
@@ -120,9 +103,7 @@ julia> test(2, 1)
 x is greater than y.
 ```
 
-The variable `relation` is declared inside the `if` block, but used outside. However, when depending
-on this behavior, make sure all possible code paths define a value for the variable. The following
-change to the above function results in a runtime error
+变量 `relation` 是在 `if` 代码块内部声明的，但可以在外部使用。然而，在利用这种行为的时候，要保证变量在所有的分支下都进行了定义。对上述函数做如下修改会导致运行时错误
 
 ```jldoctest; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> function test(x,y)
@@ -144,9 +125,9 @@ Stacktrace:
  [1] test(::Int64, ::Int64) at ./none:7
 ```
 
-`if` blocks also return a value, which may seem unintuitive to users coming from many other languages.
-This value is simply the return value of the last executed statement in the branch that was chosen,
-so
+`if` 代码块也会返回一个值，这可能对于一些从其他语言转过来的用户来说不是很直观。
+这个返回值就是被执行的分支中最后一个被执行的语句的返回值。
+所以
 
 ```jldoctest
 julia> x = 3
@@ -160,11 +141,9 @@ julia> if x > 0
 "positive!"
 ```
 
-Note that very short conditional statements (one-liners) are frequently expressed using Short-Circuit
-Evaluation in Julia, as outlined in the next section.
+需要注意的是，在 Julia 中，经常会用短路求值来表示非常短的条件表达式（单行），这会在下一节中介绍。
 
-Unlike C, MATLAB, Perl, Python, and Ruby -- but like Java, and a few other stricter, typed languages
--- it is an error if the value of a conditional expression is anything but `true` or `false`:
+与 C, MATLAB, Perl, Python，以及 Ruby 不同，但跟 Java，还有一些别的严谨的类型语言类似：一个条件表达式的值如果不是 `true` 或者 `false` 的话，会返回错误：
 
 ```jldoctest
 julia> if 1
@@ -173,28 +152,17 @@ julia> if 1
 ERROR: TypeError: non-boolean (Int64) used in boolean context
 ```
 
-This error indicates that the conditional was of the wrong type: [`Int64`](@ref) rather
-than the required [`Bool`](@ref).
+这个错误是说，条件判断结果的类型：[`Int64`](@ref) 是错的，而不是期望的 [`Bool`](@ref)。
 
-The so-called "ternary operator", `?:`, is closely related to the `if`-`elseif`-`else` syntax,
-but is used where a conditional choice between single expression values is required, as opposed
-to conditional execution of longer blocks of code. It gets its name from being the only operator
-in most languages taking three operands:
+所谓的 "三元运算符", `?:`，很类似 `if`-`elseif`-`else` 语法，它用于选择性获取单个表达式的值，而不是选择性执行大段的代码块。它因在很多语言中是唯一一个有三个操作数的运算符而得名：
 
 ```julia
 a ? b : c
 ```
 
-The expression `a`, before the `?`, is a condition expression, and the ternary operation evaluates
-the expression `b`, before the `:`, if the condition `a` is `true` or the expression `c`, after
-the `:`, if it is `false`. Note that the spaces around `?` and `:` are mandatory: an expression
-like `a?b:c` is not a valid ternary expression (but a newline is acceptable after both the `?` and
-the `:`).
+在 `?` 之前的表达式 `a`, 是一个条件表达式，如果条件 `a` 是 `true`，三元运算符计算在 `:` 之前的表达式 `b`；如果条件 `a` 是 `false`，则执行 `:` 后面的表达式 `c`。注意，`?` 和 `:` 旁边的空格是强制的，像 `a?b:c` 这种表达式不是一个有效的三元表达式（但在`?` 和 `:` 之后的换行是允许的）。
 
-The easiest way to understand this behavior is to see an example. In the previous example, the
-`println` call is shared by all three branches: the only real choice is which literal string to
-print. This could be written more concisely using the ternary operator. For the sake of clarity,
-let's try a two-way version first:
+理解这种行为的最简单方式是看一个实际的例子。在前一个例子中，虽然在三个分支中都有调用 `println`，但实质上是选择打印哪一个字符串。在这种情况下，我们可以用三元运算符更紧凑地改写。为了简明，我们先尝试只有两个分支的版本：
 
 ```jldoctest
 julia> x = 1; y = 2;
@@ -208,9 +176,7 @@ julia> println(x < y ? "less than" : "not less than")
 not less than
 ```
 
-If the expression `x < y` is true, the entire ternary operator expression evaluates to the string
-`"less than"` and otherwise it evaluates to the string `"not less than"`. The original three-way
-example requires chaining multiple uses of the ternary operator together:
+如果表达式 `x < y` 为真，整个三元运算符会执行字符串 `"less than"`，否则执行字符串 `"not less than"`。原本的三个分支的例子需要链式嵌套使用三元运算符：
 
 ```jldoctest
 julia> test(x, y) = println(x < y ? "x is less than y"    :
@@ -227,10 +193,9 @@ julia> test(1, 1)
 x is equal to y
 ```
 
-To facilitate chaining, the operator associates from right to left.
+为了方便链式传值，运算符从右到左连接到一起。
 
-It is significant that like `if`-`elseif`-`else`, the expressions before and after the `:` are
-only evaluated if the condition expression evaluates to `true` or `false`, respectively:
+重要地是，与 `if`-`elseif`-`else` 类似，`:` 之前和之后的表达式只有在条件表达式为 `true` 或者 `false` 时才会被相应地执行：
 
 ```jldoctest
 julia> v(x) = (println(x); x)
@@ -245,27 +210,16 @@ no
 "no"
 ```
 
-## Short-Circuit Evaluation
+## 短路求值
 
-The `&&` and `||` operators in Julia correspond to logical “and” and “or” operations, respectively,
-and are typically used for this purpose.  However, they have an additional property of *short-circuit*
-evaluation: they don't necessarily evaluate their second argument, as explained below.  (There
-are also bitwise `&` and `|` operators that can be used as logical “and” and “or” *without*
-short-circuit behavior, but beware that `&` and `|` have higher precedence than `&&` and `||` for evaluation order.)
+Julia 中的 `&&` 和 `||` 运算符分别对应于逻辑“与”和“或”操作，并通常都这样使用。 但是，它们具有 *逻辑短路* 的特殊性质：不一定评估其第二个参数，下面会详细介绍。 （也有按位 `&` 和 `|` 运算符可用作逻辑“与”和“或”的*无*短路行为，但要注意 `&` 和 `|` 的评估时的优先级高于 `&& ` 和 `||` 。）
 
-Short-circuit evaluation is quite similar to conditional evaluation. The behavior is found in
-most imperative programming languages having the `&&` and `||` boolean operators: in a series
-of boolean expressions connected by these operators, only the minimum number of expressions are
-evaluated as are necessary to determine the final boolean value of the entire chain. Explicitly,
-this means that:
+短路求值与条件求值非常相似。 这种行为在大多数具有 `&&` 和 `||` 布尔运算符的命令式编程语言中都可以找到：在一系列由这些运算符连接的布尔表达式中，为了得到整个链的最终布尔值，仅仅只有最小数量的表达式被计算。 一些语言（如 Python）将它们称为`and`（`&&`）和`or`（`||`）。 更准确地说，这意味着：
 
-  * In the expression `a && b`, the subexpression `b` is only evaluated if `a` evaluates to `true`.
-  * In the expression `a || b`, the subexpression `b` is only evaluated if `a` evaluates to `false`.
+  * 在表达式 `a && b` 中，子表达式 `b` 仅当 `a` 为 `true` 的时候才会被执行。
+  * 在表达式 `a || b` 中，子表达式 `b` 仅在 `a` 为 `false` 的时候才会被执行。
 
-The reasoning is that `a && b` must be `false` if `a` is `false`, regardless of the value of
-`b`, and likewise, the value of `a || b` must be true if `a` is `true`, regardless of the value
-of `b`. Both `&&` and `||` associate to the right, but `&&` has higher precedence than `||` does.
-It's easy to experiment with this behavior:
+这里的原因是：如果 `a` 是 `false`，那么无论 `b` 的值是多少，`a && b` 一定是 `false`。同理，如果 `a` 是 `true`，那么无论 `b` 的值是多少，`a || b` 的值一定是 true。`&&` 和 `||` 都依赖于右边，但是 `&&` 比 `||` 有更高的优先级。我们可以简单地测试一下这个行为：
 
 ```jldoctest tandf
 julia> t(x) = (println(x); true)
@@ -311,15 +265,13 @@ julia> f(1) || f(2)
 false
 ```
 
-You can easily experiment in the same way with the associativity and precedence of various combinations
-of `&&` and `||` operators.
+你可以用同样的方式测试不同 `&&` 和 `||` 运算符的组合条件下的关联和优先级。
 
-This behavior is frequently used in Julia to form an alternative to very short `if` statements.
-Instead of `if <cond> <statement> end`, one can write `<cond> && <statement>` (which could be
-read as: <cond> *and then* <statement>). Similarly, instead of `if ! <cond> <statement> end`,
-one can write `<cond> || <statement>` (which could be read as: <cond> *or else* <statement>).
+这种行为在 Julia 中经常被用来作为简短 `if` 语句的替代。
+可以用 `<cond> && <statement>` (可读为: <cond> *and then* <statement>)来替换 `if <cond> <statement> end`。 类似的，
+可以用 `<cond> || <statement>` (可读为: <cond> *or else* <statement>)来替换 `if ! <cond> <statement> end`.
 
-For example, a recursive factorial routine could be defined like this:
+例如，可以像这样定义递归阶乘：
 
 ```jldoctest; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> function fact(n::Int)
@@ -343,9 +295,7 @@ Stacktrace:
  [3] top-level scope
 ```
 
-Boolean operations *without* short-circuit evaluation can be done with the bitwise boolean operators
-introduced in [Mathematical Operations and Elementary Functions](@ref): `&` and `|`. These are
-normal functions, which happen to support infix operator syntax, but always evaluate their arguments:
+**无**短路求值的布尔运算可以用位布尔运算符来完成，见[数学运算和初等函数](@ref)：`&` 和 `|`。这些是普通的函数，同时也刚好支持中缀运算符语法，但总是会计算它们的所有参数：
 
 ```jldoctest tandf
 julia> f(1) & t(2)
@@ -359,17 +309,15 @@ julia> t(1) | t(2)
 true
 ```
 
-Just like condition expressions used in `if`, `elseif` or the ternary operator, the operands of
-`&&` or `||` must be boolean values (`true` or `false`). Using a non-boolean value anywhere except
-for the last entry in a conditional chain is an error:
+与 `if`, `elseif` 或者三元运算符中的条件表达式相同，`&&` 或者 `||` 的操作数必须是布尔值（`true` 或者 `false`）。在链式嵌套的条件表达式中，
+除最后一项外，使用非布尔值会导致错误：
 
 ```jldoctest
 julia> 1 && true
 ERROR: TypeError: non-boolean (Int64) used in boolean context
 ```
 
-On the other hand, any type of expression can be used at the end of a conditional chain. It will
-be evaluated and returned depending on the preceding conditionals:
+但在链的末尾允许使用任意类型的表达式，此表达式会根据前面的条件被执行并返回：
 
 ```jldoctest
 julia> true && (x = (1, 2, 3))
@@ -379,10 +327,9 @@ julia> false && (x = (1, 2, 3))
 false
 ```
 
-## [Repeated Evaluation: Loops](@id man-loops)
+## [重复执行：循环](@id man-loops)
 
-There are two constructs for repeated evaluation of expressions: the `while` loop and the `for`
-loop. Here is an example of a `while` loop:
+有两个用于重复执行表达式的组件：`while` 循环和 `for` 循环。下面是一个 `while` 循环的例子：
 
 ```jldoctest
 julia> i = 1;
@@ -398,13 +345,10 @@ julia> while i <= 5
 5
 ```
 
-The `while` loop evaluates the condition expression (`i <= 5` in this case), and as long it remains
-`true`, keeps also evaluating the body of the `while` loop. If the condition expression is `false`
-when the `while` loop is first reached, the body is never evaluated.
+`while` 循环会执行条件表达式（例子中为 `i <= 5`），只要它为 `true`，就一直执行`while` 循环的主体部分。当 `while` 循环第一次执行时，如果条件表达式为 `false`，那么主体代码就一次也不会被执行。
 
-The `for` loop makes common repeated evaluation idioms easier to write. Since counting up and
-down like the above `while` loop does is so common, it can be expressed more concisely with a
-`for` loop:
+`for` 循环使得常见的重复执行代码写起来更容易。
+像之前 `while` 循环中用到的向上和向下计数是可以用 `for` 循环更简明地表达：
 
 ```jldoctest
 julia> for i = 1:5
@@ -417,13 +361,7 @@ julia> for i = 1:5
 5
 ```
 
-Here the `1:5` is a range object, representing the sequence of numbers 1, 2, 3, 4, 5. The `for`
-loop iterates through these values, assigning each one in turn to the variable `i`. One rather
-important distinction between the previous `while` loop form and the `for` loop form is the scope
-during which the variable is visible. If the variable `i` has not been introduced in another
-scope, in the `for` loop form, it is visible only inside of the `for` loop, and not
-outside/afterwards. You'll either need a new interactive session instance or a different variable
-name to test this:
+这里的 `1:5` 是一个范围对象，代表数字 1, 2, 3, 4, 5 的序列。`for` 循环在这些值之中迭代，对每一个变量 `i` 进行赋值。`for` 循环与之前 `while` 循环的一个非常重要区别是作用域，即变量的可见性。如果变量 `i` 没有在另一个作用域里引入，在 `for` 循环内，它就只在 `for` 循环内部可见，在外部和后面均不可见。你需要一个新的交互式会话实例或者一个新的变量名来测试这个特性：
 
 ```jldoctest
 julia> for j = 1:5
@@ -439,12 +377,9 @@ julia> j
 ERROR: UndefVarError: j not defined
 ```
 
-See [Scope of Variables](@ref scope-of-variables) for a detailed explanation of variable scope and how it works in
-Julia.
+参见[变量作用域](@ref scope-of-variables)中对变量作用域的详细解释以及它在 Julia 中是如何工作的。
 
-In general, the `for` loop construct can iterate over any container. In these cases, the alternative
-(but fully equivalent) keyword `in` or `∈` is typically used instead of `=`, since it makes
-the code read more clearly:
+一般来说，`for` 循环组件可以用于迭代任一个容器。在这种情况下，相比 `=`，另外的（但完全相同）关键字 `in` 或者 `∈` 则更常用，因为它使得代码更清晰：
 
 ```jldoctest
 julia> for i in [1,4,0]
@@ -462,12 +397,9 @@ bar
 baz
 ```
 
-Various types of iterable containers will be introduced and discussed in later sections of the
-manual (see, e.g., [Multi-dimensional Arrays](@ref man-multi-dim-arrays)).
+在手册后面的章节中会介绍和讨论各种不同的迭代容器（比如，[多维数组](@ref man-multi-dim-arrays)）。
 
-It is sometimes convenient to terminate the repetition of a `while` before the test condition
-is falsified or stop iterating in a `for` loop before the end of the iterable object is reached.
-This can be accomplished with the `break` keyword:
+为了方便，我们可能会在测试条件不成立之前终止一个 `while` 循环，或者在访问到迭代对象的结尾之前停止一个 `for` 循环，这可以用关键字 `break` 来完成：
 
 ```jldoctest
 julia> i = 1;
@@ -498,10 +430,9 @@ julia> for j = 1:1000
 5
 ```
 
-Without the `break` keyword, the above `while` loop would never terminate on its own, and the `for` loop would iterate up to 1000. These loops are both exited early by using `break`.
+没有关键字 `break` 的话，上面的 `while` 循环永远不会自己结束，而 `for` 循环会迭代到 1000，这些循环都可以使用 `break` 来提前结束。
 
-In other circumstances, it is handy to be able to stop an iteration and move on to the next one
-immediately. The `continue` keyword accomplishes this:
+在某些场景下，需要直接结束此次迭代，并立刻进入下次迭代，`continue` 关键字可以用来完成此功能：
 
 ```jldoctest
 julia> for i = 1:10
@@ -515,13 +446,9 @@ julia> for i = 1:10
 9
 ```
 
-This is a somewhat contrived example since we could produce the same behavior more clearly by
-negating the condition and placing the `println` call inside the `if` block. In realistic usage
-there is more code to be evaluated after the `continue`, and often there are multiple points from
-which one calls `continue`.
+这是一个有点做作的例子，因为我们可以通过否定这个条件，把 `println` 调用放到 `if` 代码块里来更简洁的实现同样的功能。在实际应用中，在 `continue` 后面还会有更多的代码要运行，并且调用 `continue` 的地方可能会有多个。
 
-Multiple nested `for` loops can be combined into a single outer loop, forming the cartesian product
-of its iterables:
+多个嵌套的 `for` 循环可以合并到一个外部循环，可以用来创建其迭代对象的笛卡尔积：
 
 ```jldoctest
 julia> for i = 1:2, j = 3:4
@@ -533,11 +460,7 @@ julia> for i = 1:2, j = 3:4
 (2, 4)
 ```
 
-With this syntax, iterables may still refer to outer loop variables; e.g. `for i = 1:n, j = 1:i`
-is valid.
-However a `break` statement inside such a loop exits the entire nest of loops, not just the inner one.
-Both variables (`i` and `j`) are set to their current iteration values each time the inner loop runs.
-Therefore, assignments to `i` will not be visible to subsequent iterations:
+有了这个语法，迭代变量依然可以正常使用循环变量来进行索引，例如 `for i = 1:n, j = 1:i` 是合法的，但是在一个循环里面使用 `break` 语句则会跳出整个嵌套循环，不仅仅是内层循环。每次内层循环运行的时候，变量（`i` 和 `j`）会被赋值为他们当前的迭代变量值。所以对 `i` 的赋值对于接下来的迭代是不可见的：
 
 ```jldoctest
 julia> for i = 1:2, j = 3:4
@@ -550,10 +473,9 @@ julia> for i = 1:2, j = 3:4
 (2, 4)
 ```
 
-If this example were rewritten to use a `for` keyword for each variable, then the output would
-be different: the second and fourth values would contain `0`.
+如果这个例子给每个变量一个关键字 `for` 来重写，那么输出会不一样：第二个和第四个变量包含 `0`。
 
-Multiple containers can be iterated over at the same time in a single `for` loop using [`zip`](@ref):
+可以使用 [`zip`](@ref) 在单个 `for` 循环中同时迭代多个容器：
 
 ```jldoctest
 julia> for (j, k) in zip([1 2 3], [4 5 6 7])
@@ -564,21 +486,15 @@ julia> for (j, k) in zip([1 2 3], [4 5 6 7])
 (3, 6)
 ```
 
-Using [`zip`](@ref) will create an iterator that is a tuple containing the subiterators for the containers passed to it.
-The `zip` iterator will iterate over all subiterators in order, choosing the ``i``th element of each subiterator in the
-``i``th iteration of the `for` loop. Once any of the subiterators run out, the `for` loop will stop.
+使用 [`zip`](@ref) 将创建一个迭代器，它是一个包含传递给它的容器的子迭代器的元组。 `zip` 迭代器将按顺序迭代所有子迭代器，在 `for` 循环的第 ``i`` 次迭代中选择每个子迭代器的第 ``i`` 个元素。 一旦任何子迭代器用完，`for` 循环就会停止。
 
-## Exception Handling
+## 异常处理
 
-When an unexpected condition occurs, a function may be unable to return a reasonable value to
-its caller. In such cases, it may be best for the exceptional condition to either terminate the
-program while printing a diagnostic error message, or if the programmer has provided code to handle
-such exceptional circumstances then allow that code to take the appropriate action.
+当一个意外条件发生时，一个函数可能无法向调用者返回一个合理的值。在这种情况下，最好让意外条件终止程序并打印出调试的错误信息，或者根据程序员预先提供的异常处理代码来采取恰当的措施。
 
-### Built-in `Exception`s
+### 内置的 `Exception`
 
-`Exception`s are thrown when an unexpected condition has occurred. The built-in `Exception`s listed
-below all interrupt the normal flow of control.
+当一个意外的情况发生时，会抛出 `Exception`。下面列出的内置 `Exception` 都会中断正常的控制流程。
 
 | `Exception`                   |
 |:----------------------------- |
@@ -608,8 +524,7 @@ below all interrupt the normal flow of control.
 | [`UndefVarError`](@ref)       |
 | [`StringIndexError`](@ref)    |
 
-For example, the [`sqrt`](@ref) function throws a [`DomainError`](@ref) if applied to a negative
-real value:
+例如，当输入参数为负实数时，[`sqrt`](@ref) 函数会抛出一个 [`DomainError`](@ref) ：
 
 ```jldoctest
 julia> sqrt(-1)
@@ -619,17 +534,15 @@ Stacktrace:
 [...]
 ```
 
-You may define your own exceptions in the following way:
+你可能需要根据下面的方式来定义你自己的异常：
 
 ```jldoctest
 julia> struct MyCustomException <: Exception end
 ```
 
-### The [`throw`](@ref) function
+### [`throw`](@ref) 函数
 
-Exceptions can be created explicitly with [`throw`](@ref). For example, a function defined only
-for nonnegative numbers could be written to [`throw`](@ref) a [`DomainError`](@ref) if the argument
-is negative:
+我们可以用 [`throw`](@ref) 显式地创建异常。例如，若一个函数只对非负数有定义，当输入参数是负数的时候，可以用 [`throw`](@ref) 抛出一个 [`DomainError`](@ref)。
 
 ```jldoctest; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> f(x) = x>=0 ? exp(-x) : throw(DomainError(x, "argument must be nonnegative"))
@@ -645,8 +558,7 @@ Stacktrace:
  [1] f(::Int64) at ./none:1
 ```
 
-Note that [`DomainError`](@ref) without parentheses is not an exception, but a type of exception.
-It needs to be called to obtain an `Exception` object:
+注意 [`DomainError`](@ref) 后面不接括号的话不是一个异常，而是一个异常类型。我们需要调用它来获得一个 `Exception` 对象：
 
 ```jldoctest
 julia> typeof(DomainError(nothing)) <: Exception
@@ -656,15 +568,14 @@ julia> typeof(DomainError) <: Exception
 false
 ```
 
-Additionally, some exception types take one or more arguments that are used for error reporting:
+另外，一些异常类型会接受一个或多个参数来进行错误报告：
 
 ```jldoctest
 julia> throw(UndefVarError(:x))
 ERROR: UndefVarError: x not defined
 ```
 
-This mechanism can be implemented easily by custom exception types following the way [`UndefVarError`](@ref)
-is written:
+我们可以仿照 [`UndefVarError`](@ref) 的写法，用自定义异常类型来轻松实现这个机制：
 
 ```jldoctest
 julia> struct MyUndefVarError <: Exception
@@ -675,27 +586,25 @@ julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defin
 ```
 
 !!! note
-    When writing an error message, it is preferred to make the first word lowercase. For example,
+    错误信息的第一个单词最好用小写。例如：
 
     `size(A) == size(B) || throw(DimensionMismatch("size of A not equal to size of B"))`
 
-    is preferred over
+    就比
 
     `size(A) == size(B) || throw(DimensionMismatch("Size of A not equal to size of B"))`.
 
-    However, sometimes it makes sense to keep the uppercase first letter, for instance if an argument
-    to a function is a capital letter:
+    更好。
+
+    但是，有时保留大写首字母是有意义的，例如函数的参数就是大写字母时：
 
     `size(A,1) == size(B,2) || throw(DimensionMismatch("A has first dimension..."))`.
 
-### Errors
+### 错误
 
-The [`error`](@ref) function is used to produce an [`ErrorException`](@ref) that interrupts
-the normal flow of control.
+我们可以用 [`error`](@ref) 函数生成一个 [`ErrorException`](@ref) 来中断正常的控制流程。
 
-Suppose we want to stop execution immediately if the square root of a negative number is taken.
-To do this, we can define a fussy version of the [`sqrt`](@ref) function that raises an error
-if its argument is negative:
+假设我们希望在计算负数的平方根时让程序立即停止执行。为了实现它，我们可以定义一个挑剔的 [`sqrt`](@ref) 函数，当它的参数是负数时，产生一个错误：
 
 ```jldoctest fussy_sqrt; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> fussy_sqrt(x) = x >= 0 ? sqrt(x) : error("negative x not allowed")
@@ -712,9 +621,8 @@ Stacktrace:
  [3] top-level scope
 ```
 
-If `fussy_sqrt` is called with a negative value from another function, instead of trying to continue
-execution of the calling function, it returns immediately, displaying the error message in the
-interactive session:
+如果另一个函数调用 `fussy_sqrt` 和一个负数, 它会立马返回，
+在交互会话中显示错误信息，而不会继续执行调用的函数：
 
 ```jldoctest fussy_sqrt; filter = r"Stacktrace:(\n \[[0-9]+\].*)*"
 julia> function verbose_fussy_sqrt(x)
@@ -740,30 +648,28 @@ Stacktrace:
  [4] top-level scope
 ```
 
-### The `try/catch` statement
+### `try/catch` 语句
 
-The `try/catch` statement allows for `Exception`s to be tested for, and for the
-graceful handling of things that may ordinarily break your application. For example,
-in the below code the function for square root would normally throw an exception. By
-placing a `try/catch` block around it we can mitigate that here. You may choose how
-you wish to handle this exception, whether logging it, return a placeholder value or
-as in the case below where we just printed out a statement. One thing to think about
-when deciding how to handle unexpected situations is that using a `try/catch` block is
-much slower than using conditional branching to handle those situations.
-Below there are more examples of handling exceptions with a `try/catch` block:
+通过 `try / catch` 语句，可以测试 Exception 并
+优雅处理可能会破坏应用程序的事情。 例如，
+在下面的代码中，平方根函数会引发异常。 通过
+在其周围放置 `try / catch` 块可以缓解。 您可以选择如何
+处理此异常，无论是记录它，返回占位符值还是
+就像下面仅打印一句话。 要注意的是
+在决定如何处理异常时，使用`try / catch` 块
+比使用条件分支处理要慢得多。
+以下是使用` try / catch` 块处理异常的更多示例：
 
 ```jldoctest
 julia> try
-           sqrt("ten")
-       catch e
-           println("You should have entered a numeric value")
-       end
+sqrt("ten")
+catch e
+println("You should have entered a numeric value")
+end
 You should have entered a numeric value
 ```
 
-`try/catch` statements also allow the `Exception` to be saved in a variable. The following
-contrived example calculates the square root of the second element of `x` if `x`
-is indexable, otherwise assumes `x` is a real number and returns its square root:
+`try/catch` 语句允许保存 `Exception` 到一个变量中。在下面这个做作的例子中，如果 `x` 是可索引的，则计算 `x` 的第二项的平方根，否则就假设 `x` 是一个实数，并返回它的平方根：
 
 ```jldoctest
 julia> sqrt_second(x) = try
@@ -793,15 +699,13 @@ Stacktrace:
 [...]
 ```
 
-Note that the symbol following `catch` will always be interpreted as a name for the exception,
-so care is needed when writing `try/catch` expressions on a single line. The following code will
-*not* work to return the value of `x` in case of an error:
+注意 `catch` 后面的字符会被一直认为是异常的名字，所以在写 `try/catch` 单行表达式时，需要特别小心。下面的代码**不会**在错误的情况下返回 `x` 的值：
 
 ```julia
 try bad() catch x end
 ```
 
-Instead, use a semicolon or insert a line break after `catch`:
+正确的做法是在 `catch` 后添加一个分号或者直接换行：
 
 ```julia
 try bad() catch; x end
@@ -812,21 +716,13 @@ catch
 end
 ```
 
-The power of the `try/catch` construct lies in the ability to unwind a deeply nested computation
-immediately to a much higher level in the stack of calling functions. There are situations where
-no error has occurred, but the ability to unwind the stack and pass a value to a higher level
-is desirable. Julia provides the [`rethrow`](@ref), [`backtrace`](@ref), [`catch_backtrace`](@ref)
-and [`Base.catch_stack`](@ref) functions for more advanced error handling.
+`try/catch` 结构的强大之处在于能够立即将深度嵌套的计算展开到调用函数堆栈中的更高级别。 在某些情况下，没有发生错误，但需要能够展开堆栈并将值传递到更高级别。 Julia 提供了 [`rethrow`](@ref)、[`backtrace`](@ref)、[`catch_backtrace`](@ref) 和 [`current_exceptions`](@ref) 函数来进行更高级的错误处理。
 
-### `finally` Clauses
+### `finally` 子句
 
-In code that performs state changes or uses resources like files, there is typically clean-up
-work (such as closing files) that needs to be done when the code is finished. Exceptions potentially
-complicate this task, since they can cause a block of code to exit before reaching its normal
-end. The `finally` keyword provides a way to run some code when a given block of code exits, regardless
-of how it exits.
+在进行状态改变或者使用类似文件的资源的编程时，经常需要在代码结束的时候进行必要的清理工作（比如关闭文件）。由于异常会使得部分代码块在正常结束之前退出，所以可能会让上述工作变得复杂。`finally` 关键字提供了一种方式，无论代码块是如何退出的，都能够让代码块在退出时运行某段代码。
 
-For example, here is how we can guarantee that an opened file is closed:
+这里是一个确保一个打开的文件被关闭的例子：
 
 ```julia
 f = open("file")
@@ -837,13 +733,9 @@ finally
 end
 ```
 
-When control leaves the `try` block (for example due to a `return`, or just finishing normally),
-`close(f)` will be executed. If the `try` block exits due to an exception, the exception will
-continue propagating. A `catch` block may be combined with `try` and `finally` as well. In this
-case the `finally` block will run after `catch` has handled the error.
+当控制流离开 `try` 代码块（例如，遇到 `return`，或者正常结束），`close(f)` 就会被执行。如果 `try` 代码块由于异常退出，这个异常会继续传递。`catch` 代码块可以和 `try` 还有 `finally` 配合使用。这时 `finally` 代码块会在 `catch` 处理错误之后才运行。
 
-## [Tasks (aka Coroutines)](@id man-tasks)
+## [ Tasks 任务（或协程）](@id man-tasks)
 
-Tasks are a control flow feature that allows computations to be suspended and resumed in a flexible
-manner. We mention them here only for completeness; for a full discussion see
-[Asynchronous Programming](@ref man-asynchronous).
+`Task` 是一种允许计算以更灵活的方式被中断或者恢复的流程控制特性。
+我们提及它只是为了说明的完整性；详细的介绍参见：[异步编程](@ref man-asynchronous)。

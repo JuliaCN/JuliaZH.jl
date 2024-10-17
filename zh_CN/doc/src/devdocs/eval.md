@@ -1,31 +1,27 @@
-# Eval of Julia code
+# Julia 代码的 eval
 
-One of the hardest parts about learning how the Julia Language runs code is learning how all of
-the pieces work together to execute a block of code.
+学习 Julia 语言如何运行代码的最难的一部分是 学习如何让所有的小部分工作协同工作来执行一段代码。 
 
-Each chunk of code typically makes a trip through many steps with potentially unfamiliar names,
-such as (in no particular order): flisp, AST, C++, LLVM, `eval`, `typeinf`, `macroexpand`, sysimg
-(or system image), bootstrapping, compile, parse, execute, JIT, interpret, box, unbox, intrinsic
-function, and primitive function, before turning into the desired result (hopefully).
+每个代码块通常会通过许多步骤来执行，在转变为期望的结果之前（但愿如此）。并且你可能不熟悉它们的名称，例如（非特定顺序）：
+flisp，AST，C++，LLVM，`eval`，`typeinf`，`macroexpand`，sysimg（或 system image），启动，变异，解析，执行，即时编译器，解释器解释，装箱，拆箱，内部函数，原始函数
 
 !!! sidebar "Definitions"
       * REPL
 
-        REPL stands for Read-Eval-Print Loop. It's just what we call the command line environment for
-        short.
+        REPL 表示 读取-求值-输出-循环（Read-Eval-Print Loop）。 我们管这个命令行环境的简称就叫REPL。
+
       * AST
 
-        Abstract Syntax Tree The AST is the digital representation of the code structure. In this form
-        the code has been tokenized for meaning so that it is more suitable for manipulation and execution.
+        抽象语法树（Abstract Syntax Tree）是代码结构的数据表现。在这种表现形式下代码被符号化，因此更加方便操作和执行。
 
 ## Julia Execution
 
-The 10,000 foot view of the whole process is as follows:
+整个进程的千里之行如下：
 
-1. The user starts `julia`.
+1. 用户打开了 `julia`。
 2. The C function `main()` from `cli/loader_exe.c` gets called. This function processes the command line
    arguments, filling in the `jl_options` struct and setting the variable `ARGS`. It then initializes
-   Julia (by calling [`julia_init` in `task.c`](https://github.com/JuliaLang/julia/blob/master/src/task.c),
+   在 `ui/repl.c` 中的 C 语言的函数 `main()` 被调用。这个函数处理命令行参数，填充到 `jl_options` 结构图并且设置变了 `ARGS` 。接下来初始化 Julia (通过调用  [`julia_init` in `task.c`](https://github.com/JuliaLang/julia/blob/master/src/task.c)
    which may load a previously compiled [sysimg](@ref dev-sysimg)). Finally, it passes off control to Julia
    by calling [`Base._start()`](https://github.com/JuliaLang/julia/blob/master/base/client.jl).
 3. When `_start()` takes over control, the subsequent sequence of commands depends on the command

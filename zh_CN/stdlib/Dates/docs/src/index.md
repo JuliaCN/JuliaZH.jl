@@ -1,30 +1,13 @@
-# Dates
+# 日期
 
 ```@meta
 DocTestSetup = :(using Dates)
 ```
 
-The `Dates` module provides two types for working with dates: [`Date`](@ref) and [`DateTime`](@ref),
-representing day and millisecond precision, respectively; both are subtypes of the abstract [`TimeType`](@ref).
-The motivation for distinct types is simple: some operations are much simpler, both in terms of
-code and mental reasoning, when the complexities of greater precision don't have to be dealt with.
-For example, since the [`Date`](@ref) type only resolves to the precision of a single date (i.e.
-no hours, minutes, or seconds), normal considerations for time zones, daylight savings/summer
-time, and leap seconds are unnecessary and avoided.
+`Dates` 模块提供了两种类型来处理日期：[`Date`](@ref) 和 [`DateTime`](@ref)，分别精确到日和毫秒；两者都是抽象类型 [`TimeType`](@ref) 的子类型。区分类型的动机很简单：不必处理更高精度所带来的复杂性时，一些操作在代码和思维推理上都更加简单。例如，由于 [`Date`](@ref) 类型仅精确到日（即没有时、分或秒），因此避免了时区、夏令时和闰秒等不必要的通常考虑。
 
-Both [`Date`](@ref) and [`DateTime`](@ref) are basically immutable [`Int64`](@ref) wrappers.
-The single `instant` field of either type is actually a `UTInstant{P}` type, which
-represents a continuously increasing machine timeline based on the UT second [^1]. The
-[`DateTime`](@ref) type is not aware of time zones (*naive*, in Python parlance),
-analogous to a *LocalDateTime* in Java 8. Additional time zone functionality
-can be added through the [TimeZones.jl package](https://github.com/JuliaTime/TimeZones.jl/), which
-compiles the [IANA time zone database](http://www.iana.org/time-zones). Both [`Date`](@ref) and
-[`DateTime`](@ref) are based on the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard, which follows the proleptic Gregorian calendar.
-One note is that the ISO 8601 standard is particular about BC/BCE dates. In general, the last
-day of the BC/BCE era, 1-12-31 BC/BCE, was followed by 1-1-1 AD/CE, thus no year zero exists.
-The ISO standard, however, states that 1 BC/BCE is year zero, so `0000-12-31` is the day before
-`0001-01-01`, and year `-0001` (yes, negative one for the year) is 2 BC/BCE, year `-0002` is 3
-BC/BCE, etc.
+[`Date`](@ref) 和 [`DateTime`](@ref) 类型都是基本不可变类型 [`Int64`](@ref) 的包装类。这两种类型的单个 `instant` 字段实际上属于 `UTInstant{P}` 类型。这种类型表示的是一种基于世界时间（UT）持续增长的机器时间 [^1]。[`DateTime`](@ref) 类型并不考虑时区（用 Python 的话讲，它是 *naive* 的），与 Java 8 中的 *LocalDateTime* 类似。如果需要附加时区功能，可以通过 [TimeZones.jl 包](https://github.com/JuliaTime/TimeZones.jl/) 实现，其汇编了来自 [IANA 时区数据库](http://www.iana.org/time-zones) 的数据。[`Date`](@ref) 和 [`DateTime`](@ref) 都基于 [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) 标准，遵循公历（格里高利历）。
+值得注意的是，ISO 8601 标准对公元前的日期需要特别处理。通常来说，公元前的最后一天是公元前 1 年的 12 月 31 日，接下来的一天是公元 1 年的 1 月 1 日，公元 0 年是不存在的。但是，在 ISO 8601 标准中，公元前 1 年被表示为 0 年，即 `0001-01-01` 的前一天是 `0000-12-31`，而 `-0001`（没错，年数为-1）的那一年则实际上是公元前 2 年，`-0002` 则表示公元前 3 年，以此类推。
 
 [^1]:
     The notion of the UT second is actually quite fundamental. There are basically two different notions
@@ -37,10 +20,9 @@ BC/BCE, etc.
     or UT1. Basing types on the UT second basically means that every minute has 60 seconds and every
     day has 24 hours and leads to more natural calculations when working with calendar dates.
 
-## Constructors
+## 构造函数
 
-[`Date`](@ref) and [`DateTime`](@ref) types can be constructed by integer or [`Period`](@ref)
-types, by parsing, or through adjusters (more on those later):
+[`Date`](@ref) 和 [`DateTime`](@ref) 类型可以通过整数或 [`Period`](@ref) 类型，解析，或调整器来构造（稍后会详细介绍）：
 
 ```jldoctest
 julia> DateTime(2013)
@@ -83,15 +65,21 @@ julia> Date(Dates.Month(7),Dates.Year(2013))
 [`Date`](@ref) or [`DateTime`](@ref) parsing is accomplished by the use of format strings. Format
 strings work by the notion of defining *delimited* or *fixed-width* "slots" that contain a period
 to parse and passing the text to parse and format string to a [`Date`](@ref) or [`DateTime`](@ref)
-constructor, of the form `Date("2015-01-01","y-m-d")` or `DateTime("20150101","yyyymmdd")`.
+constructor, of the form `Date("2015-01-01",dateformat"y-m-d")` or
+`DateTime("20150101",dateformat"yyyymmdd")`.
 
-Delimited slots are marked by specifying the delimiter the parser should expect between two subsequent
-periods; so `"y-m-d"` lets the parser know that between the first and second slots in a date string
-like `"2014-07-16"`, it should find the `-` character. The `y`, `m`, and `d` characters let the
-parser know which periods to parse in each slot.
+有分隔的插入点是通过指定解析器在两个时段之间的分隔符来进行标记的。例如，`"y-m-d"` 会告诉解析器，一个诸如 `"2014-07-16"` 的时间字符串，应该在第一个和第二个插入点之间查找 `-` 字符。`y`，`m` 和 `d` 字符则告诉解析器每一个插入点对应的时段名称。
+
+As in the case of constructors above such as `Date(2013)`, delimited `DateFormat`s allow for
+missing parts of dates and times so long as the preceding parts are given. The other parts are given the usual
+default values.  For example, `Date("1981-03", dateformat"y-m-d")` returns `1981-03-01`, whilst
+`Date("31/12", dateformat"d/m/y")` gives `0001-12-31`.  (Note that the default year is
+1 AD/CE.)
+Consequently, an empty string will always return `0001-01-01` for `Date`s,
+and `0001-01-01T00:00:00.000` for `DateTime`s.
 
 Fixed-width slots are specified by repeating the period character the number of times corresponding
-to the width with no delimiter between characters. So `"yyyymmdd"` would correspond to a date
+to the width with no delimiter between characters. So `dateformat"yyyymmdd"` would correspond to a date
 string like `"20140716"`. The parser distinguishes a fixed-width slot by the absence of a delimiter,
 noting the transition `"yyyymm"` from one period character to the next.
 
@@ -102,10 +90,16 @@ supported, so `u` corresponds to "Jan", "Feb", "Mar", etc. And `U` corresponds t
 custom locales can be loaded by passing in the `locale=>Dict{String,Int}` mapping to the `MONTHTOVALUEABBR`
 and `MONTHTOVALUE` dicts for abbreviated and full-name month names, respectively.
 
-One note on parsing performance: using the `Date(date_string,format_string)` function is fine
-if only called a few times. If there are many similarly formatted date strings to parse however,
-it is much more efficient to first create a [`Dates.DateFormat`](@ref), and pass it instead of
-a raw format string.
+The above examples used the `dateformat""` string macro. This macro creates a `DateFormat` object once when
+the macro is expanded and uses the same `DateFormat` object even if a code snippet is run multiple times.
+
+```jldoctest
+julia> for i = 1:10^5
+           Date("2015-01-01", dateformat"y-m-d")
+       end
+```
+
+Or you can create the DateFormat object explicitly:
 
 ```jldoctest
 julia> df = DateFormat("y-m-d");
@@ -117,13 +111,35 @@ julia> dt2 = Date("2015-01-02",df)
 2015-01-02
 ```
 
-You can also use the `dateformat""` string macro. This macro creates the `DateFormat` object once when the macro is expanded and uses the same `DateFormat` object even if a code snippet is run multiple times.
+Alternatively, use broadcasting:
 
 ```jldoctest
-julia> for i = 1:10^5
-           Date("2015-01-01", dateformat"y-m-d")
-       end
+julia> years = ["2015", "2016"];
+
+julia> Date.(years, DateFormat("yyyy"))
+2-element Vector{Date}:
+ 2015-01-01
+ 2016-01-01
 ```
+
+For convenience, you may pass the format string directly (e.g., `Date("2015-01-01","y-m-d")`),
+although this form incurs performance costs if you are parsing the same format repeatedly, as
+it internally creates a new `DateFormat` object each time.
+
+As well as via the constructors, a `Date` or `DateTime` can be constructed from
+strings using the [`parse`](@ref) and [`tryparse`](@ref) functions, but with
+an optional third argument of type `DateFormat` specifying the format; for example,
+`parse(Date, "06.23.2013", dateformat"m.d.y")`, or
+`tryparse(DateTime, "1999-12-31T23:59:59")` which uses the default format.
+The notable difference between the functions is that with [`tryparse`](@ref),
+an error is not thrown if the string is in an invalid format;
+instead `nothing` is returned.  Note however that as with the constructors
+above, empty date and time parts assume
+default values and consequently an empty string (`""`) is valid
+for _any_ `DateFormat`, giving for example a `Date` of `0001-01-01`.  Code
+relying on `parse` or `tryparse` for `Date` and `DateTime` parsing should
+therefore also check whether parsed strings are empty before using the
+result.
 
 A full suite of parsing and formatting tests and examples is available in [`stdlib/Dates/test/io.jl`](https://github.com/JuliaLang/julia/blob/master/stdlib/Dates/test/io.jl).
 
@@ -668,6 +684,8 @@ Dates.Time(::Int64::Int64, ::Int64, ::Int64, ::Int64, ::Int64)
 Dates.Time(::Dates.TimePeriod)
 Dates.Time(::Function, ::Any...)
 Dates.Time(::Dates.DateTime)
+Dates.Time(::AbstractString, ::AbstractString)
+Dates.Time(::AbstractString, ::Dates.DateFormat)
 Dates.now()
 Dates.now(::Type{Dates.UTC})
 Base.eps(::Union{Type{DateTime}, Type{Date}, Type{Time}, TimeType})
@@ -747,6 +765,7 @@ Dates.Period(::Any)
 Dates.CompoundPeriod(::Vector{<:Dates.Period})
 Dates.value
 Dates.default
+Dates.periods
 ```
 
 ### Rounding Functions
@@ -820,6 +839,15 @@ Months of the Year:
 | `October`   | `Oct` | 10          |
 | `November`  | `Nov` | 11          |
 | `December`  | `Dec` | 12          |
+
+#### Common Date Formatters
+
+```@docs
+ISODateTimeFormat
+ISODateFormat
+ISOTimeFormat
+RFC1123Format
+```
 
 ```@meta
 DocTestSetup = nothing

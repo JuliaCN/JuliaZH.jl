@@ -1,4 +1,4 @@
-# Delimited Files
+# 分隔符文件
 
 ```@docs
 DelimitedFiles.readdlm(::Any, ::AbstractChar, ::Type, ::AbstractChar)

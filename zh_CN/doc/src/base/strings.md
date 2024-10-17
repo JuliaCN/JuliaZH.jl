@@ -1,4 +1,4 @@
-# [Strings](@id lib-strings)
+# [字符串](@id lib-strings)
 
 ```@docs
 Core.AbstractChar
@@ -33,6 +33,8 @@ Base.isvalid(::Any, ::Any)
 Base.isvalid(::AbstractString, ::Integer)
 Base.match
 Base.eachmatch
+Base.RegexMatch
+Base.keys(::RegexMatch)
 Base.isless(::AbstractString, ::AbstractString)
 Base.:(==)(::AbstractString, ::AbstractString)
 Base.cmp(::AbstractString, ::AbstractString)

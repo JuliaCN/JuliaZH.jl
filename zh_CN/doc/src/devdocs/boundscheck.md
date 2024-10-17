@@ -1,40 +1,28 @@
-# Bounds checking
+# 边界检查
 
-Like many modern programming languages, Julia uses bounds checking to ensure program safety when
-accessing arrays. In tight inner loops or other performance critical situations, you may wish
-to skip these bounds checks to improve runtime performance. For instance, in order to emit vectorized
-(SIMD) instructions, your loop body cannot contain branches, and thus cannot contain bounds checks.
-Consequently, Julia includes an `@inbounds(...)` macro to tell the compiler to skip such bounds
-checks within the given block. User-defined array types can use the `@boundscheck(...)` macro
-to achieve context-sensitive code selection.
+和许多其他现代编程语言一样，Julia 在访问数组元素的时候也要通过边界检查来确保程序安全。当循环次数很多，或者在其他性能敏感的场景下，你可能希望不进行边界检查以提高运行时性能。比如要使用矢量 (SIMD) 指令，循环体就不能有分支语句，因此无法进行边界检查。Julia 提供了一个宏 `@inbounds(...)` 来告诉编译器在指定语句块不进行边界检查。用户自定义的数组类型可以通过宏 `@boundscheck(...)` 来达到上下文敏感的代码选择目的。
 
-## Eliding bounds checks
+## 移除边界检查
 
-The `@boundscheck(...)` macro marks blocks of code that perform bounds checking.
-When such blocks are inlined into an `@inbounds(...)` block, the compiler may remove these blocks.
-The compiler removes the `@boundscheck` block *only if it is inlined* into the calling function.
-For example, you might write the method `sum` as:
+宏 `@boundscheck(...)` 把代码块标记为要执行边界检查。但当这些代码块被被宏 `@inbounds(...)` 标记的代码包裹时，它们可能会被编译器移除。仅当`@boundscheck(...)` 代码块被调用函数包裹时，编译器会移除它们。比如你可能这样写的 `sum` 方法： 
 
 ```julia
 function sum(A::AbstractArray)
     r = zero(eltype(A))
-    for i = 1:length(A)
+    for i in eachindex(A)
         @inbounds r += A[i]
     end
     return r
 end
 ```
 
-With a custom array-like type `MyArray` having:
+使用自定义的类数组类型 `MyArray`，我们有：
 
 ```julia
 @inline getindex(A::MyArray, i::Real) = (@boundscheck checkbounds(A,i); A.data[to_index(i)])
 ```
 
-Then when `getindex` is inlined into `sum`, the call to `checkbounds(A,i)` will be elided. If
-your function contains multiple layers of inlining, only `@boundscheck` blocks at most one level
-of inlining deeper are eliminated. The rule prevents unintended changes in program behavior from
-code further up the stack.
+当 `getindex` 被 `sum` 包裹时，对 `checkbounds(A,i)` 的调用会被忽略。如果存在多层包裹，最多只有一个 `@boundscheck` 被忽略。这个规则用来防止将来代码被改变时潜在的多余忽略。
 
 ## Propagating inbounds
 
@@ -89,3 +77,7 @@ Note this hierarchy has been designed to reduce the likelihood of method ambigui
 to make `checkbounds` the place to specialize on array type, and try to avoid specializations
 on index types; conversely, `checkindex` is intended to be specialized only on index type (especially,
 the last argument).
+
+## Emit bounds checks
+
+Julia can be launched with `--check-bounds={yes|no|auto}` to emit bounds checks always, never, or respect @inbounds declarations.

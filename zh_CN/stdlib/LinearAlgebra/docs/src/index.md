@@ -4,9 +4,8 @@
 DocTestSetup = :(using LinearAlgebra, SparseArrays, SuiteSparse)
 ```
 
-In addition to (and as part of) its support for multi-dimensional arrays, Julia provides native implementations
-of many common and useful linear algebra operations which can be loaded with `using LinearAlgebra`. Basic operations, such as [`tr`](@ref), [`det`](@ref),
-and [`inv`](@ref) are all supported:
+除了（且作为一部分）对多维数组的支持，Julia 还提供了许多常见和实用的线性代数运算的本地实现，可通过 `using LinearAlgebra` 加载。
+基本的运算，比如 [`tr`](@ref)，[`det`](@ref) 和 [`inv`](@ref) 都是支持的：
 
 ```jldoctest
 julia> A = [1 2 3; 4 1 6; 7 8 1]
@@ -28,7 +27,7 @@ julia> inv(A)
   0.240385   0.0576923  -0.0673077
 ```
 
-As well as other useful operations, such as finding eigenvalues or eigenvectors:
+还有其它实用的运算，比如寻找特征值或特征向量：
 
 ```jldoctest
 julia> A = [-4. -17.; 2. 2.]
@@ -47,10 +46,7 @@ julia> eigvecs(A)
  -0.166924+0.278207im  -0.166924-0.278207im
 ```
 
-In addition, Julia provides many [factorizations](@ref man-linalg-factorizations) which can be used to
-speed up problems such as linear solve or matrix exponentiation by pre-factorizing a matrix into a form
-more amenable (for performance or memory reasons) to the problem. See the documentation on [`factorize`](@ref)
-for more information. As an example:
+此外，Julia 提供了多种[矩阵分解](@ref man-linalg-factorizations)，通过将矩阵预先分解成更适合问题的形式（出于性能或内存上的原因），它们可用于加快问题的求解，如线性求解或矩阵求幂。更多有关信息请参阅文档 [`factorize`](@ref)。举个例子：
 
 ```jldoctest
 julia> A = [1.5 2 -4; 3 -1 -6; -10 2.3 4]
@@ -73,8 +69,7 @@ U factor:
    0.0  0.0    -5.24947
 ```
 
-Since `A` is not Hermitian, symmetric, triangular, tridiagonal, or bidiagonal, an LU factorization may be the
-best we can do. Compare with:
+因为 `A` 不是埃尔米特、对称、三角、三对角或双对角矩阵，LU 分解也许是我们能做的最好分解。与之相比：
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
@@ -102,10 +97,7 @@ permutation:
  3
 ```
 
-Here, Julia was able to detect that `B` is in fact symmetric, and used a more appropriate factorization.
-Often it's possible to write more efficient code for a matrix that is known to have certain properties e.g.
-it is symmetric, or tridiagonal. Julia provides some special types so that you can "tag" matrices as having
-these properties. For instance:
+在这里，Julia 能够发现 `B` 确实是对称矩阵，并且使用一种更适当的分解。针对一个具有某些属性的矩阵，比如一个对称或三对角矩阵，往往有可能写出更高效的代码。Julia 提供了一些特殊的类型好让你可以根据矩阵所具有的属性「标记」它们。例如：
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
@@ -121,9 +113,7 @@ julia> sB = Symmetric(B)
  -4.0  -3.0   5.0
 ```
 
-`sB` has been tagged as a matrix that's (real) symmetric, so for later operations we might perform on it,
-such as eigenfactorization or computing matrix-vector products, efficiencies can be found by only referencing
-half of it. For example:
+`sB` 已经被标记成（实）对称矩阵，所以对于之后可能在它上面执行的操作，例如特征因子化或矩阵-向量乘积，只引用矩阵的一半可以提高效率。举个例子：
 
 ```jldoctest
 julia> B = [1.5 2 -4; 2 -1 -3; -4 -3 5]
@@ -150,36 +140,33 @@ julia> sB\x
  -1.1086956521739126
  -1.4565217391304346
 ```
-The `\` operation here performs the linear solution. The left-division operator is pretty powerful and it's easy to write compact, readable code that is flexible enough to solve all sorts of systems of linear equations.
+`\` 运算在这里执行线性求解。左除运算符相当强大，很容易写出紧凑、可读的代码，它足够灵活，可以求解各种线性方程组。
 
-## Special matrices
+## 特殊矩阵
 
-[Matrices with special symmetries and structures](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274)
-arise often in linear algebra and are frequently associated with various matrix factorizations.
-Julia features a rich collection of special matrix types, which allow for fast computation with
-specialized routines that are specially developed for particular matrix types.
+[具有特殊对称性和结构的矩阵](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274)经常在线性代数中出现并且与各种矩阵分解相关。
+Julia 具有丰富的特殊矩阵类型，可以快速计算专门为特定矩阵类型开发的专用例程。
 
-The following tables summarize the types of special matrices that have been implemented in Julia,
-as well as whether hooks to various optimized methods for them in LAPACK are available.
+下表总结了在 Julia 中已经实现的特殊矩阵类型，以及为它们提供各种优化方法的钩子在 LAPACK 中是否可用。
 
-| Type                          | Description                                                                                   |
+| 类型                          | 描述                                                                                   |
 |:----------------------------- |:--------------------------------------------------------------------------------------------- |
 | [`Symmetric`](@ref)           | [Symmetric matrix](https://en.wikipedia.org/wiki/Symmetric_matrix)                            |
 | [`Hermitian`](@ref)           | [Hermitian matrix](https://en.wikipedia.org/wiki/Hermitian_matrix)                            |
-| [`UpperTriangular`](@ref)     | Upper [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix)                    |
-| [`UnitUpperTriangular`](@ref) | Upper [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix) with unit diagonal |
-| [`LowerTriangular`](@ref)     | Lower [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix)                    |     |
-| [`UnitLowerTriangular`](@ref) | Lower [triangular matrix](https://en.wikipedia.org/wiki/Triangular_matrix) with unit diagonal |
+| [`UpperTriangular`](@ref)     | 上[三角矩阵](https://en.wikipedia.org/wiki/Triangular_matrix)                    |
+| [`UnitUpperTriangular`](@ref) | 单位上[三角矩阵](https://en.wikipedia.org/wiki/Triangular_matrix) with unit diagonal |
+| [`LowerTriangular`](@ref)     | 下[三角矩阵](https://en.wikipedia.org/wiki/Triangular_matrix)                    |     |
+| [`UnitLowerTriangular`](@ref) | 单位下[三角矩阵](https://en.wikipedia.org/wiki/Triangular_matrix) |
 | [`UpperHessenberg`](@ref)     | Upper [Hessenberg matrix](https://en.wikipedia.org/wiki/Hessenberg_matrix)
 | [`Tridiagonal`](@ref)         | [Tridiagonal matrix](https://en.wikipedia.org/wiki/Tridiagonal_matrix)                        |
-| [`SymTridiagonal`](@ref)      | Symmetric tridiagonal matrix                                                                  |
-| [`Bidiagonal`](@ref)          | Upper/lower [bidiagonal matrix](https://en.wikipedia.org/wiki/Bidiagonal_matrix)              |
+| [`SymTridiagonal`](@ref)      | 对称三对角矩阵                                                                  |
+| [`Bidiagonal`](@ref)          | 上/下[双对角矩阵](https://en.wikipedia.org/wiki/Bidiagonal_matrix)              |
 | [`Diagonal`](@ref)            | [Diagonal matrix](https://en.wikipedia.org/wiki/Diagonal_matrix)                              |
 | [`UniformScaling`](@ref)      | [Uniform scaling operator](https://en.wikipedia.org/wiki/Uniform_scaling)                     |
 
-### Elementary operations
+### 基本运算
 
-| Matrix type                   | `+` | `-` | `*` | `\` | Other functions with optimized methods                      |
+| 矩阵类型                   | `+` | `-` | `*` | `\` | 具有优化方法的其它函数                      |
 |:----------------------------- |:--- |:--- |:--- |:--- |:----------------------------------------------------------- |
 | [`Symmetric`](@ref)           |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
 | [`Hermitian`](@ref)           |     |     |     | MV  | [`inv`](@ref), [`sqrt`](@ref), [`exp`](@ref)                |
@@ -196,15 +183,15 @@ as well as whether hooks to various optimized methods for them in LAPACK are ava
 
 Legend:
 
-| Key        | Description                                                   |
+| Key        | 说明                                                   |
 |:---------- |:------------------------------------------------------------- |
-| M (matrix) | An optimized method for matrix-matrix operations is available |
-| V (vector) | An optimized method for matrix-vector operations is available |
-| S (scalar) | An optimized method for matrix-scalar operations is available |
+| M（矩阵） | 针对矩阵与矩阵运算的优化方法可用 |
+| V（向量） | 针对矩阵与向量运算的优化方法可用 |
+| S（标量） | 针对矩阵与标量运算的优化方法可用 |
 
-### Matrix factorizations
+### 矩阵分解
 
-| Matrix type                   | LAPACK | [`eigen`](@ref) | [`eigvals`](@ref) | [`eigvecs`](@ref) | [`svd`](@ref) | [`svdvals`](@ref) |
+| 矩阵类型                   | LAPACK | [`eigen`](@ref) | [`eigvals`](@ref) | [`eigvecs`](@ref) | [`svd`](@ref) | [`svdvals`](@ref) |
 |:----------------------------- |:------ |:------------- |:----------------- |:----------------- |:------------- |:----------------- |
 | [`Symmetric`](@ref)           | SY     |               | ARI               |                   |               |                   |
 | [`Hermitian`](@ref)           | HE     |               | ARI               |                   |               |                   |
@@ -217,25 +204,24 @@ Legend:
 | [`Bidiagonal`](@ref)          | BD     |               |                   |                   | A             | A                 |
 | [`Diagonal`](@ref)            | DI     |               | A                 |                   |               |                   |
 
-Legend:
+图例：
 
-| Key          | Description                                                                                                                     | Example              |
+| 键名          | 说明                                                                                                                     | 例子              |
 |:------------ |:------------------------------------------------------------------------------------------------------------------------------- |:-------------------- |
-| A (all)      | An optimized method to find all the characteristic values and/or vectors is available                                           | e.g. `eigvals(M)`    |
-| R (range)    | An optimized method to find the `il`th through the `ih`th characteristic values are available                                   | `eigvals(M, il, ih)` |
-| I (interval) | An optimized method to find the characteristic values in the interval [`vl`, `vh`] is available                                 | `eigvals(M, vl, vh)` |
-| V (vectors)  | An optimized method to find the characteristic vectors corresponding to the characteristic values `x=[x1, x2,...]` is available | `eigvecs(M, x)`      |
+| A (all)      | 找到所有特征值和/或特征向量的优化方法可用                                           | e.g. `eigvals(M)`    |
+| R (range)    | 通过第 `ih` 个特征值寻找第 `il` 个特征值的优化方法可用                                   | `eigvals(M, il, ih)` |
+| I (interval) | 寻找在区间 [`vl`, `vh`] 内的特征值的优化方法可用                                 | `eigvals(M, vl, vh)` |
+| V (vectors)  | 寻找对应于特征值 `x=[x1, x2,...]` 的特征向量的优化方法可用 | `eigvecs(M, x)`      |
 
-### The uniform scaling operator
+### 均匀缩放运算符
 
-A [`UniformScaling`](@ref) operator represents a scalar times the identity operator, `λ*I`. The identity
-operator `I` is defined as a constant and is an instance of `UniformScaling`. The size of these
-operators are generic and match the other matrix in the binary operations [`+`](@ref), [`-`](@ref),
-[`*`](@ref) and [`\`](@ref). For `A+I` and `A-I` this means that `A` must be square. Multiplication
-with the identity operator `I` is a noop (except for checking that the scaling factor is one)
-and therefore almost without overhead.
+[`UniformScaling`](@ref) 运算符代表一个标量乘以单位运算符，`λ*I`。
+单位运算符 `I` 被定义为常量，是 `UniformScaling` 的实例。
+这些运算符的大小是通用的，并且会在二元运算符 [`+`](@ref)，[`-`](@ref)，[`*`](@ref) 和 [`\`](@ref) 中与另一个矩阵相匹配。
+对于 `A+I` 和 `A-I` ，这意味着 `A` 必须是个方阵。
+与单位运算符 `I` 相乘是一个空操作（除了检查比例因子是一），因此几乎没有开销。
 
-To see the `UniformScaling` operator in action:
+来查看 `UniformScaling` 运算符的运行结果：
 
 ```jldoctest
 julia> U = UniformScaling(2);
@@ -410,6 +396,7 @@ LinearAlgebra.nullspace
 Base.kron
 Base.kron!
 LinearAlgebra.exp(::StridedMatrix{<:LinearAlgebra.BlasFloat})
+Base.cis(::AbstractMatrix)
 Base.:^(::AbstractMatrix, ::Number)
 Base.:^(::Number, ::AbstractMatrix)
 LinearAlgebra.log(::StridedMatrix)
@@ -576,6 +563,7 @@ LinearAlgebra.BLAS.trmv
 LinearAlgebra.BLAS.trsv!
 LinearAlgebra.BLAS.trsv
 LinearAlgebra.BLAS.set_num_threads
+LinearAlgebra.BLAS.get_num_threads
 ```
 
 ## LAPACK functions

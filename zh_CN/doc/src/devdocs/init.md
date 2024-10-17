@@ -1,4 +1,4 @@
-# Initialization of the Julia runtime
+# Julia 运行时的初始化
 
 How does the Julia runtime execute `julia -e 'println("Hello World!")'` ?
 
