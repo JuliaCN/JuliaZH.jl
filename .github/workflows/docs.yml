@@ -10,12 +10,17 @@ on:
 jobs:
   HTML:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write # needed to allow julia-actions/cache to proactively delete old caches that it has created
+      contents: write
+      statuses: write
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1.10'
           show-versioninfo: true
+      - uses: julia-actions/cache@v2
       - name: Install dependencies
         shell: julia --project=docs --color=yes {0}
         run: |
