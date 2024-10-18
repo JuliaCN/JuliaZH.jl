@@ -31,7 +31,7 @@
 |`--min-optlevel={0,1,2,3}`             |设置每个模块加载的优化下限（默认为 0）|
 |`-g`, `-g <level>`                     |开启或设置 debug 信息的生成等级。若未配置此选项，则默认 debug 信息的级别为 1；若配置了此选项却没指定具体级别，则默认级别为 2。|
 |`--inline={yes\|no}`                   |控制是否允许函数内联，此选项会覆盖源文件中的 `@inline` 声明|
-|`--check-bounds={yes\|no\|auto}`       |进行边界检查，总是、从不、或依照宏@inbounds声明|
+|`--check-bounds={yes\|no\|auto}`       |是否进行边界检查：总是、从不、或依照宏 @inbounds 声明|
 |`--math-mode={ieee,fast}`              |开启或关闭非安全的浮点数代数计算优化，此选项会覆盖源文件中的 `@fastmath` 声明|
 |`--code-coverage={none\|user\|all}`    |对源文件中每行代码执行的次数计数|
 |`--code-coverage`                      |等价于 `--code-coverage=user`|
