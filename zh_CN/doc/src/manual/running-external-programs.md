@@ -1,4 +1,4 @@
-# 运行外部程序
+# [运行外部程序](@id Running-External-Programs)
 
 Julia 中命令的反引号记法借鉴于 shell、Perl 和 Ruby。然而，在 Julia 中编写
 
@@ -36,7 +36,7 @@ julia> run(mycommand);
 hello
 ```
 
-`hello` 是 `echo` 命令的输出，发送到 [`stdout`](@ref)。 如果外部命令无法成功运行，则 run 方法会抛出 [`ErrorException`](@ref)。
+`hello` 是 `echo` 命令的输出，发送到 [`stdout`](@ref)。 如果外部命令无法成功运行，则 run 方法会抛出 [`ProcessFailedException`](@ref)。
 
 如果要读取外部命令的输出，可以使用 [`read`](@ref) 或 [`readchomp`](@ref) 代替：
 
@@ -277,7 +277,7 @@ wait(writer)
 fetch(reader)
 ```
 
-（通常，reader 不是一个单独的任务，因为无论如何我们都会立即`fetch`它）。
+（通常，reader 不是一个单独的任务，因为无论如何我们都会立即 `fetch` 它）。
 
 ### 复杂示例
 

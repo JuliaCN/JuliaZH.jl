@@ -78,6 +78,13 @@ default values.  For example, `Date("1981-03", dateformat"y-m-d")` returns `1981
 Consequently, an empty string will always return `0001-01-01` for `Date`s,
 and `0001-01-01T00:00:00.000` for `DateTime`s.
 
+As in the case of constructors above such as `Date(2013)`, delimited `DateFormat`s allow for
+missing parts of dates and times so long as the preceding parts are given. The other parts are given the usual
+default values.  For example, `Date("1981-03", dateformat"y-m-d")` returns `1981-03-01`, whilst
+`Date("31/12", dateformat"d/m/y")` gives `0001-12-31`.  (Note that the default year is
+1 AD/CE.)
+An empty string, however, always throws an `ArgumentError`.
+
 Fixed-width slots are specified by repeating the period character the number of times corresponding
 to the width with no delimiter between characters. So `dateformat"yyyymmdd"` would correspond to a date
 string like `"20140716"`. The parser distinguishes a fixed-width slot by the absence of a delimiter,
@@ -132,14 +139,13 @@ an optional third argument of type `DateFormat` specifying the format; for examp
 `parse(Date, "06.23.2013", dateformat"m.d.y")`, or
 `tryparse(DateTime, "1999-12-31T23:59:59")` which uses the default format.
 The notable difference between the functions is that with [`tryparse`](@ref),
-an error is not thrown if the string is in an invalid format;
-instead `nothing` is returned.  Note however that as with the constructors
-above, empty date and time parts assume
-default values and consequently an empty string (`""`) is valid
-for _any_ `DateFormat`, giving for example a `Date` of `0001-01-01`.  Code
-relying on `parse` or `tryparse` for `Date` and `DateTime` parsing should
-therefore also check whether parsed strings are empty before using the
-result.
+an error is not thrown if the string is empty or in an invalid format;
+instead `nothing` is returned.
+
+!!! compat "Julia 1.9"
+    Before Julia 1.9, empty strings could be passed to constructors and `parse`
+    without error, returning as appropriate `DateTime(1)`, `Date(1)` or `Time(0)`.
+    Likewise, `tryparse` did not return `nothing`.
 
 A full suite of parsing and formatting tests and examples is available in [`stdlib/Dates/test/io.jl`](https://github.com/JuliaLang/julia/blob/master/stdlib/Dates/test/io.jl).
 
@@ -342,7 +348,7 @@ julia> Dates.monthabbr(t;locale="french")
 ```
 
 Since the abbreviated versions of the days are not loaded, trying to use the
-function `dayabbr` will error.
+function `dayabbr` will throw an error.
 
 ```jldoctest tdate2
 julia> Dates.dayabbr(t;locale="french")
@@ -558,6 +564,26 @@ julia> Dates.value(Dates.Millisecond(10))
 10
 ```
 
+Representing periods or durations that are not integer multiples of the basic types can be achieved
+with the [`Dates.CompoundPeriod`](@ref) type. Compound periods may be constructed manually from simple
+[`Period`](@ref) types. Additionally, the [`canonicalize`](@ref) function can be used to break down a
+period into a [`Dates.CompoundPeriod`](@ref). This is particularly useful to convert a duration, e.g.,
+a difference of two `DateTime`, into a more convenient representation.
+
+```jldoctest
+julia> cp = Dates.CompoundPeriod(Day(1),Minute(1))
+1 day, 1 minute
+
+julia> t1 = DateTime(2018,8,8,16,58,00)
+2018-08-08T16:58:00
+
+julia> t2 = DateTime(2021,6,23,10,00,00)
+2021-06-23T10:00:00
+
+julia> canonicalize(t2-t1) # creates a CompoundPeriod
+149 weeks, 6 days, 17 hours, 2 minutes
+```
+
 ## Rounding
 
 [`Date`](@ref) and [`DateTime`](@ref) values can be rounded to a specified resolution (e.g., 1
@@ -601,8 +627,8 @@ by 10.
 As Julia [`Date`](@ref) and [`DateTime`](@ref) values are represented according to the ISO 8601
 standard, `0000-01-01T00:00:00` was chosen as base (or "rounding epoch") from which to begin the
 count of days (and milliseconds) used in rounding calculations. (Note that this differs slightly
-from Julia's internal representation of [`Date`](@ref) s using Rata Die notation; but since the
-ISO 8601 standard is most visible to the end user, `0000-01-01T00:00:00` was chosen as the rounding
+from Julia's internal representation of [`Date`](@ref) s using [Rata Die notation](https://en.wikipedia.org/wiki/Rata_Die);
+but since the ISO 8601 standard is most visible to the end user, `0000-01-01T00:00:00` was chosen as the rounding
 epoch instead of the `0000-12-31T00:00:00` used internally to minimize confusion.)
 
 The only exception to the use of `0000-01-01T00:00:00` as the rounding epoch is when rounding
@@ -763,6 +789,7 @@ Dates.toprev(::Function, ::Dates.TimeType)
 ```@docs
 Dates.Period(::Any)
 Dates.CompoundPeriod(::Vector{<:Dates.Period})
+Dates.canonicalize
 Dates.value
 Dates.default
 Dates.periods

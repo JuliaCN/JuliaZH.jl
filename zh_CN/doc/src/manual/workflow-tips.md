@@ -4,8 +4,8 @@
 
 ## 基于 REPL 的工作流程
 
-正如在 [Julia REPL](@ref) 中演示的那样，Julia 的 REPL 为高效的交互式工作流程提供了丰富的功能。这里是一些可能进一步提升你在命令行下的体验的建议。
-
+正如在 [Julia REPL](@ref The-Julia-REPL) 中演示的那样，Julia 的 REPL 为高效的交互式工作流程提供了丰富的功能。这里是一些可能进一步提升你在命令行下的体验的建议。
+The-Julia-REPL
 ### 一个基本的编辑器 / REPL 工作流程
 
 最基本的 Julia 工作流程是将一个文本编辑器配合 `julia` 的命令行使用。一般会包含下面一些步骤：
@@ -61,7 +61,9 @@
 
 ## 基于浏览器的工作流程
 
-也可以通过 [IJulia](https://github.com/JuliaLang/IJulia.jl) 在浏览器中与 Julia REPL 进行交互，请到该库的主页查看详细用法。
+There are a few ways to interact with Julia in a browser:
+- Using Pluto notebooks through [Pluto.jl](https://github.com/fonsp/Pluto.jl)
+- Using Jupyter notebooks through [IJulia.jl](https://github.com/JuliaLang/IJulia.jl)
 
 ## 基于Revise的工作流程
 
@@ -98,7 +100,7 @@
 
      切换到临时目录并启动 Julia，然后执行以下操作：
 
-     ```julia
+     ```julia-repl
      pkg> generate MyPkg            # type ] to enter pkg mode
      julia> push!(LOAD_PATH, pwd())   # hit backspace to exit pkg mode
      ```
@@ -117,7 +119,7 @@
    然后切换到包含测试文件（假设文件为`"runtests.jl"`）的目录下，并：
     
 
-   ```julia
+   ```julia-repl
    julia> using MyPkg
 
    julia> include("runtests.jl")

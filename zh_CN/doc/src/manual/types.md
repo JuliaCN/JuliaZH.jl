@@ -30,7 +30,7 @@ Julia 的类型系统设计得强大而富有表现力，却清晰、直观且�
 
 1. 作为断言，帮助程序确认能是否正常运行，
 2. 给编译器提供额外的类型信息，在一些情况下这可以提升程序性能。
-    
+
 
 置于到计算值的表达式后面时，`::` 操作符读作「是······的实例（is an instance of）」。在任何地方都可以用它来断言左侧表达式的值是右侧类型的实例。当右侧类型是具体类型时，左侧的值必须能够以该类型作为其实现——回想一下，所有具体类型都是最终的，因此没有任何实现是任何其它具体类型的子类型。当右侧类型是抽象类型时，值是由该抽象类型子类型中的某个具体类型实现的才能满足该断言。如果类型断言非真，抛出一个异常，否则返回左侧的值：
 
@@ -69,7 +69,26 @@ local x::Int8  # in a local declaration
 x::Int8 = 10   # as the left-hand side of an assignment
 ```
 
-并应用于整个当前作用域，甚至在该声明之前。目前，类型声明不能在全局作用域中使用，例如在 REPL 中就不可以，因为 Julia 还没有常量类型的全局变量。
+and applies to the whole current scope, even before the declaration.
+
+As of Julia 1.8, type declarations can now be used in global scope i.e.
+type annotations can be added to global variables to make accessing them type stable.
+```julia
+julia> x::Int = 10
+10
+
+julia> x = 3.5
+ERROR: InexactError: Int64(3.5)
+
+julia> function foo(y)
+           global x = 15.8    # throws an error when foo is called
+           return x + y
+       end
+foo (generic function with 1 method)
+
+julia> foo(10)
+ERROR: InexactError: Int64(15.8)
+```
 
 声明也可以附加到函数定义：
 
@@ -105,16 +124,22 @@ abstract type «name» <: «supertype» end
 
 ```julia
 abstract type Number end
-abstract type Real     <: Number end
+abstract type Real          <: Number end
 abstract type AbstractFloat <: Real end
-abstract type Integer  <: Real end
-abstract type Signed   <: Integer end
-abstract type Unsigned <: Integer end
+abstract type Integer       <: Real end
+abstract type Signed        <: Integer end
+abstract type Unsigned      <: Integer end
 ```
 
-[`Number`](@ref) 类型为 `Any` 类型的直接子类型，并且 [`Real`](@ref) 为它的子类型。接下来，`Real` 有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到其它的子类型）： [`Integer`](@ref) 和 [`AbstractFloat`](@ref)，将世界分为整数的表示和实数的表示。实数的表示当然包括浮点类型，但也包括其他类型，例如有理数。因此，`AbstractFloat` 是一个 `Real` 的子类型，仅包括实数的浮点表示。整数被进一步细分为 [`Signed`](@ref) 和 [`Unsigned`](@ref) 两类。
+[`Number`](@ref) 类型为 `Any` 类型的直接子类型，并且 [`Real`](@ref) 为它的子类型。
+接下来，`Real` 有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到其它的子类型）： 
+[`Integer`](@ref) 和 [`AbstractFloat`](@ref)，将世界分为整数的表示和实数的表示。
+实数的表示当然包括浮点类型，但也包括其他类型，例如有理数。
+因此，`AbstractFloat` 是一个 `Real` 的子类型，仅包括实数的浮点表示。
+整数被进一步细分为 [`Signed`](@ref) 和 [`Unsigned`](@ref) 两类。
 
-`<:` 运算符的通常意义为「是······的子类型（is a subtype of）」，可以用在声明中，声明右侧类型是新声明类型的直接超类型；也可以在表达式中用作子类型运算符，在其左操作数为其右操作数的子类型时返回 `true`：
+`<:` 运算符的通常意义为「是······的子类型（is a subtype of）」，可以用在声明中，声明右侧类型是新声明类型的直接超类型；
+也可以在表达式中用作子类型运算符，在其左操作数为其右操作数的子类型时返回 `true`：
 
 ```jldoctest
 julia> Integer <: Number
@@ -269,7 +294,10 @@ julia> X(1, 2) === X(1, 2)
 true
 ```
 
-关于如何构造复合类型的实例还有很多要说的，但这种讨论依赖于[参数类型](@ref)和[方法](@ref)，并且这是非常重要的，应该在专门的章节中讨论：[构造函数](@ref man-constructors)。
+关于如何构造复合类型的实例还有很多要说的，但这种讨论依赖于[参数类型](@ref Parametric-Types)和[方法](@ref)，并且这是非常重要的，应该在专门的章节中讨论：[构造函数](@ref man-constructors)。
+
+For many user-defined types `X`, you may want to define a method [`Base.broadcastable(x::X) = Ref(x)`](@ref man-interfaces-broadcasting)
+so that instances of that type act as 0-dimensional "scalars" for [broadcasting](@ref Broadcasting).
 
 ## 可变复合类型
 
@@ -290,7 +318,14 @@ julia> bar.baz = 1//2
 1//2
 ```
 
-为了支持修改，这种对象通常分配在堆上，并且具有稳定的内存地址。可变对象就像一个小容器，随着时间的推移，可能保持不同的值，因此只能通过其地址可靠地识别。相反地，不可变类型的实例与特定字段值相关——仅字段值就告诉你该对象的所有内容。在决定是否使类型为可变类型时，请询问具有相同字段值的两个实例是否被视为相同，或者它们是否可能需要随时间独立更改。如果它们被认为是相同的，该类型就应该是不可变的。
+An extra interface between the fields and the user can be provided through [Instance Properties](@ref man-instance-properties).
+This grants more control on what can be accessed and modified using the `bar.baz` notation.
+
+为了支持修改，这种对象通常分配在堆上，并且具有稳定的内存地址。
+可变对象就像一个小容器，随着时间的推移，可能保持不同的值，因此只能通过其地址可靠地识别。
+相反地，不可变类型的实例与特定字段值相关——仅字段值就告诉你该对象的所有内容。
+在决定是否使类型为可变类型时，请询问具有相同字段值的两个实例是否被视为相同，或者它们是否可能需要随时间独立更改。
+如果它们被认为是相同的，该类型就应该是不可变的。
 
 总结一下，Julia 的两个基本属性定义了不变性：
 
@@ -300,6 +335,30 @@ julia> bar.baz = 1//2
   * 具有不可变类型的对象可以被编译器自由复制，因为其不可变性使得不可能以编程方式区分原始对象和副本。
     * 特别地，这意味着足够小的不可变值（如整数和浮点数）通常在寄存器（或栈分配）中传递给函数。
     * 另一方面，可变值是堆分配的，并作为指向堆分配值的指针传递给函数，除非编译器确定没有办法知道这不是正在发生的事情。
+
+In cases where one or more fields of an otherwise mutable struct is known to be immutable,
+one can declare these fields as such using `const` as shown below. This enables some,
+but not all of the optimizations of immutable structs, and can be used to enforce invariants
+on the particular fields marked as `const`.
+
+!!! compat "Julia 1.8"
+    `const` annotating fields of mutable structs requires at least Julia 1.8.
+
+```jldoctest baztype
+julia> mutable struct Baz
+           a::Int
+           const b::Float64
+       end
+
+julia> baz = Baz(1, 1.5);
+
+julia> baz.a = 2
+2
+
+julia> baz.b = 2.0
+ERROR: setfield!: const field .b of type Baz cannot be changed
+[...]
+```
 
 ## [已声明的类型](@id man-declared-types)
 
@@ -481,8 +540,13 @@ Point{Int64}
 ```jldoctest pointtype
 julia> Point(1,2.5)
 ERROR: MethodError: no method matching Point(::Int64, ::Float64)
+
 Closest candidates are:
-  Point(::T, !Matched::T) where T at none:2
+  Point(::T, !Matched::T) where T
+   @ Main none:2
+
+Stacktrace:
+[...]
 ```
 
 可以定义适当处理此类混合情况的函数构造方法，将在后面的[构造函数](@ref man-constructors)中讨论。
@@ -651,8 +715,7 @@ false
 
 ### 变参元组类型
 
-元组类型的最后一个参数可以是特殊值[`Vararg`](@ref)，它表示任意数量的尾随参数：
- 
+元组类型的最后一个参数可以是特殊值 [`Vararg`](@ref)，它表示任意数量的尾随参数：
 
 ```jldoctest
 julia> mytupletype = Tuple{AbstractString,Vararg{Int}}
@@ -672,39 +735,45 @@ false
 ```
 
 此外，`Vararg{T}` 对应于零个或更多的类型为 `T` 的元素。变参元组类型被用来表示变参方法接受的参数（请参阅[变参函数](@ref)）。
- 
 
-特殊值 `Vararg{T,N}`（当用作元组类型的最后一个参数时）正好对应于类型为 `T` 的 `N` 个元素。 `NTuple{N,T}` 是 `Tuple{Vararg{T,N}}` 的一个方便的别名，即一个包含正好包含 `T` 类型的 `N` 个元素的元组类型。
+特殊值 `Vararg{T,N}`（当用作元组类型的最后一个参数时）正好对应于类型为 `T` 的 `N` 个元素。
+`NTuple{N,T}` 是 `Tuple{Vararg{T,N}}` 的一个方便的别名，即一个包含正好包含 `T` 类型的 `N` 个元素的元组类型。
 
 ### 具名元组类型
 
 具名元组是 [`NamedTuple`](@ref) 类型的实例，该类型有两个参数：一个给出字段名称的符号元组，和一个给出字段类型的元组类型。
+For convenience, `NamedTuple` types are printed using the [`@NamedTuple`](@ref) macro which provides a
+convenient `struct`-like syntax for declaring these types via `key::Type` declarations,
+where an omitted `::Type` corresponds to `::Any`.
+
 
 ```jldoctest
-julia> typeof((a=1,b="hello"))
-NamedTuple{(:a, :b), Tuple{Int64, String}}
+julia> typeof((a=1,b="hello")) # prints in macro form
+@NamedTuple{a::Int64, b::String}
+
+julia> NamedTuple{(:a, :b), Tuple{Int64, String}} # long form of the type
+@NamedTuple{a::Int64, b::String}
 ```
 
-[`@NamedTuple`](@ref) 宏提供了类结构体（`struct`）的具名元组（`NamedTuple`）声明，使用 `key::Type` 的语法，如果省略 `::Type` 则默认为 `::Any`。
+The `begin ... end` form of the `@NamedTuple` macro allows the declarations to be
+split across multiple lines (similar to a struct declaration), but is otherwise equivalent:
+
 
 ```jldoctest
-julia> @NamedTuple{a::Int, b::String}
-NamedTuple{(:a, :b), Tuple{Int64, String}}
-
 julia> @NamedTuple begin
            a::Int
            b::String
        end
-NamedTuple{(:a, :b), Tuple{Int64, String}}
+@NamedTuple{a::Int64, b::String}
 ```
 
 `NamedTuple` 类型可以用作构造函数，接受一个单独的元组作为参数。构造出来的 `NamedTuple` 类型可以是具体类型，如果参数都被指定，也可以是只由字段名称所指定的类型：
 
 ```jldoctest
-julia> @NamedTuple{a::Float32,b::String}((1,""))
+julia> @NamedTuple{a::Float32,b::String}((1, ""))
 (a = 1.0f0, b = "")
 
-julia> NamedTuple{(:a, :b)}((1,""))
+julia> NamedTuple{(:a, :b)}((1, ""))
 (a = 1, b = "")
 ```
 
@@ -793,20 +862,67 @@ true
 julia> struct NoFieldsParam{T}
        end
 
-julia> Base.issingletontype(NoFieldsParam) # can't be a singleton type ...
+julia> Base.issingletontype(NoFieldsParam) # Can't be a singleton type ...
 false
 
 julia> NoFieldsParam{Int}() isa NoFieldsParam # ... because it has ...
 true
 
-julia> NoFieldsParam{Bool}() isa NoFieldsParam # ... multiple instances
+julia> NoFieldsParam{Bool}() isa NoFieldsParam # ... multiple instances.
 true
 
-julia> Base.issingletontype(NoFieldsParam{Int}) # parametrized, it is a singleton
+julia> Base.issingletontype(NoFieldsParam{Int}) # Parametrized, it is a singleton.
 true
 
 julia> NoFieldsParam{Int}() === NoFieldsParam{Int}()
 true
+```
+
+## Types of functions
+
+Each function has its own type, which is a subtype of `Function`.
+
+```jldoctest foo41
+julia> foo41(x) = x + 1
+foo41 (generic function with 1 method)
+
+julia> typeof(foo41)
+typeof(foo41) (singleton type of function foo41, subtype of Function)
+```
+
+Note how `typeof(foo41)` prints as itself. This is merely a convention for printing, as it is a first-class object that can be used like any other value:
+
+```jldoctest foo41
+julia> T = typeof(foo41)
+typeof(foo41) (singleton type of function foo41, subtype of Function)
+
+julia> T <: Function
+true
+```
+
+Types of functions defined at top-level are singletons. When necessary, you can compare them with [`===`](@ref).
+
+[Closures](@ref man-anonymous-functions) also have their own type, which is usually printed with names that end in `#<number>`. Names and types for functions defined at different locations are distinct, but not guaranteed to be printed the same way across sessions.
+
+```jldoctest; filter = r"[0-9\.]+"
+julia> typeof(x -> x + 1)
+var"#9#10"
+```
+
+Types of closures are not necessarily singletons.
+
+```jldoctest
+julia> addy(y) = x -> x + y
+addy (generic function with 1 method)
+
+julia> typeof(addy(1)) === typeof(addy(2))
+true
+
+julia> addy(1) === addy(2)
+false
+
+julia> Base.issingletontype(typeof(addy(1)))
+false
 ```
 
 ## [`Type{T}` 类型选择器](@id man-typet-type)
@@ -829,7 +945,7 @@ julia> isa(Float64, Type{Real})
 false
 ```
 
-换句话说，[`is(A, Type{B})`](@ref) 当且仅当 `A` 和 `B` 是同一个对象并且该对象是一个类型时才为真。
+换句话说，[`isa(A, Type{B})`](@ref) 当且仅当 `A` 和 `B` 是同一个对象并且该对象是一个类型时才为真。
 
 特别的，由于参数类型是 [不变量](@ref man-parametric-composite-types)，我们有
 
@@ -999,7 +1115,8 @@ Polar
 julia> Base.show(io::IO, z::Polar) = print(io, z.r, " * exp(", z.Θ, "im)")
 ```
 
-`Polar` 对象的输出可以被更精细地控制。特别是，人们有时想要啰嗦的多行打印格式，用于在 REPL 和其它交互式环境中显示单个对象，以及一个更紧凑的单行格式，用于 [`print`](@ref) 函数或在作为其它对象（比如一个数组）的部分是显示该对象。虽然在两种情况下默认都会调用 `show(io, z)` 函数，你仍可以定义一个*不同*的多行格式来显示单个对象，这通过重载三参数形式的 `show` 函数，该函数接收 `text/plain` MIME 类型（请参阅 [多媒体 I/O](@ref)）作为它的第二个参数，举个例子：
+`Polar` 对象的输出可以被更精细地控制。特别是，人们有时想要啰嗦的多行打印格式，用于在 REPL 和其它交互式环境中显示单个对象，以及一个更紧凑的单行格式，用于 [`print`](@ref) 函数或在作为其它对象（比如一个数组）的部分是显示该对象。虽然在两种情况下默认都会调用 `show(io, z)` 函数，你仍可以定义一个*不同*的多行格式来显示单个对象，这通过重载三参数形式的 `show` 函数，该函数接收 `text/plain` MIME 类型
+（请参阅 [多媒体 I/O](@ref Multimedia-I/O)）作为它的第二个参数，举个例子：
 
 ```jldoctest polartype
 julia> Base.show(io::IO, ::MIME"text/plain", z::Polar{T}) where{T} =
@@ -1019,7 +1136,7 @@ julia> [Polar(3, 4.0), Polar(4.0,5.3)]
  4.0 * exp(5.3im)
 ```
 
-其中单行格式的 `show(io, z)` 仍用于由 `Polar` 值组成的数组。从技术上讲，REPL 调用 `display(z)` 来显示单行的执行结果，其默认为 `show(stdout, MIME("text/plain"), z)`，而后者又默认为 `show(stdout, z)`，但是你*不应该*定义新的 [`display`](@ref) 方法，除非你正在定义新的多媒体显示管理器（请参阅[多媒体 I/O](@ref)）。
+其中单行格式的 `show(io, z)` 仍用于由 `Polar` 值组成的数组。从技术上讲，REPL 调用 `display(z)` 来显示单行的执行结果，其默认为 `show(stdout, MIME("text/plain"), z)`，而后者又默认为 `show(stdout, z)`，但是你*不应该*定义新的 [`display`](@ref) 方法，除非你正在定义新的多媒体显示管理器（请参阅[多媒体 I/O](@ref Multimedia-I/O)）。
 
 此外，你还可以为其它 MIME 类型定义 `show` 方法，以便在支持的环境（比如 IJulia）中实现更丰富的对象显示（HTML、图像等）。例如，我们可以定义 `Polar` 对象的 HTML 显示格式，使其带有上标和斜体：
 
@@ -1081,7 +1198,7 @@ julia> :($a == 2)
 在某些情况下，根据上下文调整 `show` 方法的行为是很有用的。这可通过 [`IOContext`](@ref) 类型实现，它允许同时传递上下文属性和封装后的 IO 流。例如，我们可以在 `:compact` 属性设置为 `true` 时创建一个更短的表示，而在该属性为 `false` 或不存在时返回长的表示：
 ```jldoctest polartype
 julia> function Base.show(io::IO, z::Polar)
-           if get(io, :compact, false)
+           if get(io, :compact, false)::Bool
                print(io, z.r, "ℯ", z.Θ, "im")
            else
                print(io, z.r, " * exp(", z.Θ, "im)")
@@ -1105,7 +1222,8 @@ julia> [Polar(3, 4.0) Polar(4.0,5.3)]
 
 在 Julia 中，你无法根据诸如 `true` 或 `false` 之类的*值*进行分派。然而，你可以根据参数类型进行分派，Julia 允许你包含「plain bits」值（类型、符号、整数、浮点数和元组等）作为类型参数。`Array{T,N}` 里的维度参数就是一个常见的例子，在这里 `T` 是类型（比如 [`Float64`](@ref)），而 `N` 只是个 `Int`。
 
-你可以创建把值作为参数的自定义类型，并使用它们控制自定义类型的分派。为了说明这个想法，让我们引入参数类型 `Val{x}` 和构造函数 `Val(x) = Val{x}()`，在不需要更精细的层次结构时，这是利用此技巧的一种习惯的方式。
+你可以创建把值作为参数的自定义类型，并使用它们控制自定义类型的分派。
+为了说明这个想法，让我们引入参数类型 `Val{x}` 和构造函数 `Val(x) = Val{x}()`，在不需要更精细的层次结构时，这是利用此技巧的一种习惯的方式。
 
 [`Val`](@ref) 的定义为：
 
@@ -1137,5 +1255,5 @@ julia> firstlast(Val(false))
 
 值得注意的是，参数「值」类型非常容易被误用，包括 `Val`；在不适用的情形下，你很容易使代码性能变得更*糟糕*。特别是，你可能永远都不会想要写出如上所示的代码。有关 `Val` 的正确（和不正确）使用的更多信息，请阅读[性能建议](@ref man-performance-value-type)中更广泛的讨论。
 
-[^1]: 「少数」由常数 `MAX_UNION_SPLITTING` 定义，目前设置为 4。
+[^1]: 「少数」由常数 `max_union_splitting` 定义，目前默认为 4。
 [^2]: 一些流行的编程语言具有单例类型，包括 Haskell、Scala 和 Ruby。

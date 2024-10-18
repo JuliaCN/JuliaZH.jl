@@ -180,7 +180,11 @@ julia> z.data
 ERROR: UndefRefError: access to undefined reference
 ```
 
-这避免了不断地检测 `null` 值的需要。然而，并不是所有的对象成员都是引用。Julia 会将一些类型当作纯数据（"plain data"），这意味着它们的数据是自包含的，并且没有引用其它对象。这些纯数据包括原始类型（比如 `Int` ）和由其它纯数据类型构成的不可变结构体。纯数据类型的初始值是未定义的：
+这避免了不断地检测 `null` 值的需要。然而，并不是所有的对象成员都是引用。
+Julia 会将一些类型当作纯数据（"plain data"），这意味着它们的数据是自包含的，并且没有引用其它对象。
+The plain data types consist of primitive types (e.g. `Int`)
+and immutable structs of other plain data types (see also: [`isbits`](@ref), [`isbitstype`](@ref)).
+The initial contents of a plain data type is undefined:
 
 ```julia-repl
 julia> struct HasPlain
@@ -207,7 +211,7 @@ julia> mutable struct Lazy
 
 ## 参数类型的构造函数
 
-参数类型的存在为构造函数增加了更多的复杂性。首先，让我们回顾一下[参数类型](@ref)。在默认情况下，我们可以用两种方法来实例化参数复合类型，一种是显式地提供类型参数，另一种是让 Julia 根据构造函数输入参数的类型来隐式地推导类型参数。这里有一些例子：
+参数类型的存在为构造函数增加了更多的复杂性。首先，让我们回顾一下[参数类型](@ref Parametric-Types)。在默认情况下，我们可以用两种方法来实例化参数复合类型，一种是显式地提供类型参数，另一种是让 Julia 根据构造函数输入参数的类型来隐式地推导类型参数。这里有一些例子：
 
 ```jldoctest parametric; filter = r"Closest candidates.*\n  .*"
 julia> struct Point{T<:Real}
@@ -278,8 +282,13 @@ Point{Float64}
 ```jldoctest parametric2
 julia> Point(1.5,2)
 ERROR: MethodError: no method matching Point(::Float64, ::Int64)
+
 Closest candidates are:
-  Point(::T, !Matched::T) where T<:Real at none:1
+  Point(::T, !Matched::T) where T<:Real
+   @ Main none:1
+
+Stacktrace:
+[...]
 ```
 
 如果你想要找到一种方法可以使类似的调用都可以正常工作，请参阅[类型转换与类型提升](@ref conversion-and-promotion)。这里稍稍“剧透”一下，我们可以利用下面的这个外部构造函数来满足需求，无论输入参数的类型如何，它都可以触发通用的 `Point` 构造函数：
@@ -359,11 +368,22 @@ julia> function ⊘(x::Complex, y::Complex)
 
 第一行 -- `struct OurRational{T<:Integer} <: Real` -- 声明了 `OurRational` 会接收一个整数类型的类型参数，且它自己属于实数类型。它声明了两个成员：`num::T` 和 `den::T`。这表明一个 `OurRational{T}` 的实例中会包含一对整数，且类型为 `T`，其中一个表示分子，另一个表示分母。
 
-现在事情变得有趣了。 `OurRational` 有一个内部构造器方法，它检查 `num` 和 `den` 不都为零，并确保每个有理数都是以非负分母的“最低项”构造的。 这是通过首先翻转分子和分母的符号（如果分母为负）来实现的。 然后，两者都除以它们的最大公约数（`gcd` 总是返回一个非负数，无论其参数的符号如何）。 因为这是 `OurRational` 唯一的内部构造函数，我们可以确定 `OurRational` 对象总是以这种规范化形式构造的。
+Now things get interesting. `OurRational` has a single inner constructor method which checks that
+`num` and `den` aren't both zero and ensures that every rational is constructed in "lowest
+terms" with a non-negative denominator. This is accomplished by first flipping the signs of numerator
+and denominator if the denominator is negative. Then, both are divided by their greatest common
+divisor (`gcd` always returns a non-negative number, regardless of the sign of its arguments). Because
+this is the only inner constructor for `OurRational`, we can be certain that `OurRational` objects are
+always constructed in this normalized form.
 
 为了方便，`OurRational` 也提供了一些其它的外部构造函数。第一个外部构造函数是“标准的”通用构造函数，当分子和分母的类型一致时，它就可以推导出类型参数 `T`。第二个外部构造函数可以用于分子和分母的类型不一致的情景，它会将分子和分母的类型提升至一个共同的类型，然后再委托第一个外部构造函数进行构造。第三个构造函数会将一个整数转化为分数，方法是将 1 当作分母。
 
-在定义了外部构造函数之后，我们为 `⊘` 算符定义了一系列的方法，之后就可以使用 `⊘` 算符来写分数，（比如 `1 ⊘ 2`）。Julia 的 `Rational` 类型采用的是 [`//`](@ref) 算符。在做上述定义之前，`⊘` 是一个无意的且未被定义的算符。定义之后，它的行为与在 [有理数](@ref Rational-Numbers) 一节中描述的一致——注意它的所有行为都是那短短几行定义的。第一个也是最基础的定义只是将 `a ⊘ b` 中的 `a` 和 `b` 当作参数传递给 `OurRational` 的构造函数来实例化 `OurRational`，这要求 `a` 和 `b` 分别都是整数。在 `⊘` 的某个操作数已经是分数的情况下，我们采用了一个有点不一样的方法来构建新的分数，这实际上等价于用分数除以一个整数。最后，我们也可以让 `⊘` 作用于复数，用来创建一个类型为 `Complex{<:OurRational}` 的对象——即一个实部和虚部都是分数的复数：
+在定义了外部构造函数之后，我们为 `⊘` 算符定义了一系列的方法，之后就可以使用 `⊘` 算符来写分数，（比如 `1 ⊘ 2`）。
+Julia 的 `Rational` 类型采用的是 [`//`](@ref) 算符。在做上述定义之前，`⊘` 是一个无意的且未被定义的算符。
+定义之后，它的行为与在 [有理数](@ref) 一节中描述的一致——注意它的所有行为都是那短短几行定义的。
+第一个也是最基础的定义只是将 `a ⊘ b` 中的 `a` 和 `b` 当作参数传递给 `OurRational` 的构造函数来实例化 `OurRational`，这要求 `a` 和 `b` 分别都是整数。
+在 `⊘` 的某个操作数已经是分数的情况下，我们采用了一个有点不一样的方法来构建新的分数，这实际上等价于用分数除以一个整数。
+最后，我们也可以让 `⊘` 作用于复数，用来创建一个类型为 `Complex{<:OurRational}` 的对象——即一个实部和虚部都是分数的复数：
 
 ```jldoctest rational
 julia> z = (1 + 2im) ⊘ (1 - 2im);
@@ -375,7 +395,9 @@ julia> typeof(z) <: Complex{<:OurRational}
 true
 ```
 
-因此，尽管 `⊘` 算符通常会返回一个 `OurRational` 的实例，但倘若其中一个操作数是复整数，那么就会返回 `Complex{<:OurRational}`。感兴趣的话可以读一读 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl)：它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自恰的。
+因此，尽管 `⊘` 算符通常会返回一个 `OurRational` 的实例，但倘若其中一个操作数是复整数，那么就会返回 `Complex{<:OurRational}`。
+感兴趣的话可以读一读 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl)：
+它实现了一个完整的 Julia 基本类型，但却非常的简短，而且是自恰的。
 
 ## 仅外部的构造函数
 
@@ -407,8 +429,11 @@ julia> struct SummedArray{T<:Number,S<:Number}
 
 julia> SummedArray(Int32[1; 2; 3], Int32(6))
 ERROR: MethodError: no method matching SummedArray(::Vector{Int32}, ::Int32)
+
 Closest candidates are:
-  SummedArray(::Vector{T}) where T at none:4
+  SummedArray(::Vector{T}) where T
+   @ Main none:4
+
 Stacktrace:
 [...]
 ```

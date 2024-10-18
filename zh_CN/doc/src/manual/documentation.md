@@ -1,7 +1,27 @@
 # [文档](@id man-documentation)
 
-Julia允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。
- 
+## Accessing Documentation
+
+Documentation can be accessed at the REPL or in [IJulia](https://github.com/JuliaLang/IJulia.jl)
+by typing `?` followed by the name of a function or macro, and pressing `Enter`. For example,
+
+```julia
+?cos
+?@time
+?r""
+```
+
+will show documentation for the relevant function, macro or string macro respectively. Most Julia
+environments provide a way to access documentation directly:
+- [VS Code](https://www.julia-vscode.org/) shows documentation when you hover over a function name.
+  You can also use the Julia panel in the sidebar to search for documentation.
+- In [Pluto](https://github.com/fonsp/Pluto.jl), open the "Live Docs" panel on the bottom right.
+- In [Juno](https://junolab.org) using `Ctrl-J, Ctrl-D` will show the documentation for the object
+  under the cursor.
+
+## 编写文档
+
+Julia 允许开发者和用户，使用其内置的文档系统更加便捷地为函数、类型以及其他对象编写文档。
 
 基础语法很简单：紧接在对象（函数，宏，类型和实例）之前的字符串都会被认为是对应对象的文档（称作 *docstrings*）。
 注意不要在 docstring 和文档对象之间有空行或者注释。
@@ -87,7 +107,7 @@ function bar(x, y) ...
    ```
 5. 给相关函数提供提示。
 
-   有时会存在具有功能相联系的函数。为了更易于发现相关函数，请在段落 `See also:` 中为其提供一个小列表。
+   有时会存在具有功能相联系的函数。为了更易于发现相关函数，请在段落 `See also` 中为其提供一个小列表。
     
 
    ```
@@ -196,19 +216,6 @@ function bar(x, y) ...
     
     
 
-## 访问文档
-
-文档可以在REPL中访问，也可以在 [IJulia](https://github.com/JuliaLang/IJulia.jl)
-中通过键入`?`紧接函数或者宏的名字并按下`Enter`访问。例如，
-
-```julia
-?cos
-?@time
-?r""
-```
-
-会分别为相应的函数，宏或者字符显示文档。在 [Juno](http://junolab.org) 中，使用 `Ctrl-J, Ctrl-D` 会为光标处的对象显示文档。
-
 ## 函数与方法
 
 在Julia中函数可能有多种实现，被称为方法。虽然通用函数
@@ -287,16 +294,18 @@ end
 @doc "`subtract(a,b)` subtracts `b` from `a`" subtract
 ```
 
-写在非顶级块，比如`begin`, `if`, `for`, 和 `let`，中的文档会根据块的评估情况加入文档系统中，例如：
+写在非顶级块，比如 `begin`, `if`, `for`, 和 `let`，中的文档可以通过 `@doc` 宏加入文档系统中。
+例如：
 
 ```julia
 if condition()
-    "..."
+    @doc "..."
     f(x) = x
 end
 ```
 
-会被加到`f(x)`的文档中，当`condition()`是`true`的时候。注意即使`f(x)`在块的末尾离开了作用域，他的文档还会保留。
+会被加到 `f(x)` 的文档中，当 `condition()` 是 `true` 的时候。
+注意即使 `f(x)` 在块的末尾离开了作用域，他的文档还会保留。
 
 可以利用元编程来帮助创建文档。当在文档字符串中使用字符串插值时，需要使用额外的 `$` 例如：`$($name)`
 
@@ -328,7 +337,8 @@ x = MyType(1)
 y = MyType(2)
 ```
 
-`?x` 将显示“Documentation for MyType with value 1”，而`?y` 将显示“Documentation for MyType with value 2”。
+`?x` will display "Documentation for MyType with value 1" while `?y` will display
+"Documentation for MyType with value 2".
 
 ## 语法指南
 
@@ -464,7 +474,8 @@ f(x) = x
 end
 ```
 
-通过在表达式上方放置一个 docstring 来记录 `baremodule` 会自动将 `@doc` 导入到模块中。 当没有记录模块表达式时，必须手动完成这些导入。
+通过在表达式上方放置一个 docstring 来记录 `baremodule` 会自动将 `@doc` 导入到模块中。
+当没有记录模块表达式时，必须手动完成这些导入。
 
 ### 全局变量
 

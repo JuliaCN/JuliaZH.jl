@@ -177,7 +177,7 @@ ERROR: Whoops!
 
 在处理一个异常时，后续的异常同样可能被抛出。观察这些异常对定位问题的源头极有帮助。Julia runtime 支持将每个异常发生后推入一个内部的*异常栈*。当代码正常退出一个`catch`语句，可认为所有被推入栈中的异常在相应的`try`语句中被成功处理并已从栈中移除。
 
-存放当前异常的栈可通过测试函数 [`current_exceptions`](@ref) 获取，例如
+The stack of current exceptions can be accessed using the [`current_exceptions`](@ref) function. For example,
 
 ```julia-repl
 julia> try
@@ -212,7 +212,8 @@ Stacktrace:
 
 在本例中，根源异常（A）排在栈头，其后放置着延伸异常（B)。 在正常退出（例如，不抛出新异常）两个 catch 块后，所有异常都被移除出栈，无法访问。
 
-异常栈被存放于发生异常的 `Task` 处。当某个任务失败，出现意料外的异常时，`current_exceptions(task)` 可被用于观察该任务的异常栈。
+The exception stack is stored on the `Task` where the exceptions occurred. When a task fails with uncaught exceptions,
+`current_exceptions(task)` may be used to inspect the exception stack for that task.
 
 ## [`stacktrace`](@ref) 与 [`backtrace`](@ref) 的比较
 

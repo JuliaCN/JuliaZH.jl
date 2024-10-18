@@ -115,7 +115,7 @@ convert(::Type{MyType}, x) = MyType(x)
 某些抽象类型的所有实例默认都被认为是「足够相似的」，在 Julia Base 中也提供了通用的 `convert` 定义。例如，这个定义声明通过调用单参数构造函数将任何 `Number` 类型 `convert` 为其它任何 `Number` 类型是有效的：
 
 ```julia
-convert(::Type{T}, x::Number) where {T<:Number} = T(x)
+convert(::Type{T}, x::Number) where {T<:Number} = T(x)::T
 ```
 
 这意味着新的 `Number` 类型只需要定义构造函数，因为此定义将为它们处理 `convert`。在参数已经是所请求的类型的情况下，用恒同变换来处理 `convert`。
@@ -153,7 +153,12 @@ julia> promote(1 + 2im, 3//4)
 (1//1 + 2//1*im, 3//4 + 0//1*im)
 ```
 
-浮点值被提升为最大的浮点参数类型。整数值会被提升为本机机器字大小或最大的整数参数类型中较大的一个。整数和浮点值的混合会被提升为一个足以包含所有值的浮点类型。与有理数混合的整数会被提升有理数。与浮点数混合的有理数会被提升为浮点数。与实数值混合的复数值会被提升为合适类型的复数值。
+Floating-point values are promoted to the largest of the floating-point argument types. Integer
+values are promoted to the largest of the integer argument types. If the types are the same size
+but differ in signedness, the unsigned type is chosen. Mixtures of integers and floating-point
+values are promoted to a floating-point type big enough to hold all the values. Integers mixed
+with rationals are promoted to rationals. Rationals mixed with floats are promoted to floats.
+Complex values mixed with real values are promoted to the appropriate kind of complex value.
 
 这就是使用类型提升的全部内容。剩下的只是聪明的应用，最典型的「聪明」应用是数值操作（如 `+`、`-`、`*` 和 `/`）的 catch-all 方法的定义。以下是在 [`promotion.jl`](https://github.com/JuliaLang/julia/blob/master/base/promotion.jl) 中给出的几个 catch-all 方法的定义：
 
@@ -206,7 +211,19 @@ julia> promote_type(Int8, Int64)
 Int64
 ```
 
-在内部，`promote_type` 在 `promote` 中用于确定参数值应被转换为什么类型以便进行类型提升。但是，它本身可能是有用的。好奇的读者可以阅读 [`promotion.jl`](https://github.com/JuliaLang/julia/blob/master/base/promotion.jl)，该文件用大概 35 行定义了完整的类型提升规则。
+Note that we do **not** overload `promote_type` directly: we overload `promote_rule` instead.
+`promote_type` uses `promote_rule`, and adds the symmetry.
+Overloading it directly can cause ambiguity errors.
+We overload `promote_rule` to define how things should be promoted, and we use `promote_type`
+to query that.
+
+在内部，`promote_type` 在 `promote` 中用于确定参数值应被转换为什么类型以便进行类型提升。
+好奇的读者可以阅读 [`promotion.jl`](https://github.com/JuliaLang/julia/blob/master/base/promotion.jl)，该文件用大概 35 行定义了完整的类型提升规则。
+
+Internally, `promote_type` is used inside of `promote` to determine what type argument values
+should be converted to for promotion. The curious reader can read the code in
+[`promotion.jl`](https://github.com/JuliaLang/julia/blob/master/base/promotion.jl),
+which defines the complete promotion mechanism in about 35 lines.
 
 ### 案例研究：有理数的类型提升
 

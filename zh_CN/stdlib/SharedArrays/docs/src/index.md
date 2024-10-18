@@ -1,5 +1,7 @@
 # 共享数组
 
+`SharedArray` represents an array, which is shared across multiple processes, on a single machine.
+
 ```@docs
 SharedArrays.SharedArray
 SharedArrays.SharedVector

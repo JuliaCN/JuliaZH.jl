@@ -19,10 +19,43 @@ end
 使用自定义的类数组类型 `MyArray`，我们有：
 
 ```julia
-@inline getindex(A::MyArray, i::Real) = (@boundscheck checkbounds(A,i); A.data[to_index(i)])
+@inline getindex(A::MyArray, i::Real) = (@boundscheck checkbounds(A, i); A.data[to_index(i)])
 ```
 
-当 `getindex` 被 `sum` 包裹时，对 `checkbounds(A,i)` 的调用会被忽略。如果存在多层包裹，最多只有一个 `@boundscheck` 被忽略。这个规则用来防止将来代码被改变时潜在的多余忽略。
+当 `getindex` 内联到 `sum` 时，对 `checkbounds(A, i)` 的调用将被忽略。
+如果函数包含多层内联，那么只有最深一层内联的 `@boundscheck` 块才会被忽略。
+该规则可防止堆栈上层的代码对程序行为造成意外改变。
+
+### Caution!
+
+It is easy to accidentally expose unsafe operations with `@inbounds`. You might be tempted
+to write the above example as
+
+```julia
+function sum(A::AbstractArray)
+    r = zero(eltype(A))
+    for i in 1:length(A)
+        @inbounds r += A[i]
+    end
+    return r
+end
+```
+
+Which quietly assumes 1-based indexing and therefore exposes unsafe memory access when used
+with [`OffsetArrays`](@ref man-custom-indices):
+
+```julia-repl
+julia> using OffsetArrays
+
+julia> sum(OffsetArray([1, 2, 3], -10))
+9164911648 # inconsistent results or segfault
+```
+
+While the original source of the error here is `1:length(A)`, the use of `@inbounds`
+increases the consequences from a bounds error to a less easily caught and debugged unsafe
+memory access. It is often difficult or impossible to prove that a method which uses
+`@inbounds` is safe, so one must weigh the benefits of performance improvements against the
+risk of segfaults and silent misbehavior, especially in public facing APIs.
 
 ## Propagating inbounds
 
@@ -80,4 +113,4 @@ the last argument).
 
 ## Emit bounds checks
 
-Julia can be launched with `--check-bounds={yes|no|auto}` to emit bounds checks always, never, or respect @inbounds declarations.
+Julia can be launched with `--check-bounds={yes|no|auto}` to emit bounds checks always, never, or respect `@inbounds` declarations.

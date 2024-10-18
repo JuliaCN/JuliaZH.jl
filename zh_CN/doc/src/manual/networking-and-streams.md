@@ -102,7 +102,30 @@ julia> print(stdout, 0x61)
 
 ## 使用文件
 
-和其他环境一样，Julia 有 [`open`](@ref) 函数，它接收文件名并返回一个 [`IOStream`](@ref) 对象，你可以用该对象来对文件进行读取和写入。例如，如果我们有文件 `hello.txt`，其内容为 `Hello, World!`：
+You can write content to a file with the `write(filename::String, content)` method:
+
+```julia-repl
+julia> write("hello.txt", "Hello, World!")
+13
+```
+
+_(`13` is the number of bytes written.)_
+
+You can read the contents of a file with the `read(filename::String)` method, or `read(filename::String, String)`
+to the contents as a string:
+
+```julia-repl
+julia> read("hello.txt", String)
+"Hello, World!"
+```
+
+
+### Advanced: streaming files
+
+The `read` and `write` methods above allow you to read and write file contents. Like many other
+environments, Julia also has an [`open`](@ref) function, which takes a filename and
+returns an [`IOStream`](@ref) object that you can use to read and write things from the file. For example,
+if we have a file, `hello.txt`, whose contents are `Hello, World!`:
 
 ```julia-repl
 julia> f = open("hello.txt")
@@ -291,4 +314,69 @@ julia> @sync for hostname in ("google.com", "github.com", "julialang.org")
 Finished connection to google.com
 Finished connection to julialang.org
 Finished connection to github.com
+```
+
+## Multicast
+
+Julia supports [multicast](https://datatracker.ietf.org/doc/html/rfc1112) over IPv4 and IPv6 using the User Datagram Protocol ([UDP](https://datatracker.ietf.org/doc/html/rfc768)) as transport.
+
+Unlike the Transmission Control Protocol ([TCP](https://datatracker.ietf.org/doc/html/rfc793)), UDP makes almost no assumptions about the needs of the application.
+TCP provides flow control (it accelerates and decelerates to maximize throughput), reliability (lost or corrupt packets are automatically retransmitted), sequencing (packets are ordered by the operating system before they are given to the application), segment size, and session setup and teardown.
+UDP provides no such features.
+
+A common use for UDP is in multicast applications.
+TCP is a stateful protocol for communication between exactly two devices.
+UDP can use special multicast addresses to allow simultaneous communication between many devices.
+
+### Receiving IP Multicast Packets
+
+To transmit data over UDP multicast, simply `recv` on the socket, and the first packet received will be returned. Note that it may not be the first packet that you sent however!
+
+```julia
+using Sockets
+group = ip"228.5.6.7"
+socket = Sockets.UDPSocket()
+bind(socket, ip"0.0.0.0", 6789)
+join_multicast_group(socket, group)
+println(String(recv(socket)))
+leave_multicast_group(socket, group)
+close(socket)
+```
+
+### Sending IP Multicast Packets
+
+To transmit data over UDP multicast, simply `send` to the socket.
+Notice that it is not necessary for a sender to join the multicast group.
+
+```julia
+using Sockets
+group = ip"228.5.6.7"
+socket = Sockets.UDPSocket()
+send(socket, group, 6789, "Hello over IPv4")
+close(socket)
+```
+
+### IPv6 Example
+
+This example gives the same functionality as the previous program, but uses IPv6 as the network-layer protocol.
+
+Listener:
+```julia
+using Sockets
+group = Sockets.IPv6("ff05::5:6:7")
+socket = Sockets.UDPSocket()
+bind(socket, Sockets.IPv6("::"), 6789)
+join_multicast_group(socket, group)
+println(String(recv(socket)))
+leave_multicast_group(socket, group)
+close(socket)
+```
+
+Sender:
+```julia
+using Sockets
+group = Sockets.IPv6("ff05::5:6:7")
+socket = Sockets.UDPSocket()
+send(socket, group, 6789, "Hello over IPv6")
+close(socket)
 ```

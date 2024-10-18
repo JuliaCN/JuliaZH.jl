@@ -164,7 +164,8 @@ graph[UUID("c07ecb7d-0dc9-4db7-8803-fadaaeaf08e1")][:Priv]
    - 此外，`uuid` 依照包含项目文件的目录，映射至与`src/X.jl`。
 2. 若非上述情况，且项目文件具有对应的清单文件，且该清单文件包含匹配 `uuid` 的节（stanza），那么：
    - 若其具有一个 `路径` 入口，则使用该路径（与包含清单文件的目录相关）。
-   - 若其具有一个 `git-tree-sha1` 入口，计算一个确定的 `uuid` 与 `git-tree-sha1` 函数——我们把这个函数称为 `slug`——并在每个 Julia `DEPOT_PATH` 的全局序列中的目录查询名为 `packages/X/$slug` 的目录。使用存在的第一个此类目录。
+   - 若其具有一个 `git-tree-sha1` 入口，计算一个确定的 `uuid` 与 `git-tree-sha1` 函数
+     —— 我们把这个函数称为 `slug`——并在每个 Julia `DEPOT_PATH` 的全局序列中的目录查询名为 `packages/X/$slug` 的目录。使用存在的第一个此类目录。
 
 若某些结果成功，源码入口点的路径会是这些结果中的某个，结果的相对路径+`src/X.jl`；否则，`uuid` 不存在路径映射。当加载 `X` 时，如果没找到源码路径，查找即告失败，用户可能会被提示安装适当的包版本或采取其他纠正措施（例如，将 `X` 声明为某种依赖性）。
 
@@ -350,6 +351,68 @@ paths = reduce(merge, reverse([paths₁, paths₂, …]))
 2. 非主环境中的包能最终使用与其依赖项不兼容的版本，即使它们自己的环境是完全兼容。这种情况可能发生，当它们的一个依赖项被堆栈（通过图或路径，或两者）中某个早期环境中的版本所覆盖。
 
 由于主环境通常是您正在处理的项目所在的环境，而堆栈中稍后的环境包含其他工具， 因此这是正确的权衡：最好改进您的开发工具，但保持项目能工作。当这种不兼容发生时，你通常要将开发工具升级到与主项目兼容的版本。
+
+### [Package Extensions](@id man-extensions)
+
+A package "extension" is a module that is automatically loaded when a specified set of other packages (its "extension dependencies") are loaded in the current Julia session. Extensions are defined under the `[extensions]` section in the project file. The extension dependencies of an extension are a subset of those packages listed under the `[weakdeps]` section of the project file. Those packages can have compat entries like other packages.
+
+```toml
+name = "MyPackage"
+
+[compat]
+ExtDep = "1.0"
+OtherExtDep = "1.0"
+
+[weakdeps]
+ExtDep = "c9a23..." # uuid
+OtherExtDep = "862e..." # uuid
+
+[extensions]
+BarExt = ["ExtDep", "OtherExtDep"]
+FooExt = "ExtDep"
+...
+```
+
+The keys under `extensions` are the names of the extensions.
+They are loaded when all the packages on the right hand side (the extension dependencies) of that extension are loaded.
+If an extension only has one extension dependency the list of extension dependencies can be written as just a string for brevity.
+The location for the entry point of the extension is either in `ext/FooExt.jl` or `ext/FooExt/FooExt.jl` for
+extension `FooExt`.
+The content of an extension is often structured as:
+
+```
+module FooExt
+
+# Load main package and extension dependencies
+using MyPackage, ExtDep
+
+# Extend functionality in main package with types from the extension dependencies
+MyPackage.func(x::ExtDep.SomeStruct) = ...
+
+end
+```
+
+When a package with extensions is added to an environment, the `weakdeps` and `extensions` sections
+are stored in the manifest file in the section for that package. The dependency lookup rules for
+a package are the same as for its "parent" except that the listed extension dependencies are also considered as
+dependencies.
+
+### [Package/Environment Preferences](@id preferences)
+
+Preferences are dictionaries of metadata that influence package behavior within an environment.
+The preferences system supports reading preferences at compile-time, which means that at code-loading time, we must ensure that the precompilation files selected by Julia were built with the same preferences as the current environment before loading them.
+The public API for modifying Preferences is contained within the [Preferences.jl](https://github.com/JuliaPackaging/Preferences.jl) package.
+Preferences are stored as TOML dictionaries within a `(Julia)LocalPreferences.toml` file next to the currently-active project.
+If a preference is "exported", it is instead stored within the `(Julia)Project.toml` instead.
+The intention is to allow shared projects to contain shared preferences, while allowing for users themselves to override those preferences with their own settings in the LocalPreferences.toml file, which should be .gitignored as the name implies.
+
+Preferences that are accessed during compilation are automatically marked as compile-time preferences, and any change recorded to these preferences will cause the Julia compiler to recompile any cached precompilation file(s) (`.ji` and corresponding `.so`, `.dll`, or `.dylib` files) for that module.
+This is done by serializing the hash of all compile-time preferences during compilation, then checking that hash against the current environment when searching for the proper file(s) to load.
+
+Preferences can be set with depot-wide defaults; if package Foo is installed within your global environment and it has preferences set, these preferences will apply as long as your global environment is part of your `LOAD_PATH`.
+Preferences in environments higher up in the environment stack get overridden by the more proximal entries in the load path, ending with the currently active project.
+This allows depot-wide preference defaults to exist, with active projects able to merge or even completely overwrite these inherited preferences.
+See the docstring for `Preferences.set_preferences!()` for the full details of how to set preferences to allow or disallow merging.
 
 ## 总结
 

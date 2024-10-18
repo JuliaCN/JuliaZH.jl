@@ -1,4 +1,4 @@
-# gdb 调试提示
+# [gdb 调试提示](@id gdb-debugging-tips)
 
 ## 显示 Julia 变量
 
@@ -104,11 +104,11 @@ Since this function is used for every call, you will make everything 1000x slowe
 
 ## Dealing with signals
 
-Julia requires a few signal to function property. The profiler uses `SIGUSR2` for sampling and
+Julia requires a few signals to function properly. The profiler uses `SIGUSR2` for sampling and
 the garbage collector uses `SIGSEGV` for threads synchronization. If you are debugging some code
 that uses the profiler or multiple threads, you may want to let the debugger ignore these signals
 since they can be triggered very often during normal operations. The command to do this in GDB
-is (replace `SIGSEGV` with `SIGUSRS` or other signals you want to ignore):
+is (replace `SIGSEGV` with `SIGUSR2` or other signals you want to ignore):
 
 ```
 (gdb) handle SIGSEGV noprint nostop pass
@@ -231,7 +231,7 @@ process)
 
 ## Mozilla's Record and Replay Framework (rr)
 
-Julia now works out of the box with [rr](http://rr-project.org/), the lightweight recording and
+Julia now works out of the box with [rr](https://rr-project.org/), the lightweight recording and
 deterministic debugging framework from Mozilla. This allows you to replay the trace of an execution
 deterministically.  The replayed execution's address spaces, register contents, syscall data etc
 are exactly the same in every run.

@@ -14,6 +14,9 @@ flisp，AST，C++，LLVM，`eval`，`typeinf`，`macroexpand`，sysimg（或 sys
 
         抽象语法树（Abstract Syntax Tree）是代码结构的数据表现。在这种表现形式下代码被符号化，因此更加方便操作和执行。
 
+
+![Diagram of the compiler flow](./img/compiler_diagram.png)
+
 ## Julia Execution
 
 整个进程的千里之行如下：
@@ -21,7 +24,7 @@ flisp，AST，C++，LLVM，`eval`，`typeinf`，`macroexpand`，sysimg（或 sys
 1. 用户打开了 `julia`。
 2. The C function `main()` from `cli/loader_exe.c` gets called. This function processes the command line
    arguments, filling in the `jl_options` struct and setting the variable `ARGS`. It then initializes
-   在 `ui/repl.c` 中的 C 语言的函数 `main()` 被调用。这个函数处理命令行参数，填充到 `jl_options` 结构图并且设置变了 `ARGS` 。接下来初始化 Julia (通过调用  [`julia_init` in `task.c`](https://github.com/JuliaLang/julia/blob/master/src/task.c)
+   Julia (by calling [`julia_init` in `init.c`](https://github.com/JuliaLang/julia/blob/master/src/init.c),
    which may load a previously compiled [sysimg](@ref dev-sysimg)). Finally, it passes off control to Julia
    by calling [`Base._start()`](https://github.com/JuliaLang/julia/blob/master/base/client.jl).
 3. When `_start()` takes over control, the subsequent sequence of commands depends on the command
@@ -39,7 +42,7 @@ flisp，AST，C++，LLVM，`eval`，`typeinf`，`macroexpand`，sysimg（或 sys
    interpreter.
 9. `jl_toplevel_eval_flex()` then [expands](@ref dev-macro-expansion) the code to eliminate any macros and to "lower"
    the AST to make it simpler to execute.
-10. `jl_toplevel_eval_flex()` then uses some simple heuristics to decide whether to JIT compiler the
+10. `jl_toplevel_eval_flex()` then uses some simple heuristics to decide whether to JIT compile the
     AST or to interpret it directly.
 11. The bulk of the work to interpret code is handled by [`eval` in `interpreter.c`](https://github.com/JuliaLang/julia/blob/master/src/interpreter.c).
 12. If instead, the code is compiled, the bulk of the work is handled by `codegen.cpp`. Whenever a

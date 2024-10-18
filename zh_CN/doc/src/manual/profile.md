@@ -43,11 +43,14 @@ julia> @profile myfunc()
 ```
 
 有一些图形界面可以查看性能分析的结果。这其中有一类是基于 [FlameGraphs.jl](https://github.com/timholy/FlameGraphs.jl)打造的，只不过提供了不同的用户接口：
-- [Juno](https://junolab.org/) 是一个完整的 IDE，内置对性能分析可视化的支持
+- [VS Code](https://www.julia-vscode.org/) 是一个完整的 IDE，内置对性能分析可视化的支持
 - [ProfileView.jl](https://github.com/timholy/ProfileView.jl) 是一个基于 GTK 的独立可视化工具
 - [ProfileVega.jl](https://github.com/davidanthoff/ProfileVega.jl) 使用 VegaLight 并与 Jupyter notebooks 很好地集成
-- [StatProfilerHTML](https://github.com/tkluck/StatProfilerHTML.jl) 生成 HTML 并提供一些额外的摘要，并且还与 Jupyter 笔记本很好地集成
+- [StatProfilerHTML.jl](https://github.com/tkluck/StatProfilerHTML.jl) 生成 HTML 并提供一些额外的摘要，并且还与 Jupyter 笔记本很好地集成
 - [ProfileSVG](https://github.com/timholy/ProfileSVG.jl) 渲染 SVG
+- [PProf.jl](https://github.com/JuliaPerf/PProf.jl) serves a local website for inspecting graphs, flamegraphs and more
+- [ProfileCanvas.jl](https://github.com/pfitzseb/ProfileCanvas.jl) is a HTML canvas based profile viewer UI,
+  used by the [Julia VS Code extension](https://www.julia-vscode.org/), but can also generate interactive HTML files.
 
 一种完全独立的性能分析可视化方法是 [PProf.jl](https://github.com/vchuravy/PProf.jl)，它使用外部 `pprof` 工具。
 
@@ -234,11 +237,73 @@ Profile.init(n = 10^7, delay = 0.01)
 
 ## [内存分配分析](@id memory-allocation-analysis)
 
-减少内存分配是提高性能的最常用技术之一。内存分配总量可以用 [`@time`](@ref) 和 [`@allocated`](@ref)，触发内存分配的特定行通常可以通过这些行产生的垃圾分配成本从性能分析中推断出来。但是，直接测量每行代码的内存分配总量有时会更高效。
+减少内存分配是提高性能的最常用技术之一。
+Julia provides several tools measure this:
 
-为了逐行测量内存分配，启动 Julia 时请使用命令行选项 `--track-allocation=<setting>`，该选项的可选值有 `none`（默认值，不测量内存分配）、`user`（测量除 Julia core 代码之外的所有代码的内存分配）或 `all`（测量 Julia 代码中每一行的内存分配）。这会为每行已编译的代码测量内存。在退出 Julia 时，累积的结果将写入到文本文件中，此文本文件名称为该文件名称后加 `.mem`，并与源文件位于同一目录下。该文件的每行列出内存分配的总字节数。[`Coverage` 包](https://github.com/JuliaCI/Coverage.jl)包括了一些基本分析工具，例如，按照内存分配的字节数对行进行排序的工具。
+### `@time`
+
+The total amount of allocation can be measured with [`@time`](@ref), [`@allocated`](@ref) and [`@allocations`](@ref),
+and specific lines triggering allocation can often be inferred from profiling via the cost of garbage
+collection that these lines incur. However, sometimes it is more efficient to directly measure
+the amount of memory allocated by each line of code.
+
+### GC Logging
+
+While [`@time`](@ref) logs high-level stats about memory usage and garbage collection over the course
+of evaluating an expression, it can be useful to log each garbage collection event, to get an
+intuitive sense of how often the garbage collector is running, how long it's running each time,
+and how much garbage it collects each time. This can be enabled with
+[`GC.enable_logging(true)`](@ref), which causes Julia to log to stderr every time
+a garbage collection happens.
+
+### [Allocation Profiler](@id allocation-profiler)
+
+!!! compat "Julia 1.8"
+    This functionality requires at least Julia 1.8.
+
+The allocation profiler records the stack trace, type, and size of each
+allocation while it is running. It can be invoked with
+[`Profile.Allocs.@profile`](@ref).
+
+This information about the allocations is returned as an array of `Alloc`
+objects, wrapped in an `AllocResults` object. The best way to visualize these is
+currently with the [PProf.jl](https://github.com/JuliaPerf/PProf.jl) and
+[ProfileCanvas.jl](https://github.com/pfitzseb/ProfileCanvas.jl) packages, which
+can visualize the call stacks which are making the most allocations.
+
+The allocation profiler does have significant overhead, so a `sample_rate`
+argument can be passed to speed it up by making it skip some allocations.
+Passing `sample_rate=1.0` will make it record everything (which is slow);
+`sample_rate=0.1` will record only 10% of the allocations (faster), etc.
+
+!!! note
+
+    The current implementation of the Allocations Profiler _does not
+    capture types for all allocations._ Allocations for which the profiler
+    could not capture the type are represented as having type
+    `Profile.Allocs.UnknownType`.
+
+    You can read more about the missing types and the plan to improve this, here:
+    [issue #43688](https://github.com/JuliaLang/julia/issues/43688).
+
+#### Line-by-Line Allocation Tracking
+
+An alternative way to measure allocations is to start Julia with the `--track-allocation=<setting>` command-line
+option, for which you can choose `none` (the default, do not measure allocation), `user` (measure
+memory allocation everywhere except Julia's core code), or `all` (measure memory allocation at
+each line of Julia code). Allocation gets measured for each line of compiled code. When you quit
+Julia, the cumulative results are written to text files with `.mem` appended after the file name,
+residing in the same directory as the source file. Each line lists the total number of bytes
+allocated. The [`Coverage` package](https://github.com/JuliaCI/Coverage.jl) contains some elementary
+analysis tools, for example to sort the lines in order of number of bytes allocated.
 
 在解释结果时，有一些需要注意的细节。在 `user` 设定下，直接从 REPL 调用的任何函数的第一行都将会显示内存分配，这是由发生在 REPL 代码本身的事件造成的。更重要的是，JIT 编译也会添加内存分配计数，因为 Julia 的编译器大部分是用 Julia 编写的（并且编译通常需要内存分配）。建议的分析过程是先通过执行待分析的所有命令来强制编译，然后调用 [`Profile.clear_malloc_data()`](@ref) 来重置所有内存计数器。最后，执行所需的命令并退出 Julia 以触发 `.mem` 文件的生成。
+
+!!! note
+
+    `--track-allocation` changes code generation to log the allocations, and so the allocations may
+    be different than what happens without the option. We recommend using the
+    [allocation profiler](@ref allocation-profiler) instead.
 
 ## 外部性能分析
 
@@ -263,6 +328,6 @@ $ perf inject --jit --input /tmp/perf.data --output /tmp/perf-jit.data
 $ perf report --call-graph -G -i /tmp/perf-jit.data
 ```
 
-你可以测量关于程序的更多有趣数据，若要获得详尽的列表，请阅读 [Linux perf 示例页面](http://www.brendangregg.com/perf.html)。
+你可以测量关于程序的更多有趣数据，若要获得详尽的列表，请阅读 [Linux perf 示例页面](https://www.brendangregg.com/perf.html)。
 
 请记住，perf 会为每次执行保存一个 `perf.data` 文件，即使对于小程序，它也可能变得非常大。此外，perf LLVM 模块会将调试对象保存在 `~/.debug/jit` 中，记得经常清理该文件夹。

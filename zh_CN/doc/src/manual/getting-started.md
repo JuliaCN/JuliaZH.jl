@@ -22,69 +22,28 @@ Markdown.parse("```\n\$ julia\n\n$(banner)\njulia> 1 + 2\n3\n\njulia> ans\n3\n``
 如果想以非交互的方式执行文件中的代码，可以把文件名作为 `julia` 命令的第一个参数：
 
 ```
-$ julia script.jl arg1 arg2...
+$ julia script.jl
 ```
 
-如这个例子所示，`julia` 后跟着的命令行参数会被作为程序 `script.jl` 的命令行参数。这些参数使用全局常量 `ARGS` 来传递，脚本自身的名字会以全局变量 `PROGRAM_FILE` 传入。注意当脚本以命令行里的 `-e` 选项输入时，`ARGS` 也会被设定（详见此页末尾列表）但是 `PROGRAM_FILE` 会是空的。例如，要把一个脚本的输入参数显示出来，你可以：
-
-```
-$ julia -e 'println(PROGRAM_FILE); for x in ARGS; println(x); end' foo bar
-
-foo
-bar
-```
-
-或者你可以把代码写到一个脚本文件中再执行它：
-
-```
-$ echo 'println(PROGRAM_FILE); for x in ARGS; println(x); end' > script.jl
-$ julia script.jl foo bar
-script.jl
-foo
-bar
-```
-
-可以使用 `--` 分隔符来将传给脚本文件的参数和 Julia 本身的命令行参数区分开：
-
-```
-$ julia --color=yes -O -- script.jl arg1 arg2..
-```
-
-有关编写 Julia 脚本的更多信息，请参阅 [脚本](@ref man-scripting)。
-
-使用选项 `-p` 或者 `--machine-file` 可以在并行模式下启动 Julia。
-`-p n` 会启动额外的 `n` 个 worker，使用 `--machine-file file` 会为 `file` 文件中的每一行启动一个 worker。
-定义在 `file` 中的机器必须能够通过一个不需要密码的 `ssh` 登陆访问到，且 Julia 的安装位置需要和当前主机相同。
-定义机器的格式为 `[count*][user@]host[:port] [bind_addr[:port]]`。
-`user` 默认值是当前用户；
-`port` 默认值是标准 ssh 端口；
-`count` 是在这个节点上的 worker 的数量，默认是 1；
-可选的 `bind-to bind_addr[:port]` 指定了其它 worker 访问当前 worker 应当使用的 IP 地址与端口。
-
-要让 Julia 每次启动都自动执行一些代码，你可以把它们放在 `~/.julia/config/startup.jl` 中：
-
-```
-$ echo 'println("Greetings! 你好! 안녕하세요?")' > ~/.julia/config/startup.jl
-$ julia
-Greetings! 你好! 안녕하세요?
-
-...
-```
-
-在你第一次运行 Julia 后，你应该多了一个 `~/.julia` 文件夹。
-你还可以新建 `~/.julia/config` 文件夹和 `~/.julia/config/startup.jl` 文件来配置 Julia。
-
-和 `perl` 和 `ruby` 程序类似，还有很多种运行 Julia 代码的方式，运行代码时也有很多选项：
-
-```
-julia [switches] -- [programfile] [args...]
-```
-
-详细的命令选项可以在这里找到 [Command-line Options](@ref
-command-line-options).
+You can pass additional arguments to Julia, and to your program `script.jl`. A detailed list of all the available options can be found under [Command-line Interface](@ref cli).
 
 ## 资源
 
-除了本手册以外，官方网站还提供了一个有用的**[学习资源列表](https://julialang.org/learning/)**来帮助新用户学习 Julia。
+除了本手册以外，官方网站还提供了一个有用的 **[学习资源列表](https://julialang.org/learning/)** 来帮助新用户学习 Julia。
+
+You can use the REPL as a learning resource by switching into the help mode.
+Switch to help mode by pressing `?` at an empty `julia> ` prompt, before typing
+anything else. Typing a keyword in help mode will fetch the documentation for
+it, along with examples. Similarly for most functions or other objects you
+might encounter!
+
+```
+help?> begin
+search: begin disable_sigint reenable_sigint
+
+  begin
+
+  begin...end denotes a block of code.
+```
 
 如果已经对 Julia 有所了解，你可以先看 [Performance Tips](@ref man-performance-tips) 和 [Workflow Tips](@ref man-workflow-tips)。

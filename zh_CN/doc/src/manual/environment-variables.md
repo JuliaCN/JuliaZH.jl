@@ -54,7 +54,9 @@ $JULIA_BINDIR/../etc/julia/startup.jl
 
 ### `JULIA_PROJECT`
 
-指示哪个项目应该是初始活动项目的目录路径。 设置这个环境变量和指定`--project`启动选项效果一样，但是`--project`优先级更高。 如果变量设置为 `@.`，那么 Julia 会尝试从当前目录及其父目录中查找包含 `Project.toml` 或 `JuliaProject.toml` 文件的项目目录。 另请参阅有关 [代码加载](@ref code-loading) 的章节。
+指示哪个项目应该是初始活动项目的目录路径。 设置这个环境变量和指定`--project`启动选项效果一样，但是`--project`优先级更高。
+如果变量设置为 `@.` （注意尾随的点），那么 Julia 会尝试从当前目录及其父目录中查找包含 `Project.toml` 或 `JuliaProject.toml` 文件的项目目录。
+另请参阅有关 [代码加载](@ref code-loading) 的章节。
 
 !!! note
 
@@ -79,14 +81,22 @@ export JULIA_LOAD_PATH="/foo/bar:$JULIA_LOAD_PATH"
 `JULIA_DEPOT_PATH` 环境变量用于填充全局的 Julia 变量 [`DEPOT_PATH`](@ref) ，该变量用于控制包管理器以及 Juila 代码加载机制在何处查找包注册表、已安装的包、命名环境、克隆的存储库、缓存的预编译包映像、配置文件和 REPL 历史记录文件的默认位置。
 
 与 shell 使用的 `PATH` 变量不同，但与 `JULIA_LOAD_PATH` 类似， 在 `JULIA_DEPOT_PATH` 中的空条目将会被扩展为 `DEPOT_PATH` 的默认值。这样，无论 `JULIA_DEPOT_PATH` 是否已被设置，均可以使用 shell 脚本轻松地在仓库路径前面或后面添加值。例如要将 `/foo/bar` 添加到 `DEPOT_PATH` 之前，只需要使用下列脚本：
+
 ```sh
 export JULIA_DEPOT_PATH="/foo/bar:$JULIA_DEPOT_PATH"
 ```
+
 如果已经设置了 `JULIA_DEPOT_PATH` 环境变量，那么 `/foo/bar` 将被添加在原有值之前。另一方面，如果 `JULIA_DEPOT_PATH` 尚未设置，那么它会被设置为 `/foo/bar:` ，而这将使 `/foo/bar` 被添加到默认仓库路径之前。如果 `JULIA_DEPOT_PATH` 被设置为空字符串，那么它将扩展为一个空的 `DEPOT_PATH` 数组。换句话说，这个空字符串数组将被认为是零元素的数组，而非是一个空字符串单元素的数组。使用这样的加载行为是为了可以通过环境变量设置空的仓库路径。如果你需要使用默认的仓库路径，请不要设置这一环境变量，如果它必须有值，那么可将其设置为字符串 `:` 。
 
 !!! note
 
     在 Windows 上，路径元素由 `;` 字符分隔，就像 Windows 上的大多数路径列表一样。 将上一段中的 `:` 替换为 `;`。
+
+!!! note
+    `JULIA_DEPOT_PATH` must be defined before starting julia; defining it in
+    `startup.jl` is too late in the startup process; at that point you can instead
+    directly modify the `DEPOT_PATH` array, which is populated from the environment
+    variable.
 
 ### `JULIA_HISTORY`
 
@@ -96,14 +106,105 @@ REPL 历史文件中 `REPL.find_hist_file()` 的绝对路径。如果没有设�
 $(DEPOT_PATH[1])/logs/repl_history.jl
 ```
 
+### [`JULIA_MAX_NUM_PRECOMPILE_FILES`](@id env-max-num-precompile-files)
+
+Sets the maximum number of different instances of a single package that are to be stored in the precompile cache (default = 10).
+
+### `JULIA_VERBOSE_LINKING`
+
+If set to true, linker commands will be displayed during precompilation.
+
+## Pkg.jl
+
+### `JULIA_CI`
+
+If set to `true`, this indicates to the package server that any package operations are part of a continuous integration (CI) system for the purposes of gathering package usage statistics.
+
+### `JULIA_NUM_PRECOMPILE_TASKS`
+
+The number of parallel tasks to use when precompiling packages. See [`Pkg.precompile`](https://pkgdocs.julialang.org/v1/api/#Pkg.precompile).
+
+### `JULIA_PKG_DEVDIR`
+
+The default directory used by [`Pkg.develop`](https://pkgdocs.julialang.org/v1/api/#Pkg.develop) for downloading packages.
+
+### `JULIA_PKG_IGNORE_HASHES`
+
+If set to `1`, this will ignore incorrect hashes in artifacts. This should be used carefully, as it disables verification of downloads, but can resolve issues when moving files across different types of file systems. See [Pkg.jl issue #2317](https://github.com/JuliaLang/Pkg.jl/issues/2317) for more details.
+
+!!! compat "Julia 1.6"
+    This is only supported in Julia 1.6 and above.
+
+### `JULIA_PKG_OFFLINE`
+
+If set to `true`, this will enable offline mode: see [`Pkg.offline`](https://pkgdocs.julialang.org/v1/api/#Pkg.offline).
+
+!!! compat "Julia 1.5"
+    Pkg's offline mode requires Julia 1.5 or later.
+
+### `JULIA_PKG_PRECOMPILE_AUTO`
+
+If set to `0`, this will disable automatic precompilation by package actions which change the manifest. See [`Pkg.precompile`](https://pkgdocs.julialang.org/v1/api/#Pkg.precompile).
+
 ### `JULIA_PKG_SERVER`
 
-由`Pkg.jl` 使用，用于下载软件包和更新注册表。默认情况下，`Pkg` 使用 `https://pkg.julialang.org` 来获取 Julia 包。你可以使用此环境变量来选择不同的服务器。 此外，你可以禁用 PkgServer 协议的使用，并通过设置直接从它们的主机（GitHub、GitLab 等）访问包：
+由`Pkg.jl` 使用，用于下载软件包和更新注册表。默认情况下，`Pkg` 使用 `https://pkg.julialang.org` 来获取 Julia 包。
+你可以使用此环境变量来选择不同的服务器。此外，你可以禁用 PkgServer 协议的使用，并通过设置直接从它们的主机（GitHub、GitLab 等）访问包：
+
 ```
 export JULIA_PKG_SERVER=""
 ```
 
-## 外部应用
+### `JULIA_PKG_SERVER_REGISTRY_PREFERENCE`
+
+Specifies the preferred registry flavor. Currently supported values are `conservative`
+(the default), which will only publish resources that have been processed by the storage
+server (and thereby have a higher probability of being available from the PkgServers),
+whereas `eager` will publish registries whose resources have not necessarily been
+processed by the storage servers.  Users behind restrictive firewalls that do not allow
+downloading from arbitrary servers should not use the `eager` flavor.
+
+!!! compat "Julia 1.7"
+    This only affects Julia 1.7 and above.
+
+### `JULIA_PKG_UNPACK_REGISTRY`
+
+If set to `true`, this will unpack the registry instead of storing it as a compressed tarball.
+
+!!! compat "Julia 1.7"
+    This only affects Julia 1.7 and above. Earlier versions will always unpack the registry.
+
+### `JULIA_PKG_USE_CLI_GIT`
+
+If set to `true`, Pkg operations which use the git protocol will use an external `git` executable instead of the default libgit2 library.
+
+!!! compat "Julia 1.7"
+    Use of the `git` executable is only supported on Julia 1.7 and above.
+
+### `JULIA_PKGRESOLVE_ACCURACY`
+
+The accuracy of the package resolver. This should be a positive integer, the default is `1`.
+
+### [`JULIA_PKG_PRESERVE_TIERED_INSTALLED`](@id JULIA_PKG_PRESERVE_TIERED_INSTALLED)
+
+Change the default package installation strategy to `Pkg.PRESERVE_TIERED_INSTALLED`
+to let the package manager try to install versions of packages while keeping as many
+versions of packages already installed as possible.
+
+!!! compat "Julia 1.9"
+    This only affects Julia 1.9 and above.
+
+## Network transport
+
+### `JULIA_NO_VERIFY_HOSTS` / `JULIA_SSL_NO_VERIFY_HOSTS` / `JULIA_SSH_NO_VERIFY_HOSTS` / `JULIA_ALWAYS_VERIFY_HOSTS`
+
+Specify hosts whose identity should or should not be verified for specific transport layers. See [`NetworkOptions.verify_host`](https://github.com/JuliaLang/NetworkOptions.jl#verify_host)
+
+### `JULIA_SSL_CA_ROOTS_PATH`
+
+Specify the file or directory containing the certificate authority roots. See [`NetworkOptions.ca_roots`](https://github.com/JuliaLang/NetworkOptions.jl#ca_roots)
+
+## External applications
 
 ### `JULIA_SHELL`
 
@@ -119,9 +220,11 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 `$JULIA_EDITOR` 优先于 `$VISUAL`，而后者优先于 `$EDITOR`。如果这些环境变量都没有设置，那么在 Windows 和 OS X 上会设置为 `open`，或者 `/etc/alternatives/editor`（如果存在的话），否则为 `emacs`。
 
+To use Visual Studio Code on Windows, set `$JULIA_EDITOR` to `code.cmd`.
+
 ## 并行
 
-### `JULIA_CPU_THREADS`
+### [`JULIA_CPU_THREADS`](@id env-cpu-threads)
 
 改写全局变量 [`Base.Sys.CPU_THREADS`](@ref)，逻辑 CPU 核心数。
 
@@ -144,9 +247,33 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 !!! compat "Julia 1.7"
     `$JULIA_NUM_THREADS` 的 `auto` 值需要 Julia 1.7 或更高版本。
 
+!!! compat "Julia 1.7"
+    The `auto` value for `$JULIA_NUM_THREADS` requires Julia 1.7 or above.
+
 ### `JULIA_THREAD_SLEEP_THRESHOLD`
 
 如果被设置为字符串，并且以大小写敏感的子字符串 `"infinite"` 开头，那么自旋线程从不睡眠。否则，`$JULIA_THREAD_SLEEP_THRESHOLD` 被解释为一个无符号 64 位整数（`uint64_t`），并且提供以纳秒为单位的自旋线程睡眠的时间量。
+
+### [`JULIA_NUM_GC_THREADS`](@id env-gc-threads)
+
+Sets the number of threads used by Garbage Collection. If unspecified is set to
+half of the number of worker threads.
+
+!!! compat "Julia 1.10"
+    The environment variable was added in 1.10
+
+### [`JULIA_IMAGE_THREADS`](@id env-image-threads)
+
+An unsigned 32-bit integer that sets the number of threads used by image
+compilation in this Julia process. The value of this variable may be
+ignored if the module is a small module. If left unspecified, the smaller
+of the value of [`JULIA_CPU_THREADS`](@ref env-cpu-threads) or half the
+number of logical CPU cores is used in its place.
+
+### `JULIA_IMAGE_TIMINGS`
+
+A boolean value that determines if detailed timing information is printed during
+during image compilation. Defaults to 0.
 
 ### `JULIA_EXCLUSIVE`
 
@@ -154,7 +281,8 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 ## REPL 格式化输出
 
-决定 REPL 应当如何格式化输出的环境变量。通常，这些变量应当被设置为 [ANSI 终端转义序列](http://ascii-table.com/ansi-escape-sequences.php)。Julia 提供了具有相同功能的高级接口；请参阅 [Julia REPL](@ref) 章节。
+决定 REPL 应当如何格式化输出的环境变量。通常，这些变量应当被设置为 [ANSI 终端转义序列](https://en.wikipedia.org/wiki/ANSI_escape_code)。
+Julia 提供了具有相同功能的高级接口；请参阅 [Julia REPL](@ref The-Julia-REPL) 章节。
 
 ### `JULIA_ERROR_COLOR`
 
@@ -176,11 +304,58 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 `Base.answer_color()`（默认值：标准，`"\033[0m"`），在终端中，输出应有的格式。
 
-## 调试和性能分析
+## System and Package Image Building
+
+### [`JULIA_CPU_TARGET`](@id JULIA_CPU_TARGET)
+
+Modify the target machine architecture for (pre)compiling
+[system](@ref sysimg-multi-versioning) and [package images](@ref pkgimgs-multi-versioning).
+`JULIA_CPU_TARGET` only affects machine code image generation being output to a disk cache.
+Unlike the `--cpu-target`, or `-C`, [command line option](@ref cli), it does not influence
+just-in-time (JIT) code generation within a Julia session where machine code is only
+stored in memory.
+
+Valid values for `JULIA_CPU_TARGET` can be obtained by executing `julia -C help`.
+
+Setting `JULIA_CPU_TARGET` is important for heterogeneous compute systems where processors of
+distinct types or features may be present. This is commonly encountered in high performance
+computing (HPC) clusters since the component nodes may be using distinct processors.
+
+The CPU target string is a list of strings separated by `;` each string starts with a CPU
+or architecture name and followed by an optional list of features separated by `,`.
+A `generic` or empty CPU name means the basic required feature set of the target ISA
+which is at least the architecture the C/C++ runtime is compiled with. Each string
+is interpreted by LLVM.
+
+A few special features are supported:
+1. `clone_all`
+
+     This forces the target to have all functions in sysimg cloned.
+     When used in negative form (i.e. `-clone_all`), this disables full clone that's
+     enabled by default for certain targets.
+
+2. `base([0-9]*)`
+
+     This specifies the (0-based) base target index. The base target is the target
+     that the current target is based on, i.e. the functions that are not being cloned
+     will use the version in the base target. This option causes the base target to be
+     fully cloned (as if `clone_all` is specified for it) if it is not the default target (0).
+     The index can only be smaller than the current index.
+
+3. `opt_size`
+
+     Optimize for size with minimum performance impact. Clang/GCC's `-Os`.
+
+4. `min_size`
+
+     Optimize only for size. Clang's `-Oz`.
+
+
+## Debugging and profiling
 
 ### `JULIA_DEBUG`
 
-为文件或模块启动调试日志记录，请参阅 [日志](@ref Logging) 了解更多信息。
+Enable debug logging for a file or module, see [`Logging`](@ref man-logging) for more information.
 
 ### `JULIA_GC_ALLOC_POOL`, `JULIA_GC_ALLOC_OTHER`, `JULIA_GC_ALLOC_PRINT`
 
@@ -227,7 +402,7 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
     此环境变量仅在使用 JIT 性能分析支持编译 Julia 时有效，使用如下之一：
     * Intel's [VTune™ Amplifier](https://software.intel.com/en-us/vtune)(`USE_INTEL_JITEVENTS` 在配置中设置为`1`), 或
-    * [OProfile](http://oprofile.sourceforge.net/news/)(`USE_OPROFILE_JITEVENTS` 在配置中设置为`1`)。
+    * [OProfile](https://oprofile.sourceforge.io/news/)(`USE_OPROFILE_JITEVENTS` 在配置中设置为`1`)。
     * [Perf](https://perf.wiki.kernel.org) (`USE_PERF_JITEVENTS` 在构建配置中设置为 `1`)。 默认情况下启用此集成。
 
 ### `ENABLE_GDBLISTENER`
@@ -237,5 +412,4 @@ Julia 用来执行外部命令的 shell 的绝对路径（通过 `Base.repl_cmd(
 
 ### `JULIA_LLVM_ARGS`
 
-传递给 LLVM 后端的参数。
-
+要传递给 LLVM 后端的参数。

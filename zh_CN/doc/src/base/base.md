@@ -2,7 +2,8 @@
 
 ## 介绍
 
-Julia Base 中包含一系列适用于科学及数值计算的函数和宏，但也可以用于通用编程，其它功能则由 Julia 生态圈中的各种库来提供。函数按主题划分如下：
+Julia Base 中包含一系列适用于科学及数值计算的函数和宏，但也可以用于通用编程。
+其它功能则由 Julia 生态圈中的[各种库](https://julialang.org/packages/)来提供。函数按主题划分如下：
 
 一些通用的提示：
 
@@ -17,6 +18,11 @@ The behaviors of `Base` and standard libraries are stable as defined in
 [Julia documentation](https://docs.julialang.org/) and not marked as unstable.
 See [API FAQ](@ref man-api) for more information.
 
+The behaviors of `Base` and standard libraries are stable as defined in
+[SemVer](https://semver.org/) only if they are documented; i.e., included in the
+[Julia documentation](https://docs.julialang.org/) and not marked as unstable.
+See [API FAQ](@ref man-api) for more information.
+
 ## Getting Around
 
 ```@docs
@@ -24,21 +30,22 @@ Base.exit
 Base.atexit
 Base.isinteractive
 Base.summarysize
-Base.require
-Base.compilecache
 Base.__precompile__
 Base.include
 Base.MainInclude.include
 Base.include_string
 Base.include_dependency
+__init__
 Base.which(::Any, ::Any)
 Base.methods
 Base.@show
 ans
+err
 Base.active_project
+Base.set_active_project
 ```
 
-## Keywords
+## [Keywords](@id Keywords)
 
 This is the list of reserved keywords in Julia:
 `baremodule`, `begin`, `break`, `catch`, `const`, `continue`, `do`,
@@ -55,14 +62,16 @@ However, you can create variables with names:
 Finally:
 `where` is parsed as an infix operator for writing parametric method and type definitions;
 `in` and `isa` are parsed as infix operators;
-and `outer` is parsed as a keyword when used to modify the scope of a variable in an iteration specification of a `for` loop or `generator` expression.
-Creation of variables named `where`, `in`, `isa` or `outer` is allowed though.
+`outer` is parsed as a keyword when used to modify the scope of a variable in an iteration specification of a `for` loop;
+and `as` is used as a keyword to rename an identifier brought into scope by `import` or `using`.
+Creation of variables named `where`, `in`, `isa`, `outer` and `as` is allowed, though.
 
 ```@docs
 module
 export
 import
 using
+as
 baremodule
 function
 macro
@@ -81,9 +90,11 @@ finally
 quote
 local
 global
+outer
 const
 struct
 mutable struct
+@kwdef
 abstract type
 primitive type
 where
@@ -120,6 +131,7 @@ Core.:(===)
 Core.isa
 Base.isequal
 Base.isless
+Base.isunordered
 Base.ifelse
 Core.typeassert
 Core.typeof
@@ -133,17 +145,26 @@ Base.copy
 Base.deepcopy
 Base.getproperty
 Base.setproperty!
+Base.replaceproperty!
+Base.swapproperty!
+Base.modifyproperty!
 Base.propertynames
 Base.hasproperty
 Core.getfield
 Core.setfield!
+Core.modifyfield!
+Core.replacefield!
+Core.swapfield!
 Core.isdefined
+Core.getglobal
+Core.setglobal!
 Base.@isdefined
 Base.convert
 Base.promote
 Base.oftype
 Base.widen
 Base.identity
+Base.WeakRef
 ```
 
 ## Properties of Types
@@ -169,6 +190,7 @@ Base.isdispatchtuple
 ```@docs
 Base.ismutable
 Base.isimmutable
+Base.ismutabletype
 Base.isabstracttype
 Base.isprimitivetype
 Base.issingletontype
@@ -176,7 +198,13 @@ Base.isstructtype
 Base.nameof(::DataType)
 Base.fieldnames
 Base.fieldname
+Core.fieldtype
+Base.fieldtypes
+Base.fieldcount
 Base.hasfield
+Core.nfields
+Base.isconst
+Base.isfieldatomic
 ```
 
 ### Memory layout
@@ -186,9 +214,6 @@ Base.sizeof(::Type)
 Base.isconcretetype
 Base.isbits
 Base.isbitstype
-Core.fieldtype
-Base.fieldtypes
-Base.fieldcount
 Base.fieldoffset
 Base.datatype_alignment
 Base.datatype_haspadding
@@ -219,6 +244,7 @@ Core.Tuple
 Core.NTuple
 Core.NamedTuple
 Base.@NamedTuple
+Base.@Kwargs
 Base.Val
 Core.Vararg
 Core.Nothing
@@ -270,6 +296,8 @@ Base.@inline
 Base.@noinline
 Base.@nospecialize
 Base.@specialize
+Base.@nospecializeinfer
+Base.@constprop
 Base.gensym
 Base.@gensym
 var"name"
@@ -278,7 +306,7 @@ Base.@label
 Base.@simd
 Base.@polly
 Base.@generated
-Base.@pure
+Base.@assume_effects
 Base.@deprecate
 ```
 
@@ -310,6 +338,7 @@ Base.Cmd
 Base.setenv
 Base.addenv
 Base.withenv
+Base.setcpuaffinity
 Base.pipeline(::Any, ::Any, ::Any, ::Any...)
 Base.pipeline(::Base.AbstractCmd)
 Base.Libc.gethostname
@@ -317,12 +346,15 @@ Base.Libc.getpid
 Base.Libc.time()
 Base.time_ns
 Base.@time
+Base.@showtime
 Base.@timev
 Base.@timed
 Base.@elapsed
 Base.@allocated
+Base.@allocations
 Base.EnvDict
 Base.ENV
+Base.Sys.STDLIB
 Base.Sys.isunix
 Base.Sys.isapple
 Base.Sys.islinux
@@ -335,6 +367,12 @@ Base.Sys.iswindows
 Base.Sys.windows_version
 Base.Sys.free_memory
 Base.Sys.total_memory
+Base.Sys.free_physical_memory
+Base.Sys.total_physical_memory
+Base.Sys.uptime
+Base.Sys.isjsvm
+Base.Sys.loadavg
+Base.Sys.isexecutable
 Base.@static
 ```
 
@@ -376,6 +414,7 @@ Core.OutOfMemoryError
 Core.ReadOnlyMemoryError
 Core.OverflowError
 Base.ProcessFailedException
+Base.TaskFailedException
 Core.StackOverflowError
 Base.SystemError
 Core.TypeError
@@ -404,6 +443,7 @@ Base.nameof(::Module)
 Base.parentmodule
 Base.pathof(::Module)
 Base.pkgdir(::Module)
+Base.pkgversion(::Module)
 Base.moduleroot
 __module__
 __source__
@@ -413,12 +453,21 @@ Base.@__DIR__
 Base.@__LINE__
 Base.fullname
 Base.names
-Core.nfields
-Base.isconst
 Base.nameof(::Function)
 Base.functionloc(::Any, ::Any)
 Base.functionloc(::Method)
 Base.@locals
+```
+
+## Code loading
+
+```@docs
+Base.identify_package
+Base.locate_package
+Base.require
+Base.compilecache
+Base.isprecompiled
+Base.get_extension
 ```
 
 ## Internals
@@ -428,6 +477,7 @@ Base.GC.gc
 Base.GC.enable
 Base.GC.@preserve
 Base.GC.safepoint
+Base.GC.enable_logging
 Meta.lower
 Meta.@lower
 Meta.parse(::AbstractString, ::Int)
@@ -440,6 +490,7 @@ Base.@macroexpand1
 Base.code_lowered
 Base.code_typed
 Base.precompile
+Base.jit_total_bytes
 ```
 
 ## Meta
