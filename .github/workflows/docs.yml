@@ -40,3 +40,8 @@ jobs:
         run: |
           julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
           julia --project=doc/ doc/make.jl deploy
+      - name: Upload HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-site
+          path: doc/build/
