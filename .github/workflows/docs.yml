@@ -4,22 +4,35 @@ on:
   push:
     branches:
       - master
+  pull_request:
   workflow_dispatch:
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
   HTML:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write # needed to allow julia-actions/cache to proactively delete old caches that it has created
+      contents: write
+      statuses: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: julia-actions/setup-julia@v1
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
         with:
-          version: "1.8"
+          version: '1.8'
+          show-versioninfo: true
+      - uses: julia-actions/cache@v2
       - name: Install dependencies
+        shell: julia --project=docs --color=yes {0}
         run: |
-          julia --project=docs/ -e '
-            using Pkg
-            Pkg.develop(PackageSpec(path=pwd()))
-            Pkg.instantiate()'
+          using Pkg
+          Pkg.develop(PackageSpec(path=pwd()))
+          Pkg.instantiate()
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,18 +40,8 @@ jobs:
         run: |
           julia -e 'include("contrib/build_sysimg.jl"); build_sysimg(force=true)'
           julia --project=doc/ doc/make.jl deploy
-  PDF:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build and deploy
-        timeout-minutes: 90
-        uses: JuliaCN/documenter-latex-action@v0.1.0
+      - name: Upload HTML
+        uses: actions/upload-artifact@v4
         with:
-          project_dir: 'doc'
-          format: pdf # trigger the pdf compilation in our doc/make.jl
-      - name: upload complied PDF file
-        uses: actions/upload-artifact@v2
-        with:
-          name: compiled contents
-          path: doc/build/*.pdf
+          name: html-site
+          path: doc/build/
