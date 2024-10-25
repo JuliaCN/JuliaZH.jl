@@ -4,13 +4,20 @@ on:
   push:
     branches:
       - master
+  pull_request:
   workflow_dispatch:
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
   PDF:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Build and deploy
         timeout-minutes: 90
         uses: JuliaCN/documenter-latex-action@v0.1.0
