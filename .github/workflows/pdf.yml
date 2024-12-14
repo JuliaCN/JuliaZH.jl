@@ -25,7 +25,7 @@ jobs:
           project_dir: 'doc'
           format: pdf # trigger the pdf compilation in our doc/make.jl
       - name: upload complied PDF file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: compiled contents
           path: doc/build/*.pdf
