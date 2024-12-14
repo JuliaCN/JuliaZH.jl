@@ -156,7 +156,7 @@ taskHdl = @task mytask(7)
     julia> close(c);
 
     julia> put!(c, 2) # `put!` on a closed channel throws an exception.
-    ERROR: InvalidStateException("Channel is closed.",:closed)
+    ERROR: InvalidStateException: Channel is closed.
     Stacktrace:
     [...]
     ```
@@ -175,7 +175,7 @@ taskHdl = @task mytask(7)
     1
 
     julia> take!(c) # No more data available on a closed channel.
-    ERROR: InvalidStateException("Channel is closed.",:closed)
+    ERROR: InvalidStateException: Channel is closed.
     Stacktrace:
     [...]
     ```

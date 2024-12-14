@@ -1,4 +1,4 @@
-# 处理操作系统差异
+# [处理操作系统差异](@id Handling-Operating-System-Variation)
 
 当编写跨平台的应用或库时，通常需要考虑到操作系统之间的差异。变量 `Sys.KERNEL` 可以用于这些场合。在 `Sys` 模块中有一些函数将会使这些事情更加简单：`isunix`、 `islinux`、`isapple`、`isbsd`、`isfreebsd` 以及 `iswindows`。这些函数可以按如下方式使用：
 
@@ -21,6 +21,8 @@ ccall((@static Sys.iswindows() ? :_fopen : :fopen), ...)
 ```julia
 @static if Sys.islinux()
     linux_specific_thing(a)
+elseif Sys.isapple()
+    apple_specific_thing(a)
 else
     generic_thing(a)
 end
@@ -31,4 +33,3 @@ end
 ```julia
 @static Sys.iswindows() ? :a : (@static Sys.isapple() ? :b : :c)
 ```
-

@@ -8,15 +8,10 @@ using Pkg
 Pkg.instantiate()
 
 using Documenter, DocumenterLaTeX
+using DocumenterInventoryWritingBackport
 include("../contrib/HTMLWriter.jl")
 include("../contrib/LaTeXWriter.jl")
 
-# Include the `build_sysimg` file.
-
-baremodule GenStdLib end
-@isdefined(build_sysimg) || @eval module BuildSysImg
-    include(joinpath(@__DIR__, "..", "contrib", "build_sysimg.jl"))
-end
 
 # Documenter Setup.
 
@@ -83,7 +78,7 @@ end
 const UnicodeDataPath = joinpath(Sys.BINDIR, "..", "UnicodeData.txt")
 
 if !isfile(UnicodeDataPath)
-    download("http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt", UnicodeDataPath)
+    download("http://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt", UnicodeDataPath)
 end
 
 const PAGES = [
@@ -127,7 +122,7 @@ const PAGES = [
         "manual/faq.md",
         "manual/noteworthy-differences.md",
         "manual/unicode-input.md",
-        "manual/command-line-options.md",
+        "manual/command-line-interface.md",
     ],
     "Base" => [
         "base/base.md",
@@ -144,6 +139,7 @@ const PAGES = [
         "base/punctuation.md",
         "base/sort.md",
         "base/iterators.md",
+        "base/reflection.md",
         "base/c.md",
         "base/libc.md",
         "base/stacktraces.md",
@@ -152,7 +148,6 @@ const PAGES = [
     "Standard Library" =>
         [stdlib.targetfile for stdlib in STDLIB_DOCS],
     "Developer Documentation" => [
-        "devdocs/reflection.md",
         "Documentation of Julia's Internals" => [
             "devdocs/init.md",
             "devdocs/ast.md",
@@ -167,6 +162,7 @@ const PAGES = [
             "devdocs/subarrays.md",
             "devdocs/isbitsunionarrays.md",
             "devdocs/sysimg.md",
+            "devdocs/pkgimg.md",
             "devdocs/llvm.md",
             "devdocs/stdio.md",
             "devdocs/boundscheck.md",
@@ -175,21 +171,78 @@ const PAGES = [
             "devdocs/require.md",
             "devdocs/inference.md",
             "devdocs/ssair.md",
+            "devdocs/EscapeAnalysis.md",
             "devdocs/gc-sa.md",
+            "devdocs/gc.md",
+            "devdocs/precompile_hang.md",
         ],
         "Developing/debugging Julia's C code" => [
             "devdocs/backtraces.md",
             "devdocs/debuggingtips.md",
             "devdocs/valgrind.md",
+            "devdocs/external_profilers.md",
             "devdocs/sanitizers.md",
-            # "devdocs/probes.md" # seems not synced from transifix
+            "devdocs/probes.md",
         ],
+        "Building Julia" => [
+            "devdocs/build/build.md",
+            "devdocs/build/linux.md",
+            "devdocs/build/macos.md",
+            "devdocs/build/windows.md",
+            "devdocs/build/freebsd.md",
+            "devdocs/build/arm.md",
+            "devdocs/build/distributing.md",
+        ]
     ],
 ]
 
+
+function maybe_revise(ex)
+    return ex
+end
 for stdlib in STDLIB_DOCS
     @eval using $(stdlib.stdlib)
+    # All standard library modules get `using $STDLIB` as their global
+    DocMeta.setdocmeta!(
+        Base.root_module(Base, stdlib.stdlib),
+        :DocTestSetup,
+        maybe_revise(:(using $(stdlib.stdlib)));
+        recursive=true,
+    )
 end
+# A few standard libraries need more than just the module itself in the DocTestSetup.
+# This overwrites the existing ones from above though, hence the warn=false.
+DocMeta.setdocmeta!(
+    SparseArrays,
+    :DocTestSetup,
+    maybe_revise(:(using SparseArrays, LinearAlgebra));
+    recursive=true, warn=false,
+)
+DocMeta.setdocmeta!(
+    UUIDs,
+    :DocTestSetup,
+    maybe_revise(:(using UUIDs, Random));
+    recursive=true, warn=false,
+)
+DocMeta.setdocmeta!(
+    Pkg,
+    :DocTestSetup,
+    maybe_revise(:(using Pkg, Pkg.Artifacts));
+    recursive=true, warn=false,
+)
+DocMeta.setdocmeta!(
+    Base,
+    :DocTestSetup,
+    maybe_revise(:(;;));
+    recursive=true,
+)
+DocMeta.setdocmeta!(
+    Base.BinaryPlatforms,
+    :DocTestSetup,
+    maybe_revise(:(using Base.BinaryPlatforms));
+    recursive=true, warn=false,
+)
+
 
 const render_pdf = "pdf" in ARGS
 const is_deploy = "deploy" in ARGS
@@ -202,10 +255,14 @@ else
     Documenter.HTML(
         prettyurls = is_deploy,
         canonical = is_deploy ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
-        analytics = "UA-28835595-9",
         assets = [
-            "assets/julia-manual.css"
+            "assets/julia-manual.css",
+            # "assets/julia.ico",
         ],
+        analytics = "UA-28835595-9",
+        collapselevel = 1,
+        sidebar_sitename = false,
+        # ansicolor = true,
         lang = "zh-cn",
         # 文档全局页脚
         # footer = "📢📢📢 JuliaCN 2022 冬季见面会 报告[征集](https://cn.julialang.org/meetup-website/2022/)"
@@ -213,10 +270,12 @@ else
 end
 
 makedocs(
-    modules   = [Base, Core, BuildSysImg, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
+    modules   = [Main, Base, Core, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = true,
-    doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=true" in ARGS) ? true : false,
+    doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=only" in ARGS) ? (:only) : ("doctest=true" in ARGS) ? true : false,
     linkcheck = "linkcheck=true" in ARGS,
+    linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
+    # strict    = true,
     checkdocs = :none,
     format    = format,
     sitename  = "Julia中文文档",
@@ -224,10 +283,14 @@ makedocs(
     pages     = PAGES,
 )
 
-deploydocs(
-    repo = "github.com/JuliaCN/JuliaZH.jl.git",
-    target = "build",
-    deps = nothing,
-    make = nothing,
-    branch = render_pdf ? "pdf" : "gh-pages"
-)
+if is_deploy
+    deploydocs(
+        repo = "github.com/JuliaCN/JuliaZH.jl.git",
+        target = "build",
+        deps = nothing,
+        make = nothing,
+        branch = render_pdf ? "pdf" : "gh-pages"
+    )
+else
+    @info "Skipping deployment ('deploy' not passed)"
+end

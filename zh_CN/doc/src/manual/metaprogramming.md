@@ -3,6 +3,21 @@
 Lisp 留给 Julia 最大的遗产就是它的元编程支持。和 Lisp 一样，Julia 把自己的代码表示为语言中的数据结构。既然代码被表示为了可以在语言中创建和操作的对象，程序就可以变换和生成自己的代码。这允许在没有额外构建步骤的情况下生成复杂的代码，并且还允许在 [abstract syntax trees](https://en.wikipedia.org/wiki/Abstract_syntax_tree) 级别上运行的真正的 Lisp 风格的宏。与之相对的是预处理器“宏”系统，比如 C 和 C++ 中的，它们在解析和解释代码之前进行文本操作和变换。由于 Julia 中的所有数据类型和代码都被表示为 Julia 的 数据结构，强大的 [reflection](https://en.wikipedia.org/wiki/Reflection_omputer_%28cprogramming%29)
 功能可用于探索程序的内部及其类型，就像任何其他数据一样。
 
+!!! warning
+    Metaprogramming is a powerful tool, but it introduces complexity that can make code more
+    difficult to understand. For example, it can be surprisingly hard to get scope rules
+    correct. Metaprogramming should typically be used only when other approaches such as
+    [higher order functions](@ref man-anonymous-functions) and
+    [closures](https://en.wikipedia.org/wiki/Closure_(computer_programming)) cannot be applied.
+
+    `eval` and defining new macros should be typically used as a last resort. It is almost
+    never a good idea to use `Meta.parse` or convert an arbitrary string into Julia code. For
+    manipulating Julia code, use the `Expr` data structure directly to avoid the complexity
+    of how Julia syntax is parsed.
+
+    The best uses of metaprogramming often implement most of their functionality in runtime
+    helper functions, striving to minimize the amount of code they generate.
+
 ## 程序表示
 
 每个 Julia 程序均以字符串开始：
@@ -89,7 +104,10 @@ julia> Meta.show_sexpr(ex3)
 
 ### 符号
 
-字符 `:` 在 Julia 中有两个作用。第一种形式构造一个 [`Symbol`](@ref)，这是作为表达式组成部分的一个 [interned string](https://en.wikipedia.org/wiki/String_interning)：
+字符 `:` 在 Julia 中有两个作用
+The first form creates a [`Symbol`](@ref),
+an [interned string](https://en.wikipedia.org/wiki/String_interning) used as one building-block
+of expressions, from valid identifiers:
 
 ```jldoctest
 julia> s = :foo
@@ -102,8 +120,11 @@ Symbol
 构造函数 [`Symbol`](@ref) 接受任意数量的参数并通过把它们的字符串表示连在一起创建一个新的符号：
 
 ```jldoctest
-julia> :foo == Symbol("foo")
+julia> :foo === Symbol("foo")
 true
+
+julia> Symbol("1foo") # `:1foo` would not work, as `1foo` is not a valid identifier
+Symbol("1foo")
 
 julia> Symbol("func",10)
 :func10
@@ -111,8 +132,6 @@ julia> Symbol("func",10)
 julia> Symbol(:var,'_',"sym")
 :var_sym
 ```
-
-注意，要使用 `:` 语法，符号的名称必须是有效的标识符。否则，必须使用 `Symbol(str)` 构造函数。
 
 在表达式的上下文中，符号用来表示对变量的访问；当一个表达式被求值时，符号会被替换为这个符号在合适的 [scope](@ref scope-of-variables) 中所绑定的值。
 
@@ -320,7 +339,7 @@ julia> ex = :(a + b)
 :(a + b)
 
 julia> eval(ex)
-ERROR: UndefVarError: b not defined
+ERROR: UndefVarError: `b` not defined
 [...]
 
 julia> a = 1; b = 2;
@@ -336,7 +355,7 @@ julia> ex = :(x = 1)
 :(x = 1)
 
 julia> x
-ERROR: UndefVarError: x not defined
+ERROR: UndefVarError: `x` not defined
 
 julia> eval(ex)
 1
@@ -373,7 +392,8 @@ julia> eval(ex)
 
 ### 关于表达式的函数
 
-如上所述，Julia 能在其内部生成和操作 Julia 代码，这是个非常有用的功能。我们已经见过返回 [`Expr`](@ref) 对象的函数例子：[`parse`](@ref) 函数，它接受字符串形式的 Julia 代码并返回相应的 `Expr`。函数也可以接受一个或多个 `Expr` 对象作为参数，并返回另一个 `Expr`。这是个简单、提神的例子：
+如上所述，Julia 能在其内部生成和操作 Julia 代码，这是个非常有用的功能。我们已经见过返回 [`Expr`](@ref) 对象的函数例子：
+[`Meta.parse`](@ref) 函数，它接受字符串形式的 Julia 代码并返回相应的 `Expr`。函数也可以接受一个或多个 `Expr` 对象作为参数，并返回另一个 `Expr`。这是个简单、提神的例子：
 
 ```jldoctest
 julia> function math_expr(op, op1, op2)
@@ -837,8 +857,8 @@ end
 
 回想一下在[字符串](@ref non-standard-string-literals)的文档中，以标识符为前缀的字符串字面量被称为非标准字符串字面量，它们可以具有与未加前缀的字符串字面量不同的语义。例如：
 
-  * `r"^\s*(?:#|$)"` 产生一个[正则表达式对象](@ref man-regex-literals)而不是一个字符串
-  * `b"DATA\xff\u2200"` 是一个[字节数组字面量](@ref man-byte-array-literals) ，表示`[68,65,84,65,255,226,136,128]`。
+  * `r"^\s*(?:#|$)"` produces a [regular expression object](@ref man-regex-literals) rather than a string
+  * `b"DATA\xff\u2200"` is a [byte array literal](@ref man-byte-array-literals) for `[68,65,84,65,255,226,136,128]`.
 
 可能令人惊讶的是，这些行为并没有被硬编码到 Julia 的解释器或编译器中。相反，它们是由一个通用机制实现的自定义行为，且任何人都可以使用该机制：带前缀的字符串字面量被解析为特定名称的宏的调用。例如，正则表达式宏如下：
 
@@ -883,7 +903,9 @@ end
 
 此外，如果编译器无法确定在所有循环中正则表达式对象都是常量，可能无法进行某些优化，使得此版本的效率依旧低于上面的更方便的字面量形式。当然，在某些情况下，非字面量形式更方便：如果需要向正则表达式中插入变量，就必须采用这种更冗长的方法；如果正则表达式模式本身是动态的，可能在每次循环迭代时发生变化，就必须在每次迭代中构造新的正则表达式对象。然而，在绝大多数用例中，正则表达式不是基于运行时的数据构造的。在大多数情况下，将正则表达式编写为编译期值的能力是无法估量的。
 
-用户定义字符串文字的机制非常强大。不仅使用它实现了 Julia 的非标准字面量，而且还使用以下看起来无害的宏实现了命令行字面量语法（``` `echo "Hello, $person"` ```）：
+用户定义字符串文字的机制非常强大。
+不仅使用它实现了 Julia 的非标准字面量，而且还使用以下看起来无害的宏实现了命令行字面量语法
+（``` `echo "Hello, $person"` ```）：
 
 ```julia
 macro cmd(str)
@@ -1129,7 +1151,11 @@ julia> sub2ind_rec((3, 5), 1, 2)
 
 这两种实现虽然不同，但本质上做同样的事情：在数组维度上的运行时循环，将每个维度上的偏移量收集到最后的索引中。
 
-然而，循环所需的信息都已嵌入到参数的类型信息中。因此，我们可以利用生成函数将迭代移动到编译期；用编译器的说法，我们用生成函数手动展开循环。代码主体变得几乎相同，但我们不是计算线性索引，而是建立计算索引的*表达式*：
+然而，循环所需的信息都已嵌入到参数的类型信息中。
+This allows the compiler to move the iteration to compile time and eliminate the runtime loops
+altogether. We can utilize generated functions to achieve a similar effect;
+用编译器的说法，我们用生成函数手动展开循环。
+代码主体变得几乎相同，但我们不是计算线性索引，而是建立计算索引的*表达式*：
 
 ```jldoctest sub2ind_gen
 julia> @generated function sub2ind_gen(dims::NTuple{N}, I::Integer...) where N

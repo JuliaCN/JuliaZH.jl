@@ -57,7 +57,10 @@ julia> subtypes(AbstractFloat)
 
 ## DataType 布局
 
-用 C 代码接口时，`DataType` 的内部表现非常重要。有几个函数可以检查这些细节。
+The internal representation of a `DataType` is critically important when interfacing with C code
+and several functions are available to inspect these details. [`isbitstype(T::DataType)`](@ref) returns
+true if `T` is stored with C-compatible alignment. [`fieldoffset(T::DataType, i::Integer)`](@ref)
+returns the (byte) offset for field *i* relative to the start of the type.
 
  [`isbits(T::DataType)`](@ref) 如果 `T` 类型是以 C 兼容的对齐方式存储，则为 true。  
  [`fieldoffset(T::DataType, i::Integer)`](@ref) 返回字段 *i* 相对于类型开始的 (字节) 偏移量。
@@ -110,15 +113,16 @@ julia> Meta.lower(@__MODULE__, :( [1+2, sin(0.5)] ))
 
 ```julia-repl
 julia> @code_llvm +(1,1)
-
-define i64 @"julia_+_130862"(i64, i64) {
+;  @ int.jl:87 within `+`
+; Function Attrs: sspstrong uwtable
+define i64 @"julia_+_476"(i64 signext %0, i64 signext %1) #0 {
 top:
-    %2 = add i64 %1, %0
-    ret i64 %2
+  %2 = add i64 %1, %0
+  ret i64 %2
 }
 ```
 
-For more informations see [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_warntype`](@ref),
+For more information see [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_warntype`](@ref),
 [`@code_llvm`](@ref), and [`@code_native`](@ref).
 
 ### Printing of debug information
@@ -126,7 +130,7 @@ For more informations see [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@cod
 The aforementioned functions and macros take the keyword argument `debuginfo` that controls the level
 debug information printed.
 
-```
+```julia-repl
 julia> @code_typed debuginfo=:source +(1,1)
 CodeInfo(
     @ int.jl:53 within `+'
@@ -135,7 +139,6 @@ CodeInfo(
 ) => Int64
 ```
 
-Possible values for `debuginfo` are: `:none`, `:source`, and`:default`.
+Possible values for `debuginfo` are: `:none`, `:source`, and `:default`.
 Per default debug information is not printed, but that can be changed
 by setting `Base.IRShow.default_debuginfo[] = :source`.
-

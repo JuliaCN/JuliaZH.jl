@@ -20,6 +20,33 @@ Julia 的优势在于好的性能不止被限制在一小部分的内置类型�
 
 ## [公共 API](@id man-api)
 
+### How does Julia define its public API?
+
+Julia `Base` and standard library functionality described in the
+[the documentation](https://docs.julialang.org/) that is not marked as unstable
+(e.g. experimental and internal) is covered by [SemVer](https://semver.org/).
+Functions, types, and constants are not part of the public API if they are not
+included in the documentation, _even if they have docstrings_.
+
+### There is a useful undocumented function/type/constant. Can I use it?
+
+Updating Julia may break your code if you use non-public API.  If the code is
+self-contained, it may be a good idea to copy it into your project.  If you want to rely on
+a complex non-public API, especially when using it from a stable package, it is a good idea
+to open an [issue](https://github.com/JuliaLang/julia/issues) or
+[pull request](https://github.com/JuliaLang/julia/pulls) to start a discussion for turning it
+into a public API.  However, we do not discourage the attempt to create packages that expose
+stable public interfaces while relying on non-public implementation details of Julia and
+buffering the differences across different Julia versions.
+
+### The documentation is not accurate enough. Can I rely on the existing behavior?
+
+Please open an [issue](https://github.com/JuliaLang/julia/issues) or
+[pull request](https://github.com/JuliaLang/julia/pulls) to start a discussion for turning the
+existing behavior into a public API.
+
+## Sessions and the REPL
+
 ### Julia 如何定义其公共 API？
 
 对于 `julia` 版本的 [SemVer](https://semver.org/)，唯一稳定的接口是 Julia 的 `Base` 和 [文档](https://docs.julialang.org/) 中的标准库接口中且未标记为不稳定（例如，实验性的和内部性的）的部分。 如果函数、类型和常量未包含在文档中，则它们不是公共 API 的一部分，_即使它们具有文档_。
@@ -68,44 +95,84 @@ obj3 = MyModule.someotherfunction(obj2, c)
 
 ### 该如何检查当前文件是否正在以主脚本运行？
 
-当一个文件通过使用 `julia file.jl` 来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。确定文件是以这个方式运行的一个方法是检查 `abspath(PROGRAM_FILE) == @__FILE__` 是不是 `true`。
+当一个文件通过使用 `julia file.jl` 来当做主脚本运行时，有人也希望激活另外的功能例如命令行参数操作。
+确定文件是以这个方式运行的一个方法是检查 `abspath(PROGRAM_FILE) == @__FILE__` 是不是 `true`。
+
+However, it is recommended to not write files that double as a script and as an importable library.
+If one needs functionality both available as a library and a script, it is better to write is as a library, then import the functionality into a distinct script.
 
 ### [怎样在脚本中捕获 CTRL-C ？](@id catch-ctrl-c)
 
 通过 `julia file.jl` 方式运行的 Julia 脚本，在你尝试按 CTRL-C (SIGINT) 中止它时，并不会抛出 [`InterruptException`](@ref)。如果希望在脚本终止之后运行一些代码，请使用 [`atexit`](@ref)，注意：脚本的中止不一定是由 CTRL-C 导致的。
 另外你也可以通过 `julia -e 'include(popfirst!(ARGS))' file.jl` 命令运行脚本，然后可以通过 [`try`](@ref) 捕获 `InterruptException`。
-
+Note that with this strategy [`PROGRAM_FILE`](@ref) will not be set.
 
 ### 怎样通过 `#!/usr/bin/env` 传递参数给 `julia`？
 
-通过类似 `#!/usr/bin/env julia --startup-file=no` 的方式，使用 shebang 传递选项给 Julia 的方法，可能在像 Linux 这样的平台上无法正常工作。这是因为各平台上 shebang 的参数解析是平台相关的，并且尚未标准化。
-在类 Unix 的环境中，可以通过以 `bash` 脚本作为可执行脚本的开头，并使用 `exec` 代替给 `julia` 传递选项的过程，来可靠的为 `julia` 传递选项。
+Passing options to `julia` in a so-called shebang line, as in
+`#!/usr/bin/env julia --startup-file=no`, will not work on many
+platforms (BSD, macOS, Linux) where the kernel, unlike the shell, does
+not split arguments at space characters. The option `env -S`, which
+splits a single argument string into multiple arguments at spaces,
+similar to a shell, offers a simple workaround:
 
 ```julia
-#!/bin/bash
-#=
-exec julia --color=yes --startup-file=no "${BASH_SOURCE[0]}" "$@"
-=#
-
+#!/usr/bin/env -S julia --color=yes --startup-file=no
 @show ARGS  # put any Julia code here
 ```
 
-在以上例子中，位于 `#=` 和 `=#` 之间的代码可以当作一个 `bash` 脚本。
-因为这些代码放在 Julia 的多行注释中，所以 Julia 会忽略它们。
-在 `=#` 之后的 Julia 代码会被 `bash` 忽略，J因为当文件解析到 `exec` 语句时会停止解析，开始执行命令。
-
 !!! note
-    为了在脚本中捕获 [catch CTRL-C](@ref catch-ctrl-c) ，我们可以使用
-    ```julia
-    #!/bin/bash
-    #=
-    exec julia --color=yes --startup-file=no -e 'include(popfirst!(ARGS))' \
-        "${BASH_SOURCE[0]}" "$@"
-    =#
+    Option `env -S` appeared in FreeBSD 6.0 (2005), macOS Sierra (2016)
+    and GNU/Linux coreutils 8.30 (2018).
 
-    @show ARGS  # put any Julia code here
-    ```
-    instead. Note that with this strategy [`PROGRAM_FILE`](@ref) will not be set.
+### Why doesn't `run` support `*` or pipes for scripting external programs?
+
+Julia's [`run`](@ref) function launches external programs *directly*, without
+invoking an [operating-system shell](https://en.wikipedia.org/wiki/Shell_(computing))
+(unlike the `system("...")` function in other languages like Python, R, or C).
+That means that `run` does not perform wildcard expansion of `*` (["globbing"](https://en.wikipedia.org/wiki/Glob_(programming))),
+nor does it interpret [shell pipelines](https://en.wikipedia.org/wiki/Pipeline_(Unix)) like `|` or `>`.
+
+You can still do globbing and pipelines using Julia features, however.  For example, the built-in
+[`pipeline`](@ref) function allows you to chain external programs and files, similar to shell pipes, and
+the [Glob.jl package](https://github.com/vtjnash/Glob.jl) implements POSIX-compatible globbing.
+
+You can, of course, run programs through the shell by explicitly passing a shell and a command string to `run`,
+e.g. ```run(`sh -c "ls > files.txt"`)``` to use the Unix [Bourne shell](https://en.wikipedia.org/wiki/Bourne_shell),
+but you should generally prefer pure-Julia scripting like ```run(pipeline(`ls`, "files.txt"))```.
+The reason why we avoid the shell by default is that [shelling out sucks](https://julialang.org/blog/2012/03/shelling-out-sucks/):
+launching processes via the shell is slow, fragile to quoting of special characters,  has poor error handling, and is
+problematic for portability.  (The Python developers came to a [similar conclusion](https://www.python.org/dev/peps/pep-0324/#motivation).)
+
+## Variables and Assignments
+
+### Why am I getting `UndefVarError` from a simple loop?
+
+You might have something like:
+```
+x = 0
+while x < 10
+    x += 1
+end
+```
+and notice that it works fine in an interactive environment (like the Julia REPL),
+but gives ```UndefVarError: `x` not defined``` when you try to run it in script or other
+file.   What is going on is that Julia generally requires you to **be explicit about assigning to global variables in a local scope**.
+
+Here, `x` is a global variable, `while` defines a [local scope](@ref scope-of-variables), and `x += 1` is
+an assignment to a global in that local scope.
+
+As mentioned above, Julia (version 1.5 or later) allows you to omit the `global`
+keyword for code in the REPL (and many other interactive environments), to simplify
+exploration (e.g. copy-pasting code from a function to run interactively).
+However, once you move to code in files, Julia requires a more disciplined approach
+to global variables.  You have least three options:
+
+1. Put the code into a function (so that `x` is a *local* variable in a function). In general, it is good software engineering to use functions rather than global scripts (search online for "why global variables bad" to see many explanations). In Julia, global variables are also [slow](@ref man-performance-tips).
+2. Wrap the code in a [`let`](@ref) block.  (This makes `x` a local variable within the `let ... end` statement, again eliminating the need for `global`).
+3. Explicitly mark `x` as `global` inside the local scope before assigning to it, e.g. write `global x += 1`.
+
+More explanation can be found in the manual section [on soft scope](@ref on-soft-scope).
 
 ## 函数
 
@@ -314,7 +381,7 @@ unstable (generic function with 1 method)
 ```jldoctest
 julia> sqrt(-2.0)
 ERROR: DomainError with -2.0:
-sqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
+sqrt was called with a negative real argument but will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
 Stacktrace:
 [...]
 ```
@@ -330,7 +397,11 @@ julia> sqrt(-2.0+0im)
 
 ### 怎样限制或计算类型参数？
 
-[参数类型](@ref Parametric-Types) 的参数可以包含类型或比特值，并且类型本身选择如何使用这些参数。例如，`Array{Float64, 2}` 由类型 `Float64` 参数化以表示其元素类型，并通过整数值 `2` 来表示其维度数。在定义自己的参数类型时，可以使用子类型约束来声明某个参数必须是某个抽象类型的子类型 ([`<:`](@ref)) 或以前的类型参数。但是，没有专用的语法来声明参数必须是给定类型的_值_ — 也就是说，例如，你不能在`struct`定义中直接声明一个维度参数 [`isa`](@ref) `Int`。同样，你不能对类型参数进行计算（包括简单的加法或减法）。相反，这些类型的约束和关系可以通过在类型的 [构造函数](@ref man-constructors) 中计算和强制执行的附加类型参数来表达。
+[参数类型](@ref Parametric-Types) 的参数可以包含类型或比特值，并且类型本身选择如何使用这些参数。
+例如，`Array{Float64, 2}` 由类型 `Float64` 参数化以表示其元素类型，并通过整数值 `2` 来表示其维度数。
+在定义自己的参数类型时，可以使用子类型约束来声明某个参数必须是某个抽象类型的子类型 ([`<:`](@ref)) 或以前的类型参数。
+但是，没有专用的语法来声明参数必须是给定类型的_值_ — 也就是说，例如，你不能在`struct`定义中直接声明一个维度参数 [`isa`](@ref) `Int`。
+同样，你不能对类型参数进行计算（包括简单的加法或减法）。相反，这些类型的约束和关系可以通过在类型的 [构造函数](@ref man-constructors) 中计算和强制执行的附加类型参数来表达。
 
 例如，考虑
 ```julia
@@ -534,7 +605,7 @@ julia> module Foo
 
 julia> Foo.foo()
 ERROR: On worker 2:
-UndefVarError: Foo not defined
+UndefVarError: `Foo` not defined
 Stacktrace:
 [...]
 ```
@@ -553,7 +624,7 @@ julia> @everywhere module Foo
 
 julia> Foo.foo()
 ERROR: On worker 2:
-UndefVarError: gvar not defined
+UndefVarError: `gvar` not defined
 Stacktrace:
 [...]
 ```
@@ -586,7 +657,7 @@ bar (generic function with 1 method)
 
 julia> remotecall_fetch(bar, 2)
 ERROR: On worker 2:
-UndefVarError: #bar not defined
+UndefVarError: `#bar` not defined
 [...]
 
 julia> anon_bar  = ()->1
@@ -596,7 +667,38 @@ julia> remotecall_fetch(anon_bar, 2)
 1
 ```
 
-## “method not matched”故障排除：参数类型不变性和`MethodError`
+## “method not matched” 故障排除：参数类型不变性和`MethodError`
+
+### Why doesn't it work to declare `foo(bar::Vector{Real}) = 42` and then call `foo([1])`?
+
+As you'll see if you try this, the result is a `MethodError`:
+
+```jldoctest
+julia> foo(x::Vector{Real}) = 42
+foo (generic function with 1 method)
+
+julia> foo([1])
+ERROR: MethodError: no method matching foo(::Vector{Int64})
+
+Closest candidates are:
+  foo(!Matched::Vector{Real})
+   @ Main none:1
+
+Stacktrace:
+[...]
+```
+
+This is because `Vector{Real}` is not a supertype of `Vector{Int}`! You can solve this problem with something
+like `foo(bar::Vector{T}) where {T<:Real}` (or the short form `foo(bar::Vector{<:Real})` if the static parameter `T`
+is not needed in the body of the function). The `T` is a wild card: you first specify that it must be a
+subtype of Real, then specify the function takes a Vector of with elements of that type.
+
+This same issue goes for any composite type `Comp`, not just `Vector`. If `Comp` has a parameter declared of
+type `Y`, then another type `Comp2` with a parameter of type `X<:Y` is not a subtype of `Comp`. This is
+type-invariance (by contrast, Tuple is type-covariant in its parameters). See [Parametric Composite
+Types](@ref man-parametric-composite-types) for more explanation of these.
+
+### Why does Julia use `*` for string concatenation? Why not `+` or something else?
 
 ### 为什么声明 `foo(bar::Vector{Real}) = 42` 然后调用 `foo([1])` 不起作用？
 
@@ -612,7 +714,13 @@ Closest candidates are:
   foo(!Matched::Vector{Real}) at none:1
 ```
 
-这是因为 `Vector{Real}` 不是 `Vector{Int}` 的超类型！ 您可以使用类似 `foo(bar::Vector{T}) where {T<:Real}`（或缩写 `foo(bar::Vector{<:Real})` 如果静态参数函数体中不需要`T`）。`T` 是一个通配符：首先指定它必须是 Real 的子类型，然后指定函数采用具有该类型元素的 Vector 。
+There are several differences between `using` and `import`
+(see the [Modules section](https://docs.julialang.org/en/v1/manual/modules/#modules)),
+but there is an important difference that may not seem intuitive at first glance,
+and on the surface (i.e. syntax-wise) it may seem very minor. When loading modules with `using`,
+you need to say `function Foo.bar(...` to extend module `Foo`'s function `bar` with a new method,
+but with `import Foo.bar`, you only need to say `function bar(...` and it automatically extends
+module `Foo`'s function `bar`.
 
 同样的问题适用于任何复合类型`Comp`，而不仅仅是`Vector`。 如果`Comp` 有一个声明为`Y` 类型的参数，那么另一个带有`X<:Y` 类型参数的类型`Comp2` 不是`Comp` 的子类型。 这是类型不变性（相比之下，元组在其参数中是类型协变的）。 有关这些的更多解释，请参阅 [参数复合类型](@ref man-parametric-composite-types)。
 
@@ -653,6 +761,7 @@ Closest candidates are:
 ### 为什么当`x`和`y`都是数组时`x += y`还会申请内存？
 
 在 Julia 中，`x += y` 在语法分析中会用 `x = x + y` 代替。对于数组，结果就是它会申请一个新数组来存储结果，而非把结果存在 `x` 同一位置的内存上。
+If you prefer to mutate `x`, use `x .+= y` to update each element individually.
 
 这个行为可能会让一些人吃惊，但是这个结果是经过深思熟虑的。主要原因是Julia中的不可变对象，这些对象一旦新建就不能改变他们的值。实际上，数字是不可变对象，语句`x = 5; x += 1`不会改变`5`的意义，改变的是与`x`绑定的值。对于不可变对象，改变其值的唯一方法是重新赋值。
 
@@ -678,7 +787,7 @@ end
     这个函数会对于可变和不可变的输入有不同的行为。特别地，
     对于不可变的`x`，在调用后（通常）你会得到`y != x`，而对可变的`x`，你会有`y == x`。
 
-因为支持范用计算被认为比能使用其他方法完成的潜在的性能优化（比如使用显式循环）更加重要，所以像`+=`和`*=`运算符以绑定新值的方式工作。
+因为支持范用计算被认为比能使用其他方法完成的潜在的性能优化（比如使用广播或显式循环）更加重要，所以像`+=`和`*=`运算符以绑定新值的方式工作。
 
 ## [异步 IO 与并发同步写入](@id faq-async-io)
 
@@ -728,7 +837,7 @@ julia> @sync for i in 1:3
 
 ## 数组
 
-### 零维数组和标量之间的有什么差别？
+### [零维数组和标量之间的有什么差别？](@id faq-array-0dim)
 
 零维数组是`Array{T,0}`形式的数组，它与标量的行为相似，但是有很多重要的不同。这值得一提，因为这是使用数组的范用定义来解释也符合逻辑的特殊情况，虽然最开始看起来有些非直觉。下面一行定义了一个零维数组：
 
@@ -781,14 +890,15 @@ Julia 编译并使用自己的 OpenBLAS 副本，当前线程数上限为 8（�
 
 ### 我该如何管理分布式文件系统的预编译缓存？
 
-在高性能计算 (HPC) 设施中使用 `julia` 时，同时调用 _n_ 个 `julia` 进程最多会创建 _n_ 个预编译缓存文件的临时副本。 如果这是一个问题（缓慢和/或小型分布式文件系统），你可以：
+When using Julia in high-performance computing (HPC) facilities with shared filesystems, it is recommended to use a shared
+depot (via the `JULIA_DEPOT_PATH` environment variable). Since Julia v1.10, multiple Julia processes on functionally similar
+workers and using the same depot will coordinate via pidfile locks to only spend effort precompiling on one process while the
+others wait. The precompilation process will indicate when the process is precompiling or waiting for another that is
+precompiling. If non-interactive the messages are via `@debug`.
 
-1. 使用 `julia`的 `--compiled-modules=no` 标志来关掉预编译。
-2. 使用 `pushfirst!(DEPOT_PATH, private_path)` 配置一个私有的可写仓库
-   在这里`private_path`是一个路径单独地到这个`julia`进程
-   也可以通过设置环境变量 `JULIA_DEPOT_PATH` 到
-   `$private_path:$HOME/.julia`.
-3. 在scratch里创建到 `~/.julia/compiled`的符号链接。
+However, due to caching of binary code, the cache rejection since v1.9 is more strict and users may need to set the
+[`JULIA_CPU_TARGET`](@ref JULIA_CPU_TARGET) environment variable appropriately to get a single cache that is usable throughout the HPC
+environment.
 
 ## Julia 版本发布
 

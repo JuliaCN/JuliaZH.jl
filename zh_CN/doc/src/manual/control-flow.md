@@ -120,7 +120,7 @@ julia> test(1,2)
 x is less than y.
 
 julia> test(2,1)
-ERROR: UndefVarError: relation not defined
+ERROR: UndefVarError: `relation` not defined
 Stacktrace:
  [1] test(::Int64, ::Int64) at ./none:7
 ```
@@ -214,7 +214,10 @@ no
 
 Julia 中的 `&&` 和 `||` 运算符分别对应于逻辑“与”和“或”操作，并通常都这样使用。 但是，它们具有 *逻辑短路* 的特殊性质：不一定评估其第二个参数，下面会详细介绍。 （也有按位 `&` 和 `|` 运算符可用作逻辑“与”和“或”的*无*短路行为，但要注意 `&` 和 `|` 的评估时的优先级高于 `&& ` 和 `||` 。）
 
-短路求值与条件求值非常相似。 这种行为在大多数具有 `&&` 和 `||` 布尔运算符的命令式编程语言中都可以找到：在一系列由这些运算符连接的布尔表达式中，为了得到整个链的最终布尔值，仅仅只有最小数量的表达式被计算。 一些语言（如 Python）将它们称为`and`（`&&`）和`or`（`||`）。 更准确地说，这意味着：
+短路求值与条件求值非常相似。 这种行为在大多数具有 `&&` 和 `||` 布尔运算符的命令式编程语言中都可以找到：
+在一系列由这些运算符连接的布尔表达式中，为了得到整个链的最终布尔值，仅仅只有最小数量的表达式被计算。
+一些语言（如 Python）将它们称为 `and`（`&&`）和 `or`（`||`）。
+更准确地说，这意味着：
 
   * 在表达式 `a && b` 中，子表达式 `b` 仅当 `a` 为 `true` 的时候才会被执行。
   * 在表达式 `a || b` 中，子表达式 `b` 仅在 `a` 为 `false` 的时候才会被执行。
@@ -334,15 +337,13 @@ false
 ```jldoctest
 julia> i = 1;
 
-julia> while i <= 5
+julia> while i <= 3
            println(i)
            global i += 1
        end
 1
 2
 3
-4
-5
 ```
 
 `while` 循环会执行条件表达式（例子中为 `i <= 5`），只要它为 `true`，就一直执行`while` 循环的主体部分。当 `while` 循环第一次执行时，如果条件表达式为 `false`，那么主体代码就一次也不会被执行。
@@ -351,33 +352,52 @@ julia> while i <= 5
 像之前 `while` 循环中用到的向上和向下计数是可以用 `for` 循环更简明地表达：
 
 ```jldoctest
-julia> for i = 1:5
+julia> for i = 1:3
            println(i)
        end
 1
 2
 3
-4
-5
 ```
 
-这里的 `1:5` 是一个范围对象，代表数字 1, 2, 3, 4, 5 的序列。`for` 循环在这些值之中迭代，对每一个变量 `i` 进行赋值。`for` 循环与之前 `while` 循环的一个非常重要区别是作用域，即变量的可见性。如果变量 `i` 没有在另一个作用域里引入，在 `for` 循环内，它就只在 `for` 循环内部可见，在外部和后面均不可见。你需要一个新的交互式会话实例或者一个新的变量名来测试这个特性：
+这里的 `1:3` 是一个范围对象，代表数字 `1, 2, 3` 的序列。
+`for` 循环在这些值之中迭代，对每一个变量 `i` 进行赋值。`for` 循环与之前 `while` 循环的一个非常重要区别是作用域，即变量的可见性。
+A `for` loop always introduces a new iteration variable in
+its body, regardless of whether a variable of the same name exists in the enclosing scope.
+This implies that on the one hand `i` need not be declared before the loop. On the other hand it
+will not be visible outside the loop, nor will an outside variable of the same name be affected.
+You'll either need a new interactive session instance or a different variable
 
 ```jldoctest
-julia> for j = 1:5
+julia> for j = 1:3
            println(j)
        end
 1
 2
 3
-4
-5
 
 julia> j
-ERROR: UndefVarError: j not defined
+ERROR: UndefVarError: `j` not defined
 ```
 
-参见[变量作用域](@ref scope-of-variables)中对变量作用域的详细解释以及它在 Julia 中是如何工作的。
+```jldoctest
+julia> j = 0;
+
+julia> for j = 1:3
+           println(j)
+       end
+1
+2
+3
+
+julia> j
+0
+```
+
+Use `for outer` to modify the latter behavior and reuse an existing local variable.
+
+See [Scope of Variables](@ref scope-of-variables) for a detailed explanation of variable scope, [`outer`](@ref), and how it works in
+Julia.
 
 一般来说，`for` 循环组件可以用于迭代任一个容器。在这种情况下，相比 `=`，另外的（但完全相同）关键字 `in` 或者 `∈` 则更常用，因为它使得代码更清晰：
 
@@ -406,7 +426,7 @@ julia> i = 1;
 
 julia> while true
            println(i)
-           if i >= 5
+           if i >= 3
                break
            end
            global i += 1
@@ -414,20 +434,16 @@ julia> while true
 1
 2
 3
-4
-5
 
 julia> for j = 1:1000
            println(j)
-           if j >= 5
+           if j >= 3
                break
            end
        end
 1
 2
 3
-4
-5
 ```
 
 没有关键字 `break` 的话，上面的 `while` 循环永远不会自己结束，而 `for` 循环会迭代到 1000，这些循环都可以使用 `break` 来提前结束。
@@ -529,7 +545,7 @@ julia> for (j, k) in zip([1 2 3], [4 5 6 7])
 ```jldoctest
 julia> sqrt(-1)
 ERROR: DomainError with -1.0:
-sqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
+sqrt was called with a negative real argument but will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
 Stacktrace:
 [...]
 ```
@@ -572,7 +588,7 @@ false
 
 ```jldoctest
 julia> throw(UndefVarError(:x))
-ERROR: UndefVarError: x not defined
+ERROR: UndefVarError: `x` not defined
 ```
 
 我们可以仿照 [`UndefVarError`](@ref) 的写法，用自定义异常类型来轻松实现这个机制：
@@ -694,7 +710,7 @@ julia> sqrt_second(9)
 
 julia> sqrt_second(-9)
 ERROR: DomainError with -9.0:
-sqrt will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
+sqrt was called with a negative real argument but will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
 Stacktrace:
 [...]
 ```
@@ -716,7 +732,49 @@ catch
 end
 ```
 
-`try/catch` 结构的强大之处在于能够立即将深度嵌套的计算展开到调用函数堆栈中的更高级别。 在某些情况下，没有发生错误，但需要能够展开堆栈并将值传递到更高级别。 Julia 提供了 [`rethrow`](@ref)、[`backtrace`](@ref)、[`catch_backtrace`](@ref) 和 [`current_exceptions`](@ref) 函数来进行更高级的错误处理。
+The power of the `try/catch` construct lies in the ability to unwind a deeply nested computation
+immediately to a much higher level in the stack of calling functions. There are situations where
+no error has occurred, but the ability to unwind the stack and pass a value to a higher level
+is desirable. Julia provides the [`rethrow`](@ref), [`backtrace`](@ref), [`catch_backtrace`](@ref)
+and [`current_exceptions`](@ref) functions for more advanced error handling.
+
+### `else` Clauses
+
+!!! compat "Julia 1.8"
+    This functionality requires at least Julia 1.8.
+
+In some cases, one may not only want to appropriately handle the error case, but also want to run
+some code only if the `try` block succeeds. For this, an `else` clause can be specified after the
+`catch` block that is run whenever no error was thrown previously. The advantage over including
+this code in the `try` block instead is that any further errors don't get silently caught by the
+`catch` clause.
+
+```julia
+local x
+try
+    x = read("file", String)
+catch
+    # handle read errors
+else
+    # do something with x
+end
+```
+
+!!! note
+    The `try`, `catch`, `else`, and `finally` clauses each introduce their own scope blocks, so if
+    a variable is only defined in the `try` block, it can not be accessed by the `else` or `finally`
+    clause:
+    ```jldoctest
+    julia> try
+               foo = 1
+           catch
+           else
+               foo
+           end
+    ERROR: UndefVarError: `foo` not defined
+    ```
+    Use the [`local` keyword](@ref local-scope) outside the `try` block to make the variable
+    accessible from anywhere within the outer scope.
 
 ### `finally` 子句
 

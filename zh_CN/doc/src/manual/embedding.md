@@ -1,10 +1,19 @@
 # 嵌入 Julia
 
-正如我们在 [调用 C 和 Fortran 代码](@ref) 中看到的, Julia 有着简单高效的方法来调用 C 编写的函数。但有时恰恰相反，我们需要在 C 中调用 Julia 的函数。这可以将 Julia 代码集成到一个更大的 C/C++ 项目而无需在 C/C++ 中重写所有内容。Julia 有一个 C API 来实现这一目标。几乎所有编程语言都能以某种方式来调用 C 语言的函数，因此 Julia 的 C API 也就能够进行更多语言的桥接。(例如在 Python 或是 C# 中调用 Julia ).
+As we have seen in [Calling C and Fortran Code](@ref), Julia has a simple and efficient way
+to call functions written in C. But there are situations where the opposite is needed:
+calling Julia functions from C code. This can be used to integrate Julia code into a larger
+C/C++ project, without the need to rewrite everything in C/C++. Julia has a C API to make
+this possible. As almost all programming languages have some way to call C functions, the
+Julia C API can also be used to build further language bridges (e.g. calling Julia from
+Python, Rust or C#). Even though Rust and C++ can use the C embedding API directly, both
+have packages helping with it, for C++ [Jluna](https://github.com/Clemapfel/jluna) is useful.
 
 ## 高级别嵌入
 
-__Note__: 本节包含可运行在类 Unix 系统上的、使用 C 编写的嵌入式 Julia 代码。Windows 平台请参阅下一节。
+__Note__: 本节包含可运行在类 Unix 系统上的、使用 C 编写的嵌入式 Julia 代码。
+For doing this on Windows, please see the section following this,
+[High-Level Embedding on Windows with Visual Studio](@ref).
 
 我们从一个简单的 C 程序开始初始化 Julia 并调用一些 Julia 代码：
 
@@ -30,7 +39,8 @@ int main(int argc, char *argv[])
 }
 ```
 
-为构建这个程序，你必须将 Julia 头文件的路径放入 include 路径并链接 `libjulia` 。例如 Julia 被安装到 `$JULIA_DIR`，则可以用 `gcc` 来编译上面的测试程序 `test.c`：
+为构建这个程序，你必须将 Julia 头文件的路径放入 include 路径并链接 `libjulia` 。
+例如 Julia 被安装到 `$JULIA_DIR`，则可以用 `gcc` 来编译上面的测试程序 `test.c`：
 
 ```
 gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib -Wl,-rpath,$JULIA_DIR/lib test.c -ljulia
@@ -38,11 +48,13 @@ gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib -Wl,-rpath,$JULIA_
 
 或者，查看 `test/embedding/` 文件夹中 Julia 源代码树中的 `embedding.c` 程序。 文件 `cli/loader_exe.c` 程序是另一个简单的例子，说明如何在链接 `libjulia` 时设置 `jl_options` 选项。
 
-在调用任何其他 Julia C 函数之前第一件必须要做的事是初始化 Julia，通过调用 `jl_init` 尝试自动确定 Julia 的安装位置来实现。如果需要自定义位置或指定要加载的系统映像，请改用 `jl_init_with_image`。
+在调用任何其他 Julia C 函数之前第一件必须要做的事是初始化 Julia，通过调用 `jl_init` 尝试自动确定 Julia 的安装位置来实现。
+如果需要自定义位置或指定要加载的系统映像，请改用 `jl_init_with_image`。
 
 测试程序中的第二个语句通过调用 `jl_eval_string` 来执行 Julia 语句。
 
-在程序结束之前，强烈建议调用 `jl_atexit_hook`。上面的示例程序在 `main` 返回之前进行了调用。
+在程序结束之前，强烈建议确保 `jl_atexit_hook` 已调用完成。
+上面的示例程序在 `main` 返回之前进行了调用。
 
 !!! note
     现在，动态链接 `libjulia` 的共享库需要传递选项 `RTLD_GLOBAL` 。比如在 Python 中像这样调用：
@@ -55,11 +67,14 @@ gcc -o test -fPIC -I$JULIA_DIR/include/julia -L$JULIA_DIR/lib -Wl,-rpath,$JULIA_
     ```
 
 !!! note
-    如果 Julia 程序需要访问 主可执行文件 中的符号，那么除了下面描述的由 `julia-config.jl` 生成的标记之外，可能还需要在 Linux 上的编译时添加 `-Wl,--export-dynamic` 链接器标志。编译共享库时则不必要。
+    如果 Julia 程序需要访问 主可执行文件 中的符号，那么除了下面描述的由 `julia-config.jl` 生成的标记之外，
+    可能还需要在 Linux 上的编译时添加 `-Wl,--export-dynamic` 链接器标志。编译共享库时则不必要。
 
 ### 使用 julia-config 自动确定构建参数
 
-`julia-config.jl` 创建脚本是为了帮助确定使用嵌入的 Julia 程序所需的构建参数。此脚本使用由其调用的特定 Julia 分发的构建参数和系统配置来导出嵌入程序的必要编译器标志以与该分发交互。此脚本位于 Julia 的 share 目录中。
+`julia-config.jl` 创建脚本是为了帮助确定使用嵌入的 Julia 程序所需的构建参数。
+此脚本使用由其调用的特定 Julia 分发的构建参数和系统配置来导出嵌入程序的必要编译器标志以与该分发交互。
+此脚本位于 Julia 的 share 目录中。
 
 #### 例子
 
@@ -84,7 +99,8 @@ int main(int argc, char *argv[])
 Usage: julia-config [--cflags|--ldflags|--ldlibs]
 ```
 
-如果上面的示例源代码保存为文件 `embed_example.c`，则以下命令将其编译为 Linux 和 Windows 上运行的程序（MSYS2 环境），或者如果在 OS/X 上，则用 `clang` 替换 `gcc`。：
+如果上面的示例源代码保存为文件 `embed_example.c`，则以下命令将其编译为 Linux 和 Windows 上运行的程序（MSYS2 环境），
+或者如果在 macOS 上，则用 `clang` 替换 `gcc`。：
 
 ```
 /usr/local/julia/share/julia/julia-config.jl --cflags --ldflags --ldlibs | xargs gcc embed_example.c
@@ -92,8 +108,11 @@ Usage: julia-config [--cflags|--ldflags|--ldlibs]
 
 #### 在 Makefiles 中使用
 
-但通常来说，嵌入的项目会比上面更复杂，因此一般会提供 makefile 支持。由于使用了 **shell** 宏扩展，我们就假设用 GNU make 。
-另外，尽管很多时候 `julia-config.jl` 会在目录 `/usr/local` 中出现多次，不过也未必如此，但 Julia 也定位 `julia-config.jl`，并且可以使用 makefile 来利用它。上面的示例程序使用 Makefile 来扩展。：
+通常来说，嵌入的项目会比上面更复杂，因此一般会提供 makefile 支持。
+由于使用了 **shell** 宏扩展，我们就假设用 GNU make 。
+此外，尽管 `julia-config.jl` 通常位于 `/usr/local` 目录中，但如果不在，
+则可以使用 Julia 本身来查找 `julia-config.jl`，而 makefile 可以利用这一点。
+上面的示例已扩展到使用 makefile：
 
 ```makefiles
 JL_SHARE = $(shell julia -e 'print(joinpath(Sys.BINDIR, Base.DATAROOTDIR, "julia"))')
@@ -111,7 +130,8 @@ all: embed_example
 
 如果尚未设置`JULIA_DIR`环境变量，请在启动 Visual Studio 之前使用系统面板添加它。JULIA_DIR 下的`bin` 文件夹应该在系统路径上。
 
-我们首先打开 Visual Studio 并创建一个新的控制台应用程序项目。 在`stdafx.h`头文件的末尾添加以下几行：
+我们首先打开 Visual Studio 并创建一个新的控制台应用程序项目。
+在 `stdafx.h` 头文件的末尾添加以下几行：
 
 ```c
 #include <julia.h>
@@ -194,13 +214,31 @@ jl_value_t *jl_call(jl_function_t *f, jl_value_t **args, int32_t nargs)
 
 它的第二个参数 `args` 是 `jl_value_t*` 类型的数组，`nargs` 是参数的个数 
 
+There is also an alternative, possibly simpler, way of calling Julia functions and that is via [`@cfunction`](@ref).
+Using `@cfunction` allows you to do the type conversions on the Julia side which typically is easier than doing it on
+the C side. The `sqrt` example above would with `@cfunction` be written as:
+
+```c
+double (*sqrt_jl)(double) = jl_unbox_voidpointer(jl_eval_string("@cfunction(sqrt, Float64, (Float64,))"));
+double ret = sqrt_jl(2.0);
+```
+
+where we first define a C callable function in Julia, extract the function pointer from it and finally call it.
+
 ## 内存管理
 
-正如我们所见，Julia 对象在 C 中表示为指针。这就出现了 谁来负责释放这些对象的问题。
+正如我们所见，Julia 对象在 C 中表示为类型 `jl_value_t*` 的指针。这就出现了 谁来负责释放这些对象的问题。
 
-通常，Julia 对象由垃圾收集器（GC）释放，但 GC 不会自动就懂我们正C中保留对Julia值的引用。这意味着 GC 会在你的掌控之外释放对象，从而使指针无效。
+通常，Julia 对象由垃圾收集器（GC）释放，但 GC 不会自动就懂我们正C中保留对Julia值的引用。
+这意味着 GC 会在你的掌控之外释放对象，从而使指针无效。
 
-GC 只能在分配 Julia 对象时运行。 像 `jl_box_float64` 这样的调用执行分配，分配可能发生在运行 Julia 代码的任何时候。 然而，在 `jl_...` 调用之间使用指针通常是安全的。 但是为了确保值可以在 `jl_...` 调用后留存下来，我们必须告诉 Julia 我们仍然持有对 Julia [root](https://www.cs.purdue.edu/homes/hosking/690M/p611-fenichel.pdf) 的引用，这个过程称为“GC rooting”。把一个值”扎根“将确保垃圾收集器不会意外地将此值识别为未使用并释放该值的内存。 这可以使用 `JL_GC_PUSH` 宏来完成：
+GC 会在分配 Julia 对象时运行。像 `jl_box_float64` 这样的调用执行分配，分配可能发生在运行 Julia 代码的任何时候。
+
+When writing code that embeds Julia, it is generally safe to use `jl_value_t*` values in between `jl_...` calls
+(as GC will only get triggered by those calls).
+但是为了确保值可以在 `jl_...` 调用后留存下来，我们必须告诉 Julia 我们仍然持有对 Julia [root](https://www.cs.purdue.edu/homes/hosking/690M/p611-fenichel.pdf) 的引用，
+这个过程称为“GC rooting”。把一个值”扎根“将确保垃圾收集器不会意外地将此值识别为未使用并释放该值的内存。
+这可以使用 `JL_GC_PUSH` 宏来完成：
 
 ```c
 jl_value_t *ret = jl_eval_string("sqrt(2.0)");
@@ -211,7 +249,15 @@ JL_GC_POP();
 
 `JL_GC_POP` 调用会释放之前的 `JL_GC_PUSH` 建立的引用。 请注意，`JL_GC_PUSH` 将引用存储在 C 堆栈上，因此在退出作用域之前，它必须与一个 `JL_GC_POP` 精确配对。 也就是说，在函数返回之前，或者流程控制以其他方式离开调用了`JL_GC_PUSH` 的块。
 
-可以使用 `JL_GC_PUSH2`、`JL_GC_PUSH3`、`JL_GC_PUSH4`、`JL_GC_PUSH5` 和 `JL_GC_PUSH6` 宏一次推送多个 Julia 值。 要推送一个 Julia 数组，可以使用 `JL_GC_PUSHARGS` 宏，其用法如下：
+可以使用 `JL_GC_PUSH2` 到 `JL_GC_PUSH6` 宏一次推送多个 Julia 值：
+```c
+JL_GC_PUSH2(&ret1, &ret2);
+// ...
+JL_GC_PUSH6(&ret1, &ret2, &ret3, &ret4, &ret5, &ret6);
+```
+
+要推送一个 Julia 数组，可以使用 `JL_GC_PUSHARGS` 宏，其用法如下：
+
 
 ```c
 jl_value_t **args;
@@ -222,7 +268,8 @@ args[1] = some_other_value;
 JL_GC_POP();
 ```
 
-每个作用域必须只有一次对 `JL_GC_PUSH*` 的调用。 因此，如果不能通过一次调用`JL_GC_PUSH*` 一次推送所有变量，或者如果要推送的变量超过 6 个并且使用参数数组不是一种选择，那么可以使用内部块：
+每个作用域只能调用一次 `JL_GC_PUSH*`，并且只能与一次 `JL_GC_POP` 调用配对。
+如果一次调用 `JL_GC_PUSH*` 无法推送所有需要 root 的变量，或者需要推送的变量超过 6 个，并且不能使用参数数组，那么可以使用内部代码块：
 
 ```c
 jl_value_t *ret1 = jl_eval_string("sqrt(2.0)");
@@ -238,7 +285,24 @@ jl_value_t *ret2 = 0;
 JL_GC_POP();    // This pops ret1.
 ```
 
-如果需要在函数（或块作用域）之间保存指向变量的指针，则不能使用 `JL_GC_PUSH*`。 在这种情况下，有必要在 Julia 全局作用域内创建并保留对变量的引用。 实现这一点的一种简单方法是使用一个全局的`IdDict`来保存引用，避免 GC 释放。 但是，此方法仅适用于可变类型。
+Note that it is not necessary to have valid `jl_value_t*` values before calling
+`JL_GC_PUSH*`. It is fine to have a number of them initialized to `NULL`, pass those
+to `JL_GC_PUSH*` and then create the actual Julia values. For example:
+
+```
+jl_value_t *ret1 = NULL, *ret2 = NULL;
+JL_GC_PUSH2(&ret1, &ret2);
+ret1 = jl_eval_string("sqrt(2.0)");
+ret2 = jl_eval_string("sqrt(3.0)");
+// Use ret1 and ret2
+JL_GC_POP();
+```
+
+If it is required to hold the pointer to a variable between functions (or block scopes), then it is
+not possible to use `JL_GC_PUSH*`. In this case, it is necessary to create and keep a reference to the
+variable in the Julia global scope. One simple way to accomplish this is to use a global `IdDict` that
+will hold the references, avoiding deallocation by the GC. However, this method will only work
+properly with mutable types.
 
 ```c
 // This functions shall be executed only once, during the initialization.
@@ -297,7 +361,10 @@ jl_call2(delete, refs, rvar);
 作为非常简单情况的替代方案，可以只创建一个类型为`Vector{Any}`的全局容器，并在必要时从中获取元素，甚至可以使用以下方法为每个指针创建一个全局变量
 
 ```c
-jl_set_global(jl_main_module, jl_symbol("var"), var);
+jl_module_t *mod = jl_main_module;
+jl_sym_t *var = jl_symbol("var");
+jl_binding_t *bp = jl_get_binding_wr(mod, var);
+jl_checked_assignment(bp, mod, var, val);
 ```
 
 ### 更新 GC 管理对象的字段
@@ -310,7 +377,8 @@ jl_value_t *parent = some_old_value, *child = some_young_value;
 jl_gc_wb(parent, child);
 ```
 
-通常情况下不可能在运行时预测 值是否是旧的，因此 写屏障 必须被插入在所有显式存储之后。一个需要注意的例外是如果 `parent` 对象刚分配，垃圾收集之后并不执行。请记住大多数 `jl_...` 函数有时候都会执行垃圾收集。
+通常情况下不可能在运行时预测 值是否是旧的，因此 写屏障 必须被插入在所有显式存储之后。
+一个需要注意的例外是如果 `parent` 对象刚分配，垃圾收集之后并不执行。请记住大多数 `jl_...` 函数有时候都会执行垃圾收集。
 
 直接更新数据时，对于指针数组来说 写屏障 也是必需的 例如：
 
@@ -359,7 +427,7 @@ jl_array_t *x = jl_ptr_to_array_1d(array_type, existingArray, 10, 0);
 
 最后一个参数是一个布尔值，表示 Julia 是否应该获取数据的所有权。 如果这个参数 不为零，当数组不再被引用时，GC 会在数据的指针上调用 `free` 。
 
-为了访问 x 的数据，我们可以使用 `jl_array_data`：
+为了访问 `x` 的数据，我们可以使用 `jl_array_data`：
 
 ```c
 double *xData = (double*)jl_array_data(x);
@@ -398,7 +466,7 @@ Julia的多维数组以 列序优先 存储在内存中。这是一些 创建一
 
 ```c
 // Create 2D array of float64 type
-jl_value_t *array_type = jl_apply_array_type(jl_float64_type, 2);
+jl_value_t *array_type = jl_apply_array_type((jl_value_t*)jl_float64_type, 2);
 jl_array_t *x  = jl_alloc_array_2d(array_type, 10, 5);
 
 // Get array pointer
@@ -459,5 +527,112 @@ void jl_errorf(const char *fmt, ...);
 jl_errorf("argument x = %d is too large", x);
 ```
 
-在这个例子中假定 `x` 是一个整数值。
+where in this example `x` is assumed to be an integer.
 
+
+### Thread-safety
+
+In general, the Julia C API is not fully thread-safe. When embedding Julia in a multi-threaded application care needs to be taken not to violate
+the following restrictions:
+
+* `jl_init()` may only be called once in the application life-time. The same applies to `jl_atexit_hook()`, and it may only be called after `jl_init()`.
+* `jl_...()` API functions may only be called from the thread in which `jl_init()` was called, *or from threads started by the Julia runtime*. Calling Julia API functions from user-started threads is not supported, and may lead to undefined behaviour and crashes.
+
+The second condition above implies that you can not safely call `jl_...()` functions from threads that were not started by Julia (the thread calling `jl_init()` being the exception). For example, the following is not supported and will most likely segfault:
+
+```c
+void *func(void*)
+{
+    // Wrong, jl_eval_string() called from thread that was not started by Julia
+    jl_eval_string("println(Threads.threadid())");
+    return NULL;
+}
+
+int main()
+{
+    pthread_t t;
+
+    jl_init();
+
+    // Start a new thread
+    pthread_create(&t, NULL, func, NULL);
+    pthread_join(t, NULL);
+
+    jl_atexit_hook(0);
+}
+```
+
+Instead, performing all Julia calls from the same user-created thread will work:
+
+```c
+void *func(void*)
+{
+    // Okay, all jl_...() calls from the same thread,
+    // even though it is not the main application thread
+    jl_init();
+    jl_eval_string("println(Threads.threadid())");
+    jl_atexit_hook(0);
+    return NULL;
+}
+
+int main()
+{
+    pthread_t t;
+    // Create a new thread, which runs func()
+    pthread_create(&t, NULL, func, NULL);
+    pthread_join(t, NULL);
+}
+```
+
+An example of calling the Julia C API from a thread started by Julia itself:
+
+```c
+#include <julia/julia.h>
+JULIA_DEFINE_FAST_TLS
+
+double c_func(int i)
+{
+    printf("[C %08x] i = %d\n", pthread_self(), i);
+
+    // Call the Julia sqrt() function to compute the square root of i, and return it
+    jl_function_t *sqrt = jl_get_function(jl_base_module, "sqrt");
+    jl_value_t* arg = jl_box_int32(i);
+    double ret = jl_unbox_float64(jl_call1(sqrt, arg));
+
+    return ret;
+}
+
+int main()
+{
+    jl_init();
+
+    // Define a Julia function func() that calls our c_func() defined in C above
+    jl_eval_string("func(i) = ccall(:c_func, Float64, (Int32,), i)");
+
+    // Call func() multiple times, using multiple threads to do so
+    jl_eval_string("println(Threads.threadpoolsize())");
+    jl_eval_string("use(i) = println(\"[J $(Threads.threadid())] i = $(i) -> $(func(i))\")");
+    jl_eval_string("Threads.@threads for i in 1:5 use(i) end");
+
+    jl_atexit_hook(0);
+}
+```
+
+If we run this code with 2 Julia threads we get the following output (note: the output will vary per run and system):
+
+```sh
+$ JULIA_NUM_THREADS=2 ./thread_example
+2
+[C 3bfd9c00] i = 1
+[C 23938640] i = 4
+[J 1] i = 1 -> 1.0
+[C 3bfd9c00] i = 2
+[J 1] i = 2 -> 1.4142135623730951
+[C 3bfd9c00] i = 3
+[J 2] i = 4 -> 2.0
+[C 23938640] i = 5
+[J 1] i = 3 -> 1.7320508075688772
+[J 2] i = 5 -> 2.23606797749979
+```
+
+As can be seen, Julia thread 1 corresponds to pthread ID 3bfd9c00, and Julia thread 2 corresponds to ID 23938640, showing that indeed multiple threads are used at the C level, and that we can safely call Julia C API routines from those threads.

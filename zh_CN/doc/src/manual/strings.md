@@ -30,8 +30,8 @@
 
 ## [字符](@id man-characters)
 
-`Char` 类型的值代表单个字符：它只是带有特殊文本表示法和适当算术行为的 32 位原始类型，不能转化为代表 [Unicode 代码](https://en.wikipedia.org/wiki/Code_point) 的数值。（Julia 的包可能会定义别的 `AbstractChar` 子类型，比如当为了优化对其它 [字符编码](https://en.wikipedia.org/wiki/Character_encoding) 的操作时）`Char` 类型的值以这样的方式输入和显示：
-
+`Char` 类型的值代表单个字符：它只是带有特殊文本表示法和适当算术行为的 32 位原始类型，不能转化为代表 [Unicode 代码](https://en.wikipedia.org/wiki/Code_point) 的数值。（Julia 的包可能会定义别的 `AbstractChar` 子类型，比如当为了优化对其它 [字符编码](https://en.wikipedia.org/wiki/Character_encoding) 的操作时）`Char` 类型的值以这样的方式输入和显示。
+(note that character literals are delimited with single quotes, not double quotes):
 
 ```jldoctest
 julia> c = 'x'
@@ -130,7 +130,7 @@ julia> 'A' + 1
 
 ## 字符串基础
 
-字符串字面量由双引号或三重双引号分隔：
+字符串字面量由双引号或三重双引号（非单引号）分隔：
 
 ```jldoctest helloworldstring
 julia> str = "Hello, world.\n"
@@ -208,6 +208,8 @@ julia> str[6:6]
 前者是一个 `Char` 类型的单个字符，而后者是一个恰好只包含一个字符的字符串。在 Julia 中，这些是不同的。
 
 范围索引复制原始字符串的选定部分。此外，可以使用类型 [`SubString`](@ref)，将视图创建为字符串，
+More simply, using the [`@views`](@ref) macro on a block of code converts all string slices
+into substrings.
 例如：
 
 ```jldoctest
@@ -218,6 +220,9 @@ julia> substr = SubString(str, 1, 4)
 "long"
 
 julia> typeof(substr)
+SubString{String}
+
+julia> @views typeof(str[1:4]) # @views converts slices to SubStrings
 SubString{String}
 ```
 
@@ -288,7 +293,10 @@ julia> s[1:4]
 "∀ "
 ```
 
-由于可变长度的编码，字符串中的字符数（由 [`length(s)`](@ref) 给出）并不总是等于最后一个索引的数字。如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。所以，总是有 `length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。下面是对 `s` 的字符进行迭代的一个冗长而低效的方式：
+由于可变长度的编码，字符串中的字符数（由 [`length(s)`](@ref) 给出）并不总是等于最后一个索引的数字。
+如果你从 1 到 [`lastindex(s)`](@ref) 迭代并索引到 `s`，未报错时返回的字符序列是包含字符串 `s` 的字符序列。
+所以，`length(s) <= lastindex(s)`，这是因为字符串中的每个字符必须有它自己的索引。
+下面是对 `s` 的字符进行迭代的一个冗长而低效的方式：
 
 ```jldoctest unicodestring
 julia> for i = firstindex(s):lastindex(s)
@@ -399,17 +407,17 @@ julia> string(greet, ", ", whom, ".\n")
 julia> a, b = "\xe2\x88", "\x80"
 ("\xe2\x88", "\x80")
 
-julia> c = a*b
+julia> c = string(a, b)
 "∀"
 
 julia> collect.([a, b, c])
-3-element Array{Array{Char,1},1}:
+3-element Vector{Vector{Char}}:
  ['\xe2\x88']
  ['\x80']
  ['∀']
 
 julia> length.([a, b, c])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  1
  1
@@ -435,7 +443,9 @@ julia> greet * ", " * whom * ".\n"
 拼接构造字符串的方式有时有些麻烦。为了减少对于 [`string`](@ref) 的冗余调用或者重复地做乘法，Julia 允许像 Perl 中一样使用 `$` 对字符串字面量进行插值：
 
 
-```jldoctest stringconcat
+```jldoctest
+julia> greet = "Hello"; whom = "world";
+
 julia> "$greet, $whom.\n"
 "Hello, world.\n"
 ```
@@ -540,6 +550,14 @@ julia> """
 ```
 
 如果使用反斜杠消除换行符，下一行的缩进也会被消除：
+```jldoctest
+julia> """
+         Averylong\
+         word"""
+"Averylongword"
+```
+
+Trailing whitespace is left unaltered.
 
 ```jldoctest
 julia> """
@@ -575,28 +593,28 @@ true
 你可以使用 [`findfirst`](@ref) 与 [`findlast`](@ref) 函数搜索特定字符的索引：
 
 ```jldoctest
-julia> findfirst(isequal('o'), "xylophone")
+julia> findfirst('o', "xylophone")
 4
 
-julia> findlast(isequal('o'), "xylophone")
+julia> findlast('o', "xylophone")
 7
 
-julia> findfirst(isequal('z'), "xylophone")
+julia> findfirst('z', "xylophone")
 ```
 
 你可以带上第三个参数，用 [`findnext`](@ref) 与 [`findprev`](@ref) 函数来在给定偏移量处搜索字符：
 
 ```jldoctest
-julia> findnext(isequal('o'), "xylophone", 1)
+julia> findnext('o', "xylophone", 1)
 4
 
-julia> findnext(isequal('o'), "xylophone", 5)
+julia> findnext('o', "xylophone", 5)
 7
 
-julia> findprev(isequal('o'), "xylophone", 5)
+julia> findprev('o', "xylophone", 5)
 4
 
-julia> findnext(isequal('o'), "xylophone", 8)
+julia> findnext('o', "xylophone", 8)
 ```
 
 你可以用 [`occursin`](@ref) 函数检查在字符串中某子字符串可否找到。
@@ -640,18 +658,27 @@ julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
   * [`nextind(str, i, n=1)`](@ref) 查找在索引 `i` 之后第 `n` 个字符的开头。
   * [`prevind(str, i, n=1)`](@ref) 查找在索引 `i` 之前第 `n` 个字符的开始。
 
-## [非标准字符串字面量](@id non-standard-string-literals)
+There are situations when you want to construct a string or use string semantics, but the behavior
+of the standard string construct is not quite what is needed. For these kinds of situations, Julia
+provides non-standard string literals. A non-standard string literal looks like a regular
+double-quoted string literal,
+but is immediately prefixed by an identifier, and may behave differently from a normal string literal.
 
-有时当你想构造字符串或者使用字符串语义，标准的字符串构造却不能很好的满足需求。Julia 为这种情形提供了非标准字符串字面量。非标准字符串字面量看似常规双引号字符串字面量，但却直接加上了标识符前缀因而并不那么像普通的字符串字面量。
+[Regular expressions](@ref man-regex-literals), [byte array literals](@ref man-byte-array-literals),
+and [version number literals](@ref man-version-number-literals), as described below,
+are some examples of non-standard string literals. Users and packages may also define new non-standard string literals.
+Further documentation is given in the [Metaprogramming](@ref meta-non-standard-string-literals) section.
 
-下面将提到，[正则表达式](@ref man-regex-literals)，[字节数组字面量] (@ref man-byte-array-literals) 和 [版本号字面量](@ref man-version-number-literals) 都是非标准字符串字面量的例子。
-更详细的文档见 [元编程](@ref meta-non-standard-string-literals) 章。
+## [Regular Expressions](@id man-regex-literals)
+Sometimes you are not looking for an exact string, but a particular *pattern*. For example, suppose you are trying to extract a single date from a large text file. You don’t know what that date is (that’s why you are searching for it), but you do know it will look something like `YYYY-MM-DD`. Regular expressions allow you to specify these patterns and search for them.
 
-## [正则表达式](@id man-regex-literals)
-
-Julia 具有与 Perl 兼容的正则表达式 (regexes)，就像 [PCRE](http://www.pcre.org/) 包所提供的那样，详细信息参见 [PCRE 的语法说明](http://www.pcre.org/current/doc/html/pcre2syntax.html)。
-正则表达式以两种方式和字符串相关：一个显然的关联是，正则表达式被用于找到字符串中的正则模式；另一个关联是，正则表达式自身就是作为字符串输入，它们被解析到可用来高效搜索字符串中模式的状态机中。
-在 Julia 中正则表达式的输入使用了前缀各类以 `r` 开头的标识符的非标准字符串字面量。最基本的不打开任何选项的正则表达式只用到了 `r"..."`：
+Julia uses version 2 of Perl-compatible regular expressions (regexes), as provided by the [PCRE](https://www.pcre.org/)
+library (see the [PCRE2 syntax description](https://www.pcre.org/current/doc/html/pcre2syntax.html) for more details). Regular expressions are related to strings in two ways: the obvious connection is that
+regular expressions are used to find regular patterns in strings; the other connection is that
+regular expressions are themselves input as strings, which are parsed into a state machine that
+can be used to efficiently search for patterns in strings. In Julia, regular expressions are input
+using non-standard string literals prefixed with various identifiers beginning with `r`. The most
+basic regular expression literal without any options turned on just uses `r"..."`:
 
 ```jldoctest
 julia> re = r"^\s*(?:#|$)"
@@ -691,7 +718,10 @@ else
 end
 ```
 
-如果正则表达式匹配，[`match`](@ref) 的返回值是一个 [`RegexMatch`](@ref) 对象。这些对象记录了表达式是如何匹配的，包括该模式匹配的子字符串和任何可能被捕获的子字符串。上面的例子仅仅捕获了匹配的部分子字符串，但也许我们想要捕获的是注释字符后面的任何非空文本。我们可以这样做：
+如果正则表达式匹配，[`match`](@ref) 的返回值是一个 [`RegexMatch`](@ref) 对象。
+这些对象记录了表达式是如何匹配的，包括该模式匹配的子字符串和任何可能被捕获的子字符串。
+上面的例子仅仅捕获了匹配的部分子字符串，但也许我们想要捕获的是注释字符后面的任何非空文本。
+我们可以这样做：
 
 ```jldoctest
 julia> m = match(r"^\s*(?:#\s*(.*?)\s*$|$)", "# a comment ")
@@ -764,7 +794,8 @@ julia> m.offsets
  2
 ```
 
-让捕获作为数组返回是很方便的，这样就可以用解构语法把它们和局域变量绑定起来。为了方便，`RegexMatch` 对象实现了传递到 `captures` 字段的迭代器方法，因此您可以直接解构匹配对象：
+让捕获作为数组返回是很方便的，这样就可以用解构语法把它们和局域变量绑定起来。
+为了方便，`RegexMatch` 对象实现了传递到 `captures` 字段的迭代器方法，因此您可以直接解构匹配对象：
 
 ```jldoctest acdmatch
 julia> first, second, third = m; first
@@ -798,7 +829,8 @@ julia> replace("a", r"." => s"\g<0>1")
 "a1"
 ```
 
-你可以在后双引号的后面加上 `i`, `m`, `s` 和 `x` 等标志对正则表达式进行修改。这些标志和 Perl 里面的含义一样，详见以下对 [perlre 手册](http://perldoc.perl.org/perlre.html#Modifiers)的摘录：
+你可以在后双引号的后面加上 `i`, `m`, `s` 和 `x` 等标志对正则表达式进行修改。
+这些标志和 Perl 里面的含义一样，详见以下对 [perlre 手册](https://perldoc.perl.org/perlre.html#Modifiers)的摘录：
 
 ```
 i   不区分大小写的模式匹配。
@@ -872,7 +904,12 @@ julia> match(regex_name, "[Jon]") === nothing
 true
 ```
 
-注意 `\Q...\E` 转义序列的使用。 `\Q` 和 `\E` 之间的所有字符都被解释为字符字面量（在字符串插值之后）。在插入可能是恶意的用户输入时，此转义序列非常有用。
+注意 `\Q...\E` 转义序列的使用。 `\Q` 和 `\E` 之间的所有字符都被解释为字符字面量（在字符串插值之后）。
+This is convenient for matching characters that
+would otherwise be regex metacharacters. However, caution is needed when using this feature
+together with string interpolation, since the interpolated string might itself contain
+the `\E` sequence, unexpectedly terminating literal matching. User inputs need to be sanitized
+before inclusion in a regex.
 
 ## [字节数组字面量](@id man-byte-array-literals)
 
@@ -919,7 +956,7 @@ julia> x[1]
 0x31
 
 julia> x[1] = 0x32
-ERROR: setindex! not defined for Base.CodeUnits{UInt8, String}
+ERROR: CanonicalIndexError: setindex! not defined for Base.CodeUnits{UInt8, String}
 [...]
 
 julia> Vector{UInt8}(x)

@@ -46,13 +46,78 @@ julia> ∑(2, 3)
 5
 ```
 
-## 参数传递行为
+## [参数传递行为](@id man-argument-passing)
 
-Julia 函数参数遵循有时称为 “pass-by-sharing” 的约定，这意味着变量在被传递给函数时其值并不会被复制。函数参数本身充当新的变量绑定（指向变量值的新地址），它们所指向的值与所传递变量的值完全相同。调用者可以看到对函数内可变值（如数组）的修改。这与 Scheme，大多数 Lisps，Python，Ruby 和 Perl 以及其他动态语言中的行为相同。
+Julia function arguments follow a convention sometimes called "pass-by-sharing", which means that
+values are not copied when they are passed to functions. Function arguments themselves act as
+new variable *bindings* (new "names" that can refer to values), much like
+[assignments](@ref man-assignment-expressions) `argument_name = argument_value`, so that the objects they refer to
+are identical to the passed values. Modifications to mutable values (such as `Array`s) made within
+a function will be visible to the caller. (This is the same behavior found in Scheme, most Lisps,
+Python, Ruby and Perl, among other dynamic languages.)
+
+For example, in the function
+```julia
+function f(x, y)
+    x[1] = 42    # mutates x
+    y = 7 + y    # new binding for y, no mutation
+    return y
+end
+```
+The statement `x[1] = 42` *mutates* the object `x`, and hence this change *will* be visible in the array passed
+by the caller for this argument.   On the other hand, the assignment `y = 7 + y` changes the *binding* ("name")
+`y` to refer to a new value `7 + y`, rather than mutating the *original* object referred to by `y`,
+and hence does *not* change the corresponding argument passed by the caller.   This can be seen if we call `f(x, y)`:
+```julia-repl
+julia> a = [4,5,6]
+3-element Vector{Int64}:
+ 4
+ 5
+ 6
+
+julia> b = 3
+3
+
+julia> f(a, b) # returns 7 + b == 10
+10
+
+julia> a  # a[1] is changed to 42 by f
+3-element Vector{Int64}:
+ 42
+  5
+  6
+
+julia> b  # not changed
+3
+```
+As a common convention in Julia (not a syntactic requirement), such a function would
+[typically be named `f!(x, y)`](@ref man-punctuation) rather than `f(x, y)`, as a visual reminder at
+the call site that at least one of the arguments (often the first one) is being mutated.
+
+!!! warning "Shared memory between arguments"
+    The behavior of a mutating function can be unexpected when a mutated argument shares memory with another argument, a situation known as aliasing (e.g. when one is a view of the other).
+    Unless the function docstring explicitly indicates that aliasing produces the expected result, it is the responsibility of the caller to ensure proper behavior on such inputs.
+
+## Argument-type declarations
+
+You can declare the types of function arguments by appending `::TypeName` to the argument name, as usual for [Type Declarations](@ref 类型声明) in Julia.
+For example, the following function computes [Fibonacci numbers](https://en.wikipedia.org/wiki/Fibonacci_number) recursively:
+```
+fib(n::Integer) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)
+```
+and the `::Integer` specification means that it will only be callable when `n` is a subtype of the [abstract](@ref man-abstract-types) `Integer` type.
+
+Argument-type declarations **normally have no impact on performance**: regardless of what argument types (if any) are declared, Julia compiles a specialized version of the function for the actual argument types passed by the caller.   For example, calling `fib(1)` will trigger the compilation of specialized version of `fib` optimized specifically for `Int` arguments, which is then re-used if `fib(7)` or `fib(15)` are called.  (There are rare exceptions when an argument-type declaration can trigger additional compiler specializations; see: [Be aware of when Julia avoids specializing](@ref).)  The most common reasons to declare argument types in Julia are, instead:
+
+* **Dispatch:** As explained in [Methods](@ref 方法), you can have different versions ("methods") of a function for different argument types, in which case the argument types are used to determine which implementation is called for which arguments.  For example, you might implement a completely different algorithm `fib(x::Number) = ...` that works for any `Number` type by using [Binet's formula](https://en.wikipedia.org/wiki/Fibonacci_number#Binet%27s_formula) to extend it to non-integer values.
+* **Correctness:** Type declarations can be useful if your function only returns correct results for certain argument types.  For example, if we omitted argument types and wrote `fib(n) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)`, then `fib(1.5)` would silently give us the nonsensical answer `1.0`.
+* **Clarity:** Type declarations can serve as a form of documentation about the expected arguments.
+
+However, it is a **common mistake to overly restrict the argument types**, which can unnecessarily limit the applicability of the function and prevent it from being re-used in circumstances you did not anticipate.    For example, the `fib(n::Integer)` function above works equally well for `Int` arguments (machine integers) and `BigInt` arbitrary-precision integers (see [BigFloats and BigInts](@ref BigFloats-and-BigInts)), which is especially useful because Fibonacci numbers grow exponentially rapidly and will quickly overflow any fixed-precision type like `Int` (see [溢出行为](@ref)).  If we had declared our function as `fib(n::Int)`, however, the application to `BigInt` would have been prevented for no reason.   In general, you should use the most general applicable abstract types for arguments, and **when in doubt, omit the argument types**.  You can always add argument-type specifications later if they become necessary, and you don't sacrifice performance or functionality by omitting them.
 
 ## 参数类型声明
 
-您可以通过将 `::TypeName` 附加到参数名称来声明函数参数的类型，就像 Julia 中的 [类型声明](@ref Type-Declarations) 一样。
+您可以通过将 `::TypeName` 附加到参数名称来声明函数参数的类型，就像 Julia 中的 [类型声明](@ref) 一样。
 例如，以下函数递归计算 [斐波那契数列](https://en.wikipedia.org/wiki/Fibonacci_number)：
 ```
 fib(n::Integer) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)
@@ -136,7 +201,7 @@ julia> typeof(g(1, 2))
 Int8
 ```
 
-这个函数将忽略 `x` 和 `y` 的类型，返回 `Int8` 类型的值。有关返回类型的更多信息，请参见[类型声明](@ref Type-Declarations)。
+这个函数将忽略 `x` 和 `y` 的类型，返回 `Int8` 类型的值。有关返回类型的更多信息，请参见[类型声明](@ref)。
 
 返回类型声明在 Julia 中**很少使用**：通常，你应该编写“类型稳定”的函数，Julia 的编译器可以在其中自动推断返回类型。更多信息请参阅 [性能提示](@ref man-performance-tips) 一章。
 
@@ -185,16 +250,20 @@ julia> f(1,2,3)
 
 有一些特殊的表达式对应的函数调用没有显示的函数名称，它们是：
 
-| 表达式        | 函数调用                   |
-|:----------------- |:----------------------- |
-| `[A B C ...]`     | [`hcat`](@ref)          |
-| `[A; B; C; ...]`  | [`vcat`](@ref)          |
-| `[A B; C D; ...]` | [`hvcat`](@ref)         |
-| `A'`              | [`adjoint`](@ref)       |
-| `A[i]`            | [`getindex`](@ref)      |
-| `A[i] = x`        | [`setindex!`](@ref)     |
-| `A.n`             | [`getproperty`](@ref Base.getproperty) |
-| `A.n = x`         | [`setproperty!`](@ref Base.setproperty!) |
+| 表达式                | 函数调用                 |
+|:--------------------- |:----------------------- |
+| `[A B C ...]`         | [`hcat`](@ref)          |
+| `[A; B; C; ...]`      | [`vcat`](@ref)          |
+| `[A B; C D; ...]`     | [`hvcat`](@ref)         |
+| `[A; B;; C; D;; ...]` | [`hvncat`](@ref)        |
+| `A'`                  | [`adjoint`](@ref)       |
+| `A[i]`                | [`getindex`](@ref)      |
+| `A[i] = x`            | [`setindex!`](@ref)     |
+| `A.n`                 | [`getproperty`](@ref Base.getproperty) |
+| `A.n = x`             | [`setproperty!`](@ref Base.setproperty!) |
+
+Note that expressions similar to `[A; B;; C; D;; ...]` but with more than two
+consecutive `;` also correspond to `hvncat` calls.
 
 ## [匿名函数](@id man-anonymous-functions)
 
@@ -249,7 +318,8 @@ end
 get(()->time(), dict, key)
 ```
 
-这里对 [`time`](@ref) 的调用，被包裹了它的一个无参数的匿名函数延迟了。该匿名函数只当 `dict` 缺少被请求的键时，才被调用。
+这里对 [`time`](@ref) 的调用，被包裹了它的一个无参数的匿名函数延迟了。
+只有当请求的键不在 `dict` 中时，才会调用该函数。
 
 ## 元组
 
@@ -288,11 +358,14 @@ julia> x.a
 2
 ```
 
-具名元组和元组十分类似，区别在于除了一般的下标语法（`x[1]`），还可以使用点运算符语法（`x.a`）通过元素的名字来访问它的元素。
+The fields of named tuples can be accessed by name using dot syntax (`x.a`) in
+addition to the regular indexing syntax (`x[1]` or `x[:a]`).
 
 ## [解构赋值和多返回值](@id destructuring-assignment)
 
-逗号分隔的变量列表（可选地用括号括起来）可以出现在赋值的左侧：右侧的值通过迭代并依次分配给每个变量来_解构_：
+A comma-separated list of variables (optionally wrapped in parentheses) can appear on the
+left side of an assignment: the value on the right side is _destructured_ by iterating
+over and assigning to each variable in turn:
 
 ```jldoctest
 julia> (a,b,c) = 1:3
@@ -355,6 +428,126 @@ julia> d
 4
 ```
 
+Other valid left-hand side expressions can be used as elements of the assignment list, which will call [`setindex!`](@ref) or [`setproperty!`](@ref), or recursively destructure individual elements of the iterator:
+
+```jldoctest
+julia> X = zeros(3);
+
+julia> X[1], (a,b) = (1, (2, 3))
+(1, (2, 3))
+
+julia> X
+3-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+
+julia> a
+2
+
+julia> b
+3
+```
+
+!!! compat "Julia 1.6"
+    `...` with assignment requires Julia 1.6
+
+If the last symbol in the assignment list is suffixed by `...` (known as _slurping_), then
+it will be assigned a collection or lazy iterator of the remaining elements of the
+right-hand side iterator:
+
+```jldoctest
+julia> a, b... = "hello"
+"hello"
+
+julia> a
+'h': ASCII/Unicode U+0068 (category Ll: Letter, lowercase)
+
+julia> b
+"ello"
+
+julia> a, b... = Iterators.map(abs2, 1:4)
+Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4)
+
+julia> a
+1
+
+julia> b
+Base.Iterators.Rest{Base.Generator{UnitRange{Int64}, typeof(abs2)}, Int64}(Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4), 1)
+```
+
+See [`Base.rest`](@ref) for details on the precise handling and customization for specific iterators.
+
+!!! compat "Julia 1.9"
+    `...` in non-final position of an assignment requires Julia 1.9
+
+Slurping in assignments can also occur in any other position. As opposed to slurping the end
+of a collection however, this will always be eager.
+
+```jldoctest
+julia> a, b..., c = 1:5
+1:5
+
+julia> a
+1
+
+julia> b
+3-element Vector{Int64}:
+ 2
+ 3
+ 4
+
+julia> c
+5
+
+julia> front..., tail = "Hi!"
+"Hi!"
+
+julia> front
+"Hi"
+
+julia> tail
+'!': ASCII/Unicode U+0021 (category Po: Punctuation, other)
+```
+
+This is implemented in terms of the function [`Base.split_rest`](@ref).
+
+Note that for variadic function definitions, slurping is still only allowed in final position.
+This does not apply to [single argument destructuring](@ref man-argument-destructuring) though,
+as that does not affect method dispatch:
+
+```jldoctest
+julia> f(x..., y) = x
+ERROR: syntax: invalid "..." on non-final argument
+Stacktrace:
+[...]
+
+julia> f((x..., y)) = x
+f (generic function with 1 method)
+
+julia> f((1, 2, 3))
+(1, 2)
+```
+
+## Property destructuring
+
+Instead of destructuring based on iteration, the right side of assignments can also be destructured using property names.
+This follows the syntax for NamedTuples, and works by assigning to each variable on the left a
+property of the right side of the assignment with the same name using `getproperty`:
+
+```jldoctest
+julia> (; b, a) = (a=1, b=2, c=3)
+(a = 1, b = 2, c = 3)
+
+julia> a
+1
+
+julia> b
+2
+```
+
+## [Argument destructuring](@id man-argument-destructuring)
+
 其他有效的左侧表达式可以用作赋值列表的元素，它们将调用 [`setindex!`](@ref) 或 [`setproperty!`](@ref)，或者递归地解构迭代器的各个元素：
 
 ```jldoctest
@@ -408,7 +601,7 @@ Base.Iterators.Rest{Base.Generator{UnitRange{Int64}, typeof(abs2)}, Int64}(Base.
 析构特性也可以被用在函数参数中。
 如果一个函数的参数被写成了元组形式 (如  `(x, y)`) 而不是简单的符号，那么一个赋值运算 `(x, y) = argument` 将会被默认插入：
 
-```julia
+```julia-repl
 julia> minmax(x, y) = (y < x) ? (y, x) : (x, y)
 
 julia> gap((min, max)) = max - min
@@ -419,7 +612,34 @@ julia> gap(minmax(10, 2))
 
 注意在定义函数 `gap` 时额外的括号。 没有它们，`gap` 函数将会是一个双参数函数，这个例子也会无法正常运行。
 
+Similarly, property destructuring can also be used for function arguments:
+
+```julia-repl
+julia> foo((; x, y)) = x + y
+foo (generic function with 1 method)
+
+julia> foo((x=1, y=2))
+3
+
+julia> struct A
+           x
+           y
+       end
+
+julia> foo(A(3, 4))
+7
+```
+
 对于匿名函数，解构单个元组需要一个额外的逗号：
+
+```
+julia> map(((x,y),) -> x + y, [(1,2), (3,4)])
+2-element Array{Int64,1}:
+ 3
+ 7
+```
+
+## Varargs Functions
 
 ```
 julia> map(((x,y),) -> x + y, [(1,2), (3,4)])
@@ -526,8 +746,13 @@ julia> args = [1,2,3]
 
 julia> baz(args...)
 ERROR: MethodError: no method matching baz(::Int64, ::Int64, ::Int64)
+
 Closest candidates are:
-  baz(::Any, ::Any) at none:1
+  baz(::Any, ::Any)
+   @ Main none:1
+
+Stacktrace:
+[...]
 ```
 
 正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。
@@ -536,32 +761,42 @@ Closest candidates are:
 
 在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，`Dates` 模块中的 [`Date(y, [m, d])`](@ref) 函数对于给定的年（year）`y`、月（mouth）`m`、日（data）`d` 构造了 `Date` 类型。但是，`m` 和 `d` 参数都是可选的，默认值都是 `1`。这行为可以简述为：
 
-```julia
-function Date(y::Int64, m::Int64=1, d::Int64=1)
-    err = validargs(Date, y, m, d)
-    err === nothing || throw(err)
-    return Date(UTD(totaldays(y, m, d)))
-end
+```jldoctest date_default_args
+julia> using Dates
+
+julia> function date(y::Int64, m::Int64=1, d::Int64=1)
+           err = Dates.validargs(Date, y, m, d)
+           err === nothing || throw(err)
+           return Date(Dates.UTD(Dates.totaldays(y, m, d)))
+       end
+date (generic function with 3 methods)
 ```
 
 注意，这个定义调用了 `Date` 函数的另一个方法，该方法带有一个 `UTInstant{Day}` 类型的参数。
 
 通过此定义，函数调用时可以带有一个、两个或三个参数，并且在只有一个或两个参数被指定时后，自动传递 `1` 为未指定参数值：
 
-```jldoctest
-julia> using Dates
-
-julia> Date(2000, 12, 12)
+```jldoctest date_default_args
+julia> date(2000, 12, 12)
 2000-12-12
 
-julia> Date(2000, 12)
+julia> date(2000, 12)
 2000-12-01
 
-julia> Date(2000)
+julia> date(2000)
 2000-01-01
 ```
 
-可选参数实际上只是一种方便的语法，用于编写多种具有不同数量参数的方法定义（请参阅 [可选参数和关键字的参数的注意事项](@ref)）。这可通过调用 `methods` 函数来检查我们的 `Date` 函数示例。
+可选参数实际上只是一种方便的语法，用于编写多种具有不同数量参数的方法定义（请参阅 [可选参数和关键字的参数的注意事项](@ref)）。
+这可通过调用 `methods` 函数来检查我们的 `date` 函数示例。
+
+```julia-repl
+julia> methods(date)
+# 3 methods for generic function "date":
+[1] date(y::Int64) in Main at REPL[1]:1
+[2] date(y::Int64, m::Int64) in Main at REPL[1]:1
+[3] date(y::Int64, m::Int64, d::Int64) in Main at REPL[1]:1
+```
 
 ## 关键字参数
 
@@ -605,7 +840,9 @@ function f(x; y=0, kwargs...)
 end
 ```
 
-在 `f` 中，`kwargs` 将是一个在命名元组上的不可变键值迭代器。 具名元组（以及带有`Symbol`键的字典）可以在调用中使用分号作为关键字参数传递，例如 `f(x, z=1; kwargs...)`。
+在 `f` 中，`kwargs` 将是一个在命名元组上的不可变键值迭代器。
+具名元组（以及带有`Symbol`键的字典, and other iterators yielding two-value collections with symbol as first values）
+可以在调用中使用分号作为关键字参数传递，例如 `f(x, z=1; kwargs...)`。
 
 如果一个关键字参数在方法定义中未指定默认值，那么它就是*必需的*：如果调用者没有为其赋值，那么将会抛出一个 [`UndefKeywordError`](@ref) 异常：
 ```julia
@@ -665,7 +902,12 @@ map([A, B, C]) do x
 end
 ```
 
-`do x` 语法创建一个带有参数 `x` 的匿名函数，并将其作为第一个参数传递给 [`map`](@ref)。 类似地，`do a,b` 将创建一个有两个参数的匿名函数。 请注意，`do (a,b)` 将创建一个单参数匿名函数，其参数是一个要解构的元组。 一个简单的 `do` 会声明接下来是一个形式为 `() -> ...` 的匿名函数。
+`do x` 语法创建一个带有参数 `x` 的匿名函数，并将其作为第一个参数传递给 [`map`](@ref)。
+类似地，`do a,b` 将创建一个有两个参数的匿名函数。
+请注意，`do (a,b)` 将创建一个单参数匿名函数，其参数是一个要解构的元组。
+Note that `do (a,b)` would create a one-argument anonymous function,
+whose argument is a tuple to be deconstructed. 
+一个简单的 `do` 会声明接下来是一个形式为 `() -> ...` 的匿名函数。
 
 这些参数如何初始化取决于「外部」函数；在这里，[`map`](@ref) 将会依次将 `x` 设置为 `A`、`B`、`C`，再分别调用调用匿名函数，正如在 `map(func, [A, B, C])` 语法中所发生的。
 
@@ -752,6 +994,19 @@ julia> ["a", "list", "of", "strings"] .|> [uppercase, reverse, titlecase, length
  7
 ```
 
+When combining pipes with anonymous functions, parentheses must be used if subsequent pipes are not to be parsed as part of the anonymous function's body. Compare:
+
+```jldoctest
+julia> 1:3 .|> (x -> x^2) |> sum |> sqrt
+3.7416573867739413
+
+julia> 1:3 .|> x -> x^2 |> sum |> sqrt
+3-element Vector{Float64}:
+ 1.0
+ 2.0
+ 3.0
+```
+
 ## [向量化函数的点语法](@id man-vectorized)
 
 在科学计算语言中，通常会有函数的「向量化」版本，它简单地将给定函数 `f(x)` 作用于数组 `A` 的每个元素，接着通过 `f(A)` 生成一个新数组。这种语法便于数据处理，但在其它语言中，向量化通常也是性能所需要的：如果循环很慢，函数的「向量化」版本可以调用由低级语言编写的、快速的库代码。在 Julia 中，向量化函数*不*是性能所必需的，实际上编写自己的循环通常也是有益的（请参阅 [Performance Tips](@ref man-performance-tips)），但它们仍然很方便。因此，*任何* Julia 函数 `f` 能够以元素方式作用于任何数组（或者其它集合），这通过语法 `f.(A)` 实现。例如，`sin` 可以作用于向量 `A` 中的所有元素，如下所示：
@@ -794,6 +1049,9 @@ julia> f.(A, B)
  33.0
 ```
 
+Keyword arguments are not broadcasted over, but are simply passed through to each call of
+the function.  For example, `round.(x, digits=3)` is equivalent to `broadcast(x -> round(x, digits=3), x)`.
+
 此外，*嵌套的* `f.(args...)` 调用会被*融合*到一个 `broadcast` 循环中。例如，`sin.(cos.(X))` 等价于 `broadcast(x -> sin(cos(x)), X)`，类似于 `[sin(cos(x)) for x in X]`：在 `X` 上只有一个循环，并且只为结果分配了一个数组。[ 相反，在典型的「向量化」语言中，`sin(cos(X))` 首先会为 `tmp=cos(X)` 分配第一个临时数组，然后在单独的循环中计算 `sin(tmp)`，再分配第二个数组。] 这种循环融合不是可能发生也可能不发生的编译器优化，只要遇到了嵌套的 `f.(args...)` 调用，它就是一个*语法保证*。技术上，一旦遇到「非点」函数调用，融合就会停止；例如，在 `sin.(sort(cos.(X)))` 中，由于插入的 `sort` 函数，`sin` 和 `cos` 无法被合并。
 
 最后，最大效率通常在向量化操作的输出数组被*预分配*时实现，这样重复调用就不会一次又一次地为结果分配新数组（请参阅 [输出预分配](@ref)）。一个方便的语法是 `X .= ...`，它等价于 `broadcast!(identity, X, ...)`，除了上面提到的，`broadcast!` 循环可与任何嵌套的「点」调用融合。例如，`X .= sin.(Y)` 等价于 `broadcast!(sin, X, Y)`，用 `sin.(Y)` in-place 覆盖 `X`。如果左边是数组索引表达式，例如 `X[2:end] .= sin.(Y)`，那就将 `broadcast!` 转换在一个 `view` 上，例如 `broadcast!(sin, view(X, 2:lastindex(X)), Y)`，这样左侧就被 in-place 更新了。
@@ -817,7 +1075,7 @@ julia> @. X = sin(cos(Y)) # equivalent to X .= sin.(cos.(Y))
 
 您也可以使用 [`|>`](@ref) 将点操作与函数链组合在一起，如本例所示：
 ```jldoctest
-julia> [1:5;] .|> [x->x^2, inv, x->2*x, -, isodd]
+julia> 1:5 .|> [x->x^2, inv, x->2*x, -, isodd]
 5-element Vector{Real}:
     1
     0.5

@@ -72,26 +72,28 @@ julia> pi
 π = 3.1415926535897...
 
 julia> pi = 3
-ERROR: cannot assign a value to variable MathConstants.pi from module Main
+ERROR: cannot assign a value to imported variable Base.pi from module Main
 
 julia> sqrt(100)
 10.0
 
 julia> sqrt = 4
-ERROR: cannot assign a value to variable Base.sqrt from module Main
+ERROR: cannot assign a value to imported variable Base.sqrt from module Main
 ```
 
 ## [合法的变量名](@id man-allowed-variable-names)
 
 变量名字必须以英文字母（A-Z 或 a-z）、下划线或编码大于 00A0 的 Unicode 字符的一个子集开头。
-具体来说指的是，[Unicode字符分类](http://www.fileformat.info/info/unicode/category/index.htm)中的
+具体来说指的是，[Unicode字符分类](https://www.fileformat.info/info/unicode/category/index.htm)中的
 Lu/Ll/Lt/Lm/Lo/Nl（字母）、Sc/So（货币和其他符号）以及一些其它像字母的符号（例如 Sm 类别数学符号中的一部分）。
 变量名的非首字符还允许使用惊叹号 `!`、数字（包括 0-9 和其他 Nd/No 类别中的 Unicode 字符）以及其它 Unicode 字符：变音符号和其他修改标记（Mn/Mc/Me/Sk 类别）、标点和连接符（Pc 类别）、引号和少许其他字符。
 
 像 `+` 这样的运算符也是合法的标识符，但是它们会被特别地解析。 在一些上下文中，运算符可以像变量一样使用，比如 `(+)` 表示加函数，语句 `(+) = f`会把它重新赋值。大部分 Unicode 中缀运算符（Sm 类别），像 `⊕`，会被解析成真正的中缀运算符，并且支持用户自定义方法（举个例子，你可以使用语句 `const ⊗ = kron `将 `⊗` 定义为中缀的 Kronecker 积）。 运算符也可以使用修改标记、引号和上标/下标进行加缀，例如 `+̂ₐ″` 被解析成一个与 `+` 具有相同优先级的中缀运算符。以下标/上标字母结尾的运算符与后续变量名之间需要一个空格。举个例子，如果 `+ᵃ` 是一个运算符，那么 `+ᵃx` 应该被写为`+ᵃ x`，以区分表达式 `+ ᵃx` ，其中 `ᵃx` 是变量名。
 
 
-一类特定的变量名是只包含下划线的变量名。这些标识符只能赋值，不能用于给其他变量赋值。严格来说，它们只能用作[左值](https://en.wikipedia.org/wiki/Value_(computer_science)#lrvalue) 而不能作[右值](https://en.wikipedia.org/wiki/R-value):
+一类特定的变量名是只包含下划线的变量名。这些标识符只能赋值，不能用于给其他变量赋值。
+这些标识符只能赋值，赋值后会立即丢弃，因此不能用于为其他变量赋值。
+严格来说，它们只能用作 [左值(`rvalues`)](https://en.wikipedia.org/wiki/Value_(computer_science)#Assignment:_l-values_and_r-values) 而不能作右值。
 
 ```julia-repl
 julia> x, ___ = size([2 2; 1 1])
@@ -99,9 +101,12 @@ julia> x, ___ = size([2 2; 1 1])
 
 julia> y = ___
 ERROR: syntax: all-underscore identifier used as rvalue
+
+julia> println(___)
+ERROR: syntax: all-underscore identifier used as rvalue
 ```
 
-唯一明确禁止的变量名称是内置[关键字](@ref Keywords)的名称：
+The only explicitly disallowed names for variables are the names of the built-in [Keywords](@ref Keywords):
 
 ```julia-repl
 julia> else = false
@@ -111,7 +116,90 @@ julia> try = "No"
 ERROR: syntax: unexpected "="
 ```
 
-某些 Unicode 字符被认为是等效的标识符。不同的输入 Unicode 组合字符的方法（例如：重音）被视为等价的（Julia 标识符采用 [NFC](http://www.macchiato.com/unicode/nfc-faq) 标准）。Julia 还加入了一些非标准的等价字符，用于在视觉上相似且易于通过某些输入法输入的字符。Unicode 字符 `ɛ` (U+025B: Latin small letter open e) 和 `µ` (U+00B5: micro sign) 被视为等同于相应的希腊字母。点 `·` (U+00B7) 和希腊字符[间断](https://en.wikipedia.org/wiki/Interpunct) `·` (U+0387) 都被当作数学上的点积运算符 `⋅` (U+22C5)。减号 `−` (U+2212) 与连接号 `-` (U+002D) 也被视作相同的符号。
+Some Unicode characters are considered to be equivalent in identifiers.
+Different ways of entering Unicode combining characters (e.g., accents)
+are treated as equivalent (specifically, Julia identifiers are [NFC](https://en.wikipedia.org/wiki/Unicode_equivalence).
+Julia also includes a few non-standard equivalences for characters that are
+visually similar and are easily entered by some input methods. The Unicode
+characters `ɛ` (U+025B: Latin small letter open e) and `µ` (U+00B5: micro sign)
+are treated as equivalent to the corresponding Greek letters. The middle dot
+`·` (U+00B7) and the Greek
+[interpunct](https://en.wikipedia.org/wiki/Interpunct) `·` (U+0387) are both
+treated as the mathematical dot operator `⋅` (U+22C5).
+The minus sign `−` (U+2212) is treated as equivalent to the hyphen-minus sign `-` (U+002D).
+
+## [Assignment expressions and assignment versus mutation](@id man-assignment-expressions)
+
+An assignment `variable = value` "binds" the name `variable` to the `value` computed
+on the right-hand side, and the whole assignment is treated by Julia as an expression
+equal to the right-hand-side `value`.  This means that assignments can be *chained*
+(the same `value` assigned to multiple variables with `variable1 = variable2 = value`)
+or used in other expressions, and is also why their result is shown in the REPL as
+the value of the right-hand side.  (In general, the REPL displays the value of whatever
+expression you evaluate.)  For example, here the value `4` of `b = 2+2` is
+used in another arithmetic operation and assignment:
+
+```jldoctest
+julia> a = (b = 2+2) + 3
+7
+
+julia> a
+7
+
+julia> b
+4
+```
+
+A common confusion is the distinction between *assignment* (giving a new "name" to a value)
+and *mutation* (changing a value).  If you run `a = 2` followed by `a = 3`, you have changed
+the "name" `a` to refer to a new value `3` … you haven't changed the number `2`, so `2+2`
+will still give `4` and not `6`!   This distinction becomes more clear when dealing with
+*mutable* types like [arrays](@ref lib-arrays), whose contents *can* be changed:
+
+```jldoctest mutation_vs_rebind
+julia> a = [1,2,3] # an array of 3 integers
+3-element Vector{Int64}:
+ 1
+ 2
+ 3
+
+julia> b = a   # both b and a are names for the same array!
+3-element Vector{Int64}:
+ 1
+ 2
+ 3
+```
+
+Here, the line `b = a` does *not* make a copy of the array `a`, it simply binds the name
+`b` to the *same* array `a`: both `b` and `a` "point" to one array `[1,2,3]` in memory.
+In contrast, an assignment `a[i] = value` *changes* the *contents* of the array, and the
+modified array will be visible through both the names `a` and `b`:
+
+```jldoctest mutation_vs_rebind
+julia> a[1] = 42     # change the first element
+42
+
+julia> a = 3.14159   # a is now the name of a different object
+3.14159
+
+julia> b   # b refers to the original array object, which has been mutated
+3-element Vector{Int64}:
+ 42
+  2
+  3
+```
+That is, `a[i] = value` (an alias for [`setindex!`](@ref)) *mutates* an existing array object
+in memory, accessible via either `a` or `b`.  Subsequently setting `a = 3.14159`
+does not change this array, it simply binds `a` to a different object; the array is still
+accessible via `b`. The other common syntax to mutate an existing object is
+`a.field = value` (an alias for [`setproperty!`](@ref)), which can be used to change
+a [`mutable struct`](@ref).
+
+When you call a [function](@ref man-functions) in Julia, it behaves as if you *assigned*
+the argument values to new variable names corresponding to the function arguments, as discussed
+in [Argument-Passing Behavior](@ref man-argument-passing).  (By [convention](@ref man-punctuation),
+functions that mutate one or more of their arguments have names ending with `!`.)
+
 
 ## 命名规范
 

@@ -5,19 +5,39 @@ Base.Threads.@threads
 Base.Threads.foreach
 Base.Threads.@spawn
 Base.Threads.threadid
+Base.Threads.maxthreadid
 Base.Threads.nthreads
+Base.Threads.threadpool
+Base.Threads.nthreadpools
+Base.Threads.threadpoolsize
+Base.Threads.ngcthreads
 ```
 
-## 同步
-
-```@docs
-Base.Threads.Condition
-Base.Threads.Event
-```
-
-另见 [同步](@ref lib-task-sync) 。
+See also [Multi-Threading](@ref man-multithreading).
 
 ## 原子操作
+
+```@docs
+Base.@atomic
+Base.@atomicswap
+Base.@atomicreplace
+```
+
+!!! note
+
+    The following APIs are fairly primitive, and will likely be exposed through an `unsafe_*`-like wrapper.
+
+```
+Core.Intrinsics.atomic_pointerref(pointer::Ptr{T}, order::Symbol) --> T
+Core.Intrinsics.atomic_pointerset(pointer::Ptr{T}, new::T, order::Symbol) --> pointer
+Core.Intrinsics.atomic_pointerswap(pointer::Ptr{T}, new::T, order::Symbol) --> old
+Core.Intrinsics.atomic_pointermodify(pointer::Ptr{T}, function::(old::T,arg::S)->T, arg::S, order::Symbol) --> old
+Core.Intrinsics.atomic_pointerreplace(pointer::Ptr{T}, expected::Any, new::T, success_order::Symbol, failure_order::Symbol) --> (old, cmp)
+```
+
+```@docs
+atomic
+```
 
 ```@docs
 Base.@atomic
@@ -56,7 +76,7 @@ Base.Threads.atomic_min!
 Base.Threads.atomic_fence
 ```
 
-## ccall using a threadpool (Experimental)
+## ccall using a libuv threadpool (Experimental)
 
 ```@docs
 Base.@threadcall

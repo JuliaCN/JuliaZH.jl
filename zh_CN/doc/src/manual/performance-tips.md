@@ -8,6 +8,14 @@
 
 函数的使用不仅对性能很重要：函数更可重用和可测试，并阐明正在执行哪些步骤以及它们的输入和输出是什么，[编写函数，而不仅仅是脚本]（@ref）也是 Julia 的风格指南。
 
+The functions should take arguments, instead of operating directly on global variables, see the next point.
+
+## Avoid untyped global variables
+
+The value of an untyped global variable might change at any point, possibly leading to a change of its type. This makes
+it difficult for the compiler to optimize code using global variables. This also applies to type-valued variables,
+i.e. type aliases on the global level. Variables should be local, or passed as arguments to functions, whenever possible.
+
 函数应该接收参数，而不是直接对全局变量进行操作，请参阅下一点。
 
 ## 避免全局变量
@@ -21,8 +29,9 @@
 const DEFAULT_VAL = 0
 ```
 
-对于非常量的全局变量可以通过在使用的时候标注它们的类型来优化。
+If a global is known to always be of the same type, [the type should be annotated](@ref man-typed-globals).
 
+对于非常量的全局变量可以通过在使用的时候标注它们的类型来优化。
 ```julia
 global x = rand(1000)
 
@@ -70,19 +79,32 @@ julia> function sum_global()
        end;
 
 julia> @time sum_global()
-  0.010414 seconds (9.07 k allocations: 373.448 KiB, 98.40% compilation time)
-493.6199223951192
+  0.011539 seconds (9.08 k allocations: 373.386 KiB, 98.69% compilation time)
+523.0007221951678
 
 julia> @time sum_global()
-  0.000108 seconds (3.49 k allocations: 70.156 KiB)
-493.6199223951192
+  0.000091 seconds (3.49 k allocations: 70.156 KiB)
+523.0007221951678
 ```
 
-在第一次调用（`@time sum_global()`）时，函数被编译。 （如果不在此会话中使用 [`@time`](@ref)，它还会编译计时所需的函数。）你不用把此次运行的结果放在心上。对于第二次运行，请注意，除了报告时间外，它还表明分配了大量内存。 我们在这里只是计算 64 位浮点数向量中所有元素的总和，因此不需要分配内存（至少不是在堆上，这就是 `@time` 报告的内容）。
+在第一次调用（`@time sum_global()`）时，函数被编译。
+（如果不在此会话中使用 [`@time`](@ref)，它还会编译计时所需的函数）
+你不用把此次运行的结果放在心上。对于第二次运行，请注意，除了报告时间外，它还表明分配了大量内存。
+我们在这里只是计算 64 位浮点数向量中所有元素的总和，因此不需要分配（堆）内存
+
+We should clarify that what `@time` reports is specifically *heap* allocations, which are typically needed for either
+mutable objects or for creating/growing variable-sized containers (such as `Array` or `Dict`, strings, or "type-unstable"
+objects whose type is only known at runtime).  Allocating (or deallocating) such blocks of memory may require an expensive
+system call (e.g. via `malloc` in C), and they must be tracked for garbage collection.  In contrast, immutable values like
+numbers (except bignums), tuples, and immutable `struct`s can be stored much more cheaply, e.g. in stack or CPU-register
+memory, so one doesn’t typically worry about the performance cost of "allocating" them.
 
 预料之外的内存分配几乎总是表示你的代码存在问题，通常是类型稳定性问题或创建了许多小的临时数组。 因此，除了分配本身之外，你的函数的代码很可能远非最优。请认真对待此类迹象并遵循以下建议。
 
-如果我们改为将 `x` 作为参数传递给函数，它不再分配内存（下面报告的分配是由于在全局范围内运行 `@time` 宏）并且在第一次调用后明显更快：
+In this particular case, the memory allocation is due to the usage of a type-unstable global variable `x`,
+so if we instead pass `x` as an argument to the function it no longer allocates memory
+(the remaining allocation reported below is due to running the `@time` macro in global scope)
+and is significantly faster after the first call:
 
 ```jldoctest sumarg; setup = :(using Random; Random.seed!(1234)), filter = r"[0-9\.]+ seconds \(.*?\)"
 julia> x = rand(1000);
@@ -96,12 +118,12 @@ julia> function sum_arg(x)
        end;
 
 julia> @time sum_arg(x)
-  0.007971 seconds (3.96 k allocations: 200.171 KiB, 99.83% compilation time)
-493.6199223951192
+  0.007551 seconds (3.98 k allocations: 200.548 KiB, 99.77% compilation time)
+523.0007221951678
 
 julia> @time sum_arg(x)
-  0.000003 seconds (1 allocation: 16 bytes)
-493.6199223951192
+  0.000006 seconds (1 allocation: 16 bytes)
+523.0007221951678
 ```
 
 看到的 1 allocation 来自在全局范围内运行 `@time` 宏本身。 如果我们改为在函数中运行计时，我们可以看到确实没有执行任何分配：
@@ -110,11 +132,11 @@ julia> @time sum_arg(x)
 julia> time_sum(x) = @time sum_arg(x);
 
 julia> time_sum(x)
-  0.000001 seconds
-493.6199223951192
+  0.000002 seconds
+523.0007221951678
 ```
 
-在某些情况下，你的函数可能需要将分配内存作为其操作的一部分，这比上面的简单例子复杂的多。 在这种情况下，请考虑使用下面的 [工具](@ref tools) 之一来诊断问题，或者编写一个将分配内存与算法方面分开的函数版本（请参阅 [输出预分配](@ref Pre-allocating outputs)）。
+在某些情况下，你的函数可能需要将分配内存作为其操作的一部分，这比上面的简单例子复杂的多。 在这种情况下，请考虑使用下面的 [工具](@ref tools) 之一来诊断问题，或者编写一个将分配内存与算法方面分开的函数版本（请参阅 [输出预分配](@ref)）。
 
 
 !!! note
@@ -163,7 +185,7 @@ julia> push!(a, 1); push!(a, 2.0); push!(a,  π)
 
 如果无法避免使用抽象值类型的容器，有时最好使用`Any`参数化以避免运行时类型检查。 例如。 `IdDict{Any, Any}` 的性能优于 `IdDict{Type, Vector}`。
 
-也请参见在[参数类型](@ref)下的讨论。
+也请参见在[参数类型](@ref Parametric-Types)下的讨论。
 
 ## 类型声明
 
@@ -287,6 +309,14 @@ code_llvm(func, Tuple{MyType{AbstractFloat}})
 
 由于长度的原因，代码的结果没有在这里显示出来，但是你可能会希望自己去验证这一点。因为在第一种情况中，类型被完全指定了，在运行时，编译器不需要生成任何代码来决定类型。这就带来了更短和更快的代码。
 
+One should also keep in mind that not-fully-parameterized types behave like abstract types. For example, even though a fully specified `Array{T,n}` is concrete, `Array` itself with no parameters given is not concrete:
+
+```jldoctest myambig3
+julia> !isconcretetype(Array), !isabstracttype(Array), isstructtype(Array), !isconcretetype(Array{Int}), isconcretetype(Array{Int,1})
+(true, true, true, true, true)
+```
+In this case, it would be better to avoid declaring `MyType` with a field `a::Array` and instead declare the field as `a::Array{T,N}` or as `a::A`, where `{T,N}` or `A` are parameters of `MyType`.
+
 ### 避免使用带抽象容器的字段
 
 上面的做法同样也适用于容器的类型：
@@ -298,6 +328,10 @@ julia> struct MySimpleContainer{A<:AbstractVector}
 
 julia> struct MyAmbiguousContainer{T}
            a::AbstractVector{T}
+       end
+
+julia> struct MyAlsoAmbiguousContainer
+           a::Array
        end
 ```
 
@@ -323,6 +357,17 @@ julia> b = MyAmbiguousContainer([1:3;]);
 
 julia> typeof(b)
 MyAmbiguousContainer{Int64}
+
+julia> d = MyAlsoAmbiguousContainer(1:3);
+
+julia> typeof(d), typeof(d.a)
+(MyAlsoAmbiguousContainer, Vector{Int64})
+
+julia> d = MyAlsoAmbiguousContainer(1:1.0:3);
+
+julia> typeof(d), typeof(d.a)
+(MyAlsoAmbiguousContainer, Vector{Float64})
+
 ```
 
 对于 `MySimpleContainer` 来说，它被它的类型和参数完全确定了，因此编译器能够生成优化过的代码。在大多数实例中，这点能够实现。
@@ -405,7 +450,10 @@ function nr(a, prec)
 end
 ```
 
-`c` 的注释会损害性能。要编写涉及在运行时构造类型的高性能代码，请使用下面讨论的 [函数障碍技巧](@ref kernel-functions)，并确保构造的类型出现在内核函数的参数类型中，以便内核操作由编译器合理地特例化。例如，在上面的代码片段中，一旦构建了 `b`，它就可以传递给另一个函数 `k`，即内核。 例如，如果函数 `k` 将 `b` 声明为类型为 `Complex{T}` 的参数，其中 `T` 是一个类型参数，那么出现在`k`的赋值语句中的类型注释的形式：
+`c` 的注释会损害性能。要编写涉及在运行时构造类型的高性能代码，请使用下面讨论的 [函数障碍技巧](@ref kernel-functions)，
+并确保构造的类型出现在内核函数的参数类型中，以便内核操作由编译器合理地 [特例化](@ref man-method-specializations)。
+例如，在上面的代码片段中，一旦构建了 `b`，它就可以传递给另一个函数 `k`，即内核。
+例如，如果函数 `k` 将 `b` 声明为类型为 `Complex{T}` 的参数，其中 `T` 是一个类型参数，那么出现在`k`的赋值语句中的类型注释的形式：
 
 ```julia
 c = (b + 1.0f0)::Complex{T}
@@ -465,7 +513,9 @@ g_vararg(x::Vararg{Int, N}) where {N} = tuple(x...)
 h_vararg(x::Vararg{Any, N}) where {N} = tuple(x...)
 ```
 
-请注意， [`@code_typed`](@ref) 和你的朋友给你的始终是特例化的代码，即使 Julia 通常不会特例化该方法调用。如果要查看更改参数类型时是否生成特例化，则需要检查 [method internals](@ref ast-lowered-method)，即是否 `(@which f(...)).specializations` 包含相关参数的特例化。
+请注意， [`@code_typed`](@ref) 和你的朋友给你的始终是特例化的代码，即使 Julia 通常不会特例化该方法调用。
+如果要查看更改参数类型时是否生成特例化，则需要检查 [method internals](@ref ast-lowered-method)，
+即是否 `Base.specializations(@which f(...))` 包含相关参数的特例化。
 
 ## 将函数拆分为多个定义
 
@@ -490,8 +540,8 @@ end
 这可以更简洁有效地写成：
 
 ```julia
-norm(x::Vector) = sqrt(real(dot(x, x)))
-norm(A::Matrix) = maximum(svdvals(A))
+mynorm(x::Vector) = sqrt(real(dot(x, x)))
+mynorm(A::Matrix) = maximum(svdvals(A))
 ```
 
 然而，应该注意的是，编译器会十分高效地优化掉编写得如同 `mynorm` 例子的代码中的死分支。
@@ -614,7 +664,7 @@ julia> array3(5.0, 2)
 
 这确实有用，但是（你可以自己使用 `@code_warntype array3(5.0, 2)` 来验证）问题是输出地类型不能被推断出来：参数 `N` 是一个 `Int` 类型的**值**，而且类型推断不会（也不能）提前预测它的值。这意味着使用这个函数的结果的代码在每次获取 `A` 时都不得不保守地检查其类型；这样的代码将会是非常缓慢的。
 
-现在，解决此类问题的一种很好的方法是使用 [函数障碍技巧](@ref kernel-functions)。 但是，在某些情况下，你可能希望完全消除类型不稳定性。 在这种情况下，一种方法是将维度作为参数传递，例如通过 `Val{T}()`（参见 ["Value types"](@ref)）：
+现在，解决此类问题的一种很好的方法是使用 [函数障碍技巧](@ref kernel-functions)。 但是，在某些情况下，你可能希望完全消除类型不稳定性。 在这种情况下，一种方法是将维度作为参数传递，例如通过 `Val{T}()`（参见 [值类型](@ref)）：
 
 ```jldoctest
 julia> function array3(fillval, ::Val{N}) where N
@@ -668,10 +718,9 @@ end
 当存在以下任一情况，这可能是值得做的：
 
   * 你需要对每个 `Car` 进行 CPU 密集型处理，如果你在编译时知道 `Make` 和 `Model`，并且将使用的不同`Make`或`Model`的总数不太大，则效率会大大提高。
-     
-     
+
   * 你需要处理相同类型的 `Car` 的同类列表，因此可以将它们全部存储在一个数组`{Car{:Honda,:Accord},N}` 中。
-     
+
 
 当后者成立时，处理此类同型数组的函数可以高效地特例化：Julia 预先知道每个元素的类型（容器中的所有对象都具有相同的具体类型），因此当函数被编译时， Julia 可以“查找”正确的方法调用（不需要在运行时检查），从而产生有效的代码来处理整个列表。
 
@@ -757,7 +806,7 @@ copy_row_col: 1.721531501
 
 请注意，`copy_cols` 比 `copy_rows` 快得多。这与预料的一致，因为 `copy_cols` 尊重 `Matrix` 基于列的内存布局。另外，`copy_col_row` 比 `copy_row_col` 快得多，因为它遵循我们的经验法则，即切片表达式中出现的第一个元素应该与最内层循环耦合。
 
-## [输出预分配](@id Pre-allocating-outputs)
+## 输出预分配
 
 如果函数返回 `Array` 或其它复杂类型，则可能需要分配内存。不幸的是，内存分配及其反面垃圾收集通常是很大的瓶颈。
 
@@ -824,7 +873,7 @@ Julia 有特殊的[点语法](@ref man-vectorized)，它可以将任何标量函
 ```jldoctest dotfuse
 julia> f(x) = 3x.^2 + 4x + 7x.^3;
 
-julia> fdot(x) = @. 3x^2 + 4x + 7x^3 # equivalent to 3 .* x.^2 .+ 4 .* x .+ 7 .* x.^3;
+julia> fdot(x) = @. 3x^2 + 4x + 7x^3; # equivalent to 3 .* x.^2 .+ 4 .* x .+ 7 .* x.^3
 ```
 
 `f` 和 `fdot` 都做相同的计算。但是，`fdot`（在 [`@.`](@ref @__dot__) 宏的帮助下定义）在作用于数组时明显更快：
@@ -842,7 +891,12 @@ julia> @time f.(x);
   0.002626 seconds (8 allocations: 7.630 MiB)
 ```
 
-也就是说，`fdot(x)` 的速度是 `f(x)` 的 10 倍，分配的内存是 `f(x)` 的 1/6，因为 f(x) 中的每个 `*` 和 `+` 操作都会分配一个新的临时数组并在单独的循环中执行。 （当然，如果你只做 `f.(x)` 那么在这个例子中它和 `fdot(x)` 一样快，但在许多情况下，只在表达式中写一些点比为每个向量化操作定义单独的函数更方便。）
+That is, `fdot(x)` is ten times faster and allocates 1/6 the
+memory of `f(x)`, because each `*` and `+` operation in `f(x)` allocates
+a new temporary array and executes in a separate loop. In this example
+`f.(x)` is as fast as `fdot(x)` but in many contexts it is more
+convenient to sprinkle some dots in your expressions than to
+define a separate function for each vectorized operation.
 
 ## [考虑对切片使用视图](@id man-performance-views)
 
@@ -868,37 +922,40 @@ julia> @time fview(x);
 
 ## 复制数据不总是坏的
 
-数组被连续地存储在内存中，这使其可被 CPU 向量化，并且会由于缓存减少内存访问。这与建议以列序优先方式访问数组的原因相同（请参见上文）。由于不按顺序访问内存，无规律的访问方式和不连续的视图可能会大大减慢数组上的计算速度。
+数组被连续地存储在内存中，这使其可被 CPU 向量化，并且会由于缓存减少内存访问。
+这与建议以列序优先方式访问数组的原因相同（请参见上文）。
+由于不按顺序访问内存，无规律的访问方式和不连续的视图可能会大大减慢数组上的计算速度。
 
-在对无规律访问的数据进行操作前，将其复制到连续的数组中可能带来巨大的加速，正如下例所示。其中，矩阵和向量在相乘前会访问其 800,000 个已被随机混洗的索引处的值。将视图复制到普通数组会加速乘法，即使考虑了复制操作的成本。
+在对无规律访问的数据进行重复访问之前，将其复制到连续的数组中可能带来巨大的加速，正如下例所示。
+其中，矩阵和向量在相乘前会访问已被随机混洗的索引处的值。
+即使增加了复制和分配的成本，复制到普通数组中也能加快乘法运算速度。
 
 ```julia-repl
 julia> using Random
 
-julia> x = randn(1_000_000);
+julia> A = randn(3000, 3000);
 
-julia> inds = shuffle(1:1_000_000)[1:800000];
+julia> x = randn(2000);
 
-julia> A = randn(50, 1_000_000);
+julia> inds = shuffle(1:3000)[1:2000];
 
-julia> xtmp = zeros(800_000);
-
-julia> Atmp = zeros(50, 800_000);
-
-julia> @time sum(view(A, :, inds) * view(x, inds))
-  0.412156 seconds (14 allocations: 960 bytes)
--4256.759568345458
-
-julia> @time begin
-           copyto!(xtmp, view(x, inds))
-           copyto!(Atmp, view(A, :, inds))
-           sum(Atmp * xtmp)
+julia> function iterated_neural_network(A, x, depth)
+           for _ in 1:depth
+               x .= max.(0, A * x)
+           end
+           argmax(x)
        end
-  0.285923 seconds (14 allocations: 960 bytes)
--4256.759568345134
+
+julia> @time iterated_neural_network(view(A, inds, inds), x, 10)
+  0.324903 seconds (12 allocations: 157.562 KiB)
+1569
+
+julia> @time iterated_neural_network(A[inds, inds], x, 10)
+  0.054576 seconds (13 allocations: 30.671 MiB, 13.33% gc time)
+1569
 ```
 
-倘若副本本身的内存足够大，那么将视图复制到数组的成本可能远远超过在连续数组上执行矩阵乘法所带来的加速。
+只要有足够的内存，将视图复制到数组的成本，就会被在连续数组上进行重复矩阵乘法所带来的加速所抵消。
 
 ## 使用 StaticArrays.jl 进行小型固定大小的向量/矩阵运算
 
@@ -1208,11 +1265,13 @@ julia> function f(x)
        end;
 
 julia> @code_warntype f(3.2)
-Variables
+MethodInstance for f(::Float64)
+  from f(x) @ Main REPL[9]:1
+Arguments
   #self#::Core.Const(f)
   x::Float64
-  y::UNION{FLOAT64, INT64}
-
+Locals
+  y::Union{Float64, Int64}
 Body::Float64
 1 ─      (y = Main.pos(x))
 │   %2 = (y * x)::Float64
@@ -1223,30 +1282,33 @@ Body::Float64
 
 理解 [`@code_warntype`](@ref) 的输出，就像理解它的同类工具 [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_llvm`](@ ref) 和 [`@code_native`](@ref) 一样需要一些练习。你的代码以在生成编译机器代码的过程中经过大量摘要的形式呈现。大多数表达式都由类型注释，由 `::T` 表示（例如，其中 `T` 可能是 [`Float64`](@ref)）。 [`@code_warntype`](@ref) 最大的特点就是非具体类型用红色显示； 由于本文档是用Markdown 编写的，没有颜色，所以本文档中红色文字用大写表示。
 
-在顶部，该函数类型推导后的返回类型显示为 `Body::Float64`。下一行以 Julia 的 SSA IR 形式表示了 `f` 的主体。被数字标记的方块表示代码中（通过 `goto`）跳转的目标。查看主体，你会看到首先调用了 `pos`，其返回值经类型推导为 `Union` 类型 `UNION{FLOAT64, INT64}` 并以大写字母显示，因为它是非具体类型。这意味着我们无法根据输入类型知道 `pos` 的确切返回类型。但是，无论 `y` 是 `Float64` 还是 `Int64`，`y*x` 的结果都是 `Float64`。最终的结果是 `f(x::Float64)` 在其输出中不会是类型不稳定的，即使有些中间计算是类型不稳定的。
+在顶部，该函数类型推导后的返回类型显示为 `Body::Float64`。下一行以 Julia 的 SSA IR 形式表示了 `f` 的主体。
+被数字标记的方块表示代码中（通过 `goto`）跳转的目标。
+查看主体，你会看到首先调用了 `pos`，其返回值经类型推导为 `Union` 类型 `Union{Float64, Int64}` 并以大写字母显示，因为它是非具体类型。
+这意味着我们无法根据输入类型知道 `pos` 的确切返回类型。
+但是，无论 `y` 是 `Float64` 还是 `Int64`，`y*x` 的结果都是 `Float64`。
+最终的结果是 `f(x::Float64)` 在其输出中不会是类型不稳定的，即使有些中间计算是类型不稳定的。
 
 如何使用这些信息取决于你。显然，最好将 `pos` 修改为类型稳定的：如果这样做，`f` 中的所有变量都是具体的，其性能将是最佳的。但是，在某些情况下，这种*短暂的*类型不稳定性可能无关紧要：例如，如果 `pos` 从不单独使用，那么 `f` 的输出（对于 [`Float64`](@ref) 输入）是类型稳定的这一事实将保护之后的代码免受类型不稳定性的传播影响。这与类型不稳定性难以或不可能修复的情况密切相关。在这些情况下，上面的建议（例如，添加类型注释并/或分解函数）是你控制类型不稳定性的「损害」的最佳工具。另请注意，即使是 Julia Base 也有类型不稳定的函数。例如，函数 [`findfirst`](@ref) 如果找到键则返回数组索引，如果没有找到键则返回 `nothing`，这是明显的类型不稳定性。为了更易于找到可能很重要的类型不稳定性，包含 `missing` 或 `nothing` 的 `Union` 会用黄色着重显示，而不是用红色。
 
 以下示例可以帮助你解释被标记为包含非叶类型的表达式：
 
-  * 函数体以 `Body::UNION{T1,T2})` 开头
+  * 函数体以 `Body::Union{T1,T2})` 开头
       * 解释：函数具有不稳定返回类型
       * 建议：使返回值类型稳定，即使你必须对其进行类型注释
 
-  * `invoke Main.g(%%x::Int64)::UNION{FLOAT64, INT64}`
+  * `invoke Main.g(%%x::Int64)::Union{Float64, Int64}`
       * 解释：调用类型不稳定的函数 `g`。
       * 建议：修改该函数，或在必要时对其返回值进行类型注释
 
-  * `invoke Base.getindex(%%x::Array{Any,1}, 1::Int64)::ANY`
+  * `invoke Base.getindex(%%x::Array{Any,1}, 1::Int64)::Any`
       * 解释：访问缺乏类型信息的数组的元素
       * 建议：使用具有更佳定义的类型的数组，或在必要时对访问的单个元素进行类型注释
-         
 
-  * `Base.getfield(%%x, :(:data))::ARRAY{FLOAT64,N} WHERE N`
+  * `Base.getfield(%%x, :(:data))::Array{Float64,N} where N`
       * 解释：获取一个非叶子类型的字段。 在这种情况下，`x` 的类型，比如说 `ArrayContainer`，有一个字段 `data::Array{T}`。 但是 `Array` 也需要维度 `N` 作为具体类型。
-         
       * 建议：使用类似于 `Array{T,3}` 或 `Array{T,N}` 的具体类型，其中的 `N` 现在是 `ArrayContainer` 的参数
-         
+
 
 ## [被捕获变量的性能](@id man-performance-captured)
 
@@ -1292,4 +1354,40 @@ function abmult3(r::Int)
     return f
 end
 ```
-`let` 代码块创建了一个新的变量 `r`，它的作用域只是内部函数。第二种技术在捕获变量存在时完全恢复了语言性能。请注意，这是编译器的一个快速发展的方面，未来的版本可能不需要依靠这种程度的程序员注释来获得性能。与此同时，一些用户提供的包（如 [FastClosures](https://github.com/c42f/FastClosures.jl)）会自动插入像在 `abmult3` 中那样的 `let` 语句。
+The `let` block creates a new variable `r` whose scope is only the
+inner function. The second technique recovers full language performance
+in the presence of captured variables. Note that this is a rapidly
+evolving aspect of the compiler, and it is likely that future releases
+will not require this degree of programmer annotation to attain performance.
+In the mean time, some user-contributed packages like
+[FastClosures](https://github.com/c42f/FastClosures.jl) automate the
+insertion of `let` statements as in `abmult3`.
+
+## [Multithreading and linear algebra](@id man-multithreading-linear-algebra)
+
+This section applies to multithreaded Julia code which, in each thread, performs linear algebra operations.
+Indeed, these linear algebra operations involve BLAS / LAPACK calls, which are themselves multithreaded.
+In this case, one must ensure that cores aren't oversubscribed due to the two different types of multithreading.
+
+Julia compiles and uses its own copy of OpenBLAS for linear algebra, whose number of threads is controlled by the environment variable `OPENBLAS_NUM_THREADS`.
+It can either be set as a command line option when launching Julia, or modified during the Julia session with `BLAS.set_num_threads(N)` (the submodule `BLAS` is exported by `using LinearAlgebra`).
+Its current value can be accessed with `BLAS.get_num_threads()`.
+
+When the user does not specify anything, Julia tries to choose a reasonable value for the number of OpenBLAS threads (e.g. based on the platform, the Julia version, etc.).
+However, it is generally recommended to check and set the value manually.
+The OpenBLAS behavior is as follows:
+
+* If `OPENBLAS_NUM_THREADS=1`, OpenBLAS uses the calling Julia thread(s), i.e. it "lives in" the Julia thread that runs the computation.
+* If `OPENBLAS_NUM_THREADS=N>1`, OpenBLAS creates and manages its own pool of threads (`N` in total). There is just one OpenBLAS thread pool shared among all Julia threads.
+
+When you start Julia in multithreaded mode with `JULIA_NUM_THREADS=X`, it is generally recommended to set `OPENBLAS_NUM_THREADS=1`.
+Given the behavior described above, increasing the number of BLAS threads to `N>1` can very easily lead to worse performance, in particular when `N<<X`.
+However this is just a rule of thumb, and the best way to set each number of threads is to experiment on your specific application.
+
+## [Alternative linear algebra backends](@id man-backends-linear-algebra)
+
+As an alternative to OpenBLAS, there exist several other backends that can help with linear algebra performance.
+Prominent examples include [MKL.jl](https://github.com/JuliaLinearAlgebra/MKL.jl) and [AppleAccelerate.jl](https://github.com/JuliaMath/AppleAccelerate.jl).
+
+These are external packages, so we will not discuss them in detail here.
+Please refer to their respective documentations (especially because they have different behaviors than OpenBLAS with respect to multithreading).
