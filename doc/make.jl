@@ -321,7 +321,7 @@ function fileurl(remote::JuliaZHRemote, ref::AbstractString, filename::AbstractS
         filename
     end
     url = "$(repourl(remote))/blob/$(ref)/$(real_filename)"
-    @show url
+    # @show url  # 调试输出
     isnothing(linerange) && return url
     lstart, lend = first(linerange), last(linerange)
     return (lstart == lend) ? "$(url)#L$(lstart)" : "$(url)#L$(lstart)-L$(lend)"
