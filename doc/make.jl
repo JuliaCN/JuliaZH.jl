@@ -307,7 +307,8 @@ if is_deploy
         # dirname = "en",
         # devurl = devurl,
         # versions = Versions(["v#.#", devurl => devurl]),
-        branch = render_pdf ? "pdf" : "gh-pages"
+        branch = render_pdf ? "pdf" : "gh-pages",
+        push_preview = true,
     )
 else
     @info "Skipping deployment ('deploy' not passed)"
