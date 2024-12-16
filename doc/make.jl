@@ -274,6 +274,8 @@ else
         collapselevel = 1,
         sidebar_sitename = false,
         ansicolor = true,
+        size_threshold = 800 * 2^10, # 800 KiB
+        size_threshold_warn = 200 * 2^10, # the manual has quite a few large pages, so we warn at 200+ KiB only
         lang = "zh-cn",
         # 文档全局页脚
         # footer = "📢📢📢 JuliaCN 2022 冬季见面会 报告[征集](https://cn.julialang.org/meetup-website/2022/)"
