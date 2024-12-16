@@ -294,6 +294,7 @@ makedocs(
     sitename  = "Julia 中文文档",
     authors   = "Julia 中文社区",
     pages     = PAGES,
+    remotes   = nothing, # TODO: 修复 source url, 可能需要参考主线的 make.jl
 )
 
 # TODO? Update URLs to external stdlibs (JuliaLang/julia#43199)
