@@ -283,6 +283,51 @@ else
     )
 end
 
+# TODO: 自定义 Remotes 类型，修复位于 julia 库中的标准库路径
+#   定义 Remotes.JuliaGitHub; 实现 Remotes.fileurl
+#   "src\cluster.jl" => "stdlib\Distributed\src\cluster.jl"
+inside_stdlibs = [
+    "Artifacts", "Base64", "CRC32c", "Dates", "Distributed", "FileWatching",
+    "Future", "InteractiveUtils", "LazyArtifacts", "Libdl", "LibGit2",
+    "LinearAlgebra", "Logging", "Markdown", "Mmap", "Printf", "Profile",
+    "Random", "REPL", "Serialization", "SharedArrays", "Sockets", "Test",
+    "TOML", "Unicode", "UUIDs"
+]
+outside_stdlibs = [
+    # Outside repo
+    ("ArgTools",        Remotes.GitHub("JuliaIO", "ArgTools.jl"),           "08b11b2707593d4d7f92e5f1b9dba7668285ff82"),
+    ("DelimitedFiles",  Remotes.GitHub("JuliaData", "DelimitedFiles.jl"),   "db79c842f95f55b1f8d8037c0d3363ab21cd3b90"),
+    ("Downloads",       Remotes.GitHub("JuliaLang", "Downloads.jl"),        "ead289a7f1be7689738aaea9b12d919424a106ef"),
+    ("LibCURL",         Remotes.GitHub("JuliaWeb", "LibCURL.jl"),           "a65b64f6eabc932f63c2c0a4a5fb5d75f3e688d0"),
+    ("NetworkOptions",  Remotes.GitHub("JuliaLang", "NetworkOptions.jl"),   "8eec5cb0acec4591e6db3c017f7499426cd8e352"),
+    ("Pkg",             Remotes.GitHub("JuliaLang", "Pkg.jl"),              "edfa2ed0ea117d61d33405d4214edb6513b3f236"),
+    ("SHA",             Remotes.GitHub("JuliaCrypto", "SHA.jl"),            "e1af7dd0863dee14a83550faf4b6e08971993ce8"),
+    ("SparseArrays",    Remotes.GitHub("JuliaSparse", "SparseArrays.jl"),   "279b363ca8d3129d4742903d37c8b11545fa08a2"),
+    ("Statistics",      Remotes.GitHub("JuliaStats", "Statistics.jl"),      "d147f9253aa0f2f71be9c3fed8d51c2215410408"),
+    ("SuiteSparse",     Remotes.GitHub("JuliaSparse", "SuiteSparse.jl"),    "e8285dd13a6d5b5cf52d8124793fc4d622d07554"),
+    ("Tar",             Remotes.GitHub("JuliaIO", "Tar.jl"),                "ff55460f4d329949661a33e6c8168ce6d890676c"),
+]
+documenter_stdlib_remotes = begin
+    remotes_list = []
+    for stdlib_name in inside_stdlibs
+        remote = Remotes.GitHub("JuliaLang", "julia")
+        commit = "v1.10.5"
+        package_root_dir = joinpath(Sys.STDLIB, stdlib_name)
+        @assert isdir(package_root_dir)
+        push!(remotes_list, package_root_dir => (remote, commit))
+    end
+    for (stdlib_name, remote, commit) in outside_stdlibs
+        package_root_dir = joinpath(Sys.STDLIB, stdlib_name)
+        @assert isdir(package_root_dir)
+        push!(remotes_list, package_root_dir => (remote, commit))
+    end
+    # TODO: 修复 md 文档路径
+    Dict(
+        dirname(@__DIR__) => (Remotes.GitHub("JuliaCN", "JuliaZH"), "v1.10.5"),
+        remotes_list...
+    )
+end
+
 makedocs(
     modules   = [Main, Base, Core, [Base.root_module(Base, stdlib.stdlib) for stdlib in STDLIB_DOCS]...],
     clean     = true,
@@ -295,7 +340,7 @@ makedocs(
     sitename  = "Julia 中文文档",
     authors   = "Julia 中文社区",
     pages     = PAGES,
-    remotes   = nothing, # TODO: 修复 source url, 可能需要参考主线的 make.jl
+    remotes   = documenter_stdlib_remotes,
 )
 
 # TODO? Update URLs to external stdlibs (JuliaLang/julia#43199)
