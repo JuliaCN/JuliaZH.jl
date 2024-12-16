@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>类型 · Julia 中文文档</title><meta name="title" content="类型 · Julia 中文文档"/><meta property="og:title" content="类型 · Julia 中文文档"/><meta property="twitter:title" content="类型 · Julia 中文文档"/><meta name="description" content="Documentation for Julia 中文文档."/><meta property="og:description" content="Documentation for Julia 中文文档."/><meta property="twitter:description" content="Documentation for Julia 中文文档."/><meta property="og:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/types/"/><meta property="twitter:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/types/"/><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/types/"/><script async src="https://www.googletagmanager.com/gtag/js?id=UA-28835595-9"></script><script>  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-28835595-9', {'page_path': location.pathname + location.search + location.hash});
+</script><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia 中文文档 logo"/></a><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox" checked/><label class="tocitem" for="menuitem-2"><span class="docs-label">手册</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li class="is-active"><a class="tocitem" href>类型</a><ul class="internal"><li><a class="tocitem" href="#类型声明"><span>类型声明</span></a></li><li><a class="tocitem" href="#man-abstract-types"><span>抽象类型</span></a></li><li><a class="tocitem" href="#原始类型"><span>原始类型</span></a></li><li><a class="tocitem" href="#复合类型"><span>复合类型</span></a></li><li><a class="tocitem" href="#可变复合类型"><span>可变复合类型</span></a></li><li><a class="tocitem" href="#man-declared-types"><span>已声明的类型</span></a></li><li><a class="tocitem" href="#类型共用体"><span>类型共用体</span></a></li><li><a class="tocitem" href="#Parametric-Types"><span>参数类型</span></a></li><li><a class="tocitem" href="#UnionAll-类型"><span>UnionAll 类型</span></a></li><li><a class="tocitem" href="#man-singleton-types"><span>单例类型</span></a></li><li><a class="tocitem" href="#Types-of-functions"><span>Types of functions</span></a></li><li><a class="tocitem" href="#man-typet-type"><span><code>Type{T}</code> 类型选择器</span></a></li><li><a class="tocitem" href="#类型别名"><span>类型别名</span></a></li><li><a class="tocitem" href="#类型操作"><span>类型操作</span></a></li><li><a class="tocitem" href="#man-custom-pretty-printing"><span>自定义 pretty-printing</span></a></li><li><a class="tocitem" href="#值类型"><span>值类型</span></a></li></ul></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">一维和多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../asynchronous-programming/">异步编程</a></li><li><a class="tocitem" href="../multi-threading/">多线程</a></li><li><a class="tocitem" href="../distributed-computing/">多进程和分布式计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li><li><a class="tocitem" href="../command-line-interface/">Command-line Interface</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Base</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">标准数值类型</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/reflection/">反射 与 自我检查</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">标准库</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../stdlib/Artifacts/">Artifacts</a></li><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">Distributed Computing</a></li><li><a class="tocitem" href="../../stdlib/Downloads/">Downloads</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/Future/">Future</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">Interactive Utilities</a></li><li><a class="tocitem" href="../../stdlib/LazyArtifacts/">Lazy Artifacts</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">Linear Algebra</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">The Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/TOML/">TOML</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5" type="checkbox"/><label class="tocitem" for="menuitem-5"><span class="docs-label">开发者文档</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><input class="collapse-toggle" id="menuitem-5-1" type="checkbox"/><label class="tocitem" for="menuitem-5-1"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">本机代码生成过程的高级概述</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/pkgimg/">Package Images</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li><li><a class="tocitem" href="../../devdocs/ssair/">Julia SSA-form IR</a></li><li><a class="tocitem" href="../../devdocs/EscapeAnalysis/"><code>EscapeAnalysis</code></a></li><li><a class="tocitem" href="../../devdocs/gc-sa/">Static analyzer annotations for GC correctness in C code</a></li><li><a class="tocitem" href="../../devdocs/gc/">Garbage Collection in Julia</a></li><li><a class="tocitem" href="../../devdocs/precompile_hang/">Fixing precompilation hangs due to open tasks or IO</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/external_profilers/">External Profiler Support</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li><li><a class="tocitem" href="../../devdocs/probes/">Instrumenting Julia with DTrace, and bpftrace</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Building Julia</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/build/build/">Building Julia (Detailed)</a></li><li><a class="tocitem" href="../../devdocs/build/linux/">Linux</a></li><li><a class="tocitem" href="../../devdocs/build/macos/">macOS</a></li><li><a class="tocitem" href="../../devdocs/build/windows/">Windows</a></li><li><a class="tocitem" href="../../devdocs/build/freebsd/">FreeBSD</a></li><li><a class="tocitem" href="../../devdocs/build/arm/">ARM (Linux)</a></li><li><a class="tocitem" href="../../devdocs/build/distributing/">Binary distributions</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>类型</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>类型</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl" title="View the repository"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">Repository</span></a><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl/blob/master/zh_CN/doc/src/manual/types.md" title="Edit source"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="man-types"><a class="docs-heading-anchor" href="#man-types">类型</a><a id="man-types-1"></a><a class="docs-heading-anchor-permalink" href="#man-types" title="Permalink"></a></h1><p>通常，我们把程序语言中的类型系统划分成两类：静态类型和动态类型。对于静态类型系统，在程序运行之前，我们就可计算每一个表达式的类型。而对于动态类型系统，我们只有通过运行那个程序，得到表达式具体的值，才能确定其具体的类型。通过让编写的代码无需在编译时知道值的确切类型，面向对象允许静态类型语言具有一定的灵活性。可以编写在不同类型上都能运行的代码的能力被称为多态。在经典的动态类型语言中，所有的代码都是多态的，这意味着这些代码对于其中值的类型没有约束，除非在代码中去具体的判断一个值的类型，或者对对象做一些它不支持的操作。</p><p>Julia 类型系统是动态的，但由于允许指出某些变量具有特定类型，因此占有静态类型系统的一些优势。这对于生成高效的代码非常有帮助，但更重要的是，它允许针对函数参数类型的方法派发与语言深度集成。方法派发将在<a href="../methods/#方法">方法</a>中详细探讨，但它根植于此处提供的类型系统。</p><p>在类型被省略时，Julia 的默认行为是允许值为任何类型。因此，可以编写许多有用的 Julia 函数，而无需显式使用类型。然而，当需要额外的表达力时，很容易逐渐将显式的类型注释引入先前的「无类型」代码中。添加类型注释主要有三个目的：利用 Julia 强大的多重派发机制、提高代码可读性以及捕获程序错误。</p><p>用<a href="https://zh.wikipedia.org/wiki/类型系统">类型系统</a>的术语描述，Julia是动态（dynamic）、主格（nominative）和参数（parametric）的。泛型可以被参数化，并且类型之间的层次关系可以被<a href="https://en.wikipedia.org/wiki/Nominal_type_system">显式地声明</a>，而不是<a href="https://en.wikipedia.org/wiki/Structural_type_system">隐含地通过兼容的结构</a>。Julia 类型系统的一个特别显著的特征是具体类型相互之间不能是子类型：所有具体类型都是最终的，并且超类只能是抽象类型。虽然这乍一看可能过于严格，但它有许多益处，且缺点却少得出奇。事实证明，能够继承行为比继承结构更重要，同时继承两者在传统的面向对象语言中导致了重大困难。Julia 类型系统的其它高级方面应当在先言明：</p><ul><li>对象值和非对象值之间没有分别：Julia 中的所有值都是具有类型的真实对象且其类型属于一个单独的、完全连通的类型图，该类型图的所有节点作为类型一样都是头等的。</li><li>「编译期类型」是没有任何意义的概念：变量所具有的唯一类型是程序运行时的实际类型。这在面向对象被称为「运行时类型」，其中静态编译和多态的组合使得这种区别变得显著。</li><li>只有值，而不是变量，有类型——变量只是绑定到值的名称，尽管为了简单起见，我们可以说“变量的类型”作为“变量所引用的值的类型”的简写。</li><li>抽象类型和具体类型都可以通过其它类型进行参数化。它们的参数化还可通过符号、使得 <a href="../../base/base/#Base.isbits"><code>isbits</code></a> 返回 true 的任意类型的值（实质上，也就是像数字或布尔变量这样的东西，存储方式像 C 类型或不包含指向其它对象的指针的 <code>struct</code>）和其元组。类型参数在不需要被引用或限制时可以省略。</li></ul><p>Julia 的类型系统设计得强大而富有表现力，却清晰、直观且不引人注目。许多 Julia 程序员可能从未感觉需要编写明确使用类型的代码。但是，某些场景的编程可通过声明类型变得更加清晰、简单、快速和稳健。</p><h2 id="类型声明"><a class="docs-heading-anchor" href="#类型声明">类型声明</a><a id="类型声明-1"></a><a class="docs-heading-anchor-permalink" href="#类型声明" title="Permalink"></a></h2><p><code>::</code> 运算符可以用来在程序中给表达式和变量附加类型注释。这有两个主要原因：</p><ol><li>作为断言，帮助程序确认能是否正常运行，</li><li>给编译器提供额外的类型信息，在一些情况下这可以提升程序性能。</li></ol><p>置于到计算值的表达式后面时，<code>::</code> 操作符读作「是······的实例（is an instance of）」。在任何地方都可以用它来断言左侧表达式的值是右侧类型的实例。当右侧类型是具体类型时，左侧的值必须能够以该类型作为其实现——回想一下，所有具体类型都是最终的，因此没有任何实现是任何其它具体类型的子类型。当右侧类型是抽象类型时，值是由该抽象类型子类型中的某个具体类型实现的才能满足该断言。如果类型断言非真，抛出一个异常，否则返回左侧的值：</p><pre><code class="language-julia-repl hljs">julia&gt; (1+2)::AbstractFloat
+ERROR: TypeError: in typeassert, expected AbstractFloat, got a value of type Int64
+
+julia&gt; (1+2)::Int
+3</code></pre><p>这将允许类型断言作用在任意表达式上。</p><p>置于赋值语句左侧的变量之后，或作为 <code>local</code> 声明的一部分时，<code>::</code> 操作符的意义有所不同：它声明变量始终具有指定的类型，就像静态类型语言（如 C）中的类型声明。每个被赋给该变量的值都将使用 <a href="../../base/base/#Base.convert"><code>convert</code></a> 转换为被声明的类型：</p><pre><code class="language-julia-repl hljs">julia&gt; function foo()
+           x::Int8 = 100
+           x
+       end
+foo (generic function with 1 method)
+
+julia&gt; x = foo()
+100
+
+julia&gt; typeof(x)
+Int8</code></pre><p>这个特性对避免特定的性能「陷阱」很有帮助，比如给一个变量赋值时意外地更改了其类型。</p><p>此「声明」行为仅发生在特定上下文中：</p><pre><code class="language-julia hljs">local x::Int8  # in a local declaration
+x::Int8 = 10   # as the left-hand side of an assignment</code></pre><p>and applies to the whole current scope, even before the declaration.</p><p>As of Julia 1.8, type declarations can now be used in global scope i.e. type annotations can be added to global variables to make accessing them type stable.</p><pre><code class="language-julia hljs">julia&gt; x::Int = 10
+10
+
+julia&gt; x = 3.5
+ERROR: InexactError: Int64(3.5)
+
+julia&gt; function foo(y)
+           global x = 15.8    # throws an error when foo is called
+           return x + y
+       end
+foo (generic function with 1 method)
+
+julia&gt; foo(10)
+ERROR: InexactError: Int64(15.8)</code></pre><p>声明也可以附加到函数定义：</p><pre><code class="language-julia hljs">function sinc(x)::Float64
+    if x == 0
+        return 1
+    end
+    return sin(pi*x)/(pi*x)
+end</code></pre><p>从函数返回时就如同给一个已被声明类型的变量赋值：返回值始终会被转换为<code>Float64</code>。</p><h2 id="man-abstract-types"><a class="docs-heading-anchor" href="#man-abstract-types">抽象类型</a><a id="man-abstract-types-1"></a><a class="docs-heading-anchor-permalink" href="#man-abstract-types" title="Permalink"></a></h2><p>抽象类型不能实例化，只能作为类型图中的节点使用，从而描述相关具体类型的集，即那些作为其后代的具体类型。即便抽象类型没有实例， 由于它们是类型系统的主干，故我们首先从抽象类型谈起：抽象类型形成了概念的层次结构，这使得 Julia 的类型系统不只是对象实现的集合。</p><p>回想一下，在<a href="../integers-and-floating-point-numbers/#整数和浮点数">整数和浮点数</a>中，我们介绍了各种数值的具体类型：<a href="../../base/numbers/#Core.Int8"><code>Int8</code></a>、<a href="../../base/numbers/#Core.UInt8"><code>UInt8</code></a>、<a href="../../base/numbers/#Core.Int16"><code>Int16</code></a>、<a href="../../base/numbers/#Core.UInt16"><code>UInt16</code></a>、<a href="../../base/numbers/#Core.Int32"><code>Int32</code></a>、<a href="../../base/numbers/#Core.UInt32"><code>UInt32</code></a>、<a href="../../base/numbers/#Core.Int64"><code>Int64</code></a>、<a href="../../base/numbers/#Core.UInt64"><code>UInt64</code></a>、<a href="../../base/numbers/#Core.Int128"><code>Int128</code></a>、<a href="../../base/numbers/#Core.UInt128"><code>UInt128</code></a>、<a href="../../base/numbers/#Core.Float16"><code>Float16</code></a>、<a href="../../base/numbers/#Core.Float32"><code>Float32</code></a> 和 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a>。尽管 <code>Int8</code>、<code>Int16</code>、<code>Int32</code>、<code>Int64</code> 和 <code>Int128</code> 具有不同的表示大小，但都具有共同的特征，即它们都是带符号的整数类型。类似地，<code>UInt8</code>、<code>UInt16</code>、<code>UInt32</code>、<code>UInt64</code> 和 <code>UInt128</code> 都是无符号整数类型，而 <code>Float16</code>、<code>Float32</code> 和 <code>Float64</code> 是不同的浮点数类型而非整数类型。一段代码只对某些类型有意义是很常见的，比如，只在其参数是某种类型的整数，而不真正取决于特定<em>类型</em>的整数时有意义。例如，最大公分母算法适用于所有类型的整数，但不适用于浮点数。抽象类型允许构造类型的层次结构，这给具体类型提供了可以适应的环境。例如，你可以轻松地为任何类型的整数编程，而不用将算法限制为某种特殊类型的整数。</p><p>抽象类型可以由 <a href="../../base/base/#abstract type"><code>abstract type</code></a> 关键字来声明。声明抽象类型的一般语法是：</p><pre><code class="nohighlight hljs">abstract type «name» end
+abstract type «name» &lt;: «supertype» end</code></pre><p>该 <code>abstract type</code> 关键字引入了一个新的抽象类型，<code>«name»</code> 为其名称。此名称后面可以跟 <a href="../../base/base/#Core.:&lt;:"><code>&lt;:</code></a> 和一个已存在的类型，表示新声明的抽象类型是此「父」类型的子类型。</p><p>如果没有给出超类型，则默认超类型为 <code>Any</code>——一个已经定义好的抽象类型，所有对象都是 <code>Any</code> 的实例并且所有类型都是 <code>Any</code> 的子类型。在类型理论中，<code>Any</code> 通常称为「top」，因为它位于类型图的顶点。Julia 还有一个预定义了的抽象「bottom」类型，在类型图的最低点，写成 <code>Union{}</code>。这与 <code>Any</code> 完全相反：任何对象都不是 <code>Union{}</code> 的实例，所有的类型都是 <code>Union{}</code> 的超类型。</p><p>让我们考虑一些构成 Julia 数值类型层次结构的抽象类型：</p><pre><code class="language-julia hljs">abstract type Number end
+abstract type Real          &lt;: Number end
+abstract type AbstractFloat &lt;: Real end
+abstract type Integer       &lt;: Real end
+abstract type Signed        &lt;: Integer end
+abstract type Unsigned      &lt;: Integer end</code></pre><p><a href="../../base/numbers/#Core.Number"><code>Number</code></a> 类型为 <code>Any</code> 类型的直接子类型，并且 <a href="../../base/numbers/#Core.Real"><code>Real</code></a> 为它的子类型。 接下来，<code>Real</code> 有两个子类型（它还有更多的子类型，但这里只展示了两个，稍后将会看到其它的子类型）：  <a href="../../base/numbers/#Core.Integer"><code>Integer</code></a> 和 <a href="../../base/numbers/#Core.AbstractFloat"><code>AbstractFloat</code></a>，将世界分为整数的表示和实数的表示。 实数的表示当然包括浮点类型，但也包括其他类型，例如有理数。 因此，<code>AbstractFloat</code> 是一个 <code>Real</code> 的子类型，仅包括实数的浮点表示。 整数被进一步细分为 <a href="../../base/numbers/#Core.Signed"><code>Signed</code></a> 和 <a href="../../base/numbers/#Core.Unsigned"><code>Unsigned</code></a> 两类。</p><p><code>&lt;:</code> 运算符的通常意义为「是······的子类型（is a subtype of）」，可以用在声明中，声明右侧类型是新声明类型的直接超类型； 也可以在表达式中用作子类型运算符，在其左操作数为其右操作数的子类型时返回 <code>true</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; Integer &lt;: Number
+true
+
+julia&gt; Integer &lt;: AbstractFloat
+false</code></pre><p>抽象类型的一个重要用途是为具体类型提供默认实现。举个简单的例子，考虑：</p><pre><code class="language-julia hljs">function myplus(x,y)
+    x+y
+end</code></pre><p>首先需要注意的是上述的参数声明等价于 <code>x::Any</code> 和 <code>y::Any</code>。当函数被调用时，例如 <code>myplus(2,5)</code>，派发器会选择与给定参数相匹配的名称为 <code>myplus</code> 的最具体方法。（有关多重派发的更多信息，请参阅<a href="../methods/#方法">方法</a>。）</p><p>假设没有找到比上述方法更具体的方法，Julia 则会基于上面给出的泛型函数，在内部定义并编译一个名为 <code>myplus</code> 的方法，专门用于处理两个 <code>Int</code> 参数，即它隐式地定义并编译：</p><pre><code class="language-julia hljs">function myplus(x::Int,y::Int)
+    x+y
+end</code></pre><p>最后，调用这个具体的方法。</p><p>因此，抽象类型允许程序员编写泛型函数，泛型函数可以通过许多具体类型的组合用作默认方法。多重派发使得程序员可以完全控制是使用默认方法还是更具体的方法。</p><p>需要注意的重点是，即使程序员依赖参数为抽象类型的函数，性能也不会有任何损失，因为它会针对每个调用它的参数元组的具体类型重新编译。（但在函数参数是抽象类型的容器的情况下，可能存在性能问题；请参阅<a href="../performance-tips/#man-performance-abstract-container">性能建议</a>。）</p><h2 id="原始类型"><a class="docs-heading-anchor" href="#原始类型">原始类型</a><a id="原始类型-1"></a><a class="docs-heading-anchor-permalink" href="#原始类型" title="Permalink"></a></h2><div class="admonition is-warning"><header class="admonition-header">Warning</header><div class="admonition-body"><p>通常情况下更建议在新的复合类型中封装现有的原始类型，而不是重新定义自己的原始类型。</p><p>这个功能的存在是为了允许 Julia 能引导受 LLVM 支持的标准基本类型。一旦一些标准类型被定义，就不需要再定义更多了。</p></div></div><p>原始类型是具体类型，其数据是由简单的位组成。原始类型的经典示例是整数和浮点数。与大多数语言不同，Julia 允许你声明自己的原始类型，而不是只提供一组固定的内置原始类型。实际上，标准原始类型都是在语言本身中定义的：</p><pre><code class="language-julia hljs">primitive type Float16 &lt;: AbstractFloat 16 end
+primitive type Float32 &lt;: AbstractFloat 32 end
+primitive type Float64 &lt;: AbstractFloat 64 end
+
+primitive type Bool &lt;: Integer 8 end
+primitive type Char &lt;: AbstractChar 32 end
+
+primitive type Int8    &lt;: Signed   8 end
+primitive type UInt8   &lt;: Unsigned 8 end
+primitive type Int16   &lt;: Signed   16 end
+primitive type UInt16  &lt;: Unsigned 16 end
+primitive type Int32   &lt;: Signed   32 end
+primitive type UInt32  &lt;: Unsigned 32 end
+primitive type Int64   &lt;: Signed   64 end
+primitive type UInt64  &lt;: Unsigned 64 end
+primitive type Int128  &lt;: Signed   128 end
+primitive type UInt128 &lt;: Unsigned 128 end</code></pre><p>声明原始类型的一般语法是：</p><pre><code class="nohighlight hljs">primitive type «name» «bits» end
+primitive type «name» &lt;: «supertype» «bits» end</code></pre><p>bits 的数值表示该类型需要多少存储空间，name 为新类型指定名称。可以选择将一个原始类型声明为某个超类型的子类型。如果省略超类型，则默认 <code>Any</code> 为其直接超类型。上述声明中意味着 <a href="../../base/numbers/#Core.Bool"><code>Bool</code></a> 类型需要 8 位来储存，并且直接超类型为 <a href="../../base/numbers/#Core.Integer"><code>Integer</code></a>。目前支持的大小只能是 8 位的倍数，不然你就会遇到 LLVM 的 bug。因此，布尔值虽然确实只需要一位，但不能声明为小于 8 位的值。</p><p><a href="../../base/numbers/#Core.Bool"><code>Bool</code></a>，<a href="../../base/numbers/#Core.Int8"><code>Int8</code></a> 和 <a href="../../base/numbers/#Core.UInt8"><code>UInt8</code></a> 类型都具有相同的表现形式：它们都是 8 位内存块。然而，由于 Julia 的类型系统是主格的，它们尽管具有相同的结构，但不是通用的。它们之间的一个根本区别是它们具有不同的超类型：<a href="../../base/numbers/#Core.Bool"><code>Bool</code></a> 的直接超类型是 <a href="../../base/numbers/#Core.Integer"><code>Integer</code></a>、<a href="../../base/numbers/#Core.Int8"><code>Int8</code></a> 的是 <a href="../../base/numbers/#Core.Signed"><code>Signed</code></a> 而 <a href="../../base/numbers/#Core.UInt8"><code>UInt8</code></a> 的是 <a href="../../base/numbers/#Core.Unsigned"><code>Unsigned</code></a>。<a href="../../base/numbers/#Core.Bool"><code>Bool</code></a>，<a href="../../base/numbers/#Core.Int8"><code>Int8</code></a> 和 <a href="../../base/numbers/#Core.UInt8"><code>UInt8</code></a> 的所有其它差异是行为上的——定义函数的方式在这些类型的对象作为参数给定时起作用。这也是为什么主格的类型系统是必须的：如果结构确定类型，类型决定行为，就不可能使 <a href="../../base/numbers/#Core.Bool"><code>Bool</code></a> 的行为与 <a href="../../base/numbers/#Core.Int8"><code>Int8</code></a> 或 <a href="../../base/numbers/#Core.UInt8"><code>UInt8</code></a> 有任何不同。</p><h2 id="复合类型"><a class="docs-heading-anchor" href="#复合类型">复合类型</a><a id="复合类型-1"></a><a class="docs-heading-anchor-permalink" href="#复合类型" title="Permalink"></a></h2><p><a href="https://en.wikipedia.org/wiki/Composite_data_type">复合类型</a>在各种语言中被称为 record、struct 和 object。复合类型是命名字段的集合，其实例可以视为单个值。复合类型在许多语言中是唯一一种用户可定义的类型，也是 Julia 中最常用的用户定义类型。</p><p>在主流的面向对象语言中，比如 C++、Java、Python 和 Ruby，复合类型也具有与它们相关的命名函数，并且该组合称为「对象」。在纯粹的面向对象语言中，例如 Ruby 或 Smalltalk，所有值都是对象，无论它们是否为复合类型。在不太纯粹的面向对象语言中，包括 C++ 和 Java，一些值，比如整数和浮点值，不是对象，而用户定义的复合类型是具有相关方法的真实对象。在 Julia 中，所有值都是对象，但函数不与它们操作的对象捆绑在一起。这是必要的，因为 Julia 通过多重派发选择函数使用的方法，这意味着在选择方法时考虑<em>所有</em>函数参数的类型，而不仅仅是第一个（有关方法和派发的更多信息，请参阅<a href="../methods/#方法">方法</a>）。因此，函数仅仅「属于」它们的第一个参数是不合适的。将方法组织到函数对象中而不是在每个对象「内部」命名方法最终成为语言设计中一个非常有益的方面。</p><p><a href="../../base/base/#struct"><code>struct</code></a> 关键字与复合类型一起引入，后跟一个字段名称的块，可选择使用 <code>::</code> 运算符注释类型：</p><pre><code class="language-julia-repl hljs">julia&gt; struct Foo
+           bar
+           baz::Int
+           qux::Float64
+       end</code></pre><p>没有类型注释的字段默认为 <code>Any</code> 类型，所以可以包含任何类型的值。</p><p>类型为 <code>Foo</code> 的新对象通过将 <code>Foo</code> 类型对象像函数一样应用于其字段的值来创建：</p><pre><code class="language-julia-repl hljs">julia&gt; foo = Foo(&quot;Hello, world.&quot;, 23, 1.5)
+Foo(&quot;Hello, world.&quot;, 23, 1.5)
+
+julia&gt; typeof(foo)
+Foo</code></pre><p>像函数一样使用的类型称为<strong>构造函数</strong>。有两个构造函数已被自动生成（这些构造函数称为<strong>默认构造函数</strong>）。其中一个接受任何参数并调用 <a href="../../base/base/#Base.convert"><code>convert</code></a> 函数将它其转换为字段的类型，另一个接受与字段类型完全匹配的参数。两者都生成的原因是，这使得更容易添加新定义而不会在无意中替换默认构造函数。</p><p>由于 <code>bar</code> 字段在类型上不受限制，因此任何值都可以。但是 <code>baz</code> 的值必须可转换为 <code>Int</code> 类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Foo((), 23.5, 1)
+ERROR: InexactError: Int64(23.5)
+Stacktrace:
+[...]</code></pre><p>可以使用 <a href="../../base/base/#Base.fieldnames"><code>fieldnames</code></a> 函数找到字段名称列表。</p><pre><code class="language-julia-repl hljs">julia&gt; fieldnames(Foo)
+(:bar, :baz, :qux)</code></pre><p>可以使用传统的 <code>foo.bar</code> 表示法访问复合对象的字段值：</p><pre><code class="language-julia-repl hljs">julia&gt; foo.bar
+&quot;Hello, world.&quot;
+
+julia&gt; foo.baz
+23
+
+julia&gt; foo.qux
+1.5</code></pre><p>用 <code>struct</code> 声明的复合对象是<em>不可变的</em>；创建后不能修改。乍一看这似乎很奇怪，但它有几个优点：</p><ul><li>它可以更高效。某些 struct 可以被高效地打包到数组中，并且在某些情况下，编译器可以避免完全分配不可变对象。</li><li>不可能违反类型构造函数提供的不变性。</li><li>使用不可变对象的代码更容易推理。</li></ul><p>不可变对象可以包含可变对象（比如数组）作为字段。那些被包含的对象将保持可变；只是不可变对象本身的字段不能更改为指向不同的对象。</p><p>如果需要，可以使用关键字 <a href="../../base/base/#mutable struct"><code>mutable struct</code></a> 声明可变复合对象，这将在下一节中讨论。</p><p>如果一个不可变结构的所有字段都是不可区分的（<code>===</code>），那么包含这些字段的两个不可变值也是不可区分的：</p><pre><code class="language-julia-repl hljs">julia&gt; struct X
+            a::Int
+            b::Float64
+        end
+
+julia&gt; X(1, 2) === X(1, 2)
+true</code></pre><p>关于如何构造复合类型的实例还有很多要说的，但这种讨论依赖于<a href="#Parametric-Types">参数类型</a>和<a href="../methods/#方法">方法</a>，并且这是非常重要的，应该在专门的章节中讨论：<a href="../constructors/#man-constructors">构造函数</a>。</p><p>For many user-defined types <code>X</code>, you may want to define a method <a href="../interfaces/#man-interfaces-broadcasting"><code>Base.broadcastable(x::X) = Ref(x)</code></a> so that instances of that type act as 0-dimensional &quot;scalars&quot; for <a href="../arrays/#Broadcasting">broadcasting</a>.</p><h2 id="可变复合类型"><a class="docs-heading-anchor" href="#可变复合类型">可变复合类型</a><a id="可变复合类型-1"></a><a class="docs-heading-anchor-permalink" href="#可变复合类型" title="Permalink"></a></h2><p>如果使用 <code>mutable struct</code> 而不是 <code>struct</code> 声明复合类型，则它的实例可以被修改：</p><pre><code class="language-julia-repl hljs">julia&gt; mutable struct Bar
+           baz
+           qux::Float64
+       end
+
+julia&gt; bar = Bar(&quot;Hello&quot;, 1.5);
+
+julia&gt; bar.qux = 2.0
+2.0
+
+julia&gt; bar.baz = 1//2
+1//2</code></pre><p>An extra interface between the fields and the user can be provided through <a href="../interfaces/#man-instance-properties">Instance Properties</a>. This grants more control on what can be accessed and modified using the <code>bar.baz</code> notation.</p><p>为了支持修改，这种对象通常分配在堆上，并且具有稳定的内存地址。 可变对象就像一个小容器，随着时间的推移，可能保持不同的值，因此只能通过其地址可靠地识别。 相反地，不可变类型的实例与特定字段值相关——仅字段值就告诉你该对象的所有内容。 在决定是否使类型为可变类型时，请询问具有相同字段值的两个实例是否被视为相同，或者它们是否可能需要随时间独立更改。 如果它们被认为是相同的，该类型就应该是不可变的。</p><p>总结一下，Julia 的两个基本属性定义了不变性：</p><ul><li>不允许修改不可变类型的值。<ul><li>对于位类型，这意味着值的位模式一旦设置将不再改变，并且该值是位类型的标识。</li><li>对于复合类型，这意味着其字段值的标识将不再改变。当字段是位类型时，这意味着它们的位将不再改变，对于其值是可变类型（如数组）的字段，这意味着字段将始终引用相同的可变值，尽管该可变值的内容本身可能被修改。</li></ul></li><li>具有不可变类型的对象可以被编译器自由复制，因为其不可变性使得不可能以编程方式区分原始对象和副本。<ul><li>特别地，这意味着足够小的不可变值（如整数和浮点数）通常在寄存器（或栈分配）中传递给函数。</li><li>另一方面，可变值是堆分配的，并作为指向堆分配值的指针传递给函数，除非编译器确定没有办法知道这不是正在发生的事情。</li></ul></li></ul><p>In cases where one or more fields of an otherwise mutable struct is known to be immutable, one can declare these fields as such using <code>const</code> as shown below. This enables some, but not all of the optimizations of immutable structs, and can be used to enforce invariants on the particular fields marked as <code>const</code>.</p><div class="admonition is-compat"><header class="admonition-header">Julia 1.8</header><div class="admonition-body"><p><code>const</code> annotating fields of mutable structs requires at least Julia 1.8.</p></div></div><pre><code class="language-julia-repl hljs">julia&gt; mutable struct Baz
+           a::Int
+           const b::Float64
+       end
+
+julia&gt; baz = Baz(1, 1.5);
+
+julia&gt; baz.a = 2
+2
+
+julia&gt; baz.b = 2.0
+ERROR: setfield!: const field .b of type Baz cannot be changed
+[...]</code></pre><h2 id="man-declared-types"><a class="docs-heading-anchor" href="#man-declared-types">已声明的类型</a><a id="man-declared-types-1"></a><a class="docs-heading-anchor-permalink" href="#man-declared-types" title="Permalink"></a></h2><p>前面章节中讨论的三种类型（抽象、原始、复合）实际上都是密切相关的。它们共有相同的关键属性：</p><ul><li>它们都是显式声明的。</li><li>它们都具有名称。</li><li>它们都已经显式声明超类型。</li><li>它们可以有参数。</li></ul><p>由于这些共有属性，它们在内部表现为相同概念 <code>DataType</code> 的实例，其是任何这些类型的类型：</p><pre><code class="language-julia-repl hljs">julia&gt; typeof(Real)
+DataType
+
+julia&gt; typeof(Int)
+DataType</code></pre><p><code>DataType</code> 可以是抽象的或具体的。它如果是具体的，就具有指定的大小、存储布局和字段名称（可选）。因此，原始类型是具有非零大小的 <code>DataType</code>，但没有字段名称。复合类型是具有字段名称或者为空（大小为零）的 <code>DataType</code>。</p><p>每一个具体的值在系统里都是某个 <code>DataType</code> 的实例。</p><h2 id="类型共用体"><a class="docs-heading-anchor" href="#类型共用体">类型共用体</a><a id="类型共用体-1"></a><a class="docs-heading-anchor-permalink" href="#类型共用体" title="Permalink"></a></h2><p>类型共用体是一种特殊的抽象类型，它包含作为对象的任何参数类型的所有实例，使用特殊<a href="../../base/base/#Core.Union"><code>Union</code></a>关键字构造：</p><pre><code class="language-julia-repl hljs">julia&gt; IntOrString = Union{Int,AbstractString}
+Union{Int64, AbstractString}
+
+julia&gt; 1 :: IntOrString
+1
+
+julia&gt; &quot;Hello!&quot; :: IntOrString
+&quot;Hello!&quot;
+
+julia&gt; 1.0 :: IntOrString
+ERROR: TypeError: in typeassert, expected Union{Int64, AbstractString}, got a value of type Float64</code></pre><p>许多语言都有内建的共用体结构来推导类型；Julia 简单地将它暴露给程序员。Julia 编译器能在 <code>Union</code> 类型只具有少量类型<sup class="footnote-reference"><a id="citeref-1" href="#footnote-1">[1]</a></sup>的情况下生成高效的代码，方法是为每个可能类型的不同分支都生成专用代码。</p><p><code>Union</code> 类型的一种特别有用的情况是 <code>Union{T, Nothing}</code>，其中 <code>T</code> 可以是任何类型，<a href="../../base/base/#Core.Nothing"><code>Nothing</code></a> 是单态类型，其唯一实例是对象 <a href="../../base/constants/#Core.nothing"><code>nothing</code></a>。此模式是其它语言中 <a href="https://en.wikipedia.org/wiki/Nullable_type"><code>Nullable</code>、<code>Option</code> 或 <code>Maybe</code></a> 类型在 Julia 的等价。通过将函数参数或字段声明为 <code>Union{T, Nothing}</code>，可以将其设置为类型为 <code>T</code> 的值，或者 <code>nothing</code> 来表示没有值。有关详细信息，请参阅<a href="../faq/#faq-nothing">常见问题的此条目</a>。</p><h2 id="Parametric-Types"><a class="docs-heading-anchor" href="#Parametric-Types">参数类型</a><a id="Parametric-Types-1"></a><a class="docs-heading-anchor-permalink" href="#Parametric-Types" title="Permalink"></a></h2><p>Julia 类型系统的一个重要和强大的特征是它是参数的：类型可以接受参数，因此类型声明实际上引入了一整套新类型——每一个参数值的可能组合引入一个新类型。许多语言支持某种版本的<a href="https://en.wikipedia.org/wiki/Generic_programming">泛型编程</a>，其中，可以指定操作泛型的数据结构和算法，而无需指定所涉及的确切类型。例如，某些形式的泛型编程存在于 ML、Haskell、Ada、Eiffel、C++、Java、C#、F#、和 Scala 中，这只是其中的一些例子。这些语言中的一些支持真正的参数多态（例如 ML、Haskell、Scala），而其它语言基于模板的泛型编程风格（例如 C++、Java）。由于在不同语言中有多种不同种类的泛型编程和参数类型，我们甚至不会尝试将 Julia 的参数类型与其它语言的进行比较，而是专注于解释 Julia 系统本身。然而，我们将注意到，因为 Julia 是动态类型语言并且不需要在编译时做出所有类型决定，所以许多在静态参数类型系统中遇到的传统困难可以被相对容易地处理。</p><p>所有已声明的类型（<code>DataType</code> 类型）都可被参数化，在每种情况下都使用一样的语法。我们将按一下顺序讨论它们：首先是参数复合类型，接着是参数抽象类型，最后是参数原始类型。</p><h3 id="man-parametric-composite-types"><a class="docs-heading-anchor" href="#man-parametric-composite-types">参数复合类型</a><a id="man-parametric-composite-types-1"></a><a class="docs-heading-anchor-permalink" href="#man-parametric-composite-types" title="Permalink"></a></h3><p>类型参数在类型名称后引入，用大括号扩起来：</p><pre><code class="language-julia-repl hljs">julia&gt; struct Point{T}
+           x::T
+           y::T
+       end</code></pre><p>此声明定义了一个新的参数类型，<code>Point{T}</code>，拥有类型为 <code>T</code> 的两个「坐标」。有人可能会问 <code>T</code> 是什么？嗯，这恰恰是参数类型的重点：它可以是任何类型（或者任何位类型值，虽然它实际上在这里显然用作类型）。<code>Point{Float64}</code> 是一个具体类型，该类型等价于通过用 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> 替换 <code>Point</code> 的定义中的 <code>T</code> 所定义的类型。因此，单独这一个声明实际上声明了无限个类型：<code>Point{Float64}</code>，<code>Point{AbstractString}</code>，<code>Point{Int64}</code>，等等。这些类型中的每一个类型现在都是可用的具体类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Point{Float64}
+Point{Float64}
+
+julia&gt; Point{AbstractString}
+Point{AbstractString}</code></pre><p><code>Point{Float64}</code> 类型是坐标为 64 位浮点值的点，而 <code>Point{AbstractString}</code> 类型是「坐标」为字符串对象（请参阅 <a href="../strings/#man-strings">Strings</a>）的「点」。</p><p><code>Point</code> 本身也是一个有效的类型对象，包括所有实例 <code>Point{Float64}</code>、<code>Point{AbstractString}</code> 等作为子类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Point{Float64} &lt;: Point
+true
+
+julia&gt; Point{AbstractString} &lt;: Point
+true</code></pre><p>当然，其他类型不是它的子类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Float64 &lt;: Point
+false
+
+julia&gt; AbstractString &lt;: Point
+false</code></pre><p><code>Point</code> 不同 <code>T</code> 值所声明的具体类型之间，不能互相作为子类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Point{Float64} &lt;: Point{Int64}
+false
+
+julia&gt; Point{Float64} &lt;: Point{Real}
+false</code></pre><div class="admonition is-warning"><header class="admonition-header">Warning</header><div class="admonition-body"><p>最后一点<em>非常</em>重要：即使 <code>Float64 &lt;: Real</code> 也<strong>没有</strong> <code>Point{Float64} &lt;: Point{Real}</code>。</p></div></div><p>换成类型理论说法，Julia 的类型参数是<em>不变的</em>，而不是<a href="https://en.wikipedia.org/wiki/Covariance_and_contravariance_%28computer_science%29">协变的（或甚至是逆变的）</a>。这是出于实际原因：虽然任何 <code>Point{Float64}</code> 的实例在概念上也可能像是 <code>Point{Real}</code> 的实例，但这两种类型在内存中有不同的表示：</p><ul><li><code>Point{Float64}</code> 的实例可以紧凑而高效地表示为一对 64 位立即数；</li><li><code>Point{Real}</code> 的实例必须能够保存任何一对 <a href="../../base/numbers/#Core.Real"><code>Real</code></a> 的实例。由于 <code>Real</code> 实例的对象可以具有任意的大小和结构，<code>Point{Real}</code> 的实例实际上必须表示为一对指向单独分配的 <code>Real</code> 对象的指针。</li></ul><p>在数组的情况下，能够以立即数存储 <code>Point{Float64}</code> 对象会极大地提高效率：<code>Array{Float64}</code> 可以存储为一段 64 位浮点值组成的连续内存块，而 <code>Array{Real}</code> 必须是一个由指向单独分配的 <a href="../../base/numbers/#Core.Real"><code>Real</code></a> 的指针组成的数组——这可能是 <a href="https://en.wikipedia.org/wiki/Object_type_%28object-oriented_programming%29#Boxing">boxed</a> 64 位浮点值，但也可能是任意庞大和复杂的对象，且其被声明为 <code>Real</code> 抽象类型的表示。</p><p>由于 <code>Point{Float64}</code> 不是 <code>Point{Real}</code> 的子类型，下面的方法不适用于类型为 <code>Point{Float64}</code> 的参数：</p><pre><code class="language-julia hljs">function norm(p::Point{Real})
+    sqrt(p.x^2 + p.y^2)
+end</code></pre><p>一种正确的方法来定义一个接受类型的所有参数的方法，<code>Point{T}</code>其中<code>T</code>是一个子类型<a href="../../base/numbers/#Core.Real"><code>Real</code></a>：</p><pre><code class="language-julia hljs">function norm(p::Point{&lt;:Real})
+    sqrt(p.x^2 + p.y^2)
+end</code></pre><p>（等效地，另一种定义方法 <code>function norm(p::Point{T} where T&lt;:Real)</code> 或 <code>function norm(p::Point{T}) where T&lt;:Real</code>；查看 <a href="#UnionAll-类型">UnionAll 类型</a>。）</p><p>稍后将在<a href="../methods/#方法">方法</a>中讨论更多示例。</p><p>如何构造一个 <code>Point</code> 对象？可以为复合类型定义自定义的构造函数，这将在<a href="../constructors/#man-constructors">构造函数</a>中详细讨论，但在没有任何特别的构造函数声明的情况下，有两种默认方式可以创建新的复合对象，一种是显式地给出类型参数，另一种是通过传给对象构造函数的参数隐式地推断出。</p><p>由于 <code>Point{Float64}</code> 类型等价于在 <code>Point</code> 声明时用 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a> 替换 <code>T</code> 得到的具体类型，它可以相应地作为构造函数使用：</p><pre><code class="language-julia-repl hljs">julia&gt; p = Point{Float64}(1.0, 2.0)
+Point{Float64}(1.0, 2.0)
+
+julia&gt; typeof(p)
+Point{Float64}</code></pre><p>对于默认的构造函数，必须为每个字段提供一个参数：</p><pre><code class="language-julia-repl hljs">julia&gt; Point{Float64}(1.0)
+ERROR: MethodError: no method matching Point{Float64}(::Float64)
+[...]
+
+julia&gt; Point{Float64}(1.0,2.0,3.0)
+ERROR: MethodError: no method matching Point{Float64}(::Float64, ::Float64, ::Float64)
+[...]</code></pre><p>参数类型只生成一个默认的构造函数，因为它无法覆盖。这个构造函数接受任何参数并将它们转换为字段的类型。</p><p>许多情况下，没有必要提供想要构造的 <code>Point</code> 对象的类型，因为构造函数调用参数的类型已经隐式地提供了类型信息。因此，你也可以将 <code>Point</code> 本身用作构造函数，前提是参数类型 <code>T</code> 的隐含值是明确的：</p><pre><code class="language-julia-repl hljs">julia&gt; p1 = Point(1.0,2.0)
+Point{Float64}(1.0, 2.0)
+
+julia&gt; typeof(p1)
+Point{Float64}
+
+julia&gt; p2 = Point(1,2)
+Point{Int64}(1, 2)
+
+julia&gt; typeof(p2)
+Point{Int64}</code></pre><p>在 <code>Point</code> 的例子中，当且仅当 <code>Point</code> 的两个参数类型相同时，<code>T</code> 的类型才确实是隐含的。如果不是这种情况，构造函数将失败并出现 <a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>：</p><pre><code class="language-julia-repl hljs">julia&gt; Point(1,2.5)
+ERROR: MethodError: no method matching Point(::Int64, ::Float64)
+
+Closest candidates are:
+  Point(::T, !Matched::T) where T
+   @ Main none:2
+
+Stacktrace:
+[...]</code></pre><p>可以定义适当处理此类混合情况的函数构造方法，将在后面的<a href="../constructors/#man-constructors">构造函数</a>中讨论。</p><h3 id="参数抽象类型"><a class="docs-heading-anchor" href="#参数抽象类型">参数抽象类型</a><a id="参数抽象类型-1"></a><a class="docs-heading-anchor-permalink" href="#参数抽象类型" title="Permalink"></a></h3><p>参数抽象类型声明以非常相似的方式声明了一族抽象类型：</p><pre><code class="language-julia-repl hljs">julia&gt; abstract type Pointy{T} end</code></pre><p>在此声明中，对于每个类型或整数值 <code>T</code>，<code>Pointy{T}</code> 都是不同的抽象类型。与参数复合类型一样，每个此类型的实例都是 <code>Pointy</code> 的子类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Pointy{Int64} &lt;: Pointy
+true
+
+julia&gt; Pointy{1} &lt;: Pointy
+true</code></pre><p>参数抽象类型是不变的，就像参数复合类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Pointy{Float64} &lt;: Pointy{Real}
+false
+
+julia&gt; Pointy{Real} &lt;: Pointy{Float64}
+false</code></pre><p>符号 <code>Pointy{&lt;:Real}</code> 可用于表示<em>协变</em>类型的 Julia 类似物，而 <code>Pointy{&gt;:Int}</code> 类似于<em>逆变</em>类型，但从技术上讲，它们都代表了类型的<em>集合</em>（参见 <a href="#UnionAll-类型">UnionAll 类型</a>）。</p><pre><code class="language-julia-repl hljs">julia&gt; Pointy{Float64} &lt;: Pointy{&lt;:Real}
+true
+
+julia&gt; Pointy{Real} &lt;: Pointy{&gt;:Int}
+true</code></pre><p>正如之前的普通抽象类型用于在具体类型上创建实用的类型层次结构一样，参数抽象类型在参数复合类型上具有相同的用途。例如，我们可以将 <code>Point{T}</code> 声明为 <code>Pointy{T}</code> 的子类型，如下所示：</p><pre><code class="language-julia-repl hljs">julia&gt; struct Point{T} &lt;: Pointy{T}
+           x::T
+           y::T
+       end</code></pre><p>鉴于此类声明，对每个 <code>T</code>，都有 <code>Point{T}</code> 是 <code>Pointy{T}</code> 的子类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Point{Float64} &lt;: Pointy{Float64}
+true
+
+julia&gt; Point{Real} &lt;: Pointy{Real}
+true
+
+julia&gt; Point{AbstractString} &lt;: Pointy{AbstractString}
+true</code></pre><p>下面的关系依然不变：</p><pre><code class="language-julia-repl hljs">julia&gt; Point{Float64} &lt;: Pointy{Real}
+false
+
+julia&gt; Point{Float64} &lt;: Pointy{&lt;:Real}
+true</code></pre><p>参数抽象类型（比如 <code>Pointy</code>）的用途是什么？考虑一下如果点都在对角线 <em>x = y</em> 上，那我们创建的点的实现可以只有一个坐标：</p><pre><code class="language-julia-repl hljs">julia&gt; struct DiagPoint{T} &lt;: Pointy{T}
+           x::T
+       end</code></pre><p>现在，<code>Point{Float64}</code> 和 <code>DiagPoint{Float64}</code> 都是抽象 <code>Pointy{Float64}</code> 的实现，每个类型 <code>T</code> 的其它可能选择与之类似。这允许对被所有 <code>Pointy</code> 对象共享的公共接口进行编程，接口都由 <code>Point</code> 和 <code>DiagPoint</code> 实现。但是，直到我们在下一节<a href="../methods/#方法">方法</a>中引入方法和分派前，这无法完全证明。</p><p>有时，类型参数取遍所有可能类型也许是无意义的。在这种情况下，可以像这样约束 <code>T</code> 的范围：</p><pre><code class="language-julia-repl hljs">julia&gt; abstract type Pointy{T&lt;:Real} end</code></pre><p>在这样的声明中，可以使用任何 <a href="../../base/numbers/#Core.Real"><code>Real</code></a> 的子类型替换 <code>T</code>，但不能使用不是 <code>Real</code> 子类型的类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Pointy{Float64}
+Pointy{Float64}
+
+julia&gt; Pointy{Real}
+Pointy{Real}
+
+julia&gt; Pointy{AbstractString}
+ERROR: TypeError: in Pointy, in T, expected T&lt;:Real, got Type{AbstractString}
+
+julia&gt; Pointy{1}
+ERROR: TypeError: in Pointy, in T, expected T&lt;:Real, got a value of type Int64</code></pre><p>参数化复合类型的类型参数可用相同的方式限制：</p><pre><code class="language-julia hljs">struct Point{T&lt;:Real} &lt;: Pointy{T}
+    x::T
+    y::T
+end</code></pre><p>这里给出了一个真实示例，展示了所有这些参数类型机制如何发挥作用，下面是 Julia 的不可变类型 <a href="../../base/numbers/#Base.Rational"><code>Rational</code></a> 的实际定义（除了我们为了简单起见省略了的构造函数），用来表示准确的整数比例：</p><pre><code class="language-julia hljs">struct Rational{T&lt;:Integer} &lt;: Real
+    num::T
+    den::T
+end</code></pre><p>只有接受整数值的比例才是有意义的，因此参数类型 <code>T</code> 被限制为 <a href="../../base/numbers/#Core.Integer"><code>Integer</code></a> 的子类型，又整数的比例代表实数轴上的值，因此任何 <a href="../../base/numbers/#Base.Rational"><code>Rational</code></a> 都是抽象 <a href="../../base/numbers/#Core.Real"><code>Real</code></a> 的实现。</p><h3 id="元组类型"><a class="docs-heading-anchor" href="#元组类型">元组类型</a><a id="元组类型-1"></a><a class="docs-heading-anchor-permalink" href="#元组类型" title="Permalink"></a></h3><p>元组类型是函数参数的抽象化——不带函数本身。函数参数的突出特征是它们的顺序和类型。因此，元组类型类似于参数化的不可变类型，其中每个参数都是一个字段的类型。例如，二元元组类型类似于以下不可变类型：</p><pre><code class="language-julia hljs">struct Tuple2{A,B}
+    a::A
+    b::B
+end</code></pre><p>然而，有三个主要差异：</p><ul><li>元组类型可以具有任意数量的参数。</li><li>元组类型的参数是<strong>协变的</strong>（covariant）：<code>Tuple{Int}</code> 是 <code>Tuple{Any}</code> 的子类型。因此，<code>Tuple{Any}</code> 被认为是一种抽象类型，且元组类型只有在它们的参数都是具体类型时才是具体类型。 </li><li>元组没有字段名称; 字段只能通过索引访问。</li></ul><p>元组值用括号和逗号书写。构造元组时，会根据需要生成适当的元组类型：</p><pre><code class="language-julia-repl hljs">julia&gt; typeof((1,&quot;foo&quot;,2.5))
+Tuple{Int64, String, Float64}</code></pre><p>请注意协变性的含义：</p><pre><code class="language-julia-repl hljs">julia&gt; Tuple{Int,AbstractString} &lt;: Tuple{Real,Any}
+true
+
+julia&gt; Tuple{Int,AbstractString} &lt;: Tuple{Real,Real}
+false
+
+julia&gt; Tuple{Int,AbstractString} &lt;: Tuple{Real,}
+false</code></pre><p>直观地，这对应于函数参数的类型是函数签名（当函数签名匹配时）的子类型。</p><h3 id="变参元组类型"><a class="docs-heading-anchor" href="#变参元组类型">变参元组类型</a><a id="变参元组类型-1"></a><a class="docs-heading-anchor-permalink" href="#变参元组类型" title="Permalink"></a></h3><p>元组类型的最后一个参数可以是特殊值 <a href="../../base/base/#Core.Vararg"><code>Vararg</code></a>，它表示任意数量的尾随参数：</p><pre><code class="language-julia-repl hljs">julia&gt; mytupletype = Tuple{AbstractString,Vararg{Int}}
+Tuple{AbstractString, Vararg{Int64}}
+
+julia&gt; isa((&quot;1&quot;,), mytupletype)
+true
+
+julia&gt; isa((&quot;1&quot;,1), mytupletype)
+true
+
+julia&gt; isa((&quot;1&quot;,1,2), mytupletype)
+true
+
+julia&gt; isa((&quot;1&quot;,1,2,3.0), mytupletype)
+false</code></pre><p>此外，<code>Vararg{T}</code> 对应于零个或更多的类型为 <code>T</code> 的元素。变参元组类型被用来表示变参方法接受的参数（请参阅<a href="../functions/#变参函数">变参函数</a>）。</p><p>特殊值 <code>Vararg{T,N}</code>（当用作元组类型的最后一个参数时）正好对应于类型为 <code>T</code> 的 <code>N</code> 个元素。 <code>NTuple{N,T}</code> 是 <code>Tuple{Vararg{T,N}}</code> 的一个方便的别名，即一个包含正好包含 <code>T</code> 类型的 <code>N</code> 个元素的元组类型。</p><h3 id="具名元组类型"><a class="docs-heading-anchor" href="#具名元组类型">具名元组类型</a><a id="具名元组类型-1"></a><a class="docs-heading-anchor-permalink" href="#具名元组类型" title="Permalink"></a></h3><p>具名元组是 <a href="../../base/base/#Core.NamedTuple"><code>NamedTuple</code></a> 类型的实例，该类型有两个参数：一个给出字段名称的符号元组，和一个给出字段类型的元组类型。 For convenience, <code>NamedTuple</code> types are printed using the <a href="../../base/base/#Base.@NamedTuple"><code>@NamedTuple</code></a> macro which provides a convenient <code>struct</code>-like syntax for declaring these types via <code>key::Type</code> declarations, where an omitted <code>::Type</code> corresponds to <code>::Any</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; typeof((a=1,b=&quot;hello&quot;)) # prints in macro form
+@NamedTuple{a::Int64, b::String}
+
+julia&gt; NamedTuple{(:a, :b), Tuple{Int64, String}} # long form of the type
+@NamedTuple{a::Int64, b::String}</code></pre><p>The <code>begin ... end</code> form of the <code>@NamedTuple</code> macro allows the declarations to be split across multiple lines (similar to a struct declaration), but is otherwise equivalent:</p><pre><code class="language-julia-repl hljs">julia&gt; @NamedTuple begin
+           a::Int
+           b::String
+       end
+@NamedTuple{a::Int64, b::String}</code></pre><p><code>NamedTuple</code> 类型可以用作构造函数，接受一个单独的元组作为参数。构造出来的 <code>NamedTuple</code> 类型可以是具体类型，如果参数都被指定，也可以是只由字段名称所指定的类型：</p><pre><code class="language-julia-repl hljs">julia&gt; @NamedTuple{a::Float32,b::String}((1, &quot;&quot;))
+(a = 1.0f0, b = &quot;&quot;)
+
+julia&gt; NamedTuple{(:a, :b)}((1, &quot;&quot;))
+(a = 1, b = &quot;&quot;)</code></pre><p>如果指定了字段类型，参数会被转换。否则，就直接使用参数的类型。</p><h3 id="参数原始类型"><a class="docs-heading-anchor" href="#参数原始类型">参数原始类型</a><a id="参数原始类型-1"></a><a class="docs-heading-anchor-permalink" href="#参数原始类型" title="Permalink"></a></h3><p>原始类型也可以参数化声明，例如，指针都能表示为原始类型，其在 Julia 中以如下方式声明：</p><pre><code class="language-julia hljs"># 32-bit system:
+primitive type Ptr{T} 32 end
+
+# 64-bit system:
+primitive type Ptr{T} 64 end</code></pre><p>与典型的参数复合类型相比，此声明中略显奇怪的特点是类型参数 <code>T</code> 并未在类型本身的定义里使用——它实际上只是一个抽象的标记，定义了一整族具有相同结构的类型，类型间仅由它们的类型参数来区分。因此，<code>Ptr{Float64}</code> 和 <code>Ptr{Int64}</code> 是不同的类型，就算它们具有相同的表示。当然，所有特定的指针类型都是总类型 <a href="../../base/c/#Core.Ptr"><code>Ptr</code></a> 的子类型：</p><pre><code class="language-julia-repl hljs">julia&gt; Ptr{Float64} &lt;: Ptr
+true
+
+julia&gt; Ptr{Int64} &lt;: Ptr
+true</code></pre><h2 id="UnionAll-类型"><a class="docs-heading-anchor" href="#UnionAll-类型">UnionAll 类型</a><a id="UnionAll-类型-1"></a><a class="docs-heading-anchor-permalink" href="#UnionAll-类型" title="Permalink"></a></h2><p>我们已经说过，像 <code>Ptr</code> 这样的参数类型可充当它所有实例（<code>Ptr{Int64}</code> 等）的超类型。这是如何办到的？<code>Ptr</code> 本身不能是普通的数据类型，因为在不知道引用数据的类型时，该类型显然不能用于存储器操作。答案是 <code>Ptr</code>（或其它参数类型像 <code>Array</code>）是一种不同种类的类型，称为 <a href="../../base/base/#Core.UnionAll"><code>UnionAll</code></a> 类型。这种类型表示某些参数的所有值的类型的<em>迭代并集</em>。</p><p><code>UnionAll</code> 类型通常使用关键字 <code>where</code> 编写。例如，<code>Ptr</code> 可以更精确地写为 <code>Ptr{T} where T</code>，也就是对于 <code>T</code> 的某些值，所有类型为 <code>Ptr{T}</code> 的值。在这种情况下，参数 <code>T</code> 也常被称为「类型变量」，因为它就像一个取值范围为类型的变量。每个 <code>where</code> 只引入一个类型变量，因此在具有多个参数的类型中这些表达式会被嵌套，例如 <code>Array{T,N} where N where T</code>。</p><p>类型应用语法 <code>A{B,C}</code> 要求 <code>A</code> 是个 <code>UnionAll</code> 类型，并先代入 <code>B</code> 作为 <code>A</code> 中最外层的类型变量。结果应该是另一个 <code>UnionAll</code> 类型，然后再将 <code>C</code> 代入。所以 <code>A{B,C}</code> 等价于 <code>A{B}{C}</code>。这解释了为什么可以部分实例化一个类型，比如 <code>Array{Float64}</code>：第一个参数已经被固定，但第二个参数仍取遍所有可能值。通过使用 <code>where</code> 语法，任何参数子集都能被固定。例如，所有一维数组的类型可以写为 <code>Array{T,1} where T</code>。</p><p>类型变量可以用子类型关系来加以限制。<code>Array{T} where T&lt;:Integer</code> 指的是元素类型是某种 <a href="../../base/numbers/#Core.Integer"><code>Integer</code></a> 的所有数组。语法 <code>Array{&lt;:Integer}</code> 是 <code>Array{T} where T&lt;:Integer</code> 的便捷的缩写。类型变量可同时具有上下界。<code>Array{T} where Int&lt;:T&lt;:Number</code> 指的是元素类型为能够包含 <code>Int</code> 的 <a href="../../base/numbers/#Core.Number"><code>Number</code></a> 的所有数组（因为 <code>T</code> 至少和 <code>Int</code> 一样大）。语法 <code>where T&gt;:Int</code> 也能用来只指定类型变量的下界，且 <code>Array{&gt;:Int}</code> 等价于 <code>Array{T} where T&gt;:Int</code>。</p><p>由于 <code>where</code> 表达式可以嵌套，类型变量界可以引用更外层的类型变量。比如 <code>Tuple{T,Array{S}} where S&lt;:AbstractArray{T} where T&lt;:Real</code> 指的是二元元组，其第一个元素是某个 <a href="../../base/numbers/#Core.Real"><code>Real</code></a>，而第二个元素是数组的数组 <code>Array</code>，其包含的内部数组的元素类型由元组的第一个元素类型决定。</p><p><code>where</code> 关键字本身可以嵌套在更复杂的声明里。例如，考虑由以下声明创建的两个类型：</p><pre><code class="language-julia-repl hljs">julia&gt; const T1 = Array{Array{T, 1} where T, 1}
+Vector{Vector} (alias for Array{Array{T, 1} where T, 1})
+
+julia&gt; const T2 = Array{Array{T, 1}, 1} where T
+Array{Vector{T}, 1} where T</code></pre><p>类型 <code>T1</code> 定义了由一维数组组成的一维数组；每个内部数组由相同类型的对象组成，但此类型对于不同内部数组可以不同。另一方面，类型 <code>T2</code> 定义了由一维数组组成的一维数组，其中的每个内部数组必须具有相同的类型。请注意，<code>T2</code> 是个抽象类型，比如 <code>Array{Array{Int,1},1} &lt;: T2</code>，而 <code>T1</code> 是个具体类型。因此，<code>T1</code> 可由零参数构造函数 <code>a=T1()</code> 构造，但 <code>T2</code> 不行。</p><p>命名此类型有一种方便的语法，类似于函数定义语法的简短形式：</p><pre><code class="language-julia hljs">Vector{T} = Array{T, 1}</code></pre><p>这等价于 <code>const Vector = Array{T,1} where T</code>。编写 <code>Vector{Float64}</code> 等价于编写 <code>Array{Float64,1}</code>，总类型 <code>Vector</code> 具有所有 <code>Array</code> 对象的实例，其中 <code>Array</code> 对象的第二个参数——数组维数——是 1，而不考虑元素类型是什么。在参数类型必须总被完整指定的语言中，这不是特别有用，但在 Julia 中，这允许只编写 <code>Vector</code> 来表示包含任何元素类型的所有一维密集数组的抽象类型。</p><h2 id="man-singleton-types"><a class="docs-heading-anchor" href="#man-singleton-types">单例类型</a><a id="man-singleton-types-1"></a><a class="docs-heading-anchor-permalink" href="#man-singleton-types" title="Permalink"></a></h2><p>没有字段的不可变复合类型称为 <em>单例类型</em>。正式地，如果</p><ol><li><code>T</code> 是一个不可变的复合类型（即用 <code>struct</code> 定义），</li><li><code>a isa T &amp;&amp; b isa T</code> 暗含 <code>a === b</code>,</li></ol><p>那么<code>T</code>是单例类型。<sup class="footnote-reference"><a id="citeref-2" href="#footnote-2">[2]</a></sup> <a href="../../base/base/#Base.issingletontype"><code>Base.issingletontype</code></a> 可以用来检查一个类型是否是单例类型。 <a href="#man-abstract-types">抽象类型</a> 不能通过构造成为单例类型。</p><p>根据定义，此类类型只能有一个实例：</p><pre><code class="language-julia-repl hljs">julia&gt; struct NoFields
+       end
+
+julia&gt; NoFields() === NoFields()
+true
+
+julia&gt; Base.issingletontype(NoFields)
+true</code></pre><p><a href="../../base/base/#Core.:==="><code>===</code></a> 函数确认<code>NoFields</code> 的构造实例实际上是一个且相同的。</p><p>当上述条件成立时，参数类型可以是单例类型。例如，</p><pre><code class="language-julia-repl hljs">julia&gt; struct NoFieldsParam{T}
+       end
+
+julia&gt; Base.issingletontype(NoFieldsParam) # Can&#39;t be a singleton type ...
+false
+
+julia&gt; NoFieldsParam{Int}() isa NoFieldsParam # ... because it has ...
+true
+
+julia&gt; NoFieldsParam{Bool}() isa NoFieldsParam # ... multiple instances.
+true
+
+julia&gt; Base.issingletontype(NoFieldsParam{Int}) # Parametrized, it is a singleton.
+true
+
+julia&gt; NoFieldsParam{Int}() === NoFieldsParam{Int}()
+true</code></pre><h2 id="Types-of-functions"><a class="docs-heading-anchor" href="#Types-of-functions">Types of functions</a><a id="Types-of-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Types-of-functions" title="Permalink"></a></h2><p>Each function has its own type, which is a subtype of <code>Function</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; foo41(x) = x + 1
+foo41 (generic function with 1 method)
+
+julia&gt; typeof(foo41)
+typeof(foo41) (singleton type of function foo41, subtype of Function)</code></pre><p>Note how <code>typeof(foo41)</code> prints as itself. This is merely a convention for printing, as it is a first-class object that can be used like any other value:</p><pre><code class="language-julia-repl hljs">julia&gt; T = typeof(foo41)
+typeof(foo41) (singleton type of function foo41, subtype of Function)
+
+julia&gt; T &lt;: Function
+true</code></pre><p>Types of functions defined at top-level are singletons. When necessary, you can compare them with <a href="../../base/base/#Core.:==="><code>===</code></a>.</p><p><a href="../functions/#man-anonymous-functions">Closures</a> also have their own type, which is usually printed with names that end in <code>#&lt;number&gt;</code>. Names and types for functions defined at different locations are distinct, but not guaranteed to be printed the same way across sessions.</p><pre><code class="language-julia-repl hljs">julia&gt; typeof(x -&gt; x + 1)
+var&quot;#9#10&quot;</code></pre><p>Types of closures are not necessarily singletons.</p><pre><code class="language-julia-repl hljs">julia&gt; addy(y) = x -&gt; x + y
+addy (generic function with 1 method)
+
+julia&gt; typeof(addy(1)) === typeof(addy(2))
+true
+
+julia&gt; addy(1) === addy(2)
+false
+
+julia&gt; Base.issingletontype(typeof(addy(1)))
+false</code></pre><h2 id="man-typet-type"><a class="docs-heading-anchor" href="#man-typet-type"><code>Type{T}</code> 类型选择器</a><a id="man-typet-type-1"></a><a class="docs-heading-anchor-permalink" href="#man-typet-type" title="Permalink"></a></h2><p>对于每个类型<code>T</code>，<code>Type{T}</code> 是一个抽象的参数类型，它的唯一实例是对象<code>T</code>。 在我们讨论 <a href="../methods/#参数方法">参数方法</a> 和 <a href="../conversion-and-promotion/#conversion-and-promotion">类型转换</a> 之前，很难解释这个构造的效用，但简而言之，它允许人们专门针对特定类型的函数行为 作为<em>值</em>。 这对于编写其行为取决于作为显式参数给出的类型而不是由其参数之一的类型隐含的类型的方法（尤其是参数方法）很有用。</p><p>由于定义有点难理解，我们来看一些例子：</p><pre><code class="language-julia-repl hljs">julia&gt; isa(Float64, Type{Float64})
+true
+
+julia&gt; isa(Real, Type{Float64})
+false
+
+julia&gt; isa(Real, Type{Real})
+true
+
+julia&gt; isa(Float64, Type{Real})
+false</code></pre><p>换句话说，<a href="../../base/base/#Core.isa"><code>isa(A, Type{B})</code></a> 当且仅当 <code>A</code> 和 <code>B</code> 是同一个对象并且该对象是一个类型时才为真。</p><p>特别的，由于参数类型是 <a href="#man-parametric-composite-types">不变量</a>，我们有</p><pre><code class="language-julia-repl hljs">julia&gt; struct TypeParamExample{T}
+           x::T
+       end
+
+julia&gt; TypeParamExample isa Type{TypeParamExample}
+true
+
+julia&gt; TypeParamExample{Int} isa Type{TypeParamExample}
+false
+
+julia&gt; TypeParamExample{Int} isa Type{TypeParamExample{Int}}
+true</code></pre><p>如果没有参数，<code>Type</code> 只是一个抽象类型，所有类型对象都是其实例：</p><pre><code class="language-julia-repl hljs">julia&gt; isa(Type{Float64}, Type)
+true
+
+julia&gt; isa(Float64, Type)
+true
+
+julia&gt; isa(Real, Type)
+true</code></pre><p>不是类型的对象不是 <code>Type</code> 的实例：</p><pre><code class="language-julia-repl hljs">julia&gt; isa(1, Type)
+false
+
+julia&gt; isa(&quot;foo&quot;, Type)
+false</code></pre><p>虽然 <code>Type</code> 与任何其他抽象参数类型一样是 Julia 类型层次结构的一部分，但它并不常用在方法签名之外，除非在某些特殊情况下。 <code>Type</code> 的另一个重要用法是使不太精确的字段类型更加清晰，例如<a href="#man-declared-types"><code>DataType</code></a> 在下面的示例中，默认构造函数可能会导致依赖精确包装类型的代码出现性能问题（类似于 [抽象类型参数](@ref man-performance-abstract-container））。</p><pre><code class="language-julia-repl hljs">julia&gt; struct WrapType{T}
+       value::T
+       end
+
+julia&gt; WrapType(Float64) # default constructor, note DataType
+WrapType{DataType}(Float64)
+
+julia&gt; WrapType(::Type{T}) where T = WrapType{Type{T}}(T)
+WrapType
+
+julia&gt; WrapType(Float64) # sharpened constructor, note more precise Type{Float64}
+WrapType{Type{Float64}}(Float64)</code></pre><h2 id="类型别名"><a class="docs-heading-anchor" href="#类型别名">类型别名</a><a id="类型别名-1"></a><a class="docs-heading-anchor-permalink" href="#类型别名" title="Permalink"></a></h2><p>有时为一个已经可表达的类型引入新名称是很方便的。这可通过一个简单的赋值语句完成。例如，<code>UInt</code> 是 <a href="../../base/numbers/#Core.UInt32"><code>UInt32</code></a> 或 <a href="../../base/numbers/#Core.UInt64"><code>UInt64</code></a> 的别名，因为它的大小与系统上的指针大小是相适应的。</p><pre><code class="language-julia-repl hljs"># 32-bit system:
+julia&gt; UInt
+UInt32
+
+# 64-bit system:
+julia&gt; UInt
+UInt64</code></pre><p>这是由 <code>base/boot.jl</code> 中以下代码实现的：</p><pre><code class="language-julia hljs">if Int === Int64
+    const UInt = UInt64
+else
+    const UInt = UInt32
+end</code></pre><p>当然，这依赖于 <code>Int</code> 的别名，但它被预定义成正确的类型—— <a href="../../base/numbers/#Core.Int32"><code>Int32</code></a> 或 <a href="../../base/numbers/#Core.Int64"><code>Int64</code></a>。</p><p>（注意，与 <code>Int</code> 不同，<code>Float</code> 不作为特定大小的 <a href="../../base/numbers/#Core.AbstractFloat"><code>AbstractFloat</code></a> 类型的别名而存在。与整数寄存器不同，浮点数寄存器大小由 IEEE-754 标准指定，而 <code>Int</code> 的大小反映了该机器上本地指针的大小。）</p><h2 id="类型操作"><a class="docs-heading-anchor" href="#类型操作">类型操作</a><a id="类型操作-1"></a><a class="docs-heading-anchor-permalink" href="#类型操作" title="Permalink"></a></h2><p>因为 Julia 中的类型本身就是对象，所以一般的函数可以对它们进行操作。已经引入了一些对于使用或探索类型特别有用的函数，例如 <code>&lt;:</code> 运算符，它表示其左操作数是否为其右操作数的子类型。</p><p><a href="../../base/base/#Core.isa"><code>isa</code></a> 函数测试对象是否具有给定类型并返回 true 或 false：</p><pre><code class="language-julia-repl hljs">julia&gt; isa(1, Int)
+true
+
+julia&gt; isa(1, AbstractFloat)
+false</code></pre><p>在文档示例中随处可见的 <a href="../../base/base/#Core.typeof"><code>typeof</code></a> 函数返回其参数的类型。如上所述，因为类型都是对象，所以它们也有类型，我们可以询问它们的类型：</p><pre><code class="language-julia-repl hljs">julia&gt; typeof(Rational{Int})
+DataType
+
+julia&gt; typeof(Union{Real,String})
+Union</code></pre><p>如果我们重复这个过程会怎样？一个类型的类型是什么？碰巧，每个类型都是复合值，因此都具有 <code>DataType</code> 类型：</p><pre><code class="language-julia-repl hljs">julia&gt; typeof(DataType)
+DataType
+
+julia&gt; typeof(Union)
+DataType</code></pre><p><code>DataType</code> 是它自己的类型。</p><p>另一个适用于某些类型的操作是 <a href="../../base/base/#Base.supertype"><code>supertype</code></a>，它显示了类型的超类型。只有已声明的类型（<code>DataType</code>）才有明确的超类型：</p><pre><code class="language-julia-repl hljs">julia&gt; supertype(Float64)
+AbstractFloat
+
+julia&gt; supertype(Number)
+Any
+
+julia&gt; supertype(AbstractString)
+Any
+
+julia&gt; supertype(Any)
+Any</code></pre><p>如果将 <a href="../../base/base/#Base.supertype"><code>supertype</code></a> 应用于其它类型对象（或非类型对象），则会引发 <a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>：</p><pre><code class="language-julia-repl hljs">julia&gt; supertype(Union{Float64,Int64})
+ERROR: MethodError: no method matching supertype(::Type{Union{Float64, Int64}})
+Closest candidates are:
+[...]</code></pre><h2 id="man-custom-pretty-printing"><a class="docs-heading-anchor" href="#man-custom-pretty-printing">自定义 pretty-printing</a><a id="man-custom-pretty-printing-1"></a><a class="docs-heading-anchor-permalink" href="#man-custom-pretty-printing" title="Permalink"></a></h2><p>通常，人们会想要自定义显示类型实例的方式。这可通过重载 <a href="../../base/io-network/#Base.show-Tuple{IO, Any}"><code>show</code></a> 函数来完成。举个例子，假设我们定义一个类型来表示极坐标形式的复数：</p><pre><code class="language-julia-repl hljs">julia&gt; struct Polar{T&lt;:Real} &lt;: Number
+           r::T
+           Θ::T
+       end
+
+julia&gt; Polar(r::Real,Θ::Real) = Polar(promote(r,Θ)...)
+Polar</code></pre><p>在这里，我们添加了一个自定义的构造函数，这样就可以接受不同 <a href="../../base/numbers/#Core.Real"><code>Real</code></a> 类型的参数并将它们类型提升为共同类型（请参阅<a href="../constructors/#man-constructors">构造函数</a>和<a href="../conversion-and-promotion/#conversion-and-promotion">类型转换和类型提升</a>）。（当然，为了让它表现地像个 <a href="../../base/numbers/#Core.Number"><code>Number</code></a>，我们需要定义许多其它方法，例如 <code>+</code>、<code>*</code>、<code>one</code>、<code>zero</code> 及类型提升规则等。）默认情况下，此类型的实例只是相当简单地显示有关类型名称和字段值的信息，比如，<code>Polar{Float64}(3.0,4.0)</code>。</p><p>如果我们希望它显示为 <code>3.0 * exp(4.0im)</code>，我们可定义以下方法来将对象打印到给定的输出对象 <code>io</code>（其代表文件、终端、及缓冲区等；请参阅<a href="../networking-and-streams/#网络和流">网络和流</a>）：</p><pre><code class="language-julia-repl hljs">julia&gt; Base.show(io::IO, z::Polar) = print(io, z.r, &quot; * exp(&quot;, z.Θ, &quot;im)&quot;)</code></pre><p><code>Polar</code> 对象的输出可以被更精细地控制。特别是，人们有时想要啰嗦的多行打印格式，用于在 REPL 和其它交互式环境中显示单个对象，以及一个更紧凑的单行格式，用于 <a href="../../base/io-network/#Base.print"><code>print</code></a> 函数或在作为其它对象（比如一个数组）的部分是显示该对象。虽然在两种情况下默认都会调用 <code>show(io, z)</code> 函数，你仍可以定义一个<em>不同</em>的多行格式来显示单个对象，这通过重载三参数形式的 <code>show</code> 函数，该函数接收 <code>text/plain</code> MIME 类型 （请参阅 <a href="../../base/io-network/#Multimedia-I/O">多媒体 I/O</a>）作为它的第二个参数，举个例子：</p><pre><code class="language-julia-repl hljs">julia&gt; Base.show(io::IO, ::MIME&quot;text/plain&quot;, z::Polar{T}) where{T} =
+           print(io, &quot;Polar{$T} complex number:\n   &quot;, z)</code></pre><p>（请注意 <code>print(..., z)</code> 在这里调用的是双参数的 <code>show(io, z)</code> 方法。）这导致：</p><pre><code class="language-julia-repl hljs">julia&gt; Polar(3, 4.0)
+Polar{Float64} complex number:
+   3.0 * exp(4.0im)
+
+julia&gt; [Polar(3, 4.0), Polar(4.0,5.3)]
+2-element Vector{Polar{Float64}}:
+ 3.0 * exp(4.0im)
+ 4.0 * exp(5.3im)</code></pre><p>其中单行格式的 <code>show(io, z)</code> 仍用于由 <code>Polar</code> 值组成的数组。从技术上讲，REPL 调用 <code>display(z)</code> 来显示单行的执行结果，其默认为 <code>show(stdout, MIME(&quot;text/plain&quot;), z)</code>，而后者又默认为 <code>show(stdout, z)</code>，但是你<em>不应该</em>定义新的 <a href="../../base/io-network/#Base.Multimedia.display"><code>display</code></a> 方法，除非你正在定义新的多媒体显示管理器（请参阅<a href="../../base/io-network/#Multimedia-I/O">多媒体 I/O</a>）。</p><p>此外，你还可以为其它 MIME 类型定义 <code>show</code> 方法，以便在支持的环境（比如 IJulia）中实现更丰富的对象显示（HTML、图像等）。例如，我们可以定义 <code>Polar</code> 对象的 HTML 显示格式，使其带有上标和斜体：</p><pre><code class="language-julia-repl hljs">julia&gt; Base.show(io::IO, ::MIME&quot;text/html&quot;, z::Polar{T}) where {T} =
+           println(io, &quot;&lt;code&gt;Polar{$T}&lt;/code&gt; complex number: &quot;,
+                   z.r, &quot; &lt;i&gt;e&lt;/i&gt;&lt;sup&gt;&quot;, z.Θ, &quot; &lt;i&gt;i&lt;/i&gt;&lt;/sup&gt;&quot;)</code></pre><p>之后会在支持 HTML 显示的环境中自动使用 HTML 显示 <code>Polar</code> 对象，但你也可以手动调用 <code>show</code> 来获取 HTML 输出：</p><pre><code class="language-julia-repl hljs">julia&gt; show(stdout, &quot;text/html&quot;, Polar(3.0,4.0))
+&lt;code&gt;Polar{Float64}&lt;/code&gt; complex number: 3.0 &lt;i&gt;e&lt;/i&gt;&lt;sup&gt;4.0 &lt;i&gt;i&lt;/i&gt;&lt;/sup&gt;</code></pre><p>An HTML renderer would display this as: <code>Polar{Float64}</code> complex number: 3.0 <i>e</i><sup>4.0 <i>i</i></sup></p><p>根据经验，单行 <code>show</code> 方法应为创建的显示对象打印有效的 Julia 表达式。当这个 <code>show</code> 方法包含中缀运算符时，比如上面的 <code>Polar</code> 的单行 <code>show</code> 方法里的乘法运算符（<code>*</code>），在作为另一个对象的部分打印时，它可能无法被正确解析。要查看此问题，请考虑下面的表达式对象（请参阅<a href="../metaprogramming/#程序表示">程序表示</a>），它代表 <code>Polar</code> 类型的特定实例的平方：</p><pre><code class="language-julia-repl hljs">julia&gt; a = Polar(3, 4.0)
+Polar{Float64} complex number:
+   3.0 * exp(4.0im)
+
+julia&gt; print(:($a^2))
+3.0 * exp(4.0im) ^ 2</code></pre><p>因为运算符 <code>^</code> 的优先级高于 <code>*</code>（请参阅<a href="../mathematical-operations/#运算符的优先级与结合性">运算符的优先级与结合性</a>），所以此输出错误地表示了表达式 <code>a ^ 2</code>，而该表达式等价于 <code>(3.0 * exp(4.0im)) ^ 2</code>。为了解决这个问题，我们必须为 <code>Base.show_unquoted(io::IO, z::Polar, indent::Int, precedence::Int)</code> 创建一个自定义方法，在打印时，表达式对象会在内部调用它：</p><pre><code class="language-julia-repl hljs">julia&gt; function Base.show_unquoted(io::IO, z::Polar, ::Int, precedence::Int)
+           if Base.operator_precedence(:*) &lt;= precedence
+               print(io, &quot;(&quot;)
+               show(io, z)
+               print(io, &quot;)&quot;)
+           else
+               show(io, z)
+           end
+       end
+
+julia&gt; :($a^2)
+:((3.0 * exp(4.0im)) ^ 2)</code></pre><p>当正在调用的运算符的优先级大于等于乘法的优先级时，上面定义的方法会在 <code>show</code> 调用的两侧加上括号。这个检查允许，在没有括号时也可被正确解析的表达式（例如 <code>:($a + 2)</code> 和 <code>:($a == 2)</code>），在打印时省略括号：</p><pre><code class="language-julia-repl hljs">julia&gt; :($a + 2)
+:(3.0 * exp(4.0im) + 2)
+
+julia&gt; :($a == 2)
+:(3.0 * exp(4.0im) == 2)</code></pre><p>在某些情况下，根据上下文调整 <code>show</code> 方法的行为是很有用的。这可通过 <a href="../../base/io-network/#Base.IOContext"><code>IOContext</code></a> 类型实现，它允许同时传递上下文属性和封装后的 IO 流。例如，我们可以在 <code>:compact</code> 属性设置为 <code>true</code> 时创建一个更短的表示，而在该属性为 <code>false</code> 或不存在时返回长的表示：</p><pre><code class="language-julia-repl hljs">julia&gt; function Base.show(io::IO, z::Polar)
+           if get(io, :compact, false)::Bool
+               print(io, z.r, &quot;ℯ&quot;, z.Θ, &quot;im&quot;)
+           else
+               print(io, z.r, &quot; * exp(&quot;, z.Θ, &quot;im)&quot;)
+           end
+       end</code></pre><p>当传入的 IO 流是设置了 <code>:compact</code>（译注：该属性还应当设置为 <code>true</code>）属性的 <code>IOContext</code> 对象时，新的紧凑表示将被使用。特别地，当打印具有多列的数组（由于水平空间有限）时就是这种情况：</p><pre><code class="language-julia-repl hljs">julia&gt; show(IOContext(stdout, :compact=&gt;true), Polar(3, 4.0))
+3.0ℯ4.0im
+
+julia&gt; [Polar(3, 4.0) Polar(4.0,5.3)]
+1×2 Matrix{Polar{Float64}}:
+ 3.0ℯ4.0im  4.0ℯ5.3im</code></pre><p>有关调整打印效果的常用属性列表，请参阅文档 <a href="../../base/io-network/#Base.IOContext"><code>IOContext</code></a>。</p><h2 id="值类型"><a class="docs-heading-anchor" href="#值类型">值类型</a><a id="值类型-1"></a><a class="docs-heading-anchor-permalink" href="#值类型" title="Permalink"></a></h2><p>在 Julia 中，你无法根据诸如 <code>true</code> 或 <code>false</code> 之类的<em>值</em>进行分派。然而，你可以根据参数类型进行分派，Julia 允许你包含「plain bits」值（类型、符号、整数、浮点数和元组等）作为类型参数。<code>Array{T,N}</code> 里的维度参数就是一个常见的例子，在这里 <code>T</code> 是类型（比如 <a href="../../base/numbers/#Core.Float64"><code>Float64</code></a>），而 <code>N</code> 只是个 <code>Int</code>。</p><p>你可以创建把值作为参数的自定义类型，并使用它们控制自定义类型的分派。 为了说明这个想法，让我们引入参数类型 <code>Val{x}</code> 和构造函数 <code>Val(x) = Val{x}()</code>，在不需要更精细的层次结构时，这是利用此技巧的一种习惯的方式。</p><p><a href="../../base/base/#Base.Val"><code>Val</code></a> 的定义为：</p><pre><code class="language-julia-repl hljs">julia&gt; struct Val{x}
+       end
+
+julia&gt; Val(x) = Val{x}()
+Val</code></pre><p><code>Val</code> 的实现就只需要这些。一些 Julia 标准库里的函数接收 <code>Val</code> 的实例作为参数，你也可以使用它来编写你自己的函数，例如：</p><pre><code class="language-julia-repl hljs">julia&gt; firstlast(::Val{true}) = &quot;First&quot;
+firstlast (generic function with 1 method)
+
+julia&gt; firstlast(::Val{false}) = &quot;Last&quot;
+firstlast (generic function with 2 methods)
+
+julia&gt; firstlast(Val(true))
+&quot;First&quot;
+
+julia&gt; firstlast(Val(false))
+&quot;Last&quot;</code></pre><p>为了保证 Julia 的一致性，调用处应当始终传递 <code>Val</code> <strong>实例</strong> 而不是 <strong>类型</strong>，也就是使用 <code>foo(Val(:bar))</code> 而不是 <code>foo(Val{:bar})</code>。</p><p>值得注意的是，参数「值」类型非常容易被误用，包括 <code>Val</code>；在不适用的情形下，你很容易使代码性能变得更<em>糟糕</em>。特别是，你可能永远都不会想要写出如上所示的代码。有关 <code>Val</code> 的正确（和不正确）使用的更多信息，请阅读<a href="../performance-tips/#man-performance-value-type">性能建议</a>中更广泛的讨论。</p><section class="footnotes is-size-7"><ul><li class="footnote" id="footnote-1"><a class="tag is-link" href="#citeref-1">1</a>「少数」由常数 <code>max_union_splitting</code> 定义，目前默认为 4。</li><li class="footnote" id="footnote-2"><a class="tag is-link" href="#citeref-2">2</a>一些流行的编程语言具有单例类型，包括 Haskell、Scala 和 Ruby。</li></ul></section></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../variables-and-scoping/">« 变量作用域</a><a class="docs-footer-nextpage" href="../methods/">方法 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>本文档在 <span class="colophon-date" title="2024 十二月 16 周一 16:55">2024 十二月 16 周一</span>用 <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> 1.8.0 版生成使用 1.10.7 版本的 Julia。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
