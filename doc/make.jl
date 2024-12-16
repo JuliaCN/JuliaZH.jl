@@ -1,5 +1,6 @@
-# tweaked from https://github.com/JuliaLang/julia/blob/master/doc/make.jl
+# tweaked from https://github.com/JuliaLang/julia/blob/v1.10.5/doc/make.jl
 # Install dependencies needed to build the documentation.
+Base.ACTIVE_PROJECT[] = nothing
 empty!(LOAD_PATH)
 push!(LOAD_PATH, @__DIR__, "@stdlib")
 empty!(DEPOT_PATH)
@@ -7,10 +8,10 @@ pushfirst!(DEPOT_PATH, joinpath(@__DIR__, "deps"))
 using Pkg
 Pkg.instantiate()
 
-using Documenter, DocumenterLaTeX
+using Documenter
 using DocumenterInventoryWritingBackport
 include("../contrib/HTMLWriter.jl")
-include("../contrib/LaTeXWriter.jl")
+# include("../contrib/LaTeXWriter.jl")
 
 
 # Documenter Setup.
@@ -54,7 +55,7 @@ end
 
 cpi18ndoc(;force=true)
 
-# make links for stdlib package docs, this is needed until #522 in Documenter.jl is finished
+# make links for stdlib package docs, this is needed until #552 in Documenter.jl is finished
 const STDLIB_DOCS = []
 const STDLIB_DIR = joinpath(@__DIR__, "..", "stdlib")
 cd(joinpath(@__DIR__, "src")) do
@@ -74,132 +75,142 @@ cd(joinpath(@__DIR__, "src")) do
     end
 end
 
-# manual/unicode-input.md
+# Used in: manual/unicode-input.md
+# https://github.com/JuliaLang/julia/blob/v1.10.5/doc/Makefile#L28
 const UnicodeDataPath = joinpath(Sys.BINDIR, "..", "UnicodeData.txt")
 
 if !isfile(UnicodeDataPath)
-    download("http://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt", UnicodeDataPath)
+    download("https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt", UnicodeDataPath)
 end
+
+Manual = [
+    "manual/getting-started.md",
+    "manual/variables.md",
+    "manual/integers-and-floating-point-numbers.md",
+    "manual/mathematical-operations.md",
+    "manual/complex-and-rational-numbers.md",
+    "manual/strings.md",
+    "manual/functions.md",
+    "manual/control-flow.md",
+    "manual/variables-and-scoping.md",
+    "manual/types.md",
+    "manual/methods.md",
+    "manual/constructors.md",
+    "manual/conversion-and-promotion.md",
+    "manual/interfaces.md",
+    "manual/modules.md",
+    "manual/documentation.md",
+    "manual/metaprogramming.md",
+    "manual/arrays.md",
+    "manual/missing.md",
+    "manual/networking-and-streams.md",
+    "manual/parallel-computing.md",
+    "manual/asynchronous-programming.md",
+    "manual/multi-threading.md",
+    "manual/distributed-computing.md",
+    "manual/running-external-programs.md",
+    "manual/calling-c-and-fortran-code.md",
+    "manual/handling-operating-system-variation.md",
+    "manual/environment-variables.md",
+    "manual/embedding.md",
+    "manual/code-loading.md",
+    "manual/profile.md",
+    "manual/stacktraces.md",
+    "manual/performance-tips.md",
+    "manual/workflow-tips.md",
+    "manual/style-guide.md",
+    "manual/faq.md",
+    "manual/noteworthy-differences.md",
+    "manual/unicode-input.md",
+    "manual/command-line-interface.md",
+]
+
+BaseDocs = [
+    "base/base.md",
+    "base/collections.md",
+    "base/math.md",
+    "base/numbers.md",
+    "base/strings.md",
+    "base/arrays.md",
+    "base/parallel.md",
+    "base/multi-threading.md",
+    "base/constants.md",
+    "base/file.md",
+    "base/io-network.md",
+    "base/punctuation.md",
+    "base/sort.md",
+    "base/iterators.md",
+    "base/reflection.md",
+    "base/c.md",
+    "base/libc.md",
+    "base/stacktraces.md",
+    "base/simd-types.md",
+]
+
+StdlibDocs = [stdlib.targetfile for stdlib in STDLIB_DOCS]
+
+DevDocs = [
+    "Documentation of Julia's Internals" => [
+        "devdocs/init.md",
+        "devdocs/ast.md",
+        "devdocs/types.md",
+        "devdocs/object.md",
+        "devdocs/eval.md",
+        "devdocs/callconv.md",
+        "devdocs/compiler.md",
+        "devdocs/functions.md",
+        "devdocs/cartesian.md",
+        "devdocs/meta.md",
+        "devdocs/subarrays.md",
+        "devdocs/isbitsunionarrays.md",
+        "devdocs/sysimg.md",
+        "devdocs/pkgimg.md",
+        "devdocs/llvm.md",
+        "devdocs/stdio.md",
+        "devdocs/boundscheck.md",
+        "devdocs/locks.md",
+        "devdocs/offset-arrays.md",
+        "devdocs/require.md",
+        "devdocs/inference.md",
+        "devdocs/ssair.md",
+        "devdocs/EscapeAnalysis.md",
+        "devdocs/gc-sa.md",
+        "devdocs/gc.md",
+        "devdocs/precompile_hang.md",
+    ],
+    "Developing/debugging Julia's C code" => [
+        "devdocs/backtraces.md",
+        "devdocs/debuggingtips.md",
+        "devdocs/valgrind.md",
+        "devdocs/external_profilers.md",
+        "devdocs/sanitizers.md",
+        "devdocs/probes.md",
+    ],
+    "Building Julia" => [
+        "devdocs/build/build.md",
+        "devdocs/build/linux.md",
+        "devdocs/build/macos.md",
+        "devdocs/build/windows.md",
+        "devdocs/build/freebsd.md",
+        "devdocs/build/arm.md",
+        "devdocs/build/distributing.md",
+    ]
+]
 
 const PAGES = [
     "主页" => "index.md",
-    "手册" => [
-        "manual/getting-started.md",
-        "manual/variables.md",
-        "manual/integers-and-floating-point-numbers.md",
-        "manual/mathematical-operations.md",
-        "manual/complex-and-rational-numbers.md",
-        "manual/strings.md",
-        "manual/functions.md",
-        "manual/control-flow.md",
-        "manual/variables-and-scoping.md",
-        "manual/types.md",
-        "manual/methods.md",
-        "manual/constructors.md",
-        "manual/conversion-and-promotion.md",
-        "manual/interfaces.md",
-        "manual/modules.md",
-        "manual/documentation.md",
-        "manual/metaprogramming.md",
-        "manual/arrays.md",
-        "manual/missing.md",
-        "manual/networking-and-streams.md",
-        "manual/parallel-computing.md",
-        "manual/asynchronous-programming.md",
-        "manual/multi-threading.md",
-        "manual/distributed-computing.md",
-        "manual/running-external-programs.md",
-        "manual/calling-c-and-fortran-code.md",
-        "manual/handling-operating-system-variation.md",
-        "manual/environment-variables.md",
-        "manual/embedding.md",
-        "manual/code-loading.md",
-        "manual/profile.md",
-        "manual/stacktraces.md",
-        "manual/performance-tips.md",
-        "manual/workflow-tips.md",
-        "manual/style-guide.md",
-        "manual/faq.md",
-        "manual/noteworthy-differences.md",
-        "manual/unicode-input.md",
-        "manual/command-line-interface.md",
-    ],
-    "Base" => [
-        "base/base.md",
-        "base/collections.md",
-        "base/math.md",
-        "base/numbers.md",
-        "base/strings.md",
-        "base/arrays.md",
-        "base/parallel.md",
-        "base/multi-threading.md",
-        "base/constants.md",
-        "base/file.md",
-        "base/io-network.md",
-        "base/punctuation.md",
-        "base/sort.md",
-        "base/iterators.md",
-        "base/reflection.md",
-        "base/c.md",
-        "base/libc.md",
-        "base/stacktraces.md",
-        "base/simd-types.md",
-    ],
-    "Standard Library" =>
-        [stdlib.targetfile for stdlib in STDLIB_DOCS],
-    "Developer Documentation" => [
-        "Documentation of Julia's Internals" => [
-            "devdocs/init.md",
-            "devdocs/ast.md",
-            "devdocs/types.md",
-            "devdocs/object.md",
-            "devdocs/eval.md",
-            "devdocs/callconv.md",
-            "devdocs/compiler.md",
-            "devdocs/functions.md",
-            "devdocs/cartesian.md",
-            "devdocs/meta.md",
-            "devdocs/subarrays.md",
-            "devdocs/isbitsunionarrays.md",
-            "devdocs/sysimg.md",
-            "devdocs/pkgimg.md",
-            "devdocs/llvm.md",
-            "devdocs/stdio.md",
-            "devdocs/boundscheck.md",
-            "devdocs/locks.md",
-            "devdocs/offset-arrays.md",
-            "devdocs/require.md",
-            "devdocs/inference.md",
-            "devdocs/ssair.md",
-            "devdocs/EscapeAnalysis.md",
-            "devdocs/gc-sa.md",
-            "devdocs/gc.md",
-            "devdocs/precompile_hang.md",
-        ],
-        "Developing/debugging Julia's C code" => [
-            "devdocs/backtraces.md",
-            "devdocs/debuggingtips.md",
-            "devdocs/valgrind.md",
-            "devdocs/external_profilers.md",
-            "devdocs/sanitizers.md",
-            "devdocs/probes.md",
-        ],
-        "Building Julia" => [
-            "devdocs/build/build.md",
-            "devdocs/build/linux.md",
-            "devdocs/build/macos.md",
-            "devdocs/build/windows.md",
-            "devdocs/build/freebsd.md",
-            "devdocs/build/arm.md",
-            "devdocs/build/distributing.md",
-        ]
-    ],
+    "手册" => Manual,
+    "Base" => BaseDocs,
+    "标准库" => StdlibDocs,
+    "开发者文档" => DevDocs,
 ]
 
 
 function maybe_revise(ex)
+    # Do Nothing
     return ex
 end
+
 for stdlib in STDLIB_DOCS
     @eval using $(stdlib.stdlib)
     # All standard library modules get `using $STDLIB` as their global
@@ -248,7 +259,7 @@ const render_pdf = "pdf" in ARGS
 const is_deploy = "deploy" in ARGS
 
 const format = if render_pdf
-    LaTeX(
+    Documenter.LaTeX(
         platform = "texplatform=docker" in ARGS ? "docker" : "native"
     )
 else
@@ -262,7 +273,7 @@ else
         analytics = "UA-28835595-9",
         collapselevel = 1,
         sidebar_sitename = false,
-        # ansicolor = true,
+        ansicolor = true,
         lang = "zh-cn",
         # 文档全局页脚
         # footer = "📢📢📢 JuliaCN 2022 冬季见面会 报告[征集](https://cn.julialang.org/meetup-website/2022/)"
@@ -278,17 +289,21 @@ makedocs(
     # strict    = true,
     checkdocs = :none,
     format    = format,
-    sitename  = "Julia中文文档",
-    authors   = "Julia中文社区",
+    sitename  = "Julia 中文文档",
+    authors   = "Julia 中文社区",
     pages     = PAGES,
 )
+
+# TODO? Update URLs to external stdlibs (JuliaLang/julia#43199)
 
 if is_deploy
     deploydocs(
         repo = "github.com/JuliaCN/JuliaZH.jl.git",
+        # deploy_config = BuildBotConfig(),
         target = "build",
-        deps = nothing,
-        make = nothing,
+        # dirname = "en",
+        # devurl = devurl,
+        # versions = Versions(["v#.#", devurl => devurl]),
         branch = render_pdf ? "pdf" : "gh-pages"
     )
 else
