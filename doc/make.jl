@@ -265,7 +265,6 @@ const format = if render_pdf
 else
     Documenter.HTML(
         prettyurls = is_deploy,
-        repolink = "https://github.com/JuliaCN/JuliaZH.jl",
         canonical = is_deploy ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
         assets = [
             "assets/julia-manual.css",
@@ -282,6 +281,53 @@ else
         # footer = "📢📢📢 JuliaCN 2022 冬季见面会 报告[征集](https://cn.julialang.org/meetup-website/2022/)"
     )
 end
+
+
+import Documenter.Remotes: Remote, repourl, fileurl, issueurl
+# 复制&&修改自 GitHub <: Remote 
+#   用于转换翻译文档对应的路径
+#   https://github.com/JuliaDocs/Documenter.jl/blob/2123d7a12a7380ca793b9cf2d680af1c7eb8b94a/src/utilities/Remotes.jl#L121
+struct JuliaZHRemote <: Remote
+    user::String
+    repo::String
+end
+function JuliaZHRemote(remote::AbstractString)
+    user, repo = split(remote, '/')
+    return JuliaZHRemote(user, repo)
+end
+repourl(remote::JuliaZHRemote) = "https://github.com/$(remote.user)/$(remote.repo)"
+"""XXX
+主要修改了此函数，以实现对路径的转换。
+我们复制 md 文件到 `doc/` 文件夹中，因此默认的路径基于 `doc/`。
+要将他们映射到 `zh_CN/` 中
+
+https://documenter.juliadocs.org/stable/lib/remote-links/#Documenter.Remotes.fileurl
+
+ref	        filename	    linerange	returned string
+"v1.2.3"	"foo/bar.jl"	12:12	    "https://github.com/USER/REPO/blob/v1.2.3/foo/bar.jl#L12"
+"""
+function fileurl(remote::JuliaZHRemote, ref::AbstractString, filename::AbstractString, linerange)
+    real_filename = if startswith(filename, "doc/src/index.md")
+        # 特殊处理 doc\src\index.md
+        filename
+    elseif startswith(filename, "doc/src/stdlib")
+        # doc\src\stdlib\CRC32c  =>  zh_CN\stdlib\CRC32c\docs\src\index.md
+        replace(filename, r"doc/src/stdlib/([^\.]+)\.md" => s"zh_CN/stdlib/\1/docs/src/index.md")
+    elseif startswith(filename, "doc/src")
+        # doc/src/base/parallel.md  =>  zh_CN/doc/src/base/parallel.md
+        replace(filename, r"doc/src" => "zh_CN/doc/src")
+    else
+        @warn "未找到对应的 md 源文件: $filename"
+        filename
+    end
+    url = "$(repourl(remote))/blob/$(ref)/$(real_filename)"
+    @show url
+    isnothing(linerange) && return url
+    lstart, lend = first(linerange), last(linerange)
+    return (lstart == lend) ? "$(url)#L$(lstart)" : "$(url)#L$(lstart)-L$(lend)"
+end
+issueurl(remote::JuliaZHRemote, issuenumber) = "$(repourl(remote))/issues/$issuenumber"
+
 
 # TODO: 自定义 Remotes 类型，修复位于 julia 库中的标准库路径
 #   定义 Remotes.JuliaGitHub; 实现 Remotes.fileurl
@@ -321,9 +367,8 @@ documenter_stdlib_remotes = begin
         @assert isdir(package_root_dir)
         push!(remotes_list, package_root_dir => (remote, commit))
     end
-    # TODO: 修复 md 文档路径
     Dict(
-        dirname(@__DIR__) => (Remotes.GitHub("JuliaCN", "JuliaZH"), "v1.10.5"),
+        dirname(@__DIR__) => JuliaZHRemote("JuliaCN", "JuliaZH.jl"),
         remotes_list...
     )
 end
