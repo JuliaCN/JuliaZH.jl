@@ -1,7 +1,3 @@
-```@meta
-EditURL = "https://github.com/JuliaLang/Pkg.jl/blob/master/docs/src/basedocs.md"
-```
-
 # Pkg
 
 Pkg is Julia's builtin package manager, and handles operations

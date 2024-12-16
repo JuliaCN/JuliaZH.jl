@@ -18,7 +18,7 @@ end
 import Markdown
 Markdown.parse(String(take!(io)))
 ```
-请阅读 [release notes](NEWS.md) 以了解自上次发行以来发生了什么变化。
+请阅读 release notes 以了解自上次发行以来发生了什么变化。
 
 ```@eval
 release = isempty(VERSION.prerelease)

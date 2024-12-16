@@ -484,7 +484,7 @@ Expr
 
 我们可以看到 `"human"` 字面量已被插入到表达式中了。
 
-还有一个宏 [`@ macroexpand`](@ ref)，它可能比 `macroexpand` 函数更方便：
+还有一个宏 [`@macroexpand`](@ref)，它可能比 `macroexpand` 函数更方便：
 
 
 ```jldoctest sayhello2

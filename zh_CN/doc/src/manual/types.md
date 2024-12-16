@@ -431,7 +431,7 @@ julia> Point{AbstractString}
 Point{AbstractString}
 ```
 
-`Point{Float64}` 类型是坐标为 64 位浮点值的点，而 `Point{AbstractString}` 类型是「坐标」为字符串对象（请参阅 [Strings](@id man-strings)）的「点」。
+`Point{Float64}` 类型是坐标为 64 位浮点值的点，而 `Point{AbstractString}` 类型是「坐标」为字符串对象（请参阅 [Strings](@ref man-strings)）的「点」。
 
 `Point` 本身也是一个有效的类型对象，包括所有实例 `Point{Float64}`、`Point{AbstractString}` 等作为子类型：
 
