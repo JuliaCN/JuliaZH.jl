@@ -4,13 +4,20 @@ on:
   push:
     branches:
       - master
+  pull_request:
   workflow_dispatch:
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
   PDF:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Build and deploy
         timeout-minutes: 90
         uses: JuliaCN/documenter-latex-action@v0.1.0
@@ -18,7 +25,7 @@ jobs:
           project_dir: 'doc'
           format: pdf # trigger the pdf compilation in our doc/make.jl
       - name: upload complied PDF file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: compiled contents
           path: doc/build/*.pdf
