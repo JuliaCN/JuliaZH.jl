@@ -265,6 +265,7 @@ const format = if render_pdf
 else
     Documenter.HTML(
         prettyurls = is_deploy,
+        repolink = "https://github.com/JuliaCN/JuliaZH.jl",
         canonical = is_deploy ? "https://juliacn.github.io/JuliaZH.jl/latest/" : nothing,
         assets = [
             "assets/julia-manual.css",
