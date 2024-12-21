@@ -294,7 +294,7 @@ struct StdlibSource <: Remote
     # 这里储存了标准库的名称，以作区别
     stdlib::String
 end
-repourl(remote::StdlibSource) = "https://github.com/$(remote.user)/$(remote.repo)"
+repourl(remote::StdlibSource) = repourl(Remotes.GitHub(remote.user, remote.repo))
 function fileurl(remote::StdlibSource, ref::AbstractString, filename::AbstractString, linerange)
     # NOTE: 这里指定了 stdlib 的文件夹
     url = "$(repourl(remote))/blob/$(ref)/stdlib/$(remote.stdlib)/$(filename)"
@@ -303,18 +303,14 @@ function fileurl(remote::StdlibSource, ref::AbstractString, filename::AbstractSt
     lstart, lend = first(linerange), last(linerange)
     return (lstart == lend) ? "$(url)#L$(lstart)" : "$(url)#L$(lstart)-L$(lend)"
 end
-issueurl(remote::StdlibSource, issuenumber) = "$(repourl(remote))/issues/$issuenumber"
+issueurl(remote::StdlibSource, issuenumber) = issueurl(Remotes.GitHub(remote.user, remote.repo), issuenumber)
 
 # 用于转换翻译文档对应的路径。即 md 源文件的编辑路径
 struct JuliaZHRemote <: Remote
     user::String
     repo::String
 end
-function JuliaZHRemote(remote::AbstractString)
-    user, repo = split(remote, '/')
-    return JuliaZHRemote(user, repo)
-end
-repourl(remote::JuliaZHRemote) = "https://github.com/$(remote.user)/$(remote.repo)"
+repourl(remote::JuliaZHRemote) = repourl(Remotes.GitHub(remote.user, remote.repo))
 """XXX
 主要修改了此函数，以实现对路径的转换。
 我们复制 md 文件到 `doc/` 文件夹中，因此默认的路径基于 `doc/`。
@@ -345,7 +341,7 @@ function fileurl(remote::JuliaZHRemote, ref::AbstractString, filename::AbstractS
     lstart, lend = first(linerange), last(linerange)
     return (lstart == lend) ? "$(url)#L$(lstart)" : "$(url)#L$(lstart)-L$(lend)"
 end
-issueurl(remote::JuliaZHRemote, issuenumber) = "$(repourl(remote))/issues/$issuenumber"
+issueurl(remote::JuliaZHRemote, issuenumber) = issueurl(Remotes.GitHub(remote.user, remote.repo), issuenumber)
 
 inside_stdlibs = [
     "Artifacts", "Base64", "CRC32c", "Dates", "Distributed", "FileWatching",
