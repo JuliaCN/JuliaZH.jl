@@ -18,12 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build and deploy
-        timeout-minutes: 90
-        uses: JuliaCN/documenter-latex-action@v0.1.0
+      - uses: julia-actions/setup-julia@v2
         with:
-          project_dir: 'doc'
-          format: pdf # trigger the pdf compilation in our doc/make.jl
+          version: '1.10'
+          show-versioninfo: true
+      - name: Install dependencies
+        shell: julia --project=doc --color=yes {0}
+        run: |
+          using Pkg
+          Pkg.develop(PackageSpec(path=pwd()))
+          Pkg.instantiate()
+      - name: Build PDF
+        run: julia --project=doc/ doc/make.jl pdf texplatform=docker
       - name: upload complied PDF file
         uses: actions/upload-artifact@v4
         with:
