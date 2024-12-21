@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>缺失值 · Julia 中文文档</title><meta name="title" content="缺失值 · Julia 中文文档"/><meta property="og:title" content="缺失值 · Julia 中文文档"/><meta property="twitter:title" content="缺失值 · Julia 中文文档"/><meta name="description" content="Documentation for Julia 中文文档."/><meta property="og:description" content="Documentation for Julia 中文文档."/><meta property="twitter:description" content="Documentation for Julia 中文文档."/><meta property="og:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/missing/"/><meta property="twitter:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/missing/"/><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/missing/"/><script async src="https://www.googletagmanager.com/gtag/js?id=UA-28835595-9"></script><script>  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-28835595-9', {'page_path': location.pathname + location.search + location.hash});
+</script><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia 中文文档 logo"/></a><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox" checked/><label class="tocitem" for="menuitem-2"><span class="docs-label">手册</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">一维和多维数组</a></li><li class="is-active"><a class="tocitem" href>缺失值</a><ul class="internal"><li><a class="tocitem" href="#缺失值的传播"><span>缺失值的传播</span></a></li><li><a class="tocitem" href="#相等和比较运算符"><span>相等和比较运算符</span></a></li><li><a class="tocitem" href="#逻辑运算符"><span>逻辑运算符</span></a></li><li><a class="tocitem" href="#流程控制和短路运算符"><span>流程控制和短路运算符</span></a></li><li><a class="tocitem" href="#包含缺失值的数组"><span>包含缺失值的数组</span></a></li><li><a class="tocitem" href="#跳过缺失值"><span>跳过缺失值</span></a></li><li><a class="tocitem" href="#数组上的逻辑运算"><span>数组上的逻辑运算</span></a></li></ul></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../asynchronous-programming/">异步编程</a></li><li><a class="tocitem" href="../multi-threading/">多线程</a></li><li><a class="tocitem" href="../distributed-computing/">多进程和分布式计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li><li><a class="tocitem" href="../command-line-interface/">Command-line Interface</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Base</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">标准数值类型</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/reflection/">反射 与 自我检查</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">标准库</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../stdlib/ArgTools/">ArgTools</a></li><li><a class="tocitem" href="../../stdlib/Artifacts/">Artifacts</a></li><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">Distributed Computing</a></li><li><a class="tocitem" href="../../stdlib/Downloads/">Downloads</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/Future/">Future</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">Interactive Utilities</a></li><li><a class="tocitem" href="../../stdlib/LazyArtifacts/">Lazy Artifacts</a></li><li><a class="tocitem" href="../../stdlib/LibCURL/">LibCURL</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">Linear Algebra</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/NetworkOptions/">Network Options</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">The Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/TOML/">TOML</a></li><li><a class="tocitem" href="../../stdlib/Tar/">Tar</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5" type="checkbox"/><label class="tocitem" for="menuitem-5"><span class="docs-label">开发者文档</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><input class="collapse-toggle" id="menuitem-5-1" type="checkbox"/><label class="tocitem" for="menuitem-5-1"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">本机代码生成过程的高级概述</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/pkgimg/">Package Images</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li><li><a class="tocitem" href="../../devdocs/ssair/">Julia SSA-form IR</a></li><li><a class="tocitem" href="../../devdocs/EscapeAnalysis/"><code>EscapeAnalysis</code></a></li><li><a class="tocitem" href="../../devdocs/gc-sa/">Static analyzer annotations for GC correctness in C code</a></li><li><a class="tocitem" href="../../devdocs/gc/">Garbage Collection in Julia</a></li><li><a class="tocitem" href="../../devdocs/precompile_hang/">Fixing precompilation hangs due to open tasks or IO</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/external_profilers/">External Profiler Support</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li><li><a class="tocitem" href="../../devdocs/probes/">Instrumenting Julia with DTrace, and bpftrace</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Building Julia</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/build/build/">Building Julia (Detailed)</a></li><li><a class="tocitem" href="../../devdocs/build/linux/">Linux</a></li><li><a class="tocitem" href="../../devdocs/build/macos/">macOS</a></li><li><a class="tocitem" href="../../devdocs/build/windows/">Windows</a></li><li><a class="tocitem" href="../../devdocs/build/freebsd/">FreeBSD</a></li><li><a class="tocitem" href="../../devdocs/build/arm/">ARM (Linux)</a></li><li><a class="tocitem" href="../../devdocs/build/distributing/">Binary distributions</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>缺失值</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>缺失值</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl" title="View the repository"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">Repository</span></a><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl/blob/master/zh_CN/doc/src/manual/missing.md" title="Edit source"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="missing"><a class="docs-heading-anchor" href="#missing">缺失值</a><a id="missing-1"></a><a class="docs-heading-anchor-permalink" href="#missing" title="Permalink"></a></h1><p>Julia 支持表示统计意义上的缺失值，即某个变量在观察中没有可用值，但在理论上存在有效值的情况。 缺失值由 <a href="#missing"><code>missing</code></a> 对象表示，该对象是 <a href="../../base/base/#Base.Missing"><code>Missing</code></a> 类型的唯一实例。 <code>missing</code> 等价于 <a href="https://en.wikipedia.org/wiki/NULL_(SQL)">SQL 中的 <code>NULL</code></a> 以及 <a href="https://cran.r-project.org/doc/manuals/r-release/R-lang.html#NA-handling">R 中的 <code>NA</code></a>，并在大多数情况下表现得与它们一样。</p><h2 id="缺失值的传播"><a class="docs-heading-anchor" href="#缺失值的传播">缺失值的传播</a><a id="缺失值的传播-1"></a><a class="docs-heading-anchor-permalink" href="#缺失值的传播" title="Permalink"></a></h2><p><code>missing</code>  值会自动在标准数学运算符和函数中<em>传播</em>。对于这类函数，其某个运算对象的值的不确定性会导致其结果的不确定性。 在应用中，上述情形意味着若在数学操作中包括 <code>missing</code>  值，其结果也常常返回 <code>missing</code> 值：</p><pre><code class="language-julia-repl hljs">julia&gt; missing + 1
+missing
+
+julia&gt; &quot;a&quot; * missing
+missing
+
+julia&gt; abs(missing)
+missing</code></pre><p>由于<code>missing</code> 是 Julia 中的正常对象，此传播规则仅在可实现该对象的函数中应用。 This can be achieved by:</p><ul><li>adding a specific method defined for arguments of type <code>Missing</code>,</li><li>accepting arguments of this type, and passing them to functions which propagate them (like standard math operators).</li></ul><p>在包中定义新传播规则时，应考虑缺失值的传播是否具有实际意义，并在传播有意义时定义合适的方法。 在某个不包含接受 <code>Missing</code> 类实参方法的函数中传递缺失值，则抛出 <a href="../../base/base/#Core.MethodError"><code>MethodError</code></a>的报错，正如其它类型一样。</p><p>若希望函数不传播缺失值，可将其按照 <a href="https://github.com/JuliaData/Missings.jl">Missings.jl</a> 库中的 <code>passmissing</code> 函数封装起来。例如，将 <code>f(x)</code> 封装为 <code>passmissing(f)(x)</code>。</p><h2 id="相等和比较运算符"><a class="docs-heading-anchor" href="#相等和比较运算符">相等和比较运算符</a><a id="相等和比较运算符-1"></a><a class="docs-heading-anchor-permalink" href="#相等和比较运算符" title="Permalink"></a></h2><p>标准相等和比较运算符遵循上面给出的传播规则。如果任何操作数是 <code>missing</code>，那么结果是 <code>missing</code>。 这是一些例子：</p><pre><code class="language-julia-repl hljs">julia&gt; missing == 1
+missing
+
+julia&gt; missing == missing
+missing
+
+julia&gt; missing &lt; 1
+missing
+
+julia&gt; 2 &gt;= missing
+missing</code></pre><p>特别要注意，<code>missing == missing</code> 返回 <code>missing</code>，所以 <code>==</code> 不能用于测试值是否为缺失值。要测试 <code>x</code> 是否为 <code>missing</code>，请用 <a href="../../base/base/#Base.ismissing"><code>ismissing(x)</code></a>。</p><p>特殊的比较运算符 <a href="../../base/base/#Base.isequal"><code>isequal</code></a> 和 <a href="../../base/base/#Core.:==="><code>===</code></a> 是传播规则的例外。 它们总返回一个 <code>Bool</code> 值，即使存在 <code>missing</code> 值，并认为 <code>missing</code> 与 <code>missing</code> 相等且其与任何其它值不同。 因此，它们可用于测试某个值是否为 <code>missing</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; missing === 1
+false
+
+julia&gt; isequal(missing, 1)
+false
+
+julia&gt; missing === missing
+true
+
+julia&gt; isequal(missing, missing)
+true</code></pre><p><a href="../../base/base/#Base.isless"><code>isless</code></a> 运算符是另一个例外：<code>missing</code> 被认为比任何其它值大。 此运算符被用于 <a href="../../base/sort/#Base.sort"><code>sort</code></a>，因此 <code>missing</code> 值被放置在所有其它值之后：</p><pre><code class="language-julia-repl hljs">julia&gt; isless(1, missing)
+true
+
+julia&gt; isless(missing, Inf)
+false
+
+julia&gt; isless(missing, missing)
+false</code></pre><h2 id="逻辑运算符"><a class="docs-heading-anchor" href="#逻辑运算符">逻辑运算符</a><a id="逻辑运算符-1"></a><a class="docs-heading-anchor-permalink" href="#逻辑运算符" title="Permalink"></a></h2><p>逻辑（或布尔）运算符 <a href="../../base/math/#Base.:|"><code>|</code></a>、<a href="../../base/math/#Base.:&amp;"><code>&amp;</code></a> 和 <a href="../../base/math/#Base.xor"><code>xor</code></a> 是另一种特殊情况，因为它们只有在逻辑上是必需的时传递 <code>missing</code> 值。 对于这些运算符来说，结果是否不确定取决于具体操作，其遵循<a href="https://en.wikipedia.org/wiki/Three-valued_logic"><em>三值逻辑</em></a>的既定规则， 这些规则由 SQL 中的 <code>NULL</code> 以及 R 中的 <code>NA</code> 实现。 这个抽象的定义实际上对应于一系列相对自然的行为，这最好通过具体的例子来解释。</p><p>让我们用逻辑「或」运算符 <a href="../../base/math/#Base.:|"><code>|</code></a> 来说明这个原理。 按照布尔逻辑的规则，如果其中一个操作数是 <code>true</code>，则另一个操作数对结果没影响，结果总是 <code>true</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; true | true
+true
+
+julia&gt; true | false
+true
+
+julia&gt; false | true
+true</code></pre><p>基于观察，我们可以得出结论，如果其中一个操作数是 <code>true</code> 而另一个是 <code>missing</code>，我们知道结果为 <code>true</code>，尽管另一个参数的实际值存在不确定性。 如果我们能观察到第二个操作数的实际值，那么它只能是 <code>true</code> 或 <code>false</code>，在两种情况下结果都是 <code>true</code>。 因此，在这种特殊情况下，值的缺失不会传播：</p><pre><code class="language-julia-repl hljs">julia&gt; true | missing
+true
+
+julia&gt; missing | true
+true</code></pre><p>相反地，如果其中一个操作数是 <code>false</code>，结果可能是 <code>true</code> 或 <code>false</code>，这取决于另一个操作数的值。 因此，如果一个操作数是 <code>missing</code>，那么结果也是 <code>missing</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; false | true
+true
+
+julia&gt; true | false
+true
+
+julia&gt; false | false
+false
+
+julia&gt; false | missing
+missing
+
+julia&gt; missing | false
+missing</code></pre><p>逻辑「且」运算符 <a href="../../base/math/#Base.:&amp;"><code>&amp;</code></a> 的行为与 <code>|</code> 运算符相似，区别在于当其中一个操作数为 <code>false</code> 时，值的缺失不会传播。 例如，当第一个操作数是 <code>false</code> 时：</p><pre><code class="language-julia-repl hljs">julia&gt; false &amp; false
+false
+
+julia&gt; false &amp; true
+false
+
+julia&gt; false &amp; missing
+false</code></pre><p>另一方面，当其中一个操作数为 <code>true</code> 时，值的缺失会传播。 例如，当第一个操作数是 <code>true</code> 时：</p><pre><code class="language-julia-repl hljs">julia&gt; true &amp; true
+true
+
+julia&gt; true &amp; false
+false
+
+julia&gt; true &amp; missing
+missing</code></pre><p>最后，逻辑「异或」运算符 <a href="../../base/math/#Base.xor"><code>xor</code></a> 总传播 <code>missing</code> 值，因为两个操作数都总是对结果产生影响。 还要注意，否定运算符 <a href="../../base/math/#Base.:!"><code>!</code></a> 在操作数是 <code>missing</code> 时返回 <code>missing</code>，这就像其它一元运算符。</p><h2 id="流程控制和短路运算符"><a class="docs-heading-anchor" href="#流程控制和短路运算符">流程控制和短路运算符</a><a id="流程控制和短路运算符-1"></a><a class="docs-heading-anchor-permalink" href="#流程控制和短路运算符" title="Permalink"></a></h2><p>流程控制操作符，包括 <a href="../../base/base/#if"><code>if</code></a>、<a href="../../base/base/#while"><code>while</code></a> 和<a href="../control-flow/#man-conditional-evaluation">三元运算符</a> <code>x ? y : z</code>，不允许缺失值。 这是因为如果我们能够观察实际值，它是 <code>true</code> 还是 <code>false</code> 是不确定的，这意味着我们不知道程序应该如何运行。 一旦在以下上下文中遇到 <code>missing</code> 值，就会抛出 <a href="../../base/base/#Core.TypeError"><code>TypeError</code></a>：</p><pre><code class="language-julia-repl hljs">julia&gt; if missing
+           println(&quot;here&quot;)
+       end
+ERROR: TypeError: non-boolean (Missing) used in boolean context</code></pre><p>出于同样的原因，并与上面给出的逻辑运算符相反，短路布尔运算符 <a href="../../base/math/#&amp;&amp;"><code>&amp;&amp;</code></a> 和 <a href="../../base/math/#||"><code>||</code></a> 在当前操作数的值决定下一个操作数是否求值时不允许 <code>missing</code> 值。 例如：</p><pre><code class="language-julia-repl hljs">julia&gt; missing || false
+ERROR: TypeError: non-boolean (Missing) used in boolean context
+
+julia&gt; missing &amp;&amp; false
+ERROR: TypeError: non-boolean (Missing) used in boolean context
+
+julia&gt; true &amp;&amp; missing &amp;&amp; false
+ERROR: TypeError: non-boolean (Missing) used in boolean context</code></pre><p>相反，如果无需 <code>missing</code> 值即可确定结果，则不会引发错误。 代码在对 <code>missing</code> 操作数求值前短路，以及 <code>missing</code> 是最后一个操作数都是这种情况：</p><pre><code class="language-julia-repl hljs">julia&gt; true &amp;&amp; missing
+missing
+
+julia&gt; false &amp;&amp; missing
+false</code></pre><h2 id="包含缺失值的数组"><a class="docs-heading-anchor" href="#包含缺失值的数组">包含缺失值的数组</a><a id="包含缺失值的数组-1"></a><a class="docs-heading-anchor-permalink" href="#包含缺失值的数组" title="Permalink"></a></h2><p>包含缺失值的数组的创建就像其它数组：</p><pre><code class="language-julia-repl hljs">julia&gt; [1, missing]
+2-element Vector{Union{Missing, Int64}}:
+ 1
+  missing</code></pre><p>如此示例所示，此类数组的元素类型为 <code>Union{Missing, T}</code>，其中 <code>T</code> 为非缺失值的类型。 这反映了以下事实：数组条目可以具有类型 <code>T</code>（此处为 <code>Int64</code>）或类型 <code>Missing</code>。 此类数组使用高效的内存存储，其等价于一个 <code>Array{T}</code> 和一个 <code>Array{UInt8}</code> 的组合， 前者保存实际值，后者表示条目类型（即它是 <code>Missing</code> 还是 <code>T</code>）。</p><p>允许缺失值的数组可以使用标准语法构造。使用 <code>Array{Union{Missing, T}}(missing, dims)</code> 来创建填充缺失值的数组：</p><pre><code class="language-julia-repl hljs">julia&gt; Array{Union{Missing, String}}(missing, 2, 3)
+2×3 Matrix{Union{Missing, String}}:
+ missing  missing  missing
+ missing  missing  missing</code></pre><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>使用 <code>undef</code> 或 <code>similar</code> 目前可能会给出一个填充有 <code>missing</code> 的数组，但这不是获得这样一个数组的正确方法。 请使用如上所示的 <code>missing</code> 构造函数。</p></div></div><p>An array with element type allowing <code>missing</code> entries (e.g. <code>Vector{Union{Missing, T}}</code>) which does not contain any <code>missing</code> entries can be converted to an array type that does not allow for <code>missing</code> entries (e.g. <code>Vector{T}</code>) using <a href="../../base/base/#Base.convert"><code>convert</code></a>. If the array contains <code>missing</code> values, a <code>MethodError</code> is thrown during conversion:</p><pre><code class="language-julia-repl hljs">julia&gt; x = Union{Missing, String}[&quot;a&quot;, &quot;b&quot;]
+2-element Vector{Union{Missing, String}}:
+ &quot;a&quot;
+ &quot;b&quot;
+
+julia&gt; convert(Array{String}, x)
+2-element Vector{String}:
+ &quot;a&quot;
+ &quot;b&quot;
+
+julia&gt; y = Union{Missing, String}[missing, &quot;b&quot;]
+2-element Vector{Union{Missing, String}}:
+ missing
+ &quot;b&quot;
+
+julia&gt; convert(Array{String}, y)
+ERROR: MethodError: Cannot `convert` an object of type Missing to an object of type String</code></pre><h2 id="跳过缺失值"><a class="docs-heading-anchor" href="#跳过缺失值">跳过缺失值</a><a id="跳过缺失值-1"></a><a class="docs-heading-anchor-permalink" href="#跳过缺失值" title="Permalink"></a></h2><p>由于 <code>missing</code> 会随着标准数学运算符传播，归约函数会在调用的数组包含缺失值时返回 <code>missing</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; sum([1, missing])
+missing</code></pre><p>在这种情况下，使用 <a href="../../base/base/#Base.skipmissing"><code>skipmissing</code></a> 即可跳过缺失值：</p><pre><code class="language-julia-repl hljs">julia&gt; sum(skipmissing([1, missing]))
+1</code></pre><p>此函数方便地返回一个可高效滤除 <code>missing</code> 值的迭代器。因此，它可应用于所有支持迭代器的函数：</p><pre><code class="language-julia-repl hljs">julia&gt; x = skipmissing([3, missing, 2, 1])
+skipmissing(Union{Missing, Int64}[3, missing, 2, 1])
+
+julia&gt; maximum(x)
+3
+
+julia&gt; sum(x)
+6
+
+julia&gt; mapreduce(sqrt, +, x)
+4.146264369941973
+</code></pre><p>通过在某数组中调用 <code>skipmissing</code> 生成的对象能以其在所属数组中的位置进行索引。 对应缺失值的指标并不有效，若尝试使用之会丢出报错（它们在 <code>keys</code> 和 <code>eachindex</code> 中同样是被跳过的）。</p><pre><code class="language-julia-repl hljs">julia&gt; x[1]
+3
+
+julia&gt; x[2]
+ERROR: MissingException: the value at index (2,) is missing
+[...]</code></pre><p>这允许对索引进行操作的函数与<code>skipmissing</code>结合使用。搜索和查找函数尤其如此，它们返回对<code>skipmissing</code> 函数返回的对象有效的索引，这些索引也是<em>在父数组中</em>匹配条目的索引。</p><pre><code class="language-julia-repl hljs">julia&gt; findall(==(1), x)
+1-element Vector{Int64}:
+ 4
+
+julia&gt; findfirst(!iszero, x)
+1
+
+julia&gt; argmax(x)
+1</code></pre><p>使用 <a href="../../base/collections/#Base.collect-Tuple{Any}"><code>collect</code></a> 提取非 <code>missing</code> 值并将它们存储在一个数组里：</p><pre><code class="language-julia-repl hljs">julia&gt; collect(x)
+3-element Vector{Int64}:
+ 3
+ 2
+ 1</code></pre><h2 id="数组上的逻辑运算"><a class="docs-heading-anchor" href="#数组上的逻辑运算">数组上的逻辑运算</a><a id="数组上的逻辑运算-1"></a><a class="docs-heading-anchor-permalink" href="#数组上的逻辑运算" title="Permalink"></a></h2><p>上面描述的逻辑运算符的三值逻辑也适用于针对数组的函数。 因此，使用 <a href="../../base/math/#Base.:=="><code>==</code></a> 运算符的数组相等性测试中，若在未知 <code>missing</code> 条目实际值时无法确定结果，就返回 <code>missing</code>。 在实际应用中意味着，在待比较数组中所有非缺失值都相等，且某个或全部数组包含缺失值（也许在不同位置）时会返回 <code>missing</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; [1, missing] == [2, missing]
+false
+
+julia&gt; [1, missing] == [1, missing]
+missing
+
+julia&gt; [1, 2, missing] == [1, missing, 2]
+missing</code></pre><p>对于单个值，<a href="../../base/base/#Base.isequal"><code>isequal</code></a> 会将 <code>missing</code> 值视为与其它 <code>missing</code> 值相等但与非缺失值不同：</p><pre><code class="language-julia-repl hljs">julia&gt; isequal([1, missing], [1, missing])
+true
+
+julia&gt; isequal([1, 2, missing], [1, missing, 2])
+false</code></pre><p>函数 <a href="../../base/collections/#Base.any-Tuple{Any}"><code>any</code></a> 和 <a href="../../base/collections/#Base.all-Tuple{Any}"><code>all</code></a> 遵循三值逻辑的规则，会在结果无法被确定时返回 <code>missing</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; all([true, missing])
+missing
+
+julia&gt; all([false, missing])
+false
+
+julia&gt; any([true, missing])
+true
+
+julia&gt; any([false, missing])
+missing</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../arrays/">« 一维和多维数组</a><a class="docs-footer-nextpage" href="../networking-and-streams/">网络和流 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>本文档在 <span class="colophon-date" title="2024 十二月 21 周六 12:12">2024 十二月 21 周六</span>用 <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> 1.8.0 版生成使用 1.10.7 版本的 Julia。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
