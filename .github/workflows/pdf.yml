@@ -29,6 +29,7 @@ jobs:
           Pkg.develop(PackageSpec(path=pwd()))
           Pkg.instantiate()
       - name: Build PDF
+        timeout-minutes: 90
         run: julia --project=doc/ doc/make.jl pdf texplatform=docker
       - name: upload complied PDF file
         uses: actions/upload-artifact@v4
