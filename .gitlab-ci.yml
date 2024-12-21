@@ -1,4 +1,6 @@
-image: julia:1
+# DOC: https://gitlab.cn/docs/jh/ci/docker/using_docker_images.html
+# 保持和 doc/Project.toml 中的版本一致
+image: julia:1.10
 
 before_script:
   - julia --version
@@ -11,7 +13,6 @@ before_script:
 pages:
   stage: deploy
   script:
-    - cp -r zh_CN/* ./
     - julia --project=doc --check-bounds=yes --color=yes -e 'include("doc/make.jl")'
     - mv doc/build public
   artifacts:
