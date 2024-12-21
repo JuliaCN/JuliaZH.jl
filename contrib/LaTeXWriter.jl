@@ -6,6 +6,7 @@ import Documenter.LaTeXWriter:
     piperun, _print
 
 const LaTeX_CC="xelatex"
+# 默认 juliadocs/documenter-latex
 const DOCKER_IMAGE = "tianjun2018/documenter-latex:latest"
 
 """
@@ -20,6 +21,9 @@ function latex(io::Context, node::Node, math::MarkdownAST.InlineMath)
 end
 
 """
+# XXX1: 改用 LaTeX_CC 作为后端
+# XXX2: 使用自定义的 docker 镜像
+
 https://github.com/JuliaDocs/Documenter.jl/blob/v1.8.0/src/latex/LaTeXWriter.jl#L179-L234
 """
 function compile_tex(doc::Documenter.Document, settings::LaTeX, fileprefix::String)
@@ -27,7 +31,8 @@ function compile_tex(doc::Documenter.Document, settings::LaTeX, fileprefix::Stri
         Sys.which("latexmk") === nothing && (@error "LaTeXWriter: latexmk command not found."; return false)
         @info "LaTeXWriter: using latexmk to compile tex."
         try
-            piperun(`latexmk -f -interaction=batchmode -halt-on-error -view=none -lualatex -shell-escape $(fileprefix).tex`, clearlogs = true)
+            # XXX1
+            piperun(`latexmk -f -interaction=batchmode -halt-on-error -view=none -$(LaTeX_CC) -shell-escape $(fileprefix).tex`, clearlogs = true)
             return true
         catch err
             logs = cp(pwd(), mktempdir(; cleanup = false); force = true)
@@ -51,14 +56,16 @@ function compile_tex(doc::Documenter.Document, settings::LaTeX, fileprefix::Stri
     elseif settings.platform == "docker"
         Sys.which("docker") === nothing && (@error "LaTeXWriter: docker command not found."; return false)
         @info "LaTeXWriter: using docker to compile tex."
+        # XXX1
         script = """
         mkdir /home/zeptodoctor/build
         cd /home/zeptodoctor/build
         cp -r /mnt/. .
-        latexmk -f -interaction=batchmode -halt-on-error -view=none -lualatex -shell-escape $(fileprefix).tex
+        latexmk -f -interaction=batchmode -halt-on-error -view=none -$(LaTeX_CC) -shell-escape $(fileprefix).tex
         """
         try
-            piperun(`docker run -itd -u zeptodoctor --name latex-container -v $(pwd()):/mnt/ --rm juliadocs/documenter-latex:$(DOCKER_IMAGE_TAG)`, clearlogs = true)
+            # XXX2: 使用自定义的 docker 镜像
+            piperun(`docker run -itd -u zeptodoctor --name latex-container -v $(pwd()):/mnt/ --rm $(DOCKER_IMAGE)`, clearlogs = true)
             piperun(`docker exec -u zeptodoctor latex-container bash -c $(script)`)
             piperun(`docker cp latex-container:/home/zeptodoctor/build/$(fileprefix).pdf .`)
             return true
