@@ -285,8 +285,27 @@ end
 
 import Documenter.Remotes: Remote, repourl, fileurl, issueurl
 # 复制&&修改自 GitHub <: Remote 
-#   用于转换翻译文档对应的路径
 #   https://github.com/JuliaDocs/Documenter.jl/blob/2123d7a12a7380ca793b9cf2d680af1c7eb8b94a/src/utilities/Remotes.jl#L121
+# 用于转换 stdlib 函数定义的路径，即 source 指定的路径
+#   "src\cluster.jl" => "stdlib\Distributed\src\cluster.jl"
+struct StdlibSource <: Remote
+    user::String
+    repo::String
+    # 这里储存了标准库的名称，以作区别
+    stdlib::String
+end
+repourl(remote::StdlibSource) = "https://github.com/$(remote.user)/$(remote.repo)"
+function fileurl(remote::StdlibSource, ref::AbstractString, filename::AbstractString, linerange)
+    # NOTE: 这里指定了 stdlib 的文件夹
+    url = "$(repourl(remote))/blob/$(ref)/stdlib/$(remote.stdlib)/$(filename)"
+    # @show url  # 调试输出
+    isnothing(linerange) && return url
+    lstart, lend = first(linerange), last(linerange)
+    return (lstart == lend) ? "$(url)#L$(lstart)" : "$(url)#L$(lstart)-L$(lend)"
+end
+issueurl(remote::StdlibSource, issuenumber) = "$(repourl(remote))/issues/$issuenumber"
+
+# 用于转换翻译文档对应的路径。即 md 源文件的编辑路径
 struct JuliaZHRemote <: Remote
     user::String
     repo::String
@@ -328,10 +347,6 @@ function fileurl(remote::JuliaZHRemote, ref::AbstractString, filename::AbstractS
 end
 issueurl(remote::JuliaZHRemote, issuenumber) = "$(repourl(remote))/issues/$issuenumber"
 
-
-# TODO: 自定义 Remotes 类型，修复位于 julia 库中的标准库路径
-#   定义 Remotes.JuliaGitHub; 实现 Remotes.fileurl
-#   "src\cluster.jl" => "stdlib\Distributed\src\cluster.jl"
 inside_stdlibs = [
     "Artifacts", "Base64", "CRC32c", "Dates", "Distributed", "FileWatching",
     "Future", "InteractiveUtils", "LazyArtifacts", "Libdl", "LibGit2",
@@ -356,7 +371,7 @@ outside_stdlibs = [
 documenter_stdlib_remotes = begin
     remotes_list = []
     for stdlib_name in inside_stdlibs
-        remote = Remotes.GitHub("JuliaLang", "julia")
+        remote = StdlibSource("JuliaLang", "julia", stdlib_name)
         commit = "v1.10.5"
         package_root_dir = joinpath(Sys.STDLIB, stdlib_name)
         @assert isdir(package_root_dir)
