@@ -1,7 +1,3 @@
-```@meta
-EditURL = "https://github.com/JuliaLang/julia/blob/master/stdlib/LinearAlgebra/docs/src/index.md"
-```
-
 # [Linear Algebra](@id man-linalg)
 
 ```@meta

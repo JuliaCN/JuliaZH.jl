@@ -1,7 +1,3 @@
-```@meta
-EditURL = "https://github.com/JuliaCrypto/SHA.jl/blob/master/docs/src/index.md"
-```
-
 # SHA
 
 ```@meta

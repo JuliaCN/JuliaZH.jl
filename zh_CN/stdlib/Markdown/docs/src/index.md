@@ -1,7 +1,3 @@
-```@meta
-EditURL = "https://github.com/JuliaLang/julia/blob/master/stdlib/Markdown/docs/src/index.md"
-```
-
 # [Markdown](@id markdown_stdlib)
 
 本节描述 Julia 的 markdown 语法，它是由 Markdown 标准库启用的。它支持以下的 Markdown 元素:

@@ -10,7 +10,7 @@ on:
 concurrency:
   # Skip intermediate builds: always.
   # Cancel intermediate builds: only if it is a pull request build.
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-html
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
           show-versioninfo: true
       - uses: julia-actions/cache@v2
       - name: Install dependencies
-        shell: julia --project=docs --color=yes {0}
+        shell: julia --project=doc --color=yes {0}
         run: |
           using Pkg
           Pkg.develop(PackageSpec(path=pwd()))
