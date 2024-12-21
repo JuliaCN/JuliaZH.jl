@@ -379,7 +379,8 @@ documenter_stdlib_remotes = begin
         push!(remotes_list, package_root_dir => (remote, commit))
     end
     Dict(
-        dirname(@__DIR__) => JuliaZHRemote("JuliaCN", "JuliaZH.jl"),
+        # TODO: 指定确切的 commit
+        dirname(@__DIR__) => (JuliaZHRemote("JuliaCN", "JuliaZH.jl"), "master"),
         remotes_list...
     )
 end
@@ -398,8 +399,6 @@ makedocs(
     pages     = PAGES,
     remotes   = documenter_stdlib_remotes,
 )
-
-# TODO? Update URLs to external stdlibs (JuliaLang/julia#43199)
 
 if is_deploy
     deploydocs(
