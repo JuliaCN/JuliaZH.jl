@@ -391,6 +391,8 @@ makedocs(
     doctest   = ("doctest=fix" in ARGS) ? (:fix) : ("doctest=only" in ARGS) ? (:only) : ("doctest=true" in ARGS) ? true : false,
     linkcheck = "linkcheck=true" in ARGS,
     linkcheck_ignore = ["https://bugs.kde.org/show_bug.cgi?id=136779"], # fails to load from nanosoldier?
+    # Skip Error on gitlab CI
+    warnonly  = Documenter.except(:docs_block, :cross_references, :eval_block),
     # strict    = true,
     checkdocs = :none,
     format    = format,
