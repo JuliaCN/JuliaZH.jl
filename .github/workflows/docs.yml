@@ -28,7 +28,7 @@ jobs:
           show-versioninfo: true
       - uses: julia-actions/cache@v2
       - name: Install dependencies
-        shell: julia --project=docs --color=yes {0}
+        shell: julia --project=doc --color=yes {0}
         run: |
           using Pkg
           Pkg.develop(PackageSpec(path=pwd()))
