@@ -29,7 +29,11 @@ jobs:
           Pkg.develop(PackageSpec(path=pwd()))
           Pkg.instantiate()
       - name: Build PDF
-        run: julia --project=doc/ doc/make.jl pdf texplatform=docker
+        timeout-minutes: 90
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+        run: julia --project=doc/ doc/make.jl deploy pdf texplatform=docker
       - name: upload complied PDF file
         uses: actions/upload-artifact@v4
         with:
