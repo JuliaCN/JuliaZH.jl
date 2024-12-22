@@ -30,7 +30,7 @@ jobs:
           Pkg.instantiate()
       - name: Build PDF
         timeout-minutes: 90
-        run: julia --project=doc/ doc/make.jl pdf texplatform=docker
+        run: julia --project=doc/ doc/make.jl deploy pdf texplatform=docker
       - name: upload complied PDF file
         uses: actions/upload-artifact@v4
         with:
