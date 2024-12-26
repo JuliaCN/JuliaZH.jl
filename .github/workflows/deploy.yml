@@ -13,6 +13,7 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: juliacn.com
+          port: ${{ secrets.MIRROR_SERVER_PORT }}
           username: ${{ secrets.MIRROR_SERVER_USERNAME }}
           key: ${{ secrets.MIRROR_SERVER_SSH_KEY }}
           source: "./*"
