@@ -3,7 +3,7 @@ on:
   push:
 
 jobs:
-  # server maintainers: @findmyway @johnnychen94 @Roger-luo @staticfloat
+  # server maintainers: @findmyway @johnnychen94 @Roger-luo @staticfloat @HaoxuanGuo
   deploy_juliacn:
     runs-on: ubuntu-latest
     environment: github-pages-mirror
