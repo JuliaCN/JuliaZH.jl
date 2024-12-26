@@ -17,4 +17,4 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./*"
-          target: "/gs/JuliaZH.jl/pdf/"
+          target: ${{ secrets.REMOTE_TARGET }}
