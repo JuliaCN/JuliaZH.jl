@@ -106,7 +106,7 @@ julia> println(___)
 ERROR: syntax: all-underscore identifier used as rvalue
 ```
 
-The only explicitly disallowed names for variables are the names of the built-in [Keywords](@ref Keywords):
+唯一明确禁止使用的变量名是内置的[关键字](@ref Keywords)：
 
 ```julia-repl
 julia> else = false
@@ -116,28 +116,24 @@ julia> try = "No"
 ERROR: syntax: unexpected "="
 ```
 
-Some Unicode characters are considered to be equivalent in identifiers.
-Different ways of entering Unicode combining characters (e.g., accents)
-are treated as equivalent (specifically, Julia identifiers are [NFC](https://en.wikipedia.org/wiki/Unicode_equivalence).
-Julia also includes a few non-standard equivalences for characters that are
-visually similar and are easily entered by some input methods. The Unicode
-characters `ɛ` (U+025B: Latin small letter open e) and `µ` (U+00B5: micro sign)
-are treated as equivalent to the corresponding Greek letters. The middle dot
-`·` (U+00B7) and the Greek
-[interpunct](https://en.wikipedia.org/wiki/Interpunct) `·` (U+0387) are both
-treated as the mathematical dot operator `⋅` (U+22C5).
-The minus sign `−` (U+2212) is treated as equivalent to the hyphen-minus sign `-` (U+002D).
+一些 Unicode 字符在标识符中被视为等价的。
+输入 Unicode 组合字符的不同方式被视为等价的（例如：重音符号）。
+（具体来说，Julia 标识符遵循 [NFC](https://en.wikipedia.org/wiki/Unicode_equivalence) 规范）。
 
-## [Assignment expressions and assignment versus mutation](@id man-assignment-expressions)
+Julia 还包含一些非标准的等价关系，适用于那些视觉上相似、且可以通过某些输入方法轻松输入的字符。
+- Unicode 字符 `ɛ`（U+025B: Latin small letter open e）和 `µ`（U+00B5: micro sign）被视为与相应的希腊字母等价。
+- 中间点 `·`（U+00B7）和希腊[间隔点](https://en.wikipedia.org/wiki/Interpunct) `·`（U+0387）都被视为等同于数学点运算符 `⋅`（U+22C5）。
+- 减号 `−`（U+2212）被视为与连字符减号 `-`（U+002D）等价。
 
-An assignment `variable = value` "binds" the name `variable` to the `value` computed
-on the right-hand side, and the whole assignment is treated by Julia as an expression
-equal to the right-hand-side `value`.  This means that assignments can be *chained*
-(the same `value` assigned to multiple variables with `variable1 = variable2 = value`)
-or used in other expressions, and is also why their result is shown in the REPL as
-the value of the right-hand side.  (In general, the REPL displays the value of whatever
-expression you evaluate.)  For example, here the value `4` of `b = 2+2` is
-used in another arithmetic operation and assignment:
+
+## [赋值表达式与赋值和修改的区别](@id man-assignment-expressions)
+
+赋值 `variable = value` 将名称 `variable` "**绑定**" 到右侧计算得到的 `value` 上，整个赋值被 Julia 视为一个等于右侧 `value` 的表达式。
+这意味着赋值可以被*链式*使用（同一个 `value` 可以通过 `variable1 = variable2 = value` 赋值给多个变量）或在其他表达式中使用，
+这也是为什么它们的结果在 REPL 中显示为右值（RHS, right-hand side）。
+（一般来说，REPL 会显示你所计算的任何表达式的值）
+
+例如：这里 `b = 2+2` 的值 `4` 被用于另一个算术运算和赋值。
 
 ```jldoctest
 julia> a = (b = 2+2) + 3
@@ -150,55 +146,52 @@ julia> b
 4
 ```
 
-A common confusion is the distinction between *assignment* (giving a new "name" to a value)
-and *mutation* (changing a value).  If you run `a = 2` followed by `a = 3`, you have changed
-the "name" `a` to refer to a new value `3` … you haven't changed the number `2`, so `2+2`
-will still give `4` and not `6`!   This distinction becomes more clear when dealing with
-*mutable* types like [arrays](@ref lib-arrays), whose contents *can* be changed:
+一个常见的混淆点是*赋值*（给一个值赋予新的"名称"）和*修改*（改变一个值）之间的区别。
+如果你先执行 `a = 2` 然后执行 `a = 3`，你改变的是"名称" `a` 使其指向新值 `3`。
+你并没有改变数字 `2`，所以 `2+2` 仍然会得到 `4` 而不是 `6`！
+
+当处理*可变*类型如[数组](@ref lib-arrays)时，这种区别变得更加明显，因为数组的内容*可以*被改变：
 
 ```jldoctest mutation_vs_rebind
-julia> a = [1,2,3] # an array of 3 integers
+julia> a = [1,2,3]  # 一个包含 3 个整数的数组
 3-element Vector{Int64}:
  1
  2
  3
 
-julia> b = a   # both b and a are names for the same array!
+julia> b = a   # b 和 a 是同一个数组的名称！
 3-element Vector{Int64}:
  1
  2
  3
 ```
 
-Here, the line `b = a` does *not* make a copy of the array `a`, it simply binds the name
-`b` to the *same* array `a`: both `b` and `a` "point" to one array `[1,2,3]` in memory.
-In contrast, an assignment `a[i] = value` *changes* the *contents* of the array, and the
-modified array will be visible through both the names `a` and `b`:
+这里，`b = a` 这行代码*并不*会复制数组 `a`，它只是将名称 `b` 绑定到*同一个*数组 `a` 上：
+`b` 和 `a` 都"指向"内存中的同一个数组 `[1,2,3]`。
+
+相比之下，赋值 `a[i] = value` *改变*了数组的*内容*，且修改后的数组可以通过名称 `a` 和 `b` 访问：
 
 ```jldoctest mutation_vs_rebind
-julia> a[1] = 42     # change the first element
+julia> a[1] = 42     # 修改第一个元素
 42
 
-julia> a = 3.14159   # a is now the name of a different object
+julia> a = 3.14159   # a 现在指向另一个不同的对象
 3.14159
 
-julia> b   # b refers to the original array object, which has been mutated
+julia> b   # b 指向的是经过修改的原始数组对象
 3-element Vector{Int64}:
  42
   2
   3
 ```
-That is, `a[i] = value` (an alias for [`setindex!`](@ref)) *mutates* an existing array object
-in memory, accessible via either `a` or `b`.  Subsequently setting `a = 3.14159`
-does not change this array, it simply binds `a` to a different object; the array is still
-accessible via `b`. The other common syntax to mutate an existing object is
-`a.field = value` (an alias for [`setproperty!`](@ref)), which can be used to change
-a [`mutable struct`](@ref).
 
-When you call a [function](@ref man-functions) in Julia, it behaves as if you *assigned*
-the argument values to new variable names corresponding to the function arguments, as discussed
-in [Argument-Passing Behavior](@ref man-argument-passing).  (By [convention](@ref man-punctuation),
-functions that mutate one or more of their arguments have names ending with `!`.)
+也就是说：`a[i] = value`（[`setindex!`](@ref) 的别名）*修改*了内存中已存在的数组对象，可以通过 `a` 或 `b` 访问该对象。
+随后设置 `a = 3.14159` 并不会改变这个数组，它只是将 `a` 绑定到一个不同的对象上；原始数组仍然可以通过 `b` 访问。
+另一种常见的修改现有对象的语法是 `a.field = value`（[`setproperty!`](@ref) 的别名），它可以用来修改 [`mutable struct`](@ref)。
+
+当你在 Julia 中调用[函数](@ref man-functions)时，它的行为就像你将参数值*赋值*给与函数参数对应的新变量名一样，
+这在[参数传递行为](@ref man-argument-passing)中有所讨论。
+（按照[惯例](@ref man-punctuation)，修改一个或多个输入参数的函数名以 `!` 结尾。）
 
 
 ## 命名规范
@@ -206,7 +199,7 @@ functions that mutate one or more of their arguments have names ending with `!`.
 虽然 Julia 语言对合法名字的限制非常少，但是遵循以下这些命名规范是非常有用的：
 
   * 变量的名字采用小写。
-  * 使用下划线（`'_'`）来分隔名字中的单词，但是不鼓励使用下划线
+  * 使用下划线（`'_'`）来分隔名字中的单词，但是不鼓励使用下划线，
     除非在不使用下划线时名字会非常难读。
   * 类型 (`Type`) 和模块（`Module`）的名字使用大写字母开头，并且用大写字母
     而不是用下划线分隔单词。
