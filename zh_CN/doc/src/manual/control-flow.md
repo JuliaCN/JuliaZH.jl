@@ -361,12 +361,12 @@ julia> for i = 1:3
 ```
 
 这里的 `1:3` 是一个范围对象，代表数字 `1, 2, 3` 的序列。
-`for` 循环在这些值之中迭代，对每一个变量 `i` 进行赋值。`for` 循环与之前 `while` 循环的一个非常重要区别是作用域，即变量的可见性。
-A `for` loop always introduces a new iteration variable in
-its body, regardless of whether a variable of the same name exists in the enclosing scope.
-This implies that on the one hand `i` need not be declared before the loop. On the other hand it
-will not be visible outside the loop, nor will an outside variable of the same name be affected.
-You'll either need a new interactive session instance or a different variable
+`for` 循环在这些值之中迭代，对每一个变量 `i` 进行赋值。
+`for` 循环与之前 `while` 循环的一个非常重要区别是作用域，即变量的可见性。
+`for` 循环总是在其主体中引入一个新的迭代变量，无论在外部作用域中是否存在同名变量。
+这意味着一方面 `i` 不需要在循环之前声明。
+另一方面，它在循环外部不可见，同名的外部变量也不会受到影响。
+你需要一个新的交互式会话实例或者一个不同的变量.
 
 ```jldoctest
 julia> for j = 1:3
@@ -393,11 +393,10 @@ julia> for j = 1:3
 julia> j
 0
 ```
+使用 `for outer` 可以修改后一种行为并重用现有的局部变量。
 
-Use `for outer` to modify the latter behavior and reuse an existing local variable.
-
-See [Scope of Variables](@ref scope-of-variables) for a detailed explanation of variable scope, [`outer`](@ref), and how it works in
-Julia.
+参见[变量作用域](@ref scope-of-variables)获取关于变量作用域的详细解释，
+以及 [`outer`](@ref) 及其在 Julia 中的工作方式。
 
 一般来说，`for` 循环组件可以用于迭代任一个容器。在这种情况下，相比 `=`，另外的（但完全相同）关键字 `in` 或者 `∈` 则更常用，因为它使得代码更清晰：
 
@@ -732,22 +731,21 @@ catch
 end
 ```
 
-The power of the `try/catch` construct lies in the ability to unwind a deeply nested computation
-immediately to a much higher level in the stack of calling functions. There are situations where
-no error has occurred, but the ability to unwind the stack and pass a value to a higher level
-is desirable. Julia provides the [`rethrow`](@ref), [`backtrace`](@ref), [`catch_backtrace`](@ref)
-and [`current_exceptions`](@ref) functions for more advanced error handling.
+`try/catch` 结构的强大之处在于，能够立即将深度嵌套的计算，展开到调用函数栈中的更高层级。
+在某些情况下，虽然没有发生错误，但展开栈并将值传递到更高层级的能力是很有用的。
 
-### `else` Clauses
+Julia 提供了 [`rethrow`](@ref)、[`backtrace`](@ref)、[`catch_backtrace`](@ref)
+和 [`current_exceptions`](@ref) 函数用于更高级的错误处理。
+
+
+### `else` 子句
 
 !!! compat "Julia 1.8"
-    This functionality requires at least Julia 1.8.
+    此功能至少需要 Julia 1.8
 
-In some cases, one may not only want to appropriately handle the error case, but also want to run
-some code only if the `try` block succeeds. For this, an `else` clause can be specified after the
-`catch` block that is run whenever no error was thrown previously. The advantage over including
-this code in the `try` block instead is that any further errors don't get silently caught by the
-`catch` clause.
+在某些情况下，我们可能不仅想要适当地处理错误情况，还想要在 `try` 代码块成功执行时运行一些代码。
+为此，可以在 `catch` 代码块之后指定一个 `else` 子句，该子句会在之前没有抛出错误时运行。
+与将此代码直接包含在 `try` 代码块中相比，这种方式的优势在于任何进一步的错误不会被 `catch` 子句静默捕获。
 
 ```julia
 local x
@@ -761,9 +759,8 @@ end
 ```
 
 !!! note
-    The `try`, `catch`, `else`, and `finally` clauses each introduce their own scope blocks, so if
-    a variable is only defined in the `try` block, it can not be accessed by the `else` or `finally`
-    clause:
+    `try`、`catch`、`else` 和 `finally` 子句各自引入了自己的作用域块，
+    所以如果一个变量仅在 `try` 块中定义，它就不能被 `else` 或 `finally` 子句访问：
     ```jldoctest
     julia> try
                foo = 1
@@ -773,8 +770,8 @@ end
            end
     ERROR: UndefVarError: `foo` not defined
     ```
-    Use the [`local` keyword](@ref local-scope) outside the `try` block to make the variable
-    accessible from anywhere within the outer scope.
+
+    在 `try` 块外使用 [`local` 关键字](@ref local-scope) 可以使变量在外部作用域的任何位置都可访问。
 
 ### `finally` 子句
 
@@ -785,7 +782,7 @@ end
 ```julia
 f = open("file")
 try
-    # operate on file f
+    # 处理文件 f
 finally
     close(f)
 end
