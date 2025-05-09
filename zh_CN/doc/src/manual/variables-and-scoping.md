@@ -46,10 +46,9 @@ julia> Bar.foo()
 模块可以把其他模块的变量引入到它的作用域中，通过[using 或者 import](@ref modules)语句或者通过点符号这种有资格的通路，
 也就是说每个模块都是所谓的*命名空间*或者关联着含值的名字的第一类数据结构。
 
-If a top-level expression contains a variable declaration with keyword `local`,
-then that variable is not accessible outside that expression.
-The variable inside the expression does not affect global variables of the same name.
-An example is to declare `local x` in a `begin` or `if` block at the top-level:
+如果顶层表达式包含带有关键字 `local` 的变量声明，那么该变量在该表达式外部是不可访问的。
+表达式内部的变量不会影响同名的全局变量。
+例如，在顶层的 `begin` 或 `if` 块中声明 `local x`：
 
 ```jldoctest
 julia> x = 1
@@ -64,39 +63,16 @@ x = 1
 
 注意交互式提示行（即REPL）是在模块`Main`的全局作用域中。
 
-## [Local Scope](@id local-scope)
 
-A new local scope is introduced by most code blocks (see above [table](@ref
-man-scope-table) for a complete list). If such a block is syntactically nested
-inside of another local scope, the scope it creates is nested inside of all the
-local scopes that it appears within, which are all ultimately nested inside of
-the global scope of the module in which the code is evaluated. Variables in
-outer scopes are visible from any scope they contain — meaning that they can be
-read and written in inner scopes — unless there is a local variable with the
-same name that "shadows" the outer variable of the same name. This is true even
-if the outer local is declared after (in the sense of textually below) an inner
-block. When we say that a variable "exists" in a given scope, this means that a
-variable by that name exists in any of the scopes that the current scope is
-nested inside of, including the current one.
+## [局部作用域](@id local-scope)
 
-Some programming languages require explicitly declaring new variables before
-using them. Explicit declaration works in Julia too: in any local scope, writing
-`local x` declares a new local variable in that scope, regardless of whether
-there is already a variable named `x` in an outer scope or not. Declaring each
-new variable like this is somewhat verbose and tedious, however, so Julia, like
-many other languages, considers assignment to a variable name that doesn't
-already exist to implicitly declare that variable. If the current scope is
-global, the new variable is global; if the current scope is local, the new
-variable is local to the innermost local scope and will be visible inside of
-that scope but not outside of it. If you assign to an existing local, it
-_always_ updates that existing local: you can only shadow a local by explicitly
-declaring a new local in a nested scope with the `local` keyword. In particular,
-this applies to variables assigned in inner functions, which may surprise users
-coming from Python where assignment in an inner function creates a new local
-unless the variable is explicitly declared to be non-local.
-
-Mostly this is pretty intuitive, but as with many things that behave
-intuitively, the details are more subtle than one might naïvely imagine.
+大多数代码块都会引入一个新的局部作用域（完整列表请参见上面的[表格](@ref man-scope-table)）。
+如果这样的代码块在语法上嵌套在另一个局部作用域内，则它创建的作用域嵌套在它所出现的所有局部作用域内，
+而这些作用域最终都嵌套在代码被求值的模块的全局作用域内。
+外部作用域中的变量对于它们所包含的任何作用域都是可见的，这意味着它们可以在内部作用域中被读取和写入，
+除非存在一个同名的局部变量"遮蔽"了同名的外部变量。
+即使外部局部变量是在内部块之后（在文本上位于下方）声明的，这也是成立的。
+当我们说一个变量在给定作用域中"存在"时，这意味着该名称的变量存在于当前作用域嵌套其中的任何作用域中，包括当前作用域。
 
 一些编程语言需要在使用新变量之前显式声明它们。显式声明也适用于 Julia：在任何局部作用域中，编写 `local x` 都会在该作用域中声明一个新的局部变量，无论外部作用域中是否已经存在名为 `x` 的变量。像这样声明每个新变量有点冗长乏味，但是，与许多其他语言一样，Julia 考虑对不存在的变量名称进行赋值以隐式声明该变量。如果当前作用域是全局的，则新变量是全局的；如果当前作用域是局部的，则新变量对最内部的局部作用域是局部的，并且在该作用域内可见，但在该作用域外不可见。如果你给现有的局部变量赋值，它_总是_更新现有的局部变量：你只能通过使用 `local` 关键字在嵌套范围内显式声明新的局部变量来隐藏原局部变量。特别是，这适用于在内部函数中分配的变量，这可能会让来自 Python 的用户感到惊讶，其中内部函数中的赋值会创建一个新的局部变量，除非该变量被明确声明为非局部变量。
 
@@ -633,14 +609,14 @@ julia> f()
 1
 ```
 
-## [Typed Globals](@id man-typed-globals)
+
+## [带类型的全局变量](@id man-typed-globals)
 
 !!! compat "Julia 1.8"
-    Support for typed globals was added in Julia 1.8
+    使用带类型的全局变量至少需要 Julia 1.8
 
-Similar to being declared as constants, global bindings can also be declared to always be of a
-constant type. This can either be done without assigning an actual value using the syntax
-`global x::T` or upon assignment as `x::T = 123`.
+与声明为常量类似，全局绑定也可以被声明为始终具有固定类型。
+这可以通过不分配实际值的语法 `global x::T` 来完成，或者在赋值时使用 `x::T = 123` 的形式。
 
 ```jldoctest
 julia> x::Float64 = 2.718
@@ -654,8 +630,7 @@ julia> Base.return_types(f)
  Float64
 ```
 
-For any assignment to a global, Julia will first try to convert it to the appropriate type using
-[`convert`](@ref):
+对全局赋值时，Julia 会首先尝试使用 [`convert`](@ref) 将其转换为合适的类型： 
 
 ```jldoctest
 julia> global y::Int
@@ -672,11 +647,9 @@ Stacktrace:
 [...]
 ```
 
-The type does not need to be concrete, but annotations with abstract types typically have little
-performance benefit.
+类型不必是具体的，但使用抽象类型的注解通常对性能没有什么好处。
 
-Once a global has either been assigned to or its type has been set, the binding type is not allowed
-to change:
+一旦全局已被赋值或其类型已被设置，则不允许绑定类型：
 
 ```jldoctest
 julia> x = 1
