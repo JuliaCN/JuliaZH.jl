@@ -46,15 +46,8 @@ julia> ∑(2, 3)
 5
 ```
 
-## [参数传递行为](@id man-argument-passing)
 
-Julia function arguments follow a convention sometimes called "pass-by-sharing", which means that
-values are not copied when they are passed to functions. Function arguments themselves act as
-new variable *bindings* (new "names" that can refer to values), much like
-[assignments](@ref man-assignment-expressions) `argument_name = argument_value`, so that the objects they refer to
-are identical to the passed values. Modifications to mutable values (such as `Array`s) made within
-a function will be visible to the caller. (This is the same behavior found in Scheme, most Lisps,
-Python, Ruby and Perl, among other dynamic languages.)
+## [参数传递行为](@id man-argument-passing)
 
 Julia 函数参数遵循一种有时被称为"按共享传递 (pass-by-sharing)"的约定，这意味着当值被传递给函数时不会被复制。
 函数参数本身作为新的变量*绑定*（可以引用值的新"名称"），
