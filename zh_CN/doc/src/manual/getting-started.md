@@ -25,17 +25,17 @@ Markdown.parse("```\n\$ julia\n\n$(banner)\njulia> 1 + 2\n3\n\njulia> ans\n3\n``
 $ julia script.jl
 ```
 
-You can pass additional arguments to Julia, and to your program `script.jl`. A detailed list of all the available options can be found under [Command-line Interface](@ref cli).
+您可以向 Julia 和您的程序 `script.jl` 传递额外的参数。
+所有可用选项的详细列表请参见 [命令行界面](@ref cli)。
 
 ## 资源
 
 除了本手册以外，官方网站还提供了一个有用的 **[学习资源列表](https://julialang.org/learning/)** 来帮助新用户学习 Julia。
 
-You can use the REPL as a learning resource by switching into the help mode.
-Switch to help mode by pressing `?` at an empty `julia> ` prompt, before typing
-anything else. Typing a keyword in help mode will fetch the documentation for
-it, along with examples. Similarly for most functions or other objects you
-might encounter!
+您可以切换到帮助模式，将 REPL 当作一种学习资源。
+在空的 `julia> ` 提示符下按 `?` 即可切换到帮助模式。
+在帮助模式下输入关键字或函数名，就能获取相关文档和示例。
+对于大多数函数或其他对象也是如此！
 
 ```
 help?> begin
@@ -46,4 +46,4 @@ search: begin disable_sigint reenable_sigint
   begin...end denotes a block of code.
 ```
 
-如果已经对 Julia 有所了解，你可以先看 [Performance Tips](@ref man-performance-tips) 和 [Workflow Tips](@ref man-workflow-tips)。
+如果已经对 Julia 有所了解，可以先看 [性能提示](@ref man-performance-tips) 和 [工作流程提示](@ref man-workflow-tips)。
