@@ -31,7 +31,8 @@
 ## [字符](@id man-characters)
 
 `Char` 类型的值代表单个字符：它只是带有特殊文本表示法和适当算术行为的 32 位原始类型，不能转化为代表 [Unicode 代码](https://en.wikipedia.org/wiki/Code_point) 的数值。（Julia 的包可能会定义别的 `AbstractChar` 子类型，比如当为了优化对其它 [字符编码](https://en.wikipedia.org/wiki/Character_encoding) 的操作时）`Char` 类型的值以这样的方式输入和显示。
-(note that character literals are delimited with single quotes, not double quotes):
+
+(请注意，字符字面量是用单引号分隔的，而不是双引号)：
 
 ```jldoctest
 julia> c = 'x'
@@ -140,7 +141,7 @@ julia> """Contains "quote" characters"""
 "Contains \"quote\" characters"
 ```
 
-Long lines in strings can be broken up by preceding the newline with a backslash (`\`):
+字符串中的长行可以通过在换行符前加反斜杠(`\`)来分隔：
 
 ```jldoctest
 julia> "This is a long \
@@ -208,8 +209,8 @@ julia> str[6:6]
 前者是一个 `Char` 类型的单个字符，而后者是一个恰好只包含一个字符的字符串。在 Julia 中，这些是不同的。
 
 范围索引复制原始字符串的选定部分。此外，可以使用类型 [`SubString`](@ref)，将视图创建为字符串，
-More simply, using the [`@views`](@ref) macro on a block of code converts all string slices
-into substrings.
+更简单地说，在代码块上使用 [`@views`](@ref) 宏会将所有字符串切片转换为子字符串。
+
 例如：
 
 ```jldoctest
@@ -647,7 +648,6 @@ julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
 
 其它有用的函数还包括：
 
-
   * [`firstindex(str)`](@ref) 给出可用来索引到 `str` 的最小（字节）索引（对字符串来说这总是 1，对于别的容器来说却不一定如此）。
   * [`lastindex(str)`](@ref) 给出可用来索引到 `str` 的最大（字节）索引。
   * [`length(str)`](@ref)，`str` 中的字符个数。
@@ -658,27 +658,31 @@ julia> join(["apples", "bananas", "pineapples"], ", ", " and ")
   * [`nextind(str, i, n=1)`](@ref) 查找在索引 `i` 之后第 `n` 个字符的开头。
   * [`prevind(str, i, n=1)`](@ref) 查找在索引 `i` 之前第 `n` 个字符的开始。
 
-There are situations when you want to construct a string or use string semantics, but the behavior
-of the standard string construct is not quite what is needed. For these kinds of situations, Julia
-provides non-standard string literals. A non-standard string literal looks like a regular
-double-quoted string literal,
-but is immediately prefixed by an identifier, and may behave differently from a normal string literal.
+有些情况下，你想构造一个字符串或使用字符串语义，但标准字符串结构的行为并不完全符合需求。
+对于这类情况，Julia 提供了非标准字符串字面量。
+非标准字符串字面量看起来像常规的双引号字符串字面量，但前面会紧接着一个标识符，其行为可能与普通字符串字面量不同。
 
-[Regular expressions](@ref man-regex-literals), [byte array literals](@ref man-byte-array-literals),
-and [version number literals](@ref man-version-number-literals), as described below,
-are some examples of non-standard string literals. Users and packages may also define new non-standard string literals.
-Further documentation is given in the [Metaprogramming](@ref meta-non-standard-string-literals) section.
+如下所述：[正则表达式](@ref man-regex-literals)、[字节数组字面量](@ref man-byte-array-literals)和[版本号字面量](@ref man-version-number-literals)，都是非标准字符串字面量的一些例子。
+用户和包也可以定义新的非标准字符串字面量。
+更多文档在[元编程](@ref meta-non-standard-string-literals)部分提供。
 
-## [Regular Expressions](@id man-regex-literals)
-Sometimes you are not looking for an exact string, but a particular *pattern*. For example, suppose you are trying to extract a single date from a large text file. You don’t know what that date is (that’s why you are searching for it), but you do know it will look something like `YYYY-MM-DD`. Regular expressions allow you to specify these patterns and search for them.
 
-Julia uses version 2 of Perl-compatible regular expressions (regexes), as provided by the [PCRE](https://www.pcre.org/)
-library (see the [PCRE2 syntax description](https://www.pcre.org/current/doc/html/pcre2syntax.html) for more details). Regular expressions are related to strings in two ways: the obvious connection is that
-regular expressions are used to find regular patterns in strings; the other connection is that
-regular expressions are themselves input as strings, which are parsed into a state machine that
-can be used to efficiently search for patterns in strings. In Julia, regular expressions are input
-using non-standard string literals prefixed with various identifiers beginning with `r`. The most
-basic regular expression literal without any options turned on just uses `r"..."`:
+## [正则表达式](@id man-regex-literals)
+
+有时你要寻找的不是确切的字符串，而是特定的*模式*。
+例如，假设你正试图从一个大型文本文件中提取单个日期。
+你不知道那个日期是什么（这就是为什么你要搜索它），但你知道它看起来像 `YYYY-MM-DD`。
+正则表达式允许你指定这些模式并搜索它们。
+
+Julia 使用由 [PCRE](https://www.pcre.org/) 库提供的 Perl 兼容正则表达式（regexes）的版本2
+（更多详情请参见 [PCRE2 语法描述](https://www.pcre.org/current/doc/html/pcre2syntax.html)）。
+
+正则表达式与字符串有两种关联方式：
+明显的联系是正则表达式用于在字符串中查找常规模式；
+另一个联系是正则表达式本身作为字符串输入，被解析成一个状态机，可用于高效地在字符串中搜索模式。
+
+在 Julia 中，正则表达式使用以 `r` 开头的各种标识符作为前缀的非标准字符串字面量输入。
+最基本的正则表达式字面量，没有打开任何选项，只使用 `r"..."`：
 
 ```jldoctest
 julia> re = r"^\s*(?:#|$)"
@@ -835,15 +839,23 @@ julia> replace("a", r"." => s"\g<0>1")
 ```
 i   不区分大小写的模式匹配。
 
-    若区域设置规则有效，相应映射中代码点小于 255 的部分取自当前区域设置，更大代码点的部分取自 Unicode 规则。然而，跨越 Unicode 规则（ords 255/256）和 非 Unicode 规则边界的匹配将失败。
+    若区域设置规则有效，则小于 255 码位的大小写映射将取自当前区域设置，
+    更大代码点的部分取自 Unicode 规则。
+    然而，跨越 Unicode 规则和非 Unicode 规则边界（ords 255/256）时的匹配将失败。
 
-m   将字符串视为多行。也即更改 "^" 和 "$", 使其从匹配字符串的开头和结尾变为匹配字符串中任意一行的开头或结尾。
+m   将字符串视为多行。
+    也就是说，将 "^" 和 "$", 使其从匹配字符串的开头和结尾，
+    变为匹配字符串中任意一行的开头或结尾。
 
-s   将字符串视为单行。也即更改 "." 以匹配任何字符，即使是通常不能匹配的换行符。
+s   将字符串视为单行。
+    也就是说，将 "." 以匹配任何字符，即使是通常不能匹配的换行符。
 
-    像这样一起使用，r""ms，它们让 "." 匹配任何字符，同时也支持分别在字符串中换行符的后面和前面用 "^" 和 "$" 进行匹配。
+    同时使用时 r""ms，它们让 "." 匹配任何字符，
+    也同时支持用 "^" 和 "$" 分别匹配换行后和换行前的字符串。
 
-x   令正则表达式解析器忽略多数既不是反斜杠也不属于字符类的空白。它可以用来把正则表达式分解成（略为）更易读的部分。和普通代码中一样，`#` 字符也被当作引入注释的元字符。
+x   让正则表达式解析器忽略大部分空白：既不是反斜杠也不属于字符类的空白。
+    它可以用来把正则表达式分解成更易读的部分。
+    和普通代码中一样 `#` 字符用于开始注释。
 ```
 
 例如，下面的正则表达式已打开所有三个标志：
