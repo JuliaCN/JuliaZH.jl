@@ -234,14 +234,30 @@ julia> float(3//4)
 0.75
 ```
 
-Conversion from rational to floating-point respects the following identity for any integral values
-of `a` and `b`, with the exception of the two cases `b == 0` and `a == 0 && b < 0`:
+对于任何整数值 `a` 和 `b`，从有理数到浮点数的转换都要遵守以下特性，但 `a==0 && b <= 0` 时除外：
 
 ```jldoctest
 julia> a = 1; b = 2;
 
 julia> isequal(float(a//b), a/b)
 true
+
+julia> a, b = 0, 0
+(0, 0)
+
+julia> float(a//b)
+ERROR: ArgumentError: invalid rational: zero(Int64)//zero(Int64)
+Stacktrace:
+[...]
+
+julia> a/b
+NaN
+
+julia> a, b = 0, -1
+(0, -1)
+
+julia> float(a//b), a/b
+(0.0, -0.0)
 ```
 
 Julia接受构建无穷分数值：
