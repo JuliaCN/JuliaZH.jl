@@ -155,19 +155,18 @@ UInt128
 在前导为零的情况下，大小由具有相同长度但前导数字为 `1` 的字面量所需的最小大小决定。
 这意味着：
 
-- `0x1` and `0x12` are `UInt8` literals,
-- `0x123` and `0x1234` are `UInt16` literals,
-- `0x12345` and `0x12345678` are `UInt32` literals,
-- `0x123456789` and `0x1234567890adcdef` are `UInt64` literals, etc.
+- `0x1` 和 `0x12` 是 `UInt8` 字面量
+- `0x123` 和 `0x1234` 是 `UInt16` 字面量
+- `0x12345` 和 `0x12345678` 是 `UInt32` 字面量
+- `0x123456789` 和 `0x1234567890adcdef` 是 `UInt64` 字符串字面量
 
-Even if there are leading zero digits which don’t contribute to the value, they count for
-determining storage size of a literal. So `0x01` is a `UInt8` while `0x0001` is a `UInt16`.
+即使是不影响数值的前导零，它们也会影响字面量的类型。
+因此 `0x01` 是 `UInt8` 而 `0x0001` 是 `UInt16`。
 
-That allows the user to control the size.
+这允许用户控制字面量的类型和大小。
 
-Unsigned literals (starting with `0x`) that encode integers too large to be represented as
-`UInt128` values will construct `BigInt` values instead. This is not an unsigned type but
-it is the only built-in type big enough to represent such large integer values.
+无符号字面量（以 `0x` 开头）如果编码的整数太大而无法表示为 `UInt128` 值时，将会构造 `BigInt` 值。
+这不是无符号类型，但它是唯一一个足够大能表示如此大整数值的内置类型。
 
 二进制、八进制和十六进制的字面量前面加一个负号 `-`，这样可以产生一个和原字面量有着同样位数而值为原数的补码的数（二补数）：
 
