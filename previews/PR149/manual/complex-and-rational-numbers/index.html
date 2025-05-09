@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>复数和有理数 · Julia 中文文档</title><meta name="title" content="复数和有理数 · Julia 中文文档"/><meta property="og:title" content="复数和有理数 · Julia 中文文档"/><meta property="twitter:title" content="复数和有理数 · Julia 中文文档"/><meta name="description" content="Documentation for Julia 中文文档."/><meta property="og:description" content="Documentation for Julia 中文文档."/><meta property="twitter:description" content="Documentation for Julia 中文文档."/><meta property="og:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/complex-and-rational-numbers/"/><meta property="twitter:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/complex-and-rational-numbers/"/><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/complex-and-rational-numbers/"/><script async src="https://www.googletagmanager.com/gtag/js?id=UA-28835595-9"></script><script>  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-28835595-9', {'page_path': location.pathname + location.search + location.hash});
+</script><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia 中文文档 logo"/></a><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox" checked/><label class="tocitem" for="menuitem-2"><span class="docs-label">手册</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li class="is-active"><a class="tocitem" href>复数和有理数</a><ul class="internal"><li><a class="tocitem" href="#复数"><span>复数</span></a></li><li><a class="tocitem" href="#有理数"><span>有理数</span></a></li></ul></li><li><a class="tocitem" href="../strings/">字符串</a></li><li><a class="tocitem" href="../functions/">函数</a></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">一维和多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../asynchronous-programming/">异步编程</a></li><li><a class="tocitem" href="../multi-threading/">多线程</a></li><li><a class="tocitem" href="../distributed-computing/">多进程和分布式计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li><li><a class="tocitem" href="../command-line-interface/">Command-line Interface</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Base</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">标准数值类型</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/reflection/">反射 与 自我检查</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">标准库</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../stdlib/ArgTools/">ArgTools</a></li><li><a class="tocitem" href="../../stdlib/Artifacts/">Artifacts</a></li><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">Distributed Computing</a></li><li><a class="tocitem" href="../../stdlib/Downloads/">Downloads</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/Future/">Future</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">Interactive Utilities</a></li><li><a class="tocitem" href="../../stdlib/LazyArtifacts/">Lazy Artifacts</a></li><li><a class="tocitem" href="../../stdlib/LibCURL/">LibCURL</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">Linear Algebra</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/NetworkOptions/">Network Options</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">The Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/TOML/">TOML</a></li><li><a class="tocitem" href="../../stdlib/Tar/">Tar</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5" type="checkbox"/><label class="tocitem" for="menuitem-5"><span class="docs-label">开发者文档</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><input class="collapse-toggle" id="menuitem-5-1" type="checkbox"/><label class="tocitem" for="menuitem-5-1"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">本机代码生成过程的高级概述</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/pkgimg/">Package Images</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li><li><a class="tocitem" href="../../devdocs/ssair/">Julia SSA-form IR</a></li><li><a class="tocitem" href="../../devdocs/EscapeAnalysis/"><code>EscapeAnalysis</code></a></li><li><a class="tocitem" href="../../devdocs/gc-sa/">Static analyzer annotations for GC correctness in C code</a></li><li><a class="tocitem" href="../../devdocs/gc/">Garbage Collection in Julia</a></li><li><a class="tocitem" href="../../devdocs/precompile_hang/">Fixing precompilation hangs due to open tasks or IO</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/external_profilers/">External Profiler Support</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li><li><a class="tocitem" href="../../devdocs/probes/">Instrumenting Julia with DTrace, and bpftrace</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Building Julia</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/build/build/">Building Julia (Detailed)</a></li><li><a class="tocitem" href="../../devdocs/build/linux/">Linux</a></li><li><a class="tocitem" href="../../devdocs/build/macos/">macOS</a></li><li><a class="tocitem" href="../../devdocs/build/windows/">Windows</a></li><li><a class="tocitem" href="../../devdocs/build/freebsd/">FreeBSD</a></li><li><a class="tocitem" href="../../devdocs/build/arm/">ARM (Linux)</a></li><li><a class="tocitem" href="../../devdocs/build/distributing/">Binary distributions</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>复数和有理数</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>复数和有理数</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl" title="View the repository"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">Repository</span></a><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl/blob/master/zh_CN/doc/src/manual/complex-and-rational-numbers.md" title="Edit source"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="复数和有理数"><a class="docs-heading-anchor" href="#复数和有理数">复数和有理数</a><a id="复数和有理数-1"></a><a class="docs-heading-anchor-permalink" href="#复数和有理数" title="Permalink"></a></h1><p>Julia 语言包含了预定义的复数和有理数类型，并且支持它们的各种标准<a href="../mathematical-operations/#数学运算和初等函数">数学运算和初等函数</a>。由于也定义了复数与分数的<a href="../conversion-and-promotion/#conversion-and-promotion">类型转换与类型提升</a>，因此对预定义数值类型（无论是原始的还是复合的）的任意组合进行的操作都会表现得如预期的一样。</p><h2 id="复数"><a class="docs-heading-anchor" href="#复数">复数</a><a id="复数-1"></a><a class="docs-heading-anchor-permalink" href="#复数" title="Permalink"></a></h2><p>全局常量 <a href="../../base/numbers/#Base.im"><code>im</code></a> 被绑定到复数 <em>i</em>，表示 -1 的主平方根。 （不应使用数学家习惯的 <code>i</code> 或工程师习惯的 <code>j</code> 来表示此全局常量，因为它们是非常常用的索引变量名） 由于 Julia 允许数值字面量作为<a href="../integers-and-floating-point-numbers/#man-numeric-literal-coefficients">数值字面量系数</a>，这种绑定就足以为复数提供很方便的语法，类似于传统的数学记法：</p><pre><code class="language-julia-repl hljs">julia&gt; 1+2im
+1 + 2im</code></pre><p>你可以对复数进行各种标准算术操作：</p><pre><code class="language-julia-repl hljs">julia&gt; (1 + 2im)*(2 - 3im)
+8 + 1im
+
+julia&gt; (1 + 2im)/(1 - 2im)
+-0.6 + 0.8im
+
+julia&gt; (1 + 2im) + (1 - 2im)
+2 + 0im
+
+julia&gt; (-3 + 2im) - (5 - 1im)
+-8 + 3im
+
+julia&gt; (-1 + 2im)^2
+-3 - 4im
+
+julia&gt; (-1 + 2im)^2.5
+2.729624464784009 - 6.9606644595719im
+
+julia&gt; (-1 + 2im)^(1 + 1im)
+-0.27910381075826657 + 0.08708053414102428im
+
+julia&gt; 3(2 - 5im)
+6 - 15im
+
+julia&gt; 3(2 - 5im)^2
+-63 - 60im
+
+julia&gt; 3(2 - 5im)^-1.0
+0.20689655172413793 + 0.5172413793103449im</code></pre><p>类型提升机制也确保你可以使用不同类型的操作数的组合：</p><pre><code class="language-julia-repl hljs">julia&gt; 2(1 - 1im)
+2 - 2im
+
+julia&gt; (2 + 3im) - 1
+1 + 3im
+
+julia&gt; (1 + 2im) + 0.5
+1.5 + 2.0im
+
+julia&gt; (2 + 3im) - 0.5im
+2.0 + 2.5im
+
+julia&gt; 0.75(1 + 2im)
+0.75 + 1.5im
+
+julia&gt; (2 + 3im) / 2
+1.0 + 1.5im
+
+julia&gt; (1 - 3im) / (2 + 2im)
+-0.5 - 1.0im
+
+julia&gt; 2im^2
+-2 + 0im
+
+julia&gt; 1 + 3/4im
+1.0 - 0.75im</code></pre><p>注意 <code>3/4im == 3/(4*im) == -(3/4*im)</code>，因为系数比除法的优先级更高。</p><p>Julia 提供了一些操作复数的标准函数：</p><pre><code class="language-julia-repl hljs">julia&gt; z = 1 + 2im
+1 + 2im
+
+julia&gt; real(1 + 2im) # z 的实部
+1
+
+julia&gt; imag(1 + 2im) # z 的虚部
+2
+
+julia&gt; conj(1 + 2im) # z 的复共轭
+1 - 2im
+
+julia&gt; abs(1 + 2im) # z 的绝对值
+2.23606797749979
+
+julia&gt; abs2(1 + 2im) # 取平方后的绝对值
+5
+
+julia&gt; angle(1 + 2im) # 以弧度为单位的相位角
+1.1071487177940904</code></pre><p>按照惯例，复数的绝对值（<a href="../../base/math/#Base.abs"><code>abs</code></a>）是从零点到它的距离。<a href="../../base/math/#Base.abs2"><code>abs2</code></a> 给出绝对值的平方，作用于复数上时非常有用，因为它避免了取平方根。<a href="../../base/math/#Base.angle"><code>angle</code></a> 返回以弧度为单位的相位角（也被称为辐角函数）。所有其它的<a href="../mathematical-operations/#初等函数">初等函数</a>在复数上也都有完整的定义：</p><pre><code class="language-julia-repl hljs">julia&gt; sqrt(1im)
+0.7071067811865476 + 0.7071067811865475im
+
+julia&gt; sqrt(1 + 2im)
+1.272019649514069 + 0.7861513777574233im
+
+julia&gt; cos(1 + 2im)
+2.0327230070196656 - 3.0518977991517997im
+
+julia&gt; exp(1 + 2im)
+-1.1312043837568135 + 2.4717266720048188im
+
+julia&gt; sinh(1 + 2im)
+-0.4890562590412937 + 1.4031192506220405im</code></pre><p>注意数学函数通常应用于实数就返回实数值，应用于复数就返回复数值。例如，当 <a href="../../base/math/#Base.sqrt-Tuple{Number}"><code>sqrt</code></a> 应用于 <code>-1</code> 与 <code>-1 + 0im</code> 会有不同的表现，虽然 <code>-1 == -1 + 0im</code>：</p><pre><code class="language-julia-repl hljs">julia&gt; sqrt(-1)
+ERROR: DomainError with -1.0:
+sqrt was called with a negative real argument but will only return a complex result if called with a complex argument. Try sqrt(Complex(x)).
+Stacktrace:
+[...]
+
+julia&gt; sqrt(-1 + 0im)
+0.0 + 1.0im</code></pre><p>从变量构建复数时，<a href="../integers-and-floating-point-numbers/#man-numeric-literal-coefficients">文本型数值系数记法</a>不再适用。相反地，乘法必须显式地写出：</p><pre><code class="language-julia-repl hljs">julia&gt; a = 1; b = 2; a + b*im
+1 + 2im</code></pre><p>然而，我们<strong>并不</strong>推荐这样做，而应改为使用更高效的 <a href="../../base/numbers/#Base.complex-Tuple{Complex}"><code>complex</code></a> 函数直接通过实部与虚部构建一个复数值：</p><pre><code class="language-julia-repl hljs">julia&gt; a = 1; b = 2; complex(a, b)
+1 + 2im</code></pre><p>这种构建避免了乘法和加法操作。</p><p><a href="../../base/numbers/#Base.Inf"><code>Inf</code></a> 和 <a href="../../base/numbers/#Base.NaN"><code>NaN</code></a> 可能出现在复数的实部和虚部，正如<a href="../integers-and-floating-point-numbers/#特殊的浮点值">特殊的浮点值</a>章节所描述的：</p><pre><code class="language-julia-repl hljs">julia&gt; 1 + Inf*im
+1.0 + Inf*im
+
+julia&gt; 1 + NaN*im
+1.0 + NaN*im</code></pre><h2 id="有理数"><a class="docs-heading-anchor" href="#有理数">有理数</a><a id="有理数-1"></a><a class="docs-heading-anchor-permalink" href="#有理数" title="Permalink"></a></h2><p>Julia 有一个用于表示整数精确比值的分数类型。分数通过 <a href="../../base/math/#Base.://"><code>//</code></a> 运算符构建：</p><pre><code class="language-julia-repl hljs">julia&gt; 2//3
+2//3</code></pre><p>如果一个分数的分子和分母含有公因子，它们会被约分到最简形式且分母非负：</p><pre><code class="language-julia-repl hljs">julia&gt; 6//9
+2//3
+
+julia&gt; -4//8
+-1//2
+
+julia&gt; 5//-15
+-1//3
+
+julia&gt; -4//-12
+1//3</code></pre><p>整数比值的这种标准化形式是唯一的，所以分数值的相等性可由校验分子与分母都相等来测试。分数值的标准化分子和分母可以使用 <a href="../../base/math/#Base.numerator"><code>numerator</code></a> 和 <a href="../../base/math/#Base.denominator"><code>denominator</code></a> 函数得到：</p><pre><code class="language-julia-repl hljs">julia&gt; numerator(2//3)
+2
+
+julia&gt; denominator(2//3)
+3</code></pre><p>分子和分母的直接比较通常是不必要的，因为标准算术和比较操作对分数值也有定义：</p><pre><code class="language-julia-repl hljs">julia&gt; 2//3 == 6//9
+true
+
+julia&gt; 2//3 == 9//27
+false
+
+julia&gt; 3//7 &lt; 1//2
+true
+
+julia&gt; 3//4 &gt; 2//3
+true
+
+julia&gt; 2//4 + 1//6
+2//3
+
+julia&gt; 5//12 - 1//4
+1//6
+
+julia&gt; 5//8 * 3//12
+5//32
+
+julia&gt; 6//5 / 10//7
+21//25</code></pre><p>分数可以很容易地转换成浮点数：</p><pre><code class="language-julia-repl hljs">julia&gt; float(3//4)
+0.75</code></pre><p>对于任何整数值 <code>a</code> 和 <code>b</code>，从有理数到浮点数的转换都要遵守以下特性，但 <code>a==0 &amp;&amp; b &lt;= 0</code> 时除外：</p><pre><code class="language-julia-repl hljs">julia&gt; a = 1; b = 2;
+
+julia&gt; isequal(float(a//b), a/b)
+true
+
+julia&gt; a, b = 0, 0
+(0, 0)
+
+julia&gt; float(a//b)
+ERROR: ArgumentError: invalid rational: zero(Int64)//zero(Int64)
+Stacktrace:
+[...]
+
+julia&gt; a/b
+NaN
+
+julia&gt; a, b = 0, -1
+(0, -1)
+
+julia&gt; float(a//b), a/b
+(0.0, -0.0)</code></pre><p>Julia接受构建无穷分数值：</p><pre><code class="language-julia-repl hljs">julia&gt; 5//0
+1//0
+
+julia&gt; x = -3//0
+-1//0
+
+julia&gt; typeof(x)
+Rational{Int64}</code></pre><p>但不接受试图构建一个 <a href="../../base/numbers/#Base.NaN"><code>NaN</code></a> 分数值：</p><pre><code class="language-julia-repl hljs">julia&gt; 0//0
+ERROR: ArgumentError: invalid rational: zero(Int64)//zero(Int64)
+Stacktrace:
+[...]</code></pre><p>像往常一样，类型提升系统使得分数可以轻松地同其它数值类型进行交互：</p><pre><code class="language-julia-repl hljs">julia&gt; 3//5 + 1
+8//5
+
+julia&gt; 3//5 - 0.5
+0.09999999999999998
+
+julia&gt; 2//7 * (1 + 2im)
+2//7 + 4//7*im
+
+julia&gt; 2//7 * (1.5 + 2im)
+0.42857142857142855 + 0.5714285714285714im
+
+julia&gt; 3//2 / (1 + 2im)
+3//10 - 3//5*im
+
+julia&gt; 1//2 + 2im
+1//2 + 2//1*im
+
+julia&gt; 1 + 2//3im
+1//1 - 2//3*im
+
+julia&gt; 0.5 == 1//2
+true
+
+julia&gt; 0.33 == 1//3
+false
+
+julia&gt; 0.33 &lt; 1//3
+true
+
+julia&gt; 1//3 - 0.33
+0.0033333333333332993</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../mathematical-operations/">« 数学运算和初等函数</a><a class="docs-footer-nextpage" href="../strings/">字符串 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>本文档在 <span class="colophon-date" title="2025 五月 9 周五 14:00">2025 五月 9 周五</span>用 <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> 1.10.2 版生成使用 1.10.9 版本的 Julia。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

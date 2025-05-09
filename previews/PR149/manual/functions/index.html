@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>函数 · Julia 中文文档</title><meta name="title" content="函数 · Julia 中文文档"/><meta property="og:title" content="函数 · Julia 中文文档"/><meta property="twitter:title" content="函数 · Julia 中文文档"/><meta name="description" content="Documentation for Julia 中文文档."/><meta property="og:description" content="Documentation for Julia 中文文档."/><meta property="twitter:description" content="Documentation for Julia 中文文档."/><meta property="og:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/functions/"/><meta property="twitter:url" content="https://juliacn.github.io/JuliaZH.jl/latest/manual/functions/"/><link rel="canonical" href="https://juliacn.github.io/JuliaZH.jl/latest/manual/functions/"/><script async src="https://www.googletagmanager.com/gtag/js?id=UA-28835595-9"></script><script>  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-28835595-9', {'page_path': location.pathname + location.search + location.hash});
+</script><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/julia-manual.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="Julia 中文文档 logo"/></a><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">主页</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox" checked/><label class="tocitem" for="menuitem-2"><span class="docs-label">手册</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../getting-started/">入门</a></li><li><a class="tocitem" href="../variables/">变量</a></li><li><a class="tocitem" href="../integers-and-floating-point-numbers/">整数和浮点数</a></li><li><a class="tocitem" href="../mathematical-operations/">数学运算和初等函数</a></li><li><a class="tocitem" href="../complex-and-rational-numbers/">复数和有理数</a></li><li><a class="tocitem" href="../strings/">字符串</a></li><li class="is-active"><a class="tocitem" href>函数</a><ul class="internal"><li><a class="tocitem" href="#man-argument-passing"><span>参数传递行为</span></a></li><li><a class="tocitem" href="#参数类型声明"><span>参数类型声明</span></a></li><li><a class="tocitem" href="#return-关键字"><span><code>return</code> 关键字</span></a></li><li><a class="tocitem" href="#操作符也是函数"><span>操作符也是函数</span></a></li><li><a class="tocitem" href="#具有特殊名称的操作符"><span>具有特殊名称的操作符</span></a></li><li><a class="tocitem" href="#man-anonymous-functions"><span>匿名函数</span></a></li><li><a class="tocitem" href="#元组"><span>元组</span></a></li><li><a class="tocitem" href="#具名元组"><span>具名元组</span></a></li><li><a class="tocitem" href="#destructuring-assignment"><span>解构赋值和多返回值</span></a></li><li><a class="tocitem" href="#Property-destructuring"><span>Property destructuring</span></a></li><li><a class="tocitem" href="#man-argument-destructuring"><span>参数解构</span></a></li><li><a class="tocitem" href="#变参函数"><span>变参函数</span></a></li><li><a class="tocitem" href="#可选参数"><span>可选参数</span></a></li><li><a class="tocitem" href="#关键字参数"><span>关键字参数</span></a></li><li><a class="tocitem" href="#默认值作用域的计算"><span>默认值作用域的计算</span></a></li><li><a class="tocitem" href="#Do-Block-Syntax-for-Function-Arguments"><span>函数参数中的 Do 结构</span></a></li><li><a class="tocitem" href="#函数的复合与链式调用"><span>函数的复合与链式调用</span></a></li><li><a class="tocitem" href="#man-vectorized"><span>向量化函数的点语法</span></a></li><li><a class="tocitem" href="#更多阅读"><span>更多阅读</span></a></li></ul></li><li><a class="tocitem" href="../control-flow/">流程控制</a></li><li><a class="tocitem" href="../variables-and-scoping/">变量作用域</a></li><li><a class="tocitem" href="../types/">类型</a></li><li><a class="tocitem" href="../methods/">方法</a></li><li><a class="tocitem" href="../constructors/">构造函数</a></li><li><a class="tocitem" href="../conversion-and-promotion/">类型转换和类型提升</a></li><li><a class="tocitem" href="../interfaces/">接口</a></li><li><a class="tocitem" href="../modules/">模块</a></li><li><a class="tocitem" href="../documentation/">文档</a></li><li><a class="tocitem" href="../metaprogramming/">元编程</a></li><li><a class="tocitem" href="../arrays/">一维和多维数组</a></li><li><a class="tocitem" href="../missing/">缺失值</a></li><li><a class="tocitem" href="../networking-and-streams/">网络和流</a></li><li><a class="tocitem" href="../parallel-computing/">并行计算</a></li><li><a class="tocitem" href="../asynchronous-programming/">异步编程</a></li><li><a class="tocitem" href="../multi-threading/">多线程</a></li><li><a class="tocitem" href="../distributed-computing/">多进程和分布式计算</a></li><li><a class="tocitem" href="../running-external-programs/">运行外部程序</a></li><li><a class="tocitem" href="../calling-c-and-fortran-code/">调用 C 和 Fortran 代码</a></li><li><a class="tocitem" href="../handling-operating-system-variation/">处理操作系统差异</a></li><li><a class="tocitem" href="../environment-variables/">环境变量</a></li><li><a class="tocitem" href="../embedding/">嵌入 Julia</a></li><li><a class="tocitem" href="../code-loading/">代码加载</a></li><li><a class="tocitem" href="../profile/">性能分析</a></li><li><a class="tocitem" href="../stacktraces/">栈跟踪</a></li><li><a class="tocitem" href="../performance-tips/">性能建议</a></li><li><a class="tocitem" href="../workflow-tips/">工作流程建议</a></li><li><a class="tocitem" href="../style-guide/">代码风格指南</a></li><li><a class="tocitem" href="../faq/">常见问题</a></li><li><a class="tocitem" href="../noteworthy-differences/">与其他语言的显著差异</a></li><li><a class="tocitem" href="../unicode-input/">Unicode 输入表</a></li><li><a class="tocitem" href="../command-line-interface/">Command-line Interface</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Base</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../base/base/">基本功能</a></li><li><a class="tocitem" href="../../base/collections/">集合和数据结构</a></li><li><a class="tocitem" href="../../base/math/">数学相关</a></li><li><a class="tocitem" href="../../base/numbers/">标准数值类型</a></li><li><a class="tocitem" href="../../base/strings/">字符串</a></li><li><a class="tocitem" href="../../base/arrays/">数组</a></li><li><a class="tocitem" href="../../base/parallel/">Tasks</a></li><li><a class="tocitem" href="../../base/multi-threading/">Multi-Threading</a></li><li><a class="tocitem" href="../../base/constants/">常量</a></li><li><a class="tocitem" href="../../base/file/">文件系统</a></li><li><a class="tocitem" href="../../base/io-network/">I/O 与网络</a></li><li><a class="tocitem" href="../../base/punctuation/">运算符与记号</a></li><li><a class="tocitem" href="../../base/sort/">排序及相关函数</a></li><li><a class="tocitem" href="../../base/iterators/">迭代相关</a></li><li><a class="tocitem" href="../../base/reflection/">反射 与 自我检查</a></li><li><a class="tocitem" href="../../base/c/">C 接口</a></li><li><a class="tocitem" href="../../base/libc/">C 标准库</a></li><li><a class="tocitem" href="../../base/stacktraces/">堆栈跟踪</a></li><li><a class="tocitem" href="../../base/simd-types/">SIMD 支持</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">标准库</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../stdlib/ArgTools/">ArgTools</a></li><li><a class="tocitem" href="../../stdlib/Artifacts/">Artifacts</a></li><li><a class="tocitem" href="../../stdlib/Base64/">Base64</a></li><li><a class="tocitem" href="../../stdlib/CRC32c/">CRC32c</a></li><li><a class="tocitem" href="../../stdlib/Dates/">日期</a></li><li><a class="tocitem" href="../../stdlib/DelimitedFiles/">分隔符文件</a></li><li><a class="tocitem" href="../../stdlib/Distributed/">Distributed Computing</a></li><li><a class="tocitem" href="../../stdlib/Downloads/">Downloads</a></li><li><a class="tocitem" href="../../stdlib/FileWatching/">文件相关事件</a></li><li><a class="tocitem" href="../../stdlib/Future/">Future</a></li><li><a class="tocitem" href="../../stdlib/InteractiveUtils/">Interactive Utilities</a></li><li><a class="tocitem" href="../../stdlib/LazyArtifacts/">Lazy Artifacts</a></li><li><a class="tocitem" href="../../stdlib/LibCURL/">LibCURL</a></li><li><a class="tocitem" href="../../stdlib/LibGit2/">LibGit2</a></li><li><a class="tocitem" href="../../stdlib/Libdl/">动态链接器</a></li><li><a class="tocitem" href="../../stdlib/LinearAlgebra/">Linear Algebra</a></li><li><a class="tocitem" href="../../stdlib/Logging/">日志记录</a></li><li><a class="tocitem" href="../../stdlib/Markdown/">Markdown</a></li><li><a class="tocitem" href="../../stdlib/Mmap/">内存映射 I/O</a></li><li><a class="tocitem" href="../../stdlib/NetworkOptions/">Network Options</a></li><li><a class="tocitem" href="../../stdlib/Pkg/">Pkg</a></li><li><a class="tocitem" href="../../stdlib/Printf/">Printf</a></li><li><a class="tocitem" href="../../stdlib/Profile/">性能分析</a></li><li><a class="tocitem" href="../../stdlib/REPL/">The Julia REPL</a></li><li><a class="tocitem" href="../../stdlib/Random/">随机数</a></li><li><a class="tocitem" href="../../stdlib/SHA/">SHA</a></li><li><a class="tocitem" href="../../stdlib/Serialization/">序列化</a></li><li><a class="tocitem" href="../../stdlib/SharedArrays/">共享数组</a></li><li><a class="tocitem" href="../../stdlib/Sockets/">套接字</a></li><li><a class="tocitem" href="../../stdlib/SparseArrays/">稀疏数组</a></li><li><a class="tocitem" href="../../stdlib/Statistics/">统计</a></li><li><a class="tocitem" href="../../stdlib/TOML/">TOML</a></li><li><a class="tocitem" href="../../stdlib/Tar/">Tar</a></li><li><a class="tocitem" href="../../stdlib/Test/">单元测试</a></li><li><a class="tocitem" href="../../stdlib/UUIDs/">UUIDs</a></li><li><a class="tocitem" href="../../stdlib/Unicode/">Unicode</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5" type="checkbox"/><label class="tocitem" for="menuitem-5"><span class="docs-label">开发者文档</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><input class="collapse-toggle" id="menuitem-5-1" type="checkbox"/><label class="tocitem" for="menuitem-5-1"><span class="docs-label">Documentation of Julia&#39;s Internals</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/init/">Julia 运行时的初始化</a></li><li><a class="tocitem" href="../../devdocs/ast/">Julia 的 AST</a></li><li><a class="tocitem" href="../../devdocs/types/">More about types</a></li><li><a class="tocitem" href="../../devdocs/object/">Memory layout of Julia Objects</a></li><li><a class="tocitem" href="../../devdocs/eval/">Julia 代码的 eval</a></li><li><a class="tocitem" href="../../devdocs/callconv/">Calling Conventions</a></li><li><a class="tocitem" href="../../devdocs/compiler/">本机代码生成过程的高级概述</a></li><li><a class="tocitem" href="../../devdocs/functions/">Julia 函数</a></li><li><a class="tocitem" href="../../devdocs/cartesian/">笛卡尔</a></li><li><a class="tocitem" href="../../devdocs/meta/">Talking to the compiler (the <code>:meta</code> mechanism)</a></li><li><a class="tocitem" href="../../devdocs/subarrays/">子数组</a></li><li><a class="tocitem" href="../../devdocs/isbitsunionarrays/">isbits Union Optimizations</a></li><li><a class="tocitem" href="../../devdocs/sysimg/">System Image Building</a></li><li><a class="tocitem" href="../../devdocs/pkgimg/">Package Images</a></li><li><a class="tocitem" href="../../devdocs/llvm/">Working with LLVM</a></li><li><a class="tocitem" href="../../devdocs/stdio/">printf() and stdio in the Julia runtime</a></li><li><a class="tocitem" href="../../devdocs/boundscheck/">边界检查</a></li><li><a class="tocitem" href="../../devdocs/locks/">Proper maintenance and care of multi-threading locks</a></li><li><a class="tocitem" href="../../devdocs/offset-arrays/">Arrays with custom indices</a></li><li><a class="tocitem" href="../../devdocs/require/">Module loading</a></li><li><a class="tocitem" href="../../devdocs/inference/">类型推导</a></li><li><a class="tocitem" href="../../devdocs/ssair/">Julia SSA-form IR</a></li><li><a class="tocitem" href="../../devdocs/EscapeAnalysis/"><code>EscapeAnalysis</code></a></li><li><a class="tocitem" href="../../devdocs/gc-sa/">Static analyzer annotations for GC correctness in C code</a></li><li><a class="tocitem" href="../../devdocs/gc/">Garbage Collection in Julia</a></li><li><a class="tocitem" href="../../devdocs/precompile_hang/">Fixing precompilation hangs due to open tasks or IO</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-2" type="checkbox"/><label class="tocitem" for="menuitem-5-2"><span class="docs-label">Developing/debugging Julia&#39;s C code</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/backtraces/">报告和分析崩溃（段错误）</a></li><li><a class="tocitem" href="../../devdocs/debuggingtips/">gdb 调试提示</a></li><li><a class="tocitem" href="../../devdocs/valgrind/">在Julia中使用Valgrind</a></li><li><a class="tocitem" href="../../devdocs/external_profilers/">External Profiler Support</a></li><li><a class="tocitem" href="../../devdocs/sanitizers/">Sanitizer support</a></li><li><a class="tocitem" href="../../devdocs/probes/">Instrumenting Julia with DTrace, and bpftrace</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5-3" type="checkbox"/><label class="tocitem" for="menuitem-5-3"><span class="docs-label">Building Julia</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../devdocs/build/build/">Building Julia (Detailed)</a></li><li><a class="tocitem" href="../../devdocs/build/linux/">Linux</a></li><li><a class="tocitem" href="../../devdocs/build/macos/">macOS</a></li><li><a class="tocitem" href="../../devdocs/build/windows/">Windows</a></li><li><a class="tocitem" href="../../devdocs/build/freebsd/">FreeBSD</a></li><li><a class="tocitem" href="../../devdocs/build/arm/">ARM (Linux)</a></li><li><a class="tocitem" href="../../devdocs/build/distributing/">Binary distributions</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">手册</a></li><li class="is-active"><a href>函数</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>函数</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl" title="View the repository"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">Repository</span></a><a class="docs-navbar-link" href="https://github.com/JuliaCN/JuliaZH.jl/blob/master/zh_CN/doc/src/manual/functions.md" title="Edit source"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="man-functions"><a class="docs-heading-anchor" href="#man-functions">函数</a><a id="man-functions-1"></a><a class="docs-heading-anchor-permalink" href="#man-functions" title="Permalink"></a></h1><p>在 Julia 里，函数是将参数值组成的元组映射到返回值的一个对象。Julia 的函数不是纯粹的数学函数，因为这些函数可以改变程序的全局状态并且可能受其影响。在Julia中定义函数的基本语法是：</p><pre><code class="language-julia-repl hljs">julia&gt; function f(x,y)
+           x + y
+       end
+f (generic function with 1 method)</code></pre><p>这个函数接收两个参数 <code>x</code> 和 <code>y</code> 并返回最后一个表达式的值，这里是 <code>x + y</code>。</p><p>在 Julia 中定义函数还有第二种更简洁的语法。上述的传统函数声明语法等效于以下紧凑性的“赋值形式”：</p><pre><code class="language-julia-repl hljs">julia&gt; f(x,y) = x + y
+f (generic function with 1 method)</code></pre><p>尽管函数可以是复合表达式 (见 <a href="../control-flow/#man-compound-expressions">复合表达式</a>)，但在赋值形式下，函数体必须是一个一行的表达式。简短的函数定义在 Julia 中是很常见的。非常惯用的短函数语法大大减少了打字和视觉方面的干扰。</p><p>使用传统的括号语法调用函数：</p><pre><code class="language-julia-repl hljs">julia&gt; f(2,3)
+5</code></pre><p>没有括号时，表达式 <code>f</code> 指的是函数对象，可以像任何值一样被传递：</p><pre><code class="language-julia-repl hljs">julia&gt; g = f;
+
+julia&gt; g(2,3)
+5</code></pre><p>和变量名一样，Unicode 字符也可以用作函数名：</p><pre><code class="language-julia-repl hljs">julia&gt; ∑(x,y) = x + y
+∑ (generic function with 1 method)
+
+julia&gt; ∑(2, 3)
+5</code></pre><h2 id="man-argument-passing"><a class="docs-heading-anchor" href="#man-argument-passing">参数传递行为</a><a id="man-argument-passing-1"></a><a class="docs-heading-anchor-permalink" href="#man-argument-passing" title="Permalink"></a></h2><p>Julia 函数参数遵循一种有时被称为&quot;按共享传递 (pass-by-sharing)&quot;的约定，这意味着当值被传递给函数时不会被复制。 函数参数本身作为新的变量<em>绑定</em>（可以引用值的新&quot;名称&quot;）， 很像<a href="../variables/#man-assignment-expressions">赋值</a> <code>argument_name = argument_value</code>， 因此它们所引用的对象与传递的值相同。 在函数内对可变值（如 <code>Array</code>）所做的修改对调用者是可见的。 （这与在 Scheme、大多数 Lisp、Python、Ruby 和 Perl 等其他动态语言中的行为相同）</p><p>例如，在此函数中：</p><pre><code class="language-julia hljs">function f(x, y)
+    x[1] = 42    # 修改 x
+    y = 7 + y    # y 获得新绑定，并非修改
+    return y
+end</code></pre><p>语句 <code>x[1] = 42</code> <em>改变</em>了对象 <code>x</code>，因此这个变化<em>将</em>在调用者为此参数传递的数组中可见。 另一方面，赋值 <code>y = 7 + y</code> 改变了<em>绑定</em>（&quot;名称&quot;）<code>y</code> 使其引用新值 <code>7 + y</code>， 而不是修改<code>y</code>所引用的<em>原始</em>对象。 因此<em>不会</em>改变调用者传递的相应参数。</p><p>这可以通过调用 <code>f(x, y)</code> 看出来：</p><pre><code class="language-julia-repl hljs">julia&gt; a = [4,5,6]
+3-element Vector{Int64}:
+ 4
+ 5
+ 6
+
+julia&gt; b = 3
+3
+
+julia&gt; f(a, b)  # 返回 7 + b == 10
+10
+
+julia&gt; a  # a[1]由 f 改为 42
+3-element Vector{Int64}:
+ 42
+  5
+  6
+
+julia&gt; b  # 未更改
+3</code></pre><p>Julia 中的一个常见约定（不是语法要求），作为在调用处的提醒，这样的函数通常会被命名为： <a href="../../base/punctuation/#man-punctuation"><code>f!(x, y)</code></a> 而不是<code>f(x, y)</code>， 表明至少有一个参数（通常是第一个）正在被修改。</p><div class="admonition is-warning"><header class="admonition-header">参数之间共享内存</header><div class="admonition-body"><p>当被修改的参数与另一个参数共享内存时，修改函数的行为可能会出乎意料，这种情况被称为别名 （例如，当一个参数是另一个参数的视图时）。 除非函数文档字符串明确指出别名会产生预期的结果，否则调用者有责任确保在这类输入上的正确行为。</p></div></div><h2 id="参数类型声明"><a class="docs-heading-anchor" href="#参数类型声明">参数类型声明</a><a id="参数类型声明-1"></a><a class="docs-heading-anchor-permalink" href="#参数类型声明" title="Permalink"></a></h2><p>您可以通过将 <code>::TypeName</code> 附加到参数名称来声明函数参数的类型，就像 Julia 中的 <a href="../types/#类型声明">类型声明</a> 一样。 例如，以下函数递归计算 <a href="https://en.wikipedia.org/wiki/Fibonacci_number">斐波那契数列</a>：</p><pre><code class="language-julia hljs">fib(n::Integer) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)</code></pre><p>并且 <code>::Integer</code> 规范意味着它只有在 <code>n</code> 是 <a href="../types/#man-abstract-types">抽象</a> <code>Integer</code> 类型的子类型时才可调用。</p><p>参数类型声明<strong>通常对性能没有影响</strong>：无论声明什么参数类型（如果有），Julia 都会为实际参数类型编译函数的特例版本。 例如，调用 <code>fib(1)</code> 将触发专门为 <code>Int</code> 参数优化的特例化的<code>fib</code> 的编译，它会在 <code>fib(7)</code> 或 <code>fib(15)</code> 调用时重新使用。 （参数类型声明不触发额外的编译器特化的情况很少；请参阅：<a href="../performance-tips/#Be-aware-of-when-Julia-avoids-specializing">注意 Julia 何时不触发特例化</a>。）</p><p>在 Julia 中声明参数类型的最常见原因是：</p><ul><li><strong>派发：</strong> 如 <a href="../methods/#方法">方法</a> 中所述，对于不同的参数类型，你可以有不同版本（“方法”）的函数，   在这种情况下，参数类型用于确定调用哪个版本的函数。     例如，你可以使用 <a href="https://en.wikipedia.org/wiki/Fibonacci_number#Binet&#39;s_formula">Binet 公式</a> 实现一个完全不同的算法 <code>fib(x::Number) = ...</code>，该算法扩展为了非整数值，适用于任何 <code>Number</code> 类型。</li><li><strong>正确性：</strong> 如果函数只为某些参数类型返回正确的结果，则类型声明会很有用。     例如，如果我们省略参数类型并写成 <code>fib(n) = n ≤ 2 ? one(n) : fib(n-1) + fib(n-2)</code>，然后<code>fib(1.5)</code>会默默地给我们无意义的答案<code>1.0</code>。</li><li><strong>清晰性：</strong> 类型声明可以作为一种关于预期参数的文档形式。</li></ul><p>但是，<strong>过分限制参数类型是常见的错误</strong>，这会不必要地限制函数的适用性，并防止它在未预料到的情况下被重用。 例如，上面的 <code>fib(n::Integer)</code> 函数同样适用于 <code>Int</code> 参数（机器整数）和 <code>BigInt</code> 任意精度整数（参见 <a href="../../base/numbers/#BigFloats-and-BigInts">BigFloats 和 BigInts</a>），这样十分有效，因为斐波那契数以指数方式快速增长，并且会迅速溢出任何固定精度类型，如 <code>Int</code>（参见 <a href="../integers-and-floating-point-numbers/#溢出行为">溢出行为</a>）。 但是，如果我们将函数声明为 <code>fib(n::Int)</code>，那么 <code>BigInt</code> 的应用就会被阻止。 通常，应该对参数使用最通用的适用抽象类型，并且<strong>如有不确定，就省略参数类型</strong>。 如果有必要，你可以随时添加参数类型规范，并且不会因为省略它们而牺牲性能或功能。</p><h2 id="return-关键字"><a class="docs-heading-anchor" href="#return-关键字"><code>return</code> 关键字</a><a id="return-关键字-1"></a><a class="docs-heading-anchor-permalink" href="#return-关键字" title="Permalink"></a></h2><p>函数返回的值是最后计算的表达式的值，默认情况下，它是函数定义主体中的最后一个表达式。在上一小节的示例函数 <code>f</code> 中，返回值是表达式的 <code>x + y</code> 值。与在 C 语言和大多数其他命令式或函数式语言中一样，<code>return</code> 关键字会让函数立即返回，从而提供返回值的表达式：</p><pre><code class="language-julia hljs">function g(x,y)
+    return x * y
+    x + y
+end</code></pre><p>由于函数定义可以输入到交互式会话中，因此可以很容易的比较这些定义：</p><pre><code class="language-julia-repl hljs">julia&gt; f(x,y) = x + y
+f (generic function with 1 method)
+
+julia&gt; function g(x,y)
+           return x * y
+           x + y
+       end
+g (generic function with 1 method)
+
+julia&gt; f(2,3)
+5
+
+julia&gt; g(2,3)
+6</code></pre><p>当然，在一个单纯的线性执行的函数体内，例如 <code>g</code>，使用 <code>return</code> 是没有意义的，因为表达式 <code>x + y</code> 永远不会被执行到，我们可以简单地把 <code>x * y</code> 写为最后一个表达式从而省略掉 <code>return</code>。 然而在使用其他控制流程的函数体内，<code>return</code> 却是有用的。 例如，在计算两条边长分别为 <code>x</code> 和 <code>y</code> 的三角形的斜边长度时可以避免溢出：</p><pre><code class="language-julia-repl hljs">julia&gt; function hypot(x,y)
+           x = abs(x)
+           y = abs(y)
+           if x &gt; y
+               r = y/x
+               return x*sqrt(1+r*r)
+           end
+           if y == 0
+               return zero(x)
+           end
+           r = x/y
+           return y*sqrt(1+r*r)
+       end
+hypot (generic function with 1 method)
+
+julia&gt; hypot(3, 4)
+5.0</code></pre><p>这个函数有三个可能的返回处，返回三个不同表达式的值，具体取决于 <code>x</code> 和 <code>y</code> 的值。 最后一行的 <code>return</code> 可以省略，因为它是最后一个表达式。</p><h3 id="返回类型"><a class="docs-heading-anchor" href="#返回类型">返回类型</a><a id="返回类型-1"></a><a class="docs-heading-anchor-permalink" href="#返回类型" title="Permalink"></a></h3><p>也可以使用 <code>::</code> 运算符在函数声明中指定返回类型。 这可以将返回值转换为指定的类型。</p><pre><code class="language-julia-repl hljs">julia&gt; function g(x, y)::Int8
+           return x * y
+       end;
+
+julia&gt; typeof(g(1, 2))
+Int8</code></pre><p>这个函数将忽略 <code>x</code> 和 <code>y</code> 的类型，返回 <code>Int8</code> 类型的值。有关返回类型的更多信息，请参见<a href="../types/#类型声明">类型声明</a>。</p><p>返回类型声明在 Julia 中<strong>很少使用</strong>：通常，你应该编写“类型稳定”的函数，Julia 的编译器可以在其中自动推断返回类型。更多信息请参阅 <a href="../performance-tips/#man-performance-tips">性能提示</a> 一章。</p><h3 id="返回-nothing"><a class="docs-heading-anchor" href="#返回-nothing">返回 nothing</a><a id="返回-nothing-1"></a><a class="docs-heading-anchor-permalink" href="#返回-nothing" title="Permalink"></a></h3><p>对于不需要任何返回值的函数（只用来产生副作用的函数）， Julia 中的写法为返回值<a href="../../base/constants/#Core.nothing"><code>nothing</code></a>:</p><pre><code class="language-julia hljs">function printx(x)
+    println(&quot;x = $x&quot;)
+    return nothing
+end</code></pre><p>这在某种意义上是一个“惯例”，在 Julia 中 <code>nothing</code> 不是一个关键字，而是 <code>Nothing</code> 类型的一个单例（singleton）。 也许你已经注意到 <code>printx</code> 函数有点不自然，因为 <code>println</code> 实际上已经会返回 <code>nothing</code>，所以 <code>return</code> 语句是多余的。</p><p>有两种比 <code>return nothing</code> 更短的写法：一种是直接写 <code>return</code> 这会隐式的返回 <code>nothing</code>。 另一种是在函数的会后一行写上 <code>nothing</code>，因为函数会隐式的返回最后一个表达式的值。 三种写法使用哪一种取决于代码风格的偏好。</p><h2 id="操作符也是函数"><a class="docs-heading-anchor" href="#操作符也是函数">操作符也是函数</a><a id="操作符也是函数-1"></a><a class="docs-heading-anchor-permalink" href="#操作符也是函数" title="Permalink"></a></h2><p>在 Julia中，大多数操作符只不过是支持特殊语法的函数（ <code>&amp;&amp;</code> 和<code>||</code> 等具有特殊评估语义的操作符除外，他们不能是函数，因为<a href="../control-flow/#短路求值">短路求值</a>要求在计算整个表达式的值之前不计算每个操作数）。因此，您也可以使用带括号的参数列表来使用它们，就和任何其他函数一样：</p><pre><code class="language-julia-repl hljs">julia&gt; 1 + 2 + 3
+6
+
+julia&gt; +(1,2,3)
+6</code></pre><p>中缀表达式和函数形式完全等价。—— 事实上，前一种形式会被编译器转换为函数调用。这也意味着你可以对操作符，例如 <a href="../../base/math/#Base.:+"><code>+</code></a> 和 <a href="../../base/math/#Base.:*-Tuple{Any, Vararg{Any}}"><code>*</code></a> ，进行赋值和传参，就像其它函数传参一样。</p><pre><code class="language-julia-repl hljs">julia&gt; f = +;
+
+julia&gt; f(1,2,3)
+6</code></pre><p>然而，函数以<code>f</code>命名时不再支持中缀表达式。</p><h2 id="具有特殊名称的操作符"><a class="docs-heading-anchor" href="#具有特殊名称的操作符">具有特殊名称的操作符</a><a id="具有特殊名称的操作符-1"></a><a class="docs-heading-anchor-permalink" href="#具有特殊名称的操作符" title="Permalink"></a></h2><p>有一些特殊的表达式对应的函数调用没有显示的函数名称，它们是：</p><table><tr><th style="text-align: left">表达式</th><th style="text-align: left">函数调用</th></tr><tr><td style="text-align: left"><code>[A B C ...]</code></td><td style="text-align: left"><a href="../../base/arrays/#Base.hcat"><code>hcat</code></a></td></tr><tr><td style="text-align: left"><code>[A; B; C; ...]</code></td><td style="text-align: left"><a href="../../base/arrays/#Base.vcat"><code>vcat</code></a></td></tr><tr><td style="text-align: left"><code>[A B; C D; ...]</code></td><td style="text-align: left"><a href="../../base/arrays/#Base.hvcat"><code>hvcat</code></a></td></tr><tr><td style="text-align: left"><code>[A; B;; C; D;; ...]</code></td><td style="text-align: left"><a href="../../base/arrays/#Base.hvncat"><code>hvncat</code></a></td></tr><tr><td style="text-align: left"><code>A&#39;</code></td><td style="text-align: left"><a href="../../stdlib/LinearAlgebra/#Base.adjoint"><code>adjoint</code></a></td></tr><tr><td style="text-align: left"><code>A[i]</code></td><td style="text-align: left"><a href="../../base/collections/#Base.getindex"><code>getindex</code></a></td></tr><tr><td style="text-align: left"><code>A[i] = x</code></td><td style="text-align: left"><a href="../../base/collections/#Base.setindex!"><code>setindex!</code></a></td></tr><tr><td style="text-align: left"><code>A.n</code></td><td style="text-align: left"><a href="../../base/base/#Base.getproperty"><code>getproperty</code></a></td></tr><tr><td style="text-align: left"><code>A.n = x</code></td><td style="text-align: left"><a href="../../base/base/#Base.setproperty!"><code>setproperty!</code></a></td></tr></table><p>Note that expressions similar to <code>[A; B;; C; D;; ...]</code> but with more than two consecutive <code>;</code> also correspond to <code>hvncat</code> calls.</p><h2 id="man-anonymous-functions"><a class="docs-heading-anchor" href="#man-anonymous-functions">匿名函数</a><a id="man-anonymous-functions-1"></a><a class="docs-heading-anchor-permalink" href="#man-anonymous-functions" title="Permalink"></a></h2><p>函数在Julia里是<a href="https://en.wikipedia.org/wiki/First-class_citizen">一等公民</a>：可以指定给变量，并使用标准函数调用语法通过被指定的变量调用。函数可以用作参数，也可以当作返回值。函数也可以不带函数名称地匿名创建，使用语法如下：</p><pre><code class="language-julia-repl hljs">julia&gt; x -&gt; x^2 + 2x - 1
+#1 (generic function with 1 method)
+
+julia&gt; function (x)
+           x^2 + 2x - 1
+       end
+#3 (generic function with 1 method)</code></pre><p>这样就创建了一个接受一个参数 <code>x</code> 并返回当前值的多项式 <code>x^2+2x-1</code> 的函数。注意结果是个泛型函数，但是带了编译器生成的连续编号的名字。</p><p>匿名函数最主要的用法是传递给接收函数作为参数的函数。一个经典的例子是 <a href="../../base/collections/#Base.map"><code>map</code></a> ，为数组的每个元素应用一次函数，然后返回一个包含结果值的新数组：</p><pre><code class="language-julia-repl hljs">julia&gt; map(round, [1.2, 3.5, 1.7])
+3-element Vector{Float64}:
+ 1.0
+ 4.0
+ 2.0</code></pre><p>如果做为第一个参数传递给 <a href="../../base/collections/#Base.map"><code>map</code></a> 的转换函数已经存在，那直接使用函数名称是没问题的。但是通常要使用的函数还没有定义好，这样使用匿名函数就更加方便：</p><pre><code class="language-julia-repl hljs">julia&gt; map(x -&gt; x^2 + 2x - 1, [1, 3, -1])
+3-element Vector{Int64}:
+  2
+ 14
+ -2</code></pre><p>接受多个参数的匿名函数写法可以使用语法 <code>(x,y,z)-&gt;2x+y-z</code>，而无参匿名函数写作 <code>()-&gt;3</code> 。无参函数的这种写法看起来可能有些奇怪，不过它对于延迟计算很有必要。这种用法会把代码块包进一个无参函数中，后续把它当做 <code>f</code> 调用。</p><p>例如，考虑对 <a href="../../base/collections/#Base.get"><code>get</code></a> 的调用：</p><pre><code class="language-julia hljs">get(dict, key) do
+    # default value calculated here
+    time()
+end</code></pre><p>上面的代码等效于使用包含代码的匿名函数调用<code>get</code>。 被包围在do和end之间，如下所示</p><pre><code class="language-julia hljs">get(()-&gt;time(), dict, key)</code></pre><p>这里对 <a href="../../base/base/#Base.Libc.time-Tuple{}"><code>time</code></a> 的调用，被包裹了它的一个无参数的匿名函数延迟了。 只有当请求的键不在 <code>dict</code> 中时，才会调用该函数。</p><h2 id="元组"><a class="docs-heading-anchor" href="#元组">元组</a><a id="元组-1"></a><a class="docs-heading-anchor-permalink" href="#元组" title="Permalink"></a></h2><p>Julia 有一个和函数参数与返回值密切相关的内置数据结构叫做元组（<em>tuple</em>）。 一个元组是一个固定长度的容器，可以容纳任何值，但不可以被修改(是<em>immutable</em>的)。 元组通过圆括号和逗号来构造，其内容可以通过索引来访问：</p><pre><code class="language-julia-repl hljs">julia&gt; (1, 1+1)
+(1, 2)
+
+julia&gt; (1,)
+(1,)
+
+julia&gt; x = (0.0, &quot;hello&quot;, 6*7)
+(0.0, &quot;hello&quot;, 42)
+
+julia&gt; x[2]
+&quot;hello&quot;</code></pre><p>注意，长度为1的元组必须使用逗号 <code>(1,)</code>，而 <code>(1)</code> 只是一个带括号的值。<code>()</code> 表示空元组（长度为0）。</p><h2 id="具名元组"><a class="docs-heading-anchor" href="#具名元组">具名元组</a><a id="具名元组-1"></a><a class="docs-heading-anchor-permalink" href="#具名元组" title="Permalink"></a></h2><p>元组的元素可以有名字，这时候就有了<em>具名元组</em>：</p><pre><code class="language-julia-repl hljs">julia&gt; x = (a=2, b=1+2)
+(a = 2, b = 3)
+
+julia&gt; x[1]
+2
+
+julia&gt; x.a
+2</code></pre><p>除了常规索引语法（<code>x[1]</code> 或 <code>x[:a]</code>）外，还可以使用点语法 (<code>x.a</code>)，通过名称访问已命名元组的字段。</p><h2 id="destructuring-assignment"><a class="docs-heading-anchor" href="#destructuring-assignment">解构赋值和多返回值</a><a id="destructuring-assignment-1"></a><a class="docs-heading-anchor-permalink" href="#destructuring-assignment" title="Permalink"></a></h2><p>逗号分隔的变量列表（可选地用括号括起来）可以出现在赋值的左侧： 右侧的值通过迭代并依次赋值给每个变量来进行<em>解构</em>：</p><pre><code class="language-julia-repl hljs">julia&gt; (a,b,c) = 1:3
+1:3
+
+julia&gt; b
+2</code></pre><p>右边的值应该是一个至少与左边的变量数量一样长的迭代器（参见<a href="../interfaces/#man-interface-iteration">迭代接口</a>）（迭代器的任何多余元素会被忽略）。</p><p>可用于通过返回元组或其他可迭代值从函数返回多个值。例如，以下函数返回两个值：</p><pre><code class="language-julia-repl hljs">julia&gt; function foo(a,b)
+           a+b, a*b
+       end
+foo (generic function with 1 method)</code></pre><p>如果你在交互式会话中调用它且不把返回值赋值给任何变量，你会看到返回的元组：</p><pre><code class="language-julia-repl hljs">julia&gt; foo(2,3)
+(5, 6)</code></pre><p>解构赋值将每个值提取到一个变量中：</p><pre><code class="language-julia-repl hljs">julia&gt; x, y = foo(2,3)
+(5, 6)
+
+julia&gt; x
+5
+
+julia&gt; y
+6</code></pre><p>另一个常见用途是交换变量：</p><pre><code class="language-julia-repl hljs">julia&gt; y, x = x, y
+(5, 6)
+
+julia&gt; x
+6
+
+julia&gt; y
+5</code></pre><p>如果只需要迭代器元素的一个子集，一个常见的惯例是将忽略的元素分配给一个只包含下划线 <code>_</code> 的变量 （这是一个无效的变量名，请参阅 <a href="../../base/math/#Base.:--Tuple{Any, Any}">合法的变量名</a>）:</p><pre><code class="language-julia-repl hljs">julia&gt; _, _, _, d = 1:10
+1:10
+
+julia&gt; d
+4</code></pre><p>其他有效的左侧表达式可以用作赋值列表的元素，它们将调用 <a href="../../base/collections/#Base.setindex!"><code>setindex!</code></a> 或 <a href="../../base/base/#Base.setproperty!"><code>setproperty!</code></a>，或者递归地解构迭代器的各个元素：</p><pre><code class="language-julia-repl hljs">julia&gt; X = zeros(3);
+
+julia&gt; X[1], (a,b) = (1, (2, 3))
+(1, (2, 3))
+
+julia&gt; X
+3-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+
+julia&gt; a
+2
+
+julia&gt; b
+3</code></pre><div class="admonition is-compat"><header class="admonition-header">Julia 1.6</header><div class="admonition-body"><p>带 <code>...</code> 的赋值需要 Julia 1.6</p></div></div><p>如果赋值列表中的最后一个符号后缀为 <code>...</code>（称为 <em>slurping</em>），那么它将被分配给右侧迭代器剩余元素的集合或其惰性迭代器：</p><pre><code class="language-julia-repl hljs">julia&gt; a, b... = &quot;hello&quot;
+&quot;hello&quot;
+
+julia&gt; a
+&#39;h&#39;: ASCII/Unicode U+0068 (category Ll: Letter, lowercase)
+
+julia&gt; b
+&quot;ello&quot;
+
+julia&gt; a, b... = Iterators.map(abs2, 1:4)
+Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4)
+
+julia&gt; a
+1
+
+julia&gt; b
+Base.Iterators.Rest{Base.Generator{UnitRange{Int64}, typeof(abs2)}, Int64}(Base.Generator{UnitRange{Int64}, typeof(abs2)}(abs2, 1:4), 1)</code></pre><p>有关特定迭代器的精确处理和自定义的详细信息，请参阅 <a href="../../base/collections/#Base.rest"><code>Base.rest</code></a>。</p><div class="admonition is-compat"><header class="admonition-header">Julia 1.9</header><div class="admonition-body"><p><code>...</code> in non-final position of an assignment requires Julia 1.9</p></div></div><p>Slurping in assignments can also occur in any other position. As opposed to slurping the end of a collection however, this will always be eager.</p><pre><code class="language-julia-repl hljs">julia&gt; a, b..., c = 1:5
+1:5
+
+julia&gt; a
+1
+
+julia&gt; b
+3-element Vector{Int64}:
+ 2
+ 3
+ 4
+
+julia&gt; c
+5
+
+julia&gt; front..., tail = &quot;Hi!&quot;
+&quot;Hi!&quot;
+
+julia&gt; front
+&quot;Hi&quot;
+
+julia&gt; tail
+&#39;!&#39;: ASCII/Unicode U+0021 (category Po: Punctuation, other)</code></pre><p>这是通过函数 <a href="../../base/collections/#Base.split_rest"><code>Base.split_rest</code></a> 实现的。</p><p>请注意，对于变参函数定义，收集参数（slurping）仍然只允许在最后位置使用。 这不适用于<a href="#man-argument-destructuring">单参数解构</a>， 因为它不影响方法分派：</p><pre><code class="language-julia-repl hljs">julia&gt; f(x..., y) = x
+ERROR: syntax: invalid &quot;...&quot; on non-final argument
+Stacktrace:
+[...]
+
+julia&gt; f((x..., y)) = x
+f (generic function with 1 method)
+
+julia&gt; f((1, 2, 3))
+(1, 2)</code></pre><h2 id="Property-destructuring"><a class="docs-heading-anchor" href="#Property-destructuring">Property destructuring</a><a id="Property-destructuring-1"></a><a class="docs-heading-anchor-permalink" href="#Property-destructuring" title="Permalink"></a></h2><p>除了基于迭代的解构外，赋值的右侧也可以使用属性名称进行解构。 这遵循具名元组的语法，通过使用 <code>getproperty</code> 将右侧赋值中具有相同名称的属性赋给左侧的每个变量：</p><pre><code class="language-julia-repl hljs">julia&gt; (; b, a) = (a=1, b=2, c=3)
+(a = 1, b = 2, c = 3)
+
+julia&gt; a
+1
+
+julia&gt; b
+2</code></pre><h2 id="man-argument-destructuring"><a class="docs-heading-anchor" href="#man-argument-destructuring">参数解构</a><a id="man-argument-destructuring-1"></a><a class="docs-heading-anchor-permalink" href="#man-argument-destructuring" title="Permalink"></a></h2><p>析构特性也可以被用在函数参数中。 如果一个函数的参数被写成了元组形式 (如  <code>(x, y)</code>) 而不是简单的符号，那么一个赋值运算 <code>(x, y) = argument</code> 将会被默认插入：</p><pre><code class="language-julia-repl hljs">julia&gt; minmax(x, y) = (y &lt; x) ? (y, x) : (x, y)
+
+julia&gt; gap((min, max)) = max - min
+
+julia&gt; gap(minmax(10, 2))
+8</code></pre><p>注意在定义函数 <code>gap</code> 时额外的括号。 没有它们，<code>gap</code> 函数将会是一个双参数函数，这个例子也会无法正常运行。</p><p>同样，属性解构也可用于函数参数：</p><pre><code class="language-julia-repl hljs">julia&gt; foo((; x, y)) = x + y
+foo (generic function with 1 method)
+
+julia&gt; foo((x=1, y=2))
+3
+
+julia&gt; struct A
+           x
+           y
+       end
+
+julia&gt; foo(A(3, 4))
+7</code></pre><p>对于匿名函数，解构单个元组需要一个额外的逗号：</p><pre><code class="nohighlight hljs">julia&gt; map(((x,y),) -&gt; x + y, [(1,2), (3,4)])
+2-element Array{Int64,1}:
+ 3
+ 7</code></pre><h2 id="变参函数"><a class="docs-heading-anchor" href="#变参函数">变参函数</a><a id="变参函数-1"></a><a class="docs-heading-anchor-permalink" href="#变参函数" title="Permalink"></a></h2><p>定义有任意个参数的函数会带来很多便利。这类函数通常被称为“变参”函数，即“参数数量可变”的简称。你可以通过在最后一个参数后增加省略号来定义一个变参函数:</p><pre><code class="language-julia-repl hljs">julia&gt; bar(a,b,x...) = (a,b,x)
+bar (generic function with 1 method)</code></pre><p>变量 <code>a</code> 和 <code>b</code> 和以前一样被绑定给前两个参数，后面的参数整个做为迭代集合被绑定到变量 <code>x</code> 上 :</p><pre><code class="language-julia-repl hljs">julia&gt; bar(1,2)
+(1, 2, ())
+
+julia&gt; bar(1,2,3)
+(1, 2, (3,))
+
+julia&gt; bar(1, 2, 3, 4)
+(1, 2, (3, 4))
+
+julia&gt; bar(1,2,3,4,5,6)
+(1, 2, (3, 4, 5, 6))</code></pre><p>在所有这些情况下，<code>x</code> 被绑定到传递给 <code>bar</code> 的尾随值的元组。</p><p>也可以限制可以传递给函数的参数的数量，这部分内容稍后在  <a href="../methods/#参数化约束的可变参数方法">参数化约束的可变参数方法</a>  中讨论。</p><p>另一方面，将可迭代集中包含的值拆解为单独的参数进行函数调用通常很方便。 要实现这一点，需要在函数调用中额外使用 <code>...</code> 而不仅仅只是变量：</p><pre><code class="language-julia-repl hljs">julia&gt; x = (3, 4)
+(3, 4)
+
+julia&gt; bar(1,2,x...)
+(1, 2, (3, 4))</code></pre><p>在这个情况下一组值会被精确切片成一个可变参数调用，这里参数的数量是可变的。但是并不需要成为这种情况：</p><pre><code class="language-julia-repl hljs">julia&gt; x = (2, 3, 4)
+(2, 3, 4)
+
+julia&gt; bar(1,x...)
+(1, 2, (3, 4))
+
+julia&gt; x = (1, 2, 3, 4)
+(1, 2, 3, 4)
+
+julia&gt; bar(x...)
+(1, 2, (3, 4))</code></pre><p>进一步，拆解给函数调用中的可迭代对象不需要是个元组：</p><pre><code class="language-julia-repl hljs">julia&gt; x = [3,4]
+2-element Vector{Int64}:
+ 3
+ 4
+
+julia&gt; bar(1,2,x...)
+(1, 2, (3, 4))
+
+julia&gt; x = [1,2,3,4]
+4-element Vector{Int64}:
+ 1
+ 2
+ 3
+ 4
+
+julia&gt; bar(x...)
+(1, 2, (3, 4))</code></pre><p>此外，参数被放入的函数不一定是可变参数函数（尽管经常是）：</p><pre><code class="language-julia-repl hljs">julia&gt; baz(a,b) = a + b;
+
+julia&gt; args = [1,2]
+2-element Vector{Int64}:
+ 1
+ 2
+
+julia&gt; baz(args...)
+3
+
+julia&gt; args = [1,2,3]
+3-element Vector{Int64}:
+ 1
+ 2
+ 3
+
+julia&gt; baz(args...)
+ERROR: MethodError: no method matching baz(::Int64, ::Int64, ::Int64)
+
+Closest candidates are:
+  baz(::Any, ::Any)
+   @ Main none:1
+
+Stacktrace:
+[...]</code></pre><p>正如你所见，如果要拆解的容器（比如元组或数组）元素数量不匹配就会报错，和直接给多个参数报错一样。</p><h2 id="可选参数"><a class="docs-heading-anchor" href="#可选参数">可选参数</a><a id="可选参数-1"></a><a class="docs-heading-anchor-permalink" href="#可选参数" title="Permalink"></a></h2><p>在很多情况下，函数参数有合理的默认值，因此也许不需要显式地传递。例如，<code>Dates</code> 模块中的 <a href="../../stdlib/Dates/#Dates.Date"><code>Date(y, [m, d])</code></a> 函数对于给定的年（year）<code>y</code>、月（mouth）<code>m</code>、日（data）<code>d</code> 构造了 <code>Date</code> 类型。但是，<code>m</code> 和 <code>d</code> 参数都是可选的，默认值都是 <code>1</code>。这行为可以简述为：</p><pre><code class="language-julia-repl hljs">julia&gt; using Dates
+
+julia&gt; function date(y::Int64, m::Int64=1, d::Int64=1)
+           err = Dates.validargs(Date, y, m, d)
+           err === nothing || throw(err)
+           return Date(Dates.UTD(Dates.totaldays(y, m, d)))
+       end
+date (generic function with 3 methods)</code></pre><p>注意，这个定义调用了 <code>Date</code> 函数的另一个方法，该方法带有一个 <code>UTInstant{Day}</code> 类型的参数。</p><p>通过此定义，函数调用时可以带有一个、两个或三个参数，并且在只有一个或两个参数被指定时后，自动传递 <code>1</code> 为未指定参数值：</p><pre><code class="language-julia-repl hljs">julia&gt; date(2000, 12, 12)
+2000-12-12
+
+julia&gt; date(2000, 12)
+2000-12-01
+
+julia&gt; date(2000)
+2000-01-01</code></pre><p>可选参数实际上只是一种方便的语法，用于编写多种具有不同数量参数的方法定义（请参阅 <a href="../methods/#可选参数和关键字的参数的注意事项">可选参数和关键字的参数的注意事项</a>）。 这可通过调用 <code>methods</code> 函数来检查我们的 <code>date</code> 函数示例。</p><pre><code class="language-julia-repl hljs">julia&gt; methods(date)
+# 3 methods for generic function &quot;date&quot;:
+[1] date(y::Int64) in Main at REPL[1]:1
+[2] date(y::Int64, m::Int64) in Main at REPL[1]:1
+[3] date(y::Int64, m::Int64, d::Int64) in Main at REPL[1]:1</code></pre><h2 id="关键字参数"><a class="docs-heading-anchor" href="#关键字参数">关键字参数</a><a id="关键字参数-1"></a><a class="docs-heading-anchor-permalink" href="#关键字参数" title="Permalink"></a></h2><p>某些函数需要大量参数，或者具有大量行为。记住如何调用这样的函数可能很困难。关键字参数允许通过名称而不是仅通过位置来识别参数，使得这些复杂接口易于使用和扩展。</p><p>例如，考虑绘制一条线的函数 <code>plot</code>。这个函数可能有很多选项，用来控制线条的样式、宽度、颜色等。如果它接受关键字参数，一个可行的调用可能看起来像 <code>plot(x, y, width=2)</code>，这里我们仅指定线的宽度。请注意，这样做有两个目的。调用更可读，因为我们能以其意义标记参数。也使得大量参数的任意子集都能以任意次序传递。</p><p>具有关键字参数的函数在签名中使用分号定义：</p><pre><code class="language-julia hljs">function plot(x, y; style=&quot;solid&quot;, width=1, color=&quot;black&quot;)
+    ###
+end</code></pre><p>在函数调用时，分号是可选的：可以调用 <code>plot(x, y, width=2)</code> 或 <code>plot(x, y; width=2)</code>，但前者的风格更为常见。显式的分号只有在传递可变参数或下文中描述的需计算的关键字时是必要的。</p><p>关键字参数的默认值只在必需时求值（当相应的关键字参数没有被传入），并且按从左到右的顺序求值，因为默认值的表达式可能会参照先前的关键字参数。</p><p>关键字参数的类型可以通过如下的方式显式指定：</p><pre><code class="language-julia hljs">function f(;x::Int=1)
+    ###
+end</code></pre><p>关键字参数也可以在变参函数中使用：</p><pre><code class="language-julia hljs">function plot(x...; style=&quot;solid&quot;)
+    ###
+end</code></pre><p>附加的关键字参数可用 <code>...</code> 收集，正如在变参函数中：</p><pre><code class="language-julia hljs">function f(x; y=0, kwargs...)
+    ###
+end</code></pre><p>在 <code>f</code> 中，<code>kwargs</code> 将是一个在命名元组上的不可变键值迭代器。 具名元组（以及带有<code>Symbol</code>键的字典, and other iterators yielding two-value collections with symbol as first values） 可以在调用中使用分号作为关键字参数传递，例如 <code>f(x, z=1; kwargs...)</code>。</p><p>如果一个关键字参数在方法定义中未指定默认值，那么它就是<em>必需的</em>：如果调用者没有为其赋值，那么将会抛出一个 <a href="../../base/base/#Core.UndefKeywordError"><code>UndefKeywordError</code></a> 异常：</p><pre><code class="language-julia hljs">function f(x; y)
+    ###
+end
+f(3, y=5) # ok, y is assigned
+f(3)      # throws UndefKeywordError(:y)</code></pre><p>在分号后也可传递 <code>key =&gt; value</code> 表达式。例如，<code>plot(x, y; :width =&gt; 2)</code> 等价于 <code>plot(x, y, width=2)</code>。当关键字名称需要在运行时被计算时，这就很实用了。</p><p>当分号后出现裸标识符或点表达式时，标识符或字段名称隐含关键字参数名称。 例如<code>plot(x, y; width)</code> 等价于<code>plot(x, y; width=width)</code>，<code>plot(x, y; options.width)</code> 等价于<code>plot(x, y; width=options.width)</code>。</p><p>可选参数的性质使得可以多次指定同一参数的值。例如，在调用 <code>plot(x, y; options..., width=2)</code> 的过程中，<code>options</code> 结构也能包含一个 <code>width</code> 的值。在这种情况下，最右边的值优先级最高；在此例中，<code>width</code> 的值可以确定是 <code>2</code>。但是，显式地多次指定同一参数的值是不允许的，例如 <code>plot(x, y, width=2, width=3)</code>，这会导致语法错误。</p><h2 id="默认值作用域的计算"><a class="docs-heading-anchor" href="#默认值作用域的计算">默认值作用域的计算</a><a id="默认值作用域的计算-1"></a><a class="docs-heading-anchor-permalink" href="#默认值作用域的计算" title="Permalink"></a></h2><p>当计算可选和关键字参数的默认值表达式时，只有<em>先前</em>的参数才在作用域内。例如，给出以下定义：</p><pre><code class="language-julia hljs">function f(x, a=b, b=1)
+    ###
+end</code></pre><p><code>a=b</code> 中的 <code>b</code> 指的是外部作用域内的 <code>b</code>，而不是后续参数中的 <code>b</code>。</p><h2 id="Do-Block-Syntax-for-Function-Arguments"><a class="docs-heading-anchor" href="#Do-Block-Syntax-for-Function-Arguments">函数参数中的 Do 结构</a><a id="Do-Block-Syntax-for-Function-Arguments-1"></a><a class="docs-heading-anchor-permalink" href="#Do-Block-Syntax-for-Function-Arguments" title="Permalink"></a></h2><p>把函数作为参数传递给其他函数是一种强大的技术，但它的语法并不总是很方便。当函数参数占据多行时，这样的调用便特别难以编写。例如，考虑在具有多种情况的函数上调用 <a href="../../base/collections/#Base.map"><code>map</code></a>：</p><pre><code class="language-julia hljs">map(x-&gt;begin
+           if x &lt; 0 &amp;&amp; iseven(x)
+               return 0
+           elseif x == 0
+               return 1
+           else
+               return x
+           end
+       end,
+    [A, B, C])</code></pre><p>Julia 提供了一个保留字 <code>do</code>，用于更清楚地重写此代码：</p><pre><code class="language-julia hljs">map([A, B, C]) do x
+    if x &lt; 0 &amp;&amp; iseven(x)
+        return 0
+    elseif x == 0
+        return 1
+    else
+        return x
+    end
+end</code></pre><p><code>do x</code> 语法创建一个带有参数 <code>x</code> 的匿名函数，并将其作为第一个参数传递给 <a href="../../base/collections/#Base.map"><code>map</code></a>。 类似地，<code>do a,b</code> 将创建一个有两个参数的匿名函数。 请注意，<code>do (a,b)</code> 将创建一个单参数匿名函数，其参数是一个要解构的元组。 Note that <code>do (a,b)</code> would create a one-argument anonymous function, whose argument is a tuple to be deconstructed.  一个简单的 <code>do</code> 会声明接下来是一个形式为 <code>() -&gt; ...</code> 的匿名函数。</p><p>这些参数如何初始化取决于「外部」函数；在这里，<a href="../../base/collections/#Base.map"><code>map</code></a> 将会依次将 <code>x</code> 设置为 <code>A</code>、<code>B</code>、<code>C</code>，再分别调用调用匿名函数，正如在 <code>map(func, [A, B, C])</code> 语法中所发生的。</p><p>这种语法使得更容易使用函数来有效地扩展语言，因为调用看起来就像普通代码块。有许多可能的用法与 <a href="../../base/collections/#Base.map"><code>map</code></a> 完全不同，比如管理系统状态。例如，有一个版本的 <a href="../../base/io-network/#Base.open"><code>open</code></a> 可以通过运行代码来确保已经打开的文件最终会被关闭：</p><pre><code class="language-julia hljs">open(&quot;outfile&quot;, &quot;w&quot;) do io
+    write(io, data)
+end</code></pre><p>这是通过以下定义实现的：</p><pre><code class="language-julia hljs">function open(f::Function, args...)
+    io = open(args...)
+    try
+        f(io)
+    finally
+        close(io)
+    end
+end</code></pre><p>在这里，<a href="../../base/io-network/#Base.open"><code>open</code></a> 首先打开要写入的文件，接着将结果输出流传递给你在 <code>do ... end</code> 代码快中定义的匿名函数。在你的函数退出后，<a href="../../base/io-network/#Base.open"><code>open</code></a> 将确保流被正确关闭，无论你的函数是正常退出还是抛出了一个异常（<code>try/finally</code> 结构会在 <a href="../control-flow/#流程控制">流程控制</a> 中描述）。</p><p>使用 <code>do</code> 代码块语法时，查阅文档或实现有助于了解用户函数的参数是如何初始化的。</p><p>类似于其他的内部函数， <code>do</code> 代码块也可以“捕获”上一个作用域的变量。例如，上一个 <code>open...do</code> 的例子中变量 <code>data</code> 是从外部作用域捕获的。捕获变量可能会给性能优化带来挑战，详见 <a href="../performance-tips/#man-performance-captured">性能建议</a>。</p><h2 id="函数的复合与链式调用"><a class="docs-heading-anchor" href="#函数的复合与链式调用">函数的复合与链式调用</a><a id="函数的复合与链式调用-1"></a><a class="docs-heading-anchor-permalink" href="#函数的复合与链式调用" title="Permalink"></a></h2><p>Julia中的多个函数可以用函数复合或管道连接（链式调用）组合起来。</p><p>函数的复合指的是把多个函数绑定到一起，然后作用于最先调用那个函数的参数。 你可以使用函数复合运算符 (<code>∘</code>) 来组合函数，这样一来 <code>(f ∘ g)(args...)</code> 就等价于 <code>f(g(args...))</code>.</p><p>你可以在REPL和合理配置的编辑器中用 <code>\circ&lt;tab&gt;</code> 输入函数复合运算符。</p><p>例如， <code>sqrt</code> 和 <code>+</code> 可以用下面这种方式组合：</p><pre><code class="language-julia-repl hljs">julia&gt; (sqrt ∘ +)(3, 6)
+3.0</code></pre><p>这个语句先把数字相加，再对结果求平方根。</p><p>下一个例子组合了三个函数并把新函数作用到一个字符串组成的数组上：</p><pre><code class="language-julia-repl hljs">julia&gt; map(first ∘ reverse ∘ uppercase, split(&quot;you can compose functions like this&quot;))
+6-element Vector{Char}:
+ &#39;U&#39;: ASCII/Unicode U+0055 (category Lu: Letter, uppercase)
+ &#39;N&#39;: ASCII/Unicode U+004E (category Lu: Letter, uppercase)
+ &#39;E&#39;: ASCII/Unicode U+0045 (category Lu: Letter, uppercase)
+ &#39;S&#39;: ASCII/Unicode U+0053 (category Lu: Letter, uppercase)
+ &#39;E&#39;: ASCII/Unicode U+0045 (category Lu: Letter, uppercase)
+ &#39;S&#39;: ASCII/Unicode U+0053 (category Lu: Letter, uppercase)</code></pre><p>函数的链式调用（有时也称“使用管道”把数据送到一系列函数中去）指的是把一个函数作用到前一个函数的输出上：</p><pre><code class="language-julia-repl hljs">julia&gt; 1:10 |&gt; sum |&gt; sqrt
+7.416198487095663</code></pre><p>在这里， <code>sum</code> 函数求出的和被传递到 <code>sqrt</code> 函数作为参数。等价的函数复合写法是：</p><pre><code class="language-julia-repl hljs">julia&gt; (sqrt ∘ sum)(1:10)
+7.416198487095663</code></pre><p>管道运算符还可以和广播一起使用（<code>.|&gt;</code>），这提供了一个有用的链式调用/管道+向量化运算的组合语法（接下来将描述）。</p><pre><code class="language-julia-repl hljs">julia&gt; [&quot;a&quot;, &quot;list&quot;, &quot;of&quot;, &quot;strings&quot;] .|&gt; [uppercase, reverse, titlecase, length]
+4-element Vector{Any}:
+  &quot;A&quot;
+  &quot;tsil&quot;
+  &quot;Of&quot;
+ 7</code></pre><p>当将管道与匿名函数结合使用时，如果不希望后续的管道被解析为匿名函数体的一部分，必须使用括号。比较：</p><pre><code class="language-julia-repl hljs">julia&gt; 1:3 .|&gt; (x -&gt; x^2) |&gt; sum |&gt; sqrt
+3.7416573867739413
+
+julia&gt; 1:3 .|&gt; x -&gt; x^2 |&gt; sum |&gt; sqrt
+3-element Vector{Float64}:
+ 1.0
+ 2.0
+ 3.0</code></pre><h2 id="man-vectorized"><a class="docs-heading-anchor" href="#man-vectorized">向量化函数的点语法</a><a id="man-vectorized-1"></a><a class="docs-heading-anchor-permalink" href="#man-vectorized" title="Permalink"></a></h2><p>在科学计算语言中，通常会有函数的「向量化」版本，它简单地将给定函数 <code>f(x)</code> 作用于数组 <code>A</code> 的每个元素，接着通过 <code>f(A)</code> 生成一个新数组。这种语法便于数据处理，但在其它语言中，向量化通常也是性能所需要的：如果循环很慢，函数的「向量化」版本可以调用由低级语言编写的、快速的库代码。在 Julia 中，向量化函数<em>不</em>是性能所必需的，实际上编写自己的循环通常也是有益的（请参阅 <a href="../performance-tips/#man-performance-tips">Performance Tips</a>），但它们仍然很方便。因此，<em>任何</em> Julia 函数 <code>f</code> 能够以元素方式作用于任何数组（或者其它集合），这通过语法 <code>f.(A)</code> 实现。例如，<code>sin</code> 可以作用于向量 <code>A</code> 中的所有元素，如下所示：</p><pre><code class="language-julia-repl hljs">julia&gt; A = [1.0, 2.0, 3.0]
+3-element Vector{Float64}:
+ 1.0
+ 2.0
+ 3.0
+
+julia&gt; sin.(A)
+3-element Vector{Float64}:
+ 0.8414709848078965
+ 0.9092974268256817
+ 0.1411200080598672</code></pre><p>当然，你如果为 <code>f</code> 编写了一个专门的「向量化」方法，例如通过 <code>f(A::AbstractArray) = map(f, A)</code>，可以省略点号，这和 <code>f.(A)</code> 一样高效。但这种方法要求你事先决定要进行向量化的函数。</p><p>更一般地，<code>f.(args...)</code> 实际上等价于 <code>broadcast(f, args...)</code>，它允许你操作多个数组（甚至是不同形状的），或是数组和标量的混合（请参阅 <a href="../arrays/#Broadcasting">Broadcasting</a>）。例如，如果有 <code>f(x,y) = 3x + 4y</code>，那么 <code>f.(pi,A)</code> 将为 <code>A</code> 中的每个 <code>a</code> 返回一个由 <code>f(pi,a)</code> 组成的新数组，而 <code>f.(vector1,vector2)</code> 将为每个索引 <code>i</code> 返回一个由 <code>f(vector1[i],vector2[i])</code> 组成的新向量（如果向量具有不同的长度则会抛出异常）。</p><pre><code class="language-julia-repl hljs">julia&gt; f(x,y) = 3x + 4y;
+
+julia&gt; A = [1.0, 2.0, 3.0];
+
+julia&gt; B = [4.0, 5.0, 6.0];
+
+julia&gt; f.(pi, A)
+3-element Vector{Float64}:
+ 13.42477796076938
+ 17.42477796076938
+ 21.42477796076938
+
+julia&gt; f.(A, B)
+3-element Vector{Float64}:
+ 19.0
+ 26.0
+ 33.0</code></pre><p>关键字参数不会被广播，而是简单地传递给函数的每次调用。 例如，<code>round.(x, digits=3)</code> 等价于 <code>broadcast(x -&gt; round(x, digits=3), x)</code>。</p><p>此外，<em>嵌套的</em> <code>f.(args...)</code> 调用会被<em>融合</em>到一个 <code>broadcast</code> 循环中。例如，<code>sin.(cos.(X))</code> 等价于 <code>broadcast(x -&gt; sin(cos(x)), X)</code>，类似于 <code>[sin(cos(x)) for x in X]</code>：在 <code>X</code> 上只有一个循环，并且只为结果分配了一个数组。[ 相反，在典型的「向量化」语言中，<code>sin(cos(X))</code> 首先会为 <code>tmp=cos(X)</code> 分配第一个临时数组，然后在单独的循环中计算 <code>sin(tmp)</code>，再分配第二个数组。] 这种循环融合不是可能发生也可能不发生的编译器优化，只要遇到了嵌套的 <code>f.(args...)</code> 调用，它就是一个<em>语法保证</em>。技术上，一旦遇到「非点」函数调用，融合就会停止；例如，在 <code>sin.(sort(cos.(X)))</code> 中，由于插入的 <code>sort</code> 函数，<code>sin</code> 和 <code>cos</code> 无法被合并。</p><p>最后，最大效率通常在向量化操作的输出数组被<em>预分配</em>时实现，这样重复调用就不会一次又一次地为结果分配新数组（请参阅 <a href="../performance-tips/#输出预分配">输出预分配</a>）。一个方便的语法是 <code>X .= ...</code>，它等价于 <code>broadcast!(identity, X, ...)</code>，除了上面提到的，<code>broadcast!</code> 循环可与任何嵌套的「点」调用融合。例如，<code>X .= sin.(Y)</code> 等价于 <code>broadcast!(sin, X, Y)</code>，用 <code>sin.(Y)</code> in-place 覆盖 <code>X</code>。如果左边是数组索引表达式，例如 <code>X[2:end] .= sin.(Y)</code>，那就将 <code>broadcast!</code> 转换在一个 <code>view</code> 上，例如 <code>broadcast!(sin, view(X, 2:lastindex(X)), Y)</code>，这样左侧就被 in-place 更新了。</p><p>由于在表达式中为许多操作和函数调用添加点可能很乏味并导致难以阅读的代码，宏 <a href="../../base/arrays/#Base.Broadcast.@__dot__"><code>@.</code></a> 用于将表达式中的<em>每个</em>函数调用、操作和赋值转换为「点」版本。</p><pre><code class="language-julia-repl hljs">julia&gt; Y = [1.0, 2.0, 3.0, 4.0];
+
+julia&gt; X = similar(Y); # pre-allocate output array
+
+julia&gt; @. X = sin(cos(Y)) # equivalent to X .= sin.(cos.(Y))
+4-element Vector{Float64}:
+  0.5143952585235492
+ -0.4042391538522658
+ -0.8360218615377305
+ -0.6080830096407656</code></pre><p>像 <code>.+</code> 这样的二元（或一元）运算符使用相同的机制进行管理：它们等价于 <code>broadcast</code> 调用且可与其它嵌套的「点」调用融合。<code>X .+= Y</code> 等等价于 <code>X .= X .+ Y</code>，结果为一个融合的 in-place 赋值；另见 <a href="../mathematical-operations/#man-dot-operators">dot operators</a>。</p><p>您也可以使用 <a href="../../base/base/#Base.:|&gt;"><code>|&gt;</code></a> 将点操作与函数链组合在一起，如本例所示：</p><pre><code class="language-julia-repl hljs">julia&gt; 1:5 .|&gt; [x-&gt;x^2, inv, x-&gt;2*x, -, isodd]
+5-element Vector{Real}:
+    1
+    0.5
+    6
+   -4
+ true</code></pre><h2 id="更多阅读"><a class="docs-heading-anchor" href="#更多阅读">更多阅读</a><a id="更多阅读-1"></a><a class="docs-heading-anchor-permalink" href="#更多阅读" title="Permalink"></a></h2><p>我们应该在这里提到，这远不是定义函数的完整图景。Julia 拥有一个复杂的类型系统并且允许对参数类型进行多重分派。这里给出的示例都没有为它们的参数提供任何类型注释，意味着它们可以作用于任何类型的参数。类型系统在<a href="../types/#man-types">类型</a>中描述，而<a href="../methods/#方法">方法</a>则描述了根据运行时参数类型上的多重分派所选择的方法定义函数。</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../strings/">« 字符串</a><a class="docs-footer-nextpage" href="../control-flow/">流程控制 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">设置</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">选择主题</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>本文档在 <span class="colophon-date" title="2025 五月 9 周五 14:00">2025 五月 9 周五</span>用 <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> 1.10.2 版生成使用 1.10.9 版本的 Julia。</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
