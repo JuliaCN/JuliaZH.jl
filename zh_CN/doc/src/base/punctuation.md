@@ -4,58 +4,58 @@
 
 | 符号        | 含义                                                                                        |
 |:----------- |:--------------------------------------------------------------------------------------------|
-| `@`         | the at-sign marks a [macro](@ref man-macros) invocation; optionally followed by an argument list |
+| `@`         | `@` 符号标记[宏](@ref man-macros)调用；可选后跟参数列表 |
 | [`!`](@ref) | 感叹号是一个表示逻辑否定的前缀算符 |
-| `a!`        | function names that end with an exclamation mark modify one or more of their arguments by convention |
-| `#`         | the number sign (or hash or pound) character begins single line comments                    |
-| `#=`        | when followed by an equals sign, it begins a multi-line comment (these are nestable)        |
-| `=#`        | end a multi-line comment by immediately preceding the number sign with an equals sign       |
-| `$`         | the dollar sign is used for [string](@ref string-interpolation) and [expression](@ref man-expression-interpolation) interpolation |
-| [`%`](@ref rem) | the percent symbol is the remainder operator                                            |
-| [`^`](@ref) | the caret is the exponentiation operator                                                    |
-| [`&`](@ref) | single ampersand is bitwise and                                                             |
-| [`&&`](@ref)| double ampersands is short-circuiting boolean and                                           |
-| [`\|`](@ref)| single pipe character is bitwise or                                                         |
-| [`\|\|`](@ref) | double pipe characters is short-circuiting boolean or                                    |
-| [`⊻`](@ref xor) | the unicode xor character is bitwise exclusive or                                       |
-| [`~`](@ref) | the tilde is an operator for bitwise not                                                    |
-| `'`         | a trailing apostrophe is the [`adjoint`](@ref) (that is, the complex transpose) operator Aᴴ |
-| [`*`](@ref) | the asterisk is used for multiplication, including matrix multiplication and [string concatenation](@ref man-concatenation) |
-| [`/`](@ref) | forward slash divides the argument on its left by the one on its right                      |
-| [`\`](@ref) | backslash operator divides the argument on its right by the one on its left, commonly used to solve matrix equations |
-| `()`        | parentheses with no arguments constructs an empty [`Tuple`](@ref)                           |
-| `(a,...)`   | parentheses with comma-separated arguments constructs a tuple containing its arguments      |
-| `(a=1,...)` | parentheses with comma-separated assignments constructs a [`NamedTuple`](@ref)              |
-| `(x;y)`     | parentheses can also be used to group one or more semicolon separated expressions           |
-| `a[]`       | [array indexing](@ref man-array-indexing) (calling [`getindex`](@ref) or [`setindex!`](@ref)) |
-| `[,]`       | [vector literal constructor](@ref man-array-literals) (calling [`vect`](@ref Base.vect))    |
-| `[;]`       | [vertical concatenation](@ref man-array-concatenation) (calling [`vcat`](@ref) or [`hvcat`](@ref)) |
-| `[    ]`    | with space-separated expressions, [horizontal concatenation](@ref man-concatenation) (calling [`hcat`](@ref) or [`hvcat`](@ref)) |
-| `T{ }`      | curly braces following a type list that type's [parameters](@ref Parametric-Types)          |
-| `{}`        | curly braces can also be used to group multiple [`where`](@ref) expressions in function declarations |
-| `;`         | semicolons separate statements, begin a list of keyword arguments in function declarations or calls, or are used to separate array literals for vertical concatenation |
-| `,`         | commas separate function arguments or tuple or array components                             |
-| `?`         | the question mark delimits the ternary conditional operator (used like: `conditional ? if_true : if_false`) |
-| `" "`       | the single double-quote character delimits [`String`](@ref) literals                        |
-| `""" """`   | three double-quote characters delimits string literals that may contain `"` and ignore leading indentation |
-| `' '`       | the single-quote character delimits [`Char`](@ref) (that is, character) literals            |
-| ``` ` ` ``` | the backtick character delimits [external process](@ref Running-External-Programs) ([`Cmd`](@ref)) literals |
-| `A...`      | triple periods are a postfix operator that "splat" their arguments' contents into many arguments of a function call or declare a varargs function that "slurps" up many arguments into a single tuple |
-| `a.b`       | single periods access named fields in objects/modules (calling [`getproperty`](@ref Base.getproperty) or [`setproperty!`](@ref Base.setproperty!)) |
-| `f.()`      | periods may also prefix parentheses (like `f.(...)`) or infix operators (like `.+`) to perform the function element-wise (calling [`broadcast`](@ref)) |
-| `a:b`       | colons ([`:`](@ref)) used as a binary infix operator construct a range from `a` to `b` (inclusive) with fixed step size `1` |
-| `a:s:b`     | colons ([`:`](@ref)) used as a ternary infix operator construct a range from `a` to `b` (inclusive) with step size `s` |
-| `:`         | when used by themselves, [`Colon`](@ref)s represent all indices within a dimension, frequently combined with [indexing](@ref man-array-indexing) |
-| `::`        | double-colons represent a type annotation or [`typeassert`](@ref), depending on context, frequently used when declaring function arguments |
-| `:( )`      | quoted expression                                                                           |
-| `:a`        | [`Symbol`](@ref) a                                                                          |
-| [`<:`](@ref)| 子类型运算符                                                                            |
-| [`>:`](@ref)| supertype operator (reverse of subtype operator)                                            |
-| `=`         | single equals sign is [assignment](@ref man-variables)                                      |
-| [`==`](@ref)| double equals sign is value equality comparison                                             |
-| [`===`](@ref) | triple equals sign is programmatically identical equality comparison                      |
-| [`=>`](@ref Pair) | right arrow using an equals sign defines a [`Pair`](@ref) typically used to populate [dictionaries](@ref 字典) |
-| `->`        | right arrow using a hyphen defines an [anonymous function](@ref man-anonymous-functions) on a single line |
-| [`\|>`](@ref)       | pipe operator passes output from the left argument to input of the right argument, usually a [function](@ref 函数的复合与链式调用) |
-| `∘`         | function composition operator (typed with \circ{tab}) combines two functions as though they are a single larger [function](@ref 函数的复合与链式调用) |
-| `_`         | underscores may be assigned values which will not be saved, often used to ignore [multiple return values](@ref destructuring-assignment) or create repetitive [comprehensions](@ref man-comprehensions) |
+| `a!`        | 以感叹号结尾的函数名按约定会修改其一个或多个参数 |
+| `#`         | 井号（或哈希符号）字符开始单行注释 |
+| `#=`        | 后跟等号时，开始多行注释（这些注释可以嵌套） |
+| `=#`        | 在井号前紧跟等号时，结束多行注释 |
+| `$`         | 美元符号用于[字符串](@ref string-interpolation)和[表达式](@ref man-expression-interpolation)插值 |
+| [`%`](@ref rem) | 百分号是求余运算符 |
+| [`^`](@ref) | 脱字符是幂运算符 |
+| [`&`](@ref) | 单个与符号是按位与运算符 |
+| [`&&`](@ref)| 双与符号是短路布尔与运算符 |
+| [`\|`](@ref)| 单个管道符号是按位或运算符 |
+| [`\|\|`](@ref) | 双管道符号是短路布尔或运算符 |
+| [`⊻`](@ref xor) | Unicode 异或符号是按位异或运算符 |
+| [`~`](@ref) | 波浪号是按位非运算符 |
+| `'`         | 尾随的撇号是 [`adjoint`](@ref)（即复共轭转置）运算符 Aᴴ |
+| [`*`](@ref) | 星号用于乘法，包括矩阵乘法和[字符串连接](@ref man-concatenation) |
+| [`/`](@ref) | 正斜杠将左边的参数除以右边的参数 |
+| [`\`](@ref) | 反斜杠运算符将右边的参数除以左边的参数，通常用于求解矩阵方程 |
+| `()`        | 无参数的圆括号构造一个空的 [`Tuple`](@ref) |
+| `(a,...)`   | 带有逗号分隔参数的圆括号构造一个包含其参数的元组 |
+| `(a=1,...)` | 带有逗号分隔赋值的圆括号构造一个 [`NamedTuple`](@ref) |
+| `(x;y)`     | 圆括号也可以用于分组一个或多个分号分隔的表达式 |
+| `a[]`       | [数组索引](@ref man-array-indexing)（调用[`getindex`](@ref) 或 [`setindex!`](@ref)） |
+| `[,]`       | [向量字面量构造器](@ref man-array-literals)（调用 [`vect`](@ref Base.vect)） |
+| `[;]`       | [垂直连接](@ref man-array-concatenation)（调用 [`vcat`](@ref) 或 [`hvcat`](@ref)） |
+| `[    ]`    | 带空格分隔的表达式，[水平连接](@ref man-concatenation)（调用 [`hcat`](@ref) 或 [`hvcat`](@ref)） |
+| `T{ }`      | 跟在类型后的花括号列出该类型的[参数](@ref Parametric-Types) |
+| `{}`        | 花括号也可以用于在函数声明中分组多个 [`where`](@ref)表达式 |
+| `;`         | 分号分隔语句，开始函数声明或调用中的关键字参数列表，或用于分隔数组字面量以进行垂直连接 |
+| `,`         | 逗号分隔函数参数或元组或数组组件 |
+| `?`         | 问号界定三元条件运算符（使用方式：`条件 ? 为真时 : 为假时`） |
+| `" "`       | 单个双引号字符界定 [`String`](@ref)字面量 |
+| `""" """`   | 三个双引号字符界定可以包含 `"` 且忽略前导缩进的字符串字面量 |
+| `' '`       | 单引号字符界定 [`Char`](@ref)（即字符）字面量 |
+| ``` ` ` ``` | 反引号字符界定 [外部进程](@ref Running-External-Programs)（[`Cmd`](@ref)）字面量 |
+| `A...`      | 三个句点是一个后缀运算符，将其参数的内容"展开"为函数调用的多个参数，或声明一个可变参数函数，将多个参数"吸收"为单个元组 |
+| `a.b`       | 单个句点访问对象/模块中的命名字段（调用 [`getproperty`](@ref Base.getproperty) 或 [`setproperty!`](@ref Base.setproperty!)） |
+| `f.()`      | 句点也可以前缀圆括号（如 `f.(...)`）或中缀运算符（如 `.+`）以按元素执行函数（调用 [`broadcast`](@ref)） |
+| `a:b`       | 冒号（[`:`](@ref)）用作二元中缀运算符，构造从 `a` 到 `b`（包含）的固定步长为 `1` 的范围 |
+| `a:s:b`     | 冒号（[`:`](@ref)）用作三元中缀运算符，构造从 `a` 到 `b`（包含）的步长为 `s` 的范围 |
+| `:`         | 单独使用时，[`Colon`](@ref)表示维度内的所有索引，经常与[索引](@ref man-array-indexing)组合使用 |
+| `::`        | 双冒号表示类型注解或 [`typeassert`](@ref)，取决于上下文，经常用于声明函数参数 |
+| `:( )`      | 引用的表达式 |
+| `:a`        | 符号 [`Symbol`](@ref) `a` |
+| [`<:`](@ref)| 子类型运算符 |
+| [`>:`](@ref)| 超类型运算符（子类型运算符的反向） |
+| `=`         | 单个等号是[赋值](@ref man-variables) |
+| [`==`](@ref)| 双等号是值相等比较 |
+| [`===`](@ref) | 三等号是程序上完全相同的相等比较 |
+| [`=>`](@ref Pair) | 使用等号的右箭头定义一个 [`Pair`](@ref)，通常用于填充[字典](@ref 字典) |
+| `->`        | 使用连字符的右箭头在单行上定义一个[匿名函数](@ref man-anonymous-functions) |
+| [`\|>`](@ref) | 管道运算符将左参数的输出传递给右参数的输入，通常是一个[函数](@ref 函数的复合与链式调用) |
+| `∘`         | 函数组合运算符（用 `\circ{tab}` 输入）将两个函数组合成一个更大的[函数](@ref 函数的复合与链式调用) |
+| `_`         | 下划线可以赋值但不会保存，通常用于忽略[多返回值](@ref destructuring-assignment)或创建重复的[推导式](@ref man-comprehensions) |
