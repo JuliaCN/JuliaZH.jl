@@ -231,12 +231,10 @@ Base.valtype
 
   * [`Set`](@ref)
   * [`BitSet`](@ref)
-  * [`IdSet`](@ref)
   * [`EnvDict`](@ref Base.EnvDict)
   * [`Array`](@ref)
   * [`BitArray`](@ref)
   * [`ImmutableDict`](@ref Base.ImmutableDict)
-  * [`PersistentDict`](@ref Base.PersistentDict)
   * [`Iterators.Pairs`](@ref)
 
 ## 类似 Set 的集合
@@ -264,7 +262,6 @@ Base.isdisjoint
 
   * [`Set`](@ref)
   * [`BitSet`](@ref)
-  * [`IdSet`](@ref)
 
 以下类型仅实现了部分上述函数：
 
