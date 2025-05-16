@@ -1,6 +1,8 @@
 # 文件系统
 
 ```@docs
+Base.read(::String)
+Base.write(::String, ::Any)
 Base.Filesystem.pwd
 Base.Filesystem.cd(::AbstractString)
 Base.Filesystem.cd(::Function)
