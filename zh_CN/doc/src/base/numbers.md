@@ -1,7 +1,9 @@
-# [标准数值类型](@id lib-numbers)
+# [数值类型](@id lib-numbers)
 
-A type tree for all subtypes of `Number` in `Base` is shown below.
-Abstract types have been marked, the rest are concrete types.
+## 标准数值类型
+
+下面展示了 `Base` 中 `Number` 的所有子类型的类型树。
+抽象类型已经标出，其余的是具体类型。
 ```
 Number  (Abstract Type)
 ├─ Complex
@@ -43,7 +45,7 @@ Core.Unsigned
 Base.AbstractIrrational
 ```
 
-### 具象数值类型
+### 具体数值类型
 
 ```@docs
 Core.Float16
@@ -142,7 +144,7 @@ Base.@int128_str
 Base.@uint128_str
 ```
 
-## [BigFloats and BigInts](@id BigFloats-and-BigInts)
+## [BigFloats 和 BigInts](@id BigFloats-and-BigInts)
 
 The [`BigFloat`](@ref) and [`BigInt`](@ref) types implements
 arbitrary-precision floating point and integer arithmetic, respectively. For
