@@ -2,7 +2,7 @@
 
 ## [迭代](@id lib-collections-iteration)
 
-序列迭代由 [`iterate`](@ref) 实现
+序列迭代由 [`iterate`](@ref) 实现。
 广义的 `for` 循环
 
 ```julia
@@ -23,7 +23,7 @@ end
 ```
 
 `state` 对象可以是任何对象，并且对于每个可迭代类型应该选择合适的 `state` 对象。
-请参照 [帮助文档接口的迭代小节](@ref man-interface-iteration) 来获取关于定义一个常见迭代类型的更多细节。
+有关定义自定义可迭代类型的更多详情，请参阅手册中有关[迭代接口](@ref man-interface-iteration)的部分。
 
 ```@docs
 Base.iterate
@@ -35,15 +35,15 @@ Base.IteratorEltype
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
-  * `Tuple`
-  * `Number`
+  * [`Tuple`](@ref)
+  * [`Number`](@ref)
   * [`AbstractArray`](@ref)
   * [`BitSet`](@ref)
   * [`IdDict`](@ref)
   * [`Dict`](@ref)
   * [`WeakKeyDict`](@ref)
   * `EachLine`
-  * `AbstractString`
+  * [`AbstractString`](@ref)
   * [`Set`](@ref)
   * [`Pair`](@ref)
   * [`NamedTuple`](@ref)
@@ -63,6 +63,7 @@ Base.LinRange
 
 ```@docs
 Base.isempty
+Base.isdone
 Base.empty!
 Base.length
 Base.checked_length
@@ -72,14 +73,14 @@ Base.checked_length
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
-  * `Tuple`
-  * `Number`
+  * [`Tuple`](@ref)
+  * [`Number`](@ref)
   * [`AbstractArray`](@ref)
   * [`BitSet`](@ref)
   * [`IdDict`](@ref)
   * [`Dict`](@ref)
   * [`WeakKeyDict`](@ref)
-  * `AbstractString`
+  * [`AbstractString`](@ref)
   * [`Set`](@ref)
   * [`NamedTuple`](@ref)
 
@@ -163,8 +164,8 @@ Base.lastindex
 
   * [`AbstractRange`](@ref)
   * [`UnitRange`](@ref)
-  * `Tuple`
-  * `AbstractString`
+  * [`Tuple`](@ref)
+  * [`AbstractString`](@ref)
   * [`Dict`](@ref)
   * [`IdDict`](@ref)
   * [`WeakKeyDict`](@ref)
@@ -172,7 +173,9 @@ Base.lastindex
 
 ## 字典
 
-[`Dict`](@ref) 是一个标准字典。其实现利用了 [`hash`](@ref) 作为键的哈希函数和 [`isequal`](@ref) 来决定是否相等。对于自定义类型，可以定义这两个函数来重载它们在哈希表内的存储方式。
+[`Dict`](@ref) 是一个标准字典。
+其实现利用了 [`hash`](@ref) 作为键的哈希函数和 [`isequal`](@ref) 来决定是否相等。
+对于自定义类型，可以定义这两个函数来重载它们在哈希表内的存储方式。
 
 [`IdDict`](@ref) 是一种特殊的哈希表，在里面键始终是对象标识符。
 
@@ -181,11 +184,13 @@ Base.lastindex
 它像 `Dict` 一样使用 `hash` 来做哈希和 `isequal` 来做相等判断，
 但是它不会在插入时转换键，这点不像 `Dict`。
 
-[`Dict`](@ref)s 可以由传递含有 `=>` 的成对对象给 [`Dict`](@ref) 的构造函数来被创建：`Dict("A"=>1, "B"=>2)`。
-这个调用会尝试从键值对中推到类型信息（比如这个例子创造了一个 `Dict{String, Int64}`）。
-为了显式指定类型，请使用语法 `Dict{KeyType,ValueType}(...)`。例如：`Dict{String,Int32}("A"=>1, "B"=>2)`。
+将用 `=>` 构造的成对对象传递给 [`Dict`](@ref) 构造函数，可以创建字典：`Dict("A"=>1, "B"=>2)`。
+该调用将尝试从键和值推断出类型信息（例如，本示例创建了一个 `Dict{String, Int64}`）。 
+要明确指定类型请使用语法 `Dict{KeyType, ValueType}(...)`。
+例如，`Dict{String, Int32}("A"=>1, "B"=>2)`。
 
-字典也可以用生成器创建。例如：`Dict(i => f(i) for i = 1:10)`。
+字典也可以用生成器创建。
+例如：`Dict(i => f(i) for i = 1:10)`。
 
 对于字典 `D`，若键 `x` 的值存在，则语法 `D[x]` 返回 `x` 的值；否则抛出一个错误。
 `D[x] = y` 存储键值对 `x => y` 到 `D` 中，会覆盖键 `x` 的已有的值。
@@ -218,18 +223,20 @@ Base.valtype
 
 以下类型均完全实现了上述函数：
 
-  * [`IdDict`](@ref)
   * [`Dict`](@ref)
+  * [`IdDict`](@ref)
   * [`WeakKeyDict`](@ref)
 
 以下类型仅实现了部分上述函数：
 
-  * [`BitSet`](@ref)
   * [`Set`](@ref)
+  * [`BitSet`](@ref)
+  * [`IdSet`](@ref)
   * [`EnvDict`](@ref Base.EnvDict)
   * [`Array`](@ref)
   * [`BitArray`](@ref)
   * [`ImmutableDict`](@ref Base.ImmutableDict)
+  * [`PersistentDict`](@ref Base.PersistentDict)
   * [`Iterators.Pairs`](@ref)
 
 ## 类似 Set 的集合
@@ -255,8 +262,9 @@ Base.isdisjoint
 
 以下类型均完全实现了上述函数：
 
-  * [`BitSet`](@ref)
   * [`Set`](@ref)
+  * [`BitSet`](@ref)
+  * [`IdSet`](@ref)
 
 以下类型仅实现了部分上述函数：
 
