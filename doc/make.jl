@@ -330,6 +330,9 @@ function fileurl(remote::JuliaZHRemote, ref::AbstractString, filename::AbstractS
     elseif startswith(filename, "doc/src")
         # doc/src/base/parallel.md  =>  zh_CN/doc/src/base/parallel.md
         replace(filename, r"doc/src" => "zh_CN/doc/src")
+    elseif startswith(filename, "stdlib/")
+        # stdlib/Test/docs/src/index.md  =>  zh_CN/stdlib/Test/docs/src/index.md
+        replace(filename, r"stdlib/([^\.]+)/docs/src/index\.md" => s"zh_CN/stdlib/\1/docs/src/index.md")
     else
         @warn "未找到对应的 md 源文件: $filename"
         filename
