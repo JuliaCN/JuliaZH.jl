@@ -8,8 +8,7 @@ struct VecElement{T}
 end
 ```
 
-It has a special compilation rule: a homogeneous tuple of `VecElement{T}` maps to an LLVM `vector`
-type when `T` is a primitive bits type.
+它有一个特殊的编译规则：当 `T` 是原始位类型时，`VecElement{T}` 的同构元组会映射到 LLVM 的 `vector` 类型。
 
 使用 `-O3` 参数时，编译器 *可能* 自动为这样的元组向量化运算符。
 例如接下来的程序，使用 `julia -O3` 编译，在x86系统中会生成两个 SIMD 附加指令（`addps`）：
