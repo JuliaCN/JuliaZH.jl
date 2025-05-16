@@ -1,4 +1,4 @@
-# [Multi-Threading](@id lib-multithreading)
+# [多线程](@id lib-multithreading)
 
 ```@docs
 Base.Threads.@threads
@@ -13,7 +13,7 @@ Base.Threads.threadpoolsize
 Base.Threads.ngcthreads
 ```
 
-See also [Multi-Threading](@ref man-multithreading).
+另建：手册中的[多线程](@ref man-multithreading).
 
 ## 原子操作
 
@@ -29,7 +29,7 @@ Base.@atomicreplace
 
 !!! note
 
-    The following APIs are fairly primitive, and will likely be exposed through an `unsafe_*`-like wrapper.
+    以下 API 相当原始，很可能会通过类似于 `unsafe_*` 的封装器暴露出来。
 
 ```
 Core.Intrinsics.atomic_pointerref(pointer::Ptr{T}, order::Symbol) --> T
@@ -41,7 +41,7 @@ Core.Intrinsics.atomic_pointerreplace(pointer::Ptr{T}, expected::Any, new::T, su
 
 !!! warning
 
-    The following APIs are deprecated, though support for them is likely to remain for several releases.
+    以下 API 接口已被弃用，但对它们的支持可能会持续几个版本。
 
 ```@docs
 Base.Threads.Atomic
@@ -58,15 +58,15 @@ Base.Threads.atomic_min!
 Base.Threads.atomic_fence
 ```
 
-## ccall using a libuv threadpool (Experimental)
+## 使用 libuv 线程池的 ccall（实验性）
 
 ```@docs
 Base.@threadcall
 ```
 
-## Low-level synchronization primitives
+## 低级同步原语
 
-These building blocks are used to create the regular synchronization objects.
+这些构建块用于创建常规同步对象。
 
 ```@docs
 Base.Threads.SpinLock

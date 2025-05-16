@@ -3,25 +3,20 @@
 ## 介绍
 
 Julia Base 中包含一系列适用于科学及数值计算的函数和宏，但也可以用于通用编程。
-其它功能则由 Julia 生态圈中的[各种库](https://julialang.org/packages/)来提供。函数按主题划分如下：
+其它功能则由 Julia 生态圈中的[各种库](https://julialang.org/packages/)来提供。
+函数按主题划分如下：
 
 一些通用的提示：
 
-  * 可以通过 `Import Module` 导入想要使用的模块，并利用 `Module.fn(x)` 语句来实现对模块内函数的调用。
-     
+  * 可以通过 `import Module` 导入想要使用的模块，并利用 `Module.fn(x)` 语句来实现对模块内函数的调用。
   * 此外，`using Module` 语句会将名为 `Module` 的模块中的所有可调函数引入当前的命名空间。
   * 按照约定，名字以感叹号（`!`）结尾的函数会改变其输入参数的内容。
     一些函数同时拥有改变参数（例如 `sort!`）和不改变参数（`sort`）的版本
 
-The behaviors of `Base` and standard libraries are stable as defined in
-[SemVer](https://semver.org/) only if they are documented; i.e., included in the
-[Julia documentation](https://docs.julialang.org/) and not marked as unstable.
-See [API FAQ](@ref man-api) for more information.
+`Base` 和标准库的行为稳定性遵循 [SemVer](https://semver.org/) 的定义，但仅限于已经文档化的部分；
+即已包含在 [Julia 文档](https://docs.julialang.org/) 中且未标记为不稳定的内容。
+更多信息请参阅 [API 常见问题](@ref man-api)。
 
-The behaviors of `Base` and standard libraries are stable as defined in
-[SemVer](https://semver.org/) only if they are documented; i.e., included in the
-[Julia documentation](https://docs.julialang.org/) and not marked as unstable.
-See [API FAQ](@ref man-api) for more information.
 
 ## Getting Around
 
@@ -45,26 +40,26 @@ Base.active_project
 Base.set_active_project
 ```
 
-## [Keywords](@id Keywords)
+## [关键字](@id Keywords)
 
-This is the list of reserved keywords in Julia:
-`baremodule`, `begin`, `break`, `catch`, `const`, `continue`, `do`,
-`else`, `elseif`, `end`, `export`, `false`, `finally`, `for`, `function`,
-`global`, `if`, `import`, `let`, `local`, `macro`, `module`, `quote`,
-`return`, `struct`, `true`, `try`, `using`, `while`.
-Those keywords are not allowed to be used as variable names.
+以下是 Julia 中的保留关键字列表：
+`baremodule`、`begin`、`break`、`catch`、`const`、`continue`、`do`、
+`else`、`elseif`、`end`、`export`、`false`、`finally`、`for`、`function`、
+`global`、`if`、`import`、`let`、`local`、`macro`、`module`、`quote`、
+`return`、`struct`、`true`、`try`、`using`、`while`。
+这些关键字不能用作变量名。
 
-The following two-word sequences are reserved:
-`abstract type`, `mutable struct`, `primitive type`.
-However, you can create variables with names:
-`abstract`, `mutable`, `primitive` and `type`.
+以下双词组合是保留的：
+`abstract type`、`mutable struct`、`primitive type`。
+但是，你可以创建以下名称的变量：
+`abstract`、`mutable`、`primitive` 和 `type`。
 
-Finally:
-`where` is parsed as an infix operator for writing parametric method and type definitions;
-`in` and `isa` are parsed as infix operators;
-`outer` is parsed as a keyword when used to modify the scope of a variable in an iteration specification of a `for` loop;
-and `as` is used as a keyword to rename an identifier brought into scope by `import` or `using`.
-Creation of variables named `where`, `in`, `isa`, `outer` and `as` is allowed, though.
+最后：
+`where` 被解析为中缀运算符，用于编写参数化方法和类型定义；
+`in` 和 `isa` 被解析为中缀运算符；
+`outer` 在用于修改 `for` 循环迭代规范中变量作用域时被解析为关键字；
+而 `as` 用作关键字，用于重命名通过 `import` 或 `using` 引入作用域的标识符。
+不过，创建名为 `where`、`in`、`isa`、`outer` 和 `as` 的变量是允许的。
 
 ```@docs
 module
@@ -104,14 +99,16 @@ where
 ?:
 ```
 
-## Standard Modules
+## 标准模块
+
 ```@docs
 Main
 Core
 Base
 ```
 
-## Base Submodules
+## Base 子模块
+
 ```@docs
 Base.Broadcast
 Base.Docs
@@ -124,7 +121,7 @@ Base.Threads
 Base.GC
 ```
 
-## All Objects
+## 对象操作
 
 ```@docs
 Core.:(===)
@@ -167,9 +164,9 @@ Base.identity
 Base.WeakRef
 ```
 
-## Properties of Types
+## 类型的属性
 
-### Type relations
+### 类型关系
 
 ```@docs
 Base.supertype
@@ -185,7 +182,7 @@ Base.promote_typejoin
 Base.isdispatchtuple
 ```
 
-### Declared structure
+### 声明结构体
 
 ```@docs
 Base.ismutable
@@ -207,7 +204,7 @@ Base.isconst
 Base.isfieldatomic
 ```
 
-### Memory layout
+### 内存布局
 
 ```@docs
 Base.sizeof(::Type)
@@ -220,7 +217,7 @@ Base.datatype_haspadding
 Base.datatype_pointerfree
 ```
 
-### Special values
+### 特殊值
 
 ```@docs
 Base.typemin
@@ -233,7 +230,7 @@ Base.eps(::AbstractFloat)
 Base.instances
 ```
 
-## Special Types
+## 特殊类型
 
 ```@docs
 Core.Any
@@ -261,7 +258,7 @@ Core.Symbol(x...)
 Core.Module
 ```
 
-## Generic Functions
+## 通用函数
 
 ```@docs
 Core.Function
@@ -281,7 +278,7 @@ Base.Fix1
 Base.Fix2
 ```
 
-## Syntax
+## 语法
 
 ```@docs
 Core.eval
@@ -310,7 +307,8 @@ Base.@assume_effects
 Base.@deprecate
 ```
 
-## Missing Values
+## 缺失值
+
 ```@docs
 Base.Missing
 Base.missing
@@ -321,7 +319,7 @@ Base.skipmissing
 Base.nonmissingtype
 ```
 
-## System
+## 系统
 
 ```@docs
 Base.run
@@ -376,14 +374,14 @@ Base.Sys.isexecutable
 Base.@static
 ```
 
-## Versioning
+## 版本信息
 
 ```@docs
 Base.VersionNumber
 Base.@v_str
 ```
 
-## Errors
+## 错误
 
 ```@docs
 Base.error
@@ -427,7 +425,7 @@ Base.retry
 Base.ExponentialBackOff
 ```
 
-## Events
+## 事件
 
 ```@docs
 Base.Timer(::Function, ::Real)
@@ -436,7 +434,7 @@ Base.AsyncCondition
 Base.AsyncCondition(::Function)
 ```
 
-## Reflection
+## 反射
 
 ```@docs
 Base.nameof(::Module)
@@ -459,7 +457,7 @@ Base.functionloc(::Method)
 Base.@locals
 ```
 
-## Code loading
+## 代码加载
 
 ```@docs
 Base.identify_package
@@ -470,7 +468,7 @@ Base.isprecompiled
 Base.get_extension
 ```
 
-## Internals
+## 内部工具
 
 ```@docs
 Base.GC.gc
@@ -493,7 +491,8 @@ Base.precompile
 Base.jit_total_bytes
 ```
 
-## Meta
+## 元编程
+
 ```@docs
 Meta.quot
 Meta.isexpr

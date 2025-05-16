@@ -11,7 +11,7 @@ julia> sort([2,3,1])
  3
 ```
 
-You can sort in reverse order as well:
+或者指定使用逆序：
 
 ```jldoctest
 julia> sort([2,3,1], rev=true)
@@ -21,8 +21,8 @@ julia> sort([2,3,1], rev=true)
  1
 ```
 
-`sort` constructs a sorted copy leaving its input unchanged. Use the "bang" version of
-the sort function to mutate an existing array:
+`sort` 构造一个已排序的副本，保持输入不变。
+使用排序函数的"感叹号"版本来修改现有数组：
 
 ```jldoctest
 julia> a = [2,3,1];
@@ -36,8 +36,7 @@ julia> a
  3
 ```
 
-Instead of directly sorting an array, you can compute a permutation of the array's
-indices that puts the array into sorted order:
+除了直接对数组进行排序，你还可以计算一个数组索引的置换，使数组按排序顺序排列：
 
 ```julia-repl
 julia> v = randn(5)
@@ -65,7 +64,7 @@ julia> v[p]
   0.382396
 ```
 
-Arrays can be sorted according to an arbitrary transformation of their values:
+数组可以根据其值的任意转换进行排序：
 
 ```julia-repl
 julia> sort(v, by=abs)
@@ -77,7 +76,7 @@ julia> sort(v, by=abs)
  -0.839027
 ```
 
-或者通过转换来进行逆序排序
+或者指定使用逆序：
 
 ```julia-repl
 julia> sort(v, by=abs, rev=true)
@@ -101,12 +100,11 @@ julia> sort(v, alg=InsertionSort)
   0.382396
 ```
 
-All the sorting and order related functions rely on a "less than" relation defining a
-[strict weak order](https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings)
-on the values to be manipulated. The `isless` function is invoked by default, but the
-relation can be specified via the `lt` keyword, a function that takes two array elements
-and returns `true` if and only if the first argument is "less than" the second. See
-[`sort!`](@ref) and [Alternate Orderings](@ref) for more information.
+所有排序和顺序相关的函数都依赖于一个"小于"关系，该关系在要操作的值上定义了一个
+[严格弱序](https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings)。
+默认调用 `isless` 函数，但可以通过 `lt` 关键字指定关系，这是一个接受两个数组元素的函数，
+当且仅当第一个参数"小于"第二个参数时返回 `true`。
+更多信息请参见 [`sort!`](@ref) 和 [替代排序](@ref)。
 
 ## 排序函数
 
@@ -138,47 +136,45 @@ Base.Sort.partialsortperm!
 
 ## 排序算法
 
-目前，Julia Base 中有四种可用的排序算法：
+基础 Julia 中目前有四种公开可用的排序算法：
 
   * [`InsertionSort`](@ref)
   * [`QuickSort`](@ref)
   * [`PartialQuickSort(k)`](@ref)
   * [`MergeSort`](@ref)
 
-By default, the `sort` family of functions uses stable sorting algorithms that are fast
-on most inputs. The exact algorithm choice is an implementation detail to allow for
-future performance improvements. Currently, a hybrid of `RadixSort`, `ScratchQuickSort`,
-`InsertionSort`, and `CountingSort` is used based on input type, size, and composition.
-Implementation details are subject to change but currently available in the extended help
-of `??Base.DEFAULT_STABLE` and the docstrings of internal sorting algorithms listed there.
+默认情况下，`sort` 系列函数使用稳定的排序算法，这些算法在大多数输入上都很快。
+具体的算法选择是实现细节，以便于未来的性能改进。
 
-You can explicitly specify your preferred algorithm with the `alg` keyword
-(e.g. `sort!(v, alg=PartialQuickSort(10:20))`) or reconfigure the default sorting algorithm
-for custom types by adding a specialized method to the `Base.Sort.defalg` function.
-For example, [InlineStrings.jl](https://github.com/JuliaStrings/InlineStrings.jl/blob/v1.3.2/src/InlineStrings.jl#L903)
-defines the following method:
+目前，基于输入类型、大小和组成，使用了 `RadixSort`、`ScratchQuickSort`、`InsertionSort`
+和 `CountingSort` 的混合算法。
+实现细节可能会发生变化，但目前可以在 `??Base.DEFAULT_STABLE`
+的扩展帮助和其中列出的内部排序算法的文档字符串中找到。
+
+你可以使用 `alg` 关键字显式指定你偏好的算法（例如 `sort!(v, alg=PartialQuickSort(10:20))`），
+或者通过向 `Base.Sort.defalg` 函数添加专门的方法来重新配置自定义类型的默认排序算法。
+例如，[InlineStrings.jl](https://github.com/JuliaStrings/InlineStrings.jl/blob/v1.3.2/src/InlineStrings.jl#L903)
+定义了以下方法：
+
 ```julia
 Base.Sort.defalg(::AbstractArray{<:Union{SmallInlineStrings, Missing}}) = InlineStringSort
 ```
 
 !!! compat "Julia 1.9"
-    The default sorting algorithm (returned by `Base.Sort.defalg`) is guaranteed to
-    be stable since Julia 1.9. Previous versions had unstable edge cases when
-    sorting numeric arrays.
+    默认排序算法（由 `Base.Sort.defalg` 返回）自 Julia 1.9 起保证是稳定的。
+    之前的版本在排序数值数组时有不稳定的边缘情况。
 
-## Alternate Orderings
+## 替代排序
 
-By default, `sort`, `searchsorted`, and related functions use [`isless`](@ref) to compare
-two elements in order to determine which should come first. The
-[`Base.Order.Ordering`](@ref) abstract type provides a mechanism for defining alternate
-orderings on the same set of elements: when calling a sorting function like
-`sort!`, an instance of `Ordering` can be provided with the keyword argument `order`.
+默认情况下，`sort`、`searchsorted` 和相关函数使用 [`isless`](@ref) 来比较两个元素，以确定哪个应该排在前面。
+[`Base.Order.Ordering`](@ref) 抽象类型提供了一种机制，用于在相同的元素集上定义替代排序：
+当调用像 `sort!` 这样的排序函数时，可以通过关键字参数 `order` 提供一个 `Ordering` 实例。
 
-Instances of `Ordering` define an order through the [`Base.Order.lt`](@ref)
-function, which works as a generalization of `isless`.
-This function's behavior on custom `Ordering`s must satisfy all the conditions of a
-[strict weak order](https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings).
-See [`sort!`](@ref) for details and examples of valid and invalid `lt` functions.
+`Ordering` 的实例通过 [`Base.Order.lt`](@ref) 函数定义排序，该函数作为 `isless` 的泛化。
+这个函数在自定义 `Ordering` 上的行为必须满足
+[严格弱序](https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings)
+的所有条件。
+有关有效和无效 `lt` 函数的详细信息和示例，请参见 [`sort!`](@ref)。
 
 ```@docs
 Base.Order.Ordering

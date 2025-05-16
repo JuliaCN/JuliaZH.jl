@@ -67,9 +67,9 @@ Base.strides
 
 ## 广播与矢量化
 
-也可参照 [dot syntax for vectorizing functions](@ref man-vectorized)；
+也可参照 [矢量化函数的点语法 `.`](@ref man-vectorized)；
 例如，`f.(args...)` 隐式调用 `broadcast(f, args...)`。
-与其依赖如 `sin` 函数的“已矢量化”方法，你应该使用 `sin.(a)` 来使用`broadcast`来矢量化。
+与其依赖如 `sin` 函数的“已矢量化”方法，不如用 `sin.(a)` 通过 `broadcast` 来矢量化。
 
 ```@docs
 Base.broadcast
@@ -112,11 +112,13 @@ Base.elsize
 
 “视图”是一种表现和数组相似的数据结构（它是 `AbstractArray` 的子类型），但是它的底层数据实际上是另一个数组的一部分。
 
-例如，`x` 是一个数组，`v = @view x[1:10]`，则 `v` 表现得就像一个含有 10 个元素的数组，但是它的数据实际上是访问 `x` 的前 10 个元素。对视图的写入，如 `v[3] = 2`，直接写入了底层的数组 `x` （这里是修改 `x[3]`）。
+例如，`x` 是一个数组，`v = @view x[1:10]`，则 `v` 表现得就像一个含有 10 个元素的数组，但是它的数据实际上是访问 `x` 的前 10 个元素。
+写入视图时，如 `v[3] = 2`，则直接写入了底层的数组 `x` （这里是修改 `x[3]`）。
 
 在 Julia 中，像 `x[1:10]` 这样的切片操作会创建一个副本。`@view x[1:10]` 将它变成创建一个视图。
-`@views`  宏可以用于整个代码块（如 `@views function foo() .... end` 或 `@views begin ... end`）来将整个代码块中的切片操作变为使用视图。
-如[性能建议](@ref man-performance-views)所描述的，有时候使用数据的副本更快，而有时候使用视图会更快。
+`@views`  宏可以用于整个代码块，来将整个代码块中的切片操作变为使用视图。
+（如 `@views function foo() .... end` 或 `@views begin ... end`）
+如[性能建议](@ref man-performance-views)所描述的，有时复制数据更快，有时使用视图更快。
 
 ```@docs
 Base.view

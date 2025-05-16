@@ -6,10 +6,13 @@
 Base.stdout
 Base.stderr
 Base.stdin
+Base.read(::AbstractString)
+Base.write(::AbstractString, ::Any)
 Base.open
 Base.IOStream
 Base.IOBuffer
 Base.take!(::Base.GenericIOBuffer)
+Base.Pipe
 Base.fdio
 Base.flush
 Base.close
@@ -55,7 +58,7 @@ Base.IOContext(::IO, ::Pair)
 Base.IOContext(::IO, ::IOContext)
 ```
 
-## 文本 I/O
+## 通用 I/O
 
 ```@docs
 Base.show(::IO, ::Any)
@@ -76,20 +79,15 @@ Base.displaysize
 
 ## [多媒体 I/O](@id Multimedia-I/O)
 
-就像文本输出用 [`print`](@ref) 实现，用户自定义类型可以通过重载 [`show`](@ref) 来指定其文本化表示，
-Julia 提供了一个应用于富多媒体输出的标准化机制
-（例如图片、格式化文本、甚至音频和视频），由以下三部分组成：
+就像文本输出用 [`print`](@ref) 实现，用户定义的类型可以通过重载 [`show`](@ref) 来指定其文本化表示。
+Julia 提供了一个标准化的多媒体输出机制（如图像、格式化文本，甚至音频和视频），
+，由以下三部分组成：
 
-  * 函数 [`display(x)`](@ref) 来请求一个 Julia 对象 `x` 最丰富的多媒体展示，并以纯文本作为后备模式。
-     
-  * 重载 [`show`](@ref) 允许指定用户自定义类型的任意多媒体表现形式（以标准MIME类型为键值）。
-     
-  * Multimedia-capable display backends may be registered by subclassing a generic [`AbstractDisplay`](@ref) type
-    并通过 [`pushdisplay`](@ref) 将其压进显示后端的栈中。
-
-基础 Julia 运行环境只提供纯文本显示，
-但是更富的显示可以通过加载外部模块或者使用图形化 Julia 环境
-（比如基于 IPython 的 IJulia notebook）来实现。
+  * 函数 [`display(x)`](@ref) 用于请求 Julia 对象 `x` 的最丰富的可用多媒体显示
+    （带有纯文本回退选项）。
+  * 重载 [`show`](@ref) 允许指示用户定义类型的任意多媒体表示（由标准 MIME 类型键控）。
+  * 支持多媒体的显示后端可以通过继承泛型 [`AbstractDisplay`](@ref) 类型来注册，
+    并通过 [`pushdisplay`](@ref) 将其推送到显示后端栈中。
 
 ```@docs
 Base.AbstractDisplay
@@ -103,24 +101,24 @@ Base.MIME
 Base.@MIME_str
 ```
 
-如上面提到的，用户可以定义新的显示后端。
-例如，可以在窗口显示 PNG 图片的模块可以在 Julia 中注册这个能力，
-以便为有 PNG 表示的类型调用 [`display(x)`](@ref) 时可以在模块窗口中自动显示图片。
+如上所述，你也可以定义新的显示后端。例如，一个可以在窗口中显示 PNG 图像的模块可以向 Julia 注册这个功能，
+这样当在具有 PNG 表示的类型上调用 [`display(x)`](@ref) 时，就会自动使用该模块的窗口显示图像。
 
-In order to define a new display backend, one should first create a subtype `D` of the abstract
-class [`AbstractDisplay`](@ref).  Then, for each MIME type (`mime` string) that can be displayed on `D`, one should
-define a function `display(d::D, ::MIME"mime", x) = ...` that displays `x` as that MIME type,
-usually by calling [`show(io, mime, x)`](@ref) or [`repr(io, mime, x)`](@ref).
-A [`MethodError`](@ref) should be thrown if `x` cannot be displayed
-as that MIME type; this is automatic if one calls `show` or `repr`. Finally, one should define a function
-`display(d::D, x)` that queries [`showable(mime, x)`](@ref) for the `mime` types supported by `D`
-and displays the "best" one; a `MethodError` should be thrown if no supported MIME types are found
-for `x`.  Similarly, some subtypes may wish to override [`redisplay(d::D, ...)`](@ref Base.Multimedia.redisplay). (Again, one should
-`import Base.display` to add new methods to `display`.) The return values of these functions are
-up to the implementation (since in some cases it may be useful to return a display "handle" of
-some type).  The display functions for `D` can then be called directly, but they can also be invoked
-automatically from [`display(x)`](@ref) simply by pushing a new display onto the display-backend stack
-with:
+为了定义新的显示后端，首先应该创建抽象类 [`AbstractDisplay`](@ref) 的子类型 `D`。
+
+然后，对于每个可以在子类型 `D` 上显示的 MIME 类型（`mime` 字符串），
+应该定义一个函数 `display(d::D, ::MIME"mime", x) = ...` 用来以此 MIME 类型显示 `x`，
+通常是通过调用 [`show(io, mime, x)`](@ref) 或 [`repr(io, mime, x)`](@ref)。
+
+如果 `x` 不能以该 MIME 类型显示，应该抛出 [`MethodError`](@ref)；如果调用 `show` 或 `repr`，这是自动的。
+最后，应该定义一个函数 `display(d::D, x)`，
+它查询 [`showable(mime, x)`](@ref) 以获取 `D` 支持的 `mime` 类型，并显示"最佳"的一个；
+如果没有找到 `x` 支持的 MIME 类型，应该抛出 `MethodError`。
+
+类似地，某些子类型可能希望重写 [`redisplay(d::D, ...)`](@ref Base.Multimedia.redisplay)。
+（同样，应该 `import Base.display` 来添加新的 `display` 方法）
+这些函数的返回值取决于具体实现（因为在某些情况下，返回某种类型的显示"句柄"可能很有用）。
+`D` 的显示函数可以直接调用，但也可以通过将新的待显示对象，推送到显示后端来自动调用 [`display(x)`](@ref)：
 
 ```@docs
 Base.Multimedia.pushdisplay

@@ -1,4 +1,4 @@
-# Tasks
+# 任务
 
 ```@docs
 Core.Task
@@ -15,7 +15,7 @@ Base.task_local_storage(::Any, ::Any)
 Base.task_local_storage(::Function, ::Any, ::Any)
 ```
 
-## Scheduling
+## 调度
 
 ```@docs
 Base.yield
@@ -24,7 +24,7 @@ Base.sleep
 Base.schedule
 ```
 
-## [Synchronization](@id lib-task-sync)
+## [同步](@id lib-task-sync)
 
 ```@docs
 Base.errormonitor
@@ -66,15 +66,13 @@ Base.close(::Channel)
 Base.bind(c::Channel, task::Task)
 ```
 
-## [Low-level synchronization using `schedule` and `wait`](@id low-level-schedule-wait)
+## [使用 `schedule` 和 `wait` 的低级同步](@id low-level-schedule-wait)
 
-The easiest correct use of [`schedule`](@ref) is on a `Task` that is not started (scheduled)
-yet.  However, it is possible to use [`schedule`](@ref) and [`wait`](@ref) as a very
-low-level building block for constructing synchronization interfaces.  A crucial
-pre-condition of calling `schedule(task)` is that the caller must "own" the `task`; i.e., it
-must know that the call to `wait` in the given `task` is happening at the locations known to
-the code calling `schedule(task)`.  One strategy for ensuring such pre-condition is to use
-atomics, as demonstrated in the following example:
+[`schedule`](@ref) 最简单的正确使用方式是在一个尚未启动（调度）的 `Task` 上使用。
+然而，也可以将 [`schedule`](@ref) 和 [`wait`](@ref) 用作构建同步接口的非常低级的构建块。
+调用 `schedule(task)` 的一个关键前提条件是调用者必须"拥有"该 `task`；
+也就是说，它必须知道在给定 `task` 中的 `wait` 调用正发生在调用 `schedule(task)` 的代码所知道的位置。
+确保这种前提条件的一种策略是使用原子操作，如下例所示：
 
 ```jldoctest
 @enum OWEState begin
@@ -145,12 +143,11 @@ notifying...
 done
 ```
 
-`OneWayEvent` lets one task to `wait` for another task's `notify`.  It is a limited
-communication interface since `wait` can only be used once from a single task (note the
-non-atomic assignment of `ev.task`)
+`OneWayEvent` 允许一个任务通过 `wait` 等待另一个任务的 `notify`。
+这是一个受限的通信接口，因为 `wait` 只能被单个任务使用一次（注意 `ev.task` 的非原子赋值）。
 
-In this example, `notify(ev::OneWayEvent)` is allowed to call `schedule(ev.task)` if and
-only if *it* modifies the state from `OWE_WAITING` to `OWE_NOTIFYING`.  This lets us know that
-the task executing `wait(ev::OneWayEvent)` is now in the `ok` branch and that there cannot be
-other tasks that tries to `schedule(ev.task)` since their
-`@atomicreplace(ev.state, state => OWE_NOTIFYING)` will fail.
+在这个例子中，`notify(ev::OneWayEvent)` 只有在*它*将状态从 `OWE_WAITING` 修改为 `OWE_NOTIFYING` 时，
+才允许调用 `schedule(ev.task)`。
+这让我们知道执行 `wait(ev::OneWayEvent)` 的任务现在在 `ok` 分支中，
+并且不可能有其他任务尝试 `schedule(ev.task)`，
+因为它们的 `@atomicreplace(ev.state, state => OWE_NOTIFYING)` 将会失败。
