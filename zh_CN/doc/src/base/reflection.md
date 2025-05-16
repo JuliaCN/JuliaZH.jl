@@ -1,10 +1,11 @@
-# 反射 与 自我检查
+# 反射与内省
 
 Julia 提供了多种运行时的反射功能。
 
 ## 模块绑定
 
-由 `Module` 导出的名称可用 [`names(m::Module)`](@ref) 获得，它会返回一个元素为 [`Symbol`](@ref) 的数组来表示模块导出的绑定。不管导出状态如何，`names(m::Module, all = true)` 返回 `m` 中所有绑定的符号。
+由 `Module` 导出的名称可用 [`names(m::Module)`](@ref) 获得，它会返回一个元素为 [`Symbol`](@ref) 的数组来表示模块导出的绑定。
+不管导出状态如何，`names(m::Module, all = true)` 返回 `m` 中所有绑定的符号。
 
 ## DateType 字段
 
@@ -36,13 +37,12 @@ julia> typeof(Point)
 DataType
 ```
 
-Note that `fieldnames(DataType)` gives the names for each field of `DataType` itself, and one
-of these fields is the `types` field observed in the example above.
+注意 `fieldnames(DataType)` 会给出 `DataType` 本身的每个字段的名称，其中一个字段就是上例中观察到的 `types` 字段。
 
-## Subtypes
+## 子类型
 
-The *direct* subtypes of any `DataType` may be listed using [`subtypes`](@ref). For example,
-the abstract `DataType` [`AbstractFloat`](@ref) has four (concrete) subtypes:
+任何 `DataType` 的*直接*子类型都可以使用 [`subtypes`](@ref) 列出。
+例如，抽象 `DataType` [`AbstractFloat`](@ref) 有四个（具体的）子类型：
 
 ```jldoctest; setup = :(using InteractiveUtils)
 julia> subtypes(AbstractFloat)
@@ -57,13 +57,10 @@ julia> subtypes(AbstractFloat)
 
 ## DataType 布局
 
-The internal representation of a `DataType` is critically important when interfacing with C code
-and several functions are available to inspect these details. [`isbitstype(T::DataType)`](@ref) returns
-true if `T` is stored with C-compatible alignment. [`fieldoffset(T::DataType, i::Integer)`](@ref)
-returns the (byte) offset for field *i* relative to the start of the type.
+当与 C 代码进行接口交互时，`DataType` 的内部表示非常重要，有几个函数可用于检查这些细节。
 
- [`isbits(T::DataType)`](@ref) 如果 `T` 类型是以 C 兼容的对齐方式存储，则为 true。  
- [`fieldoffset(T::DataType, i::Integer)`](@ref) 返回字段 *i* 相对于类型开始的 (字节) 偏移量。
+- [`isbitstype(T::DataType)`](@ref) 返回true，如果类型 `T` 以 C 兼容的对齐方式存储。
+- [`fieldoffset(T::DataType, i::Integer)`](@ref) 返回相对于类型起始位置的字段 *i* 的（字节）偏移量。
 
 ## 函数方法
 
@@ -71,22 +68,19 @@ returns the (byte) offset for field *i* relative to the start of the type.
 
 ## 扩展和更底层
 
-As discussed in the [Metaprogramming](@ref) section, the [`macroexpand`](@ref) function gives
-the unquoted and interpolated expression ([`Expr`](@ref)) form for a given macro. To use `macroexpand`,
-`quote` the expression block itself (otherwise, the macro will be evaluated and the result will
-be passed instead!). For example:
+如[元编程](@ref)部分所述，[`macroexpand`](@ref)函数为给定的宏提供未引用和插值的表达式（[`Expr`](@ref)）形式。
+要使用`macroexpand`，需要对表达式块本身使用`quote`（否则，宏将被求值，并传递其结果！）。
+例如：
 
 ```jldoctest; setup = :(using InteractiveUtils)
 julia> macroexpand(@__MODULE__, :(@edit println("")) )
 :(InteractiveUtils.edit(println, (Base.typesof)("")))
 ```
 
-The functions `Base.Meta.show_sexpr` and [`dump`](@ref) are used to display S-expr style views
-and depth-nested detail views for any expression.
+函数 `Base.Meta.show_sexpr` 和 [`dump`](@ref) 用于显示任何表达式的 `S-表达式` 风格视图和深度嵌套的详细视图。
 
-Finally, the [`Meta.lower`](@ref) function gives the `lowered` form of any expression and is of
-particular interest for understanding how language constructs map to primitive operations such
-as assignments, branches, and calls:
+最后，[`Meta.lower`](@ref) 函数提供任何表达式的 `lowered` 形式，
+这对于理解语言构造如何映射到原始操作（如赋值、分支和调用）特别有用：
 
 ```jldoctest
 julia> Meta.lower(@__MODULE__, :( [1+2, sin(0.5)] ))
@@ -122,13 +116,12 @@ top:
 }
 ```
 
-For more information see [`@code_lowered`](@ref), [`@code_typed`](@ref), [`@code_warntype`](@ref),
-[`@code_llvm`](@ref), and [`@code_native`](@ref).
+更多信息请参见 [`@code_lowered`](@ref)、[`@code_typed`](@ref)、[`@code_warntype`](@ref)、
+[`@code_llvm`](@ref)和[`@code_native`](@ref)。
 
-### Printing of debug information
+### 调试信息的打印
 
-The aforementioned functions and macros take the keyword argument `debuginfo` that controls the level
-debug information printed.
+上述函数和宏接受关键字参数 `debuginfo`，用于控制打印的调试信息级别。
 
 ```julia-repl
 julia> @code_typed debuginfo=:source +(1,1)
@@ -139,6 +132,5 @@ CodeInfo(
 ) => Int64
 ```
 
-Possible values for `debuginfo` are: `:none`, `:source`, and `:default`.
-Per default debug information is not printed, but that can be changed
-by setting `Base.IRShow.default_debuginfo[] = :source`.
+`debuginfo` 的可能取值有：`:none`、`:source` 和 `:default`。
+默认情况下不打印调试信息，但可以通过设置 `Base.IRShow.default_debuginfo[] = :source` 来改变这一行为。
