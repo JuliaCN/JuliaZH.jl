@@ -314,7 +314,7 @@ Point{Float64}(1.0, 0.5)
 
 ## 示例学习：有理数
 
-也许将所有这些部分联系在一起的最佳方法是展示参数复合类型及其构造方法的真实示例。 为此，我们实现了自己的有理数类型 `OurRational`，类似于 Julia 的内置 [`Rational`](@ref) 类型，定义在 [`rational.jl`](https://github.com/JuliaLang /julia/blob/master/base/rational.jl）：
+也许将所有这些部分联系在一起的最佳方法是展示参数复合类型及其构造方法的真实示例。 为此，我们实现了自己的有理数类型 `OurRational`，类似于 Julia 的内置 [`Rational`](@ref) 类型，定义在 [`rational.jl`](https://github.com/JuliaLang/julia/blob/master/base/rational.jl）：
 
 
 ```jldoctest rational
