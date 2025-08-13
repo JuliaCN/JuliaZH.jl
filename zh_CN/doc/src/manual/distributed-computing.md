@@ -179,10 +179,6 @@ julia -p <n> -L file1.jl -L file2.jl driver.jl
 
 上面执行 `driver.jl` 的进程 id 为1，就跟提供交互式命令行的 Julia 进程一样。
 
-Finally, if `DummyModule.jl` is not a standalone file but a package, then `using
-DummyModule` will _load_ `DummyModule.jl` on all processes, but only bring it into scope on
-the process where [`using`](@ref) was called.
-
 最后，如果`DummyModule.jl`不是一个独立的文件，而是一个包，那么`using DummyModule`将在所有进程上_加载_ `DummyModule.jl`，但只在调用[`using`]（@ref）的进程上将其纳入作用域。
 
 
