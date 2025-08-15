@@ -136,16 +136,6 @@ implementation-detail, but it is not a rule.
 
 Counter-examples to this rule include [`NamedTuple`](@ref), [`RegexMatch`](@ref match), [`StatStruct`](@ref stat).
 
-## Use naming conventions consistent with Julia `base/`
-
-  * modules and type names use capitalization and camel case: `module SparseArrays`, `struct UnitRange`.
-  * functions are lowercase ([`maximum`](@ref), [`convert`](@ref)) and, when readable, with multiple
-    words squashed together ([`isequal`](@ref), [`haskey`](@ref)). When necessary, use underscores
-    as word separators. Underscores are also used to indicate a combination of concepts ([`remotecall_fetch`](@ref)
-    as a more efficient implementation of `fetch(remotecall(...))`) or as modifiers.
-  * functions mutating at least one of their arguments end in `!`.
-  * conciseness is valued, but avoid abbreviation ([`indexin`](@ref) rather than `indxin`) as
-    it becomes difficult to remember whether and how particular words are abbreviated.
 
 包开发人员可以更自由地更改实现而不会破坏用户代码。
 
