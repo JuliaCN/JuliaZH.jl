@@ -20,14 +20,6 @@ Julia 的优势在于好的性能不止被限制在一小部分的内置类型�
 
 ## [公共 API](@id man-api)
 
-### How does Julia define its public API?
-
-Julia `Base` and standard library functionality described in the
-[the documentation](https://docs.julialang.org/) that is not marked as unstable
-(e.g. experimental and internal) is covered by [SemVer](https://semver.org/).
-Functions, types, and constants are not part of the public API if they are not
-included in the documentation, _even if they have docstrings_.
-
 ### There is a useful undocumented function/type/constant. Can I use it?
 
 Updating Julia may break your code if you use non-public API.  If the code is
