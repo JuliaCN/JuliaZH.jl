@@ -137,14 +137,8 @@ implementation-detail, but it is not a rule.
 Counter-examples to this rule include [`NamedTuple`](@ref), [`RegexMatch`](@ref match), [`StatStruct`](@ref stat).
 
 
-包开发人员可以更自由地更改实现而不会破坏用户代码。
-
- 
-
--  
-   
-- 方法可以传递给高阶结构，如 [`map`](@ref)（例如 `map(imag, zs)`）而不是 `[z.im for z in zs]`）。
-   
+- 包开发人员可以更自由地更改实现而不会破坏用户代码。    
+- 方法可以传递给高阶结构，如 [`map`](@ref)（例如 `map(imag, zs)`）而不是 `[z.im for z in zs]`）。   
 - 方法可以定义在抽象类型上。
 - 方法可以描述可以在不同类型之间共享的概念操作（例如 `real(z)` 适用于复数或四元数）。
    
