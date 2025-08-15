@@ -671,8 +671,6 @@ type `Y`, then another type `Comp2` with a parameter of type `X<:Y` is not a sub
 type-invariance (by contrast, Tuple is type-covariant in its parameters). See [Parametric Composite
 Types](@ref man-parametric-composite-types) for more explanation of these.
 
-### Why does Julia use `*` for string concatenation? Why not `+` or something else?
-
 ### 为什么声明 `foo(bar::Vector{Real}) = 42` 然后调用 `foo([1])` 不起作用？
 
 如果你尝试了，结果就会看到`MethodError`:
