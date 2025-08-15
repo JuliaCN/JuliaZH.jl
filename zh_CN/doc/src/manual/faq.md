@@ -20,33 +20,6 @@ Julia 的优势在于好的性能不止被限制在一小部分的内置类型�
 
 ## [公共 API](@id man-api)
 
-### How does Julia define its public API?
-
-Julia `Base` and standard library functionality described in the
-[the documentation](https://docs.julialang.org/) that is not marked as unstable
-(e.g. experimental and internal) is covered by [SemVer](https://semver.org/).
-Functions, types, and constants are not part of the public API if they are not
-included in the documentation, _even if they have docstrings_.
-
-### There is a useful undocumented function/type/constant. Can I use it?
-
-Updating Julia may break your code if you use non-public API.  If the code is
-self-contained, it may be a good idea to copy it into your project.  If you want to rely on
-a complex non-public API, especially when using it from a stable package, it is a good idea
-to open an [issue](https://github.com/JuliaLang/julia/issues) or
-[pull request](https://github.com/JuliaLang/julia/pulls) to start a discussion for turning it
-into a public API.  However, we do not discourage the attempt to create packages that expose
-stable public interfaces while relying on non-public implementation details of Julia and
-buffering the differences across different Julia versions.
-
-### The documentation is not accurate enough. Can I rely on the existing behavior?
-
-Please open an [issue](https://github.com/JuliaLang/julia/issues) or
-[pull request](https://github.com/JuliaLang/julia/pulls) to start a discussion for turning the
-existing behavior into a public API.
-
-## Sessions and the REPL
-
 ### Julia 如何定义其公共 API？
 
 对于 `julia` 版本的 [SemVer](https://semver.org/)，唯一稳定的接口是 Julia 的 `Base` 和 [文档](https://docs.julialang.org/) 中的标准库接口中且未标记为不稳定（例如，实验性的和内部性的）的部分。 如果函数、类型和常量未包含在文档中，则它们不是公共 API 的一部分，_即使它们具有文档_。
