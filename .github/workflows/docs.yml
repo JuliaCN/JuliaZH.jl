@@ -40,7 +40,7 @@ jobs:
         run: |
           julia --project=doc/ doc/make.jl deploy
       - name: Upload HTML
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: html-site
           path: doc/build/

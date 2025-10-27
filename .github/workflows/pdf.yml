@@ -35,7 +35,7 @@ jobs:
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
         run: julia --project=doc/ doc/make.jl deploy pdf texplatform=docker
       - name: upload complied PDF file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: compiled contents
           path: doc/build/*.pdf
