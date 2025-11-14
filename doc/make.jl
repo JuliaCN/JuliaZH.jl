@@ -9,6 +9,7 @@ using Pkg
 Pkg.instantiate()
 
 using Documenter
+using DocumenterInventoryWritingBackport
 include("../contrib/HTMLWriter.jl")
 include("../contrib/LaTeXWriter.jl")
 
