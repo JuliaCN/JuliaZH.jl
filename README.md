@@ -20,7 +20,7 @@ julia> using JuliaZH
 help?> julia
 search: julia Julia JuliaZH
 
-  欢迎来到 Julia 1.10.9. 完整的中文手册可以在这里找到
+  欢迎来到 Julia 1.10.5. 完整的中文手册可以在这里找到
 
   https://docs.juliacn.com/
 
