@@ -39,7 +39,8 @@ search: julia Julia JuliaZH
 
 ## 贡献
 
-我们目前使用 [Transifex](https://www.transifex.com) 作为翻译平台。 翻译工作依靠社区的贡献者来推进，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
+我们目前使用 Github 作为翻译平台，可以直接提交 pr。目前 Transifex 平台缺少人力维护，暂停使用。
+翻译工作依靠社区的贡献者来推进，有任何疑问或建议请到[社区论坛文档区](http://discourse.juliacn.com/c/community/document)反馈。若有意参与翻译工作，请参考[翻译指南](http://discourse.juliacn.com/t/topic/277)。
 
 ## 致谢
 
