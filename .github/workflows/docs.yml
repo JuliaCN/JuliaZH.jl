@@ -26,7 +26,7 @@ jobs:
         with:
           version: '1.10'
           show-versioninfo: true
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@v3
       - name: Install dependencies
         shell: julia --project=doc --color=yes {0}
         run: |
